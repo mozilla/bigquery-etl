@@ -198,6 +198,7 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: bool = attr.ib(False)
+    level: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -276,6 +277,7 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = False
+        level = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -363,6 +365,11 @@ class Metadata:
                         "require_column_descriptions"
                     ]
 
+                if "level" in metadata:
+                    level = metadata[
+                        "level"
+                    ]
+
                 return cls(
                     friendly_name,
                     description,
@@ -378,6 +385,7 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
+                    level,
                 )
             except yaml.YAMLError as e:
                 raise e

@@ -16,7 +16,7 @@ GLEAN_MAPPING = {
     "ads_backend": "ads_backend",
 }
 
-valid_geo_deprecation_schema = [
+VALID_GEO_DEPRECATION_SCHEMA = [
     bigquery.SchemaField("document_id", "STRING"),
     bigquery.SchemaField(
         "client_info",
@@ -53,7 +53,7 @@ class TestCopyDeduplicate:
         """Table with include_client_id=true and all required geo fields present."""
         table = Mock()
         table.labels = {"include_client_id": "true"}
-        table.schema = valid_geo_deprecation_schema
+        table.schema = VALID_GEO_DEPRECATION_SCHEMA
         return table
 
     @pytest.fixture
@@ -193,24 +193,24 @@ class TestCopyDeduplicate:
 
     def test_has_field_path_top_level_and_nested(self):
         # top-level field
-        assert _has_field_path(valid_geo_deprecation_schema, ["document_id"])
-        assert not _has_field_path(valid_geo_deprecation_schema, ["missing_top_level"])
+        assert _has_field_path(VALID_GEO_DEPRECATION_SCHEMA, ["document_id"])
+        assert not _has_field_path(VALID_GEO_DEPRECATION_SCHEMA, ["missing_top_level"])
 
         # nested fields
         assert _has_field_path(
-            valid_geo_deprecation_schema, ["client_info", "client_id"]
+            VALID_GEO_DEPRECATION_SCHEMA, ["client_info", "client_id"]
         )
         assert _has_field_path(
-            valid_geo_deprecation_schema, ["metadata", "geo", "city"]
+            VALID_GEO_DEPRECATION_SCHEMA, ["metadata", "geo", "city"]
         )
         assert _has_field_path(
-            valid_geo_deprecation_schema, ["metadata", "geo", "subdivision1"]
+            VALID_GEO_DEPRECATION_SCHEMA, ["metadata", "geo", "subdivision1"]
         )
         assert _has_field_path(
-            valid_geo_deprecation_schema, ["metadata", "geo", "subdivision2"]
+            VALID_GEO_DEPRECATION_SCHEMA, ["metadata", "geo", "subdivision2"]
         )
         assert not _has_field_path(
-            valid_geo_deprecation_schema, ["metadata", "geo", "nope"]
+            VALID_GEO_DEPRECATION_SCHEMA, ["metadata", "geo", "nope"]
         )
 
     @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
@@ -319,7 +319,7 @@ class TestCopyDeduplicate:
 
         table = Mock()
         table.labels = {"include_client_id": "false"}
-        table.schema = valid_geo_deprecation_schema
+        table.schema = VALID_GEO_DEPRECATION_SCHEMA
 
         mock_client = Mock(spec=bigquery.Client)
         mock_client.get_table.return_value = table
@@ -344,7 +344,7 @@ class TestCopyDeduplicate:
 
         table = Mock()
         table.labels = {"owner1": "wichan"}  # no include_client_id
-        table.schema = valid_geo_deprecation_schema
+        table.schema = VALID_GEO_DEPRECATION_SCHEMA
 
         mock_client = Mock(spec=bigquery.Client)
         mock_client.get_table.return_value = table

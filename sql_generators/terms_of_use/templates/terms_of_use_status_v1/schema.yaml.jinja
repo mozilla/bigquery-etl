@@ -1,13 +1,6 @@
 # {{ header }}
 fields:
 - mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: |
-    Date when the ping is received on the server side. Also used as the logical date
-    by the ETL process.
-
-- mode: NULLABLE
   name: client_id
   type: STRING
   description: |
@@ -84,7 +77,7 @@ fields:
   name: terms_of_use_date_accepted
   type: TIMESTAMP
   description: |
-    The timestamp when the user accepted the Terms of Use.
+    The timestamp when the user accepted the Terms of Use. Also used in ETL for retrieving previous entries.
 {% if app_name == "firefox_desktop" %}
 - mode: NULLABLE
   name: legacy_telemetry_client_id

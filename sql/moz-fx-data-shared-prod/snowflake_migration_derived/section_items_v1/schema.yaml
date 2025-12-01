@@ -27,8 +27,8 @@ fields:
   type: STRING
   name: source
   description: Source associated with the section item update.
-- mode: NULLABLE
-  type: ARRAY<STRING>
+- mode: REPEATED
+  type: STRING
   name: reasons
   description: List of reasons for deactivating the section item.
 - mode: NULLABLE

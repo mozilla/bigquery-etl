@@ -137,4 +137,7 @@ class TestEntrypoint:
                 check=True,
                 capture_output=True,
             )
-            assert b"No queries matching" in e.value.stderr
+            assert (
+                b"Error: 'query' command requires at least one argument (FILE)"
+                in e.value.stderr
+            )

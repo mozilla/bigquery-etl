@@ -904,6 +904,17 @@ def _copy_backfill_staging_to_prod(
        un-partitioned: copy the entire staging table to production.
        partitioned: determine and copy each partition from staging to production.
     """
+    # If this is a public dataset, change the destination to the public project
+    if table_metadata.is_public_bigquery():
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        public_project_id = ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        )
+        qualified_table_name = f"{public_project_id}.{dataset}.{table}"
+        click.echo(
+            f"Public dataset detected. Copying to public project: {qualified_table_name}"
+        )
+
     partitioning_type = None
     if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
         partitioning_type = table_metadata.bigquery.time_partitioning.type

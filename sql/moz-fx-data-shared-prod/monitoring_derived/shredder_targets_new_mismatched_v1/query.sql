@@ -4,7 +4,7 @@ WITH unmatching_sources AS (
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.shredder_targets_joined_v1`
   WHERE
-    matching_sources IS FALSE
+    (matching_sources IS FALSE AND ARRAY_LENGTH(detected_sources) > 0)
     OR ARRAY_LENGTH(current_sources) = 0
 ),
 previous_config AS (

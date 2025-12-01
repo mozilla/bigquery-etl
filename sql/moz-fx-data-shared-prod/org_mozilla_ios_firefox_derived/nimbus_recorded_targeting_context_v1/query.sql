@@ -18,16 +18,38 @@ WITH filtered AS (
 SELECT
   m.client_id,
   DATE(m.submission_timestamp) AS submission_date,
-  CAST(JSON_VALUE(context, '$.appVersion') AS string) AS androidSdkVersion,
-  CAST(JSON_VALUE(context, '$.daysSinceInstall') AS int) AS daysSinceInstall,
-  CAST(JSON_VALUE(context, '$.daysSinceUpdate') AS int) AS daysSinceUpdate,
-  CAST(
-    JSON_VALUE(context, '$.eventQueryValues.daysOpenedInLast28') AS int
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.app_version') AS string),
+    CAST(JSON_VALUE(context, '$.appVersion') AS string)
+  ) AS appVersion,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.days_since_install') AS int),
+    CAST(JSON_VALUE(context, '$.daysSinceInstall') AS int)
+  ) AS daysSinceInstall,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.days_since_update') AS int),
+    CAST(JSON_VALUE(context, '$.daysSinceUpdate') AS int)
+  ) AS daysSinceUpdate,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.event_query_values.days_opened_in_last_28') AS int),
+    CAST(JSON_VALUE(context, '$.eventQueryValues.daysOpenedInLast28') AS int)
   ) AS eventQuery_daysOpenedInLast28,
-  CAST(JSON_VALUE(context, '$.isDefaultBrowser') AS boolean) AS isDefaultBrowser,
-  CAST(JSON_VALUE(context, '$.isFirstRun') AS boolean) AS isFirstRun,
-  CAST(JSON_VALUE(context, '$.isPhone') AS boolean) AS isPhone,
-  CAST(JSON_VALUE(context, '$.isReviewCheckerEnabled') AS boolean) AS isReviewCheckerEnabled,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.is_default_browser') AS boolean),
+    CAST(JSON_VALUE(context, '$.isDefaultBrowser') AS boolean)
+  ) AS isDefaultBrowser,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.is_first_run') AS boolean),
+    CAST(JSON_VALUE(context, '$.isFirstRun') AS boolean)
+  ) AS isFirstRun,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.is_phone') AS boolean),
+    CAST(JSON_VALUE(context, '$.isPhone') AS boolean)
+  ) AS isPhone,
+  COALESCE(
+    CAST(JSON_VALUE(context, '$.is_review_checker_enabled') AS boolean),
+    CAST(JSON_VALUE(context, '$.isReviewCheckerEnabled') AS boolean)
+  ) AS isReviewCheckerEnabled,
   CAST(JSON_VALUE(context, '$.language') AS string) AS language,
   CAST(JSON_VALUE(context, '$.locale') AS string) AS locale,
   CAST(JSON_VALUE(context, '$.region') AS string) AS region,

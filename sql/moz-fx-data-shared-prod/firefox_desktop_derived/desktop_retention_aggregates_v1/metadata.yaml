@@ -24,5 +24,4 @@ bigquery:
     fields:
     - country
     - normalized_os
-references: {}
 require_column_descriptions: true

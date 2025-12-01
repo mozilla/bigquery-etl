@@ -107,3 +107,11 @@ def import_google_sheet(
     print(
         f"Imported {result.total_rows} rows from {sheet_url} into `{destination_table}`."
     )
+
+    # Redeploy the table schema to add back field descriptions, which get removed when overwriting the table.
+    client.update_table(
+        bigquery.Table(
+            destination_table, schema=destination_schema.to_bigquery_schema()
+        ),
+        fields=["schema"],
+    )

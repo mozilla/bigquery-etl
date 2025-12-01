@@ -27,5 +27,4 @@ bigquery:
     - app_name
     - attribution_medium
     - channel
-references: {}
 require_column_descriptions: false

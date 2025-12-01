@@ -15,4 +15,3 @@ bigquery:
   time_partitioning: null
   clustering:
     fields: [country]
-references: {}

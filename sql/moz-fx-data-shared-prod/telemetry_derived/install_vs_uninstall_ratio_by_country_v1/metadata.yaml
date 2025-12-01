@@ -19,5 +19,4 @@ bigquery:
   clustering:
     fields:
     - normalized_country_code
-references: {}
 require_column_descriptions: false

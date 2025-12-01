@@ -43,4 +43,3 @@ schema:
     - clients_daily_v6
     exclude:
     - submission_date
-references: {}

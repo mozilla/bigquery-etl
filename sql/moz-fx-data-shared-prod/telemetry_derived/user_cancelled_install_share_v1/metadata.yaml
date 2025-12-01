@@ -21,4 +21,3 @@ bigquery:
     fields:
     - installer_type
     - update_channel
-references: {}

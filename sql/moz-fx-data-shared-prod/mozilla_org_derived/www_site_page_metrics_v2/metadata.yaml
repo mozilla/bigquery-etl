@@ -21,4 +21,3 @@ bigquery:
     - locale
     - country
     - medium
-references: {}

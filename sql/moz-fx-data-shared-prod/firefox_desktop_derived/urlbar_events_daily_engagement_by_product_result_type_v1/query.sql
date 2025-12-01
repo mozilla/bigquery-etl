@@ -35,9 +35,9 @@ SELECT
   ANY_VALUE(normalized_country_code) AS normalized_country_code,
   ANY_VALUE(firefox_suggest_enabled) AS firefox_suggest_enabled,
   ANY_VALUE(sponsored_suggestions_enabled) AS sponsored_suggestions_enabled,
-  COUNTIF(is_clicked) AS urlbar_clicks,
-  COUNTIF(is_annoyed) AS urlbar_annoyances,
-  COUNTIF(is_terminal = TRUE) AS urlbar_impressions,
+  COUNT(DISTINCT IF(is_clicked, event_id, NULL)) AS urlbar_clicks,
+  COUNT(DISTINCT IF(is_annoyed, event_id, NULL)) AS urlbar_annoyances,
+  COUNT(DISTINCT IF(is_terminal, event_id, NULL)) AS urlbar_impressions
 FROM
   temp_unnested
 GROUP BY

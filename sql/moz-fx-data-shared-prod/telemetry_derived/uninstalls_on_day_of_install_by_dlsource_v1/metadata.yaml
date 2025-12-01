@@ -18,4 +18,3 @@ bigquery:
   clustering:
     fields:
     - attribution_dlsource
-references: {}

@@ -29,59 +29,6 @@ fenix_derived:
       dest: telemetry_sdk_build
     - src: client_info.locale
       dest: locale
-# see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
-#telemetry_derived:
-#  name: Firefox
-#  include_normalized_fields: True
-#  include_metadata_fields: True
-#  glean: False
-#  dataset: telemetry
-#  source_table: telemetry_derived.deanonymized_events
-#  start_date: 2020-01-01
-#  dag_name: bqetl_event_rollup
-#  user_properties:
-#    - src: application.build_id
-#      dest: build_id
-#    - src: environment.build.architecture
-#      dest: build_architecture
-#    - src: environment.profile.creation_date
-#      dest: profile_creation_date
-#      type: FLOAT64
-#    - src: environment.settings.is_default_browser
-#      dest: is_default_browser
-#      type: BOOL
-#    - src: environment.settings.attribution.source
-#      dest: attribution_source
-#    - src: metadata.uri.app_version
-#      dest: app_version
-#    - src: environment.settings.locale
-#      dest: locale
-#    - src: environment.partner.distribution_id
-#      dest: distribution_id
-#    - src: environment.settings.attribution.ua
-#      dest: attribution_ua
-#    - src: application.display_version
-#      dest: display_version
-messaging_system_derived:
-  name: Firefox Messaging System
-  include_normalized_fields: False
-  include_metadata_fields: True
-  glean: False
-  dataset: messaging_system
-  source_table: messaging_system_derived.normalized_onboarding_events
-  start_date: 2020-01-01
-  dag_name: bqetl_event_rollup
-  user_properties:
-    - src: version
-      dest: app_version
-    - src: metadata.user_agent.os
-      dest: os
-    - src: addon_version
-      dest: addon_version
-    - src: locale
-      dest: locale
-    - src: normalized_channel
-      dest: normalized_channel
 mozilla_vpn_derived:
   name: Mozilla VPN
   include_normalized_fields: True

@@ -46,4 +46,3 @@ bigquery:
     - sample_id
     - country
     - normalized_os
-references: {}

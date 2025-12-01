@@ -166,6 +166,12 @@ def _view_is_valid(v: View) -> bool:
     help="Don't publish views with labels: {authorized: true} in metadata.yaml",
 )
 @click.option(
+    "--authorized-only",
+    "--authorized_only",
+    is_flag=True,
+    help="Only publish views with labels: {authorized: true} in metadata.yaml",
+)
+@click.option(
     "--force",
     is_flag=True,
     help="Publish views even if there are no changes to the view query",
@@ -190,6 +196,7 @@ def publish(
     dry_run,
     user_facing_only,
     skip_authorized,
+    authorized_only,
     force,
     add_managed_label,
     respect_dryrun_skip,
@@ -200,9 +207,17 @@ def publish(
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
+
+    if skip_authorized and authorized_only:
+        raise click.ClickException(
+            "Cannot use both --skip-authorized and --authorized-only"
+        )
+
     credentials = get_credentials()
 
-    views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
+    views = _collect_views(
+        name, sql_dir, project_id, user_facing_only, skip_authorized, authorized_only
+    )
     if respect_dryrun_skip:
         views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
@@ -247,7 +262,9 @@ def _view_has_changes(target_project, credentials, view):
     return view.has_changes(target_project, credentials)
 
 
-def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):
+def _collect_views(
+    name, sql_dir, project_id, user_facing_only, skip_authorized, authorized_only=False
+):
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
@@ -261,6 +278,17 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
             v
             for v in views
             if not (
+                v.metadata
+                and v.metadata.labels
+                # labels with boolean true are translated to ""
+                and v.metadata.labels.get("authorized") == ""
+            )
+        ]
+    if authorized_only:
+        views = [
+            v
+            for v in views
+            if (
                 v.metadata
                 and v.metadata.labels
                 # labels with boolean true are translated to ""
@@ -314,7 +342,13 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     "--skip-authorized",
     "--skip_authorized",
     is_flag=True,
-    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+    help="Don't clean views with labels: {authorized: true} in metadata.yaml",
+)
+@click.option(
+    "--authorized-only",
+    "--authorized_only",
+    is_flag=True,
+    help="Only clean views with labels: {authorized: true} in metadata.yaml",
 )
 def clean(
     name,
@@ -326,6 +360,7 @@ def clean(
     dry_run,
     user_facing_only,
     skip_authorized,
+    authorized_only,
 ):
     """Clean managed views."""
     # set log level
@@ -334,13 +369,23 @@ def clean(
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
 
+    if skip_authorized and authorized_only:
+        raise click.ClickException(
+            "Cannot use both --skip-authorized and --authorized-only"
+        )
+
     if project_id is None and target_project is None:
         raise click.ClickException("command requires --project-id or --target-project")
 
     expected_view_ids = {
         view.target_view_identifier(target_project)
         for view in _collect_views(
-            name, sql_dir, project_id, user_facing_only, skip_authorized
+            name,
+            sql_dir,
+            project_id,
+            user_facing_only,
+            skip_authorized,
+            authorized_only,
         )
     }
 
@@ -365,7 +410,13 @@ def clean(
             for views in p.starmap(
                 client_q.with_client,
                 (
-                    (_list_managed_views, dataset, name, skip_authorized)
+                    (
+                        _list_managed_views,
+                        dataset,
+                        name,
+                        skip_authorized,
+                        authorized_only,
+                    )
                     for dataset in datasets
                 ),
                 chunksize=1,
@@ -381,7 +432,9 @@ def clean(
         )
 
 
-def _list_managed_views(client, dataset, pattern, skip_authorized):
+def _list_managed_views(
+    client, dataset, pattern, skip_authorized, authorized_only=False
+):
     query = f"""
       SELECT
         table_catalog || "." || table_schema || "." || table_name AS table_id,
@@ -407,6 +460,7 @@ def _list_managed_views(client, dataset, pattern, skip_authorized):
         for row in result
         if (pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}"))
         and (not skip_authorized or not row.is_authorized)
+        and (not authorized_only or row.is_authorized)
     ]
 
 

@@ -1,0 +1,3 @@
+friendly_name: Firefox Health Indicators - MAU per Windows OS
+description: |-
+  Aggregate table that calculates MAU, DAU and ER for different Windows versions

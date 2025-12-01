@@ -5,7 +5,7 @@ description: |-
 owners:
 - frank@mozilla.com
 scheduling:
-  #dag_name: bqetl_mozilla_org_derived - GA3 feed turned off 2024-06-30 so no need to run anymore
+  # dag_name: bqetl_mozilla_org_derived - GA3 feed turned off 2024-06-30 so no need to run anymore
   depends_on_past: true
   date_partition_parameter: null
   parameters: ["session_date:DATE:{{ds}}"]
@@ -15,5 +15,4 @@ labels:
 bigquery:
   clustering:
     fields: ["first_seen_date"]
-references: {}
 deprecated: true

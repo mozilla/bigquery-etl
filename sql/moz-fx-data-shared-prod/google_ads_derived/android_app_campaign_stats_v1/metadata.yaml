@@ -27,4 +27,5 @@ bigquery:
     field: date
     require_partition_filter: false
 monitoring:
-  enabled: true
+  enabled: false
+deprecated: true

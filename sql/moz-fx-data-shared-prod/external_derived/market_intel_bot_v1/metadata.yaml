@@ -1,0 +1,23 @@
+friendly_name: Market Intel Bot V1
+description: |-
+  Runs monthly to summarize market research.
+  Reads data scraped earlier from the "web_scraping" DAG,
+  then uses ChatGPT to supplement and summarize the findings.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_market_intel_bot
+  arguments: ["--date", "{{ds}}"]
+  depends_on:
+  - task_id: read_release_data
+    dag_name: web_scraping
+  secrets:
+  - deploy_target: DATA_ENG_OPEN_AI_API_KEY
+    key: bqetl_chrome_releases__open_ai_api_key
+  - deploy_target: MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN
+    key: bqetl_market_intel_bot__github_token
+  - deploy_target: SLACK_MARKET_INTEL_BOT_WEBHOOK_URL
+    key: bqetl_market_intel_bot__webhook_url

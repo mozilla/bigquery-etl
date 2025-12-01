@@ -12,4 +12,3 @@ labels:
 bigquery:
   time_partitioning: null
   clustering: null
-references: {}

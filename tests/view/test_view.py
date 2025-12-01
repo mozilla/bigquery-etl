@@ -6,6 +6,8 @@ from click.testing import CliRunner
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
+from bigquery_etl.cli.view import _collect_views
+from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.view import CREATE_VIEW_PATTERN, View
 
 TEST_DIR = Path(__file__).parent.parent
@@ -212,3 +214,117 @@ class TestView:
 
         assert simple_view.has_changes()
         assert "schema" in capsys.readouterr().out
+
+    @patch("bigquery_etl.cli.view.get_id_token")
+    def test_collect_views_authorized_only(self, mock_get_id_token, runner):
+        """Test that authorized_only flag filters views correctly."""
+        mock_get_id_token.return_value = None
+
+        with runner.isolated_filesystem():
+            # Create test directory structure
+            Path("sql/moz-fx-data-shared-prod/test").mkdir(parents=True)
+
+            # Create an authorized view
+            authorized_view_dir = Path(
+                "sql/moz-fx-data-shared-prod/test/authorized_view"
+            )
+            authorized_view_dir.mkdir()
+            (authorized_view_dir / "view.sql").write_text(
+                "CREATE OR REPLACE VIEW `moz-fx-data-shared-prod.test.authorized_view` AS SELECT 1"
+            )
+            authorized_metadata = Metadata(
+                friendly_name="Authorized View",
+                description="Test authorized view",
+                owners=["test@mozilla.com"],
+                labels={"authorized": True},
+            )
+            authorized_metadata.write(authorized_view_dir / "metadata.yaml")
+
+            # Create a non-authorized view
+            regular_view_dir = Path("sql/moz-fx-data-shared-prod/test/regular_view")
+            regular_view_dir.mkdir()
+            (regular_view_dir / "view.sql").write_text(
+                "CREATE OR REPLACE VIEW `moz-fx-data-shared-prod.test.regular_view` AS SELECT 1"
+            )
+            regular_metadata = Metadata(
+                friendly_name="Regular View",
+                description="Test regular view",
+                owners=["test@mozilla.com"],
+            )
+            regular_metadata.write(regular_view_dir / "metadata.yaml")
+
+            # Test authorized_only=True
+            views = _collect_views(
+                name=None,
+                sql_dir="sql",
+                project_id="moz-fx-data-shared-prod",
+                user_facing_only=False,
+                skip_authorized=False,
+                authorized_only=True,
+            )
+            assert len(views) == 1
+            assert views[0].name == "authorized_view"
+
+            # Test skip_authorized=True
+            views = _collect_views(
+                name=None,
+                sql_dir="sql",
+                project_id="moz-fx-data-shared-prod",
+                user_facing_only=False,
+                skip_authorized=True,
+                authorized_only=False,
+            )
+            assert len(views) == 1
+            assert views[0].name == "regular_view"
+
+            # Test both flags False (get all views)
+            views = _collect_views(
+                name=None,
+                sql_dir="sql",
+                project_id="moz-fx-data-shared-prod",
+                user_facing_only=False,
+                skip_authorized=False,
+                authorized_only=False,
+            )
+            assert len(views) == 2
+
+    def test_publish_authorized_only_mutually_exclusive(self, runner):
+        """Test that --authorized-only and --skip-authorized are mutually exclusive."""
+        from bigquery_etl.cli.view import publish
+
+        with runner.isolated_filesystem():
+            Path("sql/moz-fx-data-shared-prod/test").mkdir(parents=True)
+
+            result = runner.invoke(
+                publish,
+                [
+                    "--authorized-only",
+                    "--skip-authorized",
+                    "--project-id=moz-fx-data-shared-prod",
+                ],
+            )
+            assert result.exit_code != 0
+            assert (
+                "Cannot use both --skip-authorized and --authorized-only"
+                in result.output
+            )
+
+    def test_clean_authorized_only_mutually_exclusive(self, runner):
+        """Test that --authorized-only and --skip-authorized are mutually exclusive in clean."""
+        from bigquery_etl.cli.view import clean
+
+        with runner.isolated_filesystem():
+            with pytest.raises(AssertionError):
+                result = runner.invoke(
+                    clean,
+                    [
+                        "--authorized-only",
+                        "--skip-authorized",
+                        "--target-project=moz-fx-data-shared-prod",
+                    ],
+                )
+                assert result.exit_code != 0
+                assert (
+                    "Cannot use both --skip-authorized and --authorized-only"
+                    in result.output
+                )

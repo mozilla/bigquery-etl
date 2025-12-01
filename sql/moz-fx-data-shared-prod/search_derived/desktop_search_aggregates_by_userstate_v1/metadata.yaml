@@ -28,4 +28,3 @@ bigquery:
     fields:
     - geo
     - user_state
-references: {}

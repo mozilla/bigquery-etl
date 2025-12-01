@@ -20,4 +20,3 @@ bigquery:
   clustering:
     fields:
     - user_agent
-references: {}

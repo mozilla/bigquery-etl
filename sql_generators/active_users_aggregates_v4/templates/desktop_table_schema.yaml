@@ -1,0 +1,98 @@
+fields:
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the browser.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: City reported by the client.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
+  description: OS version reported by the client.
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The attribution source; similar or the same as UTM source. Reported by the install referrer service, not Adjust.
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The attribution medium; similar or the same as UTM medium. Reported by the install referrer service, not Adjust.
+- name: segment_dau
+  type: STRING
+  mode: NULLABLE
+  description: Classification of client_ids based on usage and active state.
+- name: first_seen_year_new
+  type: INTEGER
+  mode: NULLABLE
+  description: Year extracted from the first_seen_date, that corresponds to the date
+    when the first ping was received.
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who report a ping in a day.
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 7 days.
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 28 days.
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of daily active users, corresponding to the count of clients that reported at least one ping on the submission_date and qualify as active.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of weekly active users, corresponding to the count of clients that reported at least one ping on the previous 7 days from the submission_date and qualify as active.
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of monthly active users, corresponding to the count of clients that reported at least one ping on the previous 28 days from the submission_date and qualify as active.

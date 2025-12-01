@@ -21,5 +21,4 @@ bigquery:
   clustering:
     fields:
     - attribution_dlsource
-references: {}
 require_column_descriptions: true

@@ -1,8 +1,7 @@
 """Generate and run clients_last_seen_joined queries for Glean apps."""
 
-from sql_generators.glean_usage.common import GleanTable
-
 from bigquery_etl.config import ConfigLoader
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "clients_last_seen_joined_v1"
 PREFIX = "clients_last_seen_joined"
@@ -22,7 +21,8 @@ class ClientsLastSeenJoined(GleanTable):
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -31,19 +31,22 @@ class ClientsLastSeenJoined(GleanTable):
     ):
         """Generate per-app datasets."""
         skip_apps = ConfigLoader.get(
-            "generate", "glean_usage", "clients_last_seen_joined", "skip_apps", fallback=[]
+            "generate",
+            "glean_usage",
+            "clients_last_seen_joined",
+            "skip_apps",
+            fallback=[],
         )
-        if app_info[0]["app_name"] in skip_apps:
-            print(
-                f"Skipping clients_last_seen_joined generation for {app_info[0]['app_name']}"
-            )
+        if app_name in skip_apps:
+            print(f"Skipping clients_last_seen_joined generation for {app_name}")
             return
         return super().generate_per_app(
             project_id,
-            app_info,
-            output_dir,
-            use_cloud_function,
-            parallelism,
-            id_token,
-            all_base_tables_exist,
+            app_name,
+            app_ids_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
+            all_base_tables_exist=all_base_tables_exist,
         )

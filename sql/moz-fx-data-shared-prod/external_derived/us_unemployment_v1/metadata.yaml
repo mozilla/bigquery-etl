@@ -12,5 +12,4 @@ scheduling:
   secrets:
   - deploy_target: BLS_US_UNEMPLOYMENT_API_KEY
     key: bqetl_us_bls_unemployment_data__bls_us_api_key
-references: {}
 require_column_descriptions: true

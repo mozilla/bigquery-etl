@@ -18,4 +18,3 @@ scheduling:
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a
   - --event-type=users.messages.email.MarkAsSpam
 bigquery: null
-references: {}

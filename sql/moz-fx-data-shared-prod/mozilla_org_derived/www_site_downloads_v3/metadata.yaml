@@ -28,4 +28,3 @@ bigquery:
     - country
     - device_category
     - operating_system
-references: {}

@@ -16,4 +16,3 @@ bigquery:
   clustering:
     fields:
     - client_id
-references: {}

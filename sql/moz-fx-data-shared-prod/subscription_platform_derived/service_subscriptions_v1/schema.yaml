@@ -425,3 +425,14 @@ fields:
     mode: NULLABLE
     description: |-
       Last-touch attribution UTM term.
+- name: ended_reason
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Reason why the subscription ended.
+    Possible values:
+      * `Admin Initiated` - An admin at Mozilla ended the subscription, either directly or by deleting the customer's Mozilla Account.
+      * `Customer Initiated` - The customer ended their subscription, either directly or by turning off auto-renewal or deleting their Mozilla Account.
+      * `Payment Failure` - The subscription was unable to auto-renew due to a payment failure.
+      * `Downgrade` - The subscription ended due to the customer moving to a lower tier subscription.
+      * `Other` - The subscription ended for some other reason, such as unverified Mozilla Accounts being automatically deleted.

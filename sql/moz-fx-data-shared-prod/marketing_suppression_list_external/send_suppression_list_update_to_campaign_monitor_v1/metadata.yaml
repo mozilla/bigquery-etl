@@ -7,15 +7,4 @@ owners:
 labels:
   incremental: true
   owner1: leli
-scheduling:
-  dag_name: bqetl_marketing_suppression_list
-  arguments:
-  - --api_key={{ var.value.campaign_monitor_api_key }}
-  - --client_id={{ var.value.campaign_monitor_client_id }}
-  depends_on:
-  - task_id: marketing_suppression_list_external__campaign_monitor_suppression_list__v1
-    dag_name: bqetl_marketing_suppression_list
-  - task_id: marketing_suppression_list_derived__main_suppression_list__v1
-    dag_name: bqetl_marketing_suppression_list
 bigquery: null
-references: {}

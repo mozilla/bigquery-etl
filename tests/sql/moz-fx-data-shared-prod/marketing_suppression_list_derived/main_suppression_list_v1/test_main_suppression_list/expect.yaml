@@ -27,10 +27,6 @@
   suppressed_timestamp: 2022-06-01 00:00:00+00:00
   suppression_reason: hard bounce
   suppression_source: Braze Firefox hard bounce
-# User 7 MoFo
-- email: user7@email.com
-  suppressed_timestamp: 2023-07-01 00:00:00+00:00
-  suppression_source: Campaign Monitor
 # User 8 braze Mozilla hard bounce
 - email: user8@email.com
   suppressed_timestamp: 2024-08-01 00:00:00+00:00

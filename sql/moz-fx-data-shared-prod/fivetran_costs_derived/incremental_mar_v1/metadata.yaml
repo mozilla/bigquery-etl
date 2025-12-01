@@ -10,4 +10,3 @@ scheduling:
   depends_on_fivetran:
   - task_id: fivetran_log_prod
 bigquery: null
-references: {}

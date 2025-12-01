@@ -38,4 +38,3 @@ bigquery:
     fields:
       - channel
       - country
-references: {}

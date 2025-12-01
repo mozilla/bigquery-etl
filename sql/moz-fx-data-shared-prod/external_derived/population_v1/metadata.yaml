@@ -29,5 +29,4 @@ bigquery:
   clustering:
     fields:
     - location_id
-references: {}
 require_column_descriptions: true

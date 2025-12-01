@@ -27,5 +27,4 @@ bigquery:
     - country
     - device_category
     - operating_system
-references: {}
 require_column_descriptions: true

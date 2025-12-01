@@ -20,5 +20,4 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
-references: {}
 require_column_descriptions: false

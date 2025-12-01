@@ -10,7 +10,7 @@ USAGE_TYPES = (
     "created_profile",
     "seen_session_start",
     "seen_session_end",
-    "visited_1_uri"
+    "visited_1_uri",
 )
 
 
@@ -22,7 +22,7 @@ class BaselineClientsLastSeenTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
-        self.custom_render_kwargs = dict(
+        self.common_render_kwargs = dict(
             usage_types=USAGE_TYPES,
         )
         self.per_app_requires_all_base_tables = True

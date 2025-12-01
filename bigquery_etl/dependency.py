@@ -56,9 +56,19 @@ def extract_table_references(sql: str) -> List[str]:
         creates |= {
             _raw_table_name(expr.this)
             for expr in statement.find_all(sqlglot.exp.Create)
+            if expr.kind in ("TABLE", "VIEW")
         }
         tables |= (
-            {_raw_table_name(table) for table in statement.find_all(sqlglot.exp.Table)}
+            {
+                _raw_table_name(table)
+                for table in statement.find_all(sqlglot.exp.Table)
+                # Starting in sqlglot v26.9.0 the identifiers for UDFs created by `CREATE TEMP FUNCTION`
+                # statements get parsed into `Table` expressions (https://github.com/tobymao/sqlglot/pull/4829),
+                # so we need to exclude those (note that `Table` expressions in the bodies of UDFs won't have
+                # the `UserDefinedFunction` expression as their parent).  We reported this as a sqlglot bug
+                # (https://github.com/tobymao/sqlglot/issues/6298) but were told this is expected behavior.
+                if not isinstance(table.parent, sqlglot.exp.UserDefinedFunction)
+            }
             # ignore references created in this query
             - creates
             # ignore CTEs created in this statement

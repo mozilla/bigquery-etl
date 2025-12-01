@@ -40,7 +40,8 @@
   query_type: branded
 - <<: *suggest_mobile
   normalized_os: iOS
-- submission_date: "2030-01-01"
+- &suggest_mobile_ohttp
+  submission_date: "2030-01-01"
   source: suggest
   provider: remote settings
   event_type: impression
@@ -54,6 +55,8 @@
   event_count: 1
   user_count: 1
   query_type: branded
+- <<: *suggest_mobile_ohttp
+  normalized_os: iOS
 - &topsites_base
   submission_date: "2030-01-01"
   source: topsites

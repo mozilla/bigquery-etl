@@ -18,4 +18,3 @@ scheduling:
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366
   - --event-type=users.messages.email.SoftBounce
 bigquery: null
-references: {}

@@ -17,5 +17,4 @@ bigquery:
     fields:
     - event_category
     - sample_id
-references: {}
 require_column_descriptions: false

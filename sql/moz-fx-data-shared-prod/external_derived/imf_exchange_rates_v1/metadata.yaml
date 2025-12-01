@@ -9,5 +9,4 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_imf_exchange_rates
-references: {}
 require_column_descriptions: true

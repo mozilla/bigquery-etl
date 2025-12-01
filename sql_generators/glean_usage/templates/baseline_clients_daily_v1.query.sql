@@ -63,12 +63,14 @@ WITH base AS (
     JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
     JSON_VALUE(metrics.object.glean_attribution_ext.variation) AS attribution_variation,
     JSON_VALUE(metrics.object.glean_attribution_ext.ua) AS attribution_ua,
+    metrics.string.startup_profile_selection_reason AS startup_profile_selection_reason,
     {% else %}
     CAST(NULL AS STRING) AS attribution_dltoken,
     CAST(NULL AS STRING) AS attribution_dlsource,
     CAST(NULL AS STRING) AS attribution_experiment,
     CAST(NULL AS STRING) AS attribution_variation,
     CAST(NULL AS STRING) AS attribution_ua,
+    CAST(NULL AS STRING) AS startup_profile_selection_reason,
     {% endif %}
     ping_info.experiments AS experiments
   FROM
@@ -182,7 +184,8 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
     udf.mode_last(ARRAY_AGG(attribution_variation) OVER w1) AS attribution_variation,
     udf.mode_last(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
-    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments
+    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments,
+    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first
   FROM
     with_date_offsets
   LEFT JOIN

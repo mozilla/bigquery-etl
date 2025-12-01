@@ -18,4 +18,3 @@ bigquery:
   clustering:
     fields:
     - table_catalog
-references: {}

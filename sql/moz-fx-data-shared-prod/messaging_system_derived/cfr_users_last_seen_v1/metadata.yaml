@@ -21,5 +21,4 @@ bigquery:
   clustering:
     fields:
     - release_channel
-references: {}
 require_column_descriptions: false

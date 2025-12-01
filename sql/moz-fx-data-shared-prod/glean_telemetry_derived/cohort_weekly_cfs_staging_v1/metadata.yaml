@@ -28,5 +28,4 @@ bigquery:
   clustering:
     fields:
     - normalized_app_name
-references: {}
 require_column_descriptions: false

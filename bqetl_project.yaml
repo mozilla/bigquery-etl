@@ -32,6 +32,7 @@ dry_run:
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
+  cache_ttl_seconds: 900  # Cache dry run results for 15 minutes (900 seconds)
   skip:
   ## skip all data-observability-dev queries due to CI lacking permissions in that project.
   # TODO: once data observability platform assessment concludes this should be removed.
@@ -373,6 +374,7 @@ generate:
       - firefox_reality_pc
       - lockwise_android
       - lockwise_ios
+      - mozilla_vpn  # VPN events are in `main` pings rather than `events` pings (DENG-8596).
       - tiktokreporter_ios
       - tiktokreporter_android
       metrics_as_struct_apps:

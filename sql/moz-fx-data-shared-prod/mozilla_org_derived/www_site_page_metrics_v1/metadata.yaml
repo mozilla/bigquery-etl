@@ -23,5 +23,4 @@ bigquery:
     - country
     - locale
     - medium
-references: {}
 deprecated: true

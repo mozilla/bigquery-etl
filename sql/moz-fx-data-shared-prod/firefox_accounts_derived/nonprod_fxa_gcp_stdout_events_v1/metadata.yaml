@@ -24,4 +24,3 @@ bigquery:
   clustering:
     fields:
     - fxa_server
-references: {}

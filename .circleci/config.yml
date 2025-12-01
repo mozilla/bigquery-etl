@@ -48,6 +48,7 @@ workflows:
             requirements.txt validate-bqetl true
             requirements.txt validate-sql true
             requirements.txt validate-routines true
+            requirements.txt trigger-sql-generation true
             bigquery_etl/.* validate-bqetl true
             tests/.* validate-bqetl true
             bigquery_etl/query_scheduling/.* validate-sql true
@@ -58,6 +59,7 @@ workflows:
             sql/mozfun/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf_js/.* validate-routines true
+            bqetl_project.yaml trigger-sql-generation true
             bqetl_project.yaml validate-sql true
             bqetl_project.yaml validate-routines true
             dags.yaml validate-sql true

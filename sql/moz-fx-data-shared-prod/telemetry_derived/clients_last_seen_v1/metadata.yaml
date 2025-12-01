@@ -39,4 +39,3 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
-references: {}

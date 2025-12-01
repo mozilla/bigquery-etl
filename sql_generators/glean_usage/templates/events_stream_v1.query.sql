@@ -117,7 +117,7 @@ WITH base AS (
       CAST(NULL AS STRING) AS legacy_telemetry_client_id,
     {% endif %}
   FROM
-    `{{ events_view }}`
+    `{{ project_id }}.{{ events_view }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     {% if slice_by_sample_id %}

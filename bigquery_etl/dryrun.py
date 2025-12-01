@@ -94,6 +94,7 @@ class DryRun:
         self,
         sqlfile,
         content=None,
+        query_parameters=None,
         strip_dml=False,
         use_cloud_function=True,
         client=None,
@@ -109,6 +110,7 @@ class DryRun:
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
+        self.query_parameters = query_parameters
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
         self.bq_client = client
@@ -232,27 +234,38 @@ class DryRun:
             sql = self.get_sql()
 
         query_parameters = []
-        scheduling_metadata = self.metadata.scheduling if self.metadata else {}
-        if date_partition_parameter := scheduling_metadata.get(
-            "date_partition_parameter", "submission_date"
-        ):
-            query_parameters.append(
-                bigquery.ScalarQueryParameter(
-                    date_partition_parameter,
-                    "DATE",
-                    QUERY_PARAMETER_TYPE_VALUES["DATE"],
+        if self.query_parameters:
+            for parameter_name, parameter_type in self.query_parameters.items():
+                parameter_type = parameter_type.upper()
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        parameter_name,
+                        parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
+                    )
                 )
-            )
-        for parameter in scheduling_metadata.get("parameters", []):
-            parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
-            parameter_type = parameter_type.upper() or "STRING"
-            query_parameters.append(
-                bigquery.ScalarQueryParameter(
-                    parameter_name,
-                    parameter_type,
-                    QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
+        else:
+            scheduling_metadata = self.metadata.scheduling if self.metadata else {}
+            if date_partition_parameter := scheduling_metadata.get(
+                "date_partition_parameter", "submission_date"
+            ):
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        date_partition_parameter,
+                        "DATE",
+                        QUERY_PARAMETER_TYPE_VALUES["DATE"],
+                    )
                 )
-            )
+            for parameter in scheduling_metadata.get("parameters", []):
+                parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+                parameter_type = parameter_type.upper() or "STRING"
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        parameter_name,
+                        parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
+                    )
+                )
 
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))

@@ -1,0 +1,8 @@
+friendly_name: Firefox Privacy Dashboard - DAU interracting with the privacy panel
+description: |-
+  DAU interacting with the privacy panel
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

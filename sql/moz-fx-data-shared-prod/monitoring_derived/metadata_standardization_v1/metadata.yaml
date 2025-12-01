@@ -17,4 +17,3 @@ bigquery:
   clustering:
     fields:
     - dataset_id
-references: {}

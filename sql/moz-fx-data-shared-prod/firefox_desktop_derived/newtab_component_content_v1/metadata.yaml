@@ -27,4 +27,3 @@ bigquery:
       - newtab_visit_id
     expiration_days: 775
   range_partitioning: null
-references: {}

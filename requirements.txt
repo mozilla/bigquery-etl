@@ -654,9 +654,9 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
-google-auth==2.41.1 \
-    --hash=sha256:754843be95575b9a19c604a848a41be03f7f2afd8c019f716dc1f51ee41c639d \
-    --hash=sha256:b76b7b1f9e61f0cb7e88870d14f6a94aeef248959ef6992670efee37709cbfd2
+google-auth==2.42.0 \
+    --hash=sha256:9bbbeef3442586effb124d1ca032cfb8fb7acd8754ab79b55facd2b8f3ab2802 \
+    --hash=sha256:f8f944bcb9723339b0ef58a73840f3c61bc91b69bf7368464906120b55804473
     # via
     #   -r requirements.in
     #   gcsfs
@@ -899,9 +899,7 @@ jaraco-classes==3.4.0 \
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
     --hash=sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755
-    # via
-    #   keyring
-    #   secretstorage
+    # via secretstorage
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
@@ -1177,9 +1175,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.6.21 \
-    --hash=sha256:aa6a5ab6fb4f6d381588ac51da8782a4d3757cb3d1b174f81a2ec126e1f22c92 \
-    --hash=sha256:b01aa6d2731322438056f360f0e623d3faae981f8f2d8c68b1b973f4f2657870
+mkdocs-material==9.6.22 \
+    --hash=sha256:14ac5f72d38898b2f98ac75a5531aaca9366eaa427b0f49fc2ecf04d99b7ad84 \
+    --hash=sha256:87c158b0642e1ada6da0cbd798a3389b0bc5516b90e5ece4a0fb939f00bacd1c
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
@@ -1382,9 +1380,9 @@ oauthlib==3.2.2 \
     --hash=sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca \
     --hash=sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918
     # via requests-oauthlib
-openai==2.6.0 \
-    --hash=sha256:f119faf7fc07d7e558c1e7c32c873e241439b01bd7480418234291ee8c8f4b9d \
-    --hash=sha256:f33fa12070fe347b5787a7861c8dd397786a4a17e1c3186e239338dac7e2e743
+openai==2.6.1 \
+    --hash=sha256:27ae704d190615fca0c0fc2b796a38f8b5879645a3a52c9c453b23f97141bb49 \
+    --hash=sha256:904e4b5254a8416746a2f05649594fa41b19d799843cd134dac86167e094edef
     # via -r requirements.in
 packaging==24.2 \
     --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
@@ -2174,9 +2172,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.9.3 \
-    --hash=sha256:60839150a935604df1378b159da340d3fff91f912903e935da7cb615b5738c1b \
-    --hash=sha256:8ef51bc340db4d048a846c15c035d27b88acf720cbbb9b6fecf6c8b1a297b909
+rich-click==1.9.4 \
+    --hash=sha256:af73dc68e85f3bebb80ce302a642b9fe3b65f3df0ceb42eb9a27c467c1b678c8 \
+    --hash=sha256:d70f39938bcecaf5543e8750828cbea94ef51853f7d0e174cda1e10543767389
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \
@@ -2346,9 +2344,7 @@ s3transfer==0.13.0 \
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
-    # via
-    #   bigeye-sdk
-    #   keyring
+    # via bigeye-sdk
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de
@@ -2389,9 +2385,9 @@ soupsieve==2.6 \
     --hash=sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb \
     --hash=sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
     # via beautifulsoup4
-sqlglot==25.28.0 \
-    --hash=sha256:01a6b76dd916c2ce39a5f808559e337600ea261873d25be0dc7f99da3d24860d \
-    --hash=sha256:1bfcadada28bcab873382b271ed30138597cbf8893d90cc259563f9498bd1b49
+sqlglot==27.29.0 \
+    --hash=sha256:2270899694663acef94fa93497971837e6fadd712f4a98b32aee1e980bc82722 \
+    --hash=sha256:9a5ea8ac61826a7763de10cad45a35f0aa9bfcf7b96ee74afb2314de9089e1cb
     # via -r requirements.in
 sqlparse==0.5.3 \
     --hash=sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272 \
@@ -2818,10 +2814,11 @@ pip==25.2 \
     --hash=sha256:578283f006390f85bb6282dffb876454593d637f5d1be494b5202ce4877e71f2 \
     --hash=sha256:6d67a2b4e7f14d8b31b8b52648866fa717f45a1eb70e83002f4331d07e953717
     # via pip-tools
-setuptools==80.9.0 \
-    --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
-    --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
+setuptools==80.8.0 \
+    --hash=sha256:49f7af965996f26d43c8ae34539c8d99c5042fbff34302ea151eaa9c207cd257 \
+    --hash=sha256:95a60484590d24103af13b686121328cc2736bee85de8936383111e421b9edc0
     # via
+    #   -r requirements.in
     #   bigeye-sdk
     #   nodeenv
     #   pip-tools

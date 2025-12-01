@@ -78,10 +78,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
@@ -91,10 +91,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = ExternalTaskSensor(
-        task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-        external_dag_id="bqetl_analytics_tables",
-        external_task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+    wait_for_firefox_desktop_derived__baseline_active_users__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__baseline_active_users__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop_derived__baseline_active_users__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
@@ -272,11 +272,11 @@ with DAG(
     )
 
     firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
-        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )
 
     firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
-        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+        wait_for_firefox_desktop_derived__baseline_active_users__v1
     )
 
     telemetry_derived__desktop_retention__v1.set_upstream(

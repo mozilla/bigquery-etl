@@ -417,10 +417,9 @@ with DAG(
         "bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external",
     ) as bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            external_dag_id="bqetl_analytics_aggregations",
+            task_id="bqetl_glean_usage__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            external_dag_id="bqetl_glean_usage",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -435,13 +434,6 @@ with DAG(
             external_dag_id="bqetl_desktop_retention_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_firefox_enterprise__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            external_dag_id="bqetl_firefox_enterprise",
-            external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=72000)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -463,20 +455,6 @@ with DAG(
             external_dag_id="bqetl_ga4_firefoxdotcom",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_daily_churn__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            external_dag_id="bqetl_cohort_daily_churn",
-            external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(

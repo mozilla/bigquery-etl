@@ -18585,6 +18585,15 @@ fields:
 
         have values.
 
+
+        NOTE: this metric is available in both `metrics` and `addons` pings. However
+
+        the `addons` ping is the preferred source of data for add-ons related analyses,
+
+        whereas the `metrics` ping is better suited for analyses that correlates other
+
+        metrics with the add-ons listed in the `active_addons` metric.
+
         '
     - name: addons_active_g_m_plugins
       type: JSON
@@ -18632,6 +18641,15 @@ fields:
         Desktop and at times and on platforms where the environment would have
 
         values.
+
+
+        NOTE: this metric is available in both `metrics` and `addons` pings. However
+
+        the `addons` ping is the preferred source of data for add-ons related analyses,
+
+        whereas the `metrics` ping is better suited for analyses that correlates other
+
+        metrics with the add-ons listed in the `theme` metric.
 
         '
     - name: gfx_adapters

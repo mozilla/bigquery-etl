@@ -11637,6 +11637,70 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used XSLTDeprecated
+    - name: use_counter2_notificationoptions_actions_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.actions
+    - name: use_counter2_notificationoptions_actions_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.actions
+    - name: use_counter2_notificationoptions_badge_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.badge
+    - name: use_counter2_notificationoptions_badge_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.badge
+    - name: use_counter2_notificationoptions_image_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.image
+    - name: use_counter2_notificationoptions_image_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.image
+    - name: use_counter2_notificationoptions_navigate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.navigate
+    - name: use_counter2_notificationoptions_navigate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.navigate
+    - name: use_counter2_notificationoptions_renotify_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.renotify
+    - name: use_counter2_notificationoptions_renotify_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.renotify
+    - name: use_counter2_notificationoptions_requireinteraction_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.requireInteraction
+    - name: use_counter2_notificationoptions_requireinteraction_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.requireInteraction
+    - name: use_counter2_notificationoptions_timestamp_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.timestamp
+    - name: use_counter2_notificationoptions_timestamp_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.timestamp
+    - name: use_counter2_notificationoptions_vibrate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NotificationOptions.vibrate
+    - name: use_counter2_notificationoptions_vibrate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NotificationOptions.vibrate
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23130,6 +23194,70 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used XSLTDeprecated
+        - name: use_counter2_notificationoptions_actions_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.actions
+        - name: use_counter2_notificationoptions_actions_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.actions
+        - name: use_counter2_notificationoptions_badge_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.badge
+        - name: use_counter2_notificationoptions_badge_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.badge
+        - name: use_counter2_notificationoptions_image_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.image
+        - name: use_counter2_notificationoptions_image_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.image
+        - name: use_counter2_notificationoptions_navigate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.navigate
+        - name: use_counter2_notificationoptions_navigate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.navigate
+        - name: use_counter2_notificationoptions_renotify_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.renotify
+        - name: use_counter2_notificationoptions_renotify_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.renotify
+        - name: use_counter2_notificationoptions_requireinteraction_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.requireInteraction
+        - name: use_counter2_notificationoptions_requireinteraction_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.requireInteraction
+        - name: use_counter2_notificationoptions_timestamp_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.timestamp
+        - name: use_counter2_notificationoptions_timestamp_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.timestamp
+        - name: use_counter2_notificationoptions_vibrate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NotificationOptions.vibrate
+        - name: use_counter2_notificationoptions_vibrate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NotificationOptions.vibrate
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

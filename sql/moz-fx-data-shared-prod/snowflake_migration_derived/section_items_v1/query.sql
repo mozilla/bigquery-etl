@@ -51,4 +51,4 @@ QUALIFY
       object_update_trigger
     ORDER BY
       happened_at DESC
-  ) = 1;
+  ) = 1

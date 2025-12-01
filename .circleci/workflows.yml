@@ -427,9 +427,9 @@ jobs:
                   cd ~/telemetry-airflow
                   python3 -m venv .venv
                   source .venv/bin/activate
-                  pip install -r requirements.txt
-                  pip install -r requirements-dev.txt
-                  pip install -r requirements-override.txt
+                  pip install --no-deps -r requirements.txt
+                  pip install --no-deps -r requirements-dev.txt
+                  pip install --no-deps -r requirements-override.txt
             - save_cache:
                 paths:
                   - ~/telemetry-airflow/.venv

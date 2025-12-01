@@ -43,7 +43,7 @@ SELECT
     SHA256(CONCAT(s.section_item_id, s.object_update_trigger))
   ) AS section_item_id_object_update_trigger_key
 FROM
-  stg_section_items s
+  stg_section_items AS s
 QUALIFY
   ROW_NUMBER() OVER (
     PARTITION BY

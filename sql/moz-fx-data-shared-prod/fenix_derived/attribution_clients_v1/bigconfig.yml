@@ -19,6 +19,8 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.attribution_clients_v1.*
     metrics:
     - saved_metric_id: composite_key_uniqueness_2_column
+      conditions:
+      - normalized_channel IS NOT NULL
       parameters:
       - key: col_1
         column_name: client_id

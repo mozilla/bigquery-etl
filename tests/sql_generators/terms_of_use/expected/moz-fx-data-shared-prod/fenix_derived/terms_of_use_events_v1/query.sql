@@ -7,11 +7,6 @@ SELECT
   event_category,
   event_name,
   CASE
-    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding")
-      THEN "onboarding"
-    ELSE JSON_VALUE(event_extra.surface)
-  END AS surface,
-  CASE
     WHEN (event_name = "accepted")
       OR (event_name = "terms_of_service_accepted")
       THEN "accepted"
@@ -32,7 +27,12 @@ SELECT
     WHEN event_name IN ("dismiss")
       THEN "dismissed"
     ELSE event_name
-  END AS normalized_event_name
+  END AS normalized_event_name,
+  CASE
+    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding")
+      THEN "onboarding"
+    ELSE JSON_VALUE(event_extra.surface)
+  END AS surface,
 FROM
   `moz-fx-data-shared-prod.fenix.events_stream`
 WHERE

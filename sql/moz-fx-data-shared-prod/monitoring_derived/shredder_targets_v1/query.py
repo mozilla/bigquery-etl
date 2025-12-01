@@ -69,6 +69,8 @@ WHERE
   AND table_schema != "backfills_staging_derived"
   AND table_name != 'deletion_request_v1'
   AND table_name != 'deletion_request_v4'
+  -- ignore recently created tables that may not have lineage populated yet
+  AND DATE(creation_time) < DATE_SUB('2025-11-24', INTERVAL 1 DAY)
 """
 
 

@@ -59,6 +59,7 @@ workflows:
             sql/mozfun/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf_js/.* validate-routines true
+            bqetl_project.yaml trigger-sql-generation true
             bqetl_project.yaml validate-sql true
             bqetl_project.yaml validate-routines true
             dags.yaml validate-sql true

@@ -113,20 +113,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    with TaskGroup(
-        "accounts_backend_derived__users_services_last_seen__v1_external",
-    ) as accounts_backend_derived__users_services_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_braze_win10_sync__wait_for_accounts_backend_derived__users_services_last_seen__v1",
-            external_dag_id="bqetl_braze_win10_sync",
-            external_task_id="wait_for_accounts_backend_derived__users_services_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
-        )
-
-        accounts_backend_derived__users_services_last_seen__v1_external.set_upstream(
-            accounts_backend_derived__users_services_last_seen__v1
-        )
-
     checks__warn_accounts_backend_derived__users_services_daily__v1 = bigquery_dq_check(
         task_id="checks__warn_accounts_backend_derived__users_services_daily__v1",
         source_table="users_services_daily_v1",

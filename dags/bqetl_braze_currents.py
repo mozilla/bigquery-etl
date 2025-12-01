@@ -53,18 +53,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_braze_derived__fxa_win10_users_historical__v1 = ExternalTaskSensor(
-        task_id="wait_for_braze_derived__fxa_win10_users_historical__v1",
-        external_dag_id="bqetl_braze_win10_sync",
-        external_task_id="braze_derived__fxa_win10_users_historical__v1",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_braze_derived__users__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_braze_derived__users__v1",
         external_dag_id="bqetl_braze",
@@ -667,10 +655,6 @@ with DAG(
     )
 
     braze_external__braze_clicks__v1.set_upstream(
-        wait_for_braze_derived__fxa_win10_users_historical__v1
-    )
-
-    braze_external__braze_clicks__v1.set_upstream(
         braze_external__braze_currents_firefox_click__v1
     )
 
@@ -683,10 +667,6 @@ with DAG(
     )
 
     braze_external__braze_opens__v1.set_upstream(
-        wait_for_braze_derived__fxa_win10_users_historical__v1
-    )
-
-    braze_external__braze_opens__v1.set_upstream(
         braze_external__braze_currents_firefox_open__v1
     )
 
@@ -696,10 +676,6 @@ with DAG(
 
     braze_external__braze_opens__v1.set_upstream(
         wait_for_checks__fail_braze_derived__users__v1
-    )
-
-    braze_external__braze_sends__v1.set_upstream(
-        wait_for_braze_derived__fxa_win10_users_historical__v1
     )
 
     braze_external__braze_sends__v1.set_upstream(

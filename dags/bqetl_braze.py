@@ -326,12 +326,6 @@ with DAG(
         "checks__fail_braze_derived__users__v1_external",
     ) as checks__fail_braze_derived__users__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_braze_win10_sync__wait_for_checks__fail_braze_derived__users__v1",
-            external_dag_id="bqetl_braze_win10_sync",
-            external_task_id="wait_for_checks__fail_braze_derived__users__v1",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_braze_currents__wait_for_checks__fail_braze_derived__users__v1",
             external_dag_id="bqetl_braze_currents",
             external_task_id="wait_for_checks__fail_braze_derived__users__v1",

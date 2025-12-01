@@ -411,6 +411,8 @@ generate:
     events_first_seen:
       include_apps:
       - firefox_desktop
+      # - firefox_ios
+      # - fenix
     metrics_clients_last_seen:
       skip_apps:
       - accounts_cirrus

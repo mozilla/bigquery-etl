@@ -24,6 +24,7 @@ class EventsFirstSeenTable(GleanTable):
         self.per_app_id_enabled = True
         self.across_apps_enabled = False
         self.cross_channel_template = "cross_channel.view.sql"
+        # self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
 
         with open(
@@ -34,6 +35,7 @@ class EventsFirstSeenTable(GleanTable):
         ) as f:
             events_first_seen_config = yaml.safe_load(f) or {}
 
+            # parse this dictionary for each individual app_name
             self.common_render_kwargs = {"events_first_seen": events_first_seen_config}
 
     def generate_per_app_id(
@@ -41,6 +43,7 @@ class EventsFirstSeenTable(GleanTable):
         project_id,
         baseline_table,
         app_name,
+        # pass individual app_names
         app_id_info,
         output_dir=None,
         use_cloud_function=True,
@@ -61,6 +64,7 @@ class EventsFirstSeenTable(GleanTable):
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
+                custom_render_kwargs={"app_id": app_id_info["bq_dataset_family"]},
             )
 
     def generate_per_app(

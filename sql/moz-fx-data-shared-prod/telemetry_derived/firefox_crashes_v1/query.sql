@@ -238,12 +238,67 @@ unioned_pings AS (
   UNION ALL
   SELECT
     additional_properties,
-    client_info,
+    STRUCT(
+      client_info.android_sdk_version,
+      client_info.app_build,
+      client_info.app_channel,
+      client_info.app_display_version,
+      client_info.architecture,
+      client_info.build_date,
+      client_info.client_id,
+      client_info.device_manufacturer,
+      client_info.device_model,
+      client_info.first_run_date,
+      client_info.locale,
+      client_info.os,
+      client_info.os_version,
+      client_info.telemetry_sdk_build,
+      client_info.windows_build_number,
+      client_info.session_count,
+      client_info.session_id,
+      STRUCT(
+        client_info.attribution.campaign,
+        client_info.attribution.content,
+        client_info.attribution.medium,
+        client_info.attribution.source,
+        client_info.attribution.term,
+        client_info.attribution.ext
+      ) AS `attribution`,
+      STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+    ) AS `client_info`,
     document_id,
     events,
-    metadata,
     STRUCT(
-      metrics.labeled_counter,
+      STRUCT(
+        metadata.geo.city,
+        metadata.geo.country,
+        metadata.geo.db_version,
+        metadata.geo.subdivision1,
+        metadata.geo.subdivision2
+      ) AS `geo`,
+      STRUCT(
+        metadata.header.date,
+        metadata.header.dnt,
+        metadata.header.x_debug_id,
+        metadata.header.x_foxsec_ip_reputation,
+        metadata.header.x_lb_tags,
+        metadata.header.x_pingsender_version,
+        metadata.header.x_source_tags,
+        metadata.header.x_telemetry_agent,
+        metadata.header.parsed_date,
+        metadata.header.parsed_x_source_tags,
+        metadata.header.parsed_x_lb_tags
+      ) AS `header`,
+      STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`,
+      metadata.user_agent
+    ) AS `metadata`,
+    STRUCT(
+      STRUCT(
+        metrics.labeled_counter.glean_error_invalid_label,
+        metrics.labeled_counter.glean_error_invalid_overflow,
+        metrics.labeled_counter.glean_error_invalid_state,
+        metrics.labeled_counter.glean_error_invalid_value
+      ) AS `labeled_counter`,
       STRUCT(
         metrics.boolean.crash_startup,
         metrics.boolean.crash_is_garbage_collecting,
@@ -252,7 +307,7 @@ unioned_pings AS (
         CAST(NULL AS BOOLEAN) AS `dll_blocklist_user32_loaded_before`,
         metrics.boolean.environment_headless_mode
       ) AS `boolean`,
-      metrics.datetime,
+      STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
       STRUCT(
         metrics.string.crash_process_type,
         metrics.string.glean_client_annotation_experimentation_id,
@@ -274,7 +329,7 @@ unioned_pings AS (
         metrics.string.memory_js_out_of_memory,
         metrics.string.crash_cause
       ) AS `string`,
-      metrics.timespan,
+      STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
       STRUCT(
         metrics.object.crash_async_shutdown_timeout,
         metrics.object.crash_quota_manager_shutdown_timeout,
@@ -282,7 +337,22 @@ unioned_pings AS (
         metrics.object.crash_breadcrumbs,
         metrics.object.crash_java_exception
       ) AS `object`,
-      metrics.quantity,
+      STRUCT(
+        metrics.quantity.crash_event_loop_nesting_level,
+        metrics.quantity.crash_gpu_process_launch,
+        metrics.quantity.memory_available_commit,
+        metrics.quantity.memory_available_physical,
+        metrics.quantity.memory_available_swap,
+        metrics.quantity.memory_available_virtual,
+        metrics.quantity.memory_low_physical,
+        metrics.quantity.memory_oom_allocation_size,
+        metrics.quantity.memory_purgeable_physical,
+        metrics.quantity.memory_system_use_percentage,
+        metrics.quantity.memory_texture,
+        metrics.quantity.memory_total_page_file,
+        metrics.quantity.memory_total_physical,
+        metrics.quantity.memory_total_virtual
+      ) AS `quantity`,
       STRUCT(
         CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
         metrics.string_list.environment_experimental_features,
@@ -309,12 +379,67 @@ unioned_pings AS (
   UNION ALL
   SELECT
     additional_properties,
-    client_info,
+    STRUCT(
+      client_info.android_sdk_version,
+      client_info.app_build,
+      client_info.app_channel,
+      client_info.app_display_version,
+      client_info.architecture,
+      client_info.build_date,
+      client_info.client_id,
+      client_info.device_manufacturer,
+      client_info.device_model,
+      client_info.first_run_date,
+      client_info.locale,
+      client_info.os,
+      client_info.os_version,
+      client_info.telemetry_sdk_build,
+      client_info.windows_build_number,
+      client_info.session_count,
+      client_info.session_id,
+      STRUCT(
+        client_info.attribution.campaign,
+        client_info.attribution.content,
+        client_info.attribution.medium,
+        client_info.attribution.source,
+        client_info.attribution.term,
+        client_info.attribution.ext
+      ) AS `attribution`,
+      STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+    ) AS `client_info`,
     document_id,
     events,
-    metadata,
     STRUCT(
-      metrics.labeled_counter,
+      STRUCT(
+        metadata.geo.city,
+        metadata.geo.country,
+        metadata.geo.db_version,
+        metadata.geo.subdivision1,
+        metadata.geo.subdivision2
+      ) AS `geo`,
+      STRUCT(
+        metadata.header.date,
+        metadata.header.dnt,
+        metadata.header.x_debug_id,
+        metadata.header.x_foxsec_ip_reputation,
+        metadata.header.x_lb_tags,
+        metadata.header.x_pingsender_version,
+        metadata.header.x_source_tags,
+        metadata.header.x_telemetry_agent,
+        metadata.header.parsed_date,
+        metadata.header.parsed_x_source_tags,
+        metadata.header.parsed_x_lb_tags
+      ) AS `header`,
+      STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`,
+      metadata.user_agent
+    ) AS `metadata`,
+    STRUCT(
+      STRUCT(
+        metrics.labeled_counter.glean_error_invalid_label,
+        metrics.labeled_counter.glean_error_invalid_overflow,
+        metrics.labeled_counter.glean_error_invalid_state,
+        metrics.labeled_counter.glean_error_invalid_value
+      ) AS `labeled_counter`,
       STRUCT(
         metrics.boolean.crash_startup,
         metrics.boolean.crash_is_garbage_collecting,
@@ -323,7 +448,7 @@ unioned_pings AS (
         CAST(NULL AS BOOLEAN) AS `dll_blocklist_user32_loaded_before`,
         metrics.boolean.environment_headless_mode
       ) AS `boolean`,
-      metrics.datetime,
+      STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
       STRUCT(
         metrics.string.crash_process_type,
         metrics.string.glean_client_annotation_experimentation_id,
@@ -345,7 +470,7 @@ unioned_pings AS (
         metrics.string.memory_js_out_of_memory,
         metrics.string.crash_cause
       ) AS `string`,
-      metrics.timespan,
+      STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
       STRUCT(
         metrics.object.crash_async_shutdown_timeout,
         metrics.object.crash_quota_manager_shutdown_timeout,
@@ -353,7 +478,22 @@ unioned_pings AS (
         metrics.object.crash_breadcrumbs,
         metrics.object.crash_java_exception
       ) AS `object`,
-      metrics.quantity,
+      STRUCT(
+        metrics.quantity.crash_event_loop_nesting_level,
+        metrics.quantity.crash_gpu_process_launch,
+        metrics.quantity.memory_available_commit,
+        metrics.quantity.memory_available_physical,
+        metrics.quantity.memory_available_swap,
+        metrics.quantity.memory_available_virtual,
+        metrics.quantity.memory_low_physical,
+        metrics.quantity.memory_oom_allocation_size,
+        metrics.quantity.memory_purgeable_physical,
+        metrics.quantity.memory_system_use_percentage,
+        metrics.quantity.memory_texture,
+        metrics.quantity.memory_total_page_file,
+        metrics.quantity.memory_total_physical,
+        metrics.quantity.memory_total_virtual
+      ) AS `quantity`,
       STRUCT(
         CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
         metrics.string_list.environment_experimental_features,
@@ -424,7 +564,22 @@ unioned_pings AS (
         metrics.object.crash_breadcrumbs,
         metrics.object.crash_java_exception
       ) AS `object`,
-      metrics.quantity,
+      STRUCT(
+        metrics.quantity.crash_event_loop_nesting_level,
+        metrics.quantity.crash_gpu_process_launch,
+        metrics.quantity.memory_available_commit,
+        metrics.quantity.memory_available_physical,
+        metrics.quantity.memory_available_swap,
+        metrics.quantity.memory_available_virtual,
+        metrics.quantity.memory_low_physical,
+        metrics.quantity.memory_oom_allocation_size,
+        metrics.quantity.memory_purgeable_physical,
+        metrics.quantity.memory_system_use_percentage,
+        metrics.quantity.memory_texture,
+        metrics.quantity.memory_total_page_file,
+        metrics.quantity.memory_total_physical,
+        metrics.quantity.memory_total_virtual
+      ) AS `quantity`,
       STRUCT(
         CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
         metrics.string_list.environment_experimental_features,

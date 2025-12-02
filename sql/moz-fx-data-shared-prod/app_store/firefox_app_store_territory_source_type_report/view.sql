@@ -8,7 +8,6 @@ SELECT
   -- However, the `date` timestamp field appear to always show midnight meaning if we do timezone conversion
   -- we will end up moving all results 1 day back if we attempt conversion to UTC.
   -- This is why we are not doing timezone converstions here.
-  --
   *,
 FROM
   `moz-fx-data-shared-prod.app_store_syndicate.app_store_territory_source_type_report`

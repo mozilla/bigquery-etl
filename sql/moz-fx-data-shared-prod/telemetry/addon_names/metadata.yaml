@@ -1,8 +1,10 @@
 friendly_name: Addon Names
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Addon IDs, names and number of occurences.
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

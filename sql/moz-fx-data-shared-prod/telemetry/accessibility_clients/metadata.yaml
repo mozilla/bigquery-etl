@@ -1,8 +1,10 @@
-friendly_name: Accessibility Clients
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Platform Accessibility Usage
+description: |
+  A daily number of platform accessibility clients (assistive technology), partitioned by day.
+owners:
+- yzenevich@mozilla.com
+labels:
+  owner1: yzenevich
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

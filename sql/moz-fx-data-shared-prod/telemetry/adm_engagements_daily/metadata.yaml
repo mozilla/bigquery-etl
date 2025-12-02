@@ -1,8 +1,21 @@
-friendly_name: Adm Engagements Daily
+friendly_name: adMarketplace Daily Engagements
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Historical data on click volume through August 2021.
+
+  It is partitioned by day with the following facets:
+    - submission_date
+    - phase
+    - country
+    - placement
+    - partner
+    - version
+    - normalized_channel
+owners:
+- akomar@mozilla.com
+labels:
+  shredder_mitigation: true
+  table_type: aggregate
+  owner1: akomar
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

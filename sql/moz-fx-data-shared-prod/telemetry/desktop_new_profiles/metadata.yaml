@@ -1,8 +1,11 @@
-friendly_name: Desktop New Profiles
+friendly_name: Desktop New Profiles Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  This table aggregates the number of new profiles on a given day as well as recording if new profiles are DAU
+  for desktop client_ids.
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

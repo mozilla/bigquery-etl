@@ -1,8 +1,10 @@
 friendly_name: Addons Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A daily aggregate of addon usages, partitioned by day
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

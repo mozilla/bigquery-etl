@@ -1,8 +1,13 @@
-friendly_name: Ga Clients
+friendly_name: Google Analytics Clients
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A table representing Google Analytics clients. Grain is one row per client.
+  Key is ga_client_id.
+owners:
+- mhirose@mozilla.com
+- kwindau@mozilla.com
+labels:
+  owner1: mhirose
+  owner2: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

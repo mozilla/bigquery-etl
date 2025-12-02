@@ -1,8 +1,10 @@
 friendly_name: Android App Campaign Stats
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates ad spend, new profiles, and new activated profiles by day and country.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

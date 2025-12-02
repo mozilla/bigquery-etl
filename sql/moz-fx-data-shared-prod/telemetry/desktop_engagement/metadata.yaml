@@ -1,8 +1,10 @@
-friendly_name: Desktop Engagement
+friendly_name: Desktop Engagement Aggregate
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains aggregated DAU, WAU, and MAU by different attributes for engagement ratio calculation.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

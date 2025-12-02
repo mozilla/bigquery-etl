@@ -1,8 +1,10 @@
-friendly_name: Addons V2
+friendly_name: Addons
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Addon usage by client, partitioned by day
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

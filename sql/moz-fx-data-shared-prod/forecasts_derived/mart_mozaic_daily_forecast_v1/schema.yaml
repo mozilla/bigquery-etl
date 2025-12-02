@@ -1,7 +1,7 @@
 fields:
   - mode: NULLABLE
     name: forecast_start_date
-    type: STRING
+    type: DATE
     description: "The day a forecast model starts predicting future data. Partition column"
   - mode: NULLABLE
     name: forecast_run_timestamp

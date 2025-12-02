@@ -1,7 +1,6 @@
 -- Generated via `terms_of_use` SQL generator.
 WITH _previous AS (
   SELECT
-    submission_date,
     client_id,
     sample_id,
     app_version_major,
@@ -18,11 +17,10 @@ WITH _previous AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.terms_of_use_status_v1`
   WHERE
-    submission_date <> @submission_date
+    DATE(terms_of_use_date_accepted) <> @submission_date
 ),
 _current AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     sample_id,
     `moz-fx-data-shared-prod`.udf.mode_last(

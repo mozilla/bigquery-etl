@@ -357,7 +357,60 @@ class TestCopyDeduplicate:
 
     @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
     @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
-    def test_select_geo_when_geo_fields_missing(
+    def test_select_geo_when_client_id_field_missing(
+        self,
+        mock_mapping,
+        mock_config_get,
+        geo_deprecation_config_side_effect,
+    ):
+        """If one of the required geo fields is missing, we should get an empty string."""
+        mock_mapping.return_value = GLEAN_MAPPING
+        mock_config_get.side_effect = geo_deprecation_config_side_effect
+
+        invalid_geo_deprecation_schema = [
+            bigquery.SchemaField("document_id", "STRING"),
+            bigquery.SchemaField(
+                "client_info",
+                "RECORD",
+                fields=[
+                    bigquery.SchemaField("os", "STRING"),
+                ],
+            ),
+            bigquery.SchemaField(
+                "metadata",
+                "RECORD",
+                fields=[
+                    bigquery.SchemaField(
+                        "geo",
+                        "RECORD",
+                        fields=[
+                            bigquery.SchemaField("city", "STRING"),
+                            bigquery.SchemaField("subdivision1", "STRING"),
+                            bigquery.SchemaField("subdivision2", "STRING"),
+                        ],
+                    )
+                ],
+            ),
+        ]
+
+        table = Mock()
+        table.labels = {"include_client_id": "true"}
+        table.schema = invalid_geo_deprecation_schema
+
+        mock_client = Mock(spec=bigquery.Client)
+        mock_client.get_table.return_value = table
+
+        live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
+        sql = _select_geo(live_table, mock_client)
+
+        assert not _has_field_path(
+            invalid_geo_deprecation_schema, ["client_info", "client_id"]
+        )
+        assert sql == ""
+
+    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
+    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
+    def test_select_geo_when_geo_field_missing(
         self,
         mock_mapping,
         mock_config_get,

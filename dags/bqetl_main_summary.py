@@ -355,13 +355,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_google_analytics_derived_ga4__wait_for_telemetry_derived__clients_daily__v6",
-            external_dag_id="bqetl_google_analytics_derived_ga4",
-            external_task_id="wait_for_telemetry_derived__clients_daily__v6",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_search__wait_for_telemetry_derived__clients_daily__v6",
             external_dag_id="bqetl_search",
             external_task_id="wait_for_telemetry_derived__clients_daily__v6",

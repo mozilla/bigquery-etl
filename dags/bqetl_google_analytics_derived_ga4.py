@@ -108,59 +108,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
-    wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
-        external_dag_id="bqetl_mozilla_org_derived",
-        external_task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
-        task_id="wait_for_clients_first_seen_v3",
-        external_dag_id="bqetl_analytics_tables",
-        external_task_id="clients_first_seen_v3",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_google_ads_derived__conversion_event_categorization__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
-            external_dag_id="bqetl_desktop_conv_evnt_categorization",
-            external_task_id="google_ads_derived__conversion_event_categorization__v1",
-            check_existence=True,
-            mode="reschedule",
-            poke_interval=datetime.timedelta(minutes=5),
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_wmo_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_wmo_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -185,6 +132,19 @@ with DAG(
         timeout=datetime.timedelta(seconds=36000),
         retries=1,
         retry_delay=datetime.timedelta(seconds=1800),
+    )
+
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     checks__fail_mozilla_org_derived__blog_performance__v1 = bigquery_dq_check(
@@ -215,36 +175,6 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["session_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__fail_mozilla_org_derived__gclid_conversions__v2 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_org_derived__gclid_conversions__v2",
-        source_table="gclid_conversions_v2",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["conversion_window:INT64:30"] + ["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__fail_mozilla_org_derived__gclid_conversions__v3 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_org_derived__gclid_conversions__v3",
-        source_table="gclid_conversions_v3",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -466,33 +396,6 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v3/script.sql",
     )
 
-    mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
-        task_id="mozilla_org_derived__gclid_conversions__v2",
-        destination_table="gclid_conversions_v2",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        parameters=["conversion_window:INT64:30"],
-    )
-
-    mozilla_org_derived__gclid_conversions__v3 = bigquery_etl_query(
-        task_id="mozilla_org_derived__gclid_conversions__v3",
-        destination_table="gclid_conversions_v3",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     mozilla_org_derived__www_site_downloads__v3 = bigquery_etl_query(
         task_id="mozilla_org_derived__www_site_downloads__v3",
         destination_table="www_site_downloads_v3",
@@ -606,14 +509,6 @@ with DAG(
         mozilla_org_derived__ga_clients__v2
     )
 
-    checks__fail_mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        mozilla_org_derived__gclid_conversions__v2
-    )
-
-    checks__fail_mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        mozilla_org_derived__gclid_conversions__v3
-    )
-
     checks__fail_telemetry_derived__cfs_ga4_attr__v1.set_upstream(
         telemetry_derived__cfs_ga4_attr__v1
     )
@@ -687,46 +582,6 @@ with DAG(
     mozilla_org_derived__ga_sessions__v2.set_upstream(wait_for_wmo_events_table)
 
     mozilla_org_derived__ga_sessions__v3.set_upstream(wait_for_wmo_events_table)
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_clients_first_seen_v3
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_google_ads_derived__conversion_event_categorization__v1
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        mozilla_org_derived__ga_sessions__v2
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
-    )
-
-    mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
-    )
-
-    mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        wait_for_clients_first_seen_v3
-    )
-
-    mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        wait_for_google_ads_derived__conversion_event_categorization__v1
-    )
-
-    mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        mozilla_org_derived__ga_sessions__v2
-    )
-
-    mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
-    )
 
     mozilla_org_derived__www_site_downloads__v3.set_upstream(wait_for_wmo_events_table)
 

@@ -198,19 +198,6 @@ with DAG(
         + ["submission_date:DATE:{{ds}}"],
     )
 
-    with TaskGroup(
-        "google_ads_derived__conversion_event_categorization__v1_external",
-    ) as google_ads_derived__conversion_event_categorization__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_google_analytics_derived_ga4__wait_for_google_ads_derived__conversion_event_categorization__v1",
-            external_dag_id="bqetl_google_analytics_derived_ga4",
-            external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
-        )
-
-        google_ads_derived__conversion_event_categorization__v1_external.set_upstream(
-            google_ads_derived__conversion_event_categorization__v1
-        )
-
     google_ads_derived__conversion_event_categorization__v2 = bigquery_etl_query(
         task_id="google_ads_derived__conversion_event_categorization__v2",
         destination_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',

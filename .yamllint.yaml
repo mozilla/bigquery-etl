@@ -6,6 +6,8 @@ rules:
     max: 160
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
+  empty-lines:
+    max-end: 1
   document-start: disable
   indentation:
     indent-sequences: consistent

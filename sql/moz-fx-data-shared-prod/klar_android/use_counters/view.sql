@@ -2690,7 +2690,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_notificationoptions_renotify,
       metrics.counter.use_counter_worker_shared_notificationoptions_requireinteraction,
       metrics.counter.use_counter_worker_shared_notificationoptions_timestamp,
-      metrics.counter.use_counter_worker_shared_notificationoptions_vibrate
+      metrics.counter.use_counter_worker_shared_notificationoptions_vibrate,
+      metrics.counter.use_counter_deprecated_ops_doc_ckeditor4_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

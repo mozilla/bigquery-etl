@@ -20298,6 +20298,20 @@ fields:
         Compare against `use.counter.shared_workers_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_deprecated_ops_doc_ckeditor4_compat_hack
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used CKEditor4CompatHack. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_ckeditor4_compat_hack
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used CKEditor4CompatHack. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

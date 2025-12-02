@@ -248,20 +248,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_mozilla_org_derived__gclid_conversions__v3_external",
-    ) as checks__fail_mozilla_org_derived__gclid_conversions__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_census_feed__wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3",
-            external_dag_id="bqetl_census_feed",
-            external_task_id="wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=68400)).isoformat() }}",
-        )
-
-        checks__fail_mozilla_org_derived__gclid_conversions__v3_external.set_upstream(
-            checks__fail_mozilla_org_derived__gclid_conversions__v3
-        )
-
     checks__fail_telemetry_derived__cfs_ga4_attr__v1 = bigquery_dq_check(
         task_id="checks__fail_telemetry_derived__cfs_ga4_attr__v1",
         source_table="cfs_ga4_attr_v1",

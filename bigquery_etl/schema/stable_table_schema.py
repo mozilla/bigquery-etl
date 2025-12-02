@@ -59,7 +59,9 @@ def prod_schemas_uri():
     with the most recent production schemas deploy.
     """
     dryrun = DryRun(
-        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql", content="SELECT 1"
+        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql",
+        content="SELECT 1",
+        use_cache=False,
     )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
@@ -88,6 +90,11 @@ def get_stable_table_schemas() -> List[SchemaFile]:
             print(f"Failed to load cached schemas: {e}, re-downloading...")
 
     print(f"Downloading schemas from {schemas_uri}")
+
+    # Clear dry run cache when downloading new schemas
+    # Schema changes could affect dry run results
+    DryRun.clear_cache()
+
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 

@@ -33,6 +33,8 @@ tag_deployments:
                 string_value: moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1
             rct_overrides:
               - FULL_SCAN
+            conditions:
+              - normalized_channel IS NOT NULL
       - column_selectors:
         - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1.*
         metrics:

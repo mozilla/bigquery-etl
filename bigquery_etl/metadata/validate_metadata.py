@@ -2,7 +2,7 @@
 
 import glob
 import logging
-import os, re
+import os
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -219,7 +219,7 @@ def validate_shredder_mitigation(query_dir, metadata):
 
 
 def count_schema_fields(schema):
-    """Returns the count of fields and how many have descriptions in a given BigQuery schema."""
+    """Return the count of fields and how many have descriptions in a given BigQuery schema."""
     if not schema or not isinstance(schema, (list, tuple)):
         return (0, 0)
 
@@ -228,18 +228,18 @@ def count_schema_fields(schema):
     while base:
         field = base.pop()
         fields += 1
-        if getattr(field, "description", None): descriptions += 1
-        if hasattr(field, "fields") and field.fields: base.extend(field.fields)
+        if getattr(field, "description", None):
+            descriptions += 1
+        if hasattr(field, "fields") and field.fields:
+            base.extend(field.fields)
     return fields, descriptions
 
 
 def find_bigeye_checks(query_path):
-    """Returns True if bigeye metrics are present or detail of missing bigeye metrics or file."""
+    """Return True if bigeye metrics are present or detail of missing bigeye metrics or file."""
     predefined_metrics = {"FRESHNESS", "VOLUME"}
     bigeye_file_path = os.path.join(query_path, BIGEYE_PREDEFINED_FILE)
     found_types = set()
-    rx = re.compile(rf"{re.escape(query_path)}.*")
-    path_found = False
 
     if not os.path.exists(bigeye_file_path):
         return False
@@ -261,8 +261,6 @@ def find_bigeye_checks(query_path):
         elif isinstance(obj, str):
             if obj in predefined_metrics:
                 found_types.add(obj)
-            if rx.search(obj):
-                path_found = True
 
     missing = predefined_metrics - found_types
 
@@ -277,7 +275,6 @@ def validate_asset_level(query_dir, metadata):
 
     Possible levels are only one of [gold, silver, bronze] or no level label.
     """
-
     requirements = {
         1: "description",
         2: "unittests",
@@ -285,13 +282,13 @@ def validate_asset_level(query_dir, metadata):
         4: "bigeye_predefined_metrics",
         5: "change_control",
         6: "column_descriptions_all",
-        7: "column_descriptions_70_percent"
+        7: "column_descriptions_70_percent",
     }
 
     level_requirements = {
         "gold": [1, 2, 3, 4, 5, 6],
         "silver": [1, 2, 3, 4, 7],
-        "bronze": [1]
+        "bronze": [1],
     }
     results = {}
     missing = []
@@ -299,7 +296,9 @@ def validate_asset_level(query_dir, metadata):
     if not metadata.level:
         return True
     else:
-        level = metadata.level[0] if isinstance(metadata.level, list) else metadata.level
+        level = (
+            metadata.level[0] if isinstance(metadata.level, list) else metadata.level
+        )
 
         # Check percentage of fields and nested fields with descriptions.
         schema_file = Path(query_dir) / SCHEMA_FILE
@@ -313,34 +312,51 @@ def validate_asset_level(query_dir, metadata):
             return False
         schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
         fields, descriptions = count_schema_fields(schema)
-        results["column_descriptions_all"] = (descriptions / fields) == 1 if fields > 0 else False
-        results["column_descriptions_70_percent"] = (descriptions / fields) >= 0.7 if fields > 0 else False
+        results["column_descriptions_all"] = (
+            (descriptions / fields) == 1 if fields > 0 else False
+        )
+        results["column_descriptions_70_percent"] = (
+            (descriptions / fields) >= 0.7 if fields > 0 else False
+        )
 
         # Check change control.
         results["change_control"] = CHANGE_CONTROL_LABEL in metadata.labels
         # Check table description.
-        results["description"] = metadata.description and metadata.description != 'Please provide a description for the query'
+        results["description"] = (
+            metadata.description
+            and metadata.description != "Please provide a description for the query"
+        )
 
         # Check unittest.
         unittest_path = os.path.join("tests", query_dir)
-        results["unittests"] = (os.path.exists(unittest_path) and any(name.startswith("test_") for name in os.listdir(unittest_path)))
+        results["unittests"] = os.path.exists(unittest_path) and any(
+            name.startswith("test_") for name in os.listdir(unittest_path)
+        )
 
         # Check scheduler.
-        results["scheduler"] = metadata.scheduling is not None and metadata.scheduling != {} and metadata.scheduling["dag_name"] is not None
+        results["scheduler"] = (
+            metadata.scheduling is not None
+            and metadata.scheduling != {}
+            and metadata.scheduling["dag_name"] is not None
+        )
 
         # Check BigEye predefined metrics.
         results["bigeye_predefined_metrics"] = find_bigeye_checks(query_path=query_dir)
 
         # Check if the level in the metadata complies with all requirements.
         level_required_ids = level_requirements[level]
-        required_names = [requirements[i] for i in level_required_ids if i in requirements]
+        required_names = [
+            requirements[i] for i in level_required_ids if i in requirements
+        ]
 
         missing = [name for name in required_names if not results.get(name)]
         if missing:
-            click.echo(f"❌ERROR. Metadata Level '{level}' not achieved. Missing: {', '.join(missing)}")
+            click.echo(
+                f"❌ERROR. Metadata Level '{level}' not achieved. Missing: {', '.join(missing)}"
+            )
             return False
 
-        click.echo(f"✅ Metadata level {level} achieved! Table {query_dir}.");
+        click.echo(f"✅ Metadata level {level} achieved! Table {query_dir}.")
         return True
 
 

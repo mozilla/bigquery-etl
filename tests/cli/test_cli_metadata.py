@@ -18,7 +18,11 @@ from bigquery_etl.metadata.validate_metadata import (
     validate,
     validate_change_control,
     validate_col_desc_enforced,
-    validate_shredder_mitigation, validate_asset_level, count_schema_fields, find_bigeye_checks, BIGEYE_PREDEFINED_FILE,
+    validate_shredder_mitigation,
+    validate_asset_level,
+    count_schema_fields,
+    find_bigeye_checks,
+    BIGEYE_PREDEFINED_FILE,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -297,7 +301,11 @@ class TestMetadata:
                     "type": "RECORD",
                     "description": "Parent field",
                     "fields": [
-                        {"name": "column_1_1", "type": "STRING", "description": "Description 1.1"},
+                        {
+                            "name": "column_1_1",
+                            "type": "STRING",
+                            "description": "Description 1.1",
+                        },
                         {"name": "column_1_2", "type": "INTEGER"},
                     ],
                 }
@@ -323,7 +331,10 @@ class TestMetadata:
                             "name": "column_1_1",
                             "type": "RECORD",
                             "fields": [
-                                {"name": "column_1_1_1", "description": "Description 1_1"},
+                                {
+                                    "name": "column_1_1_1",
+                                    "description": "Description 1_1",
+                                },
                             ],
                         }
                     ],
@@ -350,14 +361,23 @@ class TestMetadata:
                 "type": "BIGCONFIG_FILE",
                 "tag_deployments": [
                     {
-                        "column_selectors":
-                            [{
+                        "column_selectors": [
+                            {
                                 "name": [{"name": f"{self.test_path}.*"}],
                                 "metrics": [
-                                    {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
-                                    "metric_name": "FRESHNESS"},]
-                              }]
-                    }]}
+                                    {
+                                        "metric_type": {
+                                            "type": "PREDEFINED",
+                                            "predefined_metric": "FRESHNESS",
+                                        },
+                                        "metric_name": "FRESHNESS",
+                                    },
+                                ],
+                            }
+                        ]
+                    }
+                ],
+            }
             with open(bigeye_file_path, "w") as f:
                 yaml.safe_dump(data, f)
             assert find_bigeye_checks(self.test_path) is False
@@ -373,14 +393,23 @@ class TestMetadata:
                 "type": "BIGCONFIG_FILE",
                 "tag_deployments": [
                     {
-                        "column_selectors":
-                            [{
+                        "column_selectors": [
+                            {
                                 "name": [{"name": f"{self.test_path}.*"}],
                                 "metrics": [
-                                    {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
-                                    "metric_name": "VOLUME"},]
-                              }]
-                    }]}
+                                    {
+                                        "metric_type": {
+                                            "type": "PREDEFINED",
+                                            "predefined_metric": "VOLUME",
+                                        },
+                                        "metric_name": "VOLUME",
+                                    },
+                                ],
+                            }
+                        ]
+                    }
+                ],
+            }
             with open(bigeye_file_path, "w") as f:
                 yaml.safe_dump(data, f)
             assert find_bigeye_checks(self.test_path) is False
@@ -393,14 +422,26 @@ class TestMetadata:
                 "type": "BIGCONFIG_FILE",
                 "tag_deployments": [
                     {
-                        "column_selectors":
-                            {"name": "{query_path}.*"},
+                        "column_selectors": {"name": "{query_path}.*"},
                         "metrics": [
-                            {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
-                             "metric_name": "FRESHNESS"},
-                            {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
-                             "metric_name": "VOLUME [fail]"}]
-                    }]}
+                            {
+                                "metric_type": {
+                                    "type": "PREDEFINED",
+                                    "predefined_metric": "FRESHNESS",
+                                },
+                                "metric_name": "FRESHNESS",
+                            },
+                            {
+                                "metric_type": {
+                                    "type": "PREDEFINED",
+                                    "predefined_metric": "VOLUME",
+                                },
+                                "metric_name": "VOLUME [fail]",
+                            },
+                        ],
+                    }
+                ],
+            }
             os.makedirs(self.test_path, exist_ok=True)
             bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
 
@@ -410,7 +451,16 @@ class TestMetadata:
             assert result == True
 
     def check_test_level(
-        self, runner, metadata, query=None, schema=None, with_unittests=None, with_bigeye_metrics=None, expected_result=None, expected_exception=None, capfd=None
+        self,
+        runner,
+        metadata,
+        query=None,
+        schema=None,
+        with_unittests=None,
+        with_bigeye_metrics=None,
+        expected_result=None,
+        expected_exception=None,
+        capfd=None,
     ):
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -436,14 +486,26 @@ class TestMetadata:
                     "type": "BIGCONFIG_FILE",
                     "tag_deployments": [
                         {
-                            "column_selectors":
-                                {"name": "{query_path}.*"},
+                            "column_selectors": {"name": "{query_path}.*"},
                             "metrics": [
-                                {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
-                                 "metric_name": "FRESHNESS"},
-                                {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
-                                 "metric_name": "VOLUME [fail]"}]
-                        }]}
+                                {
+                                    "metric_type": {
+                                        "type": "PREDEFINED",
+                                        "predefined_metric": "FRESHNESS",
+                                    },
+                                    "metric_name": "FRESHNESS",
+                                },
+                                {
+                                    "metric_type": {
+                                        "type": "PREDEFINED",
+                                        "predefined_metric": "VOLUME",
+                                    },
+                                    "metric_name": "VOLUME [fail]",
+                                },
+                            ],
+                        }
+                    ],
+                }
 
                 bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
                 with open(bigeye_file_path, "w") as f:
@@ -463,9 +525,7 @@ class TestMetadata:
             "owners": ["test@example.org", "test2@example.org"],
         }
 
-        self.check_test_level(
-            runner=runner, metadata=metadata, expected_result=True
-        )
+        self.check_test_level(runner=runner, metadata=metadata, expected_result=True)
 
     def test_level_is_not_unique(self, runner, capfd):
         metadata = {
@@ -543,7 +603,7 @@ class TestMetadata:
     def test_level_gold_not_comply_missing_bigeye_metrics(self, runner, capfd):
         metadata = {
             "friendly_name": "test",
-            "description" : "Table description.",
+            "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
             "level": ["gold"],
             "scheduling": {"dag_name": "bqetl_default"},
@@ -681,7 +741,9 @@ class TestMetadata:
             ]
         }
 
-        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: unittests"
+        expected_exception = (
+            "ERROR. Metadata Level 'gold' not achieved. Missing: unittests"
+        )
         self.check_test_level(
             runner=runner,
             metadata=metadata,
@@ -719,7 +781,9 @@ class TestMetadata:
             ]
         }
 
-        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: description"
+        expected_exception = (
+            "ERROR. Metadata Level 'gold' not achieved. Missing: description"
+        )
         self.check_test_level(
             runner=runner,
             metadata=metadata,
@@ -757,7 +821,9 @@ class TestMetadata:
             ]
         }
 
-        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: scheduler"
+        expected_exception = (
+            "ERROR. Metadata Level 'gold' not achieved. Missing: scheduler"
+        )
         self.check_test_level(
             runner=runner,
             metadata=metadata,
@@ -786,8 +852,16 @@ class TestMetadata:
                     "type": "RECORD",
                     "mode": "REPEATED",
                     "fields": [
-                        {"name": "column 1a", "type": "STRING", "description": "Description 1", },
-                        {"name": "column 1b", "type": "STRING", "description": "Description 1", },
+                        {
+                            "name": "column 1a",
+                            "type": "STRING",
+                            "description": "Description 1",
+                        },
+                        {
+                            "name": "column 1b",
+                            "type": "STRING",
+                            "description": "Description 1",
+                        },
                     ],
                 },
                 {
@@ -824,10 +898,17 @@ class TestMetadata:
                     "type": "RECORD",
                     "mode": "REPEATED",
                     "fields": [
-                        {"name": "column 1a", "type": "STRING", "description": "Description 1",},
-                        {"name": "column 1b", "type": "STRING",},
+                        {
+                            "name": "column 1a",
+                            "type": "STRING",
+                            "description": "Description 1",
+                        },
+                        {
+                            "name": "column 1b",
+                            "type": "STRING",
+                        },
                     ],
-                    },
+                },
                 {
                     "name": "column_2",
                     "type": "STRING",
@@ -836,9 +917,11 @@ class TestMetadata:
             ]
         }
 
-        expected_exception = ("ERROR. Metadata Level 'silver' not achieved. "
-                              "Missing: description, unittests, scheduler, "
-                              "bigeye_predefined_metrics, column_descriptions_70_percent")
+        expected_exception = (
+            "ERROR. Metadata Level 'silver' not achieved. "
+            "Missing: description, unittests, scheduler, "
+            "bigeye_predefined_metrics, column_descriptions_70_percent"
+        )
         self.check_test_level(
             runner=runner,
             metadata=metadata,

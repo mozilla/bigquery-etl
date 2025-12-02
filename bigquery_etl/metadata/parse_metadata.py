@@ -228,17 +228,23 @@ class Metadata:
         # If level is a string
         if isinstance(value, str):
             if value not in allowed:
-                raise ValueError(f"ERROR. Invalid level in metadata: {value}. Must be one of {sorted(allowed)} or None.")
+                raise ValueError(
+                    f"ERROR. Invalid level in metadata: {value}. Must be one of {sorted(allowed)} or None."
+                )
 
         # If level is a list
         if isinstance(value, list):
             # Syntax is valid, only one level is allowed.
             if len(value) != 1:
-                raise ValueError(f"ERROR. Invalid level in metadata: {value}. Only a unique level can be assigned.")
+                raise ValueError(
+                    f"ERROR. Invalid level in metadata: {value}. Only a unique level can be assigned."
+                )
 
             level = value[0]
             if not isinstance(level, str) or level not in allowed:
-                raise ValueError(f"ERROR. Invalid level '{level}'. Must be one of {sorted(allowed)}.")
+                raise ValueError(
+                    f"ERROR. Invalid level '{level}'. Must be one of {sorted(allowed)}."
+                )
             return
 
         # Any other type is invalid
@@ -406,9 +412,7 @@ class Metadata:
                     ]
 
                 if "level" in metadata:
-                    level = metadata[
-                        "level"
-                    ]
+                    level = metadata["level"]
 
                 return cls(
                     friendly_name,

@@ -1,0 +1,8 @@
+friendly_name: Report Content Live
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  owner: example
+require_column_descriptions: false

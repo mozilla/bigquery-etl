@@ -4,9 +4,7 @@
 {% if is_init() %}
 {% endraw %}
 
-{% for name, details in events_first_seen.apps.items() %}
-
-  {% for i in range(details.criteria_name|length) %}
+{% for item in criteria %}
 
 (
 WITH eventsstream AS (
@@ -17,7 +15,7 @@ WITH eventsstream AS (
   `event`,
   event_category,
   event_name,
-  {{ details.criteria_name[i] }} AS criteria,
+  {{ item["name"] }} AS criteria,
   min_by(profile_group_id, submission_timestamp) AS profile_group_id,
   min_by(sample_id, submission_timestamp) AS sample_id,
   MIN(submission_timestamp) AS first_submission_timestamp,
@@ -35,12 +33,12 @@ WITH eventsstream AS (
   DATE(submission_timestamp) >= '2023-01-01'
   -- AND sample_id >= @sample_id
   -- AND sample_id < @sample_id + @sampling_batch_size
+  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
   {% if app_id == 'firefox_desktop' -%}
   AND profile_group_id IS NOT NULL
   {% endif %}
-  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
   -- below is the templated criteria
-  AND ({{ details.criteria_sql[i] }})
+  AND ({{ item["sql"] }})
   GROUP BY
   client_id,
   `event`,
@@ -58,15 +56,12 @@ eventsstream
 UNION ALL
 {% endif %}
 {% endfor %}
-{% endfor %}
 
 {% raw %}
 {% else %}
 {% endraw %}
 
-{% for name, details in events_first_seen.apps.items() %}
-
-  {% for i in range(details.criteria_name|length) %}
+{% for item in criteria %}
 
 (
 WITH _current AS (
@@ -77,7 +72,7 @@ WITH _current AS (
     `event`,
     event_category,
     event_name,
-    {{ details.criteria_name[i] }} AS criteria,
+    {{ item["name"] }} AS criteria,
     min_by(profile_group_id, submission_timestamp) AS profile_group_id,
     min_by(sample_id, submission_timestamp) AS sample_id,
     MIN(submission_timestamp) AS first_submission_timestamp,
@@ -92,12 +87,12 @@ WITH _current AS (
     `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
     {% if app_id == 'firefox_desktop' -%}
     AND profile_group_id IS NOT NULL
     {% endif %}
-    AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
     -- below is the templated criteria
-    AND ({{ details.criteria_sql[i] }})
+    AND ({{ item["sql"] }})
   GROUP BY
     submission_date,
     event_first_seen_date,
@@ -116,7 +111,7 @@ WITH _current AS (
       `event`,
       event_category,
       event_name,
-      {{ details.criteria_name[i] }} AS criteria,
+      {{ item["name"] }} AS criteria,
       profile_group_id,
       sample_id,
       first_submission_timestamp,
@@ -160,7 +155,6 @@ FROM
 {% if not loop.last -%}
 UNION ALL
 {% endif %}
-{% endfor %}
 {% endfor %}
 
 {% raw %}

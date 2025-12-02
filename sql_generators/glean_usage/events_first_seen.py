@@ -27,23 +27,11 @@ class EventsFirstSeenTable(GleanTable):
         # self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
 
-        with open(
-            Path(os.path.dirname(__file__))
-            / "templates"
-            / "events_first_seen_templating.yaml",
-            "r",
-        ) as f:
-            events_first_seen_config = yaml.safe_load(f) or {}
-
-            # parse this dictionary for each individual app_name
-            self.common_render_kwargs = {"events_first_seen": events_first_seen_config}
-
     def generate_per_app_id(
         self,
         project_id,
         baseline_table,
         app_name,
-        # pass individual app_names
         app_id_info,
         output_dir=None,
         use_cloud_function=True,
@@ -55,6 +43,18 @@ class EventsFirstSeenTable(GleanTable):
         if app_name in ConfigLoader.get(
             "generate", "glean_usage", "events_first_seen", "include_apps", fallback=[]
         ):
+
+            with open(
+                Path(os.path.dirname(__file__))
+                / "templates"
+                / "events_first_seen_templating.yaml",
+                "r",
+            ) as f:
+                events_first_seen_config = yaml.safe_load(f)
+
+                # parse for each individual app_name
+                events_first_seen = events_first_seen_config["apps"][app_name]
+
             super().generate_per_app_id(
                 project_id,
                 baseline_table,
@@ -64,7 +64,10 @@ class EventsFirstSeenTable(GleanTable):
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
-                custom_render_kwargs={"app_id": app_id_info["bq_dataset_family"]},
+                custom_render_kwargs={
+                    "app_id": app_id_info["bq_dataset_family"],
+                    **events_first_seen,
+                },
             )
 
     def generate_per_app(

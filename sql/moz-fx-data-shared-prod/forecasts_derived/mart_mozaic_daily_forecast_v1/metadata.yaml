@@ -17,7 +17,7 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: forecast_start_day
+    field: forecast_start_date
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null

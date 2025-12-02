@@ -266,12 +266,6 @@ def find_bigeye_checks(query_path):
 
     missing = predefined_metrics - found_types
 
-    click.echo({
-        "path_found": path_found,
-        "found_types": sorted(found_types),
-        "missing_types": sorted(missing),
-    })
-
     if any(metric in missing for metric in predefined_metrics):
         click.echo(f"ERROR: Missing Bigeye metrics: {missing}.")
         return False
@@ -281,7 +275,7 @@ def find_bigeye_checks(query_path):
 def validate_asset_level(query_dir, metadata):
     """Check that the level assigned to the table or view complies with requirements.
 
-    Possible levels are gold, silver and bronze. Only one level can be assigned.
+    Possible levels are only one of [gold, silver, bronze] or no level label.
     """
 
     requirements = {
@@ -305,17 +299,7 @@ def validate_asset_level(query_dir, metadata):
     if not metadata.level:
         return True
     else:
-        # Check that the level is unique and not empty.
-        if len(metadata.level) != 1:
-            click.echo(f"❌ERROR. Invalid level in metadata, A table or view can have max. one of {[*level_requirements]} level assigned.")
-            return False
-
         level = metadata.level[0] if isinstance(metadata.level, list) else metadata.level
-
-        # Check that the level is one of the valid values.
-        if level not in level_requirements:
-            click.echo(f"❌ERROR. Invalid level in metadata, possible values are {[*level_requirements]}.")
-            return False
 
         # Check percentage of fields and nested fields with descriptions.
         schema_file = Path(query_dir) / SCHEMA_FILE

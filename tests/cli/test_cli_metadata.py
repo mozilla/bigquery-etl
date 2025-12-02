@@ -473,11 +473,16 @@ class TestMetadata:
             "level": ["gold", "silver"],
         }
 
-        expected_exc = "ERROR. Invalid level in metadata, A table or view can have max. one of"
-        self.check_test_level(
-            runner=runner, metadata=metadata, expected_result=False, expected_exception=expected_exc,
-            capfd=capfd,
-        )
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+
+            with pytest.raises(ValueError) as e:
+                _ = Metadata.from_file(metadata_path)
+            expected_exc = "ERROR. Invalid level in metadata: ['gold', 'silver']. Only a unique level can be assigned."
+            assert (str(e.value)) == expected_exc
 
     def test_level_is_not_in_expected_values(self, runner, capfd):
         metadata = {
@@ -485,10 +490,16 @@ class TestMetadata:
             "level": ["diamond"],
         }
 
-        expected_exc = "ERROR. Invalid level in metadata, possible values are"
-        self.check_test_level(
-                runner=runner, metadata=metadata, expected_result=False, expected_exception=expected_exc, capfd=capfd,
-        )
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+
+            with pytest.raises(ValueError) as e:
+                _ = Metadata.from_file(metadata_path)
+            expected_exc = "ERROR. Invalid level 'diamond'. Must be one of ['bronze', 'gold', 'silver']."
+            assert (str(e.value)) == expected_exc
 
     def test_level_gold_comply(self, runner, capfd):
         metadata = {

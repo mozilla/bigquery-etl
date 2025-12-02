@@ -37,6 +37,14 @@ def literal_presenter(dumper, data):
 yaml.add_representer(Literal, literal_presenter)
 
 
+class AssetLevel(enum.Enum):
+    """Represents BigQuery table level based on requirements for quality and maturity."""
+
+    GOLD = "gold"
+    SILVER = "silver"
+    BRONZE = "bronze"
+
+
 class PartitionType(enum.Enum):
     """Represents BigQuery table partition types."""
 
@@ -198,13 +206,45 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: bool = attr.ib(False)
-    level: bool = attr.ib(False)
+    level: Optional[str] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
         """Check that provided email addresses or github identities for owners are valid."""
         if not all(map(lambda e: is_email_or_github_identity(e), value)):
             raise ValueError(f"Invalid email or Github identity for owners: {value}.")
+
+    @level.validator
+    def validate_level(self, attribute, value):
+        """Check that the level label is within expected values and unique."""
+        if value is None:
+            return
+
+        if value is None:
+            return
+
+        allowed = [e.value for e in AssetLevel]
+
+        # If level is a string
+        if isinstance(value, str):
+            if value not in allowed:
+                raise ValueError(f"ERROR. Invalid level in metadata: {value}. Must be one of {sorted(allowed)} or None.")
+
+        # If level is a list
+        if isinstance(value, list):
+            # Syntax is valid, only one level is allowed.
+            if len(value) != 1:
+                raise ValueError(f"ERROR. Invalid level in metadata: {value}. Only a unique level can be assigned.")
+
+            level = value[0]
+            if not isinstance(level, str) or level not in allowed:
+                raise ValueError(f"ERROR. Invalid level '{level}'. Must be one of {sorted(allowed)}.")
+            return
+
+        # Any other type is invalid
+        raise ValueError(
+            f"ERROR. Invalid level in metadata with type '{type(value).__name__}'. Must be string, single-element list or no label."
+        )
 
     @labels.validator
     def validate_labels(self, attribute, value):
@@ -277,7 +317,7 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = False
-        level = False
+        level = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:

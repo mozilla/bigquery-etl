@@ -12,18 +12,18 @@ from dateutil.relativedelta import relativedelta
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.schema import Schema
 from bigquery_etl.metadata.validate_metadata import (
+    BIGEYE_PREDEFINED_FILE,
     CODEOWNERS_FILE,
+    count_schema_fields,
+    find_bigeye_checks,
     validate,
+    validate_asset_level,
     validate_change_control,
     validate_col_desc_enforced,
     validate_shredder_mitigation,
-    validate_asset_level,
-    count_schema_fields,
-    find_bigeye_checks,
-    BIGEYE_PREDEFINED_FILE,
 )
+from bigquery_etl.schema import Schema
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -448,7 +448,7 @@ class TestMetadata:
             with open(bigeye_file_path, "w") as f:
                 yaml.safe_dump(bigeye_metrics, f)
             result = find_bigeye_checks(str(self.test_path))
-            assert result == True
+            assert result is True
 
     def check_test_level(
         self,

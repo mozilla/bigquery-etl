@@ -2556,3 +2556,20 @@ bqetl_terms_of_use:
   schedule_interval: 0 6 * * *
   tags:
     - impact/tier_2
+
+report_content_hourly:
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: lmcfall@mozilla.com
+    retries: 1
+    retry_delay: 10m
+    start_date: '2025-12-03'
+  description: Hourly tables for content reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: true
+  tags:
+    - impact/tier_2

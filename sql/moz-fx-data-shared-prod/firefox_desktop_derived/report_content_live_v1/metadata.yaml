@@ -19,7 +19,7 @@ labels:
   schedule: hourly
   shredder_mitigation: true
 scheduling:
-  dag_name: report_content_hourly
+  dag_name: bqetl_report_content_hourly
   date_partition_parameter: null
   # We reprocess the same day every hour up until 1:00 the following day, to give
   # the live data time to come in

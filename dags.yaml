@@ -2557,7 +2557,7 @@ bqetl_terms_of_use:
   tags:
     - impact/tier_2
 
-report_content_hourly:
+bqetl_report_content_hourly:
   default_args:
     depends_on_past: false
     email_on_failure: true

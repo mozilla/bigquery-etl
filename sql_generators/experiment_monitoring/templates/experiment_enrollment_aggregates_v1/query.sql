@@ -18,6 +18,7 @@ WITH
         event_object AS `type`,
         event_string_value AS experiment,
         mozfun.map.get_key(event_map_values, 'branch') AS branch,
+        normalized_channel,
         event_method,
         -- Before version 109 (in desktop), clients evaluated schema
         -- before targeting, so validation_errors are invalid
@@ -35,6 +36,7 @@ WITH
       event.category AS `type`,
       mozfun.map.get_key(event.extra, 'experiment') AS experiment,
       mozfun.map.get_key(event.extra, 'branch') AS branch,
+      normalized_channel,
       event.name AS event_method,
       TRUE as validation_errors_valid
     FROM
@@ -51,6 +53,7 @@ WITH
       event.category AS `type`,
       mozfun.map.get_key(event.extra, 'experiment') AS experiment,
       mozfun.map.get_key(event.extra, 'branch') AS branch,
+      normalized_channel,
       event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -79,6 +82,7 @@ SELECT
   `type`,
   experiment,
   branch,
+  normalized_channel,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -104,5 +108,6 @@ GROUP BY
   `type`,
   experiment,
   branch,
+  normalized_channel,
   window_start,
   window_end

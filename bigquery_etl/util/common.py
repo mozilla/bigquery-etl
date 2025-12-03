@@ -8,6 +8,7 @@ import re
 import string
 import tempfile
 import warnings
+from functools import cache
 from pathlib import Path
 from typing import List, Optional, Set, Tuple
 from uuid import uuid4
@@ -17,7 +18,7 @@ import sqlglot
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
-from bigquery_etl.config import ConfigLoader
+from bigquery_etl.config import BQETL_PROJECT_CONFIG, ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metrics import MetricHub
 
@@ -70,6 +71,18 @@ def random_str(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for i in range(length))
 
 
+@cache
+def get_bqetl_project_root() -> Path | None:
+    """Return the root path of the bqetl project the user is currently in."""
+    cwd = Path.cwd()
+    search_paths = [cwd]
+    search_paths.extend(cwd.parents)
+    for possible_project_root in search_paths:
+        if (possible_project_root / BQETL_PROJECT_CONFIG).exists():
+            return possible_project_root
+    return None
+
+
 def render(
     sql_filename,
     template_folder=".",
@@ -78,7 +91,8 @@ def render(
     **kwargs,
 ) -> str:
     """Render a given template query using Jinja."""
-    path = Path(template_folder) / sql_filename
+    template_folder_path = Path(template_folder)
+    path = template_folder_path / sql_filename
     skip = {
         file
         for skip in ConfigLoader.get("render", "skip", fallback=[])
@@ -122,14 +136,20 @@ def render(
                 checks_template.write_text(
                     macro_imports
                     + "\n"
-                    + (Path(template_folder) / sql_filename).read_text()
+                    + (template_folder_path / sql_filename).read_text()
                 )
 
                 file_loader = FileSystemLoader(f"{str(checks_template.parent)}")
                 env = Environment(loader=file_loader)
                 main_sql = env.get_template(checks_template.name)
         else:
-            file_loader = FileSystemLoader(f"{template_folder}")
+            # Add the bigquery-etl project root to the search path to support Jinja imports/includes.
+            file_loader_search_paths = [template_folder_path, ROOT]
+            # Also dynamically detect the project root so imports/includes in the private-bigquery-etl repo work.
+            if bqetl_project_root := get_bqetl_project_root():
+                if bqetl_project_root not in file_loader_search_paths:
+                    file_loader_search_paths.append(bqetl_project_root)
+            file_loader = FileSystemLoader(file_loader_search_paths)
             env = Environment(loader=file_loader)
             main_sql = env.get_template(sql_filename)
 
@@ -185,6 +205,22 @@ def qualify_table_references_in_file(path: Path) -> str:
             "Cannot qualify table_references of query scripts or UDFs"
         )
 
+    # INFORMATION_SCHEMA views that can be dataset qualified
+    # https://cloud.google.com/bigquery/docs/information-schema-intro#dataset_qualifier
+    # used to make a best-effort attempt to qualify with dataset when appropriate
+    DATASET_QUALIFIED_INFO_SCHEMA_VIEWS = (
+        "COLUMNS",
+        "COLUMN_FIELD_PATHS",
+        "MATERIALIZED_VIEWS",
+        "PARAMETERS",
+        "PARTITIONS",
+        "ROUTINES",
+        "ROUTINE_OPTIONS",
+        "TABLES",
+        "TABLE_OPTIONS",
+        "VIEWS",
+    )
+
     # determine the default target project and dataset from the path
     target_project = Path(path).parent.parent.parent.name
     default_dataset = Path(path).parent.parent.name
@@ -232,7 +268,9 @@ def qualify_table_references_in_file(path: Path) -> str:
             for table_expr in statement.find_all(sqlglot.exp.Table):
                 # existing table ref including backticks without alias
                 table_expr.set("alias", "")
-                reference_string = table_expr.sql(dialect="bigquery")
+                # as of sqlglot 26, dialect=bigquery puts backticks at only start and end
+                # if every part is quoted, so using dialect=None
+                reference_string = table_expr.sql(dialect=None).replace('"', "`?")
 
                 matched_cte = [
                     re.match(
@@ -244,17 +282,28 @@ def qualify_table_references_in_file(path: Path) -> str:
                 if any(matched_cte):
                     continue
 
-                # project id is parsed as the catalog attribute
-                # but information_schema region may also be parsed as catalog
-                if table_expr.catalog.startswith("region-"):
-                    project_name = f"{target_project}.{table_expr.catalog}"
+                # as of sqlglot 26, INFORMATION_SCHEMA.{VIEW_NAME} is parsed together as a table name
+                if table_expr.name.startswith("INFORMATION_SCHEMA."):
+                    if table_expr.db.lower().startswith("region-"):
+                        project_name = table_expr.catalog or target_project
+                        dataset_name = table_expr.db
+                    elif (
+                        table_expr.name.split(".")[1]
+                        in DATASET_QUALIFIED_INFO_SCHEMA_VIEWS
+                    ):  # add project and dataset
+                        project_name = target_project
+                        dataset_name = table_expr.db or default_dataset
+                    else:  # just add project
+                        project_name = ""
+                        dataset_name = table_expr.db or target_project
                 elif table_expr.catalog == "":  # no project id
                     project_name = target_project
+                    dataset_name = table_expr.db or default_dataset
                 else:  # project id exists
                     continue
 
                 # fully qualified table ref
-                replacement_string = f"`{project_name}.{table_expr.db or default_dataset}.{table_expr.name}`"
+                replacement_string = f"`{project_name}{'.' if project_name else ''}{dataset_name}.{table_expr.name}`"
 
                 table_replacements.add((reference_string, replacement_string))
 

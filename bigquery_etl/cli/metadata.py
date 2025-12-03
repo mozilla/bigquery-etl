@@ -61,115 +61,152 @@ def metadata(ctx):
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+@parallelism_option()
+def update(
+    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+) -> None:
     """Update metadata yaml file."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+
     retained_dataset_roles = ConfigLoader.get(
         "deprecation", "retain_dataset_roles", fallback=[]
     )
 
-    # create and populate the dataset metadata yaml file if it does not exist
+    # group table metadata files by dataset
+    datasets: dict[Path, list[Path]] = {}
     for table_metadata_file in table_metadata_files:
-        dataset_metadata_path = (
-            Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
-        )
-        if not dataset_metadata_path.exists():
-            continue
-        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-        table_metadata = Metadata.from_file(table_metadata_file)
+        dataset_path = Path(table_metadata_file).parent.parent
+        if dataset_path not in datasets:
+            datasets[dataset_path] = []
+        datasets[dataset_path].append(table_metadata_file)
 
-        dataset_metadata_updated = False
-        table_metadata_updated = False
-
-        # set dataset metadata default_table_workgroup_access to table_workgroup_access if not set
-        if not dataset_metadata.default_table_workgroup_access:
-            dataset_metadata.default_table_workgroup_access = (
-                dataset_metadata.workgroup_access
+    # process each dataset in parallel
+    if parallelism > 1:
+        with Pool(parallelism) as pool:
+            pool.map(
+                partial(_update_dataset_metadata, retained_dataset_roles),
+                datasets.items(),
             )
-            dataset_metadata_updated = True
-
-        if table_metadata.deprecated:
-            # filter table workgroup_access to only retained roles
-            if table_metadata.workgroup_access is not None:
-                table_metadata.workgroup_access = [
-                    workgroup
-                    for workgroup in table_metadata.workgroup_access
-                    if workgroup.role in retained_dataset_roles
-                ]
-            else:
-                table_metadata.workgroup_access = []
-            table_metadata_updated = True
-
-            # filter dataset workgroup_access to only retained roles
-            dataset_metadata.workgroup_access = [
-                workgroup
-                for workgroup in dataset_metadata.workgroup_access
-                if workgroup.get("role") in retained_dataset_roles
-            ]
-            dataset_metadata_updated = True
-
-            # if dataViewer role exists in default_table_workgroup_access, ensure metadataViewer is present in workgroup_access
-            # https://mozilla-hub.atlassian.net/browse/DENG-8843
-            data_viewer = next(
-                (
-                    workgroup
-                    for workgroup in dataset_metadata.default_table_workgroup_access
-                    if workgroup.get("role") == "roles/bigquery.dataViewer"
-                ),
-                None,
+    else:
+        for dataset_path, dataset_table_files in datasets.items():
+            _update_dataset_metadata(
+                retained_dataset_roles, (dataset_path, dataset_table_files)
             )
-            if data_viewer:
-                has_metadata_viewer = any(
-                    workgroup.get("role") == "roles/bigquery.metadataViewer"
-                    for workgroup in dataset_metadata.workgroup_access
+
+    return None
+
+
+def _update_dataset_metadata(retained_dataset_roles, dataset_info):
+    """Update all metadata files for a single dataset."""
+    dataset_path, table_metadata_files = dataset_info
+
+    # process all table metadata files in this dataset
+    for table_metadata_file in table_metadata_files:
+        try:
+            dataset_metadata_path = (
+                Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
+            )
+            if not dataset_metadata_path.exists():
+                continue
+
+            dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+            table_metadata = Metadata.from_file(table_metadata_file)
+
+            dataset_metadata_updated = False
+            table_metadata_updated = False
+
+            # set dataset metadata default_table_workgroup_access to table_workgroup_access if not set
+            if not dataset_metadata.default_table_workgroup_access:
+                dataset_metadata.default_table_workgroup_access = (
+                    dataset_metadata.workgroup_access
                 )
-                if not has_metadata_viewer:
-                    dataset_metadata.workgroup_access.append(
-                        {
-                            "role": "roles/bigquery.metadataViewer",
-                            "members": data_viewer.get("members", []),
-                        }
-                    )
-        else:
-            if table_metadata.workgroup_access is None:
-                table_metadata.workgroup_access = []
+                dataset_metadata_updated = True
 
-            for (
-                default_workgroup_access
-            ) in dataset_metadata.default_table_workgroup_access:
-                role_exists = False
-                for i, table_workgroup_access in enumerate(
-                    table_metadata.workgroup_access
-                ):
-                    if table_workgroup_access.role == default_workgroup_access.get(
-                        "role"
+            if table_metadata.deprecated:
+                # filter table workgroup_access to only retained roles
+                if table_metadata.workgroup_access is not None:
+                    table_metadata.workgroup_access = [
+                        workgroup
+                        for workgroup in table_metadata.workgroup_access
+                        if workgroup.role in retained_dataset_roles
+                    ]
+                else:
+                    table_metadata.workgroup_access = []
+                table_metadata_updated = True
+
+                # filter dataset workgroup_access to only retained roles
+                dataset_metadata.workgroup_access = [
+                    workgroup
+                    for workgroup in dataset_metadata.workgroup_access
+                    if workgroup.get("role") in retained_dataset_roles
+                ]
+                dataset_metadata_updated = True
+
+                # if dataViewer role exists in default_table_workgroup_access, ensure metadataViewer is present in workgroup_access
+                # https://mozilla-hub.atlassian.net/browse/DENG-8843
+                data_viewer = next(
+                    (
+                        workgroup
+                        for workgroup in dataset_metadata.default_table_workgroup_access
+                        if workgroup.get("role") == "roles/bigquery.dataViewer"
+                    ),
+                    None,
+                )
+                if data_viewer:
+                    has_metadata_viewer = any(
+                        workgroup.get("role") == "roles/bigquery.metadataViewer"
+                        for workgroup in dataset_metadata.workgroup_access
+                    )
+                    if not has_metadata_viewer:
+                        dataset_metadata.workgroup_access.append(
+                            {
+                                "role": "roles/bigquery.metadataViewer",
+                                "members": sorted(data_viewer.get("members", [])),
+                            }
+                        )
+            else:
+                if table_metadata.workgroup_access is None:
+                    table_metadata.workgroup_access = []
+
+                for (
+                    default_workgroup_access
+                ) in dataset_metadata.default_table_workgroup_access:
+                    role_exists = False
+                    for i, table_workgroup_access in enumerate(
+                        table_metadata.workgroup_access
                     ):
-                        role_exists = True
-                        table_metadata.workgroup_access[i].members = sorted(
-                            set(table_workgroup_access.members)
-                            | set(default_workgroup_access.get("members", []))
+                        if table_workgroup_access.role == default_workgroup_access.get(
+                            "role"
+                        ):
+                            role_exists = True
+                            table_metadata.workgroup_access[i].members = sorted(
+                                set(table_workgroup_access.members)
+                                | set(default_workgroup_access.get("members", []))
+                            )
+                            table_metadata_updated = True
+
+                    if not role_exists:
+                        table_metadata.workgroup_access.append(
+                            WorkgroupAccessMetadata(
+                                role=default_workgroup_access["role"],
+                                members=sorted(
+                                    default_workgroup_access.get("members", [])
+                                ),
+                            )
                         )
                         table_metadata_updated = True
 
-                if not role_exists:
-                    table_metadata.workgroup_access.append(
-                        WorkgroupAccessMetadata(
-                            role=default_workgroup_access["role"],
-                            members=default_workgroup_access.get("members", []),
-                        )
-                    )
-                    table_metadata_updated = True
-
-        if dataset_metadata_updated:
-            dataset_metadata.write(dataset_metadata_path)
-            click.echo(f"Updated {dataset_metadata_path}")
-        if table_metadata_updated:
-            table_metadata.write(table_metadata_file)
-            click.echo(f"Updated {table_metadata_file}")
-
-    return None
+            if dataset_metadata_updated:
+                dataset_metadata.write(dataset_metadata_path)
+                click.echo(f"Updated {dataset_metadata_path}")
+            if table_metadata_updated:
+                table_metadata.write(table_metadata_file)
+                click.echo(f"Updated {table_metadata_file}")
+        except Exception as e:
+            click.echo(f"Error processing {table_metadata_file}: {e}", err=True)
+            raise e
 
 
 @metadata.command(
@@ -254,8 +291,12 @@ def deprecate(
     deletion_date: datetime,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
 
     for metadata_file in table_metadata_files:
@@ -292,8 +333,12 @@ def validate_workgroups(
     """Validate workgroup_access and default_table_workgroup_access configuration."""
     failed_files = set()
 
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
     skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
 

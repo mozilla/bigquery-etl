@@ -127,3 +127,151 @@ fields:
 - name: others_engagement_visits
   type: INTEGER
   description: Count of visits associated with wallpaper, topic_selection, sections with newtab opened in default ui
+
+  # Phase 4 Fields
+- name: sample_id
+  type: INTEGER
+  description: Hashed client ID for sampling (0–99)
+- name: profile_group_id
+  type: STRING
+  description: Legacy telemetry identifier for profile grouping
+- name: geo_subdivision
+  type: STRING
+  description: First-level country subdivision (state/province) of user
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: Array of experiments to associate with each client
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+- name: newtab_weather_enabled
+  type: BOOLEAN
+  description: Whether the weather widget was enabled
+- name: default_search_engine
+  type: STRING
+  description: Engine ID of the default search engine
+- name: default_private_search_engine
+  type: STRING
+  description: Engine ID of the private search engine
+- name: topsite_rows
+  type: INTEGER
+  description: Number of topsite rows shown on newtab page
+- name: topsite_sponsored_tiles_configured
+  type: INTEGER
+  description: Number of sponsored topsite tiles configured
+- name: newtab_blocked_sponsors
+  type: STRING
+  description: List of advertiser domains blocked by the user
+  mode: REPEATED
+- name: search_engagement_visits
+  type: INTEGER
+  description: Count of visits with any search interaction
+- name: search_ad_click_visits
+  type: INTEGER
+  description: Count of visits with search ad clicks
+- name: organic_content_dismissal_visits
+  type: INTEGER
+  description: Count of visits where organic content was dismissed
+- name: sponsored_content_dismissal_visits
+  type: INTEGER
+  description: Count of visits where sponsored content was dismissed
+- name: organic_topsite_dismissal_visits
+  type: INTEGER
+  description: Count of visits with organic topsite dismissal
+- name: sponsored_topsite_dismissal_visits
+  type: INTEGER
+  description: Count of visits where sponsored topsite was dismissed
+- name: content_thumbs_up_visits
+  type: INTEGER
+  description: Count of visits where user gave thumbs up on organic content
+- name: content_thumbs_down_visits
+  type: INTEGER
+  description: Count of visits where user gave thumbs down on organic content
+- name: organic_content_dismissal_count
+  type: INTEGER
+  description: Count of organic content dismissals
+- name: sponsored_content_dismissal_count
+  type: INTEGER
+  description: Count of sponsored content dismissals
+- name: organic_topsite_dismissal_count
+  type: INTEGER
+  description: Count of organic topsite dismissals
+- name: sponsored_topsite_dismissal_count
+  type: INTEGER
+  description: Count of sponsored topsite dismissals
+- name: any_interaction_count
+  type: INTEGER
+  description: Count of any client interactions with newtab opened in default UI
+- name: search_interaction_count
+  type: INTEGER
+  description: Count of search interactions
+- name: nonsearch_interaction_count
+  type: INTEGER
+  description: Count of non-search interactions on newtab
+- name: any_content_interaction_count
+  type: INTEGER
+  description: Count of any content interactions with newtab opened in default UI
+- name: organic_content_interaction_count
+  type: INTEGER
+  description: Count of organic content interactions
+- name: sponsored_content_interaction_count
+  type: INTEGER
+  description: Count of sponsored content interactions
+- name: any_topsite_interaction_count
+  type: INTEGER
+  description: Count of any topsite interactions with newtab opened in default UI
+- name: organic_topsite_interaction_count
+  type: INTEGER
+  description: Count of organic topsite interactions
+- name: sponsored_topsite_interaction_count
+  type: INTEGER
+  description: Count of sponsored topsite interactions
+- name: content_thumbs_up_count
+  type: INTEGER
+  description: Count of thumbs up on organic content with default UI
+- name: content_thumbs_down_count
+  type: INTEGER
+  description: Count of thumbs down on organic content with default UI
+- name: search_ad_click_count
+  type: INTEGER
+  description: Count of search ad clicks
+- name: search_ad_impression_count
+  type: INTEGER
+  description: Count of search ad impressions
+- name: widget_interaction_count
+  type: INTEGER
+  description: Count of widget interactions
+- name: widget_impression_count
+  type: INTEGER
+  description: Count of widget impressions
+- name: other_interaction_count
+  type: INTEGER
+  description: Count of other non-content interactions
+- name: other_impression_count
+  type: INTEGER
+  description: Count of other non-content impressions
+- name: avg_newtab_visit_duration
+  type: FLOAT64
+  description: Average duration of newtab visit (ms)
+- name: cumulative_newtab_visit_duration
+  type: INTEGER
+  description: Total duration of newtab visits on this day (ms)

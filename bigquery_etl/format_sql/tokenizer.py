@@ -706,11 +706,17 @@ class Identifier(Token):
     pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(?:\\.|[^\\`])+`")
 
 
+class ProjectIdentifier(Identifier):
+    """Identifier for a GCP project, can contain hyphens unlike Identifier."""
+
+    pattern = re.compile(r"[A-Za-z](?:[A-Za-z_0-9-]*[A-Za-z_0-9])?|`(?:\\.|[^\\`])+`")
+
+
 class QualifiedIdentifier(Identifier):
     """Fully or partially qualified identifier for a column, table, or other database object."""
 
     pattern = re.compile(
-        rf"(?:(?:{Identifier.pattern.pattern})\.)+(?:{Identifier.pattern.pattern})"
+        rf"(?:(?:{ProjectIdentifier.pattern.pattern}\.)?(?:{Identifier.pattern.pattern})\.)+(?:{Identifier.pattern.pattern})"
     )
 
 

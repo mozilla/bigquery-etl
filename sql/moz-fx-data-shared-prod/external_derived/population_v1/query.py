@@ -10,6 +10,9 @@ from google.cloud import bigquery
 # Set variables
 INDICATOR_ID_OF_INTEREST = 49  # Total population by sex"
 LOC_IDS_OF_INTEREST = [
+    348,  # Hungary
+    203, # Czechia
+    703, # Slovakia
     124,  # Canada
     276,  # Germany
     380,  # Italy

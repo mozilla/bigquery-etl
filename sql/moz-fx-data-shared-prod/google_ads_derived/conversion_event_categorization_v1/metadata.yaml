@@ -24,4 +24,3 @@ bigquery:
     fields:
     - client_id
     - country
-references: {}

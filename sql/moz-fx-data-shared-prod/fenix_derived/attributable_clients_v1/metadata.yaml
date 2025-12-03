@@ -23,4 +23,3 @@ bigquery:
     - adjust_network
     - adjust_campaign
     - country
-references: {}

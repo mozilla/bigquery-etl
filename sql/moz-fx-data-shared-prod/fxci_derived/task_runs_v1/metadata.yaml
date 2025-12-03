@@ -17,4 +17,3 @@ bigquery:
     fields:
     - task_id
     - run_id
-references: {}

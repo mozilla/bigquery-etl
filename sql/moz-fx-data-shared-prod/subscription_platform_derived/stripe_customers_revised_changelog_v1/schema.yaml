@@ -218,3 +218,16 @@ fields:
 
       This isn''t available for customers that were deleted before the initial Fivetran
       Stripe sync.'
+  - name: invoice_settings
+    type: RECORD
+    mode: NULLABLE
+    description: 'The customer''s default invoice settings.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
+    fields:
+    - name: default_payment_method_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of a payment method that's attached to the customer, to be used as
+        the customer's default payment method for subscriptions and invoices.

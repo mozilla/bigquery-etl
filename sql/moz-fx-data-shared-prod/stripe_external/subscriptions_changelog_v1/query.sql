@@ -10,6 +10,9 @@ WITH subscriptions_history AS (
     cancel_at,
     cancel_at_period_end,
     canceled_at,
+    cancellation_details_comment,
+    cancellation_details_reason,
+    cancellation_details_feedback,
     -- `billing` was renamed `collection_method`.
     COALESCE(collection_method, billing) AS collection_method,
     created,
@@ -287,7 +290,12 @@ SELECT
     subscriptions_history.start_date,
     subscriptions_history.status,
     subscriptions_history.trial_end,
-    subscriptions_history.trial_start
+    subscriptions_history.trial_start,
+    STRUCT(
+      subscriptions_history.cancellation_details_comment AS comment,
+      subscriptions_history.cancellation_details_feedback AS feedback,
+      subscriptions_history.cancellation_details_reason AS reason
+    ) AS cancellation_details
   ) AS subscription
 FROM
   subscriptions_history_with_plan_ids AS subscriptions_history

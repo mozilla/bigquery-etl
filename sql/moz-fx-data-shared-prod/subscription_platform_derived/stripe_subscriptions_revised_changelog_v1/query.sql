@@ -146,7 +146,8 @@ WITH original_changelog AS (
       PARTITION BY
         subscription.id
       ORDER BY
-        `timestamp`
+        `timestamp`,
+        id
     )
 ),
 adjusted_original_changelog AS (
@@ -224,7 +225,8 @@ questionable_subscription_plan_changes AS (
         invoice_line_items.subscription_id
       ORDER BY
         invoice_line_items.period_start,
-        invoice_line_items.period_end
+        invoice_line_items.period_end,
+        invoice_line_items.id
     )
 ),
 questionable_subscription_plans_history AS (

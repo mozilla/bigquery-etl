@@ -177,7 +177,7 @@ def create(
     A backfill.yaml file will be created if it does not already exist.
     """
     if errors := validate_table_metadata(
-        sql_dir, qualified_table_name, ignore_missing_metadata=False
+        sql_dir, qualified_table_name, ignore_missing_metadata=True
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
@@ -207,7 +207,8 @@ def create(
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
 
-    validate_depends_on_past_end_date(new_entry, backfill_file)
+    if (backfill_file.parent / METADATA_FILE).exists():
+        validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
 
@@ -903,6 +904,17 @@ def _copy_backfill_staging_to_prod(
        un-partitioned: copy the entire staging table to production.
        partitioned: determine and copy each partition from staging to production.
     """
+    # If this is a public dataset, change the destination to the public project
+    if table_metadata.is_public_bigquery():
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        public_project_id = ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        )
+        qualified_table_name = f"{public_project_id}.{dataset}.{table}"
+        click.echo(
+            f"Public dataset detected. Copying to public project: {qualified_table_name}"
+        )
+
     partitioning_type = None
     if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
         partitioning_type = table_metadata.bigquery.time_partitioning.type

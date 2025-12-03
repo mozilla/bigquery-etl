@@ -1,0 +1,7 @@
+2025-10-21:
+  start_date: 2025-04-01
+  end_date: 2025-10-20
+  reason: Backfill of urlbar events daily engagement by product result type data after fix \#8290
+  watchers:
+  - ascholtz@mozilla.com
+  status: Complete

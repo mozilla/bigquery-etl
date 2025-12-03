@@ -1,0 +1,44 @@
+-- Generated via `terms_of_use` SQL generator.
+SELECT
+  submission_timestamp,
+  client_id,
+  sample_id,
+  event_timestamp,
+  event_category,
+  event_name,
+  CASE
+    WHEN (event_name = "accepted")
+      OR (event_name = "terms_of_service_accepted")
+      THEN "accepted"
+    WHEN event_name IN ("terms_of_service_card", "shown", "impression")
+      THEN "impressions"
+    WHEN event_name IN (
+        "terms_of_service_privacy_notice_link_clicked",
+        "privacy_notice_tapped",
+        "privacy_notice_clicked"
+      )
+      THEN "privacy_notice_clicked"
+    WHEN event_name IN (
+        "terms_of_service_link_clicked",
+        "terms_of_use_link_tapped",
+        "terms_of_use_click"
+      )
+      THEN "terms_of_use_link_clicked"
+    WHEN event_name IN ("dismiss")
+      THEN "dismissed"
+    ELSE event_name
+  END AS normalized_event_name,
+  CASE
+    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding")
+      THEN "onboarding"
+    ELSE JSON_VALUE(event_extra.surface)
+  END AS surface,
+FROM
+  `moz-fx-data-shared-prod.fenix.events_stream`
+WHERE
+  DATE(submission_timestamp) = @submission_date
+  AND DATE(submission_timestamp) >= "2025-03-01" -- when terms of use started getting rolled out.
+  AND (
+    event_category = "terms_of_use"
+    OR (event_category = "onboarding" AND event_name LIKE "%terms_of_%")
+  )

@@ -14,10 +14,18 @@ WITH subscriptions_history AS (
     -- the Mozilla Account ID from the subscription's other nearby records.
     COALESCE(
       subscription.metadata.user_id,
+      LAST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER preceding_subscription_purchase_changes_asc,
       FIRST_VALUE(
         subscription.metadata.user_id IGNORE NULLS
-      ) OVER following_subscription_changes_asc,
-      LAST_VALUE(subscription.metadata.user_id IGNORE NULLS) OVER preceding_subscription_changes_asc
+      ) OVER following_subscription_purchase_changes_asc,
+      LAST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER preceding_subscription_changes_asc,
+      FIRST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER following_subscription_changes_asc
     ) AS mozilla_account_id,
     -- Apple subscription records prior to 2024-10-30 don't have `storefront` values (FXA-10549),
     -- so we fall back to trying to get it from following records.
@@ -52,6 +60,7 @@ WITH subscriptions_history AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_history_v1`
   WHERE
     subscription.last_transaction.in_app_ownership_type = 'PURCHASED'
+    AND valid_to > valid_from
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY
@@ -73,6 +82,28 @@ WITH subscriptions_history AS (
     following_subscription_changes_asc AS (
       PARTITION BY
         subscription.original_transaction_id
+      ORDER BY
+        valid_from,
+        valid_to
+      ROWS BETWEEN
+        1 FOLLOWING
+        AND UNBOUNDED FOLLOWING
+    ),
+    preceding_subscription_purchase_changes_asc AS (
+      PARTITION BY
+        subscription.original_transaction_id,
+        subscription.last_transaction.purchase_date
+      ORDER BY
+        valid_from,
+        valid_to
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND 1 PRECEDING
+    ),
+    following_subscription_purchase_changes_asc AS (
+      PARTITION BY
+        subscription.original_transaction_id,
+        subscription.last_transaction.purchase_date
       ORDER BY
         valid_from,
         valid_to
@@ -194,7 +225,16 @@ SELECT
     FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.valid_from)
   ) AS id,
   history.valid_from,
-  history.valid_to,
+  COALESCE(
+    LEAD(history.valid_from) OVER (
+      PARTITION BY
+        history_period.subscription_id
+      ORDER BY
+        history.valid_from,
+        history.valid_to
+    ),
+    '9999-12-31 23:59:59.999999'
+  ) AS valid_to,
   history.id AS provider_subscriptions_history_id,
   STRUCT(
     history_period.subscription_id AS id,
@@ -299,6 +339,30 @@ SELECT
       ),
       NULL
     ) AS ended_at,
+    -- API Docs enumerations :
+    -- https://developer.apple.com/documentation/appstoreserverapi/status
+    -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
+    CASE
+      WHEN history.subscription_is_active
+        THEN NULL
+      WHEN (
+          history.subscription.status = 2  -- 2 = expired
+          AND history.subscription.renewal_info.expiration_intent IN (
+            1,  -- 1 = customer canceled their subscription
+            3   -- 3 = customer didn’t consent to a price increase or conversion that requires their consent
+          )
+        )
+        -- admins are not revoking Apple subscriptions so we can assume such cases are from users
+        OR history.subscription.status = 5  -- 5 = revoked
+        THEN 'Customer Initiated'
+      WHEN (
+          history.subscription.status = 2  -- 2 = expired
+          AND history.subscription.renewal_info.expiration_intent = 2  -- 2 = Billing error
+        )
+        OR history.subscription.status = 3  -- 3 = in a billing retry period
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     IF(
       history.subscription_is_active,
       history.subscription.last_transaction.purchase_date,

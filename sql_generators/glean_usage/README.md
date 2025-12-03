@@ -25,7 +25,7 @@ The `GleanTable` class has a few parameters and methods that can be overridden i
 
 The parameters that are available can and in some cases _need_ to be set in the `__init__` method of the new class definitions:
 * [required] `target_table_id`: name of the target table results are written to by the query
-* [required] `first_seen`: the general prefix of the query to get related derived tables and views
+* [required] `prefix`: the general prefix of the query to get related derived tables and views
 * `per_app_id_enabled`: default = `True`; If set to `True` the query will be generated for each `app_id`-dataset.
 * `per_app_enabled`: default = `True`; If set to `True` the query will be generated for `app`-datasets
 * `cross_channel_template`: default = `"cross_channel.view.sql"`; File name of the template used to join data from different channels of the same app. Used when generated per-app queries.
@@ -36,11 +36,11 @@ Each query depends on a couple of templates that need to be added to the `templa
 * `<target_table_id>.view.sql`: Template for the user-facing view to expose the data written by the generated query
 * `dataset_metadata.yaml` and `derived_dataset_metadata.yaml`: Template for the `dataset_metadata.yaml`, reused across all queries
 
-Additional, query-specific templates or config files used during the generation process can also be added to the `templates/` directory. 
+Additional, query-specific templates or config files used during the generation process can also be added to the `templates/` directory.
 
 The `GleanTable` class calls two methods that can be overridden by the query-specific classes:
-* `generate_per_app_id(self, project_id, baseline_table, output_dir=None)`: This method is for generating the per-`app_id` queries
-* `generate_per_app(self, project_id, app_info, output_dir=None)`: This method is for generating the per-app queries
+* `generate_per_app_id(self, project_id, baseline_table, app_name, app_id_info)`: This method is for generating the per-`app_id` queries
+* `generate_per_app(self, project_id, app_name, app_ids_info)`: This method is for generating the per-app queries
 
 
 ## Customizing the Generated Queries

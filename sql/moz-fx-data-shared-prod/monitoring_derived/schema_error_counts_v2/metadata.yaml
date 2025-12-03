@@ -22,4 +22,3 @@ bigquery:
     - document_type
     - path
     - job_name
-references: {}

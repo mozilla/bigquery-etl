@@ -10,12 +10,12 @@ WITH events AS (
     mozfun.map.get_key(event.extra, 'topic') AS topic,
     mozfun.map.get_key(event.extra, 'url') AS url
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.newtab` AS e
+    `moz-fx-data-shared-prod.firefox_desktop.newtab_content` AS e
   CROSS JOIN
     UNNEST(e.events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND event.category = 'newtab'
+    AND event.category = 'newtab_content'
     AND event.name = 'report_content_submit'
 )
 SELECT

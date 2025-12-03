@@ -16,6 +16,7 @@ labels:
 {%- if not deprecated_app %}
 scheduling:
   dag_name: bqetl_glean_usage
+  depends_on_past: true
   task_group: {{ app_name }}
 {%- endif %}
 bigquery:
@@ -30,6 +31,9 @@ bigquery:
       - sample_id
 monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+schema:
+  derived_from:
+  - table: ['moz-fx-data-shared-prod', '{{ app_name }}', 'metrics_clients_daily_v1']
 {%- if deprecated_app %}
 deprecated: true
 {%- endif -%}

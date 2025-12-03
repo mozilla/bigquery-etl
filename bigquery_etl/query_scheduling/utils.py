@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 TIMEDELTA_RE = re.compile(
-    r"^-?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
+    r"^-?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
 )
 
 

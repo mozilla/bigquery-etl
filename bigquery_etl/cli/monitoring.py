@@ -6,6 +6,7 @@ import os
 import re
 import sys
 from collections import defaultdict
+from multiprocessing.pool import Pool
 from pathlib import Path
 from typing import Optional
 
@@ -38,7 +39,12 @@ from bigeye_sdk.model.protobuf_message_facade import (
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
-from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..cli.utils import (
+    parallelism_option,
+    paths_matching_name_pattern,
+    project_id_option,
+    sql_dir_option,
+)
 from ..util import extract_from_query_path
 from ..util.common import render as render_template
 
@@ -425,9 +431,20 @@ def _update_bigconfig(
                 metrics=[
                     SimpleMetricDefinition(
                         metric_name=(
-                            f"{metric.name}"
-                            if "volume" not in metric.name.lower()
-                            else f"{metric.name} [fail]"
+                            f"{metric.name} [fail]"
+                            if (
+                                (
+                                    "freshness" in metric.name.lower()
+                                    and metadata.monitoring.freshness
+                                    and metadata.monitoring.freshness.blocking
+                                )
+                                or (
+                                    "volume" in metric.name.lower()
+                                    and metadata.monitoring.volume
+                                    and metadata.monitoring.volume.blocking
+                                )
+                            )
+                            else metric.name
                         ),
                         metric_type=SimplePredefinedMetric(
                             type="PREDEFINED", predefined_metric=metric
@@ -471,46 +488,62 @@ def _update_bigconfig(
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+@parallelism_option()
+def update(
+    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+) -> None:
     """Update BigConfig files based on monitoring metadata."""
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    if parallelism == 1:
+        for metadata_file in metadata_files:
+            _update_single_monitoring_file(metadata_file)
+    else:
+        with Pool(parallelism) as pool:
+            pool.map(_update_single_monitoring_file, metadata_files)
 
-    for metadata_file in list(set(metadata_files)):
-        project, dataset, table = extract_from_query_path(metadata_file)
-        try:
-            metadata = Metadata.from_file(metadata_file)
-            if metadata.monitoring and metadata.monitoring.enabled:
-                bigconfig_file = metadata_file.parent / BIGCONFIG_FILE
 
-                if bigconfig_file.exists():
-                    bigconfig = BigConfig.load(bigconfig_file)
-                else:
-                    bigconfig = BigConfig(type="BIGCONFIG_FILE")
+def _update_single_monitoring_file(metadata_file: Path) -> None:
+    """Process a single metadata file for monitoring updates."""
+    project, dataset, table = extract_from_query_path(metadata_file)
+    try:
+        metadata = Metadata.from_file(metadata_file)
+        if metadata.monitoring and metadata.monitoring.enabled:
+            bigconfig_file = metadata_file.parent / BIGCONFIG_FILE
 
-                if (
-                    metadata_file.parent / QUERY_FILE
-                ).exists() and "public_bigquery" not in metadata.labels:
-                    _update_bigconfig(
-                        bigconfig=bigconfig,
-                        metadata=metadata,
-                        project=project,
-                        dataset=dataset,
-                        table=table,
-                        default_metrics=[
-                            SimplePredefinedMetricName.FRESHNESS,
-                            SimplePredefinedMetricName.VOLUME,
-                        ],
-                    )
+            if bigconfig_file.exists():
+                bigconfig = BigConfig.load(bigconfig_file)
+            else:
+                bigconfig = BigConfig(type="BIGCONFIG_FILE")
 
-                bigconfig.save(
-                    output_path=bigconfig_file.parent,
-                    default_file_name=bigconfig_file.stem,
+            if (
+                metadata_file.parent / QUERY_FILE
+            ).exists() and "public_bigquery" not in metadata.labels:
+                default_metrics = []
+                if metadata.monitoring.freshness:
+                    default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
+                if metadata.monitoring.volume:
+                    default_metrics.append(SimplePredefinedMetricName.VOLUME)
+
+                _update_bigconfig(
+                    bigconfig=bigconfig,
+                    metadata=metadata,
+                    project=project,
+                    dataset=dataset,
+                    table=table,
+                    default_metrics=default_metrics,
                 )
 
-        except FileNotFoundError:
-            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+            bigconfig.save(
+                output_path=bigconfig_file.parent,
+                default_file_name=bigconfig_file.stem,
+            )
+
+    except FileNotFoundError:
+        print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+    except Exception as e:
+        print(f"Error processing {metadata_file}: {e}")
 
 
 @monitoring.command(

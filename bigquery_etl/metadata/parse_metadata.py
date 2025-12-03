@@ -153,6 +153,13 @@ class ExternalDataMetadata:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetricMetadata:
+    """Metadata for specifying observability and monitoring metric configuration."""
+
+    blocking: bool = attr.ib()
+
+
+@attr.s(auto_attribs=True)
 class MonitoringMetadata:
     """Metadata for specifying observability and monitoring configuration."""
 
@@ -160,6 +167,12 @@ class MonitoringMetadata:
     collection: Optional[str] = attr.ib(None)
     partition_column: Optional[str] = attr.ib(None)
     partition_column_set: bool = attr.ib(False)
+    freshness: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=False)
+    )
+    volume: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=True)
+    )
 
 
 @attr.s(auto_attribs=True)
@@ -179,7 +192,7 @@ class Metadata:
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
-    references: Dict = attr.ib({})
+    references: Optional[Dict] = attr.ib(None)
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
@@ -257,7 +270,7 @@ class Metadata:
         bigquery = None
         schema = None
         workgroup_access = None
-        references = {}
+        references = None
         external_data = None
         deprecated = False
         deletion_date = None
@@ -400,6 +413,9 @@ class Metadata:
         if metadata_dict["workgroup_access"] is None:
             del metadata_dict["workgroup_access"]
 
+        if metadata_dict["references"] is None:
+            del metadata_dict["references"]
+
         if metadata_dict["external_data"] is None:
             del metadata_dict["external_data"]
 
@@ -411,6 +427,9 @@ class Metadata:
 
         if not metadata_dict["monitoring"]:
             del metadata_dict["monitoring"]
+
+        if metadata_dict["bigquery"] is None:
+            del metadata_dict["bigquery"]
 
         file.write_text(
             yaml.dump(

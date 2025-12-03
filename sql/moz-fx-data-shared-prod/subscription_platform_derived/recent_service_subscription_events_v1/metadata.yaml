@@ -33,5 +33,4 @@ bigquery:
     - service_id
     - type
     - reason
-references: {}
 require_column_descriptions: true

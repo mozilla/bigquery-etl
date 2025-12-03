@@ -111,6 +111,9 @@ SEARCH_WITH_CONTEXT_ID = "metrics.uuid.search_with_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
 MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
+NIMBUS_USER_ID = "metrics.string.nimbus_nimbus_user_id"
+# Cirrus events only contain one unique nimbus user id per ping
+CIRRUS_EVENTS_NIMBUS_USER_ID = '(SELECT value FROM UNNEST(events), UNNEST(extra) WHERE key = "nimbus_user_id" LIMIT 1)'
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -148,10 +151,9 @@ FXA_UNHASHED_SRC = DeleteSource(
 FXA_FRONTEND_GLEAN_SRC = DeleteSource(
     table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
-REGRETS_SRC = DeleteSource(
-    table="regrets_reporter_stable.regrets_reporter_update_v1",
-    field="data_deletion_request.extension_installation_uuid",
-    conditions=("data_deletion_request IS NOT NULL",),
+EXPERIMENTER_BACKEND_SRC = DeleteSource(
+    table="experimenter_backend_stable.data_collection_opt_out_v1",
+    field=NIMBUS_USER_ID,
 )
 # these must be in the same order as SYNC_IDS
 SYNC_SOURCES = (
@@ -250,6 +252,7 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.cfs_ga4_attr_v1"): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_v6"): DESKTOP_SRC,
     client_id_target(
@@ -273,6 +276,9 @@ DELETE_TARGETS: DeleteIndex = {
     ): DESKTOP_SRC,
     client_id_target(
         table="firefox_desktop_derived.desktop_retention_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="google_ads_derived.glean_conversion_event_categorization_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(
         table="firefox_desktop_derived.desktop_engagement_clients_v1"
@@ -312,7 +318,7 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_active_clients_staging_v1",
-        field=(CLIENT_ID,) * 15,
+        field=(CLIENT_ID,) * 10,
     ): (
         DESKTOP_SRC,
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
@@ -322,13 +328,12 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
     ),
     DeleteTarget(
-        table="telemetry_derived.cohort_weekly_active_clients_v1",
-        field=(CLIENT_ID,) * 15,
+        table="glean_telemetry_derived.cohort_weekly_active_clients_staging_v1",
+        field=(CLIENT_ID,) * 10,
     ): (
-        DESKTOP_SRC,
+        DESKTOP_GLEAN_SRC,
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
@@ -336,7 +341,6 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
     ),
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_cfs_staging_v1",
@@ -679,10 +683,6 @@ DELETE_TARGETS: DeleteIndex = {
         field=LEGACY_MOBILE_IDS,
     ): LEGACY_MOBILE_SOURCES,
     DeleteTarget(
-        table=REGRETS_SRC.table,
-        field="event_metadata.extension_installation_uuid",
-    ): REGRETS_SRC,
-    DeleteTarget(
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,
     ): USER_CHARACTERISTICS_SRC,
@@ -690,6 +690,19 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
+    DeleteTarget(
+        table="experimenter_backend_stable.page_view_v1",
+        field=NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
+    # Cirrus tables use sources from the upstream glean app
+    DeleteTarget(
+        table="experimenter_cirrus_stable.enrollment_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
+    DeleteTarget(
+        table="experimenter_cirrus_stable.enrollment_status_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

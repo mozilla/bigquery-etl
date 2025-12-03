@@ -50,55 +50,51 @@ def fetch_exchange_rate_data(
         pd.DataFrame: A DataFrame containing the date, exchange rate, frequency, and country.
     """
     # Construct the dataset key dynamically
-    dataset_key = f"CompactData/IFS/{frequency}.{country_code}.ENDA_XDC_USD_RATE"
+    dataset_key = f"{frequency}.{country_code}.ENDA_XDC_USD_RATE"
 
-    # Define query parameters
-    params = {}
-    if start_period:
-        params["startPeriod"] = start_period
-    if end_period:
-        params["endPeriod"] = end_period
+    # Fetch data from the API
+    data_url = f"{base_url}{dataset_key}"
+    params = {
+        "observations": 1,  # include observations in the payload
+        "format": "json",  # optional; JSON is the default
+    }
+    response = requests.get(data_url, params=params, timeout=60)
+    response.raise_for_status()
+    payload = response.json()
 
-    try:
-        # Fetch data from the API
-        data_url = f"{base_url}{dataset_key}"
-        response = requests.get(data_url, params=params, timeout=60)
-        response.raise_for_status()
-        data = response.json()
+    # Extract the data
+    docs = payload.get("series", {}).get("docs", [])
+    if not docs:
+        return pd.DataFrame(columns=["period", "value"])
 
-        # Extract the 'Series' element
-        series = data.get("CompactData", {}).get("DataSet", {}).get("Series", None)
-        if series is None:
-            raise KeyError("Expected 'Series' key not found in the API response.")
+    doc = docs[0]
+    periods = doc.get("period", [])
+    values = doc.get("value", [])
 
-        # Extract observations
-        observations = series.get("Obs", [])
-        if not observations:
-            raise ValueError("No observations found for the specified parameters.")
+    df = pd.DataFrame({"period": periods, "value": values})
 
-        # Convert observations to a DataFrame
-        df = pd.DataFrame(observations)
-        df.rename(
-            columns={"@TIME_PERIOD": "report_period", "@OBS_VALUE": "exchange_rate"},
-            inplace=True,
+    # Coerce to monthly periods, drop missing, sort ascending
+    df["period"] = pd.PeriodIndex(df["period"], freq="M")
+    df = df.dropna(subset=["value"]).sort_values("period").reset_index(drop=True)
+
+    # Add a column for first date of month
+    df["report_month"] = pd.PeriodIndex(df["period"], freq="M")
+
+    filtered_df = df[
+        df["report_month"].between(
+            pd.Period(start_period, "M"), pd.Period(end_period, "M")
         )
-        df["frequency"] = frequency
-        df["country_code"] = country_code
+    ]
 
-        return df
+    # Add labels
+    filtered_df = filtered_df[["period", "value"]]
+    filtered_df = filtered_df.rename(
+        columns={"period": "report_period", "value": "exchange_rate"}
+    )
+    filtered_df["frequency"] = "M"
+    filtered_df["country_code"] = country_code
 
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred while fetching the data: {e}")
-        sys.exit(1)
-    except KeyError as e:
-        print(f"An error occurred while accessing the JSON structure: {e}")
-        sys.exit(1)
-    except ValueError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        sys.exit(1)
+    return filtered_df
 
 
 def initialize_results_df():
@@ -136,7 +132,7 @@ def calculate_end_period(curr_date):
 
 def main():
     """Pull exchange rate relative to US dollar for each of the country codes, load to GCS then BQ"""
-    base_url = "http://dataservices.imf.org/REST/SDMX_JSON.svc/"
+    base_url = f"https://api.db.nomics.world/v22/series/IMF/IFS/"
     frequency = "M"  # Monthly data
 
     # Get today's date

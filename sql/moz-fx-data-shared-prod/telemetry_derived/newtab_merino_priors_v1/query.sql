@@ -182,6 +182,8 @@ SELECT
   impressions_per_item
 FROM
   per_region_stats_with_impressions
+WHERE
+  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
 UNION ALL
 SELECT
   region,

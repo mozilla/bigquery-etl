@@ -216,41 +216,20 @@ class Metadata:
 
     @level.validator
     def validate_level(self, attribute, value):
-        """Check that the level label is within expected values and unique."""
-        if value is None:
-            return
-
-        if value is None:
-            return
-
+        """Check that the level label is a string and one of the expected values."""
         allowed = [e.value for e in AssetLevel]
 
-        # If level is a string
-        if isinstance(value, str):
-            if value not in allowed:
-                raise ValueError(
-                    f"ERROR. Invalid level in metadata: {value}. Must be one of {sorted(allowed)} or None."
-                )
-
-        # If level is a list
-        if isinstance(value, list):
-            # Syntax is valid, only one level is allowed.
-            if len(value) != 1:
-                raise ValueError(
-                    f"ERROR. Invalid level in metadata: {value}. Only a unique level can be assigned."
-                )
-
-            level = value[0]
-            if not isinstance(level, str) or level not in allowed:
-                raise ValueError(
-                    f"ERROR. Invalid level '{level}'. Must be one of {sorted(allowed)}."
-                )
+        if value is None:
             return
 
-        # Any other type is invalid
-        raise ValueError(
-            f"ERROR. Invalid level in metadata with type '{type(value).__name__}'. Must be string, single-element list or no label."
-        )
+        if not isinstance(value, str):
+            raise ValueError(
+                f"ERROR. Invalid level in metadata with type '{type(value).__name__}'. Must be a string."
+            )
+        if value not in allowed:
+            raise ValueError(
+                f"ERROR. Invalid level in metadata: {value}. Must be only one of {sorted(allowed)}."
+            )
 
     @labels.validator
     def validate_labels(self, attribute, value):

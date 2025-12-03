@@ -1,0 +1,8 @@
+friendly_name: Global Outages
+description: |-
+  This query creates a unified view of global internet outage metrics by combining two historical datasets,
+  v1 and v2, and selecting the appropriate version based on date.
+  It ensures analysts can query a single table to track outage indicators—such as timeouts,
+  unreachable rates, DNS performance, and SSL errors—across all regions and time periods.
+owners:
+- aplacitelli@mozilla.com

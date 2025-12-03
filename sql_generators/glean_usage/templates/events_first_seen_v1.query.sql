@@ -29,15 +29,16 @@ WITH eventsstream AS (
   FROM
   `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE
-  -- initialize by looking over all of history
+        -- initialize by looking over all of history
   DATE(submission_timestamp) >= '2023-01-01'
-  -- AND sample_id >= @sample_id
-  -- AND sample_id < @sample_id + @sampling_batch_size
+        -- AND sample_id >= @sample_id
+        -- AND sample_id < @sample_id + @sampling_batch_size
   AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+        -- if app_id is firefox_desktop, filter for where profile_group_id is not null
   {% if app_id == 'firefox_desktop' -%}
   AND profile_group_id IS NOT NULL
   {% endif %}
-  -- below is the templated criteria
+        -- below is the templated criteria
   AND ({{ item["sql"] }})
   GROUP BY
   client_id,
@@ -88,10 +89,11 @@ WITH _current AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+        -- if app_id is firefox_desktop, filter for where profile_group_id is not null
     {% if app_id == 'firefox_desktop' -%}
     AND profile_group_id IS NOT NULL
     {% endif %}
-    -- below is the templated criteria
+        -- below is the templated criteria
     AND ({{ item["sql"] }})
   GROUP BY
     submission_date,

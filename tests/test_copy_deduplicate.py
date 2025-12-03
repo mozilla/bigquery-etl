@@ -42,8 +42,16 @@ VALID_GEO_DEPRECATION_SCHEMA = [
     ),
 ]
 
+GEO_CONFIG = {
+    "geo_deprecation": {
+        "skip_apps": ["ads_backend"],
+        "skip_tables": ["newtab"],
+    }
+}
+
 
 class TestCopyDeduplicate:
+
     @pytest.fixture
     def runner(self):
         return CliRunner()
@@ -57,81 +65,100 @@ class TestCopyDeduplicate:
         return table
 
     @pytest.fixture
-    def configure_mock_bq_client(self, valid_geo_deprecation_schema_table):
+    def mock_bq_env(self, monkeypatch):
         """
-        Returns a function that configures ClientQueue + BigQuery client
-        to always return the valid geo_deprecation table.
+        Fully self-contained environment:
+          - Patches get_glean_app_id_to_app_name_mapping and ConfigLoader.get
+          - Optionally wires a provided ClientQueue mock when client_queue_cls is given
+          - Returns (mock_client, captured_calls, run_dedup_side_effect)
         """
 
-        def _configure(mock_client_queue_cls):
+        mapping_mock = Mock()
+        config_get_mock = Mock()
+
+        monkeypatch.setattr(
+            "bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping",
+            mapping_mock,
+        )
+        monkeypatch.setattr(
+            "bigquery_etl.copy_deduplicate.ConfigLoader.get",
+            config_get_mock,
+        )
+
+        def _configure(
+            *,
+            mapping: dict | None = None,
+            config: dict | None = None,
+            table=None,
+            client_queue_cls=None,
+        ):
+            def make_config_side_effect(config_dict: dict):
+                def _side_effect(section=None, key=None, fallback=None):
+                    section_dict = config_dict.get(section)
+                    if section_dict:
+                        return section_dict.get(key, fallback)
+                    return fallback
+
+                return _side_effect
+
+            mapping_mock.return_value = mapping or {}
+            config_get_mock.side_effect = make_config_side_effect(config or {})
+
             mock_client = Mock(spec=bigquery.Client)
-            mock_client.get_table.return_value = valid_geo_deprecation_schema_table
+            if table is not None:
+                mock_client.get_table.return_value = table
 
-            client_queue = mock_client_queue_cls.return_value
-            client_ctx = client_queue.client.return_value
-            client_ctx.__enter__.return_value = mock_client
-            client_ctx.__exit__.return_value = False
+            captured_calls = None
+            run_dedup_side_effect = None
 
-            client_queue.with_client.side_effect = lambda func, *args, **kwargs: func(
-                mock_client, *args, **kwargs
-            )
+            if client_queue_cls is not None:
+                client_queue = client_queue_cls.return_value
+                client_ctx = client_queue.client.return_value
+                client_ctx.__enter__.return_value = mock_client
+                client_ctx.__exit__.return_value = False
 
-            return mock_client
+                client_queue.with_client.side_effect = (
+                    lambda func, *args, **kwargs: func(mock_client, *args, **kwargs)
+                )
+
+                captured_calls = []
+
+                def _run_dedup_side_effect(
+                    client, sql, stable_table, job_config, num_retries
+                ):
+                    captured_calls.append(
+                        (client, sql, stable_table, job_config, num_retries)
+                    )
+                    fake_job = Mock()
+                    return stable_table, fake_job
+
+                run_dedup_side_effect = _run_dedup_side_effect
+
+            return mock_client, captured_calls, run_dedup_side_effect
 
         return _configure
-
-    @pytest.fixture
-    def capture_run_dedup_calls(self):
-        """
-        Returns (captured_calls, side_effect_func) so we can plug the
-        side effect into _run_deduplication_query and inspect later.
-        """
-        captured = []
-
-        def _side_effect(client, sql, stable_table, job_config, num_retries):
-            captured.append((client, sql, stable_table, job_config, num_retries))
-            fake_query_job = Mock()
-            return stable_table, fake_query_job
-
-        return captured, _side_effect
-
-    @pytest.fixture
-    def geo_deprecation_config_side_effect(self):
-        """ConfigLoader.get side effect for geo_deprecation."""
-
-        def _side_effect(section=None, key=None, fallback=None):
-            if section == "geo_deprecation":
-                if key == "skip_apps":
-                    return ["ads_backend"]
-                if key == "skip_tables":
-                    return ["newtab"]
-            return fallback
-
-        return _side_effect
 
     @patch("bigquery_etl.copy_deduplicate._copy_join_parts")
     @patch("bigquery_etl.copy_deduplicate._run_deduplication_query")
     @patch("bigquery_etl.copy_deduplicate._list_live_tables")
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     @patch("bigquery_etl.copy_deduplicate.ClientQueue")
     def test_copy_deduplicate_geo_deprecation_sql(
         self,
         mock_client_queue_cls,
-        mock_mapping,
-        mock_config_get,
         mock_list_live_tables,
         mock_run_dedup,
         mock_copy_join_parts,
         runner,
-        geo_deprecation_config_side_effect,
-        configure_mock_bq_client,
-        capture_run_dedup_calls,
+        mock_bq_env,
+        valid_geo_deprecation_schema_table,
     ):
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-        configure_mock_bq_client(mock_client_queue_cls)
-        captured_calls, run_dedup_side_effect = capture_run_dedup_calls
+        mock_client, captured_calls, run_dedup_side_effect = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=valid_geo_deprecation_schema_table,
+            client_queue_cls=mock_client_queue_cls,
+        )
+
         mock_run_dedup.side_effect = run_dedup_side_effect
         mock_copy_join_parts.return_value = None
 
@@ -213,91 +240,72 @@ class TestCopyDeduplicate:
             VALID_GEO_DEPRECATION_SCHEMA, ["metadata", "geo", "nope"]
         )
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_with_required_fields_present(
         self,
-        mock_mapping,
-        mock_config_get,
         valid_geo_deprecation_schema_table,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If geo fields exist and conditions pass, we should get the NULLing SQL."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-
-        mock_client = Mock(spec=bigquery.Client)
-        mock_client.get_table.return_value = valid_geo_deprecation_schema_table
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=valid_geo_deprecation_schema_table,
+        )
 
         live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)
 
-        assert "org_mozilla_firefox_live" not in geo_deprecation_config_side_effect(
-            "geo_deprecation", "skip_apps"
+        assert (
+            "org_mozilla_firefox_live" not in GEO_CONFIG["geo_deprecation"]["skip_apps"]
         )
-        assert "baseline" not in geo_deprecation_config_side_effect(
-            "geo_deprecation", "skip_tables"
-        )
+        assert "baseline" not in GEO_CONFIG["geo_deprecation"]["skip_tables"]
         assert "REPLACE (" in sql
         assert "metadata.geo" in sql
         assert "CAST(NULL AS STRING) AS city" in sql
         assert "CAST(NULL AS STRING) AS subdivision1" in sql
         assert "CAST(NULL AS STRING) AS subdivision2" in sql
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_skipped_app(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If app_name is in geo_deprecation.skip_apps, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-        mock_client = Mock(spec=bigquery.Client)
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+        )
 
         live_table = "moz-fx-data-shared-prod.ads_backend_live.events_v1"
         sql = _select_geo(live_table, mock_client)
 
-        assert "ads_backend" in geo_deprecation_config_side_effect(
-            "geo_deprecation", "skip_apps"
-        )
+        assert "ads_backend" in GEO_CONFIG["geo_deprecation"]["skip_apps"]
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_skipped_table(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If table is in geo_deprecation.skip_tables, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-        mock_client = Mock(spec=bigquery.Client)
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+        )
 
         live_table = "moz-fx-data-shared-prod.firefox_ios_live.newtab_v1"
         sql = _select_geo(live_table, mock_client)
 
-        assert "newtab" in geo_deprecation_config_side_effect(
-            "geo_deprecation", "skip_tables"
-        )
+        assert "newtab" in GEO_CONFIG["geo_deprecation"]["skip_tables"]
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_not_glean_app(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If app_id is not in the glean mapping, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-        mock_client = Mock(spec=bigquery.Client)
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+        )
 
         live_table = "moz-fx-data-shared-prod.telemetry_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)
@@ -305,24 +313,20 @@ class TestCopyDeduplicate:
         assert "telemetry" not in GLEAN_MAPPING
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_client_id_label_false(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If include_client_id label is false, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-
         table = Mock()
         table.labels = {"include_client_id": "false"}
         table.schema = VALID_GEO_DEPRECATION_SCHEMA
 
-        mock_client = Mock(spec=bigquery.Client)
-        mock_client.get_table.return_value = table
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=table,
+        )
 
         live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)
@@ -330,24 +334,20 @@ class TestCopyDeduplicate:
         assert table.labels["include_client_id"] == "false"
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_client_id_label_missing(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If include_client_id label is missing, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-
         table = Mock()
         table.labels = {"owner1": "wichan"}  # no include_client_id
         table.schema = VALID_GEO_DEPRECATION_SCHEMA
 
-        mock_client = Mock(spec=bigquery.Client)
-        mock_client.get_table.return_value = table
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=table,
+        )
 
         live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)
@@ -355,18 +355,11 @@ class TestCopyDeduplicate:
         assert "include_client_id" not in table.labels
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_client_id_field_missing(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If one of the required geo fields is missing, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-
         invalid_geo_deprecation_schema = [
             bigquery.SchemaField("document_id", "STRING"),
             bigquery.SchemaField(
@@ -397,8 +390,11 @@ class TestCopyDeduplicate:
         table.labels = {"include_client_id": "true"}
         table.schema = invalid_geo_deprecation_schema
 
-        mock_client = Mock(spec=bigquery.Client)
-        mock_client.get_table.return_value = table
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=table,
+        )
 
         live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)
@@ -408,18 +404,11 @@ class TestCopyDeduplicate:
         )
         assert sql == ""
 
-    @patch("bigquery_etl.copy_deduplicate.ConfigLoader.get")
-    @patch("bigquery_etl.copy_deduplicate.get_glean_app_id_to_app_name_mapping")
     def test_select_geo_when_geo_field_missing(
         self,
-        mock_mapping,
-        mock_config_get,
-        geo_deprecation_config_side_effect,
+        mock_bq_env,
     ):
         """If one of the required geo fields is missing, we should get an empty string."""
-        mock_mapping.return_value = GLEAN_MAPPING
-        mock_config_get.side_effect = geo_deprecation_config_side_effect
-
         invalid_geo_deprecation_schema = [
             bigquery.SchemaField("document_id", "STRING"),
             bigquery.SchemaField(
@@ -449,8 +438,11 @@ class TestCopyDeduplicate:
         table.labels = {"include_client_id": "true"}
         table.schema = invalid_geo_deprecation_schema
 
-        mock_client = Mock(spec=bigquery.Client)
-        mock_client.get_table.return_value = table
+        mock_client, _, _ = mock_bq_env(
+            mapping=GLEAN_MAPPING,
+            config=GEO_CONFIG,
+            table=table,
+        )
 
         live_table = "moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1"
         sql = _select_geo(live_table, mock_client)

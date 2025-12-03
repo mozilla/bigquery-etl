@@ -1,8 +1,10 @@
-friendly_name: Urlbar Events Daily Engagement By Position
+friendly_name: Urlbar Events Daily Engagement by Position
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Each row in this table represents a daily summary statistic of clicks per ordinal position per a host of meaningful dimensions.
+owners:
+- tbrooks@mozilla.com
+labels:
+  owner1: tbrooks
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

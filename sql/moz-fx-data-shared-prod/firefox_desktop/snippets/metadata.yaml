@@ -1,8 +1,10 @@
 friendly_name: Snippets
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains Snippets specific data extracted from messaging_system_v1
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

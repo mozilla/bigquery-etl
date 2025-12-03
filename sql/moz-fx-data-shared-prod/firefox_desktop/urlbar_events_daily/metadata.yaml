@@ -1,8 +1,13 @@
 friendly_name: Urlbar Events Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Each row in this table represents a daily summary statistic of impressions
+  and clicks per product result type per a host of meaningful dimensions.
+owners:
+- tbrooks@mozilla.com
+- akommasani@mozilla.com
+labels:
+  owner1: tbrooks
+  owner2: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

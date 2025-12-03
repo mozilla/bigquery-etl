@@ -1,8 +1,11 @@
-friendly_name: Default Agent Agg
+friendly_name: Firefox Desktop Background Default Agent Derived
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table for firefox desktop background default agent pings,
+  grouped by major version, release channel, default browser, etc.
+owners:
+- wichan@mozilla.com
+labels:
+  owner1: wichan
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

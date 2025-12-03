@@ -1,8 +1,13 @@
 friendly_name: Global Outages
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: "This query creates a unified view of global internet outage metrics\
+  \ by combining two historical datasets,\nv1 and v2, and selecting the appropriate\
+  \ version based on date.\nIt ensures analysts can query a single table to track\
+  \ outage indicators\u2014such as timeouts,\nunreachable rates, DNS performance,\
+  \ and SSL errors\u2014across all regions and time periods."
+owners:
+- aplacitelli@mozilla.com
+labels:
+  owner1: aplacitelli
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

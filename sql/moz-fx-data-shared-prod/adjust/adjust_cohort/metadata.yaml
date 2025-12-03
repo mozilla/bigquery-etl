@@ -1,8 +1,10 @@
-friendly_name: Adjust Cohort
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Cohort data from external source Adjust
+description: |
+  This table represents data downloaded from Adjust using the https://api.adjust.com/kpis/v1/{app token}/cohorts link.
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

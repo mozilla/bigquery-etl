@@ -1,8 +1,11 @@
-friendly_name: Fx Cert Error Unique Users Os
+friendly_name: Firefox Certificate Errors by OS
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Each record represents the # of unique clients experience certificate
+  errors by day and by operating system.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,6 +1,7 @@
-friendly_name: Fx Cert Error Unique Users Normalized Channel
+friendly_name: Firefox Certificate Errors by Channel
 description: |-
-  Please provide a description for the query
+  Each row represents the count of unique users experiencing
+  certificate errors by day and by channel.
 owners: []
 labels: {}
 workgroup_access:

@@ -1,8 +1,20 @@
 friendly_name: Cohort Daily Statistics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Cohort Daily Statistics tracks retention for a cohort with
+  the same first seen date and same set of attributes over the next 180 days
+
+  Note that the values for client attributes are based on the
+  attributes at the time the cohort started (rather than the
+  values at activity time)
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9516
+  - Data Model README: ./README.md
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

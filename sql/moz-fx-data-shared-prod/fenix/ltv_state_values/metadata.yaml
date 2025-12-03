@@ -1,8 +1,11 @@
 friendly_name: Ltv State Values
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Android state values, in terms of Ad Clicks.
+  Each country has their own ad click LTV for each state.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

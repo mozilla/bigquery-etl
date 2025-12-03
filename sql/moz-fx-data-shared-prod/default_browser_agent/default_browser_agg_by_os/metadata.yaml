@@ -1,8 +1,10 @@
-friendly_name: Default Browser Agg By Os
+friendly_name: Default Browser Aggregates By OS version
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table for default browser setting by os version
+owners:
+- wichan@mozilla.com
+labels:
+  owner1: wichan
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

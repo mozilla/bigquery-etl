@@ -1,8 +1,12 @@
 friendly_name: Active Users Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A unioned view of desktop & mobile active users aggregates.
+  Used to calculate DAU, WAU, and MAU for KPIs.
+  Solely based off of Glean data for both desktop & mobile.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Default Browser Agg
+friendly_name: Default Browser Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table for default browser setting
+owners:
+- wichan@mozilla.com
+labels:
+  owner1: wichan
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

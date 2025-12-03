@@ -1,8 +1,10 @@
 friendly_name: Locale Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Firefox Desktop DAU, WAU, MAU and client counts by locale and core dimensions of analysis.
+owners:
+- lvargas@mozilla.com
+labels:
+  owner1: lvargas
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

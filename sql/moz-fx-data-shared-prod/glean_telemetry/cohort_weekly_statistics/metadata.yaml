@@ -1,8 +1,15 @@
 friendly_name: Cohort Weekly Statistics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains weekly retention by multiple different attributes as of first seen date
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9513
+  - Data Model README: ./README.md
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

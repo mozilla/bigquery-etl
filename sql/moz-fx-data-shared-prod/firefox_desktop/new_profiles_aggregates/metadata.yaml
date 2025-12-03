@@ -1,8 +1,10 @@
 friendly_name: New Profiles Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  This view aggregates the number of new profiles on a given day.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

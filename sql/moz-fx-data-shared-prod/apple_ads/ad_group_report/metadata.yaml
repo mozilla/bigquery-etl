@@ -1,8 +1,10 @@
-friendly_name: Ad Group Report
+friendly_name: Ad Group Report (Apple)
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Each record represents the daily ad performance of each ad group.
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

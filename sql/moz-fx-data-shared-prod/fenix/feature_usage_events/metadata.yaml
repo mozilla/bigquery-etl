@@ -1,8 +1,12 @@
-friendly_name: Feature Usage Events
+friendly_name: Feature Usage Events (Android - Fenix)
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Metrics from events pings for mobile feature usage dashboards (Fenix).
+  `distribution_id` was added as a dimension to this table beginning on
+  2024-10-08.
+owners:
+- rzhao@mozilla.com
+labels:
+  owner1: rzhao
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

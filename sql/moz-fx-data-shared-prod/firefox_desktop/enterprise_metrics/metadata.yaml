@@ -1,8 +1,12 @@
 friendly_name: Enterprise Metrics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Enterprise Metrics.
+owners:
+- pissac@mozilla.com
+- kik@mozilla.com
+labels:
+  owner1: pissac
+  owner2: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

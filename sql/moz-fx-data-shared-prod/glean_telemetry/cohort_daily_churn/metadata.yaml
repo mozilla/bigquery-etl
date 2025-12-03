@@ -1,8 +1,15 @@
 friendly_name: Cohort Daily Churn
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates churn for new users over time, for users first seen in last 180 days
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9511
+  - Data Model README: ./README.md
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

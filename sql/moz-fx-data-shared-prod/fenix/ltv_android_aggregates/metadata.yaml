@@ -1,8 +1,10 @@
-friendly_name: Ltv Android Aggregates
+friendly_name: LTV Android Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
+owners:
+- mbowerman@mozilla.com
+labels:
+  owner1: mbowerman
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

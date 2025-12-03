@@ -1,8 +1,12 @@
-friendly_name: Fxqur Viewpoint Mobile
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Alchemer Survey data for Viewpoint 2023 Expansion - Mobile
+description: |
+  An import of survey data from Alchemer (SurveyGizmo) for Viewpoint 2023 Expansion - Mobile
+owners:
+- ago@mozilla.com
+- eshallal@mozilla.com
+labels:
+  owner1: ago
+  owner2: eshallal
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

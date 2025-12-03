@@ -1,8 +1,11 @@
-friendly_name: Clients Yearly
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Fenix Clients Yearly
+description: |
+  Captures activity of each Fenix client in the past 365 days for each submission date.
+  Used as the basis for LTV calculations.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

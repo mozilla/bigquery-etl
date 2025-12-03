@@ -1,8 +1,10 @@
-friendly_name: Itemized Tax Transactions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Stripe itemized tax transactions report
+description: |
+  Itemized tax transactions report from the Stripe API.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

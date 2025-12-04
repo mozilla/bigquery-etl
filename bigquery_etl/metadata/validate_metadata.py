@@ -590,7 +590,7 @@ def validate(target):
                         failed = True
 
                     if not validate_asset_level(
-                        query_dir=path,
+                        query_dir=root,
                         metadata=metadata,
                     ):
                         failed = True

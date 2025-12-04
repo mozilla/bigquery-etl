@@ -5,7 +5,7 @@ tag_deployments:
     - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
-    - name: moz-fx-data-shared-prod.telemetry.active_users_aggregates
+    - name: moz-fx-data-shared-prod.telemetry.active_users_aggregates.*
     metrics:
     - metric_type:
         type: PREDEFINED

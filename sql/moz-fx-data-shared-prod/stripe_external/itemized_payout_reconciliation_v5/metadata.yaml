@@ -6,10 +6,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  dag: bqetl_subplat
   owner1: srose
 scheduling:
-  dag_name: bqetl_subplat
   arguments:
   - --date={{ ds }}
   - --api-key={{ var.value.stripe_api_key }}

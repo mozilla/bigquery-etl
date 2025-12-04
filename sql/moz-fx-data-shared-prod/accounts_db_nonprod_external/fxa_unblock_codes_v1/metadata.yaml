@@ -15,7 +15,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:accounts-confidential
+  - workgroup:accounts-confidential/data-viewers
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         createdAt\n       FROM\n         fxa.unblockCodes\n    ')

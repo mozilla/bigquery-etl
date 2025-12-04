@@ -15,7 +15,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:accounts-confidential
+  - workgroup:accounts-confidential/data-viewers
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         billingAgreementId,\n         status,\n         createdAt,\n         endedAt\n       FROM\n         fxa.paypalCustomers\n    ')

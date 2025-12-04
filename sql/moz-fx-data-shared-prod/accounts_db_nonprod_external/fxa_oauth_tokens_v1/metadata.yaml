@@ -15,7 +15,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:accounts-confidential
+  - workgroup:accounts-confidential/data-viewers
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth', 'SELECT\n         clientId,\n         userId,\n         type,\n         scope,\n         createdAt,\n         expiresAt,\n         profileChangedAt\n       FROM\n         fxa_oauth.tokens\n    ')

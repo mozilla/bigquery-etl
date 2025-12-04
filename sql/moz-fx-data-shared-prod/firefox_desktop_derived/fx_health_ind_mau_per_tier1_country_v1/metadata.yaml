@@ -28,3 +28,4 @@ references:
   query.sql:
   - mozdata.glean_telemetry.active_users_aggregates
 require_column_descriptions: false
+level: null

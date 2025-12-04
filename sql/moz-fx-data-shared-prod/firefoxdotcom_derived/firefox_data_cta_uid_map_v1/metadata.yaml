@@ -25,3 +25,4 @@ workgroup_access:
   members:
   - workgroup:google-managed/external-ads-dataproc
 require_column_descriptions: false
+level: null

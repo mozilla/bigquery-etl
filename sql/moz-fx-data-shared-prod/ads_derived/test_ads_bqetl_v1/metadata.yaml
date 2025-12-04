@@ -40,3 +40,4 @@ references:
   - moz-fx-data-shared-prod.ads_derived.kevel_metadata_v2
   - moz-fx-data-shared-prod.telemetry_derived.newtab_interactions_hourly_v1
 require_column_descriptions: false
+level: null

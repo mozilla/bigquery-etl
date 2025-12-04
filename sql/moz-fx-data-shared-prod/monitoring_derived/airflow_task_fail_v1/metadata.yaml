@@ -21,3 +21,4 @@ references:
   - moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.task_fail
   - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.task_fail
 require_column_descriptions: false
+level: null

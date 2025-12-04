@@ -28,3 +28,4 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
 deprecated: true
 require_column_descriptions: false
+level: null

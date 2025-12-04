@@ -33,3 +33,4 @@ references:
   - moz-fx-data-marketing-prod.65789850.ga_sessions_*
   - moz-fx-data-marketing-prod.65789850.ga_sessions_intraday_*
 require_column_descriptions: false
+level: null

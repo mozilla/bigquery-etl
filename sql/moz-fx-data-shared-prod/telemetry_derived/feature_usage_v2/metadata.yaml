@@ -40,3 +40,4 @@ references:
   - moz-fx-data-shared-prod.telemetry.events
   - moz-fx-data-shared-prod.telemetry.main_remainder_1pct
 require_column_descriptions: false
+level: null

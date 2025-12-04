@@ -36,3 +36,4 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.clients_daily_event_v1
   - moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_event_v1
 require_column_descriptions: false
+level: null

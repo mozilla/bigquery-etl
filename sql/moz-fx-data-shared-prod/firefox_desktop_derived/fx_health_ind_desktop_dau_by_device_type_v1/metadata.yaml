@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.metrics
   - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_fqueze_cpu_info_v1
 require_column_descriptions: true
+level: null

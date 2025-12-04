@@ -33,3 +33,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   - moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_first_seen_v1
 require_column_descriptions: true
+level: null

@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.pageload_base_domain
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.pageload_base_domain
 require_column_descriptions: false
+level: null

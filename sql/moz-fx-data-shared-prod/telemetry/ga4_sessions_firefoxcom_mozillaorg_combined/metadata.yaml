@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.firefoxdotcom.ga_sessions
   - moz-fx-data-shared-prod.mozilla_org.ga_sessions
 require_column_descriptions: false
+level: null

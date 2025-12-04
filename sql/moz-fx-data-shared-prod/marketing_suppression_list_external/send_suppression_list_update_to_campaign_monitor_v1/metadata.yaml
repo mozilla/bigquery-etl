@@ -16,3 +16,4 @@ workgroup_access:
   members:
   - workgroup:braze/data-developers
 require_column_descriptions: false
+level: null

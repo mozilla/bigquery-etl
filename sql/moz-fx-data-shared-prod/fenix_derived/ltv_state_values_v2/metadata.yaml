@@ -28,3 +28,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.ltv_state_values_derived.android_state_ltvs_v2
 require_column_descriptions: false
+level: null

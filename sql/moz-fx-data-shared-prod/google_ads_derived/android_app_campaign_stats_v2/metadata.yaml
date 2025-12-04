@@ -38,3 +38,4 @@ references:
   - mozdata.ltv.fenix_new_profile_ltv
   - mozdata.telemetry.mobile_new_profile_clients
 require_column_descriptions: true
+level: null

@@ -26,3 +26,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
   - moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen
 require_column_descriptions: true
+level: null

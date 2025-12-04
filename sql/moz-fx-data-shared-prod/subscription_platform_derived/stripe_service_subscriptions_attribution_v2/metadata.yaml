@@ -35,3 +35,4 @@ monitoring:
   freshness: null
   volume: null
 require_column_descriptions: true
+level: null

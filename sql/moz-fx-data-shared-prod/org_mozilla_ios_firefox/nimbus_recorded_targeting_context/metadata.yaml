@@ -11,3 +11,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1
 require_column_descriptions: false
+level: null

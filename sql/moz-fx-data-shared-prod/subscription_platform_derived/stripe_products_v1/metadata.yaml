@@ -22,3 +22,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.stripe_external.product_v1
 require_column_descriptions: true
+level: null

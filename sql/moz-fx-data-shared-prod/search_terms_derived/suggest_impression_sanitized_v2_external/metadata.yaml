@@ -16,3 +16,4 @@ references:
   - moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1
   - suggest-searches-prod-a30f.logs.stdout
 require_column_descriptions: false
+level: null

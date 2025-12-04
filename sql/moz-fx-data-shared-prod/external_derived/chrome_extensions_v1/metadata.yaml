@@ -20,3 +20,4 @@ workgroup_access:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
 require_column_descriptions: true
+level: null

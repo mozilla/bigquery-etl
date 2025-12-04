@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
 deprecated: true
 require_column_descriptions: false
+level: null

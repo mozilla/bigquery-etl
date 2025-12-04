@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.telemetry.event_types
   - moz-fx-data-shared-prod.telemetry_derived.deanonymized_events
 require_column_descriptions: false
+level: null

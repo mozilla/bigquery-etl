@@ -31,3 +31,4 @@ references:
   - moz-fx-data-shared-prod.search.search_clients_last_seen_v2
   - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1
 require_column_descriptions: true
+level: null

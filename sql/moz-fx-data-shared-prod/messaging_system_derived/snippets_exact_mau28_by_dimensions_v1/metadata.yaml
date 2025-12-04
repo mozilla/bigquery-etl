@@ -27,3 +27,4 @@ references:
   - moz-fx-data-shared-prod.messaging_system.snippets_users_last_seen
   - moz-fx-data-shared-prod.static.country_codes_v1
 require_column_descriptions: false
+level: null

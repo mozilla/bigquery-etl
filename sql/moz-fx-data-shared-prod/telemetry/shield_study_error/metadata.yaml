@@ -20,3 +20,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_stable.shield_study_error_v4
 require_column_descriptions: false
+level: null

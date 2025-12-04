@@ -36,3 +36,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.quick_suggest
   - moz-fx-data-shared-prod.payload_bytes_error.contextual_services
 require_column_descriptions: false
+level: null

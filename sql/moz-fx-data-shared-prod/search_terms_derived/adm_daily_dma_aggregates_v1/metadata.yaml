@@ -32,3 +32,4 @@ references:
   - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3
   - moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3
 require_column_descriptions: false
+level: null

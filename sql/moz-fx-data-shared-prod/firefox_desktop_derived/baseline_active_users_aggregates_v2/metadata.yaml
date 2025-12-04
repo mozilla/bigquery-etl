@@ -31,3 +31,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
 require_column_descriptions: true
+level: null

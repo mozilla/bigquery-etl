@@ -30,3 +30,4 @@ references:
   query.sql:
   - mozdata.firefox_desktop.urlbar_events
 require_column_descriptions: true
+level: null

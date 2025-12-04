@@ -21,3 +21,4 @@ references:
   - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.ab_user
   - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.ab_user_role
 require_column_descriptions: false
+level: null

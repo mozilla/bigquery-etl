@@ -47,3 +47,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
   - moz-fx-data-shared-prod.telemetry_derived.newtab_interactions_historical_legacy_v1
 require_column_descriptions: false
+level: null

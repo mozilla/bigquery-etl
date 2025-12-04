@@ -31,3 +31,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_derived.adclick_history_v1
   - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
 require_column_descriptions: false
+level: null

@@ -19,3 +19,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:platform-infra/chicory-poc
 require_column_descriptions: false
+level: null

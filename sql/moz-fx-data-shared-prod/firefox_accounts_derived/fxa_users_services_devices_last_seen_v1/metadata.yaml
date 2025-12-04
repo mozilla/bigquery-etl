@@ -36,3 +36,4 @@ references:
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_last_seen_v1
 require_column_descriptions: false
+level: null

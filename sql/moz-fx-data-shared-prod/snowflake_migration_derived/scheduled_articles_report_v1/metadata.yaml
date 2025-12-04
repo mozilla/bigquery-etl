@@ -33,3 +33,4 @@ references:
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1
 require_column_descriptions: false
+level: null

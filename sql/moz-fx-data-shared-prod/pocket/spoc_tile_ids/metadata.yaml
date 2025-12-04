@@ -8,3 +8,4 @@ labels:
 workgroup_access: []
 deprecated: true
 require_column_descriptions: false
+level: null

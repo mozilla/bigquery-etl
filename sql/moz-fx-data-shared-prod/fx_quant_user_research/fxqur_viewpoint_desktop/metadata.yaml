@@ -17,3 +17,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1
 require_column_descriptions: false
+level: null

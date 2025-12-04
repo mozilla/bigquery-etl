@@ -34,3 +34,4 @@ references:
   - moz-fx-data-shared-prod.glean_telemetry_derived.cohort_weekly_cfs_staging_v1
   - mozdata.external.calendar
 require_column_descriptions: true
+level: null

@@ -16,3 +16,4 @@ references:
   - moz-fx-data-shredder.shredder_state.shredder_state
   - moz-fx-data-shredder.shredder_state.tasks
 require_column_descriptions: false
+level: null

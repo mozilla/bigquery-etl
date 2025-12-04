@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.fx_accounts
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.fx_accounts
 require_column_descriptions: false
+level: null

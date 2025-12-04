@@ -40,3 +40,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.ads_backend.events
 require_column_descriptions: false
+level: null

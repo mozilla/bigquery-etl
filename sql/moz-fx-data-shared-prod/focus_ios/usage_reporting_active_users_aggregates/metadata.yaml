@@ -11,3 +11,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.focus_ios_derived.usage_reporting_active_users_aggregates_v1
 require_column_descriptions: false
+level: null

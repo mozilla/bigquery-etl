@@ -11,3 +11,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fxci_derived.task_runs_v1
 require_column_descriptions: false
+level: null

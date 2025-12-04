@@ -41,3 +41,4 @@ workgroup_access:
   members:
   - workgroup:fx-quant-user-research/data-developers
 require_column_descriptions: false
+level: null

@@ -46,3 +46,4 @@ references:
   - moz-fx-data-marketing-prod.analytics_313696158.events_2*
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3
 require_column_descriptions: true
+level: null

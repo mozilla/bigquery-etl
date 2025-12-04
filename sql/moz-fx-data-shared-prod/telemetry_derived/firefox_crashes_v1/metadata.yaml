@@ -36,3 +36,4 @@ references:
   - moz-fx-data-shared-prod.focus_android.crash
   - moz-fx-data-shared-prod.klar_android.crash
 require_column_descriptions: false
+level: null

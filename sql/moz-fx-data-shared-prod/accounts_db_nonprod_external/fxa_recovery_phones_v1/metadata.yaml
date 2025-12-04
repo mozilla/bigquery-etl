@@ -20,3 +20,4 @@ references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         phoneNumber,\n         createdAt,\n         lastConfirmed,\n         lookupData\n       FROM\n         fxa.recoveryPhones\n    ')
 require_column_descriptions: false
+level: null

@@ -29,3 +29,4 @@ references:
   - moz-fx-data-shared-prod.accounts_backend_derived.users_services_daily_v1
   - moz-fx-data-shared-prod.accounts_backend_derived.users_services_last_seen_v1
 require_column_descriptions: false
+level: null

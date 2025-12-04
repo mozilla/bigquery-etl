@@ -38,3 +38,4 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1
 require_column_descriptions: true
+level: null

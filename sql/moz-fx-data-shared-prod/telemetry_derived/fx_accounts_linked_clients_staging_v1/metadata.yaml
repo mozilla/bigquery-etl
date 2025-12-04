@@ -30,3 +30,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop.fx_accounts
 require_column_descriptions: true
+level: null

@@ -27,3 +27,4 @@ references:
   query.sql:
   - mozdata.monitor_frontend.events_unnested
 require_column_descriptions: false
+level: null

@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.recent_service_subscription_events_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
 require_column_descriptions: true
+level: null

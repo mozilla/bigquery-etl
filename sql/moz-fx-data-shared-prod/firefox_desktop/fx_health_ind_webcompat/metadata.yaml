@@ -1,0 +1,5 @@
+friendly_name: ETP Disablement by Country and Date
+description: |-
+  Aggregate table of count of unique users setting ETP disablement by day/country; used in Firefox Health Indicator dashboard
+owners:
+- kwindau@mozilla.com

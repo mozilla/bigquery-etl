@@ -1,0 +1,5 @@
+friendly_name: Addons
+description: |-
+  Addon usage by client, partitioned by day
+owners:
+- kik@mozilla.com

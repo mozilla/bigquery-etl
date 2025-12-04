@@ -52,7 +52,8 @@ SELECT
   b.architecture AS baseline_architecture,
   b.is_desktop AS baseline_is_desktop,
   b.windows_version AS baseline_windows_version,
-  b.normalized_app_name AS baseline_normalized_app_name
+  b.normalized_app_name AS baseline_normalized_app_name,
+  b.app_build_id AS baseline_app_build_id
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics_clients_first_seen` m
 FULL OUTER JOIN

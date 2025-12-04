@@ -14,6 +14,7 @@ from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
 from google.cloud.exceptions import NotFound
 
+from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 from bigquery_etl.schema import Schema
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
@@ -22,7 +23,6 @@ from bigquery_etl.shredder.config import (
     SHARED_PROD,
     DeleteSource,
     find_glean_targets,
-    get_glean_channel_to_app_name_mapping,
 )
 
 FIND_TABLES_QUERY_TEMPLATE = """
@@ -69,6 +69,8 @@ WHERE
   AND table_schema != "backfills_staging_derived"
   AND table_name != 'deletion_request_v1'
   AND table_name != 'deletion_request_v4'
+  -- ignore recently created tables that may not have lineage populated yet
+  AND DATE(creation_time) < DATE_SUB('2025-11-24', INTERVAL 1 DAY)
 """
 
 
@@ -169,7 +171,7 @@ def get_associated_deletions(
                 dataset_name.replace("_derived", "_stable")
             ] = f"{dataset_name}.additional_deletion_requests_v1"
 
-    glean_channel_names = get_glean_channel_to_app_name_mapping()
+    glean_channel_names = get_glean_app_id_to_app_name_mapping()
 
     for table_name, stable_tables in upstream_stable_tables.items():
         deletion_tables: Set[DeleteSource] = set()
@@ -246,7 +248,7 @@ def get_missing_deletions(
         bigquery_client = bigquery.Client()
         glean_delete_targets = find_glean_targets(pool, client=bigquery_client)
 
-    glean_channel_names = get_glean_channel_to_app_name_mapping()
+    glean_channel_names = get_glean_app_id_to_app_name_mapping()
     glean_app_name_to_channels = defaultdict(list)
     for channel, app_name in glean_channel_names.items():
         glean_app_name_to_channels[app_name].append(channel)

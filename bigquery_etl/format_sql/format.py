@@ -4,7 +4,7 @@ import glob
 import os
 import os.path
 import sys
-from functools import partial
+from functools import cache, partial
 from multiprocessing.pool import Pool
 from pathlib import Path
 from typing import Tuple
@@ -16,6 +16,7 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 from bigquery_etl.util.common import qualify_table_references_in_file
 
 
+@cache
 def skip_format():
     """Return a list of configured queries for which formatting should be skipped."""
     return [
@@ -25,6 +26,7 @@ def skip_format():
     ]
 
 
+@cache
 def skip_qualifying_references():
     """Return a list of configured queries where fully qualifying references should be skipped."""
     return [

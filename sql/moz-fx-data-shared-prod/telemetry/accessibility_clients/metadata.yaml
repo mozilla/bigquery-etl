@@ -1,0 +1,6 @@
+friendly_name: Platform Accessibility Usage
+description: >
+  A daily number of platform accessibility clients (assistive technology),
+  partitioned by day.
+owners:
+  - yzenevich@mozilla.com

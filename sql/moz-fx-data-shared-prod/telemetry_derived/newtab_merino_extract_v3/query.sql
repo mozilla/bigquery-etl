@@ -103,7 +103,7 @@ country_aggregates AS (
   WHERE
     -- Gather country (a.k.a. region) specific engagement for all countries that share a feed.
     -- https://mozilla-hub.atlassian.net/wiki/x/JY3LB
-    normalized_country_code IN ('US', 'CA', 'DE', 'CH', 'AT', 'BE', 'GB', 'IE')
+    normalized_country_code IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
 ),
 /* Combine the "global" (no region) with the "regional" breakdown. */
 combined_results AS (

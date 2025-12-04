@@ -469,7 +469,7 @@ class TestMetadata:
                 f.write(yaml.safe_dump(metadata))
 
             if query:
-                query_path = Path(self.test_path) / "query.yaml"
+                query_path = Path(self.test_path) / "query.sql"
                 with open(query_path, "w") as f:
                     f.write(query)
             if schema:
@@ -580,7 +580,7 @@ class TestMetadata:
             expected_exc = "ERROR. Invalid level in metadata: kpi. Must be only one of ['bronze', 'gold', 'silver']."
             assert (str(e.value)) == expected_exc
 
-    def test_level_gold_comply(self, runner, capfd):
+    def test_level_gold_comply_is_table(self, runner, capfd):
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
@@ -611,6 +611,42 @@ class TestMetadata:
             runner=runner,
             metadata=metadata,
             query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=True,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_comply_is_view(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": "gold",
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "Metadata level gold achieved!"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
             schema=schema,
             with_unittests=True,
             with_bigeye_metrics=True,

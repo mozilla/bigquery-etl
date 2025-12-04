@@ -4,6 +4,7 @@ import glob
 import logging
 import os
 from argparse import ArgumentParser
+from enum import Enum
 from pathlib import Path
 
 import click
@@ -275,21 +276,23 @@ def validate_asset_level(query_dir, metadata):
 
     Possible levels are only one of [gold, silver, bronze] or no level label.
     """
-    requirements = {
-        1: "description",
-        2: "unittests",
-        3: "scheduler",
-        4: "bigeye_predefined_metrics",
-        5: "change_control",
-        6: "column_descriptions_all",
-        7: "column_descriptions_70_percent",
-    }
 
-    level_requirements = {
-        "gold": [1, 2, 3, 4, 5, 6],
-        "silver": [1, 2, 3, 4, 7],
-        "bronze": [1],
-    }
+    is_table = os.path.exists(os.path.join(query_dir, "query.sql"))
+
+    class Requirements(Enum):
+        description = 1
+        unittests = 2
+        scheduler = 3
+        bigeye_predefined_metrics = 4
+        change_control = 5
+        column_descriptions_all = 6
+        column_descriptions_70_percent = 7
+
+    class LevelRequirements(Enum):
+        gold = [1, 2, 3, 4, 5, 6] if is_table else [1, 2, 4, 5, 6, 7]
+        silver = [1, 2, 3, 4, 7] if is_table else [1, 2, 4, 7]
+        bronze = [1]
+
     results = {}
     missing = []
 
@@ -344,19 +347,22 @@ def validate_asset_level(query_dir, metadata):
         results["bigeye_predefined_metrics"] = find_bigeye_checks(query_path=query_dir)
 
         # Check if the level in the metadata complies with all requirements.
-        level_required_ids = level_requirements[level]
-        required_names = [
-            requirements[i] for i in level_required_ids if i in requirements
+        level_required_ids = LevelRequirements[level].value
+        required_items = [
+            Requirements(i)
+            for i in level_required_ids
+            if i in Requirements._value2member_map_
         ]
 
-        missing = [name for name in required_names if not results.get(name)]
+        missing = [item.name for item in required_items if not results.get(item.name)]
+
         if missing:
             click.echo(
                 f"❌ERROR. Metadata Level '{level}' not achieved. Missing: {', '.join(missing)}"
             )
             return False
 
-        click.echo(f"✅ Metadata level {level} achieved! Table {query_dir}.")
+        click.echo(f"✅Metadata level {level} achieved!")
         return True
 
 

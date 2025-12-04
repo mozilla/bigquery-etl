@@ -32,4 +32,8 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.*
     metrics:
     - saved_metric_id: volume
+      threshold:
+      - type: CONSTANT
+        upper_bound: 175
+        lower_bound: 175
     - saved_metric_id: freshness

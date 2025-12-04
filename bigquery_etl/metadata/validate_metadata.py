@@ -276,7 +276,6 @@ def validate_asset_level(query_dir, metadata):
 
     Possible levels are only one of [gold, silver, bronze] or no level label.
     """
-
     is_table = os.path.exists(os.path.join(query_dir, "query.sql"))
 
     class Requirements(Enum):

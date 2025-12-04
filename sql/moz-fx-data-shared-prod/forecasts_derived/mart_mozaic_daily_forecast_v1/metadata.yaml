@@ -1,0 +1,32 @@
+friendly_name: Mart Mozaic Daily Forecast
+description: |-
+  A daily run of the KPI forecasting package Mozaic Forecasting. This
+  contains actual training data and forecasted future predictions, along
+  with information about segments and training details. See the proposal
+  for more. If you aren't certain that you want forecasted data, you
+  probably don't because these values may or may not reflect reality.
+owners:
+- brwells@mozilla.com
+- bochocki@mozilla.com
+labels:
+  incremental: true
+  owner1: brwells
+  owner2: bochocki
+bigquery:
+  time_partitioning:
+    type: day
+    field: forecast_start_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-outerbounds-task-default
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataops-managed/external-outerbounds-task-default
+require_column_descriptions: true
+level: null

@@ -589,6 +589,12 @@ def validate(target):
                     ):
                         failed = True
 
+                    if not validate_asset_level(
+                        query_dir=path,
+                        metadata=metadata,
+                    ):
+                        failed = True
+
                     # Shredder mitigation checks still WIP
                     # if not validate_shredder_mitigation(
                     #     query_dir=root,

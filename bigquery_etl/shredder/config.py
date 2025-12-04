@@ -151,6 +151,9 @@ FXA_UNHASHED_SRC = DeleteSource(
 FXA_FRONTEND_GLEAN_SRC = DeleteSource(
     table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
+SUBPLAT_CIRRUS_SRC = DeleteSource(
+    table="subscription_platform_backend_cirrus.delete_events", field="nimbus_user_id"
+)
 EXPERIMENTER_BACKEND_SRC = DeleteSource(
     table="experimenter_backend_stable.data_collection_opt_out_v1",
     field=NIMBUS_USER_ID,
@@ -703,6 +706,14 @@ DELETE_TARGETS: DeleteIndex = {
         table="experimenter_cirrus_stable.enrollment_status_v1",
         field=CIRRUS_EVENTS_NIMBUS_USER_ID,
     ): EXPERIMENTER_BACKEND_SRC,
+    DeleteTarget(
+        table="subscription_platform_backend_cirrus_stable.enrollment_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): SUBPLAT_CIRRUS_SRC,
+    DeleteTarget(
+        table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): SUBPLAT_CIRRUS_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

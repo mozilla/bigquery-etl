@@ -5,9 +5,6 @@ description: |-
   with information about segments and training details. See the proposal
   for more. If you aren't certain that you want forecasted data, you
   probably don't because these values may or may not reflect reality.
-
-  Proposal:
-  https://docs.google.com/document/d/15RNNhlcE9oj3GLlCWns6DOUWHKjZpnaEbz7OiAQZi_E/edit?usp=sharing
 owners:
 - brwells@mozilla.com
 - bochocki@mozilla.com
@@ -21,9 +18,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields:
-    - country
-    - app
-    - segment
+  clustering: null
 require_column_descriptions: true

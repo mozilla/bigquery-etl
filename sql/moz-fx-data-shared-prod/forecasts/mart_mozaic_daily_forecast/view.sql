@@ -6,7 +6,7 @@ SELECT
   target_date,
   source,
   country,
-  app,
+  app_name,
   app_category,
   COALESCE(JSON_VALUE(segment, "$.os"), "N/A") AS os,
   dau,

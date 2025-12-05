@@ -288,8 +288,8 @@ def validate_asset_level(query_dir, metadata):
         column_descriptions_70_percent = 7
 
     class LevelRequirements(Enum):
-        gold = [1, 2, 3, 4, 5, 6] if is_table else [1, 2, 4, 5, 6, 7]
-        silver = [1, 2, 3, 4, 7] if is_table else [1, 2, 4, 7]
+        gold = [1, 2, 3, 4, 5, 6] if is_table else [1, 4, 5, 6, 7]
+        silver = [1, 2, 3, 4, 7] if is_table else [1, 4, 7]
         bronze = [1]
 
     results = {}
@@ -586,6 +586,12 @@ def validate(target):
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
                         project_id=project_id,
+                    ):
+                        failed = True
+
+                    if not validate_asset_level(
+                        query_dir=root,
+                        metadata=metadata,
                     ):
                         failed = True
 

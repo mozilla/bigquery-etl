@@ -296,7 +296,6 @@ def _view_dependencies(artifact_files, sql_dir):
                 project, dataset, name = dependency_components
 
                 file_path = Path(sql_dir) / project / dataset / name
-
                 file_exists_for_dependency = False
                 for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
                     if (file_path / file).is_file():
@@ -307,24 +306,46 @@ def _view_dependencies(artifact_files, sql_dir):
                         break
 
                 path = Path(sql_dir) / project / dataset / name
+                # Create directory if needed
                 if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
+
+                # Check if schema file exists - create it even if directory/query exists
+                # This handles cases where glean_usage generator created queries without schemas
+                schema_file_path = path / SCHEMA_FILE
+                if not schema_file_path.exists():
                     # don't create schema for wildcard and metadata tables
                     # Create schemas for syndicated tables, stable, live tables and other
                     # tables not managed by bigquery-etl by doing a dryrun.
                     # The stage project doesn't have access to prod tables (e.g when referenced)
                     # so we need to create the schema here and deploy it.
                     if "*" not in name and name != "INFORMATION_SCHEMA":
+                        # Extract original production project/dataset from transformed names
+                        # Transformed datasets follow pattern: {dataset}_{project_underscored}_{suffix}
+                        # We need to query the original production project.dataset.table for schema
+                        prod_project = project
+                        prod_dataset = dataset
+
+                        # Check if dataset has been transformed (contains underscored project name)
+                        project_underscored = project.replace("-", "_")
+                        if f"_{project_underscored}_" in dataset:
+                            # Extract original dataset by removing the suffix pattern
+                            parts = dataset.split(f"_{project_underscored}_")
+                            if len(parts) == 2:
+                                prod_dataset = parts[0]
+
                         partitioned_by = None
 
+                        # Tables in _live and _stable datasets are partitioned by submission_timestamp
+                        # events_stream views and tables also reference partitioned tables
                         if any(
-                            dataset.endswith(suffix) for suffix in ("_live", "_stable")
-                        ):
+                            prod_dataset.endswith(suffix) for suffix in ("_live", "_stable")
+                        ) or "events_stream" in name:
                             partitioned_by = "submission_timestamp"
 
                         schema = Schema.for_table(
-                            project=project,
-                            dataset=dataset,
+                            project=prod_project,
+                            dataset=prod_dataset,
                             table=name,
                             id_token=id_token,
                             partitioned_by=partitioned_by,

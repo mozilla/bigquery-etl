@@ -259,7 +259,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 skip_existing=False,
             )
 
-        # Write the BigEye config files
+        # Write BigEye config files.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",

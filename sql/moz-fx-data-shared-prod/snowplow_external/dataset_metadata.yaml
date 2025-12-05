@@ -13,3 +13,4 @@ workgroup_access:
   - role: roles/bigquery.dataEditor
     members:
       - workgroup:dataops-managed/external-snowplow
+      - workgroup:pocket/apps

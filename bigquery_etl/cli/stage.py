@@ -338,9 +338,13 @@ def _view_dependencies(artifact_files, sql_dir):
 
                         # Tables in _live and _stable datasets are partitioned by submission_timestamp
                         # events_stream views and tables also reference partitioned tables
-                        if any(
-                            prod_dataset.endswith(suffix) for suffix in ("_live", "_stable")
-                        ) or "events_stream" in name:
+                        if (
+                            any(
+                                prod_dataset.endswith(suffix)
+                                for suffix in ("_live", "_stable")
+                            )
+                            or "events_stream" in name
+                        ):
                             partitioned_by = "submission_timestamp"
 
                         schema = Schema.for_table(

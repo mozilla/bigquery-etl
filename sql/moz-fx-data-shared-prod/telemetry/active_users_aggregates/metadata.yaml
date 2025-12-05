@@ -14,6 +14,5 @@ description: |-
 owners:
   - lvargas@mozilla.com
   - mozilla/kpi_table_reviewers
-level: gold
 labels:
   change_controlled: true

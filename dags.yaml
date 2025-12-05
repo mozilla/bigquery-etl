@@ -184,6 +184,8 @@ bqetl_subplat:
 
 bqetl_subplat_hourly:
   schedule_interval: 30 * * * *
+  # Limit concurrency to avoid any ETLs running while the Fivetran Stripe sync may be in progress.
+  max_active_runs: 1
   catchup: true
   description: |
     Hourly imports for Subscription Platform data from Stripe and Firestore,
@@ -1437,7 +1439,7 @@ bqetl_braze:
     - triage/record_only
 
 bqetl_braze_currents:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 5 * * *
   description: |
     Load Braze current data from GCS into BigQuery
   default_args:
@@ -2452,20 +2454,6 @@ bqetl_firefox_enterprise:
     email:
       - kik@mozilla.com
     start_date: '2025-08-21'
-    retries: 1
-    retry_delay: 30m
-  tags:
-    - impact/tier_3
-
-bqetl_braze_win10_sync:
-  schedule_interval: 0 5 * * *
-  description: |
-    Daily run to pull inactive Win10 users and sync them to Braze.
-  default_args:
-    owner: lmcfall@mozilla.com
-    email:
-      - lmcfall@mozilla.com
-    start_date: '2025-10-06'
     retries: 1
     retry_delay: 30m
   tags:

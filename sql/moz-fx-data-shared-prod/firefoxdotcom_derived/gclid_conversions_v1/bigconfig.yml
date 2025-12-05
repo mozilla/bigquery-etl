@@ -9,6 +9,7 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1.*
     metrics:
     - saved_metric_id: composite_key_uniqueness_2_column
+      metric_name: composite_key_uniqueness_2_column [fail]
       parameters:
       - key: col_1
         column_name: gclid

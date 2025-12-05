@@ -226,6 +226,19 @@ fields:
 
         This isn''t available for customers that were deleted before the initial Fivetran
         Stripe sync.'
+    - name: invoice_settings
+      type: RECORD
+      mode: NULLABLE
+      description: 'The customer''s default invoice settings.
+
+        This isn''t available for customers that were deleted before the initial Fivetran
+        Stripe sync.'
+      fields:
+      - name: default_payment_method_id
+        type: STRING
+        mode: NULLABLE
+        description: ID of a payment method that's attached to the customer, to be used as
+          the customer's default payment method for subscriptions and invoices.
   - name: billing_cycle_anchor
     type: TIMESTAMP
     mode: NULLABLE
@@ -698,3 +711,20 @@ fields:
     type: TIMESTAMP
     mode: NULLABLE
     description: If the subscription has a trial, the start time of that trial.
+  - name: cancellation_details
+    type: RECORD
+    mode: NULLABLE
+    description: Details about why this subscription was cancelled.
+    fields:
+    - name: comment
+      type: STRING
+      mode: NULLABLE
+      description: Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
+    - name: feedback
+      type: STRING
+      mode: NULLABLE
+      description: The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: Details about the reason this subscription was cancelled.

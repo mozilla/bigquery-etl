@@ -9,4 +9,3 @@ labels:
   table_type: aggregate
 bigquery:
   range_partitioning: null
-references: {}

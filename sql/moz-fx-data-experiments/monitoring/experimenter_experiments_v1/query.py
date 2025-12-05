@@ -7,7 +7,6 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
-from typing import List, Optional
 
 import attr
 import cattrs
@@ -34,31 +33,52 @@ class Branch:
 
     slug: str
     ratio: int
-    features: Optional[dict]
+    features: dict | None
+
+
+@attr.s(auto_attribs=True, kw_only=True, slots=True, frozen=True)
+class Outcome:
+    """Defines an Outcome."""
+
+    slug: str
+
+
+@attr.s(auto_attribs=True, kw_only=True, slots=True, frozen=True)
+class Segment:
+    """Defines a Segment."""
+
+    slug: str
 
 
 @attr.s(auto_attribs=True)
 class Experiment:
     """Defines an Experiment."""
 
-    experimenter_slug: Optional[str]
-    normandy_slug: Optional[str]
+    experimenter_slug: str | None
+    normandy_slug: str | None
     type: str
-    status: Optional[str]
-    branches: List[Branch]
-    start_date: Optional[datetime.datetime]
-    end_date: Optional[datetime.datetime]
-    enrollment_end_date: Optional[datetime.datetime]
-    proposed_enrollment: Optional[int]
-    reference_branch: Optional[str]
+    status: str | None
+    branches: list[Branch]
+    start_date: datetime.datetime | None
+    end_date: datetime.datetime | None
+    enrollment_end_date: datetime.datetime | None
+    proposed_enrollment: int | None
+    reference_branch: str | None
     is_high_population: bool
     app_name: str
     app_id: str
     channel: str
+    channels: list[str]
     targeting: str
     targeted_percent: float
-    namespace: Optional[str]
-    feature_ids: List[str]
+    namespace: str | None
+    feature_ids: list[str]
+    is_rollout: bool
+    outcomes: list[str]
+    segments: list[str]
+    randomization_unit: str
+    is_enrollment_paused: bool
+    is_firefox_labs_opt_in: bool
 
 
 @attr.s(auto_attribs=True)
@@ -66,18 +86,24 @@ class NimbusExperiment:
     """Represents a v8 Nimbus experiment from Experimenter."""
 
     slug: str  # Normandy slug
-    startDate: Optional[datetime.datetime]
-    endDate: Optional[datetime.datetime]
-    enrollmentEndDate: Optional[datetime.datetime]
+    startDate: datetime.datetime | None
+    endDate: datetime.datetime | None
+    enrollmentEndDate: datetime.datetime | None
     proposedEnrollment: int
-    branches: List[Branch]
-    referenceBranch: Optional[str]
+    branches: list[Branch]
+    referenceBranch: str | None
     appName: str
     appId: str
     channel: str
+    channels: list[str]
     targeting: str
     bucketConfig: dict
     featureIds: list[str]
+    isRollout: bool
+    outcomes: list[Outcome] | None = None
+    segments: list[Segment] | None = None
+    isEnrollmentPaused: bool | None = None
+    isFirefoxLabsOptIn: bool = False
 
     @classmethod
     def from_dict(cls, d) -> "NimbusExperiment":
@@ -124,10 +150,17 @@ class NimbusExperiment:
             app_name=self.appName,
             app_id=self.appId,
             channel=self.channel,
+            channels=self.channels,
             targeting=self.targeting,
             targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
             namespace=self.bucketConfig["namespace"],
             feature_ids=self.featureIds,
+            is_rollout=self.isRollout,
+            outcomes=[o.slug for o in self.outcomes] if self.outcomes else [],
+            segments=[s.slug for s in self.segments] if self.segments else [],
+            randomization_unit=self.bucketConfig["randomizationUnit"],
+            is_firefox_labs_opt_in=self.isFirefoxLabsOptIn,
+            is_enrollment_paused=self.isEnrollmentPaused,
         )
 
 
@@ -146,7 +179,7 @@ def fetch(url):
     raise last_exception
 
 
-def get_experiments() -> List[Experiment]:
+def get_experiments() -> list[Experiment]:
     """Fetch experiments from Experimenter."""
     nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V8)
     nimbus_experiments = []
@@ -195,10 +228,17 @@ def main():
         bigquery.SchemaField("app_id", "STRING"),
         bigquery.SchemaField("app_name", "STRING"),
         bigquery.SchemaField("channel", "STRING"),
+        bigquery.SchemaField("channels", "STRING", mode="REPEATED"),
         bigquery.SchemaField("targeting", "STRING"),
         bigquery.SchemaField("targeted_percent", "FLOAT"),
         bigquery.SchemaField("namespace", "STRING"),
         bigquery.SchemaField("feature_ids", "STRING", mode="REPEATED"),
+        bigquery.SchemaField("is_rollout", "BOOL"),
+        bigquery.SchemaField("outcomes", "STRING", mode="REPEATED"),
+        bigquery.SchemaField("segments", "STRING", mode="REPEATED"),
+        bigquery.SchemaField("randomization_unit", "STRING"),
+        bigquery.SchemaField("is_firefox_labs_opt_in", "BOOL"),
+        bigquery.SchemaField("is_enrollment_paused", "BOOL"),
     )
 
     job_config = bigquery.LoadJobConfig(

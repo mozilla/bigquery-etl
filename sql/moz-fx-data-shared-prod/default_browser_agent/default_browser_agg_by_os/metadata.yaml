@@ -1,0 +1,5 @@
+friendly_name: Default Browser Aggregates By OS version
+description: |-
+  Aggregate table for default browser setting by os version
+owners:
+- wichan@mozilla.com

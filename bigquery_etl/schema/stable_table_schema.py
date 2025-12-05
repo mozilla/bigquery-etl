@@ -1,7 +1,10 @@
 """Methods for working with stable table schemas."""
 
 import json
+import os
+import pickle
 import tarfile
+import tempfile
 import urllib.request
 from dataclasses import dataclass
 from functools import cache
@@ -56,7 +59,9 @@ def prod_schemas_uri():
     with the most recent production schemas deploy.
     """
     dryrun = DryRun(
-        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql", content="SELECT 1"
+        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql",
+        content="SELECT 1",
+        use_cache=False,
     )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
@@ -68,6 +73,28 @@ def prod_schemas_uri():
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
     schemas_uri = prod_schemas_uri()
+
+    # create cache file path based on the schemas URI
+    commit_hash = schemas_uri.split("/")[-1].replace(".tar.gz", "")
+    cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_schemas")
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(cache_dir, f"schemas_{commit_hash}.pkl")
+
+    # check if cached file exists and load it
+    if os.path.exists(cache_file):
+        print(f"Loading cached schemas from {cache_file}")
+        try:
+            with open(cache_file, "rb") as f:
+                return pickle.load(f)
+        except (pickle.PickleError, EOFError, OSError) as e:
+            print(f"Failed to load cached schemas: {e}, re-downloading...")
+
+    print(f"Downloading schemas from {schemas_uri}")
+
+    # Clear dry run cache when downloading new schemas
+    # Schema changes could affect dry run results
+    DryRun.clear_cache()
+
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
@@ -131,5 +158,13 @@ def get_stable_table_schemas() -> List[SchemaFile]:
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+    # Cache the processed schemas
+    try:
+        with open(cache_file, "wb") as f:
+            pickle.dump(schemas, f)
+        print(f"Cached schemas to {cache_file}")
+    except (pickle.PickleError, OSError) as e:
+        print(f"Failed to cache schemas: {e}")
 
     return schemas

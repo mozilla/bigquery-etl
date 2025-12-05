@@ -37,6 +37,14 @@ def literal_presenter(dumper, data):
 yaml.add_representer(Literal, literal_presenter)
 
 
+class AssetLevel(enum.Enum):
+    """Represents BigQuery table level based on requirements for quality and maturity."""
+
+    GOLD = "gold"
+    SILVER = "silver"
+    BRONZE = "bronze"
+
+
 class PartitionType(enum.Enum):
     """Represents BigQuery table partition types."""
 
@@ -153,6 +161,13 @@ class ExternalDataMetadata:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetricMetadata:
+    """Metadata for specifying observability and monitoring metric configuration."""
+
+    blocking: bool = attr.ib()
+
+
+@attr.s(auto_attribs=True)
 class MonitoringMetadata:
     """Metadata for specifying observability and monitoring configuration."""
 
@@ -160,6 +175,12 @@ class MonitoringMetadata:
     collection: Optional[str] = attr.ib(None)
     partition_column: Optional[str] = attr.ib(None)
     partition_column_set: bool = attr.ib(False)
+    freshness: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=False)
+    )
+    volume: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=True)
+    )
 
 
 @attr.s(auto_attribs=True)
@@ -179,18 +200,36 @@ class Metadata:
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
-    references: Dict = attr.ib({})
+    references: Optional[Dict] = attr.ib(None)
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: bool = attr.ib(False)
+    level: Optional[str] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
         """Check that provided email addresses or github identities for owners are valid."""
         if not all(map(lambda e: is_email_or_github_identity(e), value)):
             raise ValueError(f"Invalid email or Github identity for owners: {value}.")
+
+    @level.validator
+    def validate_level(self, attribute, value):
+        """Check that the level label is a string and one of the expected values."""
+        allowed = [e.value for e in AssetLevel]
+
+        if value is None:
+            return
+
+        if not isinstance(value, str):
+            raise ValueError(
+                f"ERROR. Invalid level in metadata with type '{type(value).__name__}'. Must be a string."
+            )
+        if value not in allowed:
+            raise ValueError(
+                f"ERROR. Invalid level in metadata: {value}. Must be only one of {sorted(allowed)}."
+            )
 
     @labels.validator
     def validate_labels(self, attribute, value):
@@ -257,12 +296,13 @@ class Metadata:
         bigquery = None
         schema = None
         workgroup_access = None
-        references = {}
+        references = None
         external_data = None
         deprecated = False
         deletion_date = None
         monitoring = None
         require_column_descriptions = False
+        level = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -350,6 +390,9 @@ class Metadata:
                         "require_column_descriptions"
                     ]
 
+                if "level" in metadata:
+                    level = metadata["level"]
+
                 return cls(
                     friendly_name,
                     description,
@@ -365,6 +408,7 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
+                    level,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -400,6 +444,9 @@ class Metadata:
         if metadata_dict["workgroup_access"] is None:
             del metadata_dict["workgroup_access"]
 
+        if metadata_dict["references"] is None:
+            del metadata_dict["references"]
+
         if metadata_dict["external_data"] is None:
             del metadata_dict["external_data"]
 
@@ -411,6 +458,9 @@ class Metadata:
 
         if not metadata_dict["monitoring"]:
             del metadata_dict["monitoring"]
+
+        if metadata_dict["bigquery"] is None:
+            del metadata_dict["bigquery"]
 
         file.write_text(
             yaml.dump(

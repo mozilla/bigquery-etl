@@ -1,18 +1,25 @@
 fields:
 - name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - name: sample_id
   type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: client_id
   type: STRING
+  description: A unique identifier (UUID) for the client.
 - name: os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - name: app_version
   type: INTEGER
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: app_build_id
   type: STRING
 - name: channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - fields:
   - name: first_bucket
     type: INTEGER

@@ -1,0 +1,5 @@
+friendly_name: Newtab Component-level Content Table
+description: Contains information about content interactions, both organic and sponsored,
+  from the newtab ping.  Each record represents a specific content position during a specific visit
+owners:
+  - jsnyder@mozilla.com

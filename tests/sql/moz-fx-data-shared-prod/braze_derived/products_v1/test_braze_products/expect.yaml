@@ -101,15 +101,6 @@
       is_auto_renew: true
       has_refunds: false
       has_fraudulent_charges: false
-      first_touch_impression_at: 2020-12-01 10:00:00+00:00
-      first_touch_entrypoint: first_entrypoint
-      first_touch_entrypoint_experiment: first_entrypoint_exp
-      first_touch_entrypoint_variation: first_entrypoint_var
-      first_touch_utm_campaign: first_campaign
-      first_touch_utm_content: first_content
-      first_touch_utm_medium: first_medium
-      first_touch_utm_source: first_source
-      first_touch_utm_term: first_term
       last_touch_impression_at: 2020-12-01 10:00:00+00:00
       last_touch_entrypoint: last_entrypoint
       last_touch_entrypoint_experiment: last_entrypoint_exp

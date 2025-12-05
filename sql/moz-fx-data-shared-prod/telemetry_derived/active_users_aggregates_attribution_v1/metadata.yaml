@@ -36,6 +36,5 @@ bigquery:
     - city
     - app_name
     - attribution_medium
-references: {}
 deprecated: true
 require_column_descriptions: false

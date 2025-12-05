@@ -689,3 +689,62 @@ def test_generate_select_expression_unnest_allowlist():
         unnest_structs=True, unnest_allowlist=["record2"]
     )
     assert reformat(unnest_expr) == reformat(expected_expr)
+
+
+def test_generate_compatible_select_expression_description():
+    source_schema = {
+        "fields": [
+            {"name": "scalar", "type": "INTEGER", "description": "abc"},
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested", "type": "DATE"},
+                ],
+            },
+            {
+                "name": "record2",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested", "type": "DATE"},
+                ],
+                "description": "abc",
+            },
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {"name": "scalar", "type": "INTEGER"},
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested", "type": "DATE", "description": "abc"},
+                ],
+            },
+            {
+                "name": "record2",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested", "type": "DATE"},
+                ],
+            },
+        ]
+    }
+
+    # RECORDs will be unnested if nested descriptions don't match
+    expected_expr = """
+    scalar,
+    STRUCT(
+        record.nested
+    ) AS `record`,
+    record2
+    """
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False
+    )
+    assert reformat(select_expr) == reformat(expected_expr)

@@ -104,7 +104,8 @@ get_all_events_in_each_session_staging AS (
     COALESCE(
       (SELECT `value` FROM UNNEST(event_params) WHERE key = 'entrances' LIMIT 1).int_value,
       0
-    ) AS is_entrance
+    ) AS is_entrance,
+    a.event_params
   FROM
     `moz-fx-data-marketing-prod.analytics_489412379.events_*` a
   WHERE
@@ -139,6 +140,7 @@ get_all_events_in_each_session AS (
     a.engaged_session_event,
     SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
     a.is_entrance,
+    a.event_params,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -249,7 +251,8 @@ final_staging AS (
     ] AS page_level_4,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.firefox.com', ''), '/')[
       SAFE_OFFSET(6)
-    ] AS page_level_5
+    ] AS page_level_5,
+    all_events.event_params
   FROM
     get_session_start_time all_sessions
   LEFT OUTER JOIN
@@ -316,6 +319,7 @@ SELECT
   ) AS page_name,
   final.single_page_session,
   final.product_type,
-  final.platform_type
+  final.platform_type,
+  final.event_params
 FROM
   final_staging final

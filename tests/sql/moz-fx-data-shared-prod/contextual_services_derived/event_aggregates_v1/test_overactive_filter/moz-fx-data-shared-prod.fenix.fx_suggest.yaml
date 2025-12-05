@@ -8,6 +8,7 @@
     string:
       fx_suggest_advertiser: ad4
       fx_suggest_ping_type: fxsuggest-click
+      fx_suggest_country: null
     uuid:
       fx_suggest_context_id: fenix-b
   metadata:

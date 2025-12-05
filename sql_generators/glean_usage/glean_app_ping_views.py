@@ -19,7 +19,7 @@ from pathos.multiprocessing import ThreadingPool
 
 from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import get_table_dir, write_sql
 from sql_generators.glean_usage.common import GleanTable
 
@@ -53,15 +53,18 @@ class GleanAppPingViews(GleanTable):
         GleanTable.__init__(self)
         self.per_app_id_enabled = False
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
 
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.
@@ -69,8 +72,8 @@ class GleanAppPingViews(GleanTable):
         If schemas are incompatible, then use release channel only.
         """
         # get release channel info
-        release_app = app_info[0]
-        target_dataset = release_app["app_name"]
+        release_app = app_ids_info[0]
+        target_dataset = app_name
 
         # channels are all in the same repo, sending the same pings
         repo = next(
@@ -84,7 +87,9 @@ class GleanAppPingViews(GleanTable):
         ):
             return
 
-        ignored_pings = ConfigLoader.get("generate", "glean_usage", "app_ping_views", "skip", fallback=[])
+        ignored_pings = ConfigLoader.get(
+            "generate", "glean_usage", "app_ping_views", "skip", fallback=[]
+        )
 
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
@@ -107,27 +112,58 @@ class GleanAppPingViews(GleanTable):
             # iterate through app_info to get all channels
             included_channel_apps = []
             included_channel_views = []
-            for channel_app in app_info:
+            for channel_app in app_ids_info:
                 channel_dataset = channel_app["bq_dataset_family"]
                 channel_dataset_view = f"{channel_dataset}.{view_name}"
 
                 if channel_dataset_view in ignored_pings:
                     continue
 
-                schema = Schema.for_table(
-                    "moz-fx-data-shared-prod",
-                    channel_dataset,
-                    view_name,
-                    partitioned_by="submission_timestamp",
-                    use_cloud_function=use_cloud_function,
-                    id_token=id_token,
+                # look for schema in output_dir because bqetl generate all runs stable_views first
+                sql_dir = (
+                    output_dir
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
                 )
+                existing_schema_path = (
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
+                )
+
+                schema = None
+                if existing_schema_path.exists():
+                    schema = Schema.from_schema_file(existing_schema_path)
+
+                if (
+                    schema is None
+                    or "fields" not in schema.schema
+                    or schema.schema["fields"] == []
+                ):
+                    # fetch schema from BQ if not present in the repo, or empty
+                    for attempt in range(3):
+                        # try 3 times to account for transient errors
+                        try:
+                            schema = Schema.for_table(
+                                "moz-fx-data-shared-prod",
+                                channel_dataset,
+                                view_name,
+                                partitioned_by="submission_timestamp",
+                                use_cloud_function=use_cloud_function,
+                                id_token=id_token,
+                            )
+                            if schema.schema["fields"] != []:
+                                break
+                            print(
+                                f"Attempt {attempt + 1}: Empty schema for {channel_dataset_view}"
+                            )
+                        except Exception as e:
+                            print(
+                                f"Attempt {attempt + 1}: Failed to get schema for {channel_dataset_view}: {e}"
+                            )
+
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
                 if schema.schema["fields"] == []:
-                    # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(f"Cannot get schema for `{channel_dataset_view}`; Skipping")
-                    continue
+                    raise Exception(f"Cannot get schema for `{channel_dataset_view}`")
 
                 try:
                     unioned_schema.merge(

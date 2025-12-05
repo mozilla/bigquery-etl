@@ -21,3 +21,5 @@ SELECT
   IF(num_days_active_day_2_7 > 1 AND search_count > 0, TRUE, FALSE) AS is_early_engagement,
 FROM
   `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date ASC) = 1

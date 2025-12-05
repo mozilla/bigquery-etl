@@ -34,7 +34,6 @@ syndication:
       - error
       - perfherder
       - perfherder_alert
-      - person_mozilla_com
       - pulse_task
       - resource_monitor
       - task_definition

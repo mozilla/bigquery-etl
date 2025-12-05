@@ -2,10 +2,10 @@
 WITH
   -- get past minidump hashes to remove duplicates from current day
   -- keep all empty and null minidumps
-  {% for table_name, fields in tables.items() %}
-    past_minidumps_{{ table_name.split('.')[1] }} AS (
+  past_minidumps AS (
+    {% for table_name, fields in tables.items() %}
       SELECT
-        DISTINCT(metrics.string.crash_minidump_sha256_hash) AS minidump_hash
+        metrics.string.crash_minidump_sha256_hash AS past_minidump_hash
       FROM
        `{{ table_name }}`
       WHERE
@@ -13,32 +13,45 @@ WITH
         -- hash of empty dump
         AND metrics.string.crash_minidump_sha256_hash != 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
         AND metrics.string.crash_minidump_sha256_hash IS NOT NULL
-    )
-    {% if not loop.last %}
-      ,
-    {% endif %}
-  {% endfor %}
-{% for table_name, fields in tables.items() %}
-  SELECT
-    {{ fields }},
-  FROM
-   `{{ table_name }}`
-  LEFT JOIN
-    past_minidumps_{{ table_name.split('.')[1] }}
-  ON
-    minidump_hash = metrics.string.crash_minidump_sha256_hash
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND minidump_hash IS NULL
-  -- dedupe current day
-  QUALIFY
-    metrics.string.crash_minidump_sha256_hash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-    OR metrics.string.crash_minidump_sha256_hash IS NULL
-    OR ROW_NUMBER() OVER(
-      PARTITION BY metrics.string.crash_minidump_sha256_hash
-      ORDER BY submission_timestamp
-    ) = 1
-  {% if not loop.last %}
-    UNION ALL
-  {% endif %}
-{% endfor %}
+      {% if not loop.last %}
+        UNION ALL
+      {% endif %}
+    {% endfor %}
+  ),
+  past_minidumps_deduped AS (
+    SELECT
+      DISTINCT(past_minidump_hash) AS past_minidump_hash
+    FROM
+      past_minidumps
+  ),
+  unioned_pings AS (
+    {% for table_name, fields in tables.items() %}
+      SELECT
+        {{ fields }},
+      FROM
+       `{{ table_name }}`
+      {% if not loop.last %}
+        UNION ALL
+      {% endif %}
+    {% endfor %}
+  )
+
+SELECT
+  unioned_pings.*
+FROM
+  unioned_pings
+LEFT JOIN
+  past_minidumps_deduped
+ON
+  past_minidump_hash = metrics.string.crash_minidump_sha256_hash
+WHERE
+  past_minidump_hash IS NULL
+  AND DATE(submission_timestamp) = @submission_date
+-- dedupe current day
+QUALIFY
+  metrics.string.crash_minidump_sha256_hash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  OR metrics.string.crash_minidump_sha256_hash IS NULL
+  OR ROW_NUMBER() OVER(
+    PARTITION BY metrics.string.crash_minidump_sha256_hash
+    ORDER BY submission_timestamp
+  ) = 1

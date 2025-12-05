@@ -47,4 +47,3 @@ bigquery:
     - channel
     - first_reported_country
     - distribution_id
-references: {}

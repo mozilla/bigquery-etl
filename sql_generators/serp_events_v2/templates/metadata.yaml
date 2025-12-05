@@ -1,12 +1,16 @@
 friendly_name: Serp Events
 description: |-
-  Each row in this table represents one `serp.impression` event, with information from associated `serp.ad_impression`, `serp.engagement`, and `serp.abandonment` events appended in the same row, indexed by `impression_id`.
-  This table operates at 1 day lag, so today's job run populates the partition for 2 days ago rather than yesterday. Events associated with a given `impression_id` may be submitted some time after the original `impression` event, and this lag is intended to capture enough events associated with each impression.
+  Each row in this table represents one `serp.impression` event, with information from associated `serp.ad_impression`,
+  `serp.engagement`, and `serp.abandonment` events appended in the same row, indexed by `impression_id`.
+  This table operates at 1 day lag, so today's job run populates the partition for 2 days ago rather than yesterday.
+  Events associated with a given `impression_id` may be submitted some time after the original `impression` event,
+  and this lag is intended to capture enough events associated with each impression.
   A SERP impression has either 1 or more engagements, or an abandonment reason. In either case, it has 0 or more component impressions.
 owners:
 - akommasani@mozilla.com
 - pissac@mozilla.com
-- dzeber@mozilla.com
+- kbammarito@mozilla.com
+- betling@mozilla.com
 labels:
   incremental: true
   schedule: daily
@@ -21,7 +25,7 @@ scheduling:
     (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
     }}{% endraw %}
   parameters:
-    - >-
+  - >-
       {% raw %}submission_date:DATE:{{ds}}{% endraw %}
   query_file_path:
     # explicit query file path is necessary because the destination table
@@ -35,5 +39,5 @@ bigquery:
     expiration_days: 775
   clustering:
     fields:
-      - normalized_channel
-      - sample_id
+    - normalized_channel
+    - sample_id

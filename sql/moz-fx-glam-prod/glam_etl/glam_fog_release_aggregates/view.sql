@@ -4,12 +4,19 @@ CREATE OR REPLACE VIEW
       SELECT
         * EXCEPT (percentiles, non_norm_percentiles),
         IF(
-          percentiles IS NOT NULL,
+          percentiles IS NOT NULL
+          OR metric_type = "boolean",
           NULL,
           mozfun.glam.histogram_cast_struct(histogram)
         ) AS struct_histogram,
         IF(
-          metric_type IN ("counter", "labeled_counter", "dual_labeled_counter", "quantity")
+          metric_type IN (
+            "counter",
+            "labeled_counter",
+            "dual_labeled_counter",
+            "quantity",
+            "boolean"
+          )
           OR non_norm_percentiles IS NOT NULL,
           NULL,
           mozfun.glam.histogram_cast_struct(non_norm_histogram)
@@ -42,7 +49,6 @@ CREATE OR REPLACE VIEW
           "shopping.settings.user_has_onboarded",
           "top_sites.contile_tile_id"
         )
-        AND metric_type != "boolean"
     ),
     calculated_percentiles AS (
       SELECT
@@ -102,7 +108,13 @@ CREATE OR REPLACE VIEW
       total_sample,
       non_norm_histogram,
       IF(
-        metric_type IN ("counter", "labeled_counter", "dual_labeled_counter", "quantity"),
+        metric_type IN (
+          "counter",
+          "labeled_counter",
+          "dual_labeled_counter",
+          "quantity",
+          "boolean"
+        ),
         percentiles,
         non_norm_percentiles
       ) AS non_norm_percentiles

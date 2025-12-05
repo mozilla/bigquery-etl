@@ -18,6 +18,7 @@ fields:
 - name: first_run_date
   type: DATE
   mode: NULLABLE
+  description: The date of the first run of the application.
 - name: durations
   type: INTEGER
   mode: NULLABLE
@@ -41,7 +42,8 @@ fields:
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
-  description: The optional Android specific SDK version of the software running on this hardware device.
+  description: The optional Android specific SDK version of the software running on
+    this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -49,8 +51,8 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
-  description: Name of the city in which the activity took place, as determined
-    by the IP geolocation.
+  description: Name of the city in which the activity took place, as determined by
+    the IP geolocation.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -69,25 +71,33 @@ fields:
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
+  description: The manufacturer of the device the application is running on.
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on.
+    On Android, this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL".
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
-  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
+  description: The version of the Glean SDK at the time the ping was collected (e.g.
+    25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date when the server first received a ping from this client.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: distribution_id
   type: STRING
   mode: NULLABLE

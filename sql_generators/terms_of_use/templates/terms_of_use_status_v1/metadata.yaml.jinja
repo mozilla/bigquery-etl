@@ -1,0 +1,28 @@
+# {{ header }}
+friendly_name: Terms of Use - Status
+description: |-
+  This dataset contains the most recent status
+
+  Cluster by: sample_id
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: {{ dag_name }}
+  task_group: {{ app_name }}
+  depends_on_past: true
+  date_partition_parameter: null
+  {%- raw %}
+  parameters:
+    - submission_date:DATE:{{ds}}
+  {%- endraw %}
+bigquery:
+  clustering:
+    fields:
+      - sample_id
+monitoring:
+  enabled: true

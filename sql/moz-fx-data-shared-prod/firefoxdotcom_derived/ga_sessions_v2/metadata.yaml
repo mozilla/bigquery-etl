@@ -26,7 +26,6 @@ bigquery:
     fields:
     - ga_client_id
     - country
-references: {}
 require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer

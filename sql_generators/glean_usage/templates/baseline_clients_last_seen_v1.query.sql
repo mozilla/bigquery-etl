@@ -17,6 +17,9 @@ SELECT
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
   * EXCEPT(isp),
+  {% if app_name == "firefox_desktop" %}
+  CAST(NULL AS INT64) AS days_interacted_bits
+  {% endif %}
 FROM
   `{{ daily_table }}`
 WHERE
@@ -46,9 +49,15 @@ WITH _current AS (
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
     {% endif %}
     isp,
+    CAST( browser_engagement_uri_count >= 1 AS INT64) AS days_visited_1_uri_bits,
+    active_hours_sum,
+    {% if app_name == "firefox_desktop" %}
+    CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
+    {% endif %}
     * EXCEPT(
-        submission_date, 
-        isp
+        submission_date,
+        isp,
+        active_hours_sum
       )
   FROM
     `{{ daily_table }}`
@@ -66,6 +75,11 @@ _previous AS (
     {% endif %}
     days_created_profile_bits,
     isp,
+    days_visited_1_uri_bits,
+    active_hours_sum,
+    {% if app_name == "firefox_desktop" %}
+    days_interacted_bits,
+    {% endif %}
     * EXCEPT (
         submission_date,
         days_seen_bits,
@@ -74,8 +88,13 @@ _previous AS (
         days_desktop_active_bits,
         {% endif %}
         days_created_profile_bits,
-        isp
-      ),
+        isp,
+        days_visited_1_uri_bits,
+        {% if app_name == "firefox_desktop" %}
+        days_interacted_bits,
+        {% endif %}
+        active_hours_sum
+      )
   FROM
     `{{ last_seen_table }}`
   WHERE
@@ -101,6 +120,12 @@ SELECT
       ) AS days_{{ ut }}_bits
       {{ "," if not loop.last }}
     {% endfor %}
+    {% if app_name == "firefox_desktop" %}
+      , udf.combine_adjacent_days_28_bits(
+        _previous.days_interacted_bits,
+        _current.days_interacted_bits
+      ) AS days_interacted_bits
+    {% endif %}
   )
 FROM
   _current

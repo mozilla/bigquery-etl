@@ -1,0 +1,10 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the glean telemetry ping is received on the server side AND the client
+    was a daily active user on this date.

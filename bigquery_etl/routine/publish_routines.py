@@ -6,6 +6,7 @@ import json
 import os
 import re
 from argparse import ArgumentParser
+from functools import partial
 
 from google.cloud import storage  # type: ignore
 from google.cloud import bigquery
@@ -14,6 +15,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.routine.parse_routine import accumulate_dependencies, read_routine_dir
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
+from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 OPTIONS_RE = re.compile(r"OPTIONS(\n|\s)*\(")
@@ -57,6 +59,13 @@ parser.add_argument(
     default=False,
     help="The published UDFs should be publicly accessible.",
 )
+parser.add_argument(
+    "--parallelism",
+    "-p",
+    type=int,
+    default=8,
+    help="Number of parallel processes to use for publishing routines.",
+)
 standard_args.add_log_level(parser)
 parser.add_argument(
     "pattern",
@@ -86,6 +95,7 @@ def main():
             args.gcs_path,
             args.public,
             pattern=args.pattern,
+            parallelism=args.parallelism,
         )
 
 
@@ -101,6 +111,30 @@ def skipped_routines():
     }
 
 
+def _publish_udf_worker(
+    udf_name,
+    followup_queue,
+    raw_routines,
+    project_id,
+    gcs_bucket,
+    gcs_path,
+    public,
+    dry_run,
+):
+    """Worker function for publishing a single UDF."""
+    client = bigquery.Client(project_id)
+    publish_routine(
+        raw_routines[udf_name],
+        client,
+        project_id,
+        gcs_bucket,
+        gcs_path,
+        list(raw_routines.keys()),
+        public,
+        dry_run=dry_run,
+    )
+
+
 def publish(
     target,
     project_id,
@@ -110,10 +144,9 @@ def publish(
     public,
     pattern=None,
     dry_run=False,
+    parallelism=8,
 ):
     """Publish routines in the provided directory."""
-    client = bigquery.Client(project_id)
-
     if dependency_dir and os.path.exists(dependency_dir):
         push_dependencies_to_gcs(
             gcs_bucket, gcs_path, dependency_dir, os.path.basename(target)
@@ -121,7 +154,7 @@ def publish(
 
     raw_routines = read_routine_dir(target)
 
-    published_routines = []
+    all_udfs_to_publish = set()
 
     for raw_routine in (
         raw_routines if pattern is None else fnmatch.filter(raw_routines, pattern)
@@ -134,20 +167,41 @@ def publish(
 
         for dep in udfs_to_publish:
             if (
-                dep not in published_routines
+                dep not in all_udfs_to_publish
                 and raw_routines[dep].filepath not in skipped_routines()
             ):
-                publish_routine(
-                    raw_routines[dep],
-                    client,
-                    project_id,
-                    gcs_bucket,
-                    gcs_path,
-                    raw_routines.keys(),
-                    public,
-                    dry_run=dry_run,
-                )
-                published_routines.append(dep)
+                all_udfs_to_publish.add(dep)
+
+    unique_udfs_to_publish = list(all_udfs_to_publish)
+    dependencies = {}
+    all_udfs = set(unique_udfs_to_publish)
+
+    for udf in unique_udfs_to_publish:
+        udf_deps = accumulate_dependencies([], raw_routines, udf)
+        dependencies[udf] = set(
+            dep for dep in udf_deps if dep in all_udfs and dep != udf
+        )
+
+    publish_udf = partial(
+        _publish_udf_worker,
+        raw_routines=raw_routines,
+        project_id=project_id,
+        gcs_bucket=gcs_bucket,
+        gcs_path=gcs_path,
+        public=public,
+        dry_run=dry_run,
+    )
+
+    # use topological sorter to publish UDFs in order;
+    # in theory UDFs could be published in parallel, however if a deploy fails
+    # it can leave UDFs in a broken state (e.g. referencing a UDF that failed to publish)
+    if parallelism > 1 and unique_udfs_to_publish:
+        sorter = ParallelTopologicalSorter(dependencies, parallelism=parallelism)
+        sorter.map(publish_udf)
+    else:
+        # sequential publishing fallback
+        for udf_name in unique_udfs_to_publish:
+            publish_udf(udf_name, None)
 
 
 def publish_routine(

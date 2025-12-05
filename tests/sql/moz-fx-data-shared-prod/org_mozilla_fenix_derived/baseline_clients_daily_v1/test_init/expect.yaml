@@ -10,6 +10,7 @@
   is_new_profile: false
   browser_engagement_active_ticks: 0
   browser_engagement_uri_count: 0
+  active_hours_sum: 0
 - submission_date: 2021-04-01
   client_id: client-2
   sample_id: 0
@@ -21,6 +22,7 @@
   is_new_profile: false
   browser_engagement_active_ticks: 0
   browser_engagement_uri_count: 0
+  active_hours_sum: 0
 - submission_date: 2021-04-02
   client_id: client-3
   sample_id: 0
@@ -32,3 +34,4 @@
   is_new_profile: true
   browser_engagement_active_ticks: 0
   browser_engagement_uri_count: 0
+  active_hours_sum: 0

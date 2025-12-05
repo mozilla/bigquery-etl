@@ -26,12 +26,22 @@ monitoring:
   - 463
   - 508
   - 509
+  stable_tables_monitoring:
+    firefox_desktop_stable:
+    - baseline_v1
+    org_mozilla_firefox_stable:
+    - baseline_v1
+    org_mozilla_ios_firefox_stable:
+    - baseline_v1
+    telemetry_stable:
+    - main_v4
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
+  cache_ttl_seconds: 900  # Cache dry run results for 15 minutes (900 seconds)
   skip:
   ## skip all data-observability-dev queries due to CI lacking permissions in that project.
   # TODO: once data observability platform assessment concludes this should be removed.
@@ -53,6 +63,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_backend_cirrus_derived/delete_events_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
@@ -340,6 +351,9 @@ metadata:
   validation:
     skip:
     - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+  deploy:
+    skip:
+    - sql/moz-fx-data-shared-prod/*_stable
 
 generate:
   glean_usage:
@@ -562,27 +576,15 @@ generate:
     - firefox_desktop_background_tasks
 
 geo_deprecation:
-  include_app_ids:
-  - org_mozilla_ios_klar
-  - org_mozilla_klar
-  - org_mozilla_ios_focus
-  - org_mozilla_focus
-  - org_mozilla_focus_beta
-  - org_mozilla_focus_nightly
-  - org_mozilla_ios_firefox
-  - org_mozilla_ios_firefoxbeta
-  - org_mozilla_ios_fennec
-  - org_mozilla_firefox
-  - org_mozilla_firefox_beta
-  - org_mozilla_fenix
-  - org_mozilla_fenix_nightly
-  - org_mozilla_fennec_aurora
-  - firefox_desktop
-  - firefox_desktop_background_update
-  - firefox_desktop_background_defaultagent
-  - firefox_desktop_background_tasks
+  skip_apps:
+  - ads_backend
+  - mozilla_vpn
+  - mozillavpn_backend_cirrus
+  - accounts_backend
+  - accounts_frontend
   skip_tables:
   - newtab
+  - newtab_content
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

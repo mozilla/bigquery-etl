@@ -212,7 +212,7 @@ SELECT
   unormalized_weight * normalization_factor.factor AS weight,
   position,
   tile_format,
-  NULL AS section_position,
+  CAST(NULL AS INTEGER) AS section_position,
   impressions
 FROM
   stories_weights

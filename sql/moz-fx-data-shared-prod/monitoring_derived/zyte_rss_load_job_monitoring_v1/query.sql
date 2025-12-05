@@ -14,7 +14,10 @@ WITH base AS (
     AND DATE(creation_time) = @submission_date
     AND destination_table IS NOT NULL
     AND (
-      (destination_table.dataset_id = 'mozsoc_ml_prod_articles' AND destination_table.table_id = 'zyte_cache')
+      (
+        destination_table.dataset_id = 'mozsoc_ml_prod_articles'
+        AND destination_table.table_id = 'zyte_cache'
+      )
       OR (
         destination_table.dataset_id = 'mozsoc_ml_prod_rss_news'
         AND destination_table.table_id = 'rss_feed_items'

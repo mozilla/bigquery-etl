@@ -1,8 +1,11 @@
-friendly_name: Www Site Events Metrics
+friendly_name: WWW Site Events Metrics V1
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregated metrics on non-page view events on www.firefox.com
+  Sourced from Google Analytics 4 (GA4) data
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

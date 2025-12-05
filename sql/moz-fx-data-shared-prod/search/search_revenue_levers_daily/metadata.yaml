@@ -1,6 +1,7 @@
 friendly_name: Search Revenue Levers Daily
 description: |-
-  Please provide a description for the query
+  Daily metrics identified as search revenue levers, including eligible DOU,
+  DOU_engaged_w_sap, sap, tagged_sap, tagged_follow_on, search_with_ads, and ad_clicks.
 owners: []
 labels: {}
 workgroup_access:

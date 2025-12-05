@@ -1,8 +1,10 @@
 friendly_name: Blogs Landing Page Summary
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily summary of Google analytics data for blog.mozilla.org landing page
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,17 @@
-friendly_name: Clients Activation
+friendly_name: Clients Activation (Firefox iOS)
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Mobile activation metric used for Marketing campaign performance.
+  A record per client indicating whether they became activated.
+
+  Activated means, a week has elapsed since the client was first seen
+  and within days 2 and 7 they had at least one instance of activity along
+  along with at least 1 search count.
+owners:
+- vsabino@mozilla.com
+- kik@mozilla.com
+labels:
+  owner1: vsabino
+  owner2: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Tos Rollout Enrollments
+friendly_name: Terms of Service Rollout Enrollments
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A client-level dataset from clients enrolled in the Android ToS scaled rollout experiments.
+owners:
+- dberry@mozilla.com
+labels:
+  owner1: dberry
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

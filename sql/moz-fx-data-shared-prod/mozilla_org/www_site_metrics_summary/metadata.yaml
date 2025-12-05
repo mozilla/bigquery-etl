@@ -1,8 +1,10 @@
-friendly_name: Www Site Metrics Summary
+friendly_name: WWW Site Metrics Summary
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Summary of site metrics from Google Analytics (specifically Google Analytics 4)
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

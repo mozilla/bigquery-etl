@@ -1,8 +1,10 @@
-friendly_name: Www Site Downloads
+friendly_name: WWW Site Downloads
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Data about downloads from firefox.com from GA4
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

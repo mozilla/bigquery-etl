@@ -1,8 +1,13 @@
-friendly_name: Review Checker Events
+friendly_name: Firefox iOS review checker events data
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  The view includes telemetry related to the review checker sidebar including user
+  interaction with the sidebar, open and closed states, and the status of reviews (stale, unavailable, etc.)
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: betling
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

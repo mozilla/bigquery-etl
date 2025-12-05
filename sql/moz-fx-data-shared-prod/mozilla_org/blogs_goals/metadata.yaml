@@ -1,8 +1,10 @@
 friendly_name: Blogs Goals
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Intermediate table containing key metrics for blog.mozilla.org sourced from Google Analytics 4
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

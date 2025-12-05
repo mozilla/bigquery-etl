@@ -1,8 +1,10 @@
-friendly_name: Www Site Landing Page Metrics
+friendly_name: WWW Site Landing Page Metrics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregated metrics for the www.mozilla.org landing page sourced from Google Analytics 4 (GA4)
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

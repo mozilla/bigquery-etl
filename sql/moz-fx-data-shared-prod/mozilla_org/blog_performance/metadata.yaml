@@ -1,8 +1,10 @@
 friendly_name: Blog Performance
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Blog page engagement metrics by page title and date for blog.mozilla.org pages.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

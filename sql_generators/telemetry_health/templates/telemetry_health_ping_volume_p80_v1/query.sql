@@ -1,15 +1,15 @@
 -- Query for telemetry health ping volume p80 across all applications
-{% for app in applications %}
+{% for app_id in applications %}
 (
   WITH sample AS (
     SELECT
-      "{{ application_names[app] }}" AS application,
+      "{{ application_names[app_id] }}" AS application,
       normalized_channel AS channel,
       DATE(submission_timestamp) AS submission_date,
       client_info.client_id,
       COUNT(1) AS ping_count
     FROM
-      `{{ project_id }}.{{ app }}_stable.baseline_v1`
+      `{{ project_id }}.{{ app_id }}_stable.baseline_v1`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

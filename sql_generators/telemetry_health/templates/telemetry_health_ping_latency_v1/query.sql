@@ -1,15 +1,15 @@
 -- Query for telemetry health ping latency across all applications
-{% for app in applications %}
+{% for app_id in applications %}
 (
   WITH sample AS (
     SELECT
-      "{{ application_names[app] }}" AS application,
+      "{{ application_names[app_id] }}" AS application,
       normalized_channel AS channel,
       metadata.header.parsed_date,
       ping_info.parsed_end_time,
       submission_timestamp,
     FROM
-      `{{ project_id }}.{{ app }}.baseline`
+      `{{ project_id }}.{{ app_id }}.baseline`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

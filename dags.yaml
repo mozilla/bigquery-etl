@@ -2557,7 +2557,7 @@ bqetl_terms_of_use:
   tags:
     - impact/tier_2
 
-bqetl_report_content_hourly:
+bqetl_newtab_hourly:
   default_args:
     depends_on_past: false
     email_on_failure: true
@@ -2566,7 +2566,7 @@ bqetl_report_content_hourly:
     owner: lmcfall@mozilla.com
     retries: 1
     retry_delay: 10m
-    start_date: '2025-12-03'
+    start_date: '2025-12-05'
   description: Hourly tables for content reporting
   repo: bigquery-etl
   schedule_interval: hourly

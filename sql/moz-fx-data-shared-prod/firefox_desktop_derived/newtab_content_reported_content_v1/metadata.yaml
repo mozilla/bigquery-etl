@@ -1,25 +1,16 @@
-friendly_name: Report Content Live
+friendly_name: Newtab-Content Reported Content
 description: |-
-  Reported organic content using the live tables.
-
-  For each report, we collect
-    submission date
-    card type
-    corpus item id
-    report reason
-    section
-    section position
-    title
-    topic
-    url
+  This table will be used by the content team to monitor organic content that users have reported on an hourly basis.
+  This will help assist the content team in identifying and removing problematic content faster. Data from the same day
+  will be reprocessed every hour until 1:00am the following day to allow for late arriving data. Therefore, data for that
+  day will first be available at 2:00am.
 owners:
 - lmcfall@mozilla.com
 labels:
   incremental: true
   schedule: hourly
-  shredder_mitigation: true
 scheduling:
-  dag_name: bqetl_report_content_hourly
+  dag_name: bqetl_newtab_hourly
   date_partition_parameter: null
   # We reprocess the same day every hour up until 1:00 the following day, to give
   # the live data time to come in
@@ -32,10 +23,6 @@ scheduling:
     submission_date:DATE:{{
     (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
     }}
-  query_file_path:
-    # explicit query file path is necessary because the destination table
-    # includes a partition identifier that is not in the path
-    sql/moz-fx-data-shared-prod/firefox_desktop_derived/report_content_live_v1/query.sql
 bigquery:
   time_partitioning:
     type: day

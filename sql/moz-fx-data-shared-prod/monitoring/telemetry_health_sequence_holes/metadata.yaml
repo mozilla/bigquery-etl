@@ -1,0 +1,16 @@
+friendly_name: Telemetry Health Sequence Holes
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.telemetry_health_sequence_holes_v1
+require_column_descriptions: false
+level: null

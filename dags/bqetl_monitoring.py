@@ -447,6 +447,50 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__telemetry_health_glean_errors__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_health_glean_errors__v1",
+        destination_table="telemetry_health_glean_errors_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tlong@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "tlong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    monitoring_derived__telemetry_health_ping_latency__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_health_ping_latency__v1",
+        destination_table="telemetry_health_ping_latency_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tlong@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "tlong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    monitoring_derived__telemetry_health_ping_volume_p80__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_health_ping_volume_p80__v1",
+        destination_table="telemetry_health_ping_volume_p80_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tlong@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "tlong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    monitoring_derived__telemetry_health_sequence_holes__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_health_sequence_holes__v1",
+        destination_table="telemetry_health_sequence_holes_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tlong@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "tlong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
         task_id="monitoring_derived__telemetry_missing_columns__v3",
         destination_table="telemetry_missing_columns_v3",
@@ -525,6 +569,22 @@ with DAG(
     )
 
     monitoring_derived__table_partition_expirations__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__telemetry_health_glean_errors__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__telemetry_health_ping_latency__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__telemetry_health_ping_volume_p80__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__telemetry_health_sequence_holes__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

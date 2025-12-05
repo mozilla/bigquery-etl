@@ -3114,6 +3114,19 @@ fields:
         update status file.
 
         '
+    - name: web_push_declarative
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format.
+
+        '
+    - name: web_push_declarative_mutable
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format with
+        mutable: true.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3486,7 +3499,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

@@ -3203,6 +3203,19 @@ fields:
       description: 'Number of times about:keyboard has been opened.
 
         '
+    - name: web_push_declarative
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format.
+
+        '
+    - name: web_push_declarative_mutable
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format with
+        mutable: true.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

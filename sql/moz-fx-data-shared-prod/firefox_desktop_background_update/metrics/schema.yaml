@@ -2228,6 +2228,19 @@ fields:
         update status file.
 
         '
+    - name: web_push_declarative
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format.
+
+        '
+    - name: web_push_declarative_mutable
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages in the Declarative Web Push format with
+        mutable: true.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

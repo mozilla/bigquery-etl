@@ -10,7 +10,7 @@ description: |-
   Related Documentation:
   - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
   - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9516
-  - Data Model README: ./README.md
+  - README: https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/glean_telemetry_derived/cohort_daily_statistics_v1/README.md
 owners:
 - mhirose@mozilla.com
 labels:

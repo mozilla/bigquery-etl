@@ -2692,7 +2692,15 @@ SELECT
       metrics.counter.use_counter_worker_shared_notificationoptions_timestamp,
       metrics.counter.use_counter_worker_shared_notificationoptions_vibrate,
       metrics.counter.use_counter_deprecated_ops_doc_ckeditor4_compat_hack,
-      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack
+      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_doc_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5408,7 +5416,15 @@ SELECT
       metrics.counter.use_counter_worker_shared_notificationoptions_timestamp,
       metrics.counter.use_counter_worker_shared_notificationoptions_vibrate,
       metrics.counter.use_counter_deprecated_ops_doc_ckeditor4_compat_hack,
-      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack
+      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_doc_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8124,7 +8140,15 @@ SELECT
       metrics.counter.use_counter_worker_shared_notificationoptions_timestamp,
       metrics.counter.use_counter_worker_shared_notificationoptions_vibrate,
       metrics.counter.use_counter_deprecated_ops_doc_ckeditor4_compat_hack,
-      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack
+      metrics.counter.use_counter_deprecated_ops_page_ckeditor4_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_doc_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_doc_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

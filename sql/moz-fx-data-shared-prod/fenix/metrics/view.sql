@@ -368,7 +368,9 @@ SELECT
       metrics.counter.terms_of_use_impression_count,
       metrics.counter.terms_of_use_remind_me_later_count,
       metrics.counter.media_mkv_content_count,
-      metrics.counter.update_state_write_failure
+      metrics.counter.update_state_write_failure,
+      metrics.counter.web_push_declarative,
+      metrics.counter.web_push_declarative_mutable
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2401,7 +2403,9 @@ SELECT
       metrics.counter.terms_of_use_impression_count,
       metrics.counter.terms_of_use_remind_me_later_count,
       metrics.counter.media_mkv_content_count,
-      metrics.counter.update_state_write_failure
+      metrics.counter.update_state_write_failure,
+      metrics.counter.web_push_declarative,
+      metrics.counter.web_push_declarative_mutable
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4454,7 +4458,9 @@ SELECT
       metrics.counter.terms_of_use_impression_count,
       metrics.counter.terms_of_use_remind_me_later_count,
       metrics.counter.media_mkv_content_count,
-      metrics.counter.update_state_write_failure
+      metrics.counter.update_state_write_failure,
+      metrics.counter.web_push_declarative,
+      metrics.counter.web_push_declarative_mutable
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

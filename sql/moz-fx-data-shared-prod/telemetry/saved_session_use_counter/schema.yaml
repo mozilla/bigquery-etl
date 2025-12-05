@@ -11709,6 +11709,38 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used CKEditor4CompatHack
+    - name: use_counter2_deprecated_mozlockorientation_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MozlockorientationDeprecated
+    - name: use_counter2_deprecated_mozlockorientation_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MozlockorientationDeprecated
+    - name: use_counter2_deprecated_mozorientation_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MozorientationDeprecated
+    - name: use_counter2_deprecated_mozorientation_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MozorientationDeprecated
+    - name: use_counter2_deprecated_mozorientationchange_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MozorientationchangeDeprecated
+    - name: use_counter2_deprecated_mozorientationchange_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MozorientationchangeDeprecated
+    - name: use_counter2_deprecated_mozunlockorientation_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MozunlockorientationDeprecated
+    - name: use_counter2_deprecated_mozunlockorientation_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MozunlockorientationDeprecated
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23274,6 +23306,38 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used CKEditor4CompatHack
+        - name: use_counter2_deprecated_mozlockorientation_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MozlockorientationDeprecated
+        - name: use_counter2_deprecated_mozlockorientation_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MozlockorientationDeprecated
+        - name: use_counter2_deprecated_mozorientation_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MozorientationDeprecated
+        - name: use_counter2_deprecated_mozorientation_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MozorientationDeprecated
+        - name: use_counter2_deprecated_mozorientationchange_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MozorientationchangeDeprecated
+        - name: use_counter2_deprecated_mozorientationchange_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MozorientationchangeDeprecated
+        - name: use_counter2_deprecated_mozunlockorientation_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MozunlockorientationDeprecated
+        - name: use_counter2_deprecated_mozunlockorientation_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MozunlockorientationDeprecated
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

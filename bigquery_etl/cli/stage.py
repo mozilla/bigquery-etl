@@ -295,7 +295,7 @@ def _view_dependencies(artifact_files, sql_dir):
                     )
                 project, dataset, name = dependency_components
 
-                file_path = Path(view.path).parent.parent.parent / dataset / name
+                file_path = Path(sql_dir) / project / dataset / name
 
                 file_exists_for_dependency = False
                 for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:

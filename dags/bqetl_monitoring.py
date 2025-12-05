@@ -132,6 +132,21 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    bigeye__monitoring_derived__zyte_rss_load_job_monitoring__v1 = bigquery_bigeye_check(
+        task_id="bigeye__monitoring_derived__zyte_rss_load_job_monitoring__v1",
+        table_id="moz-fx-data-shared-prod.monitoring_derived.zyte_rss_load_job_monitoring_v1",
+        warehouse_id="1939",
+        owner="chelseybeck@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "chelseybeck@mozilla.com",
+            "kwindau@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
     glean_server_knob_experiments__v1 = bigquery_etl_query(
         task_id="glean_server_knob_experiments__v1",
         destination_table="glean_server_knob_experiments_v1",
@@ -502,6 +517,25 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__zyte_rss_load_job_monitoring__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__zyte_rss_load_job_monitoring__v1",
+        destination_table="zyte_rss_load_job_monitoring_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="chelseybeck@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "chelseybeck@mozilla.com",
+            "kwindau@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    bigeye__monitoring_derived__zyte_rss_load_job_monitoring__v1.set_upstream(
+        monitoring_derived__zyte_rss_load_job_monitoring__v1
+    )
+
     glean_server_knob_experiments__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )
@@ -590,4 +624,8 @@ with DAG(
 
     monitoring_derived__telemetry_missing_columns__v3.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__zyte_rss_load_job_monitoring__v1.set_upstream(
+        wait_for_monitoring_derived__jobs_by_organization__v1
     )

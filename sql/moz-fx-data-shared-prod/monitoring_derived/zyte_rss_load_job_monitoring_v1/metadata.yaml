@@ -1,0 +1,44 @@
+friendly_name: Zyte and RSS Feed Load Job Monitoring
+description: |-
+  Monitors daily success and failure counts for BigQuery LOAD jobs targeting
+  prod_articles.zyte_cache and prod_rss_news.rss_feed_items tables.
+  Used to alert when failures exceed ten percent of the BigQuery change table limit (200 failures/day).
+  Data is retained for 180 days for historical trending.
+owners:
+- chelseybeck@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: chelseybeck
+  dag: bqetl_monitoring
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 180.0
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
+references:
+  bigeye_custom_rules.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1
+monitoring:
+  enabled: true
+  collection: Home Newtab
+  partition_column: submission_date
+  partition_column_set: true
+  freshness:
+    blocking: false
+  volume:
+    blocking: false
+require_column_descriptions: false
+level: null

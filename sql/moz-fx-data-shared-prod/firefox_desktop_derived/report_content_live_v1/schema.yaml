@@ -11,6 +11,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: content identifier
+- name: report_reason
+  type: STRING
+  mode: NULLABLE
+  description: The reason selected by the user when reporting the content
 - name: section
   type: STRING
   mode: NULLABLE
@@ -19,10 +23,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: If click belongs in a section, the numeric position of the section
-- name: report_reason
-  type: STRING
-  mode: NULLABLE
-  description: The reason selected by the user when reporting the content
 - name: title
   type: STRING
   mode: NULLABLE

@@ -108,6 +108,8 @@ def generate(target_project, output_dir, use_cloud_function):
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
     mobile_checks_template = env.get_template("mobile_checks.sql")
+    # checks templates for BigEye
+    bigeye_checks_template = env.get_template("bigconfig.yml")
 
     for browser in Browsers:
         if browser.name == "firefox_desktop":
@@ -276,6 +278,18 @@ def generate(target_project, output_dir, use_cloud_function):
                 klar_ios_dataset=Browsers("Klar iOS").name,
                 klar_android_dataset=Browsers("Klar Android").name,
             )
+        ),
+        skip_existing=False,
+    )
+
+    # Write the BigEye config files
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+        basename="bigconfig.yml",
+        sql=bigeye_checks_template.render(
+                app_name=browser.name,
+                format=False,
         ),
         skip_existing=False,
     )

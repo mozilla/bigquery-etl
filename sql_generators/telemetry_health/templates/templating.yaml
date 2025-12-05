@@ -23,14 +23,10 @@ application_names:
 
 queries:
   telemetry_health_glean_errors_v1:
-    destination_dataset: monitoring_derived
     description: "Number of metrics (from metrics pings) with Glean errors affecting > 1% of sampled clients"
   telemetry_health_ping_latency_v1:
-    destination_dataset: monitoring_derived
     description: "Baseline ping latency percentiles (collection to submission, submission to ingestion)"
   telemetry_health_ping_volume_p80_v1:
-    destination_dataset: monitoring_derived
     description: "80th percentile of baseline ping count per client per day"
   telemetry_health_sequence_holes_v1:
-    destination_dataset: monitoring_derived
     description: "Percentage of sampled clients with sequence gaps in baseline pings (within single day)"

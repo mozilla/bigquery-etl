@@ -6,6 +6,8 @@ Each query combines data from Firefox Desktop, Firefox Android (Fenix), and Fire
 
 ## Generated Queries
 
+Generated tables are written to `monitoring_derived` with user-facing views in `monitoring`.
+
 - `glean_errors_v1`: Counts Glean metrics (from metrics pings) with recording errors exceeding 1% of sampled clients per day
 - `ping_latency_v1`: Reports latency percentiles (p95, median) for baseline pings: collection-to-submission, submission-to-ingestion, and collection-to-ingestion
 - `ping_volume_p80_v1`: 80th percentile of baseline ping count per client per day

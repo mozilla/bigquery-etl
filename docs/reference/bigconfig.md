@@ -6,7 +6,7 @@
 
 > [!IMPORTANT]
 > Please keep in mind that bigConfig managed metrics cannot be modified using the Bigeye UI. The same is true the other way around, metrics defined via the UI cannot be managed via bigConfig.
-> Please apply configuration files to tables -and not to views. For the majority of the data, defining Bigeye metrics on the table and the view is redundant, thus we expect the required checks to run in upstream tables of views. Additionally, metrics validate the data inserted into a table using its metadata, and insertions don’t apply to views.
+> Please apply configuration files to tables -and not to views. For the majority of the data, defining Bigeye metrics on the table and the view is redundant, thus we expect the required checks to run in upstream tables of views. Additionally, the default metrics for volume and freshness validate the data inserted into a table using its metadata, and insertions don’t apply to views.
 
 ---
 

@@ -1,9 +1,9 @@
 -- Query for telemetry health glean errors across all applications
-{% for app in applications %}
+{% for app_id in applications %}
 (
   WITH sample AS (
     SELECT
-      "{{ application_names[app] }}" AS application,
+      "{{ application_names[app_id] }}" AS application,
       client_info.client_id,
       normalized_channel,
       DATE(submission_timestamp) AS submission_date,
@@ -12,7 +12,7 @@
       metrics.labeled_counter.glean_error_invalid_state AS es,
       metrics.labeled_counter.glean_error_invalid_overflow AS eo
     FROM
-      `{{ project_id }}.{{ app }}_stable.metrics_v1`
+      `{{ project_id }}.{{ app_id }}_stable.metrics_v1`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

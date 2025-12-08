@@ -1,0 +1,7 @@
+friendly_name: Urlbar Events Daily
+description: |-
+  Each row in this table represents a daily summary statistic of impressions
+  and clicks per product result type per a host of meaningful dimensions.
+owners:
+- tbrooks@mozilla.com
+- akommasani@mozilla.com

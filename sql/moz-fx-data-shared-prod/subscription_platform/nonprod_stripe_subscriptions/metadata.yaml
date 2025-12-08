@@ -1,0 +1,5 @@
+friendly_name: Non-Production Stripe Subscriptions
+description: >
+  Non-production Stripe subscriptions.
+owners:
+  - srose@mozilla.com

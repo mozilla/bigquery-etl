@@ -4,6 +4,7 @@ import glob
 import logging
 import os
 from argparse import ArgumentParser
+from enum import Enum
 from pathlib import Path
 
 import click
@@ -25,7 +26,10 @@ standard_args.add_log_level(parser)
 CODEOWNERS_FILE = "CODEOWNERS"
 CHANGE_CONTROL_LABEL = "change_controlled"
 SHREDDER_MITIGATION_LABEL = "shredder_mitigation"
+LEVEL_LABEL = "level"
 ID_LEVEL_COLUMNS_FILE_PATH = Path(__file__).parent / "id_level_columns.yaml"
+BIGEYE_PREDEFINED_FILE = "bigconfig.yml"
+BIGEYE_CUSTOM_FILE = "bigeye_custom_rules.sql"
 
 
 def validate_public_data(metadata, path):
@@ -213,6 +217,152 @@ def validate_shredder_mitigation(query_dir, metadata):
                 )
                 return False
     return True
+
+
+def count_schema_fields(schema):
+    """Return the count of fields and how many have descriptions in a given BigQuery schema."""
+    if not schema or not isinstance(schema, (list, tuple)):
+        return (0, 0)
+
+    fields = descriptions = 0
+    base = list(schema)
+    while base:
+        field = base.pop()
+        fields += 1
+        if getattr(field, "description", None):
+            descriptions += 1
+        if hasattr(field, "fields") and field.fields:
+            base.extend(field.fields)
+    return fields, descriptions
+
+
+def find_bigeye_checks(query_path):
+    """Return True if bigeye metrics are present or detail of missing bigeye metrics or file."""
+    predefined_metrics = {"FRESHNESS", "VOLUME"}
+    bigeye_file_path = os.path.join(query_path, BIGEYE_PREDEFINED_FILE)
+    found_types = set()
+
+    if not os.path.exists(bigeye_file_path):
+        return False
+    with open(bigeye_file_path, "r") as f:
+        try:
+            content = yaml.safe_load(f)
+        except yaml.YAMLError:
+            click.echo("ERROR: Failed to read BigEye config.")
+            return False
+
+    stack = [content]
+    while stack:
+        obj = stack.pop()
+        if isinstance(obj, dict):
+            for v in obj.values():
+                stack.append(v)
+        elif isinstance(obj, list):
+            stack.extend(obj)
+        elif isinstance(obj, str):
+            if obj in predefined_metrics:
+                found_types.add(obj)
+
+    missing = predefined_metrics - found_types
+
+    if any(metric in missing for metric in predefined_metrics):
+        click.echo(f"ERROR: Missing Bigeye metrics: {missing}.")
+        return False
+    return True
+
+
+def validate_asset_level(query_dir, metadata):
+    """Check that the level assigned to the table or view complies with requirements.
+
+    Possible levels are only one of [gold, silver, bronze] or no level label.
+    """
+    is_table = os.path.exists(os.path.join(query_dir, "query.sql"))
+
+    class Requirements(Enum):
+        description = 1
+        unittests = 2
+        scheduler = 3
+        bigeye_predefined_metrics = 4
+        change_control = 5
+        column_descriptions_all = 6
+        column_descriptions_70_percent = 7
+
+    class LevelRequirements(Enum):
+        gold = [1, 2, 3, 4, 5, 6] if is_table else [1, 4, 5, 6, 7]
+        silver = [1, 2, 3, 4, 7] if is_table else [1, 4, 7]
+        bronze = [1]
+
+    results = {}
+    missing = []
+
+    if not metadata.level:
+        return True
+    else:
+        level = (
+            metadata.level[0] if isinstance(metadata.level, list) else metadata.level
+        )
+
+        # Check percentage of fields and nested fields with descriptions.
+        schema_file = Path(query_dir) / SCHEMA_FILE
+        if not schema_file.exists():
+            click.echo(
+                click.style(
+                    f"Table {query_dir} is missing the required schema.yaml.",
+                    fg="yellow",
+                )
+            )
+            return False
+        schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
+        fields, descriptions = count_schema_fields(schema)
+        results["column_descriptions_all"] = (
+            (descriptions / fields) == 1 if fields > 0 else False
+        )
+        results["column_descriptions_70_percent"] = (
+            (descriptions / fields) >= 0.7 if fields > 0 else False
+        )
+
+        # Check change control.
+        results["change_control"] = CHANGE_CONTROL_LABEL in metadata.labels
+        # Check table description.
+        results["description"] = (
+            metadata.description
+            and metadata.description != "Please provide a description for the query"
+        )
+
+        # Check unittest.
+        unittest_path = os.path.join("tests", query_dir)
+        results["unittests"] = os.path.exists(unittest_path) and any(
+            name.startswith("test_") for name in os.listdir(unittest_path)
+        )
+
+        # Check scheduler.
+        results["scheduler"] = (
+            metadata.scheduling is not None
+            and metadata.scheduling != {}
+            and metadata.scheduling["dag_name"] is not None
+        )
+
+        # Check BigEye predefined metrics.
+        results["bigeye_predefined_metrics"] = find_bigeye_checks(query_path=query_dir)
+
+        # Check if the level in the metadata complies with all requirements.
+        level_required_ids = LevelRequirements[level].value
+        required_items = [
+            Requirements(i)
+            for i in level_required_ids
+            if i in Requirements._value2member_map_
+        ]
+
+        missing = [item.name for item in required_items if not results.get(item.name)]
+
+        if missing:
+            click.echo(
+                f"❌ERROR. Metadata Level '{level}' not achieved. Missing: {', '.join(missing)}"
+            )
+            return False
+
+        click.echo(f"✅Metadata level {level} achieved!")
+        return True
 
 
 def validate_col_desc_enforced(query_dir, metadata):
@@ -436,6 +586,12 @@ def validate(target):
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
                         project_id=project_id,
+                    ):
+                        failed = True
+
+                    if not validate_asset_level(
+                        query_dir=root,
+                        metadata=metadata,
                     ):
                         failed = True
 

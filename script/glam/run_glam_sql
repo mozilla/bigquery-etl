@@ -75,7 +75,7 @@ function run_query {
         --parameter="max_sample_id:INT64:$max_sample_id" \
         --parameter="sample_size:INT64:$sample_size" \
         "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
-        "$(if $use_slots; then echo --reservation_id=glam; fi)" \
+        "$(if $use_slots; then echo --reservation_id=moz-fx-bigquery-reserv-global:glam; fi)" \
         < "$tmp"
 }
 

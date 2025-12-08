@@ -1,0 +1,4 @@
+friendly_name: Daily Connector Costs
+description: Daily Costs per Fivetran Connector
+owners:
+- srose@mozilla.com

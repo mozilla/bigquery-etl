@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG run instances
+description: List of DAG run instances
+owners:
+- kik@mozilla.com

@@ -1,0 +1,6 @@
+friendly_name: WWW Site Events Metrics V1
+description: |-
+  Aggregated metrics on non-page view events on www.firefox.com
+  Sourced from Google Analytics 4 (GA4) data
+owners:
+- mhirose@mozilla.com

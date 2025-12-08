@@ -1,0 +1,6 @@
+friendly_name: Deletion Request Volume
+description: 'A daily count of deletion request pings by document namespace
+
+  '
+owners:
+- ascholtz@mozilla.com

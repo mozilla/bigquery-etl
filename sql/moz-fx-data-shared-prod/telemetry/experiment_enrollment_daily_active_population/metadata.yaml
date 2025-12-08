@@ -1,0 +1,4 @@
+friendly_name: Experiment Enrollment Daily Active Population
+description: Daily active clients enrolled in experiments (glean only)
+owners:
+- ascholtz@mozilla.com

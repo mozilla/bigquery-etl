@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By OS Version
+description: Aggregate table with uninstalls by normalized OS version and date
+owners:
+- kwindau@mozilla.com

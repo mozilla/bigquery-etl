@@ -1,0 +1,4 @@
+friendly_name: Column Size
+description: Determines column sizes of specific tables and partitions via dry runs.
+owners:
+- ascholtz@mozilla.com

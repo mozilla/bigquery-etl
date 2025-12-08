@@ -1,0 +1,6 @@
+friendly_name: Funnel GA to Subscriptions
+description: 'Funnel from Google Analytics 4 to Mozilla VPN Subscriptions
+
+  '
+owners:
+- srose@mozilla.com

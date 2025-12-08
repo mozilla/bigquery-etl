@@ -36,3 +36,4 @@ bigquery:
     - attributed
     - country
     - country_name
+deprecated: true

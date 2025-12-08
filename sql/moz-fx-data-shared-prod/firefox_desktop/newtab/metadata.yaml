@@ -16,7 +16,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:mozsoc-ml/service
-  - workgroup:mozsocial/prefect
   - workgroup:pocket/prefect
 references:
   view.sql:

@@ -1,0 +1,8 @@
+friendly_name: Client LTV States
+description: 'LTV states by client, rather than by client-day.
+
+  Uses the most recently seen values for a client.
+
+  LTV here is number of ad-clicks.'
+owners:
+- frank@mozilla.com

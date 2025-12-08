@@ -23,8 +23,7 @@ class EventsFirstSeenTable(GleanTable):
         self.per_app_enabled = True
         self.per_app_id_enabled = True
         self.across_apps_enabled = False
-        self.cross_channel_template = "cross_channel.view.sql"
-        # self.cross_channel_template = "cross_channel_events_stream.query.sql"
+        self.cross_channel_template = "cross_channel_events_first_seen.view.sql"
         self.base_table_name = "events_v1"
 
     def generate_per_app_id(

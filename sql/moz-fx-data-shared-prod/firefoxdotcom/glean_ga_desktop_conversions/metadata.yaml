@@ -1,8 +1,10 @@
-friendly_name: Glean Ga Desktop Conversions
+friendly_name: Glean Google Analytics Desktop Conversions
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Query that pulls conversion event data for marketing campaigns
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

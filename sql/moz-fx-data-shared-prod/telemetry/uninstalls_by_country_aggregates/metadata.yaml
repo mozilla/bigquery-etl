@@ -1,8 +1,10 @@
 friendly_name: Uninstalls By Country Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates uninstalls by country and submission date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

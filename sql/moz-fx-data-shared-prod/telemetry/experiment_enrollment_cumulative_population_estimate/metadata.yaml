@@ -1,8 +1,10 @@
 friendly_name: Experiment Enrollment Cumulative Population Estimate
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Cumulative number of clients enrolled in experiments (glean only)
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

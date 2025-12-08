@@ -1,8 +1,10 @@
 friendly_name: Uninstalls By Browser Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table calculating uninstalls by browser and date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

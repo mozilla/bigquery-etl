@@ -1,8 +1,10 @@
 friendly_name: Fx Health Ind Windows Versions Mau Per Os
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table that calculates MAU, DAU and ER for different Windows versions
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

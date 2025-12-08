@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Webcompat
+friendly_name: ETP Disablement by Country and Date
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table of count of unique users setting ETP disablement by day/country; used in Firefox Health Indicator dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,11 @@
-friendly_name: Fx Cert Error Ssl Handshake Failure Rate By Country Os
+friendly_name: Firefox Cert Error Dashboard - SSL handshake failure rate by country
+  and os
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  SSL handshake failure rate per country
+owners:
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Conversion Event Categorization
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Classifies conversion events
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Funnel Fxa Login To Protected
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Funnel FxA Login to Protected
+description: |
+  Funnel from FxA Login to Protected with 2-day time limit
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

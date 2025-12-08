@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Np By Install Type
+friendly_name: Firefox Health Indicator - New Profiles by Installer Type
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates new profiles per installer type for Windows clients; used in Firefox Health Indicator dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

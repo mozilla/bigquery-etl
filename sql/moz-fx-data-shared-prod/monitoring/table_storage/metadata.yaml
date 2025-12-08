@@ -1,8 +1,10 @@
 friendly_name: Table Storage
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Runs daily and saves the size of tables in moz-fx-data-shared-prod
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

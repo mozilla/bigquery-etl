@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Bookmarks By Os Version
+friendly_name: Firefox Health Indicator - Bookmarks By Windows OS Version
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Bookmarks per DAU by OS and channel, app version >= 84
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

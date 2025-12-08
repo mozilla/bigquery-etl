@@ -1,8 +1,11 @@
-friendly_name: Fx Share Of Private Uri Loads
+friendly_name: Private browsing mode users dashboard - Share of private URI loads
+  for users of private windows
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Share of private URI loads for users of private windows
+owners:
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

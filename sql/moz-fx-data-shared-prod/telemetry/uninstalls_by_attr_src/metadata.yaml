@@ -1,8 +1,10 @@
-friendly_name: Uninstalls By Attr Src
+friendly_name: Uninstalls By Attribution Source
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table calculating # unique clients with uninstalls by attribution source and date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

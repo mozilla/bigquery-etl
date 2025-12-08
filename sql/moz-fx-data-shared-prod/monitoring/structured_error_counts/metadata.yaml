@@ -1,8 +1,10 @@
 friendly_name: Structured Error Counts
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  A daily count of structured errors by document namespace
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Survey Lifecycle 28d Desktop
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Mozilla VPN Lifecycle Survey - Early Usage - 28d - Desktop
+description: |
+  An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN Lifecycle Survey - Early Usage - 28d - Desktop
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

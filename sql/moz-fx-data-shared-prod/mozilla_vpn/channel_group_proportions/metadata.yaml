@@ -1,8 +1,10 @@
 friendly_name: Channel Group Proportions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  Count of new subscriptions by utm values, and by channel group as a percent of the total for that date
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

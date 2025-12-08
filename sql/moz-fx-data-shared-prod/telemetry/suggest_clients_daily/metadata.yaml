@@ -1,8 +1,10 @@
 friendly_name: Suggest Clients Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  daily client-level aggregates of Suggest-related fields
+owners:
+- rburwei@mozilla.com
+labels:
+  owner1: rburwei
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

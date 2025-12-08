@@ -1,8 +1,12 @@
-friendly_name: Mozregression Aggregates
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: mozregression aggregates
+description: |
+  Aggregated metrics of mozregression usage
+
+  Used by the mozregression public usage dashboard: https://observablehq.com/@wlach/mozregression-public-usage-dashboard
+owners:
+- wlachance@mozilla.com
+labels:
+  owner1: wlachance
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

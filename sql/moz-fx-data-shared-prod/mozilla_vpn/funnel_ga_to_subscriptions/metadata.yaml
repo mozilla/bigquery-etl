@@ -1,8 +1,10 @@
-friendly_name: Funnel Ga To Subscriptions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Funnel GA to Subscriptions
+description: |
+  Funnel from Google Analytics 4 to Mozilla VPN Subscriptions
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Uninstalls By Os Ver Aggregates
+friendly_name: Uninstalls By OS Version
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table with uninstalls by normalized OS version and date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

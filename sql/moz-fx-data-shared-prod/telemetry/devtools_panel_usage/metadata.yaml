@@ -1,8 +1,10 @@
 friendly_name: Devtools Panel Usage
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  A daily number of usages of different devtools, partitioned by day.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

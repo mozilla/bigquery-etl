@@ -1,8 +1,10 @@
-friendly_name: Subscriptions
+friendly_name: Firefox Relay Subscriptions
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Firefox Relay subscriptions
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

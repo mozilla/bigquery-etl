@@ -1,8 +1,10 @@
 friendly_name: Ltv States
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Fields required for retrieving LTV for clients.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

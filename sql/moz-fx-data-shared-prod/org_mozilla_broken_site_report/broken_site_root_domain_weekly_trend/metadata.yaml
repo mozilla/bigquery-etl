@@ -1,8 +1,10 @@
-friendly_name: Broken Site Root Domain Weekly Trend
+friendly_name: Broken site Root Domain Weekly Trends
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Weekly trend computation for broken site reports.
+owners:
+- gkatre@mozilla.com
+labels:
+  owner1: gkatre
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

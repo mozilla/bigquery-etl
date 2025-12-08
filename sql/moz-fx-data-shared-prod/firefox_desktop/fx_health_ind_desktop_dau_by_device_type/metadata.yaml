@@ -1,8 +1,10 @@
 friendly_name: Fx Health Ind Desktop Dau By Device Type
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table that calculates desktop DAU by device type
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

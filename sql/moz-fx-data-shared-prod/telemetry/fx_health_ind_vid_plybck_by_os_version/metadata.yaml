@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Vid Plybck By Os Version
+friendly_name: Fx Health Ind Vid Plybck By Os
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table of video playback minutes per user per OS
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

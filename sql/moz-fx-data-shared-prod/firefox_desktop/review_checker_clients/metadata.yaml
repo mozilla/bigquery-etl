@@ -1,8 +1,11 @@
-friendly_name: Review Checker Clients
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Review checker clients data
+description: ""
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: betling
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,13 @@
 friendly_name: Accounts Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate counts of accounts from the FxA backend services databases grouped by a number of dimensions.
+
+  This table can be used to get a total number of accounts, including those inactive that aren't captured
+  in the telemetry data.
+owners:
+- akomar@mozilla.com
+labels:
+  owner1: akomar
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

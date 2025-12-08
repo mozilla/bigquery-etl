@@ -1,8 +1,16 @@
-friendly_name: Request Payload Suggest
+friendly_name: Contextual Services Suggest Request Payload
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Derived dataset for Contextual services tiles request payload
+
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+owners:
+- skahmann@mozilla.com
+- akommasani@mozilla.com
+- mozilla/request_payload_reviewers
+labels:
+  owner1: skahmann
+  owner2: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

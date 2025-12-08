@@ -1,8 +1,10 @@
 friendly_name: Metadata Standardization
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Summary of metrics related to the metadata of tables at dataset-level and for project shared-prod.
+owners:
+- lvargas@mozilla.com
+labels:
+  owner1: lvargas
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

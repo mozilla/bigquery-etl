@@ -1,8 +1,10 @@
 friendly_name: Cohort Weekly Statistics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains weekly retention by multiple different attributes as of first seen date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

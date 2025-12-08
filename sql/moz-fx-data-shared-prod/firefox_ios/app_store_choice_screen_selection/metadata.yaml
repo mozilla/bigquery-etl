@@ -1,8 +1,14 @@
-friendly_name: App Store Choice Screen Selection
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Apple App Store Choice Screen Selection (post-iOS 18.2 only)
+description: "Apple App Store Choice Screen Engagement (post-iOS 18.2 only)\nThis\
+  \ report includes rates around user selection/egagement with our browser\nvia the\
+  \ App Store Choice Screen.\n\nOfficial docs: https://developer.apple.com/documentation/analytics-reports/browser-choice-screen-selection\n\
+  \nNote: Starting 2025-06-23 Apple changed the value of the \"territory\" field\n\
+  \      from the user\u2019s region code as set in \"Language & Region\" to the user's\
+  \ App Store storefront region.\n"
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

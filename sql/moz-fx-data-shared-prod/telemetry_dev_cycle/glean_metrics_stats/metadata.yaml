@@ -1,8 +1,10 @@
-friendly_name: Glean Metrics Stats
+friendly_name: Glean Metrics Dates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Dates for glean metrics to be released and expired for Telemetry Dev Cycle Dashboard.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,15 @@
-friendly_name: Desktop Search Aggregates For Searchreport
+friendly_name: Desktop Search Aggregates For Search Report
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  This query creates a table based on search_aggregate containing
+  search metrics aggregated by geo, locale, os, engine, app_version,
+  submission_date.
+  Originally created for the search report dashboard.
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com
+labels:
+  owner1: cmorales
+  owner2: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

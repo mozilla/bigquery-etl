@@ -1,8 +1,10 @@
-friendly_name: Airflow Dag Run
+friendly_name: Airflow DAG run instances
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  List of DAG run instances
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

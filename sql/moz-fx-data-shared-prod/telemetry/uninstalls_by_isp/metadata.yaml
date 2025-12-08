@@ -1,8 +1,10 @@
-friendly_name: Uninstalls By Isp
+friendly_name: Uninstalls By ISP Name
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Number of clients uninstalling by submission date and ISP
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,12 @@
 friendly_name: Looker Usage Models
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Usage of Looker models via henry.
+
+  This is run via docker-etl.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

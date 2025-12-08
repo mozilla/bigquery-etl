@@ -1,8 +1,10 @@
 friendly_name: Users Services Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Activity aggregates per Mozilla Account per service per day
+owners:
+- ksiegler@mozilla.com
+labels:
+  owner1: ksiegler
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

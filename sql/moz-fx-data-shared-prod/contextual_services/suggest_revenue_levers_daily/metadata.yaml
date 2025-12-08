@@ -1,8 +1,14 @@
 friendly_name: Suggest Revenue Levers Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily metrics identified as Suggest revenue levers, including DOU,
+  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest ad clicks.
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+owners:
+- skahmann@mozilla.com
+- mozilla/revenue_forecasting_data_reviewers
+labels:
+  owner1: skahmann
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

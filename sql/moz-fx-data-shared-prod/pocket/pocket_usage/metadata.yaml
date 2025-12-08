@@ -1,8 +1,10 @@
-friendly_name: Pocket Usage
+friendly_name: Pocket usage by event type
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Percentage of DAU for Pocket usage by event type for each channel
+owners:
+- gkatre@mozilla.com
+labels:
+  owner1: gkatre
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,11 @@
-friendly_name: Doh Adoption Rate
+friendly_name: DOH Adoption Rate
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A distinct client count of a combination of metrics to measure
+  the adoption of DOH (DNS over HTTPS) in Firefox.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

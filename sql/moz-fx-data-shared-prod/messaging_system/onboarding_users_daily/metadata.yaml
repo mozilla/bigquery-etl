@@ -1,8 +1,10 @@
-friendly_name: Onboarding Users Daily
+friendly_name: Messaging System Onboarding Users Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily users of Onboarding, partitioned by day
+owners:
+- najiang@mozilla.com
+labels:
+  owner1: najiang
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Slow Startup Events By Startup Type Version And Device
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Break out slow startup frequency by device info
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

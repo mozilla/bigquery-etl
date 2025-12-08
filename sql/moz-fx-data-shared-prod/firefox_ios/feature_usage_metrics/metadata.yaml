@@ -1,8 +1,12 @@
-friendly_name: Feature Usage Metrics
+friendly_name: Feature Usage Metrics (Firefox iOS)
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Metrics from metrics pings for mobile feature usage dashboards (iOS)
+owners:
+- rzhao@mozilla.com
+- vsabino@mozilla.com
+labels:
+  owner1: rzhao
+  owner2: vsabino
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

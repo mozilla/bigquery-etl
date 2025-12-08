@@ -1,8 +1,11 @@
-friendly_name: Fxa Users Services First Seen
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: FxA Users Services First Seen
+description: |
+  Usage aggregations describing when an FxA user
+  was seen for the first time using an FxA service.
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Users Services Last Seen
+friendly_name: Accounts Backend Users Services Last Seen
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Usage aggregations per Mozilla Accounts user per service per day over a 28-day window
+owners:
+- ksiegler@mozilla.com
+labels:
+  owner1: ksiegler
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

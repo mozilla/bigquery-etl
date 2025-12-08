@@ -1,8 +1,10 @@
 friendly_name: Fx Health Ind Win Uninstll
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate view of Windows uninstalls by day
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

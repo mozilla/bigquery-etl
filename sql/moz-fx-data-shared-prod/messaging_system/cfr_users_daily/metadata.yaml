@@ -1,8 +1,10 @@
-friendly_name: Cfr Users Daily
+friendly_name: Messaging System CFR Users Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily users of CFR, partitioned by day
+owners:
+- najiang@mozilla.com
+labels:
+  owner1: najiang
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

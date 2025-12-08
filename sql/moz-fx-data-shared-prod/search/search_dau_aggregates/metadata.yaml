@@ -1,7 +1,11 @@
-friendly_name: Search Dau Aggregates
+friendly_name: Search Revenue DAU aggregates
 description: |-
-  Please provide a description for the query
-owners: []
+  Daily metrics including eligible DOU,
+  DAU_engaged_w_sap, DAU_engaged_w_default_engine
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

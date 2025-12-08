@@ -1,8 +1,10 @@
 friendly_name: Fx Health Ind Clients Daily By Country
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates active hrs, subsession hrs, and searches per user by country on a 1% client sample
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

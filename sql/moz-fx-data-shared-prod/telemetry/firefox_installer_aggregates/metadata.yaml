@@ -1,8 +1,10 @@
 friendly_name: Firefox Installer Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregated view of Firefox Install pings and their attribution info
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

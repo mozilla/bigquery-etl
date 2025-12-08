@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Ratios Smooth
+friendly_name: Firefox Health Indicator Dashboard - Ratios Smooth
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates % of clients with Firefox set as default based on a 1% sample for Windows OS 10, release channel only; used in Firefox Health Indicator dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,15 @@
-friendly_name: New Profile Activation
+friendly_name: (DEPRECATED) Firefox iOS New Profile Activation
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  DEPRECATED, please use `new_profile_activation_clients` instead.
+
+  Mobile activation metric used for Marketing campaign performance.
+  Each record inside this table corresponds to a user activation.
+owners:
+- vsabino@mozilla.com
+- kik@mozilla.com
+labels:
+  owner1: vsabino
+  owner2: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

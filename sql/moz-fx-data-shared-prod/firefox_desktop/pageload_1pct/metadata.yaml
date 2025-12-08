@@ -1,8 +1,14 @@
 friendly_name: Pageload 1pct
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains 1pct sample from pageload_v1.  Document_id was used to sample data since most pings did not have client_id.
+owners:
+- wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com
+labels:
+  owner1: wichan
+  owner2: acreskey
+  owner3: dpalmeiro
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

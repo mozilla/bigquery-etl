@@ -1,8 +1,10 @@
-friendly_name: Airflow Trigger
+friendly_name: Airflow triggers
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  List of triggers
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

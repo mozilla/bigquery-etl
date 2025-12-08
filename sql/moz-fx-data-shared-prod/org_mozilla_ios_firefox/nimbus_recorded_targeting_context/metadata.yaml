@@ -1,8 +1,10 @@
-friendly_name: Nimbus Recorded Targeting Context
+friendly_name: Nimbus Recorded Targeting Context (iOS)
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A query to obtain the previous day's recorded Nimbus targeting context values for each client.
+owners:
+- chumphreys@mozilla.com
+labels:
+  owner1: chumphreys
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

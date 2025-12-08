@@ -1,8 +1,10 @@
 friendly_name: Uninstalls By Account Signed In Status
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table calculating # unique clients with uninstalls by account enabled status and date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

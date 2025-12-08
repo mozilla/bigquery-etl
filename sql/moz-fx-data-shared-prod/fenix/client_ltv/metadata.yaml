@@ -1,8 +1,10 @@
-friendly_name: Client Ltv
+friendly_name: Client LTV
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Per-client historical and predicted future ad clicks, using the latest android_states_v2 state.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

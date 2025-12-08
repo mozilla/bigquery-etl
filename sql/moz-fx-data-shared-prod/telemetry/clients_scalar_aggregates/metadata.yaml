@@ -1,8 +1,10 @@
-friendly_name: Clients Scalar Aggregates
+friendly_name: Telemetry Derived - Clients Scalar Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  [DESCRIPTION_MISSING]
+owners:
+- data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

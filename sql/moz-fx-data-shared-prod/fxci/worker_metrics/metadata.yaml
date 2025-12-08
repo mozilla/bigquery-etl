@@ -1,8 +1,10 @@
-friendly_name: Worker Metrics
+friendly_name: Firefox-CI Worker Metrics
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Derived Firefox-CI worker metrics exported from Google Cloud Monitoring.
+owners:
+- ahalberstadt@mozilla.com
+labels:
+  owner1: ahalberstadt
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

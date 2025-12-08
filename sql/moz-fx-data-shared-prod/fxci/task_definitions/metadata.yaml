@@ -1,8 +1,10 @@
-friendly_name: Task Definitions
+friendly_name: Firefox-CI Task definitions
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Derived Firefox-CI task definitions exported from Taskcluster.
+owners:
+- jcristau@mozilla.com
+labels:
+  owner1: jcristau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Looker Dashboard Load Times
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Looker dashboard load times imported from Looker.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

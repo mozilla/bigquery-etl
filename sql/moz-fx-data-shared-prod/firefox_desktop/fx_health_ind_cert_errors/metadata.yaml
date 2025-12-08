@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Cert Errors
+friendly_name: Firefox Health Indicator - Cert Errors
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Rate of certificate load errors based on 1% sample
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

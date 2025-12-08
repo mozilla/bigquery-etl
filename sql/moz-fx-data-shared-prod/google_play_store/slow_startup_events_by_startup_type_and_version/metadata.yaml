@@ -1,8 +1,16 @@
 friendly_name: Slow Startup Events By Startup Type And Version
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Pulls slow startup data from Google Play Store API for
+  * org.mozilla.firefox
+  * org.mozilla.firefox_beta
+  * org.mozilla.fenix
+  * org.mozilla.klar
+  * org.mozilla.firefox.vpn
+  * org.mozilla.focus
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

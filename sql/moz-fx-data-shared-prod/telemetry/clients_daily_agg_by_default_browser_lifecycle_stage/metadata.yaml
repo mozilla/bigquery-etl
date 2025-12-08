@@ -1,8 +1,10 @@
-friendly_name: Clients Daily Agg By Default Browser Lifecycle Stage
+friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table for clients daily by default browser lifecycle stage
+owners:
+- wichan@mozilla.com
+labels:
+  owner1: wichan
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

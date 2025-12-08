@@ -1,8 +1,10 @@
-friendly_name: Airflow Slot Pool
+friendly_name: Airflow Slot Pools
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  List of slot pools configured in Airflow
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

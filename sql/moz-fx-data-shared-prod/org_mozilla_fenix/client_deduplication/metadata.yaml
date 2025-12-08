@@ -1,8 +1,10 @@
 friendly_name: Client Deduplication
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Rewrite the client deduplication ping, anonymizing the Ad ID.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

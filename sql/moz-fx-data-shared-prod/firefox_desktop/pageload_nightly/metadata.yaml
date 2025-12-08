@@ -1,8 +1,14 @@
 friendly_name: Pageload Nightly
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains pings from nightly channel only from pageload_v1
+owners:
+- wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com
+labels:
+  owner1: wichan
+  owner2: acreskey
+  owner3: dpalmeiro
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

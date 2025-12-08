@@ -1,8 +1,10 @@
 friendly_name: Daily Connector Costs
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily Costs per Fivetran Connector
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

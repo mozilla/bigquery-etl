@@ -1,8 +1,10 @@
-friendly_name: Airflow Job
+friendly_name: Airflow jobs
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  List of jobs
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

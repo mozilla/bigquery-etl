@@ -1,8 +1,10 @@
-friendly_name: Active Subscriptions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Active Hubs Subscriptions
+description: |
+  Aggregated count of active Hubs subscriptions.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

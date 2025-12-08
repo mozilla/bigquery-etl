@@ -1,8 +1,10 @@
-friendly_name: Fx Dau With Private Engine Default
+friendly_name: Firefox privacy dashboard - DAU with private engine set as default
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  DAU with private engine set as default
+owners:
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

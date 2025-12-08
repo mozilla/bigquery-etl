@@ -1,8 +1,12 @@
-friendly_name: New Profile Activation
+friendly_name: (DEPRECATED) Fenix New Profile Activation
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  DEPRECATED, please use `new_profile_activation_clients` instead.
+
+  Mobile activation metric used for Marketing campaign performance
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

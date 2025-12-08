@@ -1,8 +1,12 @@
-friendly_name: Fx Accounts Linked Clients Ordered
+friendly_name: Firefox Accounts Linked Clients Ordered
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Table overwrites daily with latest information, orders clients by first seen date
+  Client ID with the smaller first seen date is client ID
+  Client ID with the larger first seen date is linked client ID
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

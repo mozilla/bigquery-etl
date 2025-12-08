@@ -1,8 +1,12 @@
-friendly_name: Client Ltv
+friendly_name: Firefox iOS Client LTV
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  LTV States by client, rather than by client-day
+  Uses the most recently seen values for a client
+  LTV here is number of ad-clicks
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Clients Histogram Aggregates
+friendly_name: Telemetry Derived - Clients Histogram Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Intermediate table that holds the last 3 versions of histogram aggregates from Legacy Telemetry
+owners:
+- efilho@mozilla.com
+labels:
+  owner1: efilho
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Shredder Rows Deleted
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  Record of rows deleted by shredder.
+owners:
+- akomar@mozilla.com
+labels:
+  owner1: akomar
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Urlbar Clients Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Daily per-client metrics related to urlbar usage
+owners:
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

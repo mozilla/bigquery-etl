@@ -1,8 +1,13 @@
-friendly_name: Geckoview Version
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Geckoview versions corresponding to build hours
+description: |
+  Enumerate the most common GeckoView version for each build hour for nightly"
+  Fenix builds.
+  This includes all hours up to the reference day e.g. the last row up where the
+  reference date is 2020-10-01 will include hours up to midnight of that day.
+owners:
+- amiyaguchi@mozilla.com
+labels:
+  owner1: amiyaguchi
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

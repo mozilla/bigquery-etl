@@ -1,8 +1,12 @@
-friendly_name: Fx Accounts Active Daily Clients
+friendly_name: Firefox Accounts Active Daily Clients
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Table with 1 row per submission date and Glean client ID sending a Firefox Accounts ping that date
+  Intentionally does not contain Firefox Account ID
+  Primary key is submission date & Glean client_info.client_id
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

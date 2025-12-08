@@ -1,8 +1,10 @@
-friendly_name: Airflow User
+friendly_name: Airflow Users
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Most recent record of Airflow users
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

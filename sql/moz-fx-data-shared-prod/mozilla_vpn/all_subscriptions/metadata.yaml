@@ -1,8 +1,10 @@
-friendly_name: All Subscriptions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: All Mozilla VPN Subscriptions
+description: |
+  Mozilla VPN Subscriptions from both IAP and FxA.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Uninstalls By Cpu Cores
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Records number of unique clients uninstalling by day and CPU core count
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Airflow Task Instance Note
+friendly_name: Airflow task instance notes
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Airflow tasks instance notes
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

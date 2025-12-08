@@ -1,8 +1,12 @@
-friendly_name: Bigquery Usage
+friendly_name: BigQuery Query Usage
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  BigQuery usage, partitioned by day.
+owners:
+- wichan@mozilla.com
+- mhirose@mozilla.com
+labels:
+  owner1: wichan
+  owner2: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

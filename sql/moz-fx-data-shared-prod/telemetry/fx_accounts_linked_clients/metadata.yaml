@@ -1,8 +1,10 @@
-friendly_name: Fx Accounts Linked Clients
+friendly_name: Firefox Accounts Linked Clients
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Unique combinations of client IDs linked via the same account
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

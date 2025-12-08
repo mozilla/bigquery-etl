@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind New Profiles By Os
+friendly_name: Firefox Health Indicator - New Profiles By OS
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table used in Firefox Health dashboard, contains number of new profiles by OS
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

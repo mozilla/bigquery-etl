@@ -1,8 +1,17 @@
-friendly_name: Attributable Clients
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Attributable Clients v2
+description: |
+  For clients who
+    - Sent a baseline ping
+    - Sent a metrics ping
+    - activated
+  Records their information and associated activity.
+  Note that while the grain is 1-row per-client per-day,
+  a row does _not_ mean that said client was active on that day.
+  Use the `active_day_count` field to determine that.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

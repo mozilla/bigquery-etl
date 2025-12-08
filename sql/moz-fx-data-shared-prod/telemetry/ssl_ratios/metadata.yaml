@@ -1,8 +1,11 @@
-friendly_name: Ssl Ratios
+friendly_name: SSL Ratios
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Percentages of page loads Firefox users have performed that were
+  conducted over SSL broken down by country.
+owners:
+- chutten@mozilla.com
+labels:
+  owner1: chutten
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

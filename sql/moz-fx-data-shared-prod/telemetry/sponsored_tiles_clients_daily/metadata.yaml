@@ -1,8 +1,16 @@
 friendly_name: Sponsored Tiles Clients Daily
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  daily client-level aggregates of Sponsored Tiles-related fields.
+  Note that for desktop tile dismissals and disables, we deprecated PingCentre's Activity Stream in Fx123,
+  and now rely on Glean's newtab ping as of Fx120. There's an effective cutover version of Fx123.
+owners:
+- skahmann@mozilla.com
+- cmorales@mozilla.com
+- akommasani@mozilla.com
+labels:
+  owner1: skahmann
+  owner2: cmorales
+  owner3: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

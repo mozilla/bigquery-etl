@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Mau Per Os
+friendly_name: Fx Health Indicator Mau by OS
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table calculating MAU and DAU per OS
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

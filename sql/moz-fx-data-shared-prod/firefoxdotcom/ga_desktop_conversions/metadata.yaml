@@ -1,8 +1,10 @@
-friendly_name: Ga Desktop Conversions
+friendly_name: Google Analytics Desktop Conversions Feed
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Query that pulls conversion event data so Census feed can pull and send to Google for marketing campaigns
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

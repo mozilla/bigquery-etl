@@ -1,8 +1,11 @@
-friendly_name: Fxa Users Services Devices Last Seen
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: FxA Users Services Devices Last Seen
+description: |
+  Usage aggregations describing FxA user, service, device_id combination
+  activity in the last 28 days.
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

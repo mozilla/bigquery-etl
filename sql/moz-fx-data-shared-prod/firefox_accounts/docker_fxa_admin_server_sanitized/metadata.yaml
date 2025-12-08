@@ -1,8 +1,13 @@
 friendly_name: Docker Fxa Admin Server Sanitized
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Sanitized version of docker_fxa_admin_server from FxA.
+  PII is hashed.
+
+  (contains events coming from the GCP deployment of this service)
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

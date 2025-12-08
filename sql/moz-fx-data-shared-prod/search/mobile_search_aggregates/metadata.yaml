@@ -1,8 +1,12 @@
-friendly_name: Mobile Search Aggregates
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Mobile Search Clients Daily
+description: |
+  Daily mobile clients sending pings that have searches, aggregated across unique sets of dimensions and partitioned by day
+owners:
+- akommasani@mozilla.com
+- cmorales@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: cmorales
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

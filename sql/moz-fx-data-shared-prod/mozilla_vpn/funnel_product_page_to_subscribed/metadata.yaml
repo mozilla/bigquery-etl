@@ -1,8 +1,10 @@
-friendly_name: Funnel Product Page To Subscribed
+friendly_name: Funnel Product to Subscribed
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Funnel from Mozilla VPN Product page to completing payment
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

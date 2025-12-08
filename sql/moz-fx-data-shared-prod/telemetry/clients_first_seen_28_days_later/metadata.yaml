@@ -1,8 +1,12 @@
-friendly_name: Clients First Seen 28 Days Later
+friendly_name: Clients First Seen 28 Days Later v3
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Client cohorts 28 days after their first seen date with relevant retention indicators.
+owners:
+- mhirose@mozilla.com
+- shong@mozilla.com
+labels:
+  owner1: mhirose
+  owner2: shong
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Campaign Names Map
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A mapping from campaign_id to campaign_name for google_ads campaigns.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Deletion Request Volume
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  A daily count of deletion request pings by document namespace
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

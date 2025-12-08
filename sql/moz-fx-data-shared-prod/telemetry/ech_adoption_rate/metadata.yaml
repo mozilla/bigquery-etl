@@ -1,8 +1,11 @@
-friendly_name: Ech Adoption Rate
+friendly_name: ECH Adoption Rate
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A distinct client count of a combination of metrics to measure
+  the adoption of ECH (Encrypted Client Hello) in Firefox.
+owners:
+- efilho@mozilla.com
+labels:
+  owner1: efilho
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

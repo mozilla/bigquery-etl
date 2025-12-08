@@ -1,8 +1,10 @@
-friendly_name: Subscription Events
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Firefox Relay Subscription Events
+description: |
+  Aggregated count of Firefox Relay subscription start/end events.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

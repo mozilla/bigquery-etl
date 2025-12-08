@@ -1,8 +1,10 @@
-friendly_name: Broken Site Root Domain Daily Aggregates
+friendly_name: Broken site Root Domain Daily Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  A daily aggregation for broken site root domains.
+owners:
+- gkatre@mozilla.com
+labels:
+  owner1: gkatre
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

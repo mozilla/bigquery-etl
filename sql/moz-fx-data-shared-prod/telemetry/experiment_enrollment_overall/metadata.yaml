@@ -1,8 +1,10 @@
 friendly_name: Experiment Enrollment Overall
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+description: |
+  Overall number of clients enrolled in experiments, clustered by experiment. (glean only)
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

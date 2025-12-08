@@ -1,8 +1,11 @@
-friendly_name: Desktop Retention Clients
+friendly_name: Desktop Retention V2 - Client Level
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Desktop Retention data at the client level.
+  Includes attribution information, profile_group_id.
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

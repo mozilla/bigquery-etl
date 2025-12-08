@@ -1,8 +1,10 @@
-friendly_name: Devices
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Mozilla VPN Devices
+description: |
+  A subset of Mozilla VPN devices columns that are accessible to a broader audience.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

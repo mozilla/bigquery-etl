@@ -1,8 +1,14 @@
-friendly_name: Glean Gclid Conversions
+friendly_name: Glean Google Click ID Conversions
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  All conversions for GCLIDs.
+  Partitioned by activity_date; a single GCLID
+  can have multiple entries in this table,
+  if they perform different conversion actions
+  on different days.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

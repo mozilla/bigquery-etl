@@ -1,8 +1,10 @@
 friendly_name: Desktop Acquisition Funnel Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table used to track desktop installation and retention 28 days later
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

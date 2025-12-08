@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Clients Daily By Os Version
+friendly_name: Firefox Health Indicator Clients Daily By OS Version
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates active hrs, subsession hrs, & searches per user on a 1% client sample by OS version for Windows NT
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

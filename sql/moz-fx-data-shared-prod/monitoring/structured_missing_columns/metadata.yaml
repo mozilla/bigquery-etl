@@ -1,8 +1,10 @@
-friendly_name: Structured Missing Columns
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Structured missing columns
+description: |
+  Generates the list of missing columns in structured datasets.
+owners:
+- amiyaguchi@mozilla.com
+labels:
+  owner1: amiyaguchi
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

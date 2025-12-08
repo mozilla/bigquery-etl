@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Win Instll By Instll Typ
+friendly_name: Firefox Health Indicator Windows Installs
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table of installs by installer type & channel, used in Firefox Health dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

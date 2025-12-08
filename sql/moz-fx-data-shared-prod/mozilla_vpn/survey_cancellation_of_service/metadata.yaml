@@ -1,8 +1,11 @@
-friendly_name: Survey Cancellation Of Service
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Cancellation of Service - Firefox Private Network and Mozilla VPN
+description: |
+  An import of survey data from Alchemer (SurveyGizmo) for Cancellation of Service -- Firefox Private Network and Mozilla VPN.
+  Survey extraction turned off in https://mozilla-hub.atlassian.net/browse/DENG-211
+owners:
+- amiyaguchi@mozilla.com
+labels:
+  owner1: amiyaguchi
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
 friendly_name: Uninstalls On Day Of Install By Account Signed In Status
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Uninstalls by account enabled status by if the uninstall was on date of installation or not
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

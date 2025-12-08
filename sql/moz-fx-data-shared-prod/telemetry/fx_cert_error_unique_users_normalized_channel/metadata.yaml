@@ -1,8 +1,10 @@
-friendly_name: Fx Cert Error Unique Users Normalized Channel
+friendly_name: Firefox Cert Error Dashboard - Unique users by normalized channel
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Unique users experiencing cert error page per day per channel
+owners:
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

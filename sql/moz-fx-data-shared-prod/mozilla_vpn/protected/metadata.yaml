@@ -1,8 +1,10 @@
-friendly_name: Protected
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Mozilla VPN protected users
+description: |
+  First time that accounts were protected by the Mozilla VPN
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

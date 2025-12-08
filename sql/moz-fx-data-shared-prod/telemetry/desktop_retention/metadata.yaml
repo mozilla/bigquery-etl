@@ -1,8 +1,10 @@
-friendly_name: Desktop Retention
+friendly_name: Desktop Retention - Aggregate
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Desktop Retention Aggregated
+owners:
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

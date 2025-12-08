@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Mau Per Tier1 Country
+friendly_name: Firefox Health Indicators MAU Per Tier1 Country
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate of MAU per tier 1 country used in dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

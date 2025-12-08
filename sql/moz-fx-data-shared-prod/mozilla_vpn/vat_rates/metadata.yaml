@@ -1,8 +1,10 @@
-friendly_name: Vat Rates
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: VAT Rates
+description: |
+  Import VAT rates from Google Sheets.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

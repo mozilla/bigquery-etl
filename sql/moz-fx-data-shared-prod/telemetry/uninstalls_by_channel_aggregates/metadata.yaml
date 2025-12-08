@@ -1,8 +1,10 @@
 friendly_name: Uninstalls By Channel Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table calculating uninstalls by channel and submission date
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

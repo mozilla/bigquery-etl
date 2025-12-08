@@ -1,8 +1,10 @@
-friendly_name: Fxa Delete Events
+friendly_name: FxA Delete Events
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Deletion events extracted from FxA auth server logs used as signal for Mozilla to delete analysis data associated with the user
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

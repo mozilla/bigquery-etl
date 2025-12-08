@@ -1,8 +1,10 @@
-friendly_name: Bigquery Table Storage
+friendly_name: BigQuery Tables Storage
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  BigQuery table storage size and costs.
+owners:
+- wichan@mozilla.com
+labels:
+  owner1: wichan
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

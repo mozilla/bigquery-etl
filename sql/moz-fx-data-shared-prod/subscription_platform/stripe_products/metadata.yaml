@@ -1,8 +1,10 @@
-friendly_name: Stripe Products
+friendly_name: Stripe products
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Stripe products.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

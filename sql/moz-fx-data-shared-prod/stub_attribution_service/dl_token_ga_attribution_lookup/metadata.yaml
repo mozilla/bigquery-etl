@@ -1,8 +1,16 @@
-friendly_name: Dl Token Ga Attribution Lookup
+friendly_name: Download Token Google Analytics Attribution Lookup
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  This table lets you lookup Google Analytics attribution data for dl_tokens.
+
+  1 row per-(dl_token, ga_client_id, stub_session_id) triplet.
+
+  dl_token - Available in Stub Attribution Service and Telemetry
+  ga_client_id - Available in Stub Attribution Service and GA
+  stub_session_id - Available in Stub Attribution Service and GA
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Nonprod Stripe Subscriptions History
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Non-Production Stripe Subscriptions History
+description: |
+  Non-production Stripe subscriptions history.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

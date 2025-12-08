@@ -1,8 +1,10 @@
-friendly_name: Stripe Plans
+friendly_name: Stripe plans
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Stripe plans.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,10 @@
-friendly_name: Ga4 Events
+friendly_name: GA4 Events Data for SUMO
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  GA4 Events Data for SUMO (support.mozilla.org)
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

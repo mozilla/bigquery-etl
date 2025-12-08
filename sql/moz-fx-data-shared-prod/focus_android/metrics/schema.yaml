@@ -2305,7 +2305,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Number of push messages that were successfully decrypted and delivered
-        to a ServiceWorker.
+        to a ServiceWorker when required.
 
         This metric was generated to correspond to the Legacy Telemetry count histogram
         PUSH_API_NOTIFY.

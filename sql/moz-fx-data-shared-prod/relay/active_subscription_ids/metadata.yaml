@@ -1,8 +1,10 @@
-friendly_name: Active Subscription Ids
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Active Firefox Relay Subscription IDs
+description: |
+  IDs of active Firefox Relay subscriptions by date.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

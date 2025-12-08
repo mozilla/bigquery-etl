@@ -1,8 +1,10 @@
-friendly_name: Delete Events
+friendly_name: Subscription Platform Backend Cirrus Delete Events
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Deletion events for subscription platform backend cirrus, derived from FxA's delete events and subplat's namespace secrets
+owners:
+- mwilliams@mozilla.com
+labels:
+  owner1: mwilliams
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,8 +1,14 @@
 friendly_name: Acer Cohort
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Table of client_ids that have been seen with an Acer distribution
+  The underlying table was created once, in January 2023, and will not change
+  in the future.
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com
+labels:
+  owner1: cmorales
+  owner2: akommasani
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

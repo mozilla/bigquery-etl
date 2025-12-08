@@ -1,8 +1,10 @@
-friendly_name: Active Subscriptions
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Active Stripe Subscriptions
+description: |
+  Active Stripe subscriptions for products included in KPIs.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

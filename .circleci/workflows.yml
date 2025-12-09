@@ -922,9 +922,12 @@ jobs:
             - *attach_generated_sql
             - run:
                 name: Move generated-sql into place
+                # yamllint disable rule:line-length
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
+                  yq e '. * load("bqetl_project.yaml")' /tmp/workspace/private-generated-sql/bqetl_project.yaml > bqetl_project.yaml
+                # yamllint enable rule:line-length
             - gcp-gcr/gcr-auth:
                 use_oidc: true
             - gcp-gcr/build-image: &private-image

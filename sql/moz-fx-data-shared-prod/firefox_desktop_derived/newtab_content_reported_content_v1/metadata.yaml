@@ -1,0 +1,38 @@
+friendly_name: Newtab-Content Reported Content
+description: |-
+  This table will be used by the content team to monitor organic content that users have reported on an hourly basis.
+  This will help assist the content team in identifying and removing problematic content faster. Data from the same day
+  will be reprocessed every hour until 1:00am the following day to allow for late arriving data. Therefore, data for that
+  day will first be available at 2:00am.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+  dag: bqetl_newtab_hourly
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_newtab_hourly
+  date_partition_parameter: null
+  destination_table: report_content_live_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+  - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+    }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1
+require_column_descriptions: false
+level: null

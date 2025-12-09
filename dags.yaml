@@ -2560,6 +2560,9 @@ bqetl_terms_of_use:
 bqetl_newtab_hourly:
   default_args:
     depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lmcfall@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

@@ -1,0 +1,5 @@
+friendly_name: Glean Metrics Dates
+description: Dates for glean metrics to be released and expired for Telemetry Dev
+  Cycle Dashboard.
+owners:
+- ascholtz@mozilla.com

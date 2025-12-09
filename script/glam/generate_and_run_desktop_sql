@@ -11,8 +11,7 @@ IMPORT=true source script/glam/run_glam_sql
 function generate_and_run_sql {
     local probe_type=$1
     local windows_release_sample_percent=$2
-    local use_slots=$3
-    local process=$4
+    local process=$3
     local script_type
     local destination_table
     local write_disposition
@@ -61,12 +60,12 @@ function generate_and_run_sql {
     run_query "clients_daily_${script_type}_aggregates_v1" \
         true 0 99 "clients_daily_${probe_type}_aggregates_${table_name_suffix}v1" \
         "$write_disposition --clustering_fields=app_version,channel --time_partitioning_field=submission_date" \
-        "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)" \
-        "$(if [[ -n $use_slots ]]; then echo $use_slots; fi)"
+        "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)"
+
 }
 
 probe_types=${1:-"scalar" "keyed_boolean" "keyed_scalar" "histogram" "keyed_histogram"}
 
 for probe_type in ${probe_types[@]}; do
-    generate_and_run_sql $probe_type $2 $3 $4
+    generate_and_run_sql $probe_type $2 $3
 done

@@ -1,0 +1,4 @@
+friendly_name: FxA Users Services Daily
+description: Usage aggregations per FxA user per FxA service per day
+owners:
+- kik@mozilla.com

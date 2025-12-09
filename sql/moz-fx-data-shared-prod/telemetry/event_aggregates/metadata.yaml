@@ -1,0 +1,4 @@
+friendly_name: Event Aggregates
+description: Aggregate table based off of telemetry.events
+owners:
+- kwindau@mozilla.com

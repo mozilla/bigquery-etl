@@ -1,0 +1,10 @@
+friendly_name: (DEPRECATED) Firefox iOS New Profile Activation
+description: 'DEPRECATED, please use `new_profile_activation_clients` instead.
+
+
+  Mobile activation metric used for Marketing campaign performance.
+
+  Each record inside this table corresponds to a user activation.'
+owners:
+- vsabino@mozilla.com
+- kik@mozilla.com

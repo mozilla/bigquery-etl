@@ -1,0 +1,4 @@
+friendly_name: Urlbar Clients Daily
+description: Daily per-client metrics related to urlbar usage
+owners:
+- akommasani@mozilla.com

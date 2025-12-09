@@ -1,0 +1,4 @@
+friendly_name: Onboarding
+description: Contains CFR specific data extracted from messaging_system_v1
+owners:
+- kwindau@mozilla.com

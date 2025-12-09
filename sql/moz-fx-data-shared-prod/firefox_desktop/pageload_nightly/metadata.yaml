@@ -1,0 +1,6 @@
+friendly_name: Pageload Nightly
+description: Contains pings from nightly channel only from pageload_v1
+owners:
+- wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com

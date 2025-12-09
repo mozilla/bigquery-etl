@@ -927,7 +927,10 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
-                  yq e '. *+ load("bqetl_project.yaml")' /tmp/workspace/private-generated-sql/bqetl_project.yaml > bqetl_project.yaml
+                  # rename bqetl_project.yaml otherwise yq fails to correctly merge both files
+                  mv bqetl_project.yaml bqetl_project.bqetl.yaml
+                  # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
+                  yq e '. *+ load("bqetl_project.bqetl.yaml")' /tmp/workspace/private-generated-sql/bqetl_project.yaml > bqetl_project.yaml
                 # yamllint enable rule:line-length
             - gcp-gcr/gcr-auth:
                 use_oidc: true
@@ -939,22 +942,6 @@ jobs:
           condition: *deploy
           steps:
             - *skip
-  merge-bqetl-project: # for testing
-    executor: ubuntu-machine-executor
-    steps:
-      - checkout:
-          method: blobless
-      - *attach_generated_sql
-      - run:
-          name: Move generated-sql into place
-          # yamllint disable rule:line-length
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/private-generated-sql/sql sql
-            mv bqetl_project.yaml bqetl_project.bqetl.yaml
-            yq e '. *+ load("bqetl_project.bqetl.yaml")' /tmp/workspace/private-generated-sql/bqetl_project.yaml > bqetl_project.yaml
-            cat bqetl_project.yaml
-          # yamllint enable rule:line-length
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large
@@ -1321,11 +1308,6 @@ workflows:
             branches:
               only:
                 - main
-      - merge-bqetl-project: # for testing
-          requires:
-            - private-generate-sql
-            - build
-            - generate-sql
       - deploy-to-private-gcr:
           context: dataeng-bqetl-gcr
           requires:

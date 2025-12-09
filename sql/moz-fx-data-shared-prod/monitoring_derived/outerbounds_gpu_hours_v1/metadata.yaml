@@ -13,7 +13,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-  - workgroup:platform-infra/chicory-poc
 external_data:
   format: google_sheets
   source_uris:

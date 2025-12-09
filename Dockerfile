@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.11
-# pin Google Cloud SDK to old version due to https://stackoverflow.com/questions/76159439/job-failing-with-error-gcloud-crashed-attributeerror-bool-object-has-no-at
-ARG GOOGLE_CLOUD_SDK_VERSION=417.0.0
+# Google Cloud SDK pinned for stability, look for breaking changes when upgrading https://docs.cloud.google.com/sdk/docs/release-notes
+ARG GOOGLE_CLOUD_SDK_VERSION=548.0.0
 
 # --platform=linux/amd64 added to prevent pulling ARM images when run on Apple Silicon
 FROM --platform=linux/amd64 python:${PYTHON_VERSION}-slim-bullseye AS base

@@ -26,9 +26,9 @@ newtab_content_live_events AS (
     mozfun.map.get_key(event.extra, 'topic') AS topic,
     mozfun.map.get_key(event.extra, 'url') AS url
   FROM
-    newtab_content_live_deduped AS e
+    newtab_content_live_deduped
   CROSS JOIN
-    UNNEST(e.events) AS event
+    UNNEST(events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event.category = 'newtab_content'

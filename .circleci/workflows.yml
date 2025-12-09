@@ -256,6 +256,20 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip
+  dry-run-sql-test:
+    docker: *docker
+    steps:
+      - *skip_forked_pr
+      - checkout:
+          method: blobless
+      - *restore_venv_cache
+      - *build
+      - *authenticate
+      - run:
+          name: Dry run queries
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas sql/moz-fx-data-shared-prod/fenix_derived
+          # yamllint enable rule:line-length
   validate-backfills:
     docker: *docker
     steps:
@@ -1195,6 +1209,7 @@ workflows:
       - verify-requirements
       - verify-format-yaml
       - verify-format-sql
+      - dry-run-sql-test
       - deploy-changes-to-stage:
           requires:
             - generate-sql

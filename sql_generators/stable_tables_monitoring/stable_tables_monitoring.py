@@ -20,16 +20,15 @@ def parse_config_name(config):
     return config, "v1"
 
 
-def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
+def generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring):
     """Generate the metadata and bigconfig files and write to correct directories."""
-    THIS_PATH = Path(__file__).parent
-    TEMPLATES_DIR = THIS_PATH / "templates"
-    SQL_BASE_DIR = THIS_PATH.parent.parent / "sql" / target_project
+    templates_dir = Path(__file__).parent / "templates"
+    sql_base_dir = Path(output_dir) / target_project
 
-    BIGEYE_COLLECTION = "Operational Checks"
-    BIGEYE_SLACK_CHANNEL = "#de-bigeye-triage"
+    bigeye_collection = "Operational Checks"
+    bigeye_slack_channel = "#de-bigeye-triage"
 
-    env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
+    env = Environment(loader=FileSystemLoader(str(templates_dir)))
     bigconfig_template = env.get_template("bigconfig.yml.jinja")
     metadata_template = env.get_template("metadata.yaml.jinja")
 
@@ -37,8 +36,7 @@ def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
 
     # Create directory for each dataset
     for dataset_name, table_names in stable_table_bigconfigs.items():
-
-        target_dir = SQL_BASE_DIR / dataset_name
+        target_dir = sql_base_dir / dataset_name
         target_dir.mkdir(parents=True, exist_ok=True)
 
         # Create directory for each table each with a metadata.yaml and bigconfig.yml file
@@ -50,12 +48,12 @@ def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
                 dataset=dataset_name,
                 name=name_part,
                 version=version_part,
-                bigeye_collection=BIGEYE_COLLECTION,
-                bigeye_notification_slack_channel=BIGEYE_SLACK_CHANNEL,
+                bigeye_collection=bigeye_collection,
+                bigeye_notification_slack_channel=bigeye_slack_channel,
             )
 
             metadata_rendered = metadata_template.render(
-                bigeye_collection=BIGEYE_COLLECTION,
+                bigeye_collection=bigeye_collection,
                 enable_monitoring=enable_monitoring,
                 name=name_part,
             )

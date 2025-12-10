@@ -1,0 +1,7 @@
+friendly_name: Pageload 1pct
+description: Contains 1pct sample from pageload_v1.  Document_id was used to sample
+  data since most pings did not have client_id.
+owners:
+- wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com

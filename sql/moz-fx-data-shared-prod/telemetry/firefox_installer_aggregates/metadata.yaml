@@ -1,0 +1,4 @@
+friendly_name: Firefox Installer Aggregates
+description: Aggregated view of Firefox Install pings and their attribution info
+owners:
+- kwindau@mozilla.com

@@ -1,0 +1,30 @@
+friendly_name: Newtab-Content Reported Content
+description: |-
+  This table will be used by the content team to monitor organic content that users have reported on an hourly basis.
+  This will help assist the content team in identifying and removing problematic content faster. Data from the same day
+  will be reprocessed every hour until 1:00am the following day to allow for late arriving data. Therefore, data for that
+  day will first be available at 2:00am.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_newtab_hourly
+  date_partition_parameter: null
+  # We reprocess the same day every hour up until 1:00 the following day, to give
+  # the live data time to come in
+  destination_table: >-
+    report_content_live_v1${{
+    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+  - >-
+    submission_date:DATE:{{
+    (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+    }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

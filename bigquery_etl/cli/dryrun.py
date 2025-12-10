@@ -17,6 +17,50 @@ from ..config import ConfigLoader
 from ..dryrun import DryRun, get_credentials, get_id_token
 
 
+def chunked(iterable, n):
+    """Yield up to n balanced chunks from iterable."""
+    lst = list(iterable)
+    if not lst:
+        return
+    size = (len(lst) + n - 1) // n  # ceil division
+    for i in range(0, len(lst), size):
+        yield lst[i : i + size]
+
+
+def worker(args):
+    """
+    Worker for a batch of SQL files.
+
+    args is a tuple of:
+        (use_cloud_function, respect_skip, validate_schemas,
+         credentials, id_token, billing_project, batch)
+    """
+    (
+        use_cloud_function,
+        respect_skip,
+        validate_schemas,
+        credentials,
+        id_token,
+        billing_project,
+        batch,
+    ) = args
+
+    results = []
+    for sqlfile in batch:
+        results.append(
+            _sql_file_valid(
+                use_cloud_function,
+                respect_skip,
+                validate_schemas,
+                sqlfile,
+                credentials,
+                id_token,
+                billing_project=billing_project,
+            )
+        )
+    return results
+
+
 @click.command(
     help="""Dry run SQL.
         Uses the dryrun Cloud Function by default which only has access to shared-prod.
@@ -113,18 +157,38 @@ def dryrun(
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
 
-    sql_file_valid = partial(
-        _sql_file_valid,
-        use_cloud_function,
-        respect_skip,
-        validate_schemas,
-        credentials=credentials,
-        id_token=id_token,
-        billing_project=billing_project,
-    )
+    # Make a deterministic list so batching is stable / predictable
+    sql_files_list = sorted(sql_files)
+
+    num_workers = 8
+    if len(sql_files_list) < num_workers:
+        num_workers = len(sql_files_list)
+
+    # Prepare batched args for workers
+    batches = list(chunked(sql_files_list, num_workers))
+    worker_args = [
+        (
+            use_cloud_function,
+            respect_skip,
+            validate_schemas,
+            credentials,
+            id_token,
+            billing_project,
+            batch,
+        )
+        for batch in batches
+    ]
+
     start_time = time.time()
-    with Pool(8) as p:
-        result = p.map(sql_file_valid, sql_files, chunksize=1)
+    if num_workers == 0:
+        result = []
+    else:
+        with Pool(num_workers) as p:
+            # Each worker processes a whole batch of files
+            nested_results = p.map(worker, worker_args)
+        # Flatten list-of-lists
+        result = [item for sublist in nested_results for item in sublist]
+
     print(f"Total dryrun time: {time.time() - start_time:.2f}s")
 
     failures = sorted([r[1] for r in result if not r[0]])

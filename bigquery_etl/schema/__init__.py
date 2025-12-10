@@ -236,10 +236,11 @@ class Schema:
                             # )
                         else:
                             if node_attr_key == "description":
-                                print(
-                                    "Warning: descriptions for "
-                                    f"{prefix}.{field_path} differ"
-                                )
+                                # print(
+                                #     "Warning: descriptions for "
+                                #     f"{prefix}.{field_path} differ"
+                                # )
+                                pass
                             else:
                                 if not ignore_incompatible_fields:
                                     raise Exception(
@@ -249,9 +250,10 @@ class Schema:
                         # check field attribute diffs
                         if node_attr_key == "description":
                             # overwrite descripton for the "other" schema
-                            print(
-                                f"Warning: descriptions for {prefix}.{field_path} differ."
-                            )
+                            # print(
+                            #     f"Warning: descriptions for {prefix}.{field_path} differ."
+                            # )
+                            pass
                         elif node_attr_key != "fields":
                             if not ignore_incompatible_fields:
                                 raise Exception(

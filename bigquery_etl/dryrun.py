@@ -497,7 +497,8 @@ class DryRun:
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.skip():
-            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            # print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            pass
 
         if (
             self.dry_run_result
@@ -582,7 +583,7 @@ class DryRun:
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.skip():
-            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            # print(f"\t...Ignoring dryrun results for {self.sqlfile}")
             return {}
 
         if (
@@ -600,7 +601,7 @@ class DryRun:
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.skip():
-            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            # print(f"\t...Ignoring dryrun results for {self.sqlfile}")
             return {}
 
         if (
@@ -625,7 +626,7 @@ class DryRun:
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.skip():
-            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            # print(f"\t...Ignoring dryrun results for {self.sqlfile}")
             return {}
 
         if (
@@ -643,18 +644,21 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
+            # print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or /0:.2f}s")
+            pass
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
+            # print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
+            pass
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run
             # We mark these requests as valid and add a date filter
             # in get_referenced_table()
-            print(f"{self.sqlfile!s:59} OK but DATE FILTER NEEDED")
+            # print(f"{self.sqlfile!s:59} OK but DATE FILTER NEEDED")
+            pass
         else:
             print(f"{self.sqlfile!s:59} ERROR\n", self.dry_run_result["errors"])
             return False
@@ -702,7 +706,7 @@ class DryRun:
             or basename(self.sqlfile) == "script.sql"
             or str(self.sqlfile).endswith(".py")
         ):  # noqa E501
-            print(f"\t...Ignoring schema validation for {self.sqlfile}")
+            # print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 
         query_file_path = Path(self.sqlfile)
@@ -716,12 +720,12 @@ class DryRun:
         query_schema = Schema.from_json(self.get_schema())
         if self.errors():
             # ignore file when there are errors that self.get_schema() did not raise
-            click.echo(f"\t...Ignoring schema validation for {self.sqlfile}")
+            # click.echo(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
-            click.echo(f"No schema file defined for {query_file_path}", err=True)
+            # click.echo(f"No schema file defined for {query_file_path}", err=True)
             return True
 
         table_schema = Schema.from_json(self.get_table_schema())

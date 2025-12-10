@@ -264,11 +264,14 @@ jobs:
           method: blobless
       - *restore_venv_cache
       - *build
+      - *attach_generated_sql
       - *authenticate
       - run:
           name: Dry run queries
           command: |
-            PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas sql/moz-fx-data-shared-prod/fenix_derived
+            rm -rf sql/
+            cp -r /tmp/workspace/generated-sql/sql sql
+            PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas sql/moz-fx-data-shared-prod/telemetry_derived
           # yamllint enable rule:line-length
   validate-backfills:
     docker: *docker
@@ -1209,7 +1212,9 @@ workflows:
       - verify-requirements
       - verify-format-yaml
       - verify-format-sql
-      - dry-run-sql-test
+      - dry-run-sql-test:
+          requires:
+            - generate-sql
       - deploy-changes-to-stage:
           requires:
             - generate-sql

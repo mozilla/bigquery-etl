@@ -31,8 +31,8 @@ WITH eventsstream AS (
   WHERE
         -- initialize by looking over all of history
   DATE(submission_timestamp) >= '2023-01-01'
-        -- AND sample_id >= @sample_id
-        -- AND sample_id < @sample_id + @sampling_batch_size
+  AND sample_id >= @sample_id
+  AND sample_id < @sample_id + @sampling_batch_size
   AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
         -- if app_id is firefox_desktop, filter for where profile_group_id is not null
   {% if app_id == 'firefox_desktop' -%}

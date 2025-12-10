@@ -1,0 +1,5 @@
+friendly_name: GA3 Events Data for SUMO
+description: |-
+  GA3 Events Data for SUMO (support.mozilla.org)
+owners:
+- kwindau@mozilla.com

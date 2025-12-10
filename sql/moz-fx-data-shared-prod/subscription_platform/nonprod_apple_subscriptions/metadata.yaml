@@ -1,0 +1,5 @@
+friendly_name: Non-Production Apple Subscriptions
+description: >
+  Non-production Apple subscriptions.
+owners:
+  - srose@mozilla.com

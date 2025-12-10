@@ -1,0 +1,4 @@
+friendly_name: Slow Startup Events By Startup Type Version And Device
+description: Break out slow startup frequency by device info
+owners:
+- kwindau@mozilla.com

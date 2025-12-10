@@ -1,0 +1,6 @@
+friendly_name: Mozilla VPN Subscription Events
+description: 'Aggregated count of Mozilla VPN subscription start/end events.
+
+  '
+owners:
+- srose@mozilla.com

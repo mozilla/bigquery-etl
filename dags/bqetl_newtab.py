@@ -104,6 +104,23 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_desktop_derived__newtab_client_tile_component_daily__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_desktop_derived__newtab_client_tile_component_daily__v1",
+            destination_table="newtab_client_tile_component_daily_v1",
+            dataset_id="firefox_desktop_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="gkatre@mozilla.com",
+            email=[
+                "gkatre@mozilla.com",
+                "mbowerman@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     firefox_desktop_derived__newtab_clients_daily__v2 = bigquery_etl_query(
         task_id="firefox_desktop_derived__newtab_clients_daily__v2",
         destination_table="newtab_clients_daily_v2",
@@ -367,6 +384,10 @@ with DAG(
         telemetry_derived__newtab_visits__v1_external.set_upstream(
             telemetry_derived__newtab_visits__v1
         )
+
+    firefox_desktop_derived__newtab_client_tile_component_daily__v1.set_upstream(
+        firefox_desktop_derived__newtab_visits_daily__v2
+    )
 
     firefox_desktop_derived__newtab_clients_daily__v2.set_upstream(
         firefox_desktop_derived__newtab_visits_daily__v2

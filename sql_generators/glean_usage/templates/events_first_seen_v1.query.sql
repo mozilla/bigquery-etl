@@ -16,16 +16,24 @@ WITH eventsstream AS (
   event_category,
   event_name,
   {{ item["name"] }} AS criteria,
-  min_by(profile_group_id, submission_timestamp) AS profile_group_id,
-  min_by(sample_id, submission_timestamp) AS sample_id,
-  MIN(submission_timestamp) AS first_submission_timestamp,
-  MIN(event_timestamp) AS first_event_timestamp,
-  min_by(event_extra, submission_timestamp) AS event_extra,
-  min_by(app_version_major, submission_timestamp) AS app_version_major,
-  min_by(normalized_channel, submission_timestamp) AS normalized_channel,
-  min_by(normalized_country_code, submission_timestamp) AS normalized_country_code,
-  min_by(normalized_os, submission_timestamp) AS normalized_os,
-  min_by(normalized_os_version, submission_timestamp) AS normalized_os_version
+  ARRAY_AGG(
+    STRUCT(
+      profile_group_id,
+      sample_id,
+      submission_timestamp AS first_submission_timestamp,
+      event_timestamp AS first_event_timestamp,
+      event_extra,
+      app_version_major,
+      normalized_channel,
+      normalized_country_code,
+      normalized_os,
+      normalized_os_version
+    )
+    ORDER BY
+      submission_timestamp,
+      event_timestamp NULLS LAST
+    LIMIT 1
+  )[0].*
   FROM
   `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE
@@ -74,16 +82,24 @@ WITH _current AS (
     event_category,
     event_name,
     {{ item["name"] }} AS criteria,
-    min_by(profile_group_id, submission_timestamp) AS profile_group_id,
-    min_by(sample_id, submission_timestamp) AS sample_id,
-    MIN(submission_timestamp) AS first_submission_timestamp,
-    MIN(event_timestamp) AS first_event_timestamp,
-    min_by(event_extra, submission_timestamp) AS event_extra,
-    min_by(app_version_major, submission_timestamp) AS app_version_major,
-    min_by(normalized_channel, submission_timestamp) AS normalized_channel,
-    min_by(normalized_country_code, submission_timestamp) AS normalized_country_code,
-    min_by(normalized_os, submission_timestamp) AS normalized_os,
-    min_by(normalized_os_version, submission_timestamp) AS normalized_os_version,
+    ARRAY_AGG(
+        STRUCT(
+          profile_group_id,
+          sample_id,
+          submission_timestamp AS first_submission_timestamp,
+          event_timestamp AS first_event_timestamp,
+          event_extra,
+          app_version_major,
+          normalized_channel,
+          normalized_country_code,
+          normalized_os,
+          normalized_os_version
+        )
+        ORDER BY
+          submission_timestamp,
+          event_timestamp NULLS LAST
+        LIMIT 1
+      )[0].*
   FROM
     `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE

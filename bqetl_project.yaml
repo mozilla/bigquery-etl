@@ -3,7 +3,7 @@ default:
   sql_dir: sql/
   sql_generators_dir: sql_generators/
   test_project: bigquery-etl-integration-test
-  non_user_facing_dataset_suffixes: # suffixes of datasets with non-user-facing views
+  non_user_facing_dataset_suffixes:  # suffixes of datasets with non-user-facing views
   - _derived
   - _external
   - _bi
@@ -12,7 +12,7 @@ default:
   - glam_etl
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill
-  additional_projects: # additional valid projects managed outside of bigquery-etl
+  additional_projects:  # additional valid projects managed outside of bigquery-etl
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7

@@ -655,6 +655,11 @@ def delete_from_table(
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
+    if len(sources) == 0:
+        logging.info(
+            f"Skipping {sql_table_id(target)} due to no deletion request sources"
+        )
+        return ()  # type: ignore
     try:
         table = client.get_table(sql_table_id(target))
     except NotFound:

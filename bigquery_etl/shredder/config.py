@@ -367,6 +367,10 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
+        table="ltv_derived.fenix_client_ltv_v1",
+        field=(),
+    ): (),  # Does not need to be shredded https://mozilla-hub.atlassian.net/browse/DENG-6169
+    DeleteTarget(
         table="ltv_derived.fenix_new_profile_ltv_v1",
         field=(CLIENT_ID),
     ): (DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)),
@@ -456,6 +460,7 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
     ),
+    client_id_target(table="telemetry_derived.crashes_daily_v1"): DESKTOP_SRC,
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)

@@ -17,7 +17,7 @@ table_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: VOLUME
-      metric_name: VOLUME [fail]
+      metric_name: VOLUME
       metric_schedule:
         named_schedule:
           name: Default Schedule - 13:00 UTC

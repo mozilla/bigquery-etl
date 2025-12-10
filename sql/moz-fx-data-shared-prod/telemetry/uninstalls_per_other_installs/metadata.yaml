@@ -1,0 +1,4 @@
+friendly_name: Uninstalls Per Other Installs
+description: Calculates uninstallations per number of other installs
+owners:
+- kwindau@mozilla.com

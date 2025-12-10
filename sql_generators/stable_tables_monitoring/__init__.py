@@ -10,6 +10,13 @@ from sql_generators.stable_tables_monitoring.stable_tables_monitoring import (
 
 @click.command()
 @click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to",
+    type=click.Path(file_okay=False),
+    default="sql",
+)
+@click.option(
     "--target-project",
     "--target_project",
     help="GCP project ID",
@@ -22,6 +29,6 @@ from sql_generators.stable_tables_monitoring.stable_tables_monitoring import (
     help="Monitoring enabled true or false",
     default=True,
 )
-def generate(target_project, enable_monitoring, **kwargs):
+def generate(target_project, output_dir, enable_monitoring, **kwargs):
     """Call generate_stable_table_bigconfig_files function."""
-    generate_stable_table_bigconfig_files(target_project, enable_monitoring)
+    generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring)

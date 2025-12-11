@@ -1,0 +1,5 @@
+friendly_name: GA4 Events Data for SUMO
+description: |-
+  GA4 Events Data for SUMO (support.mozilla.org)
+owners:
+- kwindau@mozilla.com

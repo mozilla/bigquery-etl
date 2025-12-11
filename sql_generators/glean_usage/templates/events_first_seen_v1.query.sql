@@ -27,7 +27,8 @@ WITH eventsstream AS (
       normalized_channel,
       normalized_country_code,
       normalized_os,
-      normalized_os_version
+      normalized_os_version,
+      client_info.windows_build_number
     )
     ORDER BY
       submission_timestamp,
@@ -93,7 +94,8 @@ WITH _current AS (
           normalized_channel,
           normalized_country_code,
           normalized_os,
-          normalized_os_version
+          normalized_os_version,
+          client_info.windows_build_number
         )
         ORDER BY
           submission_timestamp,
@@ -139,7 +141,8 @@ WITH _current AS (
       normalized_channel,
       normalized_country_code,
       normalized_os,
-      normalized_os_version
+      normalized_os_version,
+      windows_build_number
     FROM
       `{{ project_id }}.{{ events_first_seen_table }}`
     WHERE

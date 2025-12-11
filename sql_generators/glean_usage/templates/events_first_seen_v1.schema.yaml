@@ -50,3 +50,6 @@ fields:
   - mode: NULLABLE
     name: normalized_os_version
     type: STRING
+  - mode: NULLABLE
+    name: windows_build_number
+    type: INTEGER

@@ -5,3 +5,4 @@ description: |-
   Solely based off of Glean data for both desktop & mobile.
 owners:
 - kwindau@mozilla.com
+level: bronze

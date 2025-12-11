@@ -15,6 +15,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential
 require_column_descriptions: false
 level: null

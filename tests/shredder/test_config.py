@@ -125,6 +125,10 @@ class FakeClient:
             "focus_android",
         }:
             table.schema = [bigquery.SchemaField("client_id", "STRING")]
+        elif table.table_id in {
+            "usage_reporting_clients_daily_v1",
+        }:
+            table.schema = [bigquery.SchemaField("usage_profile_id", "STRING")]
         else:
             table.schema = [bigquery.SchemaField("document_id", "STRING")]
         return table
@@ -288,6 +292,28 @@ def test_glean_targets(mock_requests):
                 DeleteTarget(
                     table="focus_android_derived.clients_daily_v1",
                     field=("client_id",) * 3,
+                    project="moz-fx-data-shared-prod",
+                ),
+            ]
+        },
+        **{
+            target: {  # usage_reporting
+                DeleteSource(
+                    table="org_mozilla_focus_stable.usage_deletion_request_v1",
+                    field="metrics.uuid.usage_profile_id",
+                    project="moz-fx-data-shared-prod",
+                    conditions=(),
+                ),
+            }
+            for target in [
+                DeleteTarget(
+                    table="org_mozilla_focus_stable.usage_reporting_v1",
+                    field=("metrics.uuid.usage_profile_id",) * 2,
+                    project="moz-fx-data-shared-prod",
+                ),
+                DeleteTarget(
+                    table="focus_android_derived.usage_reporting_clients_daily_v1",
+                    field=("usage_profile_id",) * 2,
                     project="moz-fx-data-shared-prod",
                 ),
             ]

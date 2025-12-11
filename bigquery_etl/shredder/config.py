@@ -903,7 +903,7 @@ def find_glean_targets(
                     metric_type_field.name == "uuid"
                     and any(
                         [
-                            metric_field.name == "usage_profile_id"
+                            metric_field.name == USAGE_PROFILE_ID
                             for metric_field in metric_type_field.fields
                         ]
                     )

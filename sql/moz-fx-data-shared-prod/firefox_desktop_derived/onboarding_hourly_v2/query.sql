@@ -1,4 +1,4 @@
-WITH onboarding_hourly_deduped AS (
+WITH messaging_system_live_deduped AS (
   SELECT
     *
   FROM
@@ -52,4 +52,4 @@ SELECT
     metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin
   ) AS attribution
 FROM
-  onboarding_hourly_deduped
+  messaging_system_live_deduped

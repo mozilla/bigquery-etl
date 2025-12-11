@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
+  owner2: afranchuk
 scheduling:
   dag_name: bqetl_crashes
 bigquery:
@@ -14,8 +15,5 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields: []
 references: {}
 require_column_descriptions: true

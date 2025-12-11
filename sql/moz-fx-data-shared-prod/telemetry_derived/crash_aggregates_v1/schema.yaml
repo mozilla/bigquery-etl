@@ -18,7 +18,8 @@ fields:
 - name: process_type
   type: STRING
   mode: NULLABLE
-  description:
+  description: The type of process that experienced a crash. See the full list
+        of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
 - name: memory_oom_allocation_size
   type: INT64
   mode: NULLABLE

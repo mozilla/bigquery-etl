@@ -39,6 +39,7 @@ fields:
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
+  description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
@@ -92,15 +93,19 @@ fields:
 - mode: NULLABLE
   name: daily_users
   type: INTEGER
+  description: Number of daily users on the submission_date (based on sending the ping).
 - mode: NULLABLE
   name: weekly_users
   type: INTEGER
+  description: Number of weekly users on the submission_date (based on sending the ping).
 - mode: NULLABLE
   name: monthly_users
   type: INTEGER
+  description: Number of monthly users on the submission_date (based on sending the ping).
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The name of the browser.
 - mode: NULLABLE
   name: app_version
   type: STRING
@@ -118,12 +123,15 @@ fields:
 - mode: NULLABLE
   name: app_version_patch_revision
   type: NUMERIC
+  description: The patch revision number of the app version.
 - mode: NULLABLE
   name: app_version_is_major_release
   type: BOOLEAN
+  description: Boolean flag indicating if the app version was a major release.
 - mode: NULLABLE
   name: os_grouped
   type: STRING
+  description: Operating system group reported by the client.
 - mode: NULLABLE
   name: partnership
   type: STRING

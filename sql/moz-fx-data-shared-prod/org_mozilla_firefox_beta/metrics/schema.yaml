@@ -12731,8 +12731,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -18081,6 +18080,20 @@ fields:
         Broken down by thread name for a given process type.
 
         '
+    - name: contentblocking_canvas_fingerprinting_per_tab2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether any canvas fingerprinting attempt was detected, as identified
+        by either a known fingerprinting text or a known behavior (alias)
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -19297,6 +19310,22 @@ fields:
       description: 'Measures user retention of the HTTPS-Only setting at start-up.
 
         Example values include: "DISABLED", "ENABLED_PRIVATE_ONLY", "ENABLED".
+
+        '
+    - name: preferences_toolbar_expanded_shortcut
+      type: STRING
+      mode: NULLABLE
+      description: 'The toolbar shortcut used in expanded toolbar.
+
+        Possible values are: bookmark, translate, homepage or back.
+
+        '
+    - name: preferences_toolbar_simple_shortcut
+      type: STRING
+      mode: NULLABLE
+      description: 'The toolbar shortcut used in simple toolbar.
+
+        Possible values are: new_tab, share, bookmark, translate, homepage or back.
 
         '
   - name: string_list
@@ -47940,6 +47969,47 @@ fields:
         URLCLASSIFIER_COMPLETE_TIMEOUT2.
 
         '
+    - name: contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Fingerprinting detection hits by fingerprinter alias (key) and
+        the source(s) used (category). An alias using multiple sources will increment
+        each source individually once, and increment the combination once as well.
+
+        '
+    - name: contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: Fingerprinting detection hits by known fingerprinting string (key)
+        and source (category).
   - name: text2
     type: RECORD
     mode: NULLABLE

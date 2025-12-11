@@ -18,7 +18,8 @@ SELECT
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
-      metrics.counter.glean_health_init_count
+      metrics.counter.glean_health_init_count,
+      metrics.counter.fog_inits_during_shutdown
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -1076,7 +1076,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1224,7 +1225,9 @@ SELECT
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_toolbar_mode_setting,
       metrics.string.preferences_doh_protection_level,
-      metrics.string.preferences_https_only_mode
+      metrics.string.preferences_https_only_mode,
+      metrics.string.preferences_toolbar_expanded_shortcut,
+      metrics.string.preferences_toolbar_simple_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2011,7 +2014,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3113,7 +3118,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3261,7 +3267,9 @@ SELECT
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_toolbar_mode_setting,
       metrics.string.preferences_doh_protection_level,
-      metrics.string.preferences_https_only_mode
+      metrics.string.preferences_https_only_mode,
+      metrics.string.preferences_toolbar_expanded_shortcut,
+      metrics.string.preferences_toolbar_simple_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4048,7 +4056,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5170,7 +5180,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5318,7 +5329,9 @@ SELECT
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_toolbar_mode_setting,
       metrics.string.preferences_doh_protection_level,
-      metrics.string.preferences_https_only_mode
+      metrics.string.preferences_https_only_mode,
+      metrics.string.preferences_toolbar_expanded_shortcut,
+      metrics.string.preferences_toolbar_simple_shortcut
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6105,7 +6118,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

@@ -651,7 +651,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1774,7 +1775,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -2450,7 +2453,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3573,7 +3577,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -4249,7 +4255,8 @@ SELECT
       metrics.labeled_counter.media_recorder_mime_type_query,
       metrics.labeled_counter.pdfjs_comment_edit,
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
-      metrics.labeled_counter.power_wakeups_per_thread_inference_process
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process,
+      metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -5372,7 +5379,9 @@ SELECT
       metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
-      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

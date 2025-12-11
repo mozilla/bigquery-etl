@@ -11,7 +11,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:internet-outages/external
+  - workgroup:internet-outages/external-data-viewers
   - workgroup:mozilla-confidential
 references:
   view.sql:

@@ -234,9 +234,8 @@ jobs:
                 # as a stage environment)
                 command: |
                   if [ "$CIRCLE_BRANCH" = main ]; then
-                    echo "Check dry run for all queries because branch is" \
-                      "$CIRCLE_BRANCH"
-                    PATHS=sql
+                    echo "Skip dryruns on main. Dryruns will run in Airflow"
+                    circleci-agent step halt
                   elif git log --format=%B --no-merges -n 1 |
                       grep -qF '[run-tests]'; then
                     echo "Check dry run for all queries because [run-tests] in" \

@@ -31,7 +31,7 @@ WITH eventsstream AS (
     )
     ORDER BY
       submission_timestamp,
-      event_timestamp NULLS LAST
+      COALESCE(event_timestamp, '9999-12-31 23:59:59')
     LIMIT 1
   )[0].*
   FROM
@@ -97,7 +97,7 @@ WITH _current AS (
         )
         ORDER BY
           submission_timestamp,
-          event_timestamp NULLS LAST
+          COALESCE(event_timestamp, '9999-12-31 23:59:59')
         LIMIT 1
       )[0].*
   FROM

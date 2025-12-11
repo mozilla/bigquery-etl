@@ -54,7 +54,7 @@ with DAG(
 
     firefox_desktop_derived__newtab_content_reported_content__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__newtab_content_reported_content__v1",
-        destination_table='report_content_live_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
+        destination_table='newtab_content_reported_content_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",

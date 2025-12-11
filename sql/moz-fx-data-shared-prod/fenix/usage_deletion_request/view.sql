@@ -69,81 +69,14 @@ SELECT
   mozfun.norm.fenix_app_info("org_mozilla_fenix", '21850000').channel AS normalized_channel,
   additional_properties,
   document_id,
-  ARRAY(
-    SELECT
-      STRUCT(
-        events.category,
-        ARRAY(
-          SELECT
-            STRUCT(extra.key, extra.value)
-          FROM
-            UNNEST(events.extra) AS `extra`
-        ) AS `extra`,
-        events.name,
-        events.timestamp
-      )
-    FROM
-      UNNEST(events) AS `events`
-  ) AS `events`,
+  events,
+  metadata,
   STRUCT(
     STRUCT(
-      metadata.geo.city,
-      metadata.geo.country,
-      metadata.geo.db_version,
-      metadata.geo.subdivision1,
-      metadata.geo.subdivision2
-    ) AS `geo`,
-    STRUCT(
-      metadata.header.date,
-      metadata.header.dnt,
-      metadata.header.x_debug_id,
-      metadata.header.x_foxsec_ip_reputation,
-      metadata.header.x_lb_tags,
-      metadata.header.x_pingsender_version,
-      metadata.header.x_source_tags,
-      metadata.header.x_telemetry_agent,
-      metadata.header.parsed_date,
-      metadata.header.parsed_x_source_tags,
-      STRUCT(
-        metadata.header.parsed_x_lb_tags.tls_version,
-        metadata.header.parsed_x_lb_tags.tls_cipher_hex
-      ) AS `parsed_x_lb_tags`
-    ) AS `header`,
-    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`,
-    STRUCT(
-      metadata.user_agent.browser,
-      metadata.user_agent.os,
-      metadata.user_agent.version
-    ) AS `user_agent`
-  ) AS `metadata`,
-  STRUCT(
-    STRUCT(
-      ARRAY(
-        SELECT
-          STRUCT(glean_error_invalid_label.key, glean_error_invalid_label.value)
-        FROM
-          UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS `glean_error_invalid_label`
-      ) AS `glean_error_invalid_label`,
-      ARRAY(
-        SELECT
-          STRUCT(glean_error_invalid_overflow.key, glean_error_invalid_overflow.value)
-        FROM
-          UNNEST(
-            metrics.labeled_counter.glean_error_invalid_overflow
-          ) AS `glean_error_invalid_overflow`
-      ) AS `glean_error_invalid_overflow`,
-      ARRAY(
-        SELECT
-          STRUCT(glean_error_invalid_state.key, glean_error_invalid_state.value)
-        FROM
-          UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS `glean_error_invalid_state`
-      ) AS `glean_error_invalid_state`,
-      ARRAY(
-        SELECT
-          STRUCT(glean_error_invalid_value.key, glean_error_invalid_value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS `glean_error_invalid_value`
-      ) AS `glean_error_invalid_value`
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,

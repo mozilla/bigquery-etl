@@ -14,7 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_newtab_hourly
   date_partition_parameter: null
-  destination_table: report_content_live_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+  destination_table: newtab_content_reported_content_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:
   - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')

@@ -15,7 +15,7 @@ scheduling:
   # We reprocess the same day every hour up until 1:00 the following day, to give
   # the live data time to come in
   destination_table: >-
-    report_content_live_v1${{
+    newtab_content_reported_content_v1${{
     (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:

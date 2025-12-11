@@ -27,239 +27,39 @@ monitoring:
   - 508
   - 509
   stable_tables_monitoring:
+    # Firefox Desktop
     firefox_desktop_stable:
     - baseline_v1
-    org_mozilla_firefox_stable:
+    telemetry_stable:
+    - main_v5
+    # Firefox IOS
+    org_mozilla_ios_fennec_stable:
+    - baseline_v1
+    org_mozilla_ios_firefoxbeta_stable:
     - baseline_v1
     org_mozilla_ios_firefox_stable:
     - baseline_v1
-    telemetry_stable:
-    - main_v4
-    # Firefox IOS
-    org_mozilla_ios_fennec_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_ios_firefoxbeta_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_ios_firefox_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - review_checker_clients_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - nimbus_recorded_targeting_context_v1
-    - review_checker_events_v1
-    - usage_reporting_clients_daily_v1
     # Focus Android
-    org_mozilla_focus_nightly_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - additional_deletion_requests_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_focus_beta_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - additional_deletion_requests_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_focus_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - additional_deletion_requests_v1
-    - usage_reporting_clients_daily_v1
+    org_mozilla_focus_nightly_stable:
+    - baseline_v1
+    org_mozilla_focus_beta_stable:
+    - baseline_v1
+    org_mozilla_focus_stable:
+    - baseline_v1
     # Focus IOS
-    org_mozilla_ios_focus_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - usage_reporting_clients_daily_v1
-    # Firefox Desktop
-    firefox_desktop_derived:
-    - terms_of_use_messages_v1
-    - onboarding_v2
-    - urlbar_events_v2
-    - urlbar_events_daily_engagement_by_position_v1
-    - usage_reporting_clients_last_seen_v1
-    - newtab_component_content_v1
-    - baseline_clients_yearly_v1
-    - review_checker_clients_v1
-    - serp_events_v2
-    - fx_health_ind_mau_per_tier1_country_v1
-    - terms_of_use_status_v1
-    - client_ltv_v1
-    - fx_health_ind_webcompat_v1
-    - fx_privacy_dau_agg_v1
-    - fx_health_ind_desktop_dau_by_device_type_v1
-    - newtab_items_daily_v1
-    - review_checker_microsurvey_v1
-    - fx_health_ind_cert_errors_v1
-    - desktop_installs_v1
-    - terms_of_use_events_v1
-    - desktop_engagement_aggregates_v1
-    - clients_last_seen_joined_v1
-    - snippets_v2
-    - fx_health_ind_windows_versions_mau_per_os_v1
-    - fx_health_ind_antivirus_v1
-    - urlbar_events_v1
-    - baseline_clients_daily_v1_kw
-    - fx_health_ind_bookmarks_by_os_version_v1
-    - newtab_content_items_daily_v1
-    - urlbar_events_daily_engagement_by_product_result_type_v1
-    - fx_cert_error_unique_users_normalized_channel_v1
-    - ltv_states_v1
-    - metrics_clients_first_seen_v1
-    - baseline_active_users_aggregates_v2
-    - migration_esr_incorrect_deletion_request_v1
-    - adclick_history_v1
-    - usage_reporting_clients_first_seen_v1
-    - active_users_aggregates_deletion_request_v1
-    - newtab_clients_daily_v2
-    - newtab_client_tile_component_daily_v1
-    - new_profiles_aggregates_v1
-    - metrics_clients_daily_v1
-    - clients_first_seen_28_days_later_v1
-    - fx_health_ind_bookmarks_by_country_v1
-    - baseline_active_users_aggregates_v1
-    - desktop_retention_clients_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - newtab_clients_daily_aggregates_v2
-    - fx_health_ind_bookmarks_by_os_v1
-    - fx_health_ind_searches_by_provider_v1
-    - enterprise_metrics_clients_v1
-    - baseline_clients_first_seen_v1
-    - desktop_engagement_clients_v1
-    - esr_migration_incorrect_deletion_request_v1
-    - tos_rollout_enrollments_v1
-    - active_users_aggregates_v1
-    - fx_cert_error_unique_users_os_v1
-    - usage_reporting_active_users_aggregates_v1
-    - baseline_clients_last_seen_v1
-    - fx_health_ind_new_profiles_by_os_v1
-    - review_checker_events_v1
-    - locale_aggregates_v1
-    - usage_reporting_clients_daily_v1
-    - pageload_1pct_v1
-    - urlbar_events_daily_v1
-    - baseline_clients_city_seen_v1
-    - serp_events_v1
-    - newtab_content_historical_items_daily_v1
-    - firefox_desktop_use_counters_v2
-    - fx_health_ind_mau_per_os_v1
-    - active_users_aggregates_v3
-    - metrics_clients_last_seen_v1
-    - cfs_ga4_attr_v1
-    - desktop_dau_distribution_id_history_v1
-    - enterprise_metrics_v1
-    - baseline_active_users_v1
-    - newtab_content_reported_content_v1
-    - desktop_retention_aggregates_v1
-    - active_users_aggregates_v4
-    - pageload_nightly_v1
-    - fx_health_ind_page_reloads_v1
-    - newtab_visits_daily_v2
-    - fx_health_ind_np_by_install_type_v1
-    - report_content_v1
+    org_mozilla_ios_focus_stable:
+    - baseline_v1
     # Firefox (Fenix) Android
-    org_mozilla_fenix_derived:
-    - baseline_daily_v1
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - review_checker_clients_v1
-    - releases_v1
-    - geckoview_version_v1
-    - usage_reporting_clients_first_seen_v1
-    - clients_last_seen_v2
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - nimbus_recorded_targeting_context_v1
-    - client_deduplication_v1
-    - review_checker_events_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_fenix_nightly_derived:
-    - baseline_daily_v1
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_last_seen_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_fennec_aurora_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_firefox_beta_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - baseline_clients_first_seen_v1
-    - baseline_clients_last_seen_v1
-    - client_deduplication_v1
-    - usage_reporting_clients_daily_v1
-    org_mozilla_firefox_derived:
-    - usage_reporting_clients_last_seen_v1
-    - baseline_clients_yearly_v1
-    - fennec_clients_first_seen_v1
-    - usage_reporting_clients_first_seen_v1
-    - events_stream_v1
-    - baseline_clients_daily_v1
-    - event_types_history_v1
-    - baseline_clients_first_seen_v1
-    - incline_executive_v1
-    - events_daily_v1
-    - baseline_clients_last_seen_v1
-    - client_deduplication_v1
-    - usage_reporting_clients_daily_v1
-    - migrated_clients_v1
-    - encrypted_keys_v1
-    - event_types_v1
+    org_mozilla_fenix_stable:
+    - baseline_v1
+    org_mozilla_fenix_nightly_stable:
+    - baseline_v1
+    org_mozilla_fennec_aurora_stable:
+    - baseline_v1
+    org_mozilla_firefox_beta_stable:
+    - baseline_v1
+    org_mozilla_firefox_stable:
+    - baseline_v1
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun

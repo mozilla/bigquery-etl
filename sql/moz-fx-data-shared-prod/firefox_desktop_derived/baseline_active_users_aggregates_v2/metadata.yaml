@@ -3,7 +3,6 @@ description: |-
   Builds active_users_aggregates using the baseline ping.
 owners:
 - kwindau@mozilla.com
-- ago@mozilla.com
 labels:
   incremental: true
   table_type: aggregate
@@ -24,5 +23,5 @@ bigquery:
     - app_name
     - channel
     - country
-references: {}
-require_column_descriptions: false
+require_column_descriptions: true
+level: bronze

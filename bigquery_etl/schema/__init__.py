@@ -3,7 +3,6 @@
 import json
 import os
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Any, Dict, Iterable, List, Optional
 
 import attr
@@ -14,6 +13,7 @@ from google.cloud import bigquery
 from google.cloud.bigquery import SchemaField
 
 from .. import dryrun
+from ..config import ConfigLoader
 
 SCHEMA_FILE = "schema.yaml"
 
@@ -59,7 +59,16 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
+    def for_table(
+        cls,
+        project,
+        dataset,
+        table,
+        partitioned_by=None,
+        filename="query.sql",
+        *args,
+        **kwargs,
+    ):
         """Get the schema for a BigQuery table."""
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
@@ -67,16 +76,17 @@ class Schema:
             query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
 
         try:
+            sql_dir = ConfigLoader.get("default", "sql_dir")
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"),
+                    os.path.join(sql_dir, project, dataset, table, filename),
                     query,
                     project=project,
                     dataset=dataset,
                     table=table,
                     *args,
                     **kwargs,
-                ).get_schema()
+                ).get_table_schema()
             )
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
@@ -85,9 +95,7 @@ class Schema:
     def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
-        tmp_schema_file = NamedTemporaryFile()
-        self.to_json_file(Path(tmp_schema_file.name))
-        bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+        bigquery_schema = self.to_bigquery_schema()
 
         try:
             # destination table already exists, update schema
@@ -281,6 +289,10 @@ class Schema:
         """Write schema to the YAML file path."""
         with open(yaml_path, "w") as out:
             yaml.dump(self.schema, out, default_flow_style=False, sort_keys=False)
+
+    def to_yaml(self):
+        """Return the schema data as YAML."""
+        return yaml.dump(self.schema, default_flow_style=False, sort_keys=False)
 
     def to_json_file(self, json_path: Path):
         """Write schema to the JSON file path."""

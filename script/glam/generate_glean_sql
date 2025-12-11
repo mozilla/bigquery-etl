@@ -45,8 +45,8 @@ function write_clients_daily_aggregates {
     local src_project=$2
     local dst_project=$3
     local sql_dir=$4
-
     local dataset="${product}_stable"
+
     local qualified="$src_project:$dataset"
     # validate inputs with set -e, however note that this will fail silently
     if ! bq ls "$qualified" &> /dev/null; then
@@ -60,15 +60,26 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
+    # Pings to exclude
+    local excluded_tables=(
+        "use_counters.*"             # Use counters bring too many rows to process and GLAM doesn't support them.
+        "^migration$"                # Migration tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^client_deduplication$"     # Client deduplication tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^events$"                   # Not supported by GLAM.
+        "^nimbus-targeting-context$" # Not supported by GLAM.
+    )
+    local exclude_pattern=$(IFS='|'; echo "${excluded_tables[*]}")
+
     # GLAM only supports tables with glean_ping_* schema.
-    # Also excluding use_counters because they are not supported
-    # and their generated query is too big to run
+    # Also excluding tables matching patterns in excluded_tables list
+    # because they are not supported or their generated query is too big to run
     tables=$(bq ls --format=json "$qualified" | \
-        jq -r '.[] |
+        jq -r --arg exclude_pattern "$exclude_pattern" '.[] |
         select(.labels.schema_id | test("^glean_ping_[0-9]+")) |
         select(.type == "TABLE") |
-        select(.tableReference.tableId | test("^use_counters.*") | not) |
+        select(.tableReference.tableId | test($exclude_pattern) | not) |
         "\(.tableReference.tableId)"')
+
     # generate schemas in parallel
     for table in $tables; do
         # 2 tables at a time to limit concurrent python processes

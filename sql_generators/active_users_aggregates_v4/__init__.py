@@ -94,14 +94,18 @@ def generate(target_project, output_dir, use_cloud_function):
     # metadata template
     metadata_template = "metadata.yaml"
     # schema templates
-    desktop_schema_template = "desktop_schema.yaml"
-    mobile_schema_template = "mobile_schema.yaml"
+    desktop_table_schema_template = "desktop_table_schema.yaml"
+    desktop_view_schema_template = "desktop_view_schema.yaml"
+    mobile_table_schema_template = "mobile_table_schema.yaml"
+    mobile_view_schema_template = "mobile_view_schema.yaml"
     # backfill template
     desktop_backfill_template = "desktop_backfill.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
     mobile_checks_template = env.get_template("mobile_checks.sql")
+    # checks templates for BigEye
+    bigeye_checks_template = env.get_template("bigconfig.yml")
 
     for browser in Browsers:
         if browser.name == "firefox_desktop":
@@ -110,7 +114,8 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_value=browser.value,
                 )
             )
-            schema_template = desktop_schema_template
+            table_schema_template = desktop_table_schema_template
+            view_schema_template = desktop_view_schema_template
         elif browser.name == "focus_android":
             query_sql = reformat(
                 focus_android_query_template.render(
@@ -118,7 +123,8 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
-            schema_template = mobile_schema_template
+            table_schema_template = mobile_table_schema_template
+            view_schema_template = mobile_view_schema_template
         else:
             query_sql = reformat(
                 mobile_query_template.render(
@@ -127,7 +133,8 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
-            schema_template = mobile_schema_template
+            table_schema_template = mobile_table_schema_template
+            view_schema_template = mobile_view_schema_template
 
         # create checks_sql
         if browser.name == "firefox_desktop":
@@ -149,7 +156,6 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_name=browser.name,
                 channels=CHECKS_TEMPLATE_CHANNELS[browser.name],
             )
-
 
         # Write query SQL files.
         write_sql(
@@ -182,7 +188,18 @@ def generate(target_project, output_dir, use_cloud_function):
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="schema.yaml",
             sql=render(
-                schema_template,
+                table_schema_template,
+                template_folder=THIS_PATH / "templates",
+                format=False,
+            ),
+            skip_existing=False,
+        )
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+            basename="schema.yaml",
+            sql=render(
+                view_schema_template,
                 template_folder=THIS_PATH / "templates",
                 format=False,
             ),
@@ -212,6 +229,7 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
+        # Write view sql files.
         if browser.name == "focus_android":
             write_sql(
                 output_dir=output_dir,
@@ -240,3 +258,15 @@ def generate(target_project, output_dir, use_cloud_function):
                 ),
                 skip_existing=False,
             )
+
+        # Write BigEye config files.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="bigconfig.yml",
+            sql=bigeye_checks_template.render(
+                    app_name=browser.name,
+                    format=False,
+            ),
+            skip_existing=False,
+        )

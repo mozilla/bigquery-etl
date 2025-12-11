@@ -1,0 +1,5 @@
+friendly_name: LTV Android Aggregates
+description: |-
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
+owners:
+- mbowerman@mozilla.com

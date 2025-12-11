@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The date when the telemetry ping is received on the server side.
+- mode: NULLABLE
+  name: TDP
+  type: STRING
+  description: TDP - CPU Type
+- mode: NULLABLE
+  name: users
+  type: INTEGER
+  description: Number of Users

@@ -196,7 +196,41 @@ MERGE INTO
             KEY = 'variant'
           LIMIT
             1
-        ).string_value AS experiment_branch_from_event_params
+        ).string_value AS experiment_branch_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = 'gad_campaignid'
+          LIMIT
+            1
+        ).string_value AS gad_campaignid_from_event_params,
+        COALESCE(
+          (
+            SELECT
+              ep.value.int_value
+            FROM
+              UNNEST(event_params) ep
+            WHERE
+              ep.key = 'session_engaged'
+            LIMIT
+              1
+          ),
+          SAFE_CAST(
+            (
+              SELECT
+                ep.value.string_value
+              FROM
+                UNNEST(event_params) ep
+              WHERE
+                ep.key = 'session_engaged'
+              LIMIT
+                1
+            ) AS INT64
+          )
+        ) AS session_engaged_indicator,
       FROM
         `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
       JOIN
@@ -214,8 +248,10 @@ MERGE INTO
         term_from_event_params,
         experiment_id_from_event_params,
         experiment_branch_from_event_params,
+        gad_campaignid_from_event_params,
         event_timestamp,
-        country
+        country,
+        session_engaged_indicator
       FROM
         attr_info_from_event_params_in_session_staging
       WHERE
@@ -226,6 +262,7 @@ MERGE INTO
       SELECT
         ga_client_id,
         ga_session_id,
+        MAX(session_engaged_indicator) AS engaged_session,
         DATETIME(
           TIMESTAMP_MICROS(MIN(event_timestamp)),
           "America/Los_Angeles"
@@ -274,7 +311,13 @@ MERGE INTO
         ] AS first_experiment_branch_from_event_params,
         ARRAY_AGG(
           DISTINCT experiment_branch_from_event_params IGNORE NULLS
-        ) AS distinct_experiment_branches_from_event_params
+        ) AS distinct_experiment_branches_from_event_params,
+        ARRAY_AGG(gad_campaignid_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_gad_campaignid_from_event_params,
+        ARRAY_AGG(
+          DISTINCT gad_campaignid_from_event_params IGNORE NULLS
+        ) AS distinct_gad_campaignid_from_event_params
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -565,7 +608,10 @@ MERGE INTO
       session_attrs.first_experiment_id_from_event_params,
       session_attrs.distinct_experiment_ids_from_event_params,
       session_attrs.first_experiment_branch_from_event_params,
-      session_attrs.distinct_experiment_branches_from_event_params
+      session_attrs.distinct_experiment_branches_from_event_params,
+      session_attrs.first_gad_campaignid_from_event_params,
+      session_attrs.distinct_gad_campaignid_from_event_params,
+      session_attrs.engaged_session
     FROM
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
     LEFT JOIN
@@ -662,7 +708,10 @@ THEN
       first_experiment_id_from_event_params,
       distinct_experiment_ids_from_event_params,
       first_experiment_branch_from_event_params,
-      distinct_experiment_branches_from_event_params
+      distinct_experiment_branches_from_event_params,
+      first_gad_campaignid_from_event_params,
+      distinct_gad_campaignid_from_event_params,
+      engaged_session
     )
   VALUES
     (
@@ -725,7 +774,10 @@ THEN
       S.first_experiment_id_from_event_params,
       S.distinct_experiment_ids_from_event_params,
       S.first_experiment_branch_from_event_params,
-      S.distinct_experiment_branches_from_event_params
+      S.distinct_experiment_branches_from_event_params,
+      S.first_gad_campaignid_from_event_params,
+      S.distinct_gad_campaignid_from_event_params,
+      S.engaged_session
     )
   WHEN MATCHED
 THEN
@@ -789,4 +841,7 @@ THEN
     T.first_experiment_id_from_event_params = S.first_experiment_id_from_event_params,
     T.distinct_experiment_ids_from_event_params = S.distinct_experiment_ids_from_event_params,
     T.first_experiment_branch_from_event_params = S.first_experiment_branch_from_event_params,
-    T.distinct_experiment_branches_from_event_params = S.distinct_experiment_branches_from_event_params
+    T.distinct_experiment_branches_from_event_params = S.distinct_experiment_branches_from_event_params,
+    T.first_gad_campaignid_from_event_params = S.first_gad_campaignid_from_event_params,
+    T.distinct_gad_campaignid_from_event_params = S.distinct_gad_campaignid_from_event_params,
+    T.engaged_session = S.engaged_session

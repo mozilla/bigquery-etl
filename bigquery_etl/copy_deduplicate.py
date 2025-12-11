@@ -9,21 +9,27 @@ or to process only a specific list of tables.
 
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
+from typing import List
 
 import click
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
-from bigquery_etl.cli.utils import table_matches_patterns
+from bigquery_etl.cli.utils import (
+    get_glean_app_id_to_app_name_mapping,
+    parallelism_option,
+    project_id_option,
+    table_matches_patterns,
+)
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
-
-from .cli.utils import parallelism_option, project_id_option
 
 QUERY_TEMPLATE = """
 WITH
@@ -73,12 +79,80 @@ WITH
   --
   -- Retain only one document for each ID.
 SELECT
-  * EXCEPT(_n)
+  * EXCEPT(_n){replace_geo}
 FROM
   numbered_duplicates
 WHERE
   _n = 1
 """
+
+
+def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool:
+    """Return True if nested field path (e.g., ['metadata','geo','city']) exists."""
+    for name in path:
+        f = next((field for field in schema if field.name == name), None)
+        if not f:
+            return False
+        schema = getattr(f, "fields", []) or []
+    return True
+
+
+def _select_geo(live_table: str, client: bigquery.Client) -> str:
+    """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
+    _, dataset_id, table_id = live_table.split(".")
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
+    app_id = re.sub("_live$", "", dataset_id)
+
+    excluded_apps = set(ConfigLoader.get("geo_deprecation", "skip_apps", fallback=[]))
+    app_name = channel_to_app_name.get(app_id)
+    if app_name in excluded_apps:
+        return ""
+
+    excluded_tables = set(
+        ConfigLoader.get("geo_deprecation", "skip_tables", fallback=[])
+    )
+    if re.sub(r"_v\d+$", "", table_id) in excluded_tables:
+        return ""
+
+    table = client.get_table(live_table)
+
+    # Only deprecating the geo fields for glean apps.  Legacy tables would be deprecated after glean migration
+    if app_id not in channel_to_app_name.keys():
+        return ""
+
+    # only glean tables have this label
+    include_client_id = table.labels.get("include_client_id") == "true"
+    if not include_client_id:
+        return ""
+
+    # Check schema to ensure required fields exists
+    schema = table.schema
+    has_client_id_field = _has_field_path(schema, ["client_info", "client_id"])
+    if not has_client_id_field:
+        return ""
+
+    required_geo_fields = ("city", "subdivision1", "subdivision2")
+    has_required_geo_fields = all(
+        _has_field_path(schema, ["metadata", "geo", field])
+        for field in required_geo_fields
+    )
+    if not has_required_geo_fields:
+        return ""
+
+    return """
+        REPLACE (
+        (SELECT AS STRUCT
+           metadata.* REPLACE (
+             (SELECT AS STRUCT
+                metadata.geo.* REPLACE (
+                  CAST(NULL AS STRING) AS city,
+                  CAST(NULL AS STRING) AS subdivision1,
+                  CAST(NULL AS STRING) AS subdivision2
+                )
+             ) AS geo
+           )
+        ) AS metadata)
+    """
 
 
 def _get_query_job_configs(
@@ -92,7 +166,8 @@ def _get_query_job_configs(
     num_retries,
     temp_dataset,
 ):
-    sql = QUERY_TEMPLATE.format(live_table=live_table)
+    replace_geo = _select_geo(live_table, client)
+    sql = QUERY_TEMPLATE.format(live_table=live_table, replace_geo=replace_geo)
     stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
     kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
     start_time = datetime(*date.timetuple()[:6])

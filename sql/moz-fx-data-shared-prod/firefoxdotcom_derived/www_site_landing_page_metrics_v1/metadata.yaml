@@ -20,4 +20,3 @@ bigquery:
     - device_category
     - country
     - operating_system
-references: {}

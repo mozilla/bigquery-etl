@@ -19,4 +19,3 @@ bigquery:
     expiration_days: null
   clustering:
     fields: ['project_id', 'user_email']
-references: {}

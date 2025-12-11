@@ -1,0 +1,7 @@
+friendly_name: Google Analytics Clients
+description: |-
+  A table representing Google Analytics clients. Grain is one row per client.
+  Key is ga_client_id.
+owners:
+- mhirose@mozilla.com
+- kwindau@mozilla.com

@@ -22,4 +22,3 @@ bigquery:
     - is_new_profile
     - app_name
     - os
-references: {}

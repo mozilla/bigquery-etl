@@ -8,4 +8,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v2`
 CROSS JOIN
-  UNNEST(mozfun.json.js_extract_string_map(approximate_language_proportions_json)) AS lang
+  UNNEST(mozfun.json.extract_string_map(approximate_language_proportions_json)) AS lang

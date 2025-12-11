@@ -16,6 +16,7 @@ dags.yaml
 /sql/**/active_users_aggregates_v3 @mozilla/kpi_table_reviewers
 /sql_generators/active_users_aggregates_v4/templates/ @mozilla/kpi_table_reviewers
 /sql/**/active_users_aggregates_v4 @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/telemetry/active_users_aggregates @mozilla/kpi_table_reviewers
 # Search
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas

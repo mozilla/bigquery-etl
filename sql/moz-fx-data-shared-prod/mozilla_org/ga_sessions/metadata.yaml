@@ -1,0 +1,7 @@
+friendly_name: Google Analytics Sessions V3
+description: |-
+  Contains 1 row for each Google Analytics 4 session
+  The primary key is a composite key (ga_client_id, ga_session_id)
+  This view filters out invalid GA client IDs and invalid GA session IDs.
+owners:
+- kwindau@mozilla.com

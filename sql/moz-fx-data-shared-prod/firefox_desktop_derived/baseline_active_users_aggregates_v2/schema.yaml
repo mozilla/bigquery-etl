@@ -15,14 +15,9 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: 'App name (Firefox Desktop), if client comes from MozillaOnline distribution
-
+  description: App name (Firefox Desktop), if client comes from MozillaOnline distribution
     then the distribution_id is appended to the app_name. If client comes from BrowserStack
-    (isp)
-
-    this is appended to the app_name.
-
-    '
+    (isp) this is appended to the app_name.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -65,8 +60,8 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: 'The optional Windows build number, reported by Windows (e.g. 22000)
-    and not set for other platforms (Windows only).'
+  description: The optional Windows build number, reported by Windows (e.g. 22000)
+    and not set for other platforms (Windows only).
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -74,21 +69,19 @@ fields:
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
-  description: 'The major version of the application version (e.g. if 123.0, then
-    123)'
+  description: The major version of the application version (e.g. if 123.0, then 123)
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
-  description: 'The minor version of the application version (e.g. if 123.0, then
-    0)'
+  description: The minor version of the application version (e.g. if 123.0, then 0)
 - name: app_version_patch_revision
   type: NUMERIC
   mode: NULLABLE
-  description: 'The patch revision number of the app version'
+  description: The patch revision number of the app version
 - name: app_version_is_major_release
   type: BOOLEAN
   mode: NULLABLE
-  description: 'Boolean flag indicating if the app version was a major release'
+  description: Boolean flag indicating if the app version was a major release
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
@@ -106,56 +99,40 @@ fields:
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: 'Medium to which the ping should be attributed e.g. referral, firefox
+  description: Medium to which the ping should be attributed e.g. referral, firefox
     desktop.
-
-    '
 - name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: 'Source to which the ping should be attributed e.g. firefox browser,
+  description: Source to which the ping should be attributed e.g. firefox browser,
     search fox.
-
-    '
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of daily users on the submission_date (based on sending the
+  description: Number of daily users on the submission_date (based on sending the
     ping).
-
-    '
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of weekly users on the submission_date (based on sending the
+  description: Number of weekly users on the submission_date (based on sending the
     ping).
-
-    '
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of monthly users on the submission_date (based on sending the
+  description: Number of monthly users on the submission_date (based on sending the
     ping).
-
-    '
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of DAU (Daily Active Users) users on the submission_date (based
+  description: Number of DAU (Daily Active Users) users on the submission_date (based
     on activity).
-
-    '
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of WAU (Weekly Active Users) users on the submission_date (based
+  description: Number of WAU (Weekly Active Users) users on the submission_date (based
     on activity).
-
-    '
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of MAU (Monthly Active Users) users on the submission_date
+  description: Number of MAU (Monthly Active Users) users on the submission_date
     (based on activity).
-
-    '

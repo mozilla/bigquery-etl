@@ -100,6 +100,24 @@ def generate(
     elif exclude:
         table_filter = partial(table_matches_patterns, exclude, True)
 
+    output_dir = Path(output_dir) / target_project
+
+    app_info = {
+        name: info
+        for name, info in get_app_info().items()
+        if (
+            (app_name is None or name == app_name)
+            and name
+            not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
+        )
+    }
+
+    app_id_info_by_stable_dataset = {
+        app_id_info["bq_dataset_family"] + "_stable": app_id_info
+        for app_ids_info in app_info.values()
+        for app_id_info in app_ids_info
+    }
+
     @cache
     def get_tables(table_name="baseline_v1"):
         tables = list_tables(
@@ -109,54 +127,31 @@ def generate(
             table_name=table_name,
         )
 
-        # filter out skipped apps
         return [
             table
             for table in tables
-            if table.split(".")[1]
-            not in [
-                f"{skipped_app}_stable"
-                for skipped_app in ConfigLoader.get(
-                    "generate", "glean_usage", "skip_apps", fallback=[]
-                )
-            ]
+            if table.split(".")[-2] in app_id_info_by_stable_dataset
         ]
-
-    output_dir = Path(output_dir) / target_project
-
-    # per app specific datasets
-    app_info = get_app_info()
-    if app_name:
-        app_info = {name: info for name, info in app_info.items() if name == app_name}
-
-    app_info = [
-        info
-        for name, info in app_info.items()
-        if name
-        not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
-    ]
 
     id_token = get_id_token()
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
-    # Parameters to generate per-app_id datasets consist of the function to be called
-    # and baseline tables
     generate_per_app_id = [
-        (
-            partial(
-                table.generate_per_app_id,
-                target_project,
-                output_dir=output_dir,
-                use_cloud_function=use_cloud_function,
-                app_info=app_info,
-                parallelism=parallelism,
-                id_token=id_token,
-            ),
+        partial(
+            table.generate_per_app_id,
+            target_project,
             base_table,
+            app_id_info["app_name"],
+            app_id_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
         )
         for table in GLEAN_TABLES
         for base_table in get_tables(table_name=table.base_table_name)
+        for app_id_info in [app_id_info_by_stable_dataset[base_table.split(".")[-2]]]
     ]
 
     base_tables = {}
@@ -164,58 +159,54 @@ def generate(
     for table_name in unique_base_table_names:
         base_tables[table_name] = get_tables(table_name=table_name)
 
-    def all_base_tables_exist(app_info, table_name="baseline_v1"):
-        """Check if baseline tables exist for all app datasets."""     
+    def all_base_tables_exist(app_ids_info, table_name="baseline_v1"):
+        """Check if baseline tables exist for all app datasets."""
         # Extract dataset names from table names (format: project.dataset.table)
         existing_datasets = {table.split(".")[1] for table in base_tables[table_name]}
-        
+
         # Check if all app datasets have corresponding tables
-        if isinstance(app_info, dict):
-            required_datasets = {f"{app_info['bq_dataset_family']}_stable"}
-        else:
-            required_datasets = {f"{app['bq_dataset_family']}_stable" for app in app_info}
+        required_datasets = {
+            f"{app_id_info['bq_dataset_family']}_stable" for app_id_info in app_ids_info
+        }
 
         return all(dataset in existing_datasets for dataset in required_datasets)
-    
 
-    # Parameters to generate per-app datasets consist of the function to be called
-    # and app_info
     generate_per_app = [
-        (
-            partial(
-                table.generate_per_app,
-                target_project,
-                output_dir=output_dir,
-                use_cloud_function=use_cloud_function,
-                parallelism=parallelism,
-                id_token=id_token,
-                all_base_tables_exist=all_base_tables_exist(info, table_name=table.base_table_name) 
-                if hasattr(table, 'per_app_requires_all_base_tables') and table.per_app_requires_all_base_tables 
+        partial(
+            table.generate_per_app,
+            target_project,
+            app_name,
+            app_ids_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
+            all_base_tables_exist=(
+                all_base_tables_exist(app_ids_info, table_name=table.base_table_name)
+                if hasattr(table, "per_app_requires_all_base_tables")
+                and table.per_app_requires_all_base_tables
                 else None
             ),
-            info,
         )
-        for info in app_info
+        for app_name, app_ids_info in app_info.items()
         for table in GLEAN_TABLES
     ]
 
     # Parameters to generate datasets that union all app datasets
     generate_across_apps = [
-        (
-            partial(
-                table.generate_across_apps,
-                target_project,
-                output_dir=output_dir,
-                use_cloud_function=use_cloud_function,
-                parallelism=parallelism,
-            ),
+        partial(
+            table.generate_across_apps,
+            target_project,
             app_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
         )
         for table in GLEAN_TABLES
     ]
 
     with ProcessingPool(parallelism) as pool:
         pool.map(
-            lambda f: f[0](f[1]),
+            lambda f: f(),
             generate_per_app_id + generate_per_app + generate_across_apps,
         )

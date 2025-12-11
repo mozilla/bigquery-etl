@@ -25,4 +25,3 @@ bigquery:
     fields:
     - country
     - normalized_os
-references: {}

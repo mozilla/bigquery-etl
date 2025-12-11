@@ -1,19 +1,29 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.service_subscription_events`
 AS
+WITH subscription_events AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1`
+  WHERE
+    DATE(`timestamp`) < (
+      SELECT
+        COALESCE(MIN(DATE(`timestamp`)), '9999-12-31')
+      FROM
+        `moz-fx-data-shared-prod.subscription_platform_derived.recent_service_subscription_events_v1`
+    )
+  UNION ALL
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.recent_service_subscription_events_v1`
+)
 SELECT
-  *
-FROM
-  `moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1`
-WHERE
-  DATE(`timestamp`) < (
-    SELECT
-      COALESCE(MIN(DATE(`timestamp`)), '9999-12-31')
-    FROM
-      `moz-fx-data-shared-prod.subscription_platform_derived.recent_service_subscription_events_v1`
+  * REPLACE (
+    -- DENG-9858
+    (SELECT AS STRUCT subscription.* EXCEPT (first_touch_attribution)) AS subscription,
+    (SELECT AS STRUCT old_subscription.* EXCEPT (first_touch_attribution)) AS old_subscription
   )
-UNION ALL
-SELECT
-  *
 FROM
-  `moz-fx-data-shared-prod.subscription_platform_derived.recent_service_subscription_events_v1`
+  subscription_events

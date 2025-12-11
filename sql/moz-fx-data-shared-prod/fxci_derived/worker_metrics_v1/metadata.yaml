@@ -18,4 +18,3 @@ bigquery:
     - project
     - zone
     - instance_id
-references: {}

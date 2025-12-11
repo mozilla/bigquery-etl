@@ -234,6 +234,7 @@ def publish(
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    skip_deploy = ConfigLoader.get("metadata", "deploy", "skip", fallback=[])
 
     if parallelism > 0:
         credentials = get_credentials()
@@ -245,7 +246,10 @@ def publish(
             )
     else:
         for metadata_file in table_metadata_files:
-            _publish_metadata(project_id, credentials=None, metadata_file=metadata_file)
+            if str(metadata_file) not in skip_deploy:
+                _publish_metadata(
+                    project_id, credentials=None, metadata_file=metadata_file
+                )
 
 
 def _publish_metadata(project_id, credentials, metadata_file):

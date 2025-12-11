@@ -13,3 +13,5 @@ SELECT
   IF(num_days_active_day_2_7 > 1 AND search_count > 0, TRUE, FALSE) AS is_early_engagement,
 FROM
   `moz-fx-data-shared-prod.klar_android_derived.new_profile_activation_clients_v1`
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date ASC) = 1

@@ -159,7 +159,8 @@ subscriptions_history AS (
       history.subscription.has_refunds,
       history.subscription.has_fraudulent_charges,
       subscription_attributions.first_touch_attribution,
-      subscription_attributions.last_touch_attribution
+      subscription_attributions.last_touch_attribution,
+      history.subscription.ended_reason
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history
@@ -188,14 +189,21 @@ synthetic_subscription_ends_history AS (
           FALSE AS is_active,
           valid_to AS ended_at,
           CAST(NULL AS TIMESTAMP) AS current_period_started_at,
-          CAST(NULL AS TIMESTAMP) AS current_period_ends_at
+          CAST(NULL AS TIMESTAMP) AS current_period_ends_at,
+          'Downgrade' AS ended_reason
         )
     ) AS subscription
   FROM
-    subscriptions_history
+    subscriptions_history AS history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
-    AND valid_to < '9999-12-31 23:59:59.999999'
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from DESC,
+        history.valid_to DESC
+    )
+    AND history.valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT
   *

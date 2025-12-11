@@ -14,25 +14,26 @@ class BaselineClientsFirstSeenTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.per_app_requires_all_base_tables = True
 
     def generate_per_app_id(
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
     ):
         """Generate per-app_id datasets."""
-        self.custom_render_kwargs = dict(
+        custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality
-            fennec_id=any(
-                (f"{app_id}_stable" in baseline_table)
-                for app_id in [
+            fennec_id=(
+                app_id_info["bq_dataset_family"]
+                in [
                     "org_mozilla_firefox",
                     "org_mozilla_fenix_nightly",
                     "org_mozilla_fennec_aurora",
@@ -46,8 +47,11 @@ class BaselineClientsFirstSeenTable(GleanTable):
             self,
             project_id,
             baseline_table,
+            app_name,
+            app_id_info,
             output_dir=output_dir,
-            app_info=app_info,
+            use_cloud_function=use_cloud_function,
             parallelism=parallelism,
-            id_token=id_token
+            id_token=id_token,
+            custom_render_kwargs=custom_render_kwargs,
         )

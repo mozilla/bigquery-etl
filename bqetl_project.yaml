@@ -35,7 +35,7 @@ monitoring:
     - baseline_v1
     telemetry_stable:
     - main_v4
-    # Firefox Ios
+    # Firefox IOS
     org_mozilla_ios_fennec_derived:
     - usage_reporting_clients_last_seen_v1
     - baseline_clients_yearly_v1
@@ -97,7 +97,7 @@ monitoring:
     - baseline_clients_last_seen_v1
     - additional_deletion_requests_v1
     - usage_reporting_clients_daily_v1
-    # Focus Ios
+    # Focus IOS
     org_mozilla_ios_focus_derived:
     - usage_reporting_clients_last_seen_v1
     - baseline_clients_yearly_v1

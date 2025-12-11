@@ -12,7 +12,7 @@ fields:
   mode: NULLABLE
   description: release, beta, nightly, esr.
 - name: major_version
-  type: STRING
+  type: INT64
   mode: NULLABLE
   description: Extracted version from crash_app_display_version.
 - name: process_type

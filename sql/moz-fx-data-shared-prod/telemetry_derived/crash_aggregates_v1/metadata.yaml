@@ -9,6 +9,8 @@ labels:
   owner2: afranchuk
 scheduling:
   dag_name: bqetl_crashes
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

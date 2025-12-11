@@ -2,7 +2,7 @@ WITH crashes AS (
   -- Crash records from Firefox desktop, excluding OS "Other" and "iOS"
   SELECT
     client_info.client_id AS client_id,
-    DATE(@submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     normalized_os AS os,
     crash_app_channel AS channel,
     metrics.string.crash_process_type AS process_type,
@@ -25,6 +25,8 @@ WITH crashes AS (
     ) AS no_minidump
   FROM
     `moz-fx-data-shared-prod.telemetry.firefox_crashes`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
 )
   -- Aggregate distinct crashing users per OS and time group
 SELECT

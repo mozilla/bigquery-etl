@@ -28,7 +28,7 @@ WITH crashes AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
 )
-  -- Aggregate distinct crashing users per OS and time group
+  -- Aggregate distinct crashing users per OS, channel, major_version, process_type, and other crash details
 SELECT
   submission_date,
   os,

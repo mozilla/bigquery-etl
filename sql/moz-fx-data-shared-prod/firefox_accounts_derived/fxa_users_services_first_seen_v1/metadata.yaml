@@ -19,3 +19,5 @@ bigquery:
     fields:
     - service
     - user_id
+deprecated: true
+deletion_date: 2025-12-12

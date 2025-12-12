@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events_stream`
 AS
 SELECT
+  CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
   STRUCT(
     STRUCT(

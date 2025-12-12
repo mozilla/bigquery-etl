@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop_background_update.events_stream`
 AS
 SELECT
+  CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
   STRUCT(
     STRUCT(

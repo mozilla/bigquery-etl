@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.net_thunderbird_android_daily.events_stream`
 AS
 SELECT
+  CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
 FROM
   `moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.events_stream_v1`

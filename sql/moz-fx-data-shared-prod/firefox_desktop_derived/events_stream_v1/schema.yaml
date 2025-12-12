@@ -267,4 +267,7 @@ fields:
 - name: event_extra
   type: JSON
   mode: NULLABLE
+- name: document_event_number
+  type: INTEGER
+  mode: NULLABLE
 

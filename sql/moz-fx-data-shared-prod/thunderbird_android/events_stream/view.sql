@@ -24,6 +24,7 @@ WITH events_stream_union AS (
     `moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.events_stream_v1` AS e
 )
 SELECT
+  CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
 FROM
   events_stream_union

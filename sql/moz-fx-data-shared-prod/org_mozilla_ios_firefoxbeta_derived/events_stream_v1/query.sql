@@ -121,7 +121,9 @@ SELECT
   event.name AS event_name,
   ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
   from_map_event_extra(event.extra) AS event_extra,
+  (event_offset + 1) AS document_event_number,
 FROM
   base
 CROSS JOIN
   UNNEST(events) AS event
+  WITH OFFSET AS event_offset

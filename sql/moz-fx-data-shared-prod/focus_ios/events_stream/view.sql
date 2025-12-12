@@ -10,6 +10,7 @@ WITH events_stream_union AS (
     `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.events_stream_v1` AS e
 )
 SELECT
+  CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
   STRUCT(
     STRUCT(LAX_BOOL(event_extra.is_enabled) AS `is_enabled`) AS `boolean`,

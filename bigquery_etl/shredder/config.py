@@ -981,10 +981,12 @@ def find_glean_targets(
             DeleteTarget(
                 table=qualified_table_id(table),
                 # field must be repeated for each deletion source
-                field=(USAGE_PROFILE_ID,) * len(sources[table.dataset_id]),
-            ): sources[table.dataset_id]
+                field=(USAGE_PROFILE_ID,)
+                * len(usage_reporting_sources[table.dataset_id]),
+            ): usage_reporting_sources[table.dataset_id]
             for table in glean_derived_tables
             if any(field.name == USAGE_PROFILE_ID for field in table.schema)
+            and all(field.name != CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
             and qualified_table_id(table) not in skipped_tables
         },

@@ -157,9 +157,9 @@ def query(ctx):
     "--sub-daily",
     help=(
         "Using this option creates a query that consists of two tables with"
-        "different schedules based on a single base query, plus a view that"
-        "unions the two tables together, for use with ETL that needs to run"
-        "more frequently than daily."
+        " different schedules based on a single base query, plus a view that"
+        " unions the two tables together, for use with ETL that needs to run"
+        " more frequently than daily."
     ),
     default=False,
     is_flag=True,
@@ -204,7 +204,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, sub_daily):
     derived_path = path / project_id / dataset / (name + version)
     derived_path.mkdir(parents=True)
     if sub_daily:
-        sub_daily_path = path / project_id / dataset / (name + "sub_daily" + version)
+        sub_daily_path = path / project_id / dataset / (name + "_sub_daily" + version)
         sub_daily_path.mkdir(parents=True)
     if create_view_path:
         view_path = path / project_id / dataset.replace("_derived", "") / name
@@ -238,32 +238,34 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, sub_daily):
 
         view_metadata.write(view_metadata_file)
 
-    # create query.sql file
-    query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+    for table_path in derived_path, sub_daily_path:
 
-    # create default metadata.yaml
-    metadata_file = derived_path / "metadata.yaml"
-    metadata = Metadata(
-        friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
-        owners=[owner],
-        labels={"incremental": True},
-        bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
-            clustering=ClusteringMetadata(fields=[]),
-        ),
-        require_column_descriptions=True,
-    )
-    metadata.write(metadata_file)
+        # create query.sql file
+        query_file = table_path / "query.sql"
+        query_file.write_text(
+            reformat(
+                f"""-- Query for {dataset}.{name}{version}
+                -- For more information on writing queries see:
+                -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+                SELECT * FROM table WHERE submission_date = @submission_date"""
+            )
+            + "\n"
+        )
+
+        # create default metadata.yaml
+        metadata_file = table_path / "metadata.yaml"
+        metadata = Metadata(
+            friendly_name=string.capwords(name.replace("_", " ")),
+            description="Please provide a description for the query",
+            owners=[owner],
+            labels={"incremental": True},
+            bigquery=BigQueryMetadata(
+                time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+                clustering=ClusteringMetadata(fields=[]),
+            ),
+            require_column_descriptions=True,
+        )
+        metadata.write(metadata_file)
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():

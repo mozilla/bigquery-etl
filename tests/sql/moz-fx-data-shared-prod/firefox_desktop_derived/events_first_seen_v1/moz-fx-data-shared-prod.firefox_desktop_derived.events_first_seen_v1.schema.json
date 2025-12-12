@@ -6,11 +6,6 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "event_first_seen_date",
-    "type": "DATE"
-  },
-  {
-    "mode": "NULLABLE",
     "name": "client_id",
     "type": "STRING"
   },

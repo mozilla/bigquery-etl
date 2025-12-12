@@ -1,7 +1,5 @@
 ---
 # Test 1: New event - uses current data
-# - submission_date: 2025-10-29
-  # event_first_seen_date: 2025-10-29
 - client_id: client1-new
   profile_group_id: "client1-new-profile"
   sample_id: 0
@@ -13,8 +11,6 @@
   event_extra: {date: 2025-10-29}
 
 # Test 2: Existing event - uses previous (earlier) data
-# - submission_date: 2025-10-15
-  # event_first_seen_date: 2025-10-15
 - client_id: client2-existing
   profile_group_id: "client2-existing-profile"
   sample_id: 1
@@ -24,8 +20,6 @@
   first_submission_timestamp: 2025-10-15T08:00:00+00:00
   first_event_timestamp: 2025-10-15T08:00:00+00:00
   event_extra: {date: 2025-10-15}
-# - submission_date: 2025-10-15
-  # event_first_seen_date: 2025-10-15
 - client_id: client2-existing
   profile_group_id: "client2-existing-profile"
   sample_id: 1
@@ -36,8 +30,6 @@
   first_submission_timestamp: 2025-10-15T08:00:00+00:00
   first_event_timestamp: 2025-10-15T08:00:00+00:00
   event_extra: {date: 2025-10-15}
-# - submission_date: 2025-10-15
-  # event_first_seen_date: 2025-10-15
 - client_id: client2-existing
   profile_group_id: "client2-existing-profile"
   sample_id: 1
@@ -48,8 +40,6 @@
   first_submission_timestamp: 2025-10-15T08:00:00+00:00
   first_event_timestamp: 2025-10-15T08:00:00+00:00
   event_extra: {date: 2025-10-15}
-# - submission_date: 2025-10-15
-  # event_first_seen_date: 2025-10-15
 - client_id: client2-existing
   profile_group_id: "client2-existing-profile"
   sample_id: 1
@@ -62,8 +52,6 @@
   event_extra: {date: 2025-10-15}
 
 # Test 3: Multiple events - aggregated to minimum
-# - submission_date: 2025-10-29
-  # event_first_seen_date: 2025-10-29
 - client_id: client3-multiple
   profile_group_id: "client3-multiple-profile"
   sample_id: 2
@@ -75,8 +63,6 @@
   event_extra: {date: 2025-10-29, sequence: 1}
 
 # Test 4: Different profiles - collapsed to ONE record (min_by aggregation)
-# - submission_date: 2025-10-29
-  # event_first_seen_date: 2025-10-29
 - client_id: client4-profiles
   profile_group_id: "profile-a"
   sample_id: 3
@@ -88,8 +74,6 @@
   event_extra: {profile: a}
 
 # Test 8: History-only record - preserved from FULL JOIN
-# - submission_date: 2025-10-20
-  # event_first_seen_date: 2025-10-20
 - client_id: client8-history-only
   profile_group_id: "client8-profile"
   sample_id: 7
@@ -99,8 +83,6 @@
   first_submission_timestamp: 2025-10-20T09:00:00+00:00
   first_event_timestamp: 2025-10-20T09:00:00+00:00
   event_extra: {date: 2025-10-20}
-# - submission_date: 2025-10-20
-  # event_first_seen_date: 2025-10-20
 - client_id: client8-history-only
   profile_group_id: "client8-profile"
   sample_id: 7
@@ -111,8 +93,6 @@
   first_submission_timestamp: 2025-10-20T09:00:00+00:00
   first_event_timestamp: 2025-10-20T09:00:00+00:00
   event_extra: {date: 2025-10-20}
-# - submission_date: 2025-10-20
-  # event_first_seen_date: 2025-10-20
 - client_id: client8-history-only
   profile_group_id: "client8-profile"
   sample_id: 7
@@ -123,8 +103,6 @@
   first_submission_timestamp: 2025-10-20T09:00:00+00:00
   first_event_timestamp: 2025-10-20T09:00:00+00:00
   event_extra: {date: 2025-10-20}
-# - submission_date: 2025-10-20
-  # event_first_seen_date: 2025-10-20
 - client_id: client8-history-only
   profile_group_id: "client8-profile"
   sample_id: 7

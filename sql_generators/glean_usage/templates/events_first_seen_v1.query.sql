@@ -74,7 +74,7 @@ UNION ALL
 (
 WITH _current AS (
   SELECT
-  MIN(submission_timestamp) AS first_submission_timestamp,
+    MIN(submission_timestamp) AS first_submission_timestamp,
     client_id,
     `event`,
     event_category,
@@ -101,7 +101,7 @@ WITH _current AS (
   FROM
     `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE
-    DATE(submission_timestamp) = DATE(@submission_timestamp)
+    DATE(submission_timestamp) = @submission_date
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
         -- if app_id is firefox_desktop, filter for where profile_group_id is not null
     {% if app_id == 'firefox_desktop' -%}
@@ -110,7 +110,6 @@ WITH _current AS (
         -- below is the templated criteria
     AND ({{ item["sql"] }})
   GROUP BY
-    DATE(submission_timestamp),
     client_id,
     `event`,
     event_category,
@@ -139,16 +138,15 @@ WITH _current AS (
     FROM
       `{{ project_id }}.{{ events_first_seen_table }}`
     WHERE
-      DATE(first_submission_timestamp) > '2023-01-01'
-      AND DATE(first_submission_timestamp) < DATE(@submission_timestamp)
+      DATE(first_submission_timestamp) >= '2023-01-01'
+      AND DATE(first_submission_timestamp) < @submission_date
   ),
   _joined AS (
     --switch to using separate if statements instead of 1
     --because dry run is struggling to validate the final struct
     SELECT
       IF(
-        _previous.client_id IS NULL
-        OR date(_previous.first_submission_timestamp) >= date(_current.first_submission_timestamp),
+        _previous.client_id IS NULL,
         _current,
         _previous
       ).*

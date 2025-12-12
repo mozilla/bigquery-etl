@@ -1,8 +1,8 @@
 ---
 # Historical record for client2-existing (earlier than current)
-- submission_date: 2025-10-15
-  event_first_seen_date: 2025-10-15
-  client_id: client2-existing
+# - submission_date: 2025-10-15
+  # event_first_seen_date: 2025-10-15
+- client_id: client2-existing
   profile_group_id: "client2-existing-profile"
   sample_id: 1
   event_category: "client2-existing-event-category"
@@ -13,9 +13,9 @@
   event_extra: {date: 2025-10-15}
 
 # Historical record only in previous (not in current day)
-- submission_date: 2025-10-20
-  event_first_seen_date: 2025-10-20
-  client_id: client8-history-only
+# - submission_date: 2025-10-20
+  # event_first_seen_date: 2025-10-20
+- client_id: client8-history-only
   profile_group_id: "client8-profile"
   sample_id: 7
   event_category: "client8-event-category"

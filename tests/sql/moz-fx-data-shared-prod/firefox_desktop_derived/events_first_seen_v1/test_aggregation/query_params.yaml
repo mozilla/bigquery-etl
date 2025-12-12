@@ -1,4 +1,4 @@
 ---
-- name: submission_date
-  type: DATE
-  value: 2025-10-29
+- name: submission_timestamp
+  type: TIMESTAMP
+  value: 2025-10-29T10:00:00

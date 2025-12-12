@@ -1,8 +1,8 @@
 [
   {
     "mode": "NULLABLE",
-    "name": "submission_date",
-    "type": "DATE"
+    "name": "first_submission_timestamp",
+    "type": "TIMESTAMP"
   },
   {
     "mode": "NULLABLE",
@@ -43,11 +43,6 @@
     "mode": "NULLABLE",
     "name": "sample_id",
     "type": "INTEGER"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "first_submission_timestamp",
-    "type": "TIMESTAMP"
   },
   {
     "mode": "NULLABLE",

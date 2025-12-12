@@ -1,8 +1,8 @@
 ---
 # Different events for same client_id
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-diff-events
+# - submission_date: 2025-10-29
+  # event_first_seen_date: 2025-10-29
+- client_id: client1-diff-events
   profile_group_id: "client1-diff-events-profile"
   sample_id: 0
   event_category: "category1"
@@ -11,9 +11,9 @@
   first_submission_timestamp: 2025-10-29T10:00:00+00:00
   first_event_timestamp: 2025-10-29T10:00:00+00:00
   event_extra: {type: event1}
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-diff-events
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client1-diff-events
   profile_group_id: "client1-diff-events-profile"
   sample_id: 0
   event_category: "category2"
@@ -24,9 +24,9 @@
   event_extra: {type: event2}
 
 # Date boundary - only 2023-01-01 included
-- submission_date: 2023-01-01
-  event_first_seen_date: 2023-01-01
-  client_id: client2-date-boundary
+# - submission_date: 2023-01-01
+#   event_first_seen_date: 2023-01-01
+- client_id: client2-date-boundary
   profile_group_id: "client2-date-boundary-profile"
   sample_id: 0
   event_category: "date-category"
@@ -37,9 +37,9 @@
   event_extra: {included: true}
 
 # NULL optional fields
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-null-fields
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client1-null-fields
   profile_group_id: "client1-null-fields-profile"
   sample_id: 0
   event_category: "null-fields-category"
@@ -50,9 +50,9 @@
 
 # Tie - min_by should pick one deterministically (likely profile-A or profile-B based on implementation)
 # This seems to go with profile-A
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-tie
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client1-tie
   profile_group_id: "profile-A"  # or "profile-B" depending on min_by tie-breaking
   sample_id: 0  # or 1
   event_category: "tie-category"
@@ -63,9 +63,9 @@
   event_extra: {profile: A}  # or {profile: B}
 
 # test dupes
-- submission_date: 2025-11-10
-  event_first_seen_date: 2025-11-10
-  client_id: client1-dupes
+# - submission_date: 2025-11-10
+#   event_first_seen_date: 2025-11-10
+- client_id: client1-dupes
   profile_group_id: "client1-dupes-profile1"
   sample_id: 2
   event_category: "client1-dupes-event-category"
@@ -76,9 +76,9 @@
   event_extra: {date: 2025-11-08}
 
 # get minimums
-- submission_date: 2025-10-27
-  event_first_seen_date: 2025-10-27
-  client_id: client1-mins
+# - submission_date: 2025-10-27
+#   event_first_seen_date: 2025-10-27
+- client_id: client1-mins
   profile_group_id: "client1-mins-profile"
   sample_id: 0
   event_category: "client1-mins-event-category"
@@ -87,9 +87,9 @@
   first_submission_timestamp: 2025-10-27T00:00:00+00:00
   first_event_timestamp: 2025-10-27T00:00:00+00:00
   event_extra: {date: 2025-10-27}
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client2-mins
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client2-mins
   profile_group_id: "client2-mins-profile"
   sample_id: 0
   event_category: "client2-mins-event-category"
@@ -100,9 +100,9 @@
   event_extra: {date: 2025-10-29}
 
 # profile_group_id is not null
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-pg
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client1-pg
   profile_group_id: "client1-pg-profile"
   sample_id: 0
   event_category: "client1-pg-event-category"
@@ -113,9 +113,9 @@
   event_extra: {date: 2025-10-29}
 
 # event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-- submission_date: 2025-10-29
-  event_first_seen_date: 2025-10-29
-  client_id: client1-ec
+# - submission_date: 2025-10-29
+#   event_first_seen_date: 2025-10-29
+- client_id: client1-ec
   profile_group_id: "client1-ec-profile"
   sample_id: 0
   event_category: "client1-ec-event-category"

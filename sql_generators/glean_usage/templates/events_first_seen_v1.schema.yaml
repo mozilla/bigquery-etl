@@ -1,10 +1,7 @@
 fields:
   - mode: NULLABLE
-    name: submission_date
-    type: DATE
-  - mode: NULLABLE
-    name: event_first_seen_date
-    type: DATE
+    name: first_submission_timestamp
+    type: TIMESTAMP
   - mode: NULLABLE
     name: client_id
     type: STRING
@@ -26,9 +23,6 @@ fields:
   - mode: NULLABLE
     name: sample_id
     type: INTEGER
-  - mode: NULLABLE
-    name: first_submission_timestamp
-    type: TIMESTAMP
   - mode: NULLABLE
     name: first_event_timestamp
     type: TIMESTAMP

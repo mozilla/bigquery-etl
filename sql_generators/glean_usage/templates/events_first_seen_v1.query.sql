@@ -9,8 +9,7 @@
 (
 WITH eventsstream AS (
   SELECT
-  DATE(MIN(submission_timestamp)) as submission_date,
-  DATE(MIN(submission_timestamp)) as event_first_seen_date,
+  MIN(submission_timestamp) AS first_submission_timestamp,
   client_id,
   `event`,
   event_category,
@@ -20,7 +19,6 @@ WITH eventsstream AS (
     STRUCT(
       profile_group_id,
       sample_id,
-      submission_timestamp AS first_submission_timestamp,
       event_timestamp AS first_event_timestamp,
       event_extra,
       app_version_major,
@@ -76,8 +74,7 @@ UNION ALL
 (
 WITH _current AS (
   SELECT
-    @submission_date AS submission_date,
-    @submission_date AS event_first_seen_date,
+  MIN(submission_timestamp) AS first_submission_timestamp,
     client_id,
     `event`,
     event_category,
@@ -87,7 +84,6 @@ WITH _current AS (
         STRUCT(
           profile_group_id,
           sample_id,
-          submission_timestamp AS first_submission_timestamp,
           event_timestamp AS first_event_timestamp,
           event_extra,
           app_version_major,
@@ -105,7 +101,7 @@ WITH _current AS (
   FROM
     `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = DATE(@submission_timestamp)
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
         -- if app_id is firefox_desktop, filter for where profile_group_id is not null
     {% if app_id == 'firefox_desktop' -%}
@@ -114,8 +110,7 @@ WITH _current AS (
         -- below is the templated criteria
     AND ({{ item["sql"] }})
   GROUP BY
-    submission_date,
-    event_first_seen_date,
+    DATE(submission_timestamp),
     client_id,
     `event`,
     event_category,
@@ -125,8 +120,7 @@ WITH _current AS (
   -- query over all of history to see whether the client_id, event and criteria combination has shown up before
   _previous AS (
     SELECT
-      submission_date,
-      event_first_seen_date,
+      first_submission_timestamp,
       client_id,
       `event`,
       event_category,
@@ -134,7 +128,6 @@ WITH _current AS (
       {{ item["name"] }} AS criteria,
       profile_group_id,
       sample_id,
-      first_submission_timestamp,
       first_event_timestamp,
       event_extra,
       app_version_major,
@@ -146,8 +139,8 @@ WITH _current AS (
     FROM
       `{{ project_id }}.{{ events_first_seen_table }}`
     WHERE
-      event_first_seen_date > '2023-01-01'
-      AND event_first_seen_date < @submission_date
+      DATE(first_submission_timestamp) > '2023-01-01'
+      AND DATE(first_submission_timestamp) < DATE(@submission_timestamp)
   ),
   _joined AS (
     --switch to using separate if statements instead of 1
@@ -155,7 +148,7 @@ WITH _current AS (
     SELECT
       IF(
         _previous.client_id IS NULL
-        OR _previous.event_first_seen_date >= _current.event_first_seen_date,
+        OR date(_previous.first_submission_timestamp) >= date(_current.first_submission_timestamp),
         _current,
         _previous
       ).*

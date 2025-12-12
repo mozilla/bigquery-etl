@@ -1,6 +1,6 @@
 WITH params AS (
   SELECT
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 14 DAY AS start_timestamp,
+    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
     11 AS minutes_to_assume_random_ranking,
     "US" AS country

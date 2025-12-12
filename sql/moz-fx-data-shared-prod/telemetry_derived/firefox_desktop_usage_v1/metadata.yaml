@@ -36,13 +36,12 @@ bigquery:
     - attributed
     - country
     - country_name
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.static.country_codes_v1
   - moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_exact_mau28_by_dimensions_v2
+deprecated: true
+deletion_date: 2025-12-12
 require_column_descriptions: false
 level: null

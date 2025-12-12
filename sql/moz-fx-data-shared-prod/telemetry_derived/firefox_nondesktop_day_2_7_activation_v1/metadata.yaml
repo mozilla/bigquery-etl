@@ -21,3 +21,4 @@ bigquery:
     field: submission_date
     require_partition_filter: false
 deprecated: true
+deletion_date: 2025-12-12

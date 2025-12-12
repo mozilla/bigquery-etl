@@ -20,3 +20,4 @@ bigquery:
     require_partition_filter: false
   clustering: null
 deprecated: true
+deletion_date: 2025-12-12

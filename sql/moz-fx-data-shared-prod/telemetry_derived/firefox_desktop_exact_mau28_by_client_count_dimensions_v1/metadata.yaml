@@ -24,3 +24,4 @@ bigquery:
   clustering: null
 require_column_descriptions: false
 deprecated: true
+deletion_date: 2025-12-12

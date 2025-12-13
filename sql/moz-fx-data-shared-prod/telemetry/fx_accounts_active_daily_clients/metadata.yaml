@@ -1,9 +1,7 @@
 friendly_name: Firefox Accounts Active Daily Clients
-description: 'Table with 1 row per submission date and Glean client ID sending a Firefox
+description: Table with 1 row per submission date and Glean client ID sending a Firefox
   Accounts ping that date
-
   Intentionally does not contain Firefox Account ID
-
-  Primary key is submission date & Glean client_info.client_id'
+  Primary key is submission date & Glean client_info.client_id
 owners:
 - kwindau@mozilla.com

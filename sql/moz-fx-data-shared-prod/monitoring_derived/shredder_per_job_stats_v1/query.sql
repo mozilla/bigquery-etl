@@ -2,7 +2,7 @@ SELECT
   -- task id example: project.dataset.table_v1$20240102__sample_10
   SAFE.PARSE_DATE(
     "%Y%m%d",
-    REGEXP_EXTRACT(task_id, r"\$([0-9]{8})(?:__sample_[0-9]+)?$")
+    REGEXP_EXTRACT(task_id, r"\$([0-9]{8})(?:__sample_[0-9_]+)?$")
   ) AS partition_date,
   task_id,
   shredder_state.job_id,
@@ -26,6 +26,7 @@ SELECT
   SAFE_CAST(REGEXP_EXTRACT(task_id, r"__sample_([0-9]+)(?:_[0-9]+)?") AS INT) AS shredded_sample_id,
   shredder_jobs.error_result.reason AS error_reason,
   shredder_jobs.error_result.message AS error_message,
+  shredder_jobs.job_type,
 FROM
   `moz-fx-data-shredder.shredder_state.shredder_state` AS shredder_state
 INNER JOIN

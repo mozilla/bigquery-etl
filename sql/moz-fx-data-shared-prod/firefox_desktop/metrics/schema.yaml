@@ -11931,6 +11931,20 @@ fields:
         by either a known fingerprinting text or a known behavior (alias)
 
         '
+    - name: browser_ui_interaction_list_all_tabs_action
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records how often users interact with any top-level menu option
+        in the "List All Tabs" menu.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -1,0 +1,39 @@
+friendly_name: Onboarding Hourly
+description: |-
+  Contains CFR specific data extracted from messaging_system_v1 at an hourly cadence
+owners:
+- phlee@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+  owner1: phlee
+  table_type: client_level
+  dag: bqetl_messaging_system_hourly
+scheduling:
+  dag_name: bqetl_messaging_system_hourly
+  date_partition_parameter: null
+  destination_table: onboarding_hourly_v2${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+  - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+    }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 7.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.messaging_system_v1
+require_column_descriptions: false
+level: null

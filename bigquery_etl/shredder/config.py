@@ -915,6 +915,12 @@ def find_glean_targets(
                     qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
                 )
                 usage_reporting_sources[table.dataset_id] += (source,)
+                usage_reporting_sources[
+                    table.dataset_id.replace("stable", "derived")
+                ] += (source,)
+                usage_reporting_sources[
+                    channel_to_app_name[table.dataset_id.replace("_stable", "")]
+                ] += (source,)
 
     return {
         **{

@@ -8,7 +8,8 @@ labels:
   schedule: daily
   table_type: client_level
 scheduling:
-  dag_name: bqetl_glean_usage
+  # Temporarily unschedule this ETL until the table initialization has been able to complete.
+  #dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
   parameters:
     - >-

@@ -329,7 +329,10 @@
       ) AS browser_backup_scheduler_enabled,
       mozfun.stats.mode_last(
         ARRAY_AGG(metrics.boolean.browser_backup_archive_enabled ORDER BY submission_timestamp)
-      ) AS browser_backup_archive_enabled
+      ) AS browser_backup_archive_enabled,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp)
+      ) AS app_display_version
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

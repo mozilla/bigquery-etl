@@ -260,7 +260,7 @@ bqetl_messaging_system_hourly:
     owner: phlee@mozilla.com
     retries: 1
     retry_delay: 10m
-    start_date: '2025-12-10'
+    start_date: '2025-12-15'
   description: Hourly tables for onboarding reporting
   repo: bigquery-etl
   schedule_interval: hourly

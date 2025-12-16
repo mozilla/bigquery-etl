@@ -5,6 +5,8 @@
   sample_id: 3
   city: ??
   activity_segment: segment-3
+  is_weekly_user: True
+  is_monthly_user: True
   is_dau: False
   is_wau: True
   is_mau: True

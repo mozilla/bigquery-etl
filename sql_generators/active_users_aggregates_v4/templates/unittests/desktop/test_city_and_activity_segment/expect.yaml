@@ -8,8 +8,8 @@
   os_version_major: 0
   os_version_minor: 0
   daily_users: 0
-  weekly_users: 0
-  monthly_users: 0
+  weekly_users: 1
+  monthly_users: 1
   dau: 0
   wau: 1
   mau: 1

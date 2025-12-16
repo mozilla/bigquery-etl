@@ -90,7 +90,7 @@ bqetl_google_play_store:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -938,7 +938,6 @@ bqetl_fivetran_google_ads:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -1274,7 +1273,6 @@ bqetl_use_counter_analysis:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1582,7 +1580,7 @@ bqetl_cloudflare_os_market_share:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1602,7 +1600,7 @@ bqetl_cloudflare_browser_market_share:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1622,7 +1620,7 @@ bqetl_cloudflare_device_market_share:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1642,7 +1640,6 @@ bqetl_firefox_desktop_ad_click_history:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1746,7 +1743,6 @@ bqetl_dynamic_dau:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1811,7 +1807,7 @@ bqetl_monitoring_weekly:
     This DAG populates monitoring datasets that only need to be updated weekly
   default_args:
     owner: kwindau@mozilla.com
-    email: ["kwindau@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com"]
     start_date: "2024-10-25"
     retries: 2
     retry_delay: 30m
@@ -1824,7 +1820,7 @@ bqetl_shredder_impact_measurement:
     This DAG populates a table that measures the impact of shredder that only runs weekly
   default_args:
     owner: kwindau@mozilla.com
-    email: ["kwindau@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com"]
     start_date: "2025-05-01"
     retries: 2
     retry_delay: 30m
@@ -1838,7 +1834,7 @@ bqetl_cohort_daily_churn:
     Currently set to run weekly since it's an intensive query
   default_args:
     owner: kwindau@mozilla.com
-    email: ["kwindau@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com"]
     start_date: "2025-07-01"
     email_on_failure: true
     email_on_retry: false
@@ -1872,7 +1868,6 @@ bqetl_firefox_installer_aggregates:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -1946,7 +1941,6 @@ bqetl_event_aggregates:
     owner: kwindau@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-12-19"
@@ -2003,7 +1997,6 @@ bqetl_dsktp_acqstn_fnnl:
     owner: kwindau@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-01-08"
@@ -2039,7 +2032,7 @@ bqetl_imf_exchange_rates:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-01-01"
@@ -2057,7 +2050,7 @@ bqetl_imf_cpi_data:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-01-01"
@@ -2075,7 +2068,7 @@ bqetl_fred_daily_exchange_rate:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-08-27"
@@ -2093,7 +2086,7 @@ bqetl_us_bls_unemployment_data:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-04-01"
@@ -2149,7 +2142,6 @@ bqetl_cohort_retention:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -2186,7 +2178,6 @@ bqetl_client_attributes:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -2203,7 +2194,7 @@ bqetl_un_population:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

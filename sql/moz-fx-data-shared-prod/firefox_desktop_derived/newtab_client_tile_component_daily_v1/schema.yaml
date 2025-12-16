@@ -1,0 +1,100 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission date (UTC) the newtab ping was ingested.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Telemetry client installation identifier (hashed).
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy telemetry identifier used for profile grouping.
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Firefox Desktop major version.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating system name reported by the client.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Firefox Desktop release channel (release, beta, nightly, esr).
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country associated with the newtab event (GeoIP-derived).
+- name: is_default_ui
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the New Tab was opened with the default UI layout.
+- name: organic_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if organic topsites are enabled in the browser settings.
+- name: sponsored_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if sponsored topsites are enabled in the browser settings.
+- name: position
+  type: INTEGER
+  mode: NULLABLE
+  description: Grid position (0-indexed) of the topsite tile on the New Tab page.
+- name: is_sponsored
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the topsite tile is sponsored.
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: Array of experiments to associate with each client
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Experiment name (slug).
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    description: Enrollment detail.
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+      description: Assigned experiment branch.
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      description: Additional enrollment metadata.
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+        description: Experiment type or source.
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+        description: Enrollment identifier.
+- name: impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total topsite tile impressions.
+- name: click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total topsite tile clicks.
+- name: dismissal_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total dismissals of the topsite tile.
+- name: pin_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total times the topsite tile was pinned.
+- name: unpin_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total times the topsite tile was unpinned.

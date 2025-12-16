@@ -1,0 +1,6 @@
+friendly_name: Hubs Subscription Events
+description: 'Aggregated count of Hubs subscription start/end events.
+
+  '
+owners:
+- srose@mozilla.com

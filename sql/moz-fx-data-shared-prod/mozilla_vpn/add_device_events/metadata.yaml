@@ -1,0 +1,6 @@
+friendly_name: Mozilla VPN add device events
+description: 'Event timestamps where accounts added a device
+
+  '
+owners:
+- srose@mozilla.com

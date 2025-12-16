@@ -1,0 +1,10 @@
+friendly_name: Active Users Aggregates
+description: |-
+  A unioned view of desktop & mobile active users aggregates.
+  Used to calculate DAU, WAU, and MAU for KPIs.
+  Solely based off of Glean data for both desktop & mobile.
+  Created as the union of `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users_aggregates` (desktop)
+  & `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile` (mobile).
+owners:
+- kwindau@mozilla.com
+level: bronze

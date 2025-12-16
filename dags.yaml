@@ -248,6 +248,26 @@ bqetl_messaging_system:
   tags:
     - impact/tier_3
 
+bqetl_messaging_system_hourly:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - phlee@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: phlee@mozilla.com
+    retries: 1
+    retry_delay: 10m
+    start_date: '2025-12-15'
+  description: Hourly tables for onboarding reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: true
+  tags:
+    - impact/tier_1
+
 bqetl_activity_stream:
   schedule_interval: 0 2 * * *
   description: |
@@ -418,7 +438,6 @@ bqetl_org_mozilla_firefox_derived:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -452,7 +471,7 @@ bqetl_monitoring:
     used for monitoring of the data platform.
   default_args:
     owner: ascholtz@mozilla.com
-    email: ["ascholtz@mozilla.com", "kwindau@mozilla.com"]
+    email: ["ascholtz@mozilla.com"]
     start_date: "2018-10-30"
     retries: 2
     retry_delay: 30m
@@ -602,7 +621,6 @@ bqetl_firefox_ios:
     depends_on_past: false
     email:
       - kik@mozilla.com
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -940,7 +958,6 @@ bqetl_campaign_cost_breakdowns:
     depends_on_past: false
     email:
       - ctroy@mozilla.com
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1051,7 +1068,6 @@ bqetl_fenix_external:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1067,7 +1083,6 @@ bqetl_fivetran_apple_ads:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
       - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1088,7 +1103,6 @@ bqetl_fivetran_copied_tables:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1211,7 +1225,6 @@ bqetl_mozilla_org_derived:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1319,7 +1332,6 @@ bqetl_desktop_installs_v1:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1338,7 +1350,6 @@ bqetl_google_analytics_derived_ga4:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1355,7 +1366,6 @@ bqetl_ga4_firefoxdotcom:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1493,7 +1503,6 @@ bqetl_desktop_engagement_model:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1544,7 +1553,6 @@ bqetl_desktop_conv_evnt_categorization:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -1561,7 +1569,6 @@ bqetl_census_feed:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
@@ -2459,20 +2466,6 @@ bqetl_firefox_enterprise:
   tags:
     - impact/tier_3
 
-bqetl_braze_win10_sync:
-  schedule_interval: 0 5 * * *
-  description: |
-    Daily run to pull inactive Win10 users and sync them to Braze.
-  default_args:
-    owner: lmcfall@mozilla.com
-    email:
-      - lmcfall@mozilla.com
-    start_date: '2025-10-06'
-    retries: 1
-    retry_delay: 30m
-  tags:
-    - impact/tier_3
-
 bqetl_baseline_clients_city_seen:
   schedule_interval: 0 4 * * *
   default_args:
@@ -2494,11 +2487,11 @@ bqetl_market_intel_bot:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - lmcfall@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 1
     retry_delay: 45m
     start_date: '2025-09-01'
@@ -2568,5 +2561,25 @@ bqetl_terms_of_use:
     start_date: '2025-11-03'
   description: DAG for updating terms_of_use related datasets.
   schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_newtab_hourly:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lmcfall@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: lmcfall@mozilla.com
+    retries: 1
+    retry_delay: 10m
+    start_date: '2025-12-05'
+  description: Hourly tables for content reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: true
   tags:
     - impact/tier_2

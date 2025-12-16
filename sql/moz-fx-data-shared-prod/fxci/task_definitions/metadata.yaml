@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Task definitions
+description: Derived Firefox-CI task definitions exported from Taskcluster.
+owners:
+- jcristau@mozilla.com

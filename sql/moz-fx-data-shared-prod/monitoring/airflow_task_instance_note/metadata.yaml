@@ -1,0 +1,4 @@
+friendly_name: Airflow task instance notes
+description: Airflow tasks instance notes
+owners:
+- kik@mozilla.com

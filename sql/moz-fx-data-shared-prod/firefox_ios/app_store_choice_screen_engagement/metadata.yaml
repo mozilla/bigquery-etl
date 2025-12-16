@@ -1,0 +1,10 @@
+friendly_name: Apple App Store Choice Screen Engagement (pre-iOS 18.2 version)
+description: 'Apple App Store Choice Screen Engagement (pre-iOS 18.2 version)
+
+  This report includes numbers around user egagement with our browser
+
+  via the App Store Choice Screen.
+
+  '
+owners:
+- kik@mozilla.com

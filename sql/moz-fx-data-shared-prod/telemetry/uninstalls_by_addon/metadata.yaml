@@ -1,0 +1,5 @@
+friendly_name: Uninstalls By Addon
+description: 'Aggregate table calculating # unique clients with uninstalls by add
+  on and date'
+owners:
+- kwindau@mozilla.com

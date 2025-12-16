@@ -1,0 +1,5 @@
+friendly_name: Telemetry Probes
+description: Dates for telemetry probes to be released and expired for Telemetry Dev
+  Cycle Dashboard.
+owners:
+- ascholtz@mozilla.com

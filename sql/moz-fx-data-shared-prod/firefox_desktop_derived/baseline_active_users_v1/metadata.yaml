@@ -1,0 +1,27 @@
+friendly_name: Firefox Desktop Baseline Active Users
+description: |-
+  Contains 1 row for every client ID that has sent a baseline ping
+  in the last 28 days, with information about when they were last seen.
+  Also contains information from the client's first seen date,
+  like attribution information.
+  Primary Key: Client ID & Submission Date
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_glean_usage
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+require_column_descriptions: false
+level: bronze

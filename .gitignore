@@ -16,6 +16,7 @@ sql/**/docs
 sql/**/mkdocs.yml
 generated_docs/
 generated-sql/
+CLAUDE.md
 
 # ignore Bigeye artifacts
 moz-fx-data-shared-prod_APPLY.yml

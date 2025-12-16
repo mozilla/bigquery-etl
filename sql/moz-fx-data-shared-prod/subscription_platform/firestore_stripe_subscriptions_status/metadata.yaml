@@ -1,0 +1,5 @@
+friendly_name: Firestore Stripe subscriptions status
+description: |-
+  Stripe subscriptions' status over time as recorded in Firestore by SubPlat, based on Firestore record changes exported to BigQuery.
+owners:
+- srose@mozilla.com

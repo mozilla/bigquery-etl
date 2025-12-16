@@ -1,0 +1,17 @@
+friendly_name: adMarketplace Daily Engagements
+description: |-
+  Historical data on click volume through August 2021.
+
+  It is partitioned by day with the following facets:
+    - submission_date
+    - phase
+    - country
+    - placement
+    - partner
+    - version
+    - normalized_channel
+labels:
+  shredder_mitigation: true
+  table_type: aggregate
+owners:
+  - akomar@mozilla.com

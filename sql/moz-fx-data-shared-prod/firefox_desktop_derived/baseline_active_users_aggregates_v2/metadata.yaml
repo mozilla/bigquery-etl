@@ -24,3 +24,4 @@ bigquery:
     - channel
     - country
 require_column_descriptions: true
+level: bronze

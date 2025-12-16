@@ -1,0 +1,22 @@
+friendly_name: Active Users Aggregates Attribution
+description: |-
+  This aggregation contains the metrics of daily, weekly and monthly
+  active users as well as new profiles and search counts in the
+  context of analysing where the installations come from and
+  the cohorts behaviour. This information is retrieved by the
+  attribution parameters and complemented with the core
+  dimensions: country, submission_date, app_name and whether the
+  browser is set to default or not.
+
+  The reason to have this aggregate in addition to active_users_aggregates
+  is to improve the query performance for final users, by separating the
+  analysis of the numerous attribution parameters, which is required with
+  less regularity than other dimensions and mostly for specific purposes
+  E.g. During investigations or marketing campaigns.
+
+  Documentation about the Adjust parameters:
+  https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
+
+  Deprecation decision: https://mozilla-hub.atlassian.net/browse/DENG-3966
+owners:
+- lvargas@mozilla.com

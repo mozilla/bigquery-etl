@@ -1,0 +1,6 @@
+friendly_name: Active Hubs Subscriptions
+description: 'Aggregated count of active Hubs subscriptions.
+
+  '
+owners:
+- srose@mozilla.com

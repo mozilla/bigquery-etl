@@ -1,0 +1,6 @@
+friendly_name: Schema Error Counts
+description: 'Counts the number of schema errors in the error stream per hour.
+
+  '
+owners:
+- bewu@mozilla.com

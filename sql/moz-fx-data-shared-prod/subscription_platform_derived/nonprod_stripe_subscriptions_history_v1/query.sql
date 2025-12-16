@@ -16,8 +16,11 @@ WITH base_subscriptions_history AS (
     JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
     ended_at,
     status,
-    TIMESTAMP_SECONDS(
-      CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64)
+    -- SubPlat ran a test script for PAY-3440 which accidentally set `plan_change_date` using milliseconds for some records.
+    IF(
+      LENGTH(JSON_VALUE(metadata, "$.plan_change_date")) > 12,
+      TIMESTAMP_MILLIS(CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64)),
+      TIMESTAMP_SECONDS(CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64))
     ) AS plan_change_date,
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
   FROM

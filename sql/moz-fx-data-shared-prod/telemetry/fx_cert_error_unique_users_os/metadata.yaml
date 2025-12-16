@@ -1,0 +1,4 @@
+friendly_name: Firefox Cert Error Dashboard - Unique users by os
+description: Unique users experiencing cert error page per day per os
+owners:
+- akommasani@mozilla.com

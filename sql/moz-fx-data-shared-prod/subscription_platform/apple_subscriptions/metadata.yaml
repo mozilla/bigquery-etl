@@ -1,0 +1,5 @@
+friendly_name: Apple Subscriptions
+description: >
+  Apple subscriptions.
+owners:
+  - srose@mozilla.com

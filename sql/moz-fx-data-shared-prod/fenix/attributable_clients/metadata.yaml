@@ -1,0 +1,7 @@
+friendly_name: Attributable Clients v2
+description: "For clients who\n  - Sent a baseline ping\n  - Sent a metrics ping\n\
+  \  - activated\nRecords their information and associated activity.\nNote that while\
+  \ the grain is 1-row per-client per-day,\na row does _not_ mean that said client\
+  \ was active on that day.\nUse the `active_day_count` field to determine that.\n"
+owners:
+- frank@mozilla.com

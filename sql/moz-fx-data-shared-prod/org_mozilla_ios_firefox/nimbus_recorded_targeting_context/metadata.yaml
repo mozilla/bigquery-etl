@@ -1,0 +1,5 @@
+friendly_name: Nimbus Recorded Targeting Context (iOS)
+description: A query to obtain the previous day's recorded Nimbus targeting context
+  values for each client.
+owners:
+- chumphreys@mozilla.com

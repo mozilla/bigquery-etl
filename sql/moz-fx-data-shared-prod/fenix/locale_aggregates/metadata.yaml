@@ -1,0 +1,5 @@
+friendly_name: Locale Aggregates
+description: |-
+  Fenix DAU, WAU, MAU and client counts by locale and core dimensions of analysis.
+owners:
+- lvargas@mozilla.com

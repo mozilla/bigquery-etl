@@ -1,0 +1,4 @@
+friendly_name: Pocket usage by event type
+description: Percentage of DAU for Pocket usage by event type for each channel
+owners:
+- gkatre@mozilla.com

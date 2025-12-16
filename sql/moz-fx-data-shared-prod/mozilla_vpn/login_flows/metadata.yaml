@@ -1,0 +1,7 @@
+friendly_name: Mozilla VPN FxA Login Flows
+description: 'A list of users that attempted to login to FxA, to sign up for or login
+  to Mozilla VPN.
+
+  '
+owners:
+- srose@mozilla.com

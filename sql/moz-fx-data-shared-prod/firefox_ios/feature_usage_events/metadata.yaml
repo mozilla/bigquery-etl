@@ -1,0 +1,4 @@
+friendly_name: Feature Usage Events (Firefox iOS)
+description: Metrics from events pings for mobile feature usage dashboards (iOS)
+owners:
+- rzhao@mozilla.com

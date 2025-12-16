@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Task Runs
+description: Derived Firefox-CI task run data exported from Taskcluster pulse.
+owners:
+- ahalberstadt@mozilla.com

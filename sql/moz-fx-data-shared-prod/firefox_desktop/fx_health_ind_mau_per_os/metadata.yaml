@@ -1,0 +1,4 @@
+friendly_name: Fx Health Indicator Mau by OS
+description: Aggregate table calculating MAU and DAU per OS
+owners:
+- kwindau@mozilla.com

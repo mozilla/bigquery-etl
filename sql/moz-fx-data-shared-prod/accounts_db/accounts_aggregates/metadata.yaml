@@ -1,0 +1,11 @@
+friendly_name: Accounts Aggregates
+description: 'Aggregate counts of accounts from the FxA backend services databases
+  grouped by a number of dimensions.
+
+
+  This table can be used to get a total number of accounts, including those inactive
+  that aren''t captured
+
+  in the telemetry data.'
+owners:
+- akomar@mozilla.com

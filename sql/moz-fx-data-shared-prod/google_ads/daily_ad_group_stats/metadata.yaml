@@ -1,0 +1,5 @@
+friendly_name: Daily Ad Group Stats
+description: |-
+  Daily ad group stats for Google Ads UAC ad groups.
+  This is written directly from Fivetran's ETL.
+  https://github.com/fivetran/dbt_google_ads

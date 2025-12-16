@@ -1,0 +1,4 @@
+friendly_name: Install Vs Uninstall Ratio By Country
+description: Aggregate table calculating install vs uninstalls by country
+owners:
+- kwindau@mozilla.com

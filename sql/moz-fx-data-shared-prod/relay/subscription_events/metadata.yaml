@@ -1,0 +1,6 @@
+friendly_name: Firefox Relay Subscription Events
+description: 'Aggregated count of Firefox Relay subscription start/end events.
+
+  '
+owners:
+- srose@mozilla.com

@@ -1,0 +1,6 @@
+friendly_name: All Mozilla VPN Subscriptions
+description: 'Mozilla VPN Subscriptions from both IAP and FxA.
+
+  '
+owners:
+- srose@mozilla.com

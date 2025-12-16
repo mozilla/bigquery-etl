@@ -1,0 +1,7 @@
+friendly_name: Channel Group Proportions
+description: 'Count of new subscriptions by utm values, and by channel group as a
+  percent of the total for that date
+
+  '
+owners:
+- srose@mozilla.com

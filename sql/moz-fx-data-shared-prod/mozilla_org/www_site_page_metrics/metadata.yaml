@@ -1,0 +1,5 @@
+friendly_name: WWW Site Page Metrics
+description: |-
+  Aggregated metrics per page on www.mozilla.org from Google Analytics 4
+owners:
+- kwindau@mozilla.com

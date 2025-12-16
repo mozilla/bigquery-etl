@@ -1,0 +1,4 @@
+friendly_name: Airflow failed tasks
+description: List of airflow failed tasks
+owners:
+- kik@mozilla.com

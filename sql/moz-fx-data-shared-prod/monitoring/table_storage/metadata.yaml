@@ -1,0 +1,4 @@
+friendly_name: Table Storage
+description: Runs daily and saves the size of tables in moz-fx-data-shared-prod
+owners:
+- kwindau@mozilla.com

@@ -1,0 +1,16 @@
+friendly_name: Slow Startup Events By Startup Type And Version
+description: 'Pulls slow startup data from Google Play Store API for
+
+  * org.mozilla.firefox
+
+  * org.mozilla.firefox_beta
+
+  * org.mozilla.fenix
+
+  * org.mozilla.klar
+
+  * org.mozilla.firefox.vpn
+
+  * org.mozilla.focus'
+owners:
+- kwindau@mozilla.com

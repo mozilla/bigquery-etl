@@ -1,0 +1,6 @@
+friendly_name: Active Mozilla VPN Subscriptions
+description: 'Aggregated count of active Mozilla VPN subscriptions.
+
+  '
+owners:
+- srose@mozilla.com

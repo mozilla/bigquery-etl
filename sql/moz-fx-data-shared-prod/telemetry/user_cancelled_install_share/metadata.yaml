@@ -1,0 +1,5 @@
+friendly_name: User Cancelled Install Share
+description: Share of attempted installs cancelled by user and or failed w/ timeout
+  by installer type and channel
+owners:
+- kwindau@mozilla.com

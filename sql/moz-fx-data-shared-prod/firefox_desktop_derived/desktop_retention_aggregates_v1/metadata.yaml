@@ -25,3 +25,4 @@ bigquery:
     - country
     - normalized_os
 require_column_descriptions: true
+level: bronze

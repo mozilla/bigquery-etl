@@ -1,0 +1,4 @@
+friendly_name: Firefox Certificate Errors by Channel
+description: |-
+  Each row represents the count of unique users experiencing
+  certificate errors by day and by channel.

@@ -8,7 +8,8 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_subplat
+  # Temporarily unschedule this ETL while it's expected to continue failing (https://bugzilla.mozilla.org/show_bug.cgi?id=2003288).
+  #dag_name: bqetl_subplat
   arguments:
     - --date={{ ds }}
     - --api-key={{ var.value.stripe_api_key }}

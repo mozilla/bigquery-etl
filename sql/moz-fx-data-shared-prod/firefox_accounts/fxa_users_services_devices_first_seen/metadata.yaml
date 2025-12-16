@@ -1,0 +1,13 @@
+friendly_name: FxA Users Services Devices First Seen
+description: "Usage aggregations describing when each FxA user, service,\ndevice_id\
+  \ combination was first seen by us and some\nattributes associated with this first\
+  \ session.\nNote: registration or login events are used to\ndetermine the first\
+  \ session.\n\nAdditional attributes get captured to provide insight into\nwhat os\
+  \ and browser is used by the new device, as well as,\nthe device's entrypoint and\
+  \ utm information.\nThis information is static and represents as was at the time\n\
+  (does not change).\n\nLowest granularity field: device_id\n\nNotes:\n  - There are\
+  \ very few cases when a single flow_id\n    can contain multiple device_ids.\n \
+  \ - utm fields contain very high levels of null values.\n\nMore information about\
+  \ fxa data can be found here:\nhttps://docs.telemetry.mozilla.org/datasets/fxa.html\n"
+owners:
+- kik@mozilla.com

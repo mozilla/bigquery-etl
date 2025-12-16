@@ -426,9 +426,9 @@ class View:
 
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
-
-                table.description = self.metadata.description
-                table.friendly_name = self.metadata.friendly_name
+                else:
+                    table.description = self.metadata.description
+                    table.friendly_name = self.metadata.friendly_name
 
                 if table.labels != self.labels:
                     labels = self.labels.copy()

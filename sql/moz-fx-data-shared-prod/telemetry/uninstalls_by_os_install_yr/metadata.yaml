@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By Os Install Yr
+description: Uninstalls by submission date & Windows installation year
+owners:
+- kwindau@mozilla.com

@@ -1,0 +1,5 @@
+friendly_name: WWW Site Metrics Summary
+description: |-
+  Summary of site metrics from Google Analytics about firefox.com
+owners:
+- kwindau@mozilla.com

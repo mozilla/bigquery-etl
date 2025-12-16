@@ -1,0 +1,4 @@
+friendly_name: BigQuery Tables Storage
+description: BigQuery table storage size and costs.
+owners:
+- wichan@mozilla.com

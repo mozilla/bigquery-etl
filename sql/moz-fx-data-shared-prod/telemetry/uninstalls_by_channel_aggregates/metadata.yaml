@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By Channel Aggregates
+description: Aggregate table calculating uninstalls by channel and submission date
+owners:
+- kwindau@mozilla.com

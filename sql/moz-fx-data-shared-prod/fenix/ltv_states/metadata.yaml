@@ -1,0 +1,4 @@
+friendly_name: Ltv States
+description: Fields required for retrieving LTV for clients.
+owners:
+- frank@mozilla.com

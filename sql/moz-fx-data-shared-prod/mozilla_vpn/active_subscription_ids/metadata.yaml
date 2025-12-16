@@ -1,0 +1,6 @@
+friendly_name: Active Mozilla VPN Subscription IDs
+description: 'IDs of active Mozilla VPN subscriptions by date.
+
+  '
+owners:
+- srose@mozilla.com

@@ -2500,11 +2500,11 @@ bqetl_market_intel_bot:
   default_args:
     depends_on_past: false
     email:
-      - kwindau@mozilla.com
+      - lmcfall@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 1
     retry_delay: 45m
     start_date: '2025-09-01'

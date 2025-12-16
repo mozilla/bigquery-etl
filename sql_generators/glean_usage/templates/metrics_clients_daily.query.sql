@@ -334,8 +334,8 @@
         ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp)
       ) AS app_display_version,
       mozfun.stats.mode_last(
-        ARRAY_AGG(metrics.object.addons_theme ORDER BY submission_timestamp)
-      ) AS addons_theme
+        ARRAY_AGG(JSON_VALUE(metrics.object.addons_theme.id) ORDER BY submission_timestamp)
+      ) AS addons_theme_id
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

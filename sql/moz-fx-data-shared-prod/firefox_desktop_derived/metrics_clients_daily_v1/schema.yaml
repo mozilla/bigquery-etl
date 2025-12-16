@@ -114,7 +114,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: User visible version string (e.g. "1.0.3") for the browser.
-- name: addons_theme
+- name: addons_theme_id
   type: STRING
   mode: NULLABLE
-  description: The currently active theme.
+  description: The ID of the currently active theme.

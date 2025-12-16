@@ -32,7 +32,7 @@ default_args = {
     "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2025, 2, 20, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "kwindau@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,

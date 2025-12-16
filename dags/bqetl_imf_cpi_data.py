@@ -33,7 +33,7 @@ default_args = {
     "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2025, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["kwindau@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1500),
     "email_on_failure": True,
@@ -60,7 +60,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -73,7 +73,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -86,7 +86,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -101,7 +101,7 @@ with DAG(
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     external_derived__monthly_inflation__v1 = GKEPodOperator(
@@ -113,7 +113,7 @@ with DAG(
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     external_derived__quarterly_inflation__v1 = GKEPodOperator(
@@ -125,7 +125,7 @@ with DAG(
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     checks__fail_external_derived__gdp__v1.set_upstream(external_derived__gdp__v1)

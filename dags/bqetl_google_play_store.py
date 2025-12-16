@@ -52,7 +52,7 @@ default_args = {
     "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2025, 3, 18, 0, 0),
     "end_date": None,
-    "email": ["kwindau@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=21600),
     "email_on_failure": True,
@@ -81,7 +81,7 @@ with DAG(
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
@@ -96,7 +96,7 @@ with DAG(
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
@@ -111,7 +111,7 @@ with DAG(
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],

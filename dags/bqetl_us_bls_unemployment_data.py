@@ -43,7 +43,7 @@ default_args = {
     "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2025, 4, 1, 0, 0),
     "end_date": None,
-    "email": ["kwindau@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1500),
     "email_on_failure": True,
@@ -72,7 +72,7 @@ with DAG(
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             external_derived__us_unemployment__v1_bqetl_us_bls_unemployment_data__bls_us_api_key,
         ],

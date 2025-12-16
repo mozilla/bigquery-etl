@@ -1,0 +1,44 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date the table was last updated.
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: OS of app
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: release, beta, nightly, esr.
+- name: major_version
+  type: INT64
+  mode: NULLABLE
+  description: Extracted version from crash_app_display_version.
+- name: process_type
+  type: STRING
+  mode: NULLABLE
+  description: The type of process that experienced a crash. See the full list
+        of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
+- name: memory_oom_allocation_size
+  type: INT64
+  mode: NULLABLE
+  description: The size of the allocation that caused on OOM crash.
+- name: crash_background_task_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the background task if launched as one.
+- name: crash_async_shutdown_timeout
+  type: STRING
+  mode: NULLABLE
+  description: Present when a shutdown blocker failed to respond within a reasonable.
+        amount of time
+- name: crash_quota_manager_shutdown_timeout
+  type: STRING
+  mode: NULLABLE
+  description: Contains a list of shutdown steps and status of the quota manager.
+        clients
+- name: crashing_users
+  type: FLOAT64
+  mode: NULLABLE
+  description: The number of users who experienced a crash.

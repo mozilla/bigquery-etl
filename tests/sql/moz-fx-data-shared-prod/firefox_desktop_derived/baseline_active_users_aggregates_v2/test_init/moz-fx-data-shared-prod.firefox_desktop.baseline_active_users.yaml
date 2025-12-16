@@ -1,0 +1,96 @@
+---
+# Test case 1: Initial user in US
+- submission_date: 2025-04-01
+  first_seen_year: 2024
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: New York
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: "11"
+  os_version_major: 11
+  os_version_minor: null
+  os_version_build: null
+  windows_build_number: 22000
+  app_version: "129.0.0"
+  app_version_major: 129
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: regular_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: true
+  is_wau: true
+  is_mau: true
+
+# Test case 2: Initial user in Canada
+- submission_date: 2025-04-01
+  first_seen_year: 2025
+  channel: nightly
+  app_name: Firefox Desktop
+  country: CA
+  city: Vancouver
+  locale: en-CA
+  os: macOS
+  os_grouped: macOS
+  os_version: "14.0"
+  os_version_major: 14
+  os_version_minor: 0
+  os_version_build: null
+  windows_build_number: null
+  app_version: "132.0.0"
+  app_version_major: 132
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: false
+  distribution_id: null
+  activity_segment: casual_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: false
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: false
+  is_wau: true
+  is_mau: true
+
+# Test case 3: Initial user in Japan
+- submission_date: 2025-04-01
+  first_seen_year: 2023
+  channel: release
+  app_name: Firefox Desktop
+  country: JP
+  city: Tokyo
+  locale: ja-JP
+  os: Windows
+  os_grouped: Windows
+  os_version: "10"
+  os_version_major: 10
+  os_version_minor: null
+  os_version_build: null
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: regular_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: true
+  is_wau: true
+  is_mau: true

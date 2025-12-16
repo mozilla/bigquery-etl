@@ -1,0 +1,160 @@
+---
+# Test case 1: US users with release channel
+- submission_date: 2025-06-02
+  first_seen_year: 2024
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: San Francisco
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: "10"
+  os_version_major: 10
+  os_version_minor: null
+  os_version_build: null
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: regular_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: true
+  is_wau: true
+  is_mau: true
+
+# Test case 2: Another US user with same attributes (aggregation test)
+- submission_date: 2025-06-02
+  first_seen_year: 2024
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: San Francisco
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: "10"
+  os_version_major: 10
+  os_version_minor: null
+  os_version_build: null
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: regular_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: true
+  is_wau: true
+  is_mau: true
+
+# Test case 3: German user with beta channel
+- submission_date: 2025-06-02
+  first_seen_year: 2023
+  channel: beta
+  app_name: Firefox Desktop
+  country: DE
+  city: Berlin
+  locale: de-DE
+  os: macOS
+  os_grouped: macOS
+  os_version: "14.0"
+  os_version_major: 14
+  os_version_minor: 0
+  os_version_build: null
+  windows_build_number: null
+  app_version: "131.0.0"
+  app_version_major: 131
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: false
+  distribution_id: null
+  activity_segment: casual_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: false
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: false
+  is_wau: true
+  is_mau: true
+
+# Test case 4: User with different activity segment
+- submission_date: 2025-06-02
+  first_seen_year: 2025
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: San Francisco
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: "10"
+  os_version_major: 10
+  os_version_minor: null
+  os_version_build: null
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: infrequent_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: false
+  is_weekly_user: false
+  is_monthly_user: true
+  is_dau: false
+  is_wau: false
+  is_mau: true
+
+# Test case 5: User from different date (should be excluded)
+- submission_date: 2025-06-01
+  first_seen_year: 2024
+  channel: release
+  app_name: Firefox Desktop
+  country: CA
+  city: Toronto
+  locale: en-CA
+  os: Linux
+  os_grouped: Linux
+  os_version: "22.04"
+  os_version_major: 22
+  os_version_minor: 4
+  os_version_build: null
+  windows_build_number: null
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  distribution_id: null
+  activity_segment: regular_user
+  attribution_medium: null
+  attribution_source: null
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  is_dau: true
+  is_wau: true
+  is_mau: true

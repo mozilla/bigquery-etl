@@ -110,3 +110,7 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.

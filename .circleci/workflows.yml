@@ -234,9 +234,8 @@ jobs:
                 # as a stage environment)
                 command: |
                   if [ "$CIRCLE_BRANCH" = main ]; then
-                    echo "Check dry run for all queries because branch is" \
-                      "$CIRCLE_BRANCH"
-                    PATHS=sql
+                    echo "Skip dryruns on main. Dryruns will run in Airflow"
+                    circleci-agent step halt
                   elif git log --format=%B --no-merges -n 1 |
                       grep -qF '[run-tests]'; then
                     echo "Check dry run for all queries because [run-tests] in" \
@@ -616,6 +615,7 @@ jobs:
                   fi
 
                   mkdir -p /tmp/workspace/generated-sql
+                  cp bqetl_project.yaml /tmp/workspace/generated-sql/
 
                   if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
                     echo "Changes made will affect generated SQL. Run SQL generators."
@@ -863,6 +863,7 @@ jobs:
                   mkdir -p /tmp/workspace/private-generated-sql
                   cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
                   cp -rf sql/. /tmp/workspace/private-generated-sql/sql
+                  cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
 
                   # persist commit hash used for generation
                   git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -922,9 +923,13 @@ jobs:
             - *attach_generated_sql
             - run:
                 name: Move generated-sql into place
+                # yamllint disable rule:line-length
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
+                  # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
+                  yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' > bqetl_project.yaml
+                # yamllint enable rule:line-length
             - gcp-gcr/gcr-auth:
                 use_oidc: true
             - gcp-gcr/build-image: &private-image

@@ -96,6 +96,7 @@ def save_column_sizes(
         bigquery.SchemaField("byte_size", "INT64"),
     )
     job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
+    job_config.time_partitioning = bigquery.TimePartitioning(field="submission_date")
 
     partition_date = date.replace("-", "")
     client.load_table_from_json(

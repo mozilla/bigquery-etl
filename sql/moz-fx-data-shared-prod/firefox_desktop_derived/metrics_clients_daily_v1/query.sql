@@ -275,7 +275,10 @@ SELECT
   ) AS browser_backup_archive_enabled,
   mozfun.stats.mode_last(
     ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp)
-  ) AS app_display_version
+  ) AS app_display_version,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(JSON_VALUE(metrics.object.addons_theme.id) ORDER BY submission_timestamp)
+  ) AS addons_theme_id
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

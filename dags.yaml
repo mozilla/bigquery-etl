@@ -438,7 +438,6 @@ bqetl_org_mozilla_firefox_derived:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -622,7 +621,6 @@ bqetl_firefox_ios:
     depends_on_past: false
     email:
       - kik@mozilla.com
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -960,7 +958,6 @@ bqetl_campaign_cost_breakdowns:
     depends_on_past: false
     email:
       - ctroy@mozilla.com
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1071,7 +1068,6 @@ bqetl_fenix_external:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1087,7 +1083,6 @@ bqetl_fivetran_apple_ads:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
       - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1108,7 +1103,6 @@ bqetl_fivetran_copied_tables:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1231,7 +1225,6 @@ bqetl_mozilla_org_derived:
   default_args:
     depends_on_past: false
     email:
-      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true

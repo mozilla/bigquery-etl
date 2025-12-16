@@ -1,0 +1,28 @@
+# additional combinations for active users
+- submission_date: 2020-01-05
+  client_id: client-1
+  app_name: {{ app_name }}
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: False
+  is_mau: False
+- submission_date: 2020-01-05
+  client_id: client-2
+  app_name: {{ app_name }}
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: False
+  is_mau: False
+- submission_date: 2020-01-05
+  client_id: client-3
+  app_name: {{ app_name }}
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: True
+  is_mau: False

@@ -899,7 +899,9 @@ jaraco-classes==3.4.0 \
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
     --hash=sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755
-    # via secretstorage
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
@@ -1075,9 +1077,9 @@ lz4==4.3.3 \
     --hash=sha256:f4c7bf687303ca47d69f9f0133274958fd672efaa33fb5bcde467862d6c621f0 \
     --hash=sha256:f76176492ff082657ada0d0f10c794b6da5800249ef1692b35cf49b1e93e8ef7
     # via bigeye-sdk
-markdown==3.4.4 \
-    --hash=sha256:225c6123522495d4119a90b3a3ba31a1e87a70369e03f14799ea9c0d7183a3d6 \
-    --hash=sha256:a4c1b65c0957b4bd9e7d86ddc7b3c9868fb9670660f6f99f6d1bca8954d5a941
+markdown==3.10 \
+    --hash=sha256:37062d4f2aa4b2b6b32aefb80faa300f82cc790cb949a35b8caede34f2b68c0e \
+    --hash=sha256:b5b99d6951e2e4948d939255596523444c0e677c669700b1d17aa4a8a464cb7c
     # via
     #   markdown-include
     #   mdx-truly-sane-lists
@@ -1861,9 +1863,9 @@ pyjwt==2.10.1 \
     --hash=sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953 \
     --hash=sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb
     # via -r requirements.in
-pymdown-extensions==10.3 \
-    --hash=sha256:77a82c621c58a83efc49a389159181d570e370fff9f810d3a4766a75fc678b66 \
-    --hash=sha256:94a0d8a03246712b64698af223848fd80aaf1ae4c4be29c8c61939b0467b5722
+pymdown-extensions==10.16.1 \
+    --hash=sha256:aace82bcccba3efc03e25d584e6a22d27a8e17caa3f4dd9f207e49b787aa9a91 \
+    --hash=sha256:d6ba157a6c03146a7fb122b2b9a121300056384eafeec9c9f9e584adfdb2a32d
     # via mkdocs-material
 pynacl==1.5.0 \
     --hash=sha256:06b8f6fa7f5de8d5d2f7573fe8c863c051225a27b61e6860fd047b1775807858 \
@@ -2344,7 +2346,9 @@ s3transfer==0.13.0 \
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
-    # via bigeye-sdk
+    # via
+    #   bigeye-sdk
+    #   keyring
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de

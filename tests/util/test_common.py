@@ -10,6 +10,7 @@ from bigquery_etl.util.common import (
     project_dirs,
     qualify_table_references_in_file,
     render,
+    get_table_dir,
 )
 
 
@@ -513,4 +514,33 @@ class TestUtilCommon:
         assert ["COLUMN"] == extract_last_group_by_from_query(
             sql_text="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
             cte2 AS (SELECT COLUMN FROM test_table group by COLUMN) SELECT * FROM cte2;"""
+        )
+
+    def test_get_table_dir(self):
+        """Test cases using a path and table."""
+        assert Path("sql/project1/dataset1/table1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="dataset1.table1",
+        )
+        assert Path("sql/project1/dataset1/table1/subfolder1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1",
+            parts=3,
+        )
+        assert Path(
+            "sql/project1/dataset1/table1/subfolder1/subfolder2/subfolder3"
+        ) == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1.subfolder2.subfolder3",
+            parts=5,
+        )
+        # 'parts' is incorrect or missing.
+        assert Path("sql/project1/table1/subfolder1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1",
+        )
+        assert Path("sql/project1/project1/dataset1/table1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1",
+            parts=3,
         )

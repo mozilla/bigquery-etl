@@ -36,7 +36,7 @@ default_args = {
     "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2025, 5, 27, 0, 0),
     "end_date": None,
-    "email": ["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -219,11 +219,7 @@ with DAG(
         table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1",
         warehouse_id="1939",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
@@ -248,11 +244,7 @@ with DAG(
         table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1",
         warehouse_id="1939",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
@@ -349,11 +341,7 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -400,11 +388,7 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -415,11 +399,7 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -430,11 +410,7 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -445,11 +421,7 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

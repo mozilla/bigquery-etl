@@ -29,7 +29,7 @@ default_args = {
     "owner": "frank@mozilla.com",
     "start_date": datetime.datetime(2022, 11, 30, 0, 0),
     "end_date": None,
-    "email": ["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -316,11 +316,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="rvasquez@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "rvasquez@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["rvasquez@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -393,11 +389,7 @@ with DAG(
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
@@ -431,11 +423,7 @@ with DAG(
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="rvasquez@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "rvasquez@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["rvasquez@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -446,11 +434,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -462,11 +446,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

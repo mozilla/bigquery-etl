@@ -7,10 +7,10 @@ from click.testing import CliRunner
 from bigquery_etl.cli.utils import is_valid_dir
 from bigquery_etl.util.common import (
     extract_last_group_by_from_query,
+    get_table_dir,
     project_dirs,
     qualify_table_references_in_file,
     render,
-    get_table_dir,
 )
 
 

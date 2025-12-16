@@ -185,7 +185,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2025-12-15"
+  DATE(submission_timestamp) >= "2025-12-16"
 GROUP BY
   submission_date,
   window_start,

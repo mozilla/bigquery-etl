@@ -17,7 +17,7 @@ labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:braze
+  - workgroup:braze/data-viewers
   - workgroup:braze/ingestion-mozilla-dev
   - workgroup:braze/ingestion-firefox
 - role: roles/bigquery.dataEditor
@@ -30,7 +30,7 @@ workgroup_access:
   - workgroup:braze/data-developers
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:braze
+  - workgroup:braze/data-viewers
   - workgroup:braze/ingestion-firefox
   - workgroup:braze/ingestion-mozilla-dev
 syndication: {}

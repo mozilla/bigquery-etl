@@ -8,7 +8,7 @@ labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:braze
+  - workgroup:braze/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
@@ -19,5 +19,5 @@ workgroup_access:
   - workgroup:braze/data-developers
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:braze
+  - workgroup:braze/data-viewers
 syndication: {}

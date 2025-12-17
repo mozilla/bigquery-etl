@@ -9,6 +9,7 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: bqetl_glean_usage
+  arguments: ["--billing-project=moz-fx-data-backfill-4"]
   task_group: {{ app_name }}
   parameters:
     - >-

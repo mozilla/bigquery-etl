@@ -2,7 +2,7 @@ friendly_name: Apple App Store Choice Screen Selection (post-iOS 18.2 only)
 description: |
   Apple App Store Choice Screen Engagement (post-iOS 18.2 only)
   This report includes rates around user selection/egagement with our browser
-  via the App Store Choice Screen.
+  via the App Store Choice Screen. We expect this report to be generated with a 7 day lag.
 
   Official docs: https://developer.apple.com/documentation/analytics-reports/browser-choice-screen-selection
 
@@ -11,34 +11,32 @@ description: |
 
 owners:
 - kik@mozilla.com
+- ebrandi@mozilla.com
 labels:
   schedule: daily
   incremental: true
   table_type: aggregate
   shredder_mitigation: false
-# 2025-09-24:
-# temporarily unscheduled due to a wider issue
-# once that issue has been resolved this task will be rescheduled.
-# scheduling:
-#   dag_name: bqetl_firefox_ios
-#   depends_on_past: false
-#   arguments:
-#   - --date={{macros.ds_add(ds, -5)}}
-#   - --connect_app_id=989804926
-#   - --partition_field=logical_date
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+  arguments:
+  - --date={{macros.ds_add(ds, -10)}}
+  - --connect_app_id=989804926
+  - --partition_field=logical_date
 
-#   secrets:
-#   - deploy_target: CONNECT_ISSUER_ID
-#     key: bqetl_firefox_ios__app_store_connect_issuer_id
-#   - deploy_target: CONNECT_KEY_ID
-#     key: bqetl_firefox_ios__app_store_connect_key_id
-#   - deploy_target: CONNECT_KEY
-#     key: bqetl_firefox_ios__app_store_connect_key
+  secrets:
+  - deploy_target: CONNECT_ISSUER_ID
+    key: bqetl_firefox_ios__app_store_connect_issuer_id
+  - deploy_target: CONNECT_KEY_ID
+    key: bqetl_firefox_ios__app_store_connect_key_id
+  - deploy_target: CONNECT_KEY
+    key: bqetl_firefox_ios__app_store_connect_key
 
-#   date_partition_offset: -5
-#   retry_delay: 30m
-#   retries: 2
-#   email_on_retry: false
+  date_partition_offset: -10
+  retry_delay: 30m
+  retries: 2
+  email_on_retry: false
 
 bigquery:
   time_partitioning:

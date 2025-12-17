@@ -29,9 +29,3 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: The number of users who experienced a crash.
-- name: process_types_bitset
-  type: INTEGER
-  mode: NULLABLE
-- name: classifications_bitset
-  type: INTEGER
-  mode: NULLABLE

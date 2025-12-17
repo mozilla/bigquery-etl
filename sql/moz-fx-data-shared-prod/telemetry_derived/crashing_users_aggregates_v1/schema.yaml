@@ -12,15 +12,26 @@ fields:
   mode: NULLABLE
   description: release, beta, nightly, esr.
 - name: major_version
-  type: INT64
+  type: INTEGER
   mode: NULLABLE
   description: Extracted version from crash_app_display_version.
-- name: process_types_bit
+- name: process_types_bitset
   type: INT64
   mode: NULLABLE
-  description: The type of process that experienced a crash as a bit. See the full list
-        of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
+  description: The type of process that experienced a crash as a bit. See the full
+    list of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
+- name: classifications_bitset
+  type: INT64
+  mode: NULLABLE
+  description: Classification for OOM, crash_background_task_name, crash_async_manager_shutdown_timeout,
+    crash_quota_manager_shutdown_timeout.
 - name: crashing_users
-  type: FLOAT64
+  type: FLOAT
   mode: NULLABLE
   description: The number of users who experienced a crash.
+- name: process_types_bitset
+  type: INTEGER
+  mode: NULLABLE
+- name: classifications_bitset
+  type: INTEGER
+  mode: NULLABLE

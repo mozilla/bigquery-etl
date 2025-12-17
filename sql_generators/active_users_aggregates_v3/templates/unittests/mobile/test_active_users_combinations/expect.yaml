@@ -1,3 +1,4 @@
+---
 - submission_date: 2020-01-05
   app_name: {{ app_name }}
   attributed: False

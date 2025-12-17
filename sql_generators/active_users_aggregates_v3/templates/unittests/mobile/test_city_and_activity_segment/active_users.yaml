@@ -1,4 +1,4 @@
-# city NULL & activity_segment
+# city NULL should result in ??. activity_segment calculation remains stable.
 - submission_date: 2020-01-05
   app_name: {{ app_name }}
   client_id: client-3
@@ -8,7 +8,7 @@
   is_dau: False
   is_wau: True
   is_mau: True
-# city not NULL & activity_segment
+# city not NULL and activity_segment calculation remain stable.
 - submission_date: 2020-01-05
   app_name: {{ app_name }}
   client_id: client-4

@@ -1,4 +1,4 @@
-# os_version_major & os_version_minor
+# os_version_major & os_version_minor remain stable.
 - submission_date: 2020-01-04
   app_name: {{ app_name }}
   client_id: client-7
@@ -8,7 +8,7 @@
   is_daily_user: False
   is_weekly_user: True
   is_monthly_user: True
-# os_version without major nor minor
+# os_version without major nor minor.
 - submission_date: 2020-01-04
   app_name: {{ app_name }}
   client_id: client-8

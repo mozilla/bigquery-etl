@@ -20,7 +20,7 @@ This DAG populates monitoring datasets that only need to be updated weekly
 
 #### Owner
 
-kwindau@mozilla.com
+lvargas@mozilla.com
 
 #### Tags
 
@@ -30,7 +30,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "lvargas@mozilla.com",
     "start_date": datetime.datetime(2024, 10, 25, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],

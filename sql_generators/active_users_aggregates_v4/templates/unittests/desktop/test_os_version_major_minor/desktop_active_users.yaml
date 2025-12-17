@@ -1,4 +1,4 @@
-# os_version_major & os_version_minor
+# os_version_major & os_version_minor remain stable.
 - submission_date: 2020-01-04
   app_name: {{ app_name }}
   client_id: client-7

@@ -1,5 +1,4 @@
 ---
-# city NULL & activity_segment
 - submission_date: 2020-01-03
   app_name: {{ app_name }}
   city: ??
@@ -14,7 +13,6 @@
   dau: 0
   wau: 0
   mau: 0
-# city not NULL & activity_segment
 - submission_date: 2020-01-03
   app_name: {{ app_name }}
   city: ??

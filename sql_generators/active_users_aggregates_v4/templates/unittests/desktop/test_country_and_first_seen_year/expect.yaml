@@ -1,5 +1,4 @@
 ---
-# country NULL & first_seen_year_new
 - submission_date: 2020-01-01
   app_name: {{ app_name }}
   first_seen_year_new: 2000
@@ -13,7 +12,6 @@
   dau: 0
   wau: 0
   mau: 0
-# country not NULL & first_seen_year_new
 - submission_date: 2020-01-01
   app_name: {{ app_name }}
   first_seen_year_new: 2010

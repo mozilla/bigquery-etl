@@ -1,4 +1,4 @@
-# os_version_build
+# os_version integrates Windows build number.
 - submission_date: 2020-01-03
   app_name: {{ app_name }}
   client_id: client-5
@@ -9,7 +9,7 @@
   is_daily_user: False
   is_weekly_user: False
   is_monthly_user: False
-# os_version_build not applicable
+# os_version unaffected by indows build number for Linux.
 - submission_date: 2020-01-03
   app_name: {{ app_name }}
   client_id: client-6

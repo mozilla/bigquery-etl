@@ -1,4 +1,4 @@
-# country null & first_seen_year_new
+# country null should result in ??. first_seen_year_new calculated correctly.
 - submission_date: 2020-01-01
   app_name: {{ app_name }}
   client_id: client-1
@@ -7,7 +7,7 @@
   is_dau: False
   is_wau: False
   is_mau: False
-# country not null  & first_seen_year_new
+# country not null. first_seen_year_new calculated correctly.
 - submission_date: 2020-01-01
   app_name: {{ app_name }}
   client_id: client-2

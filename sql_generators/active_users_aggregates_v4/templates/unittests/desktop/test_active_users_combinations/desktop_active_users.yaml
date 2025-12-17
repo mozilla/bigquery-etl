@@ -1,4 +1,4 @@
-# additional combinations for active users
+# combinations for active users status should return the correct dau, wau, mau.
 - submission_date: 2020-01-05
   client_id: client-1
   app_name: {{ app_name }}

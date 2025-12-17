@@ -209,7 +209,6 @@ def generate(target_project, output_dir, use_cloud_function):
                 source="common",
                 test_name=test,
             )
-            # if browser.value == "firefox_desktop":
             output_unittest_templates(
                 dataset=browser.name,
                 app_name=browser.value,

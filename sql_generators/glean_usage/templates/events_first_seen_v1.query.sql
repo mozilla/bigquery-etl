@@ -140,6 +140,7 @@ WITH _current AS (
     WHERE
       DATE(first_submission_timestamp) >= '2023-01-01'
       AND DATE(first_submission_timestamp) < @submission_date
+      AND criteria IS NOT DISTINCT FROM {{ item["name"] }}
   ),
   _joined AS (
     --switch to using separate if statements instead of 1

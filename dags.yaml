@@ -1933,23 +1933,6 @@ bqetl_fx_health_ind_dashboard:
   repo: bigquery-etl
   schedule_interval: 0 16 * * *
 
-bqetl_event_aggregates:
-  description: |
-    This DAG builds the event_aggregates table
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-12-19"
-    retries: 2
-    retry_delay: 5m
-  tags:
-    - impact/tier_3
-  repo: bigquery-etl
-  schedule_interval: 40 16 * * *
 
 bqetl_fx_cert_error_privacy_dashboard:
   description: |

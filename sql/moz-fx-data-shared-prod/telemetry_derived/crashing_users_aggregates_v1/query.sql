@@ -67,7 +67,7 @@ WITH crashes AS (
   FROM
     telemetry.firefox_crashes
   WHERE
-    DATE(submission_timestamp) = "2025-12-10"
+    DATE(submission_timestamp) = @submission_date
     AND crash_app_channel IN ('release', 'beta', 'nightly', 'esr')
     AND metrics.string.crash_process_type IN (
       'main',

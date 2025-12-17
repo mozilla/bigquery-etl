@@ -15,7 +15,7 @@ fields:
   type: INT64
   mode: NULLABLE
   description: Extracted version from crash_app_display_version.
-- name: process_type_bit
+- name: process_types_bit
   type: INT64
   mode: NULLABLE
   description: The type of process that experienced a crash as a bit. See the full list

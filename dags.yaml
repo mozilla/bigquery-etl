@@ -1806,7 +1806,7 @@ bqetl_monitoring_weekly:
   description: |
     This DAG populates monitoring datasets that only need to be updated weekly
   default_args:
-    owner: kwindau@mozilla.com
+    owner: lvargas@mozilla.com
     email: ["telemetry-alerts@mozilla.com"]
     start_date: "2024-10-25"
     retries: 2

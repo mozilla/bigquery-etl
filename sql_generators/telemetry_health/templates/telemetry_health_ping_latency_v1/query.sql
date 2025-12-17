@@ -4,7 +4,11 @@
   WITH sample AS (
     SELECT
       "{{ application_names[app_id] }}" AS application,
+      {% if application_names[app_id] == "Firefox for Android" %}
+      mozfun.norm.fenix_app_info("{{ app_id }}", client_info.app_build).channel AS channel,
+      {% else %}
       normalized_channel AS channel,
+      {% endif %}
       metadata.header.parsed_date,
       ping_info.parsed_end_time,
       submission_timestamp,

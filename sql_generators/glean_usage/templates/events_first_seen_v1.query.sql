@@ -124,7 +124,7 @@ WITH _current AS (
       `event`,
       event_category,
       event_name,
-      {{ item["name"] }} AS criteria,
+      criteria,
       profile_group_id,
       sample_id,
       first_event_timestamp,

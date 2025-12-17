@@ -1,0 +1,22 @@
+friendly_name: Historical Pings for `ads-backend/provider-request-stats`
+description: |-
+  A historical view of pings sent for the
+  `ads-backend/provider-request-stats`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+owners: []
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.ads_backend_stable.provider_request_stats_v1
+require_column_descriptions: false
+level: null

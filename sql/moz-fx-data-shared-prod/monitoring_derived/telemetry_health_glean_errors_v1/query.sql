@@ -73,7 +73,10 @@ UNION ALL
       SELECT
         "Firefox for Android" AS application,
         client_info.client_id,
-        normalized_channel,
+        mozfun.norm.fenix_app_info(
+          "org_mozilla_firefox",
+          client_info.app_build
+        ).channel AS normalized_channel,
         DATE(submission_timestamp) AS submission_date,
         metrics.labeled_counter.glean_error_invalid_value AS ev,
         metrics.labeled_counter.glean_error_invalid_label AS el,
@@ -142,7 +145,10 @@ UNION ALL
       SELECT
         "Firefox for Android" AS application,
         client_info.client_id,
-        normalized_channel,
+        mozfun.norm.fenix_app_info(
+          "org_mozilla_firefox_beta",
+          client_info.app_build
+        ).channel AS normalized_channel,
         DATE(submission_timestamp) AS submission_date,
         metrics.labeled_counter.glean_error_invalid_value AS ev,
         metrics.labeled_counter.glean_error_invalid_label AS el,
@@ -211,7 +217,10 @@ UNION ALL
       SELECT
         "Firefox for Android" AS application,
         client_info.client_id,
-        normalized_channel,
+        mozfun.norm.fenix_app_info(
+          "org_mozilla_fenix",
+          client_info.app_build
+        ).channel AS normalized_channel,
         DATE(submission_timestamp) AS submission_date,
         metrics.labeled_counter.glean_error_invalid_value AS ev,
         metrics.labeled_counter.glean_error_invalid_label AS el,

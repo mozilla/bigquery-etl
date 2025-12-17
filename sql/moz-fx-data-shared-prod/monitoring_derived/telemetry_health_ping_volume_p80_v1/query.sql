@@ -44,7 +44,7 @@ UNION ALL
     WITH sample AS (
       SELECT
         "Firefox for Android" AS application,
-        normalized_channel AS channel,
+        mozfun.norm.fenix_app_info("org_mozilla_firefox", client_info.app_build).channel AS channel,
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id,
         COUNT(1) AS ping_count
@@ -85,7 +85,10 @@ UNION ALL
     WITH sample AS (
       SELECT
         "Firefox for Android" AS application,
-        normalized_channel AS channel,
+        mozfun.norm.fenix_app_info(
+          "org_mozilla_firefox_beta",
+          client_info.app_build
+        ).channel AS channel,
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id,
         COUNT(1) AS ping_count
@@ -126,7 +129,7 @@ UNION ALL
     WITH sample AS (
       SELECT
         "Firefox for Android" AS application,
-        normalized_channel AS channel,
+        mozfun.norm.fenix_app_info("org_mozilla_fenix", client_info.app_build).channel AS channel,
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id,
         COUNT(1) AS ping_count

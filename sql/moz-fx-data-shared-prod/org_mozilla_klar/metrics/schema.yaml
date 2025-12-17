@@ -7957,6 +7957,19 @@ fields:
         by either a known fingerprinting text or a known behavior (alias)
 
         '
+    - name: networking_http_3_slow_start_exited
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts whether an HTTP3 connections exited slow start.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -80,6 +80,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__crashing_users_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__crashing_users_aggregates__v1",
+        destination_table="crashing_users_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "benwu@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__firefox_crashes__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_crashes__v1",
         destination_table="firefox_crashes_v1",

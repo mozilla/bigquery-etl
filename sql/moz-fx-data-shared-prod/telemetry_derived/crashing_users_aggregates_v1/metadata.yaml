@@ -1,0 +1,32 @@
+friendly_name: Crashing User Aggregates
+description: |-
+  Aggregates the count of crashes of firefox based on os, channel, process_type and version
+
+  Related Documentation:
+  - Parent JIRA ticket: https://mozilla-hub.atlassian.net/browse/DENG-9398
+  - JIRA ticket for this table: https://mozilla-hub.atlassian.net/browse/DENG-10311
+  - Data Model README: ./README.md
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose
+  owner2: afranchuk
+  dag: bqetl_crashes
+scheduling:
+  dag_name: bqetl_crashes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true
+level: null

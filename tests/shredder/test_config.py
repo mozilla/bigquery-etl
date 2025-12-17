@@ -76,10 +76,14 @@ class FakeClient:
         ]
 
     def list_tables(self, dataset_ref):
-        labels = {}
         if dataset_ref.dataset_id.endswith("stable"):
-            table_ids = ["metrics_v1", "deletion_request_v1", "migration_v1"]
-            labels["schema_id"] = "glean_ping_1"
+            table_ids = [
+                ("metrics_v1", {"schema_id": "glean_ping_1"}),
+                ("deletion_request_v1", {"schema_id": "glean_ping_1"}),
+                ("migration_v1", {"schema_id": "glean_ping_1"}),
+                ("usage_reporting_v1", {"schema_id": "glean-min_ping_1"}),
+                ("usage_deletion_request_v1", {"schema_id": "glean-min_ping_1"}),
+            ]
         elif dataset_ref.dataset_id in {
             "org_mozilla_focus_derived",
             "org_mozilla_focus_beta_derived",
@@ -87,7 +91,8 @@ class FakeClient:
             table_ids = [
                 "additional_deletion_requests_v1",  # should be ignored
                 "clients_daily_v1",
-                "dau_v1",  # aggregated, no client_id
+                "dau_v1",  # aggregated, no client_id,
+                "usage_reporting_clients_daily_v1",  # should use usage_deletion_request_v1
             ]
         elif dataset_ref.dataset_id.endswith("derived"):
             table_ids = ["clients_daily_v1"]
@@ -97,9 +102,10 @@ class FakeClient:
             bigquery.table.TableListItem(
                 {
                     "tableReference": bigquery.TableReference(
-                        dataset_ref, table_id
+                        dataset_ref,
+                        table_id if isinstance(table_id, str) else table_id[0],
                     ).to_api_repr(),
-                    "labels": labels,
+                    "labels": {} if isinstance(table_id, str) else table_id[1],
                 }
             )
             for table_id in table_ids
@@ -108,13 +114,29 @@ class FakeClient:
     def get_table(self, table_ref):
         table = bigquery.Table(table_ref)
         table._properties[table._PROPERTY_TO_API_FIELD["type"]] = "TABLE"
-        if table.dataset_id.endswith("stable"):
+        if table.table_id in {
+            "usage_reporting_v1",
+            "usage_deletion_request_v1",
+        }:
+            table.schema = [
+                bigquery.SchemaField(
+                    "metrics",
+                    "RECORD",
+                    fields=[
+                        bigquery.SchemaField(
+                            "uuid",
+                            "RECORD",
+                            fields=[bigquery.SchemaField("usage_profile_id", "STRING")],
+                        ),
+                    ],
+                )
+            ]
+        elif table.dataset_id.endswith("stable"):
             table.schema = [
                 bigquery.SchemaField(
                     "client_info",
                     "RECORD",
-                    "NULLABLE",
-                    [bigquery.SchemaField("client_id", "STRING")],
+                    fields=[bigquery.SchemaField("client_id", "STRING")],
                 )
             ]
         elif table.table_id in {
@@ -125,6 +147,10 @@ class FakeClient:
             "focus_android",
         }:
             table.schema = [bigquery.SchemaField("client_id", "STRING")]
+        elif table.table_id in {
+            "usage_reporting_clients_daily_v1",
+        }:
+            table.schema = [bigquery.SchemaField("usage_profile_id", "STRING")]
         else:
             table.schema = [bigquery.SchemaField("document_id", "STRING")]
         return table
@@ -290,6 +316,44 @@ def test_glean_targets(mock_requests):
                     field=("client_id",) * 3,
                     project="moz-fx-data-shared-prod",
                 ),
+            ]
+        },
+        **{  # usage_reporting_v1
+            DeleteTarget(
+                table=f"{app_id}_stable.usage_reporting_v1",
+                field=("metrics.uuid.usage_profile_id",),
+                project="moz-fx-data-shared-prod",
+            ): {
+                DeleteSource(
+                    table=f"{app_id}_stable.usage_deletion_request_v1",
+                    field="metrics.uuid.usage_profile_id",
+                    project="moz-fx-data-shared-prod",
+                    conditions=(),
+                ),
+            }
+            for app_id in [
+                "org_mozilla_focus",
+                "org_mozilla_focus_beta",
+                "org_mozilla_firefox",
+                "org_mozilla_firefox_beta",
+            ]
+        },
+        **{  # usage_reporting_clients_daily_v1
+            DeleteTarget(
+                table=f"{app_id}_derived.usage_reporting_clients_daily_v1",
+                field=("usage_profile_id",),
+                project="moz-fx-data-shared-prod",
+            ): {
+                DeleteSource(
+                    table=f"{app_id}_stable.usage_deletion_request_v1",
+                    field="metrics.uuid.usage_profile_id",
+                    project="moz-fx-data-shared-prod",
+                    conditions=(),
+                ),
+            }
+            for app_id in [
+                "org_mozilla_focus",
+                "org_mozilla_focus_beta",
             ]
         },
     }

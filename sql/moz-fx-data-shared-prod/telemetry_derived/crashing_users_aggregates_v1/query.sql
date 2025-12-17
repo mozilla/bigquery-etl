@@ -65,7 +65,7 @@ WITH crashes AS (
       OR metrics.string.crash_minidump_sha256_hash IS NULL
     ) AS no_minidump
   FROM
-    telemetry.firefox_crashes
+    `moz-fx-data-shared-prod.telemetry.firefox_crashes`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND crash_app_channel IN ('release', 'beta', 'nightly', 'esr')

@@ -15,7 +15,7 @@ WITH constants AS (
 crashes AS (
   SELECT
     client_info.client_id AS client_id,
-    DATE(submission_timestamp) AS date,
+    DATE(submission_timestamp) AS submission_date,
     normalized_os AS os,
     crash_app_channel AS channel,
     (
@@ -75,7 +75,7 @@ crashes AS (
 per_client_crash_counts AS (
   SELECT
     client_id,
-    date,
+    submission_date,
     os,
     channel,
     process_type_bit,
@@ -89,7 +89,7 @@ per_client_crash_counts AS (
     ALL
 ),
 /*
-We want to exclude the crashiest clients per (date, os, channel, process_type) combination, so group accordingly.
+We want to exclude the crashiest clients per (submission_date, os, channel, process_type) combination, so group accordingly.
 
 It's difficult to account for main_no_minidump here, but if we assume the main_no_minidump clients are evenly
 distributed, the double-submissions shouldn't skew the statistics too much. Note that they may not be (given the
@@ -98,7 +98,7 @@ aggregation, which we want to avoid.
 */
 crashes_per_client_quantiles AS (
   SELECT
-    date,
+    submission_date,
     os,
     channel,
     process_type_bit,
@@ -110,7 +110,7 @@ crashes_per_client_quantiles AS (
 ),
 crashes_per_client AS (
   SELECT
-    date,
+    submission_date,
     os,
     channel,
     process_type_bit,
@@ -133,12 +133,12 @@ crashes_per_client AS (
     per_client_crash_counts
   LEFT JOIN
     crashes_per_client_quantiles
-    USING (date, os, channel, process_type_bit)
+    USING (submission_date, os, channel, process_type_bit)
   GROUP BY
     ALL
 )
 SELECT
-  date,
+  submission_date,
   os,
   channel,
   major_version,

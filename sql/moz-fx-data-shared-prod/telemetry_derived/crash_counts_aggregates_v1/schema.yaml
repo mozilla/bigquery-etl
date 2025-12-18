@@ -37,9 +37,3 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: The total number of crashes with no outliers.
-- name: process_type_bit
-  type: INTEGER
-  mode: NULLABLE
-- name: classification_bit
-  type: INTEGER
-  mode: NULLABLE

@@ -3499,8 +3499,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -40759,6 +40758,13 @@ fields:
 
         '
     - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+    - name: privacy_notice_banner_displayed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: The timestamp when the user was shown the privacy notice banner.
+    - name: raw_privacy_notice_banner_displayed_date
       type: STRING
       mode: NULLABLE
     - name: terms_of_use_date

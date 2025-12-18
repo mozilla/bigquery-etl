@@ -110,4 +110,8 @@ with DAG(
         telemetry_derived__firefox_crashes__v1
     )
 
+    telemetry_derived__crashing_users_aggregates__v1.set_upstream(
+        telemetry_derived__firefox_crashes__v1
+    )
+
     telemetry_derived__firefox_crashes__v1.set_upstream(wait_for_copy_deduplicate_all)

@@ -1767,6 +1767,8 @@ SELECT
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.privacy_notice_banner_displayed_date,
+      metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
       metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,
@@ -3810,6 +3812,8 @@ SELECT
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.privacy_notice_banner_displayed_date,
+      metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
       metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,
@@ -5873,6 +5877,8 @@ SELECT
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.privacy_notice_banner_displayed_date,
+      metrics.datetime.raw_privacy_notice_banner_displayed_date,
       metrics.datetime.terms_of_use_date,
       metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,

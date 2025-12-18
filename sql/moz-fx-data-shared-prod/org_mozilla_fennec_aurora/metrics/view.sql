@@ -34,6 +34,10 @@ SELECT
               metrics.datetime.glean_validation_first_run_hour
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.privacy_notice_banner_displayed_date
+            ) AS privacy_notice_banner_displayed_date,
+            metrics.datetime.privacy_notice_banner_displayed_date AS raw_privacy_notice_banner_displayed_date,
             mozfun.glean.parse_datetime(metrics.datetime.terms_of_use_date) AS terms_of_use_date,
             metrics.datetime.terms_of_use_date AS raw_terms_of_use_date
           ) AS datetime

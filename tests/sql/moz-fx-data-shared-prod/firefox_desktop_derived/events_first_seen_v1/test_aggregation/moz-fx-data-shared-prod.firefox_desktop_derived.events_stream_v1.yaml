@@ -1,0 +1,95 @@
+---
+# Test 1: New event (not in history) - should use current data
+- client_id: client1-new
+  profile_group_id: "client1-new-profile"
+  sample_id: 0
+  event_category: "client1-new-event-category"
+  event_name: "client1-new-event-name"
+  event: "client1-new-event"
+  submission_timestamp: 2025-10-29T12:00:00
+  event_timestamp: 2025-10-29T12:00:00
+  event_extra: {date: 2025-10-29}
+
+# Test 2: Event exists in history (earlier date) - should use previous data
+- client_id: client2-existing
+  profile_group_id: "client2-existing-profile"
+  sample_id: 1
+  event_category: "client2-existing-event-category"
+  event_name: "client2-existing-event-name"
+  event: "client2-existing-event"
+  submission_timestamp: 2025-10-29T12:00:00
+  event_timestamp: 2025-10-29T12:00:00
+  event_extra: {date: 2025-10-29}
+
+# Test 3: Multiple events on same day - should aggregate minimums
+- client_id: client3-multiple
+  profile_group_id: "client3-multiple-profile"
+  sample_id: 2
+  event_category: "client3-multiple-event-category"
+  event_name: "client3-multiple-event-name"
+  event: "client3-multiple-event"
+  submission_timestamp: 2025-10-29T08:00:00
+  event_timestamp: 2025-10-29T08:00:00
+  event_extra: {date: 2025-10-29, sequence: 1}
+- client_id: client3-multiple
+  profile_group_id: "client3-multiple-profile"
+  sample_id: 2
+  event_category: "client3-multiple-event-category"
+  event_name: "client3-multiple-event-name"
+  event: "client3-multiple-event"
+  submission_timestamp: 2025-10-29T14:00:00
+  event_timestamp: 2025-10-29T14:00:00
+  event_extra: {date: 2025-10-29, sequence: 2}
+
+# Test 4: Same (client_id, event) with different profile_group_id - should collapse to one record
+- client_id: client4-profiles
+  profile_group_id: "profile-a"
+  sample_id: 3
+  event_category: "client4-event-category"
+  event_name: "client4-event-name"
+  event: "client4-event"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {profile: a}
+- client_id: client4-profiles
+  profile_group_id: "profile-b"
+  sample_id: 4
+  event_category: "client4-event-category"
+  event_name: "client4-event-name"
+  event: "client4-event"
+  submission_timestamp: 2025-10-29T11:00:00
+  event_timestamp: 2025-10-29T11:00:00
+  event_extra: {profile: b}
+
+# Test 5: Filters - NULL profile_group_id (should be excluded)
+- client_id: client5-null-pg
+  profile_group_id: NULL
+  sample_id: 5
+  event_category: "client5-event-category"
+  event_name: "client5-event-name"
+  event: "client5-event"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {should: excluded}
+
+# Test 6: Filters - excluded event categories (should be excluded)
+- client_id: client6-excluded
+  profile_group_id: "client6-profile"
+  sample_id: 6
+  event_category: "media.playback"
+  event_name: "excluded-event"
+  event: "excluded-event"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {should: excluded}
+
+# Test 7: Event on different date (should be excluded from current)
+- client_id: client7-wrong-date
+  profile_group_id: "client7-profile"
+  sample_id: 7
+  event_category: "client7-event-category"
+  event_name: "client7-event-name"
+  event: "client7-event"
+  submission_timestamp: 2025-10-28T10:00:00
+  event_timestamp: 2025-10-28T10:00:00
+  event_extra: {should: excluded}

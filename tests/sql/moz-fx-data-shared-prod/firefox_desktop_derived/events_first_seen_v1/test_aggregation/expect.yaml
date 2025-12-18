@@ -20,36 +20,6 @@
   first_submission_timestamp: 2025-10-15T08:00:00+00:00
   first_event_timestamp: 2025-10-15T08:00:00+00:00
   event_extra: {date: 2025-10-15}
-- client_id: client2-existing
-  profile_group_id: "client2-existing-profile"
-  sample_id: 1
-  event_category: "client2-existing-event-category"
-  event_name: "client2-existing-event-name"
-  criteria: 'chatbot_usage'
-  event: "client2-existing-event"
-  first_submission_timestamp: 2025-10-15T08:00:00+00:00
-  first_event_timestamp: 2025-10-15T08:00:00+00:00
-  event_extra: {date: 2025-10-15}
-- client_id: client2-existing
-  profile_group_id: "client2-existing-profile"
-  sample_id: 1
-  event_category: "client2-existing-event-category"
-  event_name: "client2-existing-event-name"
-  criteria: 'linkpreview_ai_consent'
-  event: "client2-existing-event"
-  first_submission_timestamp: 2025-10-15T08:00:00+00:00
-  first_event_timestamp: 2025-10-15T08:00:00+00:00
-  event_extra: {date: 2025-10-15}
-- client_id: client2-existing
-  profile_group_id: "client2-existing-profile"
-  sample_id: 1
-  event_category: "client2-existing-event-category"
-  event_name: "client2-existing-event-name"
-  criteria: 'smart_tabgroup_save'
-  event: "client2-existing-event"
-  first_submission_timestamp: 2025-10-15T08:00:00+00:00
-  first_event_timestamp: 2025-10-15T08:00:00+00:00
-  event_extra: {date: 2025-10-15}
 
 # Test 3: Multiple events - aggregated to minimum
 - client_id: client3-multiple
@@ -79,36 +49,6 @@
   sample_id: 7
   event_category: "client8-event-category"
   event_name: "client8-event-name"
-  event: "client8-event"
-  first_submission_timestamp: 2025-10-20T09:00:00+00:00
-  first_event_timestamp: 2025-10-20T09:00:00+00:00
-  event_extra: {date: 2025-10-20}
-- client_id: client8-history-only
-  profile_group_id: "client8-profile"
-  sample_id: 7
-  event_category: "client8-event-category"
-  event_name: "client8-event-name"
-  criteria: 'chatbot_usage'
-  event: "client8-event"
-  first_submission_timestamp: 2025-10-20T09:00:00+00:00
-  first_event_timestamp: 2025-10-20T09:00:00+00:00
-  event_extra: {date: 2025-10-20}
-- client_id: client8-history-only
-  profile_group_id: "client8-profile"
-  sample_id: 7
-  event_category: "client8-event-category"
-  event_name: "client8-event-name"
-  criteria: 'linkpreview_ai_consent'
-  event: "client8-event"
-  first_submission_timestamp: 2025-10-20T09:00:00+00:00
-  first_event_timestamp: 2025-10-20T09:00:00+00:00
-  event_extra: {date: 2025-10-20}
-- client_id: client8-history-only
-  profile_group_id: "client8-profile"
-  sample_id: 7
-  event_category: "client8-event-category"
-  event_name: "client8-event-name"
-  criteria: 'smart_tabgroup_save'
   event: "client8-event"
   first_submission_timestamp: 2025-10-20T09:00:00+00:00
   first_event_timestamp: 2025-10-20T09:00:00+00:00

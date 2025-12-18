@@ -4,7 +4,7 @@
   reason: Rerun to reflect removed duplicate records for Apple subscriptions (DENG-10350).
   watchers:
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

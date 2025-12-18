@@ -3806,6 +3806,24 @@ with DAG(
             firefox_desktop_derived__clients_last_seen_joined__v1
         )
 
+    firefox_desktop_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        task_group=task_group_firefox_desktop,
+    )
+
     firefox_desktop_derived__events_stream__v1 = GKEPodOperator(
         task_id="firefox_desktop_derived__events_stream__v1",
         arguments=[
@@ -7612,6 +7630,10 @@ with DAG(
 
     firefox_desktop_derived__clients_last_seen_joined__v1.set_upstream(
         bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1
+    )
+
+    firefox_desktop_derived__events_first_seen__v1.set_upstream(
+        firefox_desktop_derived__events_stream__v1
     )
 
     firefox_desktop_derived__events_stream__v1.set_upstream(

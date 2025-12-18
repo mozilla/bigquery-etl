@@ -42,6 +42,10 @@ WITH base AS (
     CAST(NULL AS STRING) AS attribution_variation,
     CAST(NULL AS STRING) AS attribution_ua,
     CAST(NULL AS STRING) AS startup_profile_selection_reason,
+    CAST(NULL AS STRING) AS distribution_version,
+    CAST(NULL AS STRING) AS distributor,
+    CAST(NULL AS STRING) AS distributor_channel,
+    CAST(NULL AS STRING) AS distribution_partner_id,
     ping_info.experiments AS experiments
   FROM
     `moz-fx-data-shared-prod.thunderbird_desktop_stable.baseline_v1`
@@ -177,7 +181,17 @@ windowed AS (
     ) AS attribution_variation,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
     LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments,
-    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first
+    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(distribution_version) OVER w1
+    ) AS distribution_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distributor) OVER w1) AS distributor,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(distributor_channel) OVER w1
+    ) AS distributor_channel,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(distribution_partner_id) OVER w1
+    ) AS distribution_partner_id
   FROM
     with_date_offsets
   LEFT JOIN

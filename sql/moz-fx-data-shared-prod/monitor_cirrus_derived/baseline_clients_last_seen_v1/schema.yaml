@@ -207,3 +207,19 @@ fields:
 - name: startup_profile_selection_reason_first
   type: STRING
   description: How the profile was selected during startup
+- mode: NULLABLE
+  name: distribution_version
+  type: STRING
+  description: pref distribution.version, null on failure
+- mode: NULLABLE
+  name: distributor
+  type: STRING
+  description: pref app.distributor, null on failure
+- mode: NULLABLE
+  name: distributor_channel
+  type: STRING
+  description: pref app.distributor.channel, null on failure
+- mode: NULLABLE
+  name: distribution_partner_id
+  type: STRING
+  description: pref mozilla.partner.id, null on failure

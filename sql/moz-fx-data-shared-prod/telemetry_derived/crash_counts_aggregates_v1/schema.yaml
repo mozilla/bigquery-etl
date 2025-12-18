@@ -15,12 +15,12 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Extracted version from crash_app_display_version.
-- name: process_types_bit
+- name: process_type_bit
   type: INT64
   mode: NULLABLE
   description: The type of process that experienced a crash as a bit. See the full
     list of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
-- name: classifications_bit
+- name: classification_bit
   type: INT64
   mode: NULLABLE
   description: Classification for OOM, crash_background_task_name, crash_async_manager_shutdown_timeout,

@@ -1,0 +1,39 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date the table was last updated.
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: OS of app
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: release, beta, nightly, esr.
+- name: major_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Extracted version from crash_app_display_version.
+- name: process_types_bit
+  type: INT64
+  mode: NULLABLE
+  description: The type of process that experienced a crash as a bit. See the full
+    list of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
+- name: classifications_bit
+  type: INT64
+  mode: NULLABLE
+  description: Classification for OOM, crash_background_task_name, crash_async_manager_shutdown_timeout,
+    crash_quota_manager_shutdown_timeout.
+- name: total_crashes
+  type: FLOAT
+  mode: NULLABLE
+  description: The total number of crashes.
+- name: total_95percentile
+  type: FLOAT
+  mode: NULLABLE
+  description: The 95th percentile of crashes.
+- name: total_no_outliers
+  type: FLOAT
+  mode: NULLABLE
+  description: The total number of crashes with no outliers.

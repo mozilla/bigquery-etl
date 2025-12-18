@@ -47,7 +47,6 @@ WITH crashes AS (
         ELSE 0
       END
     ) AS process_type_bit,
-    --SAFE_CAST(REGEXP_SUBSTR(crash_app_display_version,"[0-9]*") as INT) as major_version,
     (
       CASE
         WHEN metrics.quantity.memory_oom_allocation_size IS NOT NULL

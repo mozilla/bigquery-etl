@@ -7,7 +7,7 @@ WITH
       adjust_network,
       install_source
     FROM
-      fenix.firefox_android_clients
+      `{{ project_id }}.fenix.firefox_android_clients`
   ),
 {% endif %}
 {% if app_name == "firefox_ios"%}
@@ -17,7 +17,7 @@ WITH
       adjust_network,
       CAST(NULL AS STRING) install_source
     FROM
-      firefox_ios.firefox_ios_clients
+      `{{ project_id }}.firefox_ios.firefox_ios_clients`
   ),
 {% endif %}
 baseline AS (

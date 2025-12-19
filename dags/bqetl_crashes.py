@@ -65,21 +65,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__crash_aggregates__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__crash_aggregates__v1",
-        destination_table="crash_aggregates_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
-        email=[
-            "benwu@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     telemetry_derived__crash_counts_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__crash_counts_aggregates__v1",
         destination_table="crash_counts_aggregates_v1",
@@ -119,10 +104,6 @@ with DAG(
         email=["benwu@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-    )
-
-    telemetry_derived__crash_aggregates__v1.set_upstream(
-        telemetry_derived__firefox_crashes__v1
     )
 
     telemetry_derived__crash_counts_aggregates__v1.set_upstream(

@@ -46,6 +46,7 @@ SELECT
       LAX_BOOL(event_extra.outcome) AS `outcome`
     ) AS `boolean`,
     STRUCT(
+      LAX_INT64(event_extra.api_query_count) AS `api_query_count`,
       LAX_INT64(event_extra.average_tabs_in_all_groups) AS `average_tabs_in_all_groups`,
       LAX_INT64(event_extra.consecutive_crash) AS `consecutive_crash`,
       LAX_INT64(event_extra.count) AS `count`,
@@ -84,6 +85,7 @@ SELECT
       JSON_VALUE(event_extra.engagement_type) AS `engagement_type`,
       JSON_VALUE(event_extra.error) AS `error`,
       JSON_VALUE(event_extra.error_code) AS `error_code`,
+      JSON_VALUE(event_extra.error_description) AS `error_description`,
       JSON_VALUE(event_extra.error_message) AS `error_message`,
       JSON_VALUE(event_extra.error_string) AS `error_string`,
       JSON_VALUE(event_extra.error_type) AS `error_type`,
@@ -101,6 +103,7 @@ SELECT
       JSON_VALUE(event_extra.is_enabled) AS `is_enabled`,
       JSON_VALUE(event_extra.is_private) AS `is_private`,
       JSON_VALUE(event_extra.is_running) AS `is_running`,
+      JSON_VALUE(event_extra.last_provided_date) AS `last_provided_date`,
       JSON_VALUE(event_extra.location) AS `location`,
       JSON_VALUE(event_extra.media_type) AS `media_type`,
       JSON_VALUE(event_extra.message_key) AS `message_key`,
@@ -122,6 +125,7 @@ SELECT
       JSON_VALUE(event_extra.reason) AS `reason`,
       JSON_VALUE(event_extra.received_url) AS `received_url`,
       JSON_VALUE(event_extra.results) AS `results`,
+      JSON_VALUE(event_extra.retry_date) AS `retry_date`,
       JSON_VALUE(event_extra.sap) AS `sap`,
       JSON_VALUE(event_extra.search_mode) AS `search_mode`,
       JSON_VALUE(event_extra.section) AS `section`,

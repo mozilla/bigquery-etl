@@ -369,6 +369,13 @@ fields:
       description: 'Number of milliseconds until Normandy.init resolved in FirstStartup.
 
         '
+    - name: first_startup_category_tasks_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until the tasks registered for first-startup-new-profile-task
+        have resolved.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

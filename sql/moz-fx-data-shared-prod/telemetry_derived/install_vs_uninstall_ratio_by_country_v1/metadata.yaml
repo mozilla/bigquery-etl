@@ -20,3 +20,4 @@ bigquery:
     fields:
     - normalized_country_code
 require_column_descriptions: false
+label: bronze

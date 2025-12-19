@@ -18,3 +18,4 @@ bigquery:
   clustering:
     fields:
     - normalized_os_version
+label: bronze

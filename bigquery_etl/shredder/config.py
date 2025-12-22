@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """Meta data about tables and ids for self serve deletion."""
-
+import functools
 import logging
 import re
 from collections import defaultdict
@@ -9,13 +9,14 @@ from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
-from typing import List
+from typing import List, Optional
 
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 
+from ..schema import Schema
 from ..util.bigquery_id import qualified_table_id
 
 MOZDATA = "mozdata"
@@ -781,13 +782,19 @@ GLEAN_IGNORE_LIST = {
 
 
 def find_glean_targets(
-    pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
+    pool: ThreadPool,
+    client: bigquery.Client,
+    project: str = SHARED_PROD,
+    column_removal_backfill_tables: Optional[List] = None,
 ) -> DeleteIndex:
     """Return a dict like DELETE_TARGETS for glean tables.
 
     Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
+    if column_removal_backfill_tables is None:
+        column_removal_backfill_tables = []
+
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
 
     def stable_tables_by_schema(schema_id):
@@ -920,7 +927,7 @@ def find_glean_targets(
                     channel_to_app_name[table.dataset_id.replace("_stable", "")]
                 ] += (source,)
 
-    return {
+    delete_targets = {
         **{
             # glean stable tables that have a source
             DeleteTarget(
@@ -993,6 +1000,20 @@ def find_glean_targets(
             and all(field.name != CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
             and qualified_table_id(table) not in skipped_tables
+        },
+    }
+
+    return {
+        **delete_targets,
+        # backfill tables are included with no deletion requests sources if they normally would not be shredded
+        **{
+            DeleteTarget(
+                table=qualified_table_id(table),
+                field=tuple(),
+            ): tuple()
+            for table in glean_stable_tables
+            if qualified_table_id(table) in column_removal_backfill_tables
+            and qualified_table_id(table) not in {d.table for d in delete_targets}
         },
     }
 
@@ -1203,3 +1224,18 @@ def find_pioneer_targets(
             for table in _get_tables_with_pioneer_id(dataset)
         },
     }
+
+
+@functools.cache
+def unnest_and_remove_metrics(client: bigquery.Client, target_table_id: str):
+    """Unnest metrics struct, removing unused dist fields and blocklisted metrics.
+
+    Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+    """
+    v1_table = client.get_table(target_table_id)
+    v2_table = client.get_table(re.sub("_v1$", "_v2", target_table_id))
+
+    v1_schema = Schema.from_bigquery_schema(v1_table.schema)
+    v2_schema = Schema.from_bigquery_schema(v2_table.schema)
+
+    return v1_schema.generate_compatible_select_expression(v2_schema)

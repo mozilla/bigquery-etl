@@ -1,5 +1,7 @@
 """Build and use query dependency graphs."""
 
+import hashlib
+import json
 import re
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -18,6 +20,8 @@ from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import render
 
 stable_views = None
+
+_CACHE_FILE = Path("/tmp/.bigquery_etl_dependency_cache.json")
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
@@ -241,10 +245,64 @@ def _get_references(
         raise click.ClickException("Some paths could not be analyzed")
 
 
+def _load_cache_from_disk() -> Dict:
+    """Load dependency graph cache from disk."""
+    if _CACHE_FILE.exists():
+        try:
+            with open(_CACHE_FILE, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            # cache file is corrupted or unreadable, ignore it
+            return {}
+    return {}
+
+
+def _save_cache_to_disk(cache: Dict):
+    """Save dependency graph cache to disk."""
+    try:
+        with open(_CACHE_FILE, "w") as f:
+            json.dump(cache, f)
+    except OSError:
+        # failed to write cache, not a critical error
+        pass
+
+
+def _compute_paths_hash(paths: Tuple[str, ...]) -> str:
+    """Compute a hash of all SQL file mtimes in the given paths for cache invalidation."""
+    file_paths: List[Path] = []
+    for parent in map(Path, paths or ["sql"]):
+        if parent.is_dir():
+            file_paths.extend(
+                path
+                for path in sorted(parent.glob("**/*.sql"))
+                if not path.name.endswith(".template.sql")
+            )
+        else:
+            file_paths.append(parent)
+
+    hasher = hashlib.sha256()
+    for path in sorted(file_paths):
+        try:
+            # include both path and mtime for cache invalidation
+            hasher.update(str(path).encode())
+            hasher.update(str(path.stat().st_mtime).encode())
+        except (OSError, FileNotFoundError):
+            # file might have been deleted, skip it
+            pass
+    return hasher.hexdigest()
+
+
 def get_dependency_graph(
     paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 1
 ) -> Dict[str, List[str]]:
-    """Return the query dependency graph."""
+    """Return the query dependency graph (with caching based on file modification times)."""
+    files_hash = _compute_paths_hash(paths)
+    cache_key_str = f"{paths}|{without_views}|{parallelism}|{files_hash}"
+
+    disk_cache = _load_cache_from_disk()
+    if cache_key_str in disk_cache:
+        return disk_cache[cache_key_str]
+
     refs = _get_references(paths, without_views=without_views, parallelism=parallelism)
     dependency_graph = {}
 
@@ -253,6 +311,9 @@ def get_dependency_graph(
         dataset = ref[0].parent.parent.name
         project = ref[0].parent.parent.parent.name
         dependency_graph[f"{project}.{dataset}.{table}"] = ref[1]
+
+    disk_cache[cache_key_str] = dependency_graph
+    _save_cache_to_disk(disk_cache)
 
     return dependency_graph
 

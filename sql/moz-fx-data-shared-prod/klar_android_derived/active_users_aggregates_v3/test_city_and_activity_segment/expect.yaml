@@ -1,0 +1,29 @@
+---
+- submission_date: 2020-01-05
+  app_name: Klar Android
+  attributed: False
+  segment: segment-3
+  city: ??
+  country: ??
+  os_version_major: 0
+  os_version_minor: 0
+  daily_users: 0
+  weekly_users: 0
+  monthly_users: 0
+  dau: 0
+  wau: 1
+  mau: 1
+- submission_date: 2020-01-05
+  app_name: Klar Android
+  attributed: False
+  city: city-4
+  country: ??
+  segment: segment-4
+  os_version_major: 0
+  os_version_minor: 0
+  daily_users: 0
+  weekly_users: 0
+  monthly_users: 1
+  dau: 0
+  wau: 0
+  mau: 1

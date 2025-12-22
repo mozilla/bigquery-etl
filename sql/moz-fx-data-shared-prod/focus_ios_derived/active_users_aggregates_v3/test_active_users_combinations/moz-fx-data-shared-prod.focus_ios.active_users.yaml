@@ -1,0 +1,25 @@
+# combinations for active users status should return the correct dau, wau, mau.
+- submission_date: 2020-01-05
+  app_name: Focus iOS
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: False
+  is_mau: False
+- submission_date: 2020-01-05
+  app_name: Focus iOS
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: False
+  is_mau: False
+- submission_date: 2020-01-05
+  app_name: Focus iOS
+  is_daily_user: True
+  is_weekly_user: True
+  is_monthly_user: False
+  is_dau: True
+  is_wau: True
+  is_mau: False

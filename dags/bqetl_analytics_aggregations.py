@@ -765,23 +765,6 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3 = bigquery_dq_check(
-        task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v3",
-        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="lvargas@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
-    )
-
     checks__warn_firefox_desktop_derived__active_users_aggregates__v4 = bigquery_dq_check(
         task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v4",
         source_table='active_users_aggregates_v4${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -904,22 +887,6 @@ with DAG(
         task_id="fenix_derived__locale_aggregates__v1",
         destination_table='locale_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="lvargas@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-    )
-
-    firefox_desktop_active_users_aggregates_v3 = bigquery_etl_query(
-        task_id="firefox_desktop_active_users_aggregates_v3",
-        destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=[
@@ -1207,14 +1174,6 @@ with DAG(
         fenix_active_users_aggregates_v3
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
-        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
-    )
-
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
-        firefox_desktop_active_users_aggregates_v3
-    )
-
     checks__warn_firefox_desktop_derived__active_users_aggregates__v4.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
@@ -1293,10 +1252,6 @@ with DAG(
 
     fenix_derived__locale_aggregates__v1.set_upstream(
         wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_desktop_active_users_aggregates_v3.set_upstream(
-        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     firefox_desktop_active_users_aggregates_v4.set_upstream(

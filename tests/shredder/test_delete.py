@@ -197,6 +197,7 @@ def test_delete_from_table_sampling(mock_list_partitions):
                 max_single_dml_bytes=1,
                 partition_limit=None,
                 end_date="",
+                column_removal_backfill=False,
             )
         )[0]
         create_job_func = task.func.keywords["create_job"]
@@ -254,6 +255,7 @@ def test_context_id_brace_normalization():
             temp_dataset="project.tmp",
             priority="INTERACTIVE",
             reservation_override=None,
+            column_removal_backfill=False,
         )
     )
 

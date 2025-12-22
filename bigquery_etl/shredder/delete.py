@@ -28,6 +28,7 @@ from .config import (
     find_experiment_analysis_targets,
     find_glean_targets,
     find_pioneer_targets,
+    unnest_and_remove_metrics,
 )
 
 NULL_PARTITION_ID = "__NULL__"
@@ -129,6 +130,7 @@ parser.add_argument(
     "--sampling-tables",
     "--sampling_tables",
     nargs="+",
+    metavar="DATASET.TABLE",
     dest="sampling_tables",
     help="Create tasks per sample id for the given table(s).  Table format is dataset.table_name.",
     default=[],
@@ -160,6 +162,17 @@ parser.add_argument(
     metavar="projects/{project}/locations/{location}/reservations/{reservation}",
     help="Override the reservation assigned to the billing projects, e.g. "
     "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
+# Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+parser.add_argument(
+    "--column-removal-backfill-tables",
+    "--column_removal_backfill_tables",
+    nargs="+",
+    metavar="DATASET.TABLE",
+    help="List of tables (dataset.table format) on which to run a modified query to remove "
+    "fields and backfill to another table. "
+    "Tables are expected to be in a *_stable dataset and have a _v1 prefix.",
+    default=[],
 )
 
 
@@ -318,6 +331,7 @@ def delete_from_partition(
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
     reservation_override: Optional[str] = None,
+    column_removal_backfill: Optional[bool] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
@@ -326,22 +340,29 @@ def delete_from_partition(
         priority=priority,
         reservation=reservation_override,
     )
-    # whole table operations must use DML to protect against dropping partitions in the
-    # case of conflicting write operations in ETL, and special partitions must use DML
-    # because they can't be set as a query destination.
     if partition.id is None or partition.is_special:
+        # whole table operations must use DML to protect against dropping partitions in the
+        # case of conflicting write operations in ETL, and special partitions must use DML
+        # because they can't be set as a query destination.
         use_dml = True
-    elif sample_id_range is not None:
-        use_dml = False
-        job_config.destination = (
-            f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
-            f"{partition.id}__sample_{sample_id_range[0]}_{sample_id_range[1]}"
-        )
-        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
-        job_config.clustering_fields = clustering_fields
-    elif not use_dml:
-        job_config.destination = f"{sql_table_id(target)}${partition.id}"
-        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+    else:
+        if column_removal_backfill:
+            # column removal requires a transformation using a SELECT query
+            use_dml = False
+
+        if sample_id_range is not None:
+            # sample_id shredding can't use DML because of performance, and it will result in
+            # partially shredded partitions
+            use_dml = False
+            job_config.destination = (
+                f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
+                f"{partition.id}__sample_{sample_id_range[0]}_{sample_id_range[1]}"
+            )
+            job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+            job_config.clustering_fields = clustering_fields
+        elif not use_dml:
+            job_config.destination = f"{sql_table_id(target)}${partition.id}"
+            job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client) -> bigquery.QueryJob:
         def normalized_expr(expr: str) -> str:
@@ -429,7 +450,8 @@ def delete_from_partition(
             query = reformat(
                 f"""
                 SELECT
-                  _target.*,
+                  # TODO: get metrics from schema
+                  _target.{"*" if not column_removal_backfill else unnest_and_remove_metrics(metrics)},
                 FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
@@ -652,6 +674,7 @@ def delete_from_table(
     use_sampling,
     temp_dataset,
     reservation_override,
+    column_removal_backfill,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
@@ -818,6 +841,7 @@ def main():
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
             reservation_override=args.reservation_override,
+            column_removal_backfill=target.table in args.column_removal_backfill,
         )
     ]
 

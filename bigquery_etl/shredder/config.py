@@ -1210,3 +1210,51 @@ def find_pioneer_targets(
             for table in _get_tables_with_pioneer_id(dataset)
         },
     }
+
+
+def unnest_and_remove_metrics(metrics_fields: List[bigquery.SchemaField]):
+    """Unnest metrics struct, removing unused dist fields and blocklisted metrics.
+
+    Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+    """
+    # TODO: compare with v2 schema and remove
+
+    query_parts = ["STRUCT("]
+    for metric_type_num, metric_type in enumerate(metrics_fields):
+        # leave non-distributions as-is
+        if re.search("(timing|custom|memory)_distribution$", metric_type.name) is None:
+            query_parts.append(
+                f"metrics.{metric_type.name} AS {metric_type.name}{',' if metric_type_num != len(metrics_fields) - 1 else ''}"
+            )
+        else:
+            # wrap distributions with STRUCT(...) AS ..._distribution
+            query_parts.append("STRUCT(")
+            for metric_name_num, metric_name in enumerate(metric_type.fields):
+                if metric_type.name.startswith("labeled_"):
+                    query_parts.append(
+                        f"""
+                            ARRAY(
+                                SELECT AS STRUCT
+                                    key,
+                                    STRUCT(
+                                        value.sum,
+                                        value.values
+                                    ) AS value
+                                FROM
+                                    UNNEST(metrics.{metric_type.name}.{metric_name.name}) AS m
+                            ) AS {metric_name.name}{',' if metric_name_num != len(metric_type.fields) - 1 else ''}
+                        """
+                    )
+                else:
+                    query_parts.append(
+                        f"""
+                            STRUCT(
+                                metrics.{metric_type.name}.{metric_name.name}.sum,
+                                metrics.{metric_type.name}.{metric_name.name}.values
+                            ) AS {metric_name.name}{',' if metric_name_num != len(metric_type.fields) - 1 else ''}
+                        """
+                    )
+            query_parts.append(
+                f") AS {metric_type.name}{',' if metric_type_num != len(metrics_fields) - 1 else ''}"
+            )
+    query_parts.append(") AS metrics")

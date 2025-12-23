@@ -40,7 +40,7 @@ WITH eventsstream AS (
   DATE(submission_timestamp) >= '2023-01-01'
   AND sample_id >= @sample_id
   AND sample_id < @sample_id + @sampling_batch_size
-  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result') -- removing unnecessary high-volume categories to reduce cost
         -- if app_id is firefox_desktop, filter for where profile_group_id is not null
   {% if app_id == 'firefox_desktop' -%}
   AND profile_group_id IS NOT NULL

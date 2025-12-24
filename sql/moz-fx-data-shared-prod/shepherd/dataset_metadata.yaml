@@ -11,5 +11,5 @@ syndication:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:ads
+  - workgroup:ads/data-viewers
   - workgroup:ads/external-tapclicks

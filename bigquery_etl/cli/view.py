@@ -262,7 +262,6 @@ def publish(
 def _publish_view_callback(
     view_id, followup_queue, views_by_id, target_project, dry_run, credentials, results
 ):
-    """Callback function for ParallelTopologicalSorter to publish a view."""
     try:
         client = bigquery.Client(credentials=credentials)
         success = views_by_id[view_id].publish(target_project, dry_run, client)

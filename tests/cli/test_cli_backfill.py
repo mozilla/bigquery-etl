@@ -62,7 +62,7 @@ BACKFILL_YAML_TEMPLATE = (
 VALID_WORKGROUP_ACCESS = [
     dict(
         role="roles/bigquery.dataViewer",
-        members=["workgroup:mozilla-confidential"],
+        members=["workgroup:mozilla-confidential/data-viewers"],
     )
 ]
 
@@ -1296,7 +1296,7 @@ class TestBackfill:
                 dict(
                     role="roles/bigquery.dataViewer",
                     members=[
-                        "workgroup:mozilla-confidential",
+                        "workgroup:mozilla-confidential/data-viewers",
                         "workgroup:something-else",
                     ],
                 )
@@ -1327,7 +1327,7 @@ class TestBackfill:
                             dict(
                                 role="roles/bigquery.dataViewer",
                                 members=[
-                                    "workgroup:mozilla-confidential",
+                                    "workgroup:mozilla-confidential/data-viewers",
                                     "workgroup:something-else",
                                 ],
                             )

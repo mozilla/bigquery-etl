@@ -355,11 +355,12 @@ class View:
 
         return False
 
-    def publish(self, target_project=None, dry_run=False, client=None):
+    def publish(self, target_project=None, dry_run=False, client=None, force=False):
         """
         Publish this view to BigQuery.
 
         If `target_project` is set, it will replace the project ID in the view definition.
+        If `force` is set, the view will be created/updated as if it doesn't exist.
         """
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             print(f"Skipping {self.path}")
@@ -399,13 +400,14 @@ class View:
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
                 view_exists = False
-                try:
-                    existing_view = client.get_table(target_view)
-                    view_exists = True
-                except NotFound:
-                    view_exists = False
+                if not force:
+                    try:
+                        existing_view = client.get_table(target_view)
+                        view_exists = True
+                    except NotFound:
+                        view_exists = False
 
-                if not view_exists:
+                if not view_exists or force:
                     job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
                     query_job = client.query(sql, job_config)
                     try:

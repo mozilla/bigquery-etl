@@ -246,6 +246,7 @@ def publish(
         views_by_id=views_by_id,
         target_project=target_project,
         dry_run=dry_run,
+        force=force,
         credentials=credentials,
         results=results,
     )
@@ -260,12 +261,18 @@ def publish(
 
 
 def _publish_view_callback(
-    view_id, followup_queue, views_by_id, target_project, dry_run, credentials, results
+    view_id,
+    followup_queue,
+    views_by_id,
+    target_project,
+    dry_run,
+    force,
+    credentials,
+    results,
 ):
-    """Callback function for ParallelTopologicalSorter to publish a view."""
     try:
         client = bigquery.Client(credentials=credentials)
-        success = views_by_id[view_id].publish(target_project, dry_run, client)
+        success = views_by_id[view_id].publish(target_project, dry_run, client, force)
         results[view_id] = success if success is not None else True
     except Exception:
         print(f"Failed to publish view: {view_id}")

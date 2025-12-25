@@ -20,3 +20,4 @@ bigquery:
   clustering:
     fields:
     - normalized_country_code
+label: bronze

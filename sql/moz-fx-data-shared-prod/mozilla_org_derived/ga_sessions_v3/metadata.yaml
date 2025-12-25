@@ -32,3 +32,4 @@ workgroup_access:
   members:
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
+label: bronze

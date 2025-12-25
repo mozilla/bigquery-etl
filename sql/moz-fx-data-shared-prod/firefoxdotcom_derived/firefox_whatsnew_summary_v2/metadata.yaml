@@ -24,3 +24,4 @@ bigquery:
     fields:
     - page_location_locale
 require_column_descriptions: true
+label: bronze

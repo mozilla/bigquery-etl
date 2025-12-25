@@ -23,3 +23,4 @@ bigquery:
     fields:
     - page_title
 require_column_descriptions: true
+label: bronze

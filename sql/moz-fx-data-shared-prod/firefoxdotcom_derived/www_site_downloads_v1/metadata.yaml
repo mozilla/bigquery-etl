@@ -28,3 +28,4 @@ bigquery:
     - device_category
     - operating_system
 require_column_descriptions: true
+label: bronze

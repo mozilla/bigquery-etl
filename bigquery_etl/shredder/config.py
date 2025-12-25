@@ -94,6 +94,7 @@ DeleteIndex = dict[DeleteTarget, DeleteSource | tuple[DeleteSource, ...]]
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
 GLEAN_USAGE_PROFILE_ID = "metrics.uuid.usage_profile_id"
+USAGE_PROFILE_ID = "usage_profile_id"
 IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
@@ -214,6 +215,7 @@ LEGACY_MOBILE_IDS = tuple(CLIENT_ID for _ in LEGACY_MOBILE_SOURCES)
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
+usage_profile_id_target = partial(DeleteTarget, field=USAGE_PROFILE_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
@@ -906,7 +908,7 @@ def find_glean_targets(
                     metric_type_field.name == "uuid"
                     and any(
                         [
-                            metric_field.name == "usage_profile_id"
+                            metric_field.name == USAGE_PROFILE_ID
                             for metric_field in metric_type_field.fields
                         ]
                     )
@@ -918,6 +920,12 @@ def find_glean_targets(
                     qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
                 )
                 usage_reporting_sources[table.dataset_id] += (source,)
+                usage_reporting_sources[
+                    table.dataset_id.replace("stable", "derived")
+                ] += (source,)
+                usage_reporting_sources[
+                    channel_to_app_name[table.dataset_id.replace("_stable", "")]
+                ] += (source,)
 
     return {
         **{
@@ -978,6 +986,20 @@ def find_glean_targets(
             for table in glean_min_stable_tables
             if table.table_id == "usage_reporting_v1"
             and table.dataset_id in usage_reporting_sources
+        },
+        **{
+            # usage_reporting derived tables that contain usage_profile_id
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(USAGE_PROFILE_ID,)
+                * len(usage_reporting_sources[table.dataset_id]),
+            ): usage_reporting_sources[table.dataset_id]
+            for table in glean_derived_tables
+            if any(field.name == USAGE_PROFILE_ID for field in table.schema)
+            and all(field.name != CLIENT_ID for field in table.schema)
+            and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in skipped_tables
         },
     }
 

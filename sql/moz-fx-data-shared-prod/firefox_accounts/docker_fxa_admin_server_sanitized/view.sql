@@ -40,8 +40,9 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1`
 UNION ALL
+  BY NAME
 SELECT
-  * REPLACE (
+  * EXCEPT (apphub, apphubDestination) REPLACE(
     STRUCT(
       resource.type,
       STRUCT(

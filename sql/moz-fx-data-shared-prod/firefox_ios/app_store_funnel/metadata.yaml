@@ -1,0 +1,10 @@
+friendly_name: Funnel iOS
+description: 'Derived dataset for supporting (Apple) app store funnel analysis (iOS).
+
+
+  Runs with a 7 day lag due to the data being available only a around few days later
+  to us.
+
+  '
+owners:
+- kik@mozilla.com

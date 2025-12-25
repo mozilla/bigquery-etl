@@ -119,7 +119,8 @@ WITH services AS (
           >[] AS tiers,
           ['monitor'] AS subplat_capabilities,
           [STRUCT('802d56ef2a9af9fa' AS id, 'fx-monitor' AS name)] AS subplat_oauth_clients,
-          ARRAY<STRING>[] AS stripe_product_ids
+          -- Just in case capabilities metadata gets removed from the Monitor Stripe products.
+          ['prod_OiV9RSaatywSRy', 'prod_SOYBYCOWallcgz'] AS stripe_product_ids
         )
       ]
     )

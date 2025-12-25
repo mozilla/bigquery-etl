@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mozilla_vpn_derived.active_subscription_ids_live`
 AS
-SELECT
+SELECT DISTINCT
   active_date,
   subscription_id,
 FROM

@@ -103,6 +103,22 @@ SELECT
   SUM(others_engagement_visits) AS other_engagement_visits,
   SUM(other_interaction_count) AS other_interaction_count,
   SUM(other_impression_count) AS other_impression_count,
+  COUNT(
+    DISTINCT IF(organic_content_impression_count > 0, client_id, NULL)
+  ) AS organic_content_impression_clients,
+  COUNT(
+    DISTINCT IF(sponsored_content_impression_count > 0, client_id, NULL)
+  ) AS sponsored_content_impression_clients,
+  COUNT(
+    DISTINCT IF(any_content_impression_count > 0, client_id, NULL)
+  ) AS any_content_impression_clients,
+  COUNT(
+    DISTINCT IF(organic_content_click_count > 0, client_id, NULL)
+  ) AS organic_content_click_clients,
+  COUNT(
+    DISTINCT IF(sponsored_content_click_count > 0, client_id, NULL)
+  ) AS sponsored_content_click_clients,
+  COUNT(DISTINCT IF(any_content_click_count > 0, client_id, NULL)) AS any_content_click_clients
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_clients_daily_v2`
 WHERE

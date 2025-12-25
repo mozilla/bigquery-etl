@@ -5,7 +5,11 @@
     SELECT
       "{{ application_names[app_id] }}" AS application,
       client_info.client_id,
+      {% if application_names[app_id] == "Firefox for Android" %}
+      mozfun.norm.fenix_app_info("{{ app_id }}", client_info.app_build).channel AS normalized_channel,
+      {% else %}
       normalized_channel,
+      {% endif %}
       DATE(submission_timestamp) AS submission_date,
       metrics.labeled_counter.glean_error_invalid_value AS ev,
       metrics.labeled_counter.glean_error_invalid_label AS el,

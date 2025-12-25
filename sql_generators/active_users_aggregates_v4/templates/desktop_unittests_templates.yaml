@@ -1,0 +1,8 @@
+test_data:
+  - firefox_desktop:
+      expect: expect.yaml
+      query_params: query_params.yaml
+      desktop_active_users: desktop_active_users.yaml
+test_schemas:
+  - firefox_desktop:
+      desktop_active_users: desktop_active_users.schema.json

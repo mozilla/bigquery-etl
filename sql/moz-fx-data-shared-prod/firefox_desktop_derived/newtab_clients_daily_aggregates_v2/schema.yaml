@@ -251,3 +251,21 @@ fields:
 - name: other_impression_count
   type: INTEGER
   description: Total number of impressions for other categories (e.g., wallpaper, topic_selection, sections) on the newtab in the default UI
+- name: organic_content_impression_clients
+  type: INTEGER
+  description: Count of unique clients with at least one organic content impression on the newtab in the default UI
+- name: sponsored_content_impression_clients
+  type: INTEGER
+  description: Count of unique clients with at least one sponsored content impression on the newtab in the default UI
+- name: any_content_impression_clients
+  type: INTEGER
+  description: Count of unique clients with at least one content impression (organic or sponsored) on the newtab in the default UI
+- name: organic_content_click_clients
+  type: INTEGER
+  description: Count of unique clients with at least one organic content click on the newtab in the default UI
+- name: sponsored_content_click_clients
+  type: INTEGER
+  description: Count of unique clients with at least one sponsored content click on the newtab in the default UI
+- name: any_content_click_clients
+  type: INTEGER
+  description: Count of unique clients with at least one content click (organic or sponsored) on the newtab in the default UI

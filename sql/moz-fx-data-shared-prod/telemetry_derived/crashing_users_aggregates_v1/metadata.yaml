@@ -1,4 +1,4 @@
-friendly_name: Crash Aggregates
+friendly_name: Crashing User Aggregates
 description: |-
   Aggregates the count of crashes of firefox based on os, channel, process_type and version
 

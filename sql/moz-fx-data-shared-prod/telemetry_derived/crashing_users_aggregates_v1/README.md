@@ -1,4 +1,4 @@
-# cohort_daily_churn_v1
+# crashing_users_aggregates_v1
 
 ## Description
 

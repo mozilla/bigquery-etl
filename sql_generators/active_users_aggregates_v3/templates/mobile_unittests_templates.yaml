@@ -1,0 +1,18 @@
+test_data:
+  - common:
+      expect: expect.yaml
+      query_params: query_params.yaml
+      active_users: active_users.yaml
+      metrics_clients_last_seen: metrics_clients_last_seen.yaml
+    fenix:
+      firefox_android_clients: firefox_android_clients.yaml
+    firefox_ios:
+      firefox_ios_clients: firefox_ios_clients.yaml
+test_schemas:
+  - common:
+      active_users: active_users.schema.json
+      metrics_clients_last_seen: metrics_clients_last_seen.schema.json
+    fenix:
+      firefox_android_clients: firefox_android_clients.schema.json
+    firefox_ios:
+      firefox_ios_clients: firefox_ios_clients.schema.json

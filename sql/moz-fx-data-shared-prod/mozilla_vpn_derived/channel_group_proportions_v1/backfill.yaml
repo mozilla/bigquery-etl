@@ -1,0 +1,11 @@
+2025-12-16:
+  start_date: 2025-08-04
+  end_date: 2025-12-08
+  reason: Rerun to reflect removed duplicate records for Apple subscriptions (DENG-10350).
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true

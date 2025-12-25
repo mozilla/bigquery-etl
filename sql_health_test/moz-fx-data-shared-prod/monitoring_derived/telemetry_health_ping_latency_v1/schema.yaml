@@ -1,0 +1,28 @@
+fields:
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+  - name: collection_to_submission_latency_p95
+    type: INTEGER
+    mode: NULLABLE
+  - name: collection_to_submission_latency_median
+    type: INTEGER
+    mode: NULLABLE
+  - name: submission_to_ingestion_latency_p95
+    type: INTEGER
+    mode: NULLABLE
+  - name: submission_to_ingestion_latency_median
+    type: INTEGER
+    mode: NULLABLE
+  - name: collection_to_ingestion_latency_p95
+    type: INTEGER
+    mode: NULLABLE
+  - name: collection_to_ingestion_latency_median
+    type: INTEGER
+    mode: NULLABLE

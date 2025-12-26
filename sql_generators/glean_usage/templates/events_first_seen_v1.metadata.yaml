@@ -10,11 +10,7 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
-  parameters:
-    - >-
-      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
   depends_on_past: true
-  date_partition_parameter: null
 
 bigquery:
   time_partitioning:

@@ -4,7 +4,7 @@
 {% if is_init() %}
 {% endraw %}
 
-{% for item in criteria %}
+{% for criteria_name, criteria_sql in criteria.items() %}
 
 (
 WITH eventsstream AS (
@@ -14,7 +14,7 @@ WITH eventsstream AS (
   `event`,
   event_category,
   event_name,
-  {{ item["name"] }} AS criteria,
+  {{ ("'" ~ criteria_name ~ "'") }} AS criteria,
   ARRAY_AGG(
     STRUCT(
       profile_group_id,
@@ -34,19 +34,17 @@ WITH eventsstream AS (
     LIMIT 1
   )[0].*
   FROM
-  `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
+  `{{ project_id }}.{{ app_id_dataset }}_derived.events_stream_v1`
   WHERE
-        -- initialize by looking over all of history
-  DATE(submission_timestamp) >= '2023-01-01'
+  DATE(submission_timestamp) >= '2023-01-01' -- initialize by looking over all of history
   AND sample_id >= @sample_id
   AND sample_id < @sample_id + @sampling_batch_size
-  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-        -- if app_id is firefox_desktop, filter for where profile_group_id is not null
-  {% if app_id == 'firefox_desktop' -%}
-  AND profile_group_id IS NOT NULL
+  AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result') -- remove unnecessary high-volume categories to reduce cost
+  {% if app_id_dataset == 'firefox_desktop' -%}
+  AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
   {% endif %}
         -- below is the templated criteria
-  AND ({{ item["sql"] }})
+  AND ({{ criteria_sql }})
   GROUP BY
   client_id,
   `event`,
@@ -69,7 +67,7 @@ UNION ALL
 {% else %}
 {% endraw %}
 
-{% for item in criteria %}
+{% for criteria_name, criteria_sql in criteria.items() %}
 
 (
 WITH _current AS (
@@ -79,7 +77,7 @@ WITH _current AS (
     `event`,
     event_category,
     event_name,
-    {{ item["name"] }} AS criteria,
+    {{ ("'" ~ criteria_name ~ "'") }} AS criteria,
     ARRAY_AGG(
         STRUCT(
           profile_group_id,
@@ -99,16 +97,15 @@ WITH _current AS (
         LIMIT 1
       )[0].*
   FROM
-    `{{ project_id }}.{{ app_id }}_derived.events_stream_v1`
+    `{{ project_id }}.{{ app_id_dataset }}_derived.events_stream_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-        -- if app_id is firefox_desktop, filter for where profile_group_id is not null
-    {% if app_id == 'firefox_desktop' -%}
-    AND profile_group_id IS NOT NULL
+    AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result') -- remove unnecessary high-volume categories to reduce cost
+    {% if app_id_dataset == 'firefox_desktop' -%}
+    AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
     {% endif %}
         -- below is the templated criteria
-    AND ({{ item["sql"] }})
+    AND ({{ criteria_sql }})
   GROUP BY
     client_id,
     `event`,
@@ -140,30 +137,19 @@ WITH _current AS (
     WHERE
       DATE(first_submission_timestamp) >= '2023-01-01'
       AND DATE(first_submission_timestamp) < @submission_date
-      AND criteria IS NOT DISTINCT FROM {{ item["name"] }}
-  ),
-  _joined AS (
-    --switch to using separate if statements instead of 1
-    --because dry run is struggling to validate the final struct
-    SELECT
-      IF(
-        _previous.client_id IS NULL,
-        _current,
-        _previous
-      ).*
-    FROM
-      _current
-    FULL OUTER JOIN
-      _previous
-      ON _current.client_id = _previous.client_id
-          AND _current.event = _previous.event
-          AND (_current.criteria = _previous.criteria
-              OR (_current.criteria IS NULL AND _previous.criteria IS NULL))
+      AND criteria IS NOT DISTINCT FROM {{ ("'" ~ criteria_name ~ "'") }}
   )
-SELECT
-  *
-FROM
-  _joined
+  SELECT
+    _current.*
+  FROM
+    _current
+  LEFT JOIN
+    _previous
+    ON _current.client_id = _previous.client_id
+    AND _current.event = _previous.event
+    AND _current.criteria = _previous.criteria
+  WHERE
+    _previous.client_id IS NULL
 )
 {% if not loop.last -%}
 UNION ALL

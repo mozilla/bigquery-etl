@@ -5,6 +5,7 @@
   sample_id: 0
   event_category: "category1"
   event_name: "event1"
+  criteria: "any_event"
   event: "event1"
   first_submission_timestamp: 2025-10-29T10:00:00+00:00
   first_event_timestamp: 2025-10-29T10:00:00+00:00
@@ -14,6 +15,7 @@
   sample_id: 0
   event_category: "category2"
   event_name: "event2"
+  criteria: "any_event"
   event: "event2"
   first_submission_timestamp: 2025-10-29T11:00:00+00:00
   first_event_timestamp: 2025-10-29T11:00:00+00:00
@@ -25,6 +27,7 @@
   sample_id: 0
   event_category: "date-category"
   event_name: "date-event"
+  criteria: "any_event"
   event: "date-event-included"
   first_submission_timestamp: 2023-01-01T00:00:00+00:00
   first_event_timestamp: 2023-01-01T00:00:00+00:00
@@ -36,6 +39,7 @@
   sample_id: 0
   event_category: "null-fields-category"
   event_name: "null-fields-event"
+  criteria: "any_event"
   event: "null-fields-event"
   first_submission_timestamp: 2025-10-29T10:00:00+00:00
   first_event_timestamp: 2025-10-29T10:00:00+00:00
@@ -47,6 +51,7 @@
   sample_id: 0  # or 1
   event_category: "tie-category"
   event_name: "tie-event"
+  criteria: "any_event"
   event: "tie-event"
   first_submission_timestamp: 2025-10-29T10:00:00+00:00
   first_event_timestamp: 2025-10-29T10:00:00+00:00
@@ -58,6 +63,7 @@
   sample_id: 2
   event_category: "client1-dupes-event-category"
   event_name: "client1-dupes-event-name"
+  criteria: "any_event"
   event: "client1-dupes-event"
   first_submission_timestamp: 2025-11-10T00:31:18+00:00
   first_event_timestamp: 2025-11-05T09:38:18+00:00
@@ -69,6 +75,7 @@
   sample_id: 0
   event_category: "client1-mins-event-category"
   event_name: "client1-mins-event-name"
+  criteria: "any_event"
   event: "client1-mins-event"
   first_submission_timestamp: 2025-10-27T00:00:00+00:00
   first_event_timestamp: 2025-10-27T00:00:00+00:00
@@ -78,6 +85,7 @@
   sample_id: 0
   event_category: "client2-mins-event-category"
   event_name: "client2-mins-event-name"
+  criteria: "any_event"
   event: "client2-mins-event"
   first_submission_timestamp: 2025-10-29T00:00:00+00:00
   first_event_timestamp: 2025-10-29T00:00:00+00:00
@@ -89,6 +97,7 @@
   sample_id: 0
   event_category: "client1-pg-event-category"
   event_name: "client1-pg-event-name"
+  criteria: "any_event"
   event: "client1-pg-event"
   first_submission_timestamp: 2025-10-29T00:00:00+00:00
   first_event_timestamp: 2025-10-29T00:00:00+00:00
@@ -101,6 +110,7 @@
   event_category: "client1-ec-event-category"
   event_name: "client1-ec-event-name"
   event: "client1-ec-event"
+  criteria: "any_event"
   first_submission_timestamp: 2025-10-29T00:00:00+00:00
   first_event_timestamp: 2025-10-29T00:00:00+00:00
   event_extra: {date: 2025-10-29}

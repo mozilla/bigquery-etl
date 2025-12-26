@@ -1,61 +1,54 @@
 # The general structure of this config file is as follows:
 
 # apps:
-#   app_name:
+#   <app name>:
 #     criteria:
-#       - name: <name of criteria>
-#         sql: <SQL expression>
-
-# To correctly output the name of the criteria inside single quotes, wrap it in single and then double quotes. E.g., "'sidebar'"
+#       <criteria name>: |
+#         <criteria SQL>
 
 apps:
   firefox_desktop:
     criteria:
-      - name: CAST(NULL as string)
-        sql: true
-      - name: "'chatbot_usage'"
-        sql: |
-          event_category = 'genai.chatbot'
-          AND event_name = 'sidebar_toggle'
-          AND JSON_VALUE(event_extra.provider) <> 'none'
-      - name: "'smart_tabgroup_save'"
-        sql: |
-          event_category = 'tabgroup'
-          AND (
-            (
-              event_name = 'smart_tab_suggest'
-              AND JSON_VALUE(event_extra.action) LIKE 'save%'
-            )
-            OR (
-              event_name = 'smart_tab_topic'
-              AND JSON_VALUE(event_extra.action) = 'save'
-              )
+      any_event: |
+        true
+      chatbot_usage: |
+        event_category = 'genai.chatbot'
+        AND event_name = 'sidebar_toggle'
+        AND JSON_VALUE(event_extra.provider) <> 'none'
+      smart_tabgroup_save: |
+        event_category = 'tabgroup'
+        AND (
+          (
+            event_name = 'smart_tab_suggest'
+            AND JSON_VALUE(event_extra.action) LIKE 'save%'
           )
-      - name: "'linkpreview_ai_consent'"
-        sql: |
-          event_category = 'genai.linkpreview'
-          AND event_name = 'card_ai_consent'
-          AND JSON_VALUE(event_extra.option) = 'continue'
+          OR (
+            event_name = 'smart_tab_topic'
+            AND JSON_VALUE(event_extra.action) = 'save'
+            )
+        )
+      linkpreview_ai_consent: |
+        event_category = 'genai.linkpreview'
+        AND event_name = 'card_ai_consent'
+        AND JSON_VALUE(event_extra.option) = 'continue'
   firefox_ios:
     criteria:
-      - name: "'tou_accept'"
-        sql: |
-          (
-            event_category = 'terms_of_use'
-            AND event_name = "accepted"
-            AND JSON_VALUE(event_extra.surface) = "bottom_sheet"
-          ) OR (
-              event_category = 'onboarding'
-              AND event_name = "terms_of_service_accepted"
-            )
+      tou_accept: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name = "accepted"
+          AND JSON_VALUE(event_extra.surface) = "bottom_sheet"
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = "terms_of_service_accepted"
+          )
   fenix:
     criteria:
-      - name: "'tou_accept'"
-        sql: |
-          (
-            event_category = 'terms_of_use'
-            AND event_name = "accepted"
-          ) OR (
-              event_category = 'onboarding'
-              AND event_name = "terms_of_service_accepted"
-            )
+      tou_accept: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name = "accepted"
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = "terms_of_service_accepted"
+          )

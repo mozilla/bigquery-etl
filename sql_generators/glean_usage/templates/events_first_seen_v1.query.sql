@@ -4,7 +4,7 @@
 {% if is_init() %}
 {% endraw %}
 
-{% for item in criteria %}
+{% for criteria_name, criteria_sql in criteria.items() %}
 
 (
 WITH eventsstream AS (
@@ -14,7 +14,7 @@ WITH eventsstream AS (
   `event`,
   event_category,
   event_name,
-  {{ item["name"] }} AS criteria,
+  {{ ("'" ~ criteria_name ~ "'") }} AS criteria,
   ARRAY_AGG(
     STRUCT(
       profile_group_id,
@@ -44,7 +44,7 @@ WITH eventsstream AS (
   AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
   {% endif %}
         -- below is the templated criteria
-  AND ({{ item["sql"] }})
+  AND ({{ criteria_sql }})
   GROUP BY
   client_id,
   `event`,
@@ -67,7 +67,7 @@ UNION ALL
 {% else %}
 {% endraw %}
 
-{% for item in criteria %}
+{% for criteria_name, criteria_sql in criteria.items() %}
 
 (
 WITH _current AS (
@@ -77,7 +77,7 @@ WITH _current AS (
     `event`,
     event_category,
     event_name,
-    {{ item["name"] }} AS criteria,
+    {{ ("'" ~ criteria_name ~ "'") }} AS criteria,
     ARRAY_AGG(
         STRUCT(
           profile_group_id,
@@ -105,7 +105,7 @@ WITH _current AS (
     AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
     {% endif %}
         -- below is the templated criteria
-    AND ({{ item["sql"] }})
+    AND ({{ criteria_sql }})
   GROUP BY
     client_id,
     `event`,
@@ -137,7 +137,7 @@ WITH _current AS (
     WHERE
       DATE(first_submission_timestamp) >= '2023-01-01'
       AND DATE(first_submission_timestamp) < @submission_date
-      AND criteria IS NOT DISTINCT FROM {{ item["name"] }}
+      AND criteria IS NOT DISTINCT FROM {{ ("'" ~ criteria_name ~ "'") }}
   ),
   _joined AS (
     --switch to using separate if statements instead of 1
@@ -154,8 +154,7 @@ WITH _current AS (
       _previous
       ON _current.client_id = _previous.client_id
           AND _current.event = _previous.event
-          AND (_current.criteria = _previous.criteria
-              OR (_current.criteria IS NULL AND _previous.criteria IS NULL))
+          AND _current.criteria = _previous.criteria
   )
 SELECT
   *

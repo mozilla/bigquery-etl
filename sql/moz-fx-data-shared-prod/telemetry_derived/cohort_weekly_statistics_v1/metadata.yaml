@@ -18,3 +18,4 @@ bigquery:
     - normalized_channel
     - app_version
 require_column_descriptions: true
+label: bronze

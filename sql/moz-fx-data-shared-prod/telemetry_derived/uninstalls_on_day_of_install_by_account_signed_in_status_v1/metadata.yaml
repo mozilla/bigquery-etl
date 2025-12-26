@@ -20,3 +20,4 @@ bigquery:
   clustering:
     fields:
     - account_enabled
+label: bronze

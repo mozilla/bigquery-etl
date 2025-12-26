@@ -20,3 +20,4 @@ bigquery:
   range_partitioning: null
   clustering: null
 require_column_descriptions: false
+label: bronze

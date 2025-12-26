@@ -20,3 +20,4 @@ bigquery:
     fields:
     - version
 require_column_descriptions: true
+label: bronze

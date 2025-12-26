@@ -138,28 +138,18 @@ WITH _current AS (
       DATE(first_submission_timestamp) >= '2023-01-01'
       AND DATE(first_submission_timestamp) < @submission_date
       AND criteria IS NOT DISTINCT FROM {{ ("'" ~ criteria_name ~ "'") }}
-  ),
-  _joined AS (
-    --switch to using separate if statements instead of 1
-    --because dry run is struggling to validate the final struct
-    SELECT
-      IF(
-        _previous.client_id IS NULL,
-        _current,
-        _previous
-      ).*
-    FROM
-      _current
-    FULL OUTER JOIN
-      _previous
-      ON _current.client_id = _previous.client_id
-          AND _current.event = _previous.event
-          AND _current.criteria = _previous.criteria
   )
-SELECT
-  *
-FROM
-  _joined
+  SELECT
+    _current.*
+  FROM
+    _current
+  LEFT JOIN
+    _previous
+    ON _current.client_id = _previous.client_id
+    AND _current.event = _previous.event
+    AND _current.criteria = _previous.criteria
+  WHERE
+    _previous.client_id IS NULL
 )
 {% if not loop.last -%}
 UNION ALL

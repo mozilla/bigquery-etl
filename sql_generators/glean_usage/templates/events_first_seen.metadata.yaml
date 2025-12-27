@@ -1,0 +1,7 @@
+{{ header_yaml }}
+friendly_name: Events First Seen
+description: |-
+  Captures the earliest date that we observe an event for a particular client in the events_stream_v1 table.
+owners:
+  - kbammarito@mozilla.com
+  - vsabino@mozilla.com

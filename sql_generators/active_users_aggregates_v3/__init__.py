@@ -5,13 +5,21 @@ from enum import Enum
 from pathlib import Path
 
 import click
+import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import render, write_sql
+from bigquery_etl.util.common import render, write_sql, get_table_dir
 
 THIS_PATH = Path(os.path.dirname(__file__))
+MOBILE_UNITTESTS_PATH = THIS_PATH / "templates/unittests/mobile"
+DESKTOP_UNITTESTS_PATH = THIS_PATH / "templates/unittests/desktop"
+MOBILE_UNITTESTS_TEMPLATES = THIS_PATH / "templates" / "mobile_unittests_templates.yaml"
+DESKTOP_UNITTESTS_TEMPLATES = (
+    THIS_PATH / "templates" / "desktop_unittests_templates.yaml"
+)
+
 TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
 BASE_NAME = "_".join(TABLE_NAME.split("_")[:-1])
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
@@ -50,15 +58,15 @@ CHECKS_TEMPLATE_CHANNELS = {
     "klar_ios": [
         {"table": "`moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`"}
     ],
-    "klar_android" : [
-        {"table" : "`moz-fx-data-shared-prod.org_mozilla_klar_live.baseline_v1`"}
+    "klar_android": [
+        {"table": "`moz-fx-data-shared-prod.org_mozilla_klar_live.baseline_v1`"}
     ],
 }
+
 
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
-    firefox_desktop = "Firefox Desktop"
     fenix = "Fenix"
     focus_ios = "Focus iOS"
     focus_android = "Focus Android"
@@ -108,8 +116,112 @@ def generate(target_project, output_dir, use_cloud_function):
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
     mobile_checks_template = env.get_template("mobile_checks.sql")
+    # checks templates for BigEye
+    bigeye_checks_template = env.get_template("bigconfig.yml")
+
+    def output_unittest_templates(
+        dataset, app_name, templates, template_type, source, test_name=None
+    ):
+        """Load, render and output unitest template."""
+        test_folder = ""
+        parts = 2
+        output_path = Path("tests") / output_dir
+        for group in templates[template_type]:
+            try:
+                for file_name, file_template in group[source].items():
+                    if template_type == "test_data":
+                        parts = 3
+                        test_folder = (
+                            "/desktop" if app_name == "firefox_desktop" else "/mobile"
+                        ) + f"/{test_name}"
+                    _dataset = (
+                        "telemetry"
+                        if (
+                            dataset == "firefox_desktop"
+                            and file_name == "desktop_active_users"
+                        )
+                        else dataset
+                    )
+                    _file = (
+                        file_template
+                        if file_name in ["expect", "query_params"]
+                        else f"{target_project}.{_dataset}.{file_template}"
+                    )
+
+                    unittest_template = env.get_template(
+                        f"unittests{test_folder}/{file_template}"
+                    )
+                    full_table_id = (
+                        f"{target_project}.{dataset}_derived.{TABLE_NAME}"
+                        + (f".{test_name}" if template_type == "test_data" else "")
+                    )
+                    d = get_table_dir(output_path, full_table_id, parts)
+                    d.mkdir(parents=True, exist_ok=True)
+                    target = d / _file
+                    click.echo(f"INFO:Writing {target}")
+                    with target.open("w") as f:
+                        f.write(
+                            unittest_template.render(
+                                app_name=app_name,
+                                format=False,
+                            )
+                        )
+                        f.write("\n")
+            except KeyError:
+                continue
 
     for browser in Browsers:
+        # Load list of unittests schemas and data templates.
+        templates_yaml_path = (
+            DESKTOP_UNITTESTS_TEMPLATES
+            if browser.name == "firefox_desktop"
+            else MOBILE_UNITTESTS_TEMPLATES
+        )
+        tests_path = (
+            DESKTOP_UNITTESTS_PATH
+            if browser.name == "firefox_desktop"
+            else MOBILE_UNITTESTS_PATH
+        )
+
+        with open(templates_yaml_path) as f:
+            templates = yaml.safe_load(f)
+
+        # Write unittests test schemas.
+        output_unittest_templates(
+            dataset=browser.name,
+            app_name=browser.value,
+            templates=templates,
+            template_type="test_schemas",
+            source="common",
+        )
+        output_unittest_templates(
+            dataset=browser.name,
+            app_name=browser.value,
+            templates=templates,
+            template_type="test_schemas",
+            source=browser.name,
+        )
+
+        # Write unittests test data.
+        for test in next(os.walk(tests_path))[1]:
+            output_unittest_templates(
+                dataset=browser.name,
+                app_name=browser.value,
+                templates=templates,
+                template_type="test_data",
+                source="common",
+                test_name=test,
+            )
+            output_unittest_templates(
+                dataset=browser.name,
+                app_name=browser.value,
+                templates=templates,
+                template_type="test_data",
+                source=browser.name,
+                test_name=test,
+            )
+
+        # Write queries.
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
@@ -138,7 +250,7 @@ def generate(target_project, output_dir, use_cloud_function):
             table_schema_template = mobile_table_schema_template
             view_schema_template = mobile_view_schema_template
 
-        # create checks_sql
+        # Create checks_sql
         if browser.name == "firefox_desktop":
             checks_sql = desktop_checks_template.render(
                 project_id=target_project,
@@ -174,13 +286,13 @@ def generate(target_project, output_dir, use_cloud_function):
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
             sql=render(
-                    metadata_template,
-                    template_folder=THIS_PATH / "templates",
-                    app_value=browser.value,
-                    app_name=browser.name,
-                    table_name=TABLE_NAME,
-                    format=False,
-                ),
+                metadata_template,
+                template_folder=THIS_PATH / "templates",
+                app_value=browser.value,
+                app_name=browser.name,
+                table_name=TABLE_NAME,
+                format=False,
+            ),
             skip_existing=False,
         )
 
@@ -276,6 +388,18 @@ def generate(target_project, output_dir, use_cloud_function):
                 klar_ios_dataset=Browsers("Klar iOS").name,
                 klar_android_dataset=Browsers("Klar Android").name,
             )
+        ),
+        skip_existing=False,
+    )
+
+    # Write BigEye config files.
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+        basename="bigconfig.yml",
+        sql=bigeye_checks_template.render(
+            app_name=browser.name,
+            format=False,
         ),
         skip_existing=False,
     )

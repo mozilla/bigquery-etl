@@ -25,3 +25,4 @@ bigquery:
   clustering:
     fields:
     - sample_id
+level: bronze

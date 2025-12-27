@@ -2477,9 +2477,6 @@ def _update_query_schema(
         query_schema = Schema.from_query_file(
             query_file_path,
             content=sql_content,
-            project=project_name,
-            dataset=dataset_name,
-            table=table_name,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,

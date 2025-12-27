@@ -1,0 +1,4 @@
+friendly_name: Suggest Clients Daily
+description: daily client-level aggregates of Suggest-related fields
+owners:
+- rburwei@mozilla.com

@@ -1,0 +1,5 @@
+friendly_name: Uninstalls On Day Of Install by Os Version
+description: Uninstalls by OS version split by if the uninstall was on date of installation
+  or not
+owners:
+- kwindau@mozilla.com

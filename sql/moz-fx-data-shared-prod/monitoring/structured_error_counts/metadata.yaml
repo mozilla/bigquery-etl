@@ -1,0 +1,6 @@
+friendly_name: Structured Error Counts
+description: 'A daily count of structured errors by document namespace
+
+  '
+owners:
+- ascholtz@mozilla.com

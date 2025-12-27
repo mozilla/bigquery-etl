@@ -235,11 +235,8 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
         view_path = path / project_id / dataset.replace("_derived", "") / name
         view_path.mkdir(parents=True, exist_ok=view_exist_ok)
 
-    click.echo(f"Created query in {derived_path}")
-
     if create_view_path and not (view_file := view_path / "view.sql").exists():
         # Don't overwrite the view_file if it already exists
-        click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
 
         if use_live:
@@ -271,8 +268,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
             owners=[owner],
             labels={"owner": safe_owner},
         )
-
         view_metadata.write(view_metadata_file)
+
+        click.echo(f"Created view in {view_path}")
 
     # create query.sql file
     if use_live:
@@ -338,6 +336,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 )
                 + "\n"
             )
+        click.echo(f"Created base query in {macro_file}")
         query_file = derived_path / "query.sql"
         query_file.write_text(
             reformat(
@@ -360,7 +359,6 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
             )
             + "\n"
         )
-
     else:
         query_file = derived_path / "query.sql"
         query_file.write_text(
@@ -387,6 +385,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
         require_column_descriptions=True,
     )
     metadata.write(metadata_file)
+    click.echo(f"Created query in {derived_path}")
 
     if use_live:
         use_live_metadata_file = use_live_path / "metadata.yaml"
@@ -432,6 +431,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
             require_column_descriptions=True,
         )
         use_live_metadata.write(use_live_metadata_file)
+        click.echo(f"Created use_live query in {use_live_path}")
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():

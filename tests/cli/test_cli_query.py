@@ -141,6 +141,7 @@ class TestQuery:
                 "dataset_metadata.yaml",
                 "test_query_sub_daily_v1",
                 "test_query_v1",
+                "test_query_v1_macros.jinja",
             ]
             assert sorted(
                 os.listdir("sql/moz-fx-data-shared-prod/test_derived/test_query_v1")
@@ -148,6 +149,39 @@ class TestQuery:
             assert sorted(
                 os.listdir(
                     "sql/moz-fx-data-shared-prod/test_derived/test_query_sub_daily_v1"
+                )
+            ) == ["metadata.yaml", "query.sql"]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query",
+            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test/test_query")
+            ) == ["metadata.yaml", "view.sql"]
+
+    def test_create_hourly_query(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test_derived")
+            result = runner.invoke(
+                create, ["test.test_query", "--hourly", "--no_schedule"]
+            )
+            assert result.exit_code == 0
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod")) == [
+                "test",
+                "test_derived",
+            ]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test_derived")) == [
+                "dataset_metadata.yaml",
+                "test_query_hourly_v1",
+                "test_query_v1",
+                "test_query_v1_macros.jinja",
+            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test_derived/test_query_v1")
+            ) == ["metadata.yaml", "query.sql"]
+            assert sorted(
+                os.listdir(
+                    "sql/moz-fx-data-shared-prod/test_derived/test_query_hourly_v1"
                 )
             ) == ["metadata.yaml", "query.sql"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [

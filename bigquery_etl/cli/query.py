@@ -344,7 +344,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 f"""-- Query for {dataset}.{table_name}
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-                {{% from {macro_file} import {table_name} %}}
+                {{% from "{macro_file}" import {table_name} %}}
                 {{{{ {table_name}(use_live=false) }}}}"""
             )
             + "\n"
@@ -355,7 +355,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 f"""-- Query for {dataset}.{use_live_table_name}
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-                {{% from {macro_file} import {table_name} %}}
+                {{% from "{macro_file}" import {table_name} %}}
                 {{{{ {table_name}(use_live=true) }}}}"""
             )
             + "\n"

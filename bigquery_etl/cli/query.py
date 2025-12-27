@@ -331,7 +331,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                             TIMESTAMP_TRUNC(submission_date, DAY) = TIMESTAMP_TRUNC(@interval_start, DAY)
                             AND (
                                 submission_timestamp < @interval_start
-                                OR submission_timestamp >= @inteval_end
+                                OR submission_timestamp >= @interval_end
                             )
                         {{% endif %}}
                         {{% endmacro %}}"""

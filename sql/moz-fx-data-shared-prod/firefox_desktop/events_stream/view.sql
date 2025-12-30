@@ -384,7 +384,6 @@ SELECT
       JSON_VALUE(event_extra.engagement_type) AS `engagement_type`,
       JSON_VALUE(event_extra.engine_id) AS `engine_id`,
       JSON_VALUE(event_extra.engineId) AS `engineId`,
-      JSON_VALUE(event_extra.enrollment_id) AS `enrollment_id`,
       JSON_VALUE(event_extra.enrollmentId) AS `enrollmentId`,
       JSON_VALUE(event_extra.enrollments) AS `enrollments`,
       JSON_VALUE(event_extra.enterprise) AS `enterprise`,

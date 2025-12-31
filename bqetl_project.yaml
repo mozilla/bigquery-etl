@@ -450,8 +450,9 @@ generate:
       - firefox_desktop
     events_first_seen:
       include_apps:
-      - fenix
       - firefox_desktop
+      - fenix
+      - firefox_ios
     metrics_clients_last_seen:
       skip_apps:
       - accounts_cirrus
@@ -630,6 +631,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

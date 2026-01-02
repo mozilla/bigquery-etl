@@ -201,6 +201,25 @@ def project_id_option(default=None, required=False):
     )
 
 
+def multi_project_id_option(default=None, required=False):
+    """Generate a multi project-id option."""
+    if default is None:
+        default = []
+    return click.option(
+        "--project-ids",
+        "--project_ids",
+        "--project-id",
+        "--project_id",
+        help="GCP project IDs",
+        default=default,
+        multiple=True,
+        callback=lambda ctx, param, value: [
+            is_valid_project(ctx, param, v) for v in value
+        ],
+        required=required,
+    )
+
+
 def billing_project_option(default=None, required=False):
     """Generate a billing-project option, with optional default."""
     return click.option(

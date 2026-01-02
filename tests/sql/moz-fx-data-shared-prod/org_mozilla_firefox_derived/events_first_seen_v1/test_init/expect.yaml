@@ -1,0 +1,203 @@
+---
+# Test 1: Single TOU accept event
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client1-tou-single
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client1-tou-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {version: "1.0"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 2: Single onboarding event
+- first_submission_timestamp: 2025-10-29T11:00:00+00:00
+  client_id: client2-onboarding-single
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client2-onboarding-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T11:00:00+00:00
+  event_extra: {screen: "welcome"}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "Android"
+  normalized_os_version: "14"
+
+# Test 3: Multiple events - earliest submission (07:00)
+- first_submission_timestamp: 2025-10-29T07:00:00+00:00
+  client_id: client3-multiple
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client3-profile-2"
+  sample_id: 1
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {attempt: 2}
+  normalized_channel: "beta"
+  normalized_country_code: "FR"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 4: Same submission, earliest event_timestamp (09:00)
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client4-same-submission
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client4-profile-1"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {order: 1}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 5: NULL event_timestamp - picks the one with timestamp
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client5-null-event-timestamp
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client5-profile-1"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T09:00:00+00:00
+  event_extra: {has_timestamp: true}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 6: Both NULL - earliest submission (08:00)
+- first_submission_timestamp: 2025-10-29T08:00:00+00:00
+  client_id: client6-both-null
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client6-profile-1"
+  sample_id: 0
+  event_extra: {both_null: 1}
+  normalized_channel: "release"
+  normalized_country_code: "DE"
+  normalized_os: "Android"
+  normalized_os_version: "12"
+
+# Test 7: Different events - two separate rows
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client7-diff-events
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client7-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {type: "tou"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+- first_submission_timestamp: 2025-10-29T11:00:00+00:00
+  client_id: client7-diff-events
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client7-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T11:00:00+00:00
+  event_extra: {type: "onboarding"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Tests 8-12: Excluded (wrong categories/names) - NOT IN OUTPUT
+
+# Test 13-14: Sample boundaries
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client13-sample-min
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client13-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client14-sample-max
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client14-profile"
+  sample_id: 3
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 15: client15-sample-excluded - NOT IN OUTPUT (sample_id >= 10)
+# Test 16: client16-before-cutoff - NOT IN OUTPUT (date < 2023-01-01)
+
+# Test 17: On cutoff date
+- first_submission_timestamp: 2023-01-01T00:00:00+00:00
+  client_id: client17-on-cutoff
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client17-profile"
+  sample_id: 0
+  first_event_timestamp: 2023-01-01T00:00:00+00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Android"
+  normalized_os_version: "13"
+
+# Test 18: Windows build number
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client18-windows
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client18-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T10:00:00+00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  windows_build_number: 22000
+
+# Test 19: All NULLs
+- first_submission_timestamp: 2025-10-29T10:00:00+00:00
+  client_id: client19-nulls
+  event: "terms_of_use#accepted"
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client19-profile"
+  sample_id: 0

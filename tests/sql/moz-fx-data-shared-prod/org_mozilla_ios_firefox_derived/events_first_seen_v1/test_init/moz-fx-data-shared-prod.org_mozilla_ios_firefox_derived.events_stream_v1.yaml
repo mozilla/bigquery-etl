@@ -1,0 +1,379 @@
+---
+# Test 1: TOU accepted with surface = "bottom_sheet" (should be included)
+- client_id: client1-tou-bottom-sheet
+  profile_group_id: "client1-tou-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet", version: "1.0"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 2: TOU accepted with surface = "modal" (should be excluded)
+- client_id: client2-tou-modal
+  profile_group_id: "client2-tou-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "modal", version: "1.0"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 3: TOU accepted with no surface field (should be excluded)
+- client_id: client3-tou-no-surface
+  profile_group_id: "client3-tou-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {version: "1.0"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 4: TOU accepted with surface = null (should be excluded)
+- client_id: client4-tou-null-surface
+  profile_group_id: "client4-tou-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: null, version: "1.0"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 5: Onboarding TOU (no surface requirement)
+- client_id: client5-onboarding
+  profile_group_id: "client5-onboarding-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T11:00:00
+  event_timestamp: 2025-10-29T11:00:00
+  event_extra: {screen: "welcome"}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "iOS"
+  normalized_os_version: "17.1"
+  client_info:
+    windows_build_number: null
+
+# Test 6: Multiple events - ARRAY_AGG picks earliest submission_timestamp
+- client_id: client6-multiple
+  profile_group_id: "client6-profile-1"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T08:00:00
+  event_timestamp: 2025-10-29T08:30:00
+  event_extra: {surface: "bottom_sheet", attempt: 1}
+  normalized_channel: "release"
+  normalized_country_code: "DE"
+  normalized_os: "iOS"
+  normalized_os_version: "16.5"
+  client_info:
+    windows_build_number: null
+- client_id: client6-multiple
+  profile_group_id: "client6-profile-2"
+  sample_id: 1
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T07:00:00  # Earlier submission (should be picked)
+  event_timestamp: 2025-10-29T09:00:00
+  event_extra: {surface: "bottom_sheet", attempt: 2}
+  normalized_channel: "beta"
+  normalized_country_code: "FR"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 7: Same submission_timestamp, different event_timestamp
+- client_id: client7-same-submission
+  profile_group_id: "client7-profile-1"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T09:00:00  # Earlier event time (should be picked)
+  event_extra: {surface: "bottom_sheet", order: 1}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+- client_id: client7-same-submission
+  profile_group_id: "client7-profile-2"
+  sample_id: 1
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00  # Same submission
+  event_timestamp: 2025-10-29T10:00:00  # Later event time
+  event_extra: {surface: "bottom_sheet", order: 2}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "iOS"
+  normalized_os_version: "17.1"
+  client_info:
+    windows_build_number: null
+
+# Test 8: NULL event_timestamp - uses COALESCE fallback
+- client_id: client8-null-event-timestamp
+  profile_group_id: "client8-profile-1"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T09:00:00  # Has timestamp (should be picked)
+  event_extra: {surface: "bottom_sheet", has_timestamp: true}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+- client_id: client8-null-event-timestamp
+  profile_group_id: "client8-profile-2"
+  sample_id: 1
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00  # Same submission
+  event_timestamp: null  # NULL gets COALESCE to 9999-12-31
+  event_extra: {surface: "bottom_sheet", has_timestamp: false}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "iOS"
+  normalized_os_version: "17.1"
+  client_info:
+    windows_build_number: null
+
+# Test 9: Different events for same client
+- client_id: client9-diff-events
+  profile_group_id: "client9-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet", type: "tou"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+- client_id: client9-diff-events
+  profile_group_id: "client9-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T11:00:00
+  event_timestamp: 2025-10-29T11:00:00
+  event_extra: {type: "onboarding"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 10: Excluded event category (media.playback)
+- client_id: client10-excluded-media
+  profile_group_id: "client10-profile"
+  sample_id: 0
+  event_category: "media.playback"
+  event_name: "accepted"
+  event: "media.playback#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 11: Wrong event_name for terms_of_use
+- client_id: client11-wrong-name
+  profile_group_id: "client11-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "declined"
+  event: "terms_of_use#declined"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 12: Sample ID boundaries (assuming @sample_id = 0, @sampling_batch_size = 4)
+- client_id: client12-sample-min
+  profile_group_id: "client12-profile"
+  sample_id: 0  # Should be included (>= 0)
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+- client_id: client13-sample-max
+  profile_group_id: "client13-profile"
+  sample_id: 3  # Should be included (< 0 + 4)
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+- client_id: client14-sample-excluded
+  profile_group_id: "client14-profile"
+  sample_id: 4  # Should be excluded (>= 0 + 4)
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 13: Date boundary - before 2023-01-01 (excluded)
+- client_id: client15-before-cutoff
+  profile_group_id: "client15-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2022-12-31T23:59:59
+  event_timestamp: 2022-12-31T23:59:59
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 14: Date boundary - exactly 2023-01-01 (included)
+- client_id: client16-on-cutoff
+  profile_group_id: "client16-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2023-01-01T00:00:00
+  event_timestamp: 2023-01-01T00:00:00
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 15: All NULL optional fields
+- client_id: client17-nulls
+  profile_group_id: "client17-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: null
+  event_extra: {surface: "bottom_sheet"}
+  normalized_channel: null
+  normalized_country_code: null
+  normalized_os: null
+  normalized_os_version: null
+  client_info:
+    windows_build_number: null
+
+# Test 16: event_extra is null (should be excluded - can't check surface)
+- client_id: client18-null-extra
+  profile_group_id: "client18-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: null
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null
+
+# Test 17: Onboarding with surface field (surface not required for onboarding)
+- client_id: client19-onboarding-surface
+  profile_group_id: "client19-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {surface: "modal", screen: "welcome"}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "iOS"
+  normalized_os_version: "17.0"
+  client_info:
+    windows_build_number: null

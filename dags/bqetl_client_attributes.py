@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_client_attributes.py`](https://github
 Schedules daily level retention queries
 #### Owner
 
-kwindau@mozilla.com
+lmcfall@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2025, 2, 20, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],

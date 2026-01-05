@@ -1,6 +1,6 @@
 """Client-side sampled metrics.
 
-Fetches sampled metrics from BigQuery instead of a hardcoded list.
+Fetches sampled metrics information from BigQuery.
 """
 
 import json

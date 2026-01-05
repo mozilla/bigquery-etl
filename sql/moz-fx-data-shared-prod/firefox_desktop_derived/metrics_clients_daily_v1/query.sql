@@ -278,7 +278,10 @@ SELECT
   ) AS app_display_version,
   mozfun.stats.mode_last(
     ARRAY_AGG(JSON_VALUE(metrics.object.addons_theme.id) ORDER BY submission_timestamp)
-  ) AS addons_theme_id
+  ) AS addons_theme_id,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(metadata.geo.country ORDER BY submission_timestamp)
+  ) AS country_code
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

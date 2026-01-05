@@ -1636,7 +1636,7 @@
 <p>The behaviour of <code>bqetl</code> can be configured via the <code>bqetl_project.yaml</code> file. This file, for example, specifies the queries that should be skipped during dryrun, views that should not be published and contains various other configurations.</p>
 <p>The general structure of <code>bqetl_project.yaml</code> is as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">dry_run</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun</span>
+<span class="w">  </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun</span>
 <span class="w">  </span><span class="nt">test_project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bigquery-etl-integration-test</span>
 <span class="w">  </span><span class="nt">skip</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql</span>

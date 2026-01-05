@@ -1,0 +1,5 @@
+friendly_name: Cohort Daily Churn
+description: Calculates churn for new users over time, for users first seen in last
+  180 days
+owners:
+- kwindau@mozilla.com

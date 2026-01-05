@@ -1,6 +1,6 @@
 WITH params AS (
   SELECT
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 8 DAY AS start_timestamp,
+    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
     11 AS minutes_to_assume_random_ranking,
     "US" AS country
@@ -112,12 +112,12 @@ stories_aggregates AS (
     tile_format,
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
-    SUM(clicks) / SUM(impressions) AS ctr
+    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
   FROM
     aggregates
   WHERE
     position >= 0
-    AND position <= 50
+    AND position <= 100
   GROUP BY
     position,
     tile_format
@@ -126,13 +126,13 @@ stories_totals AS (
   SELECT
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
-    SUM(clicks) / SUM(impressions) AS ctr
+    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
   FROM
     stories_aggregates
 ),
 stories_weights AS (
   SELECT
-    SAFE_DIVIDE(stories_totals.ctr, ag.ctr) AS unormalized_weight,
+    SAFE_DIVIDE(stories_totals.ctr, NULLIF(ag.ctr, 0)) AS unormalized_weight,
     ag.impressions,
     position,
     tile_format
@@ -140,6 +140,11 @@ stories_weights AS (
     stories_totals,
     stories_aggregates AS ag
 ),
+-- Now that we have weights, we want to normalize (scale) all of them in such a way that the overall
+-- average CTR is unchanged regardless of whether we apply propensity. This allows non-adjusted and
+-- adjusted data to mix freely.
+-- We compute denom_sum, which is the re-weighted total impressions and click_sum, which is the total clicks
+-- Normalization Factor = target_ctr * denom_sum/click_sum
 base_events_all_items AS (
   SELECT
     tile_format,
@@ -150,6 +155,7 @@ base_events_all_items AS (
     params
   WHERE
     ev.section_position IS NOT NULL
+    AND ev.section_position < 100
 ),
 aggregates_all_items AS (
   SELECT
@@ -163,19 +169,18 @@ aggregates_all_items AS (
     tile_format,
     position
 ),
-adjusted_all_data_clicks AS (
+adjust_sums AS (
   SELECT
-    aggregates_all_items.clicks / stories_weights.unormalized_weight AS clicks_adjusted,
-    aggregates_all_items.position,
-    aggregates_all_items.tile_format
+    SUM(
+      SAFE_DIVIDE(aggregates_all_items.impressions, NULLIF(stories_weights.unormalized_weight, 0))
+    ) AS denom_sum,
+    SUM(aggregates_all_items.clicks) AS clicks_sum
   FROM
     aggregates_all_items
   JOIN
     stories_weights
-    ON (
-      stories_weights.position = aggregates_all_items.position
-      AND stories_weights.tile_format = aggregates_all_items.tile_format
-    )
+    ON stories_weights.position = aggregates_all_items.position
+    AND stories_weights.tile_format = aggregates_all_items.tile_format
 ),
 all_items_stats AS (
   SELECT
@@ -185,34 +190,21 @@ all_items_stats AS (
   FROM
     aggregates_all_items
 ),
-totals_all_items AS (
-  SELECT
-    SUM(impressions) AS impressions_all
-  FROM
-    aggregates_all_items
-),
-adjusted_clicks_total AS (
-  SELECT
-    SUM(clicks_adjusted) AS clicks_adj_total
-  FROM
-    adjusted_all_data_clicks
-),
 normalization_factor AS (
   SELECT
     SAFE_DIVIDE(
-      all_items_stats.target_ctr * totals_all_items.impressions_all,
-      adjusted_clicks_total.clicks_adj_total
+      all_items_stats.target_ctr * adjust_sums.denom_sum,
+      NULLIF(adjust_sums.clicks_sum, 0)
     ) AS factor
   FROM
     all_items_stats,
-    totals_all_items,
-    adjusted_clicks_total
+    adjust_sums
 )
 SELECT
-  unormalized_weight * normalization_factor.factor AS weight,
+  unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
   position,
   tile_format,
-  CAST(NULL AS INTEGER) AS section_position,
+  NULL AS section_position,
   impressions
 FROM
   stories_weights
@@ -220,3 +212,5 @@ CROSS JOIN
   normalization_factor
 WHERE
   impressions > 2000
+  AND unormalized_weight IS NOT NULL
+  AND unormalized_weight != 0;

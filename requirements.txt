@@ -526,9 +526,9 @@ fastavro==1.9.0 \
     --hash=sha256:f803c33f4fd4e3bfc17bbdbf3c036fbcb92a1f8e6bd19a035800518479ce6b36 \
     --hash=sha256:fb7e3a058a169d2c8bd19dfcbc7ae14c879750ce49fbaf3c436af683991f7eae
     # via google-cloud-bigquery-storage
-filelock==3.16.1 \
-    --hash=sha256:2082e5703d51fbf98ea75855d9d5527e33d8ff23099bec374a134febee6946b0 \
-    --hash=sha256:c249fbfcd5db47e5e2d6d62198e565475ee65e4831e2561c8e313fa7eb961435
+filelock==3.20.1 \
+    --hash=sha256:15d9e9a67306188a44baa72f569d2bfd803076269365fdea0934385da4dc361a \
+    --hash=sha256:b8360948b351b80f420878d8516519a2204b07aefcdcfd24912a5d33127f188c
     # via
     #   pytest-mypy
     #   virtualenv
@@ -618,13 +618,13 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.3.2 \
-    --hash=sha256:2daf8dc3d1dfa65b6aa37748d112773a7a08416f6c70d96b264c96476ecaf711 \
-    --hash=sha256:e52c77ef398680bbd6a98c0e628fbc469491282981209907bbc8aea76a04fdc6
+fsspec==2025.12.0 \
+    --hash=sha256:8bf1fe301b7d8acfa6e8571e3b1c3d158f909666642431cc78a1b7b4dbc5ec5b \
+    --hash=sha256:c505de011584597b1060ff778bb664c1bc022e87921b0e4f10cc9c44f9635973
     # via gcsfs
-gcsfs==2025.3.2 \
-    --hash=sha256:1bdecb530fbf3604a31f00f858a208e0770baf24d405a0b9df99fdde35737745 \
-    --hash=sha256:fe300179492e63e309fecb11e4de7c15a51172eefa2b846d4b3659960216bba8
+gcsfs==2025.12.0 \
+    --hash=sha256:9a9c1c32b7899a3967ba30a7e9422cdfda596266f03476cdf5545402b8af4cd5 \
+    --hash=sha256:e06aaec53797dc6b83d5cc90c4d3ae7247b4ee0cf8d8b1ce50e8d6b78e3a9aea
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
@@ -654,6 +654,7 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
+    #   google-cloud-storage-control
 google-auth==2.42.0 \
     --hash=sha256:9bbbeef3442586effb124d1ca032cfb8fb7acd8754ab79b55facd2b8f3ab2802 \
     --hash=sha256:f8f944bcb9723339b0ef58a73840f3c61bc91b69bf7368464906120b55804473
@@ -667,6 +668,7 @@ google-auth==2.42.0 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
+    #   google-cloud-storage-control
 google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
@@ -695,6 +697,10 @@ google-cloud-storage==3.4.1 \
     # via
     #   -r requirements.in
     #   gcsfs
+google-cloud-storage-control==1.8.0 \
+    --hash=sha256:1a3179438f82fc49b2ad3d4674d737164bd6a51e0a9b545a9ec7e7d118b8bee0 \
+    --hash=sha256:e77f1365667e9cf8b6fbb0fc0de725a6045ee4b42220c3e6f863adace6c4033f
+    # via gcsfs
 google-crc32c==1.5.0 \
     --hash=sha256:024894d9d3cfbc5943f8f230e23950cd4906b2fe004c72e29b209420a1e6b05a \
     --hash=sha256:02c65b9817512edc6a4ae7c7e987fea799d2e0ee40c53ec573a692bee24de876 \
@@ -773,12 +779,17 @@ google-resumable-media==2.7.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-googleapis-common-protos==1.58.0 \
+googleapis-common-protos[grpc]==1.58.0 \
     --hash=sha256:c727251ec025947d545184ba17e3578840fc3a24a0516a020479edab660457df \
     --hash=sha256:ca3befcd4580dab6ad49356b46bf165bb68ff4b32389f028f1abd7c10ab9519a
     # via
     #   google-api-core
+    #   grpc-google-iam-v1
     #   grpcio-status
+grpc-google-iam-v1==0.14.3 \
+    --hash=sha256:7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6 \
+    --hash=sha256:879ac4ef33136c5491a6300e27575a9ec760f6cdf9a2518798c1b8977a5dc389
+    # via google-cloud-storage-control
 grpcio==1.54.3 \
     --hash=sha256:058e313479aac21b20e0768aa4ecd782ae0b96b1eba7e4b615e0575a1c02d0e5 \
     --hash=sha256:06f8ebdcfebee56a816dba7903a7e6b656050e7b4a5c1c4d46ad88e2378bbc1e \
@@ -828,6 +839,9 @@ grpcio==1.54.3 \
     # via
     #   google-api-core
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
+    #   googleapis-common-protos
+    #   grpc-google-iam-v1
     #   grpcio-status
 grpcio-status==1.51.1 \
     --hash=sha256:a52cbdc4b18f325bfc13d319ae7c7ae7a0fee07f3d9a005504d6097896d7a495 \
@@ -899,7 +913,9 @@ jaraco-classes==3.4.0 \
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
     --hash=sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755
-    # via secretstorage
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
@@ -1075,9 +1091,9 @@ lz4==4.3.3 \
     --hash=sha256:f4c7bf687303ca47d69f9f0133274958fd672efaa33fb5bcde467862d6c621f0 \
     --hash=sha256:f76176492ff082657ada0d0f10c794b6da5800249ef1692b35cf49b1e93e8ef7
     # via bigeye-sdk
-markdown==3.4.4 \
-    --hash=sha256:225c6123522495d4119a90b3a3ba31a1e87a70369e03f14799ea9c0d7183a3d6 \
-    --hash=sha256:a4c1b65c0957b4bd9e7d86ddc7b3c9868fb9670660f6f99f6d1bca8954d5a941
+markdown==3.10 \
+    --hash=sha256:37062d4f2aa4b2b6b32aefb80faa300f82cc790cb949a35b8caede34f2b68c0e \
+    --hash=sha256:b5b99d6951e2e4948d939255596523444c0e677c669700b1d17aa4a8a464cb7c
     # via
     #   markdown-include
     #   mdx-truly-sane-lists
@@ -1607,6 +1623,7 @@ proto-plus==1.24.0 \
     # via
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
 protobuf==4.21.12 \
     --hash=sha256:1f22ac0ca65bb70a876060d96d914dae09ac98d114294f77584b0d2644fa9c30 \
     --hash=sha256:237216c3326d46808a9f7c26fd1bd4b20015fb6867dc5d263a493ef9a539293b \
@@ -1627,7 +1644,9 @@ protobuf==4.21.12 \
     #   google-api-core
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
     #   googleapis-common-protos
+    #   grpc-google-iam-v1
     #   grpcio-status
     #   proto-plus
 pyarrow==20.0.0 \
@@ -1861,9 +1880,9 @@ pyjwt==2.10.1 \
     --hash=sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953 \
     --hash=sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb
     # via -r requirements.in
-pymdown-extensions==10.3 \
-    --hash=sha256:77a82c621c58a83efc49a389159181d570e370fff9f810d3a4766a75fc678b66 \
-    --hash=sha256:94a0d8a03246712b64698af223848fd80aaf1ae4c4be29c8c61939b0467b5722
+pymdown-extensions==10.16.1 \
+    --hash=sha256:aace82bcccba3efc03e25d584e6a22d27a8e17caa3f4dd9f207e49b787aa9a91 \
+    --hash=sha256:d6ba157a6c03146a7fb122b2b9a121300056384eafeec9c9f9e584adfdb2a32d
     # via mkdocs-material
 pynacl==1.5.0 \
     --hash=sha256:06b8f6fa7f5de8d5d2f7573fe8c863c051225a27b61e6860fd047b1775807858 \
@@ -2344,7 +2363,9 @@ s3transfer==0.13.0 \
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
-    # via bigeye-sdk
+    # via
+    #   bigeye-sdk
+    #   keyring
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de

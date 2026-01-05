@@ -59,27 +59,6 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     logging.info(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
 
 
-def download_experiments_v1(url):
-    """Download experiment data from API v1 and parse it."""
-    experiments_v1 = []
-    experiments = get_api_response(f"{url}/api/v1/experiments/")
-    for experiment in experiments:
-        if experiment["status"] == "Draft":
-            continue
-        experiments_v1.append(
-            {
-                "slug": experiment["slug"],
-                "start_date": parse_unix_datetime_to_string(experiment["start_date"]),
-                "enrollment_end_date": None,
-                "end_date": parse_unix_datetime_to_string(experiment["end_date"]),
-            }
-        )
-    logging.info(
-        f"Downloaded {len(experiments_v1)} records from the experiments v1 API"
-    )
-    return experiments_v1
-
-
 def download_experiments_v6(url):
     """Download experiment data from API v6 and parse it."""
     experiments_v6 = []
@@ -114,7 +93,6 @@ def download_metric_hub_files(url):
 
 def compare_experiments_with_metric_hub_configs():
     """Download experiments from v1 and v6 API and compare them with config files in metric_hub."""
-    experiments_v1 = download_experiments_v1(API_BASE_URL_EXPERIMENTS)
     experiments_v6 = download_experiments_v6(API_BASE_URL_EXPERIMENTS)
     metric_files = download_metric_hub_files(API_BASE_URL_METRIC_HUB)
 
@@ -124,7 +102,7 @@ def compare_experiments_with_metric_hub_configs():
             if experiment["slug"] in metric_files
             else {**experiment, "has_config": False}
         )
-        for experiment in (experiments_v1 + experiments_v6)
+        for experiment in experiments_v6
     ]
     return experiments
 

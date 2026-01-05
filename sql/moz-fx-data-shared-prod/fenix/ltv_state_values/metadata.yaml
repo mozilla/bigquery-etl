@@ -1,0 +1,6 @@
+friendly_name: Ltv State Values
+description: |-
+  Android state values, in terms of Ad Clicks.
+  Each country has their own ad click LTV for each state.
+owners:
+- frank@mozilla.com

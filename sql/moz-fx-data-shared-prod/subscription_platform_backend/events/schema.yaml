@@ -314,8 +314,9 @@ fields:
     - name: subscription_checkout_type
       type: STRING
       mode: NULLABLE
-      description: "Whether the checkout flow is for new users or existing users.\n\
-        One of \u201Cwith-account\u201D or \u201Cwithout-account\"\n"
+      description: 'Account status at time of checkout
+
+        '
     - name: subscription_currency
       type: STRING
       mode: NULLABLE

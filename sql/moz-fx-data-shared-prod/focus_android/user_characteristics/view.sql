@@ -151,7 +151,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_maxvertexbuffers,
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
-      metrics.quantity.characteristics_gl2_version_software
+      metrics.quantity.characteristics_gl2_version_software,
+      metrics.quantity.characteristics_timezone_offset_web
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -279,7 +280,13 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
-      metrics.string.characteristics_pixel_ratio
+      metrics.string.characteristics_pixel_ratio,
+      metrics.string.characteristics_firefox_binary_arch,
+      metrics.string.characteristics_fpu_control_state,
+      metrics.string.characteristics_os_distro,
+      metrics.string.characteristics_os_distro_id,
+      metrics.string.characteristics_os_distro_version,
+      metrics.string.characteristics_timezone_web
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -349,7 +356,8 @@ SELECT
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
       metrics.text2.characteristics_math_ops_fdlibm,
-      metrics.text2.characteristics_screens
+      metrics.text2.characteristics_screens,
+      metrics.text2.characteristics_math_ops_fdlibm_2
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -512,7 +520,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_maxvertexbuffers,
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
-      metrics.quantity.characteristics_gl2_version_software
+      metrics.quantity.characteristics_gl2_version_software,
+      metrics.quantity.characteristics_timezone_offset_web
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -640,7 +649,13 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
-      metrics.string.characteristics_pixel_ratio
+      metrics.string.characteristics_pixel_ratio,
+      metrics.string.characteristics_firefox_binary_arch,
+      metrics.string.characteristics_fpu_control_state,
+      metrics.string.characteristics_os_distro,
+      metrics.string.characteristics_os_distro_id,
+      metrics.string.characteristics_os_distro_version,
+      metrics.string.characteristics_timezone_web
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -710,7 +725,8 @@ SELECT
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
       metrics.text2.characteristics_math_ops_fdlibm,
-      metrics.text2.characteristics_screens
+      metrics.text2.characteristics_screens,
+      metrics.text2.characteristics_math_ops_fdlibm_2
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -873,7 +889,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_maxvertexbuffers,
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
-      metrics.quantity.characteristics_gl2_version_software
+      metrics.quantity.characteristics_gl2_version_software,
+      metrics.quantity.characteristics_timezone_offset_web
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1001,7 +1018,13 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
-      metrics.string.characteristics_pixel_ratio
+      metrics.string.characteristics_pixel_ratio,
+      metrics.string.characteristics_firefox_binary_arch,
+      metrics.string.characteristics_fpu_control_state,
+      metrics.string.characteristics_os_distro,
+      metrics.string.characteristics_os_distro_id,
+      metrics.string.characteristics_os_distro_version,
+      metrics.string.characteristics_timezone_web
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -1071,7 +1094,8 @@ SELECT
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
       metrics.text2.characteristics_math_ops_fdlibm,
-      metrics.text2.characteristics_screens
+      metrics.text2.characteristics_screens,
+      metrics.text2.characteristics_math_ops_fdlibm_2
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,

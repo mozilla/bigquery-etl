@@ -1032,6 +1032,12 @@ fields:
       description: 'The version of OpenGL supported by the user''s system.
 
         '
+    - name: characteristics_timezone_offset_web
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The timezone offset in minutes exposed to web content via getTimezoneOffset()
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -1834,6 +1840,52 @@ fields:
       description: 'The value of window.devicePixelRatio
 
         '
+    - name: characteristics_firefox_binary_arch
+      type: STRING
+      mode: NULLABLE
+      description: 'Architecture of the Firefox binary itself (not the CPU). This
+        can differ from cpu_arch when running under emulation (e.g., x86-64 Firefox
+        via Rosetta 2 on ARM64 Mac) or when running 32-bit Firefox on 64-bit CPU.
+        Format: "xpcomabi:<abi>|is64bit:<bool>" where abi is from XPCOMABI (e.g.,
+        "Darwin_x86_64-gcc3") and is64bit indicates 64-bit build.
+
+        '
+    - name: characteristics_fpu_control_state
+      type: STRING
+      mode: NULLABLE
+      description: "The current FPU (Floating-Point Unit) rounding mode and precision\
+        \ settings. Format depends on architecture: - x86/x86-64: \"std:X;x87:Y;sse:Z;prec:P\"\
+        \ where X,Y,Z are rounding modes (0-3)\n  and P is precision (single/double/extended)\n\
+        - ARM: \"std:X;arm:Y\" where X,Y are rounding modes (0-3) Rounding modes:\
+        \ 0=nearest, 1=down/negative, 2=up/positive, 3=toward-zero This helps identify\
+        \ unusual FPU configurations that may cause math variations.\n"
+    - name: characteristics_os_distro
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS distribution, as reported by lsb_release (Linux only,
+        blank otherwise)
+
+        '
+    - name: characteristics_os_distro_id
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS distribution, as reported by MOZ_DISTRIBUTION_ID
+
+        '
+    - name: characteristics_os_distro_version
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS distribution version, as reported by lsb_release (Linux
+        only, blank otherwise)
+
+        '
+    - name: characteristics_timezone_web
+      type: STRING
+      mode: NULLABLE
+      description: 'The timezone string reported via the web using Intl API (e.g.
+        America/New_York)
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -2250,6 +2302,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'JSON string of screen properties
+
+        '
+    - name: characteristics_math_ops_fdlibm_2
+      type: STRING
+      mode: NULLABLE
+      description: 'Result of additional fingerprintable math operations, with fdlibm
+        enabled
 
         '
   - name: uuid

@@ -1,5 +1,4 @@
----
-friendly_name: FxA Users Services Last Seen
+friendly_name: FxA Users Services Last Seen (DEPRECATED)
 description: Usage aggregations per FxA user per FxA service
  per day over a 28-day window
 owners:
@@ -7,20 +6,6 @@ owners:
 labels:
   application: fxa
   incremental: true
-  schedule: daily
   table_type: client_level
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   depends_on_past: true
-#   start_date: 2023-08-02
-bigquery:
-  time_partitioning:
-    type: day
-    field: submission_date
-    require_partition_filter: false
-  clustering:
-    fields:
-      - service
-      - user_id
 deprecated: true
 deletion_date: 2025-12-12

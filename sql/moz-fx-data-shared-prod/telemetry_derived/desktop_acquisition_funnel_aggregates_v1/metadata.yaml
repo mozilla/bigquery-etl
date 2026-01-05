@@ -22,3 +22,4 @@ bigquery:
     expiration_days: null
   range_partitioning: null
 label: bronze
+deprecated: true

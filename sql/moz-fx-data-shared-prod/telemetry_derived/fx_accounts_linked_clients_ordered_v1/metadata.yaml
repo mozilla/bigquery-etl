@@ -14,3 +14,4 @@ scheduling:
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 require_column_descriptions: true
+level: bronze

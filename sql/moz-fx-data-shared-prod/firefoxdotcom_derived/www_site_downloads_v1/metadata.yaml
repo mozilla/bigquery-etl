@@ -39,4 +39,4 @@ references:
   query.sql:
   - moz-fx-data-marketing-prod.analytics_489412379.events_*
 require_column_descriptions: true
-level: null
+level: bronze

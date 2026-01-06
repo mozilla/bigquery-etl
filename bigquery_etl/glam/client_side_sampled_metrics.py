@@ -3,10 +3,10 @@
 Fetches sampled metrics information from BigQuery.
 """
 
-import json
 import math
-import subprocess
 from typing import Iterable, List, Optional
+
+from google.cloud import bigquery
 
 PROJECT_ID = "moz-fx-glam-prod"
 DATASET = "glam_etl"
@@ -14,14 +14,11 @@ TABLE_NAME = "sampled_metrics_v1"
 EXPECTED_SAMPLE_RATE = 10.0  # For now, we only support 10% sampling.
 
 
-def _run_bq_query(query: str) -> str:
-    """Run a BigQuery query and return stdout."""
-    res = subprocess.run(
-        ["bq", "query", "--nouse_legacy_sql", "--format=json", query],
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    return res.stdout.decode().strip()
+def _run_bq_query(query: str):
+    """Run a BigQuery query and return rows."""
+    client = bigquery.Client(project=PROJECT_ID)
+    query_job = client.query(query)
+    return query_job.result()
 
 
 def _format_metric_types_filter(metric_types: Iterable[str]) -> str:
@@ -61,11 +58,10 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
     )
 
     try:
-        output = _run_bq_query(query)
-    except subprocess.CalledProcessError as e:
+        rows = _run_bq_query(query)
+    except Exception as e:
         raise RuntimeError("Failed to fetch sampled metrics") from e
 
-    rows = json.loads(output) if output else []
     metrics: dict[str, List[str]] = {}
     for row in rows:
         sample_rate = float(row["sample_rate"])

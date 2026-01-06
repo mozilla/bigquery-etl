@@ -62,7 +62,7 @@ monitoring:
     - baseline_v1
 
 dry_run:
-  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com

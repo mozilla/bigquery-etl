@@ -263,9 +263,9 @@ cachetools==5.3.0 \
     --hash=sha256:13dfddc7b8df938c21a940dfa6557ce6e94a2f1cdfa58eb90c805721d58f2c14 \
     --hash=sha256:429e1a1e845c008ea6c85aa35d4b98b65d6a9763eeef3e37e92728a12d1de9d4
     # via google-auth
-cattrs==25.2.0 \
-    --hash=sha256:539d7eedee7d2f0706e4e109182ad096d608ba84633c32c75ef3458f1d11e8f1 \
-    --hash=sha256:f46c918e955db0177be6aa559068390f71988e877c603ae2e56c71827165cc06
+cattrs==25.3.0 \
+    --hash=sha256:1ac88d9e5eda10436c4517e390a4142d88638fe682c436c93db7ce4a277b884a \
+    --hash=sha256:9896e84e0a5bf723bc7b4b68f4481785367ce07a8a02e7e9ee6eb2819bc306ff
     # via
     #   -r requirements.in
     #   looker-sdk
@@ -618,13 +618,13 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.3.2 \
-    --hash=sha256:2daf8dc3d1dfa65b6aa37748d112773a7a08416f6c70d96b264c96476ecaf711 \
-    --hash=sha256:e52c77ef398680bbd6a98c0e628fbc469491282981209907bbc8aea76a04fdc6
+fsspec==2025.12.0 \
+    --hash=sha256:8bf1fe301b7d8acfa6e8571e3b1c3d158f909666642431cc78a1b7b4dbc5ec5b \
+    --hash=sha256:c505de011584597b1060ff778bb664c1bc022e87921b0e4f10cc9c44f9635973
     # via gcsfs
-gcsfs==2025.3.2 \
-    --hash=sha256:1bdecb530fbf3604a31f00f858a208e0770baf24d405a0b9df99fdde35737745 \
-    --hash=sha256:fe300179492e63e309fecb11e4de7c15a51172eefa2b846d4b3659960216bba8
+gcsfs==2025.12.0 \
+    --hash=sha256:9a9c1c32b7899a3967ba30a7e9422cdfda596266f03476cdf5545402b8af4cd5 \
+    --hash=sha256:e06aaec53797dc6b83d5cc90c4d3ae7247b4ee0cf8d8b1ce50e8d6b78e3a9aea
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
@@ -654,6 +654,7 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
+    #   google-cloud-storage-control
 google-auth==2.42.0 \
     --hash=sha256:9bbbeef3442586effb124d1ca032cfb8fb7acd8754ab79b55facd2b8f3ab2802 \
     --hash=sha256:f8f944bcb9723339b0ef58a73840f3c61bc91b69bf7368464906120b55804473
@@ -667,6 +668,7 @@ google-auth==2.42.0 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
+    #   google-cloud-storage-control
 google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
@@ -695,6 +697,10 @@ google-cloud-storage==3.4.1 \
     # via
     #   -r requirements.in
     #   gcsfs
+google-cloud-storage-control==1.8.0 \
+    --hash=sha256:1a3179438f82fc49b2ad3d4674d737164bd6a51e0a9b545a9ec7e7d118b8bee0 \
+    --hash=sha256:e77f1365667e9cf8b6fbb0fc0de725a6045ee4b42220c3e6f863adace6c4033f
+    # via gcsfs
 google-crc32c==1.5.0 \
     --hash=sha256:024894d9d3cfbc5943f8f230e23950cd4906b2fe004c72e29b209420a1e6b05a \
     --hash=sha256:02c65b9817512edc6a4ae7c7e987fea799d2e0ee40c53ec573a692bee24de876 \
@@ -773,12 +779,17 @@ google-resumable-media==2.7.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-googleapis-common-protos==1.58.0 \
+googleapis-common-protos[grpc]==1.58.0 \
     --hash=sha256:c727251ec025947d545184ba17e3578840fc3a24a0516a020479edab660457df \
     --hash=sha256:ca3befcd4580dab6ad49356b46bf165bb68ff4b32389f028f1abd7c10ab9519a
     # via
     #   google-api-core
+    #   grpc-google-iam-v1
     #   grpcio-status
+grpc-google-iam-v1==0.14.3 \
+    --hash=sha256:7a7f697e017a067206a3dfef44e4c634a34d3dee135fe7d7a4613fe3e59217e6 \
+    --hash=sha256:879ac4ef33136c5491a6300e27575a9ec760f6cdf9a2518798c1b8977a5dc389
+    # via google-cloud-storage-control
 grpcio==1.54.3 \
     --hash=sha256:058e313479aac21b20e0768aa4ecd782ae0b96b1eba7e4b615e0575a1c02d0e5 \
     --hash=sha256:06f8ebdcfebee56a816dba7903a7e6b656050e7b4a5c1c4d46ad88e2378bbc1e \
@@ -828,6 +839,9 @@ grpcio==1.54.3 \
     # via
     #   google-api-core
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
+    #   googleapis-common-protos
+    #   grpc-google-iam-v1
     #   grpcio-status
 grpcio-status==1.51.1 \
     --hash=sha256:a52cbdc4b18f325bfc13d319ae7c7ae7a0fee07f3d9a005504d6097896d7a495 \
@@ -1609,6 +1623,7 @@ proto-plus==1.24.0 \
     # via
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
 protobuf==4.21.12 \
     --hash=sha256:1f22ac0ca65bb70a876060d96d914dae09ac98d114294f77584b0d2644fa9c30 \
     --hash=sha256:237216c3326d46808a9f7c26fd1bd4b20015fb6867dc5d263a493ef9a539293b \
@@ -1629,7 +1644,9 @@ protobuf==4.21.12 \
     #   google-api-core
     #   google-cloud-bigquery-storage
     #   google-cloud-datacatalog-lineage
+    #   google-cloud-storage-control
     #   googleapis-common-protos
+    #   grpc-google-iam-v1
     #   grpcio-status
     #   proto-plus
 pyarrow==20.0.0 \
@@ -2174,9 +2191,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.9.4 \
-    --hash=sha256:af73dc68e85f3bebb80ce302a642b9fe3b65f3df0ceb42eb9a27c467c1b678c8 \
-    --hash=sha256:d70f39938bcecaf5543e8750828cbea94ef51853f7d0e174cda1e10543767389
+rich-click==1.9.5 \
+    --hash=sha256:48120531493f1533828da80e13e839d471979ec8d7d0ca7b35f86a1379cc74b6 \
+    --hash=sha256:9b195721a773b1acf0e16ff9ec68cef1e7d237e53471e6e3f7ade462f86c403a
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \
@@ -2491,9 +2508,9 @@ types-ujson==5.10.0.20250822 \
     --hash=sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006 \
     --hash=sha256:3e9e73a6dc62ccc03449d9ac2c580cd1b7a8e4873220db498f7dd056754be080
     # via -r requirements.in
-typing-extensions==4.12.2 \
-    --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
-    --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
+typing-extensions==4.15.0 \
+    --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
+    --hash=sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548
     # via
     #   anyio
     #   beautifulsoup4

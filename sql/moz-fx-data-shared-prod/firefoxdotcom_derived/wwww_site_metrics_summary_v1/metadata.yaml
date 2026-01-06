@@ -24,4 +24,4 @@ bigquery:
     - country
     - browser
 require_column_descriptions: true
-label: bronze
+level: bronze

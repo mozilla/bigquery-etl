@@ -22,4 +22,4 @@ bigquery:
     fields:
     - distribution_id
 require_column_descriptions: true
-label: bronze
+level: bronze

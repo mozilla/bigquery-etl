@@ -20,4 +20,4 @@ bigquery:
   clustering:
     fields:
     - attribution_source
-label: bronze
+level: bronze

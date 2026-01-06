@@ -22,4 +22,4 @@ scheduling:
 bigquery:
   clustering:
     fields: [first_seen_date]
-label: bronze
+level: bronze

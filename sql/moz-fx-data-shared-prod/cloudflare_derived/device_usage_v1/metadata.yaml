@@ -24,4 +24,4 @@ bigquery:
     fields:
     - location
     - user_type
-label: bronze
+level: bronze

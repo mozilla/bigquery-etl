@@ -24,4 +24,4 @@ bigquery:
     fields:
     - os
     - device_type
-label: bronze
+level: bronze

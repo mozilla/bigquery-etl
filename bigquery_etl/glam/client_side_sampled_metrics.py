@@ -4,6 +4,7 @@ Fetches sampled metrics information from BigQuery.
 """
 
 import math
+from textwrap import dedent
 from typing import Iterable, List, Optional
 
 from google.cloud import bigquery
@@ -43,19 +44,21 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         where_clause = _format_metric_types_filter(metric_types)
     else:
         where_clause = ""
-    query = f"""
+    query = dedent(
+        f"""
         WITH latest_metrics AS (
-          SELECT metric_type, metric_name, sample_rate, timestamp 
-          FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}` 
-          {where_clause} 
+          SELECT metric_type, metric_name, sample_rate, timestamp
+          FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
+          {where_clause}
           QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY metric_type, metric_name 
+            PARTITION BY metric_type, metric_name
             ORDER BY timestamp DESC
           ) = 1
-        ) 
-        SELECT metric_type, metric_name, sample_rate 
-        FROM latest_metrics 
-    """
+        )
+        SELECT metric_type, metric_name, sample_rate
+        FROM latest_metrics
+        """
+    )
 
     try:
         rows = _run_bq_query(query)

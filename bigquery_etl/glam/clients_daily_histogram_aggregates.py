@@ -53,8 +53,7 @@ def get_distribution_metrics(
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Metrics that are already sampled
-    sampled_metric_names = get_sampled_metrics("distributions")
-    sampled_metrics = {"timing_distribution": sampled_metric_names}
+    sampled_metrics = get_sampled_metrics(metric_type_set)
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and

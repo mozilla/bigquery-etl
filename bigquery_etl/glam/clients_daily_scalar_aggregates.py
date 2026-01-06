@@ -97,7 +97,7 @@ def get_scalar_metrics(
     assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
-        "labeled": ["labeled_counter", "labeled_boolean"],
+        "labeled": ["labeled_counter"],
         "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {

@@ -375,10 +375,7 @@ render:
 metadata:
   validation:
     skip:
-    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml  # backfill compatibility issue
-  deploy:
-    skip:
-    - sql/moz-fx-data-shared-prod/*_stable
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
 
 generate:
   glean_usage:

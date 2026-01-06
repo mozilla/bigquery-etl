@@ -105,7 +105,7 @@ def get_scalar_metrics(
     assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
-        "labeled": ["labeled_counter", "labeled_boolean"],
+        "labeled": ["labeled_counter"],
         "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {
@@ -114,8 +114,7 @@ def get_scalar_metrics(
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Metrics that are already sampled
-    sampled_metric_names = get_sampled_metrics("counters")
-    sampled_metrics = {"counter": sampled_metric_names}
+    sampled_metrics = get_sampled_metrics(metric_type_set[scalar_type])
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and

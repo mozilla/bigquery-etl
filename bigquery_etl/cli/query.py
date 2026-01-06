@@ -1943,6 +1943,13 @@ def schema():
     is_flag=True,
     default=False,
 )
+@click.option(
+    "--skip_existing",
+    "--skip-existing",
+    help="Skip updating schemas for existing schema files.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
@@ -1955,6 +1962,7 @@ def update(
     is_init,
     use_dataset_schema,
     use_global_schema,
+    skip_existing,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1975,7 +1983,12 @@ def update(
         for query_file in query_files
         if str(query_file)
         not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+        and (not skip_existing or (query_file.parent / SCHEMA_FILE).exists() is False)
     ]
+
+    if len(query_files) == 0:
+        return
+
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     manager = multiprocessing.Manager()
     tmp_tables = manager.dict({})

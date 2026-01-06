@@ -1973,13 +1973,32 @@ def update(
     query_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=["query.sql"]
     )
+
+    # Check if query metadata has ALLOW_FIELD_ADDITION
+    def has_allow_field_addition(query_file):
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            if metadata and metadata.scheduling:
+                arguments = metadata.scheduling.get("arguments", [])
+                return any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                )
+        except Exception:
+            pass
+        return False
+
     # skip updating schemas that are not to be deployed
     query_files = [
         query_file
         for query_file in query_files
         if str(query_file)
         not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
-        and (not skip_existing or (query_file.parent / SCHEMA_FILE).exists() is False)
+        and (
+            not skip_existing
+            or (query_file.parent / SCHEMA_FILE).exists() is False
+            or has_allow_field_addition(query_file)
+        )
     ]
 
     if len(query_files) == 0:

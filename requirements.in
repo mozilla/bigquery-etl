@@ -41,7 +41,7 @@ pytest-pydocstyle==2.4.0
 pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
-rich-click==1.9.4
+rich-click==1.9.5
 smart_open==6.4.0
 sqlglot==27.29.0
 sqlparse==0.5.3

@@ -497,7 +497,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             update_query_schema,
             name=query_files,
             sql_dir=sql_dir,
-            project_id=project_id,
+            project_ids=[project_id],
             respect_dryrun_skip=True,
             is_init=True,
         )
@@ -505,7 +505,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             deploy_query_schema,
             name=query_files,
             sql_dir=sql_dir,
-            project_id=project_id,
+            project_ids=[project_id],
             force=True,
             respect_dryrun_skip=False,
             skip_external_data=True,

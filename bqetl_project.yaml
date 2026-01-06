@@ -291,7 +291,7 @@ dry_run:
   - moz-fx-data-backfill-31
 
 deprecation:
-  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  retain_dataset_roles:  # the following roles are retain permissions on datasets when a dataset table is deprecated
   - roles/bigquery.dataEditor  # operational access
 
 format:
@@ -383,7 +383,7 @@ generate:
     - firefox_fire_tv
     - firefox_reality
     - firefox_reality_pc
-    skip_existing: # Skip automatically updating the following artifacts
+    skip_existing:  # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
@@ -430,11 +430,11 @@ generate:
       - org.mozilla.fenix.nightly
       - org.mozilla.fennec.aurora
       skip_pings:
-      - topsites-impression # access denied
-      - serp-categorization # access denied
-      - background-update # table doesn't exist
-      events_tables: # overwrite event tables
-        pine: # Probe info returns pings that don't have tables, only use events_v1
+      - topsites-impression  # access denied
+      - serp-categorization  # access denied
+      - background-update  # table doesn't exist
+      events_tables:  # overwrite event tables
+        pine:  # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
       manual_refresh_apps:  # apps to use manual materialized view refreshes for on-demand billing
       - firefox_desktop

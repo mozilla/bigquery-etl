@@ -19,3 +19,7 @@ fields:
   mode: NULLABLE
   name: classpath
   type: STRING
+- description:
+  mode: NULLABLE
+  name: created_date
+  type: TIMESTAMP

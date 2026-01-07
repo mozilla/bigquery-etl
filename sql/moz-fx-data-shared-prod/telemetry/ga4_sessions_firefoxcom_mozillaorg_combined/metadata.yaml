@@ -1,8 +1,10 @@
-friendly_name: Ga4 Sessions Firefoxcom Mozillaorg Combined
+friendly_name: GA4 Sessions Combined - Firefox.com & Mozilla.org
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains 1 row per session. Primary key is a 3 part key, ga_session_id + ga_client_id + flag. The flag value indicates the website the session is from, i.e. mozilla.org or firefox.com
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -13,4 +15,4 @@ references:
   - moz-fx-data-shared-prod.firefoxdotcom.ga_sessions
   - moz-fx-data-shared-prod.mozilla_org.ga_sessions
 require_column_descriptions: false
-level: null
+level: bronze

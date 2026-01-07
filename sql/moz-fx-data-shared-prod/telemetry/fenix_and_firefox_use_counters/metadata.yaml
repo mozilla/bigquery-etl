@@ -7,7 +7,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - mozilla-public-data.fenix_derived.fenix_use_counters_v2

@@ -21,7 +21,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:contextual-services
+  - workgroup:contextual-services/data-viewers
 references:
   query.sql:
   - moz-fx-data-experiments.mozanalysis.enrollments_firefox_android_sponsored_shortcuts_experiment

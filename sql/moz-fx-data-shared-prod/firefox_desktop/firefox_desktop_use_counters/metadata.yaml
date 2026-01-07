@@ -6,7 +6,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - mozilla-public-data.firefox_desktop_derived.firefox_desktop_use_counters_v2

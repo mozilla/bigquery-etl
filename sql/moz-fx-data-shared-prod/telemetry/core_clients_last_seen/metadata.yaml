@@ -9,7 +9,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.core_clients_last_seen_v1

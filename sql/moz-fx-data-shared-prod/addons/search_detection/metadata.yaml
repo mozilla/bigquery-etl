@@ -14,7 +14,7 @@ workgroup_access:
   members:
   - workgroup:amo/prod
   - workgroup:dataops-managed/external-fides
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.addons_derived.search_detection_v1

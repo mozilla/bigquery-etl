@@ -7,7 +7,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-bq-fivetran.firefox_app_store_v2_apple_store.apple_store__territory_report

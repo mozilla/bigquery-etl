@@ -6,7 +6,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-fxa-prod.gke_fxa_prod_log.stderr

@@ -33,7 +33,7 @@ workgroup_access:
   members:
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:dataops-managed/external-fides

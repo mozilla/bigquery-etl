@@ -6,7 +6,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:ads
+  - workgroup:ads/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.ads_backend.events

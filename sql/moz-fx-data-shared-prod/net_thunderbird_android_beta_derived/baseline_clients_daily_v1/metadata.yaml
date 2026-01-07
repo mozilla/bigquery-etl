@@ -30,7 +30,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
   - moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_first_seen_v1

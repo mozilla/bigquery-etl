@@ -24,7 +24,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-outerbounds-task-default
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataops-managed/external-outerbounds-task-default

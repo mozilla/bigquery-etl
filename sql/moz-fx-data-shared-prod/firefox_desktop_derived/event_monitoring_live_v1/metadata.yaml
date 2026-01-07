@@ -19,7 +19,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_live.data_leak_blocker_v1

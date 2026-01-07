@@ -21,7 +21,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
   - moz-fx-guardian-prod-bfc7.log_storage.stdout

@@ -10,7 +10,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:contextual-services
+  - workgroup:contextual-services/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.contextual_services_live.topsites_impression_v1

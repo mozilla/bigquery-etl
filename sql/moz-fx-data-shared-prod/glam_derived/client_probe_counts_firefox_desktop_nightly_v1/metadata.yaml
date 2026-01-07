@@ -23,7 +23,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_derived.glam_extract_firefox_nightly_v1

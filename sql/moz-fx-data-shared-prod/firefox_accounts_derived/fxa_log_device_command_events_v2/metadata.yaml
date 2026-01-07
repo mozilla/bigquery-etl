@@ -31,7 +31,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1

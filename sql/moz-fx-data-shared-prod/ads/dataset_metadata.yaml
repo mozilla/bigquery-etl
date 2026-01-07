@@ -7,10 +7,10 @@ labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:ads
+  - workgroup:ads/data-viewers
 default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:ads
+  - workgroup:ads/data-viewers
 syndication: {}

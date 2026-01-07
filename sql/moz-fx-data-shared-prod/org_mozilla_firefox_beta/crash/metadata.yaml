@@ -16,7 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/crash-ping-ingest
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
 references:
   view.sql:

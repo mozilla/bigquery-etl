@@ -9,7 +9,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_first_seen_v2

@@ -12,7 +12,7 @@ workgroup_access:
   members:
   - workgroup:fx-quant-user-research/data-developers
   - workgroup:fx-quant-user-research/data-viewers
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1

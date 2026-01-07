@@ -48,7 +48,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:dataops-managed/external-fides

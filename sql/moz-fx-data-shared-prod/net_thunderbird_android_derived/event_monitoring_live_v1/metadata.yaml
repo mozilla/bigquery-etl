@@ -11,7 +11,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.net_thunderbird_android_live.events_v1

@@ -39,7 +39,7 @@ schema:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   checks.sql:
   - ..baseline_clients_daily_v1

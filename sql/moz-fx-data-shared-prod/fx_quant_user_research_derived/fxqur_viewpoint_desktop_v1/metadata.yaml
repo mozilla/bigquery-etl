@@ -36,7 +36,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:fx-quant-user-research/data-viewers
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:fx-quant-user-research/data-developers

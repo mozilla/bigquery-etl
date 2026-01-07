@@ -10,7 +10,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:mozsoc-ml/service
   - workgroup:pocket/prefect
 references:

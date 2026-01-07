@@ -14,6 +14,6 @@ workgroup_access:
   - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: false
 level: null

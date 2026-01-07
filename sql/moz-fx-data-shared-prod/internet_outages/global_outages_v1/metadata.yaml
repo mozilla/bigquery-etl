@@ -80,7 +80,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:internet-outages/external-data-viewers
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   checks.sql:
   - ..

@@ -8,7 +8,7 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_broken_site_report_derived.broken_site_root_domain_weekly_trend_v1

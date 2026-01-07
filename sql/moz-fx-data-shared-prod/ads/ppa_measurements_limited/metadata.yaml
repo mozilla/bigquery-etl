@@ -20,8 +20,8 @@ labels:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:ads
-  - workgroup:mozilla-confidential
+  - workgroup:ads/data-viewers
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-ads-prod.ppa.measurements

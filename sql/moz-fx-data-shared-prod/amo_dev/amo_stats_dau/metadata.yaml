@@ -7,7 +7,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:amo/nonprod
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.amo_dev.amo_stats_dau_v2

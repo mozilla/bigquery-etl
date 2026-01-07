@@ -1,5 +1,5 @@
 friendly_name: Mobile Search Clients Daily
-description: |
+description: |-
   Daily mobile clients sending pings that have searches, aggregated across unique sets of dimensions and partitioned by day
 owners:
 - akommasani@mozilla.com

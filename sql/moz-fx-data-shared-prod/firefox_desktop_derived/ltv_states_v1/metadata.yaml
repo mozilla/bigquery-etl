@@ -22,3 +22,4 @@ bigquery:
     - first_seen_date
     - first_reported_country
 require_column_descriptions: true
+level: bronze

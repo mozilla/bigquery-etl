@@ -20,3 +20,4 @@ bigquery:
     fields:
     - isp_name
 require_column_descriptions: true
+level: bronze

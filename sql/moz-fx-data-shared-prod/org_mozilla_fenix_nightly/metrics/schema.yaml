@@ -8875,6 +8875,20 @@ fields:
       description: 'Counts whether an HTTP3 connections exited slow start.
 
         '
+    - name: networking_http_3_congestion_event_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The type of signal that caused a congestion event in Firefox''s
+        QUIC stack.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

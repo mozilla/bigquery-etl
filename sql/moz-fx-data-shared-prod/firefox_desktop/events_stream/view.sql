@@ -146,6 +146,7 @@ SELECT
       LAX_INT64(event_extra.comments_count) AS `comments_count`,
       LAX_INT64(event_extra.containers) AS `containers`,
       LAX_INT64(event_extra.cores) AS `cores`,
+      LAX_INT64(event_extra.count) AS `count`,
       LAX_INT64(event_extra.cpu_milliseconds) AS `cpu_milliseconds`,
       LAX_INT64(event_extra.cpu_utilization) AS `cpu_utilization`,
       LAX_INT64(event_extra.current) AS `current`,

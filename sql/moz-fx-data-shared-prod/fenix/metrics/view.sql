@@ -1078,7 +1078,8 @@ SELECT
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
-      metrics.labeled_counter.networking_http_3_slow_start_exited
+      metrics.labeled_counter.networking_http_3_slow_start_exited,
+      metrics.labeled_counter.networking_http_3_congestion_event_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3123,7 +3124,8 @@ SELECT
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
-      metrics.labeled_counter.networking_http_3_slow_start_exited
+      metrics.labeled_counter.networking_http_3_slow_start_exited,
+      metrics.labeled_counter.networking_http_3_congestion_event_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5188,7 +5190,8 @@ SELECT
       metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
-      metrics.labeled_counter.networking_http_3_slow_start_exited
+      metrics.labeled_counter.networking_http_3_slow_start_exited,
+      metrics.labeled_counter.networking_http_3_congestion_event_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

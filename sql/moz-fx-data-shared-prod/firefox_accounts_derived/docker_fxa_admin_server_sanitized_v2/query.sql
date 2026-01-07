@@ -15,7 +15,7 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-data-shared-prod.firefox_accounts_gke_logs_syndicate.stdout`
+  `moz-fx-fxa-prod.gke_fxa_prod_log.stdout`
 WHERE
   DATE(`timestamp`) = @submission_date
   AND (

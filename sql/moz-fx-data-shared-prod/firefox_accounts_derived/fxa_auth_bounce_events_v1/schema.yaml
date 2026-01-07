@@ -1,0 +1,320 @@
+fields:
+- name: logName
+  type: STRING
+  mode: NULLABLE
+- name: resource
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: labels
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: instance_id
+      type: STRING
+      mode: NULLABLE
+    - name: zone
+      type: STRING
+      mode: NULLABLE
+    - name: project_id
+      type: STRING
+      mode: NULLABLE
+- name: textPayload
+  type: STRING
+  mode: NULLABLE
+- name: jsonPayload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: timestamp
+    type: FLOAT
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: fields
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: domain
+      type: STRING
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: template
+      type: STRING
+      mode: NULLABLE
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
+    - name: templateversion
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: processingtimemillis
+      type: FLOAT
+      mode: NULLABLE
+    - name: event
+      type: STRING
+      mode: NULLABLE
+    - name: time
+      type: FLOAT
+      mode: NULLABLE
+    - name: flow_time
+      type: FLOAT
+      mode: NULLABLE
+    - name: flowid
+      type: STRING
+      mode: NULLABLE
+    - name: templatename
+      type: STRING
+      mode: NULLABLE
+    - name: flowbegintime
+      type: STRING
+      mode: NULLABLE
+    - name: currenttime
+      type: FLOAT
+      mode: NULLABLE
+    - name: event_type
+      type: STRING
+      mode: NULLABLE
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+    - name: user_properties
+      type: STRING
+      mode: NULLABLE
+    - name: event_properties
+      type: STRING
+      mode: NULLABLE
+    - name: op
+      type: STRING
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    - name: language
+      type: STRING
+      mode: NULLABLE
+    - name: bounced
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: action
+      type: STRING
+      mode: NULLABLE
+    - name: bouncetype
+      type: STRING
+      mode: NULLABLE
+    - name: bounce
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: status
+      type: STRING
+      mode: NULLABLE
+    - name: bouncesubtype
+      type: STRING
+      mode: NULLABLE
+    - name: lang
+      type: STRING
+      mode: NULLABLE
+    - name: diagnosticcode
+      type: STRING
+      mode: NULLABLE
+    - name: uid
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: complaint
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: complaintfeedbacktype
+      type: STRING
+      mode: NULLABLE
+    - name: complaintuseragent
+      type: STRING
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: amplitudeevent
+      type: STRING
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: msg
+      type: STRING
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: port
+      type: FLOAT
+      mode: NULLABLE
+    - name: device_id
+      type: STRING
+      mode: NULLABLE
+  - name: severity
+    type: FLOAT
+    mode: NULLABLE
+  - name: logger
+    type: STRING
+    mode: NULLABLE
+  - name: envversion
+    type: STRING
+    mode: NULLABLE
+  - name: pid
+    type: FLOAT
+    mode: NULLABLE
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: receiveTimestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: severity
+  type: STRING
+  mode: NULLABLE
+- name: insertId
+  type: STRING
+  mode: NULLABLE
+- name: httpRequest
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: requestMethod
+    type: STRING
+    mode: NULLABLE
+  - name: requestUrl
+    type: STRING
+    mode: NULLABLE
+  - name: requestSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: status
+    type: INTEGER
+    mode: NULLABLE
+  - name: responseSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: userAgent
+    type: STRING
+    mode: NULLABLE
+  - name: remoteIp
+    type: STRING
+    mode: NULLABLE
+  - name: serverIp
+    type: STRING
+    mode: NULLABLE
+  - name: referer
+    type: STRING
+    mode: NULLABLE
+  - name: cacheLookup
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheHit
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheValidatedWithOriginServer
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheFillBytes
+    type: INTEGER
+    mode: NULLABLE
+  - name: protocol
+    type: STRING
+    mode: NULLABLE
+- name: labels
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: env
+    type: STRING
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: stack
+    type: STRING
+    mode: NULLABLE
+  - name: compute_googleapis_com_resource_name
+    type: STRING
+    mode: NULLABLE
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: pro
+    type: STRING
+    mode: NULLABLE
+- name: operation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+  - name: producer
+    type: STRING
+    mode: NULLABLE
+  - name: first
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: last
+    type: BOOLEAN
+    mode: NULLABLE
+- name: trace
+  type: STRING
+  mode: NULLABLE
+- name: spanId
+  type: STRING
+  mode: NULLABLE
+- name: traceSampled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: sourceLocation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: file
+    type: STRING
+    mode: NULLABLE
+  - name: line
+    type: INTEGER
+    mode: NULLABLE
+  - name: function
+    type: STRING
+    mode: NULLABLE
+- name: split
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: uid
+    type: STRING
+    mode: NULLABLE
+  - name: index
+    type: INTEGER
+    mode: NULLABLE
+  - name: totalSplits
+    type: INTEGER
+    mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: DO NOT USE! This column was added accidentally and isn't populated.

@@ -13,7 +13,7 @@ SELECT
   jsonPayload.fields.utm_medium,
   jsonPayload.fields.utm_term
 FROM
-  `moz-fx-data-shared-prod.firefox_accounts_prod_logs_syndicate.docker_fxa_auth`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
 WHERE
   -- We exclude event types that are Amplitude events;
   -- these are already captured in the fxa_auth_events_v1 table.

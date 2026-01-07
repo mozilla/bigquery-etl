@@ -8,7 +8,7 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-data-shared-prod.firefox_accounts_gke_logs_syndicate.stderr`
+  `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
 WHERE
   (
     DATE(_PARTITIONTIME)

@@ -4,10 +4,12 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
-  incremental: false
   table_type: aggregate
-  shredder_mitigation: false
+  dag: bqetl_fivetran_apple_ads
+  owner1: kik
 scheduling:
   dag_name: bqetl_fivetran_apple_ads
   date_partition_parameter: null
   depends_on_past: false
+require_column_descriptions: false
+level: null

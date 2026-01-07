@@ -35,6 +35,7 @@ from ..cli.utils import (
     billing_project_option,
     is_authenticated,
     is_valid_project,
+    multi_project_id_option,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
@@ -1530,7 +1531,9 @@ def _initialize_in_parallel(
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option()
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
+)
 @billing_project_option(default="moz-fx-data-backfill-slots")
 @click.option(
     "--dry_run/--no_dry_run",
@@ -1563,7 +1566,7 @@ def initialize(
     ctx,
     name,
     sql_dir,
-    project_id,
+    project_ids,
     billing_project,
     dry_run,
     parallelism,
@@ -1584,9 +1587,11 @@ def initialize(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
             r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
-        query_files = paths_matching_name_pattern(
-            name, sql_dir, project_id, file_regex=file_regex
-        )
+        query_files = []
+        for project_id in project_ids:
+            query_files += paths_matching_name_pattern(
+                name, sql_dir, project_id, file_regex=file_regex
+            )
 
     if not query_files:
         click.echo(
@@ -1896,12 +1901,8 @@ def schema():
 )
 @click.argument("name", nargs=-1)
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
-    callback=is_valid_project,
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @click.option(
     "--update-downstream",
@@ -1942,10 +1943,17 @@ def schema():
     is_flag=True,
     default=False,
 )
+@click.option(
+    "--skip_existing",
+    "--skip-existing",
+    help="Skip updating schemas for existing schema files.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
-    project_id,
+    project_ids,
     update_downstream,
     tmp_dataset,
     use_cloud_function,
@@ -1954,6 +1962,7 @@ def update(
     is_init,
     use_dataset_schema,
     use_global_schema,
+    skip_existing,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1962,16 +1971,43 @@ def update(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    query_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, files=["query.sql"]
-    )
+
+    query_files = []
+    for project_id in project_ids:
+        query_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, files=["query.sql"]
+        )
+
+    # Check if query metadata has ALLOW_FIELD_ADDITION
+    def has_allow_field_addition(query_file):
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            if metadata and metadata.scheduling:
+                arguments = metadata.scheduling.get("arguments", [])
+                return any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                )
+        except Exception:
+            pass
+        return False
+
     # skip updating schemas that are not to be deployed
     query_files = [
         query_file
         for query_file in query_files
         if str(query_file)
         not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+        and (
+            not skip_existing
+            or (query_file.parent / SCHEMA_FILE).exists() is False
+            or has_allow_field_addition(query_file)
+        )
     ]
+
+    if len(query_files) == 0:
+        return
+
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     manager = multiprocessing.Manager()
     tmp_tables = manager.dict({})
@@ -1980,6 +2016,8 @@ def update(
     query_file_graph = {}
     for query_file in query_files:
         query_file_graph[query_file] = []
+        project_id = extract_from_query_path(query_file)[0]
+
         try:
             metadata = Metadata.of_query_file(str(query_file))
             if metadata and metadata.schema and metadata.schema.derived_from:
@@ -2007,7 +2045,6 @@ def update(
         partial(
             _update_query_schema_with_downstream,
             sql_dir,
-            project_id,
             tmp_dataset,
             dependency_graph,
             tmp_tables,
@@ -2126,7 +2163,6 @@ def _update_query_schema_with_base_schemas(
 
 def _update_query_schema_with_downstream(
     sql_dir,
-    project_id,
     tmp_dataset,
     dependency_graph,
     tmp_tables={},
@@ -2142,10 +2178,12 @@ def _update_query_schema_with_downstream(
     use_global_schema=False,
 ):
     try:
+        project, dataset, table = extract_from_query_path(query_file)
+
         changed = _update_query_schema(
             query_file,
             sql_dir,
-            project_id,
+            project,
             tmp_dataset,
             tmp_tables,
             use_cloud_function,
@@ -2168,7 +2206,6 @@ def _update_query_schema_with_downstream(
                     )
                     sys.exit(1)
 
-                project, dataset, table = extract_from_query_path(query_file)
                 identifier = f"{project}.{dataset}.{table}"
                 tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
 
@@ -2183,7 +2220,7 @@ def _update_query_schema_with_downstream(
                     p
                     for k, refs in dependency_graph.items()
                     for p in paths_matching_name_pattern(
-                        k, sql_dir, project_id, files=("query.sql",)
+                        k, sql_dir, project, files=("query.sql",)
                     )
                     if identifier in refs
                 ]
@@ -2300,9 +2337,6 @@ def _update_query_schema(
         query_schema = Schema.from_query_file(
             query_file_path,
             content=sql_content,
-            project=project_name,
-            dataset=dataset_name,
-            table=table_name,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
@@ -2428,12 +2462,8 @@ def _update_query_schema(
 )
 @click.argument("name", nargs=-1)
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
-    callback=is_valid_project,
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @click.option(
     "--force/--noforce",
@@ -2473,7 +2503,7 @@ def deploy(
     ctx,
     name,
     sql_dir,
-    project_id,
+    project_ids,
     force,
     use_cloud_function,
     respect_dryrun_skip,
@@ -2490,13 +2520,16 @@ def deploy(
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, ["query.*", "script.sql"]
-    )
+    query_files = []
+    metadata_files = []
+    for project_id in project_ids:
+        query_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, ["query.*", "script.sql"]
+        )
 
-    metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, ["metadata.yaml"]
-    )
+        metadata_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, ["metadata.yaml"]
+        )
 
     if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
@@ -2505,12 +2538,16 @@ def deploy(
             output_dir=ctx.obj["TMP_DIR"],
             ignore=["derived_view_schemas", "stable_views"],
         )
-        query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
-        )
-        metadata_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
-        )
+
+        query_files = []
+        metadata_files = []
+        for project_id in project_ids:
+            query_files = paths_matching_name_pattern(
+                name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
+            )
+            metadata_files = paths_matching_name_pattern(
+                name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
+            )
         if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 

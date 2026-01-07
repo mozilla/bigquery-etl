@@ -1,0 +1,8 @@
+friendly_name: FxA Users Services First Seen
+description: 'Usage aggregations describing when an FxA user
+
+  was seen for the first time using an FxA service.
+
+  '
+owners:
+- kik@mozilla.com

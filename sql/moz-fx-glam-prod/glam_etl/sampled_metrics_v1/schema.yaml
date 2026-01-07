@@ -1,0 +1,13 @@
+fields:
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+- name: metric_name
+  type: STRING
+  mode: NULLABLE
+- name: sample_rate
+  type: FLOAT64
+  mode: NULLABLE

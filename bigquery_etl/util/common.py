@@ -161,9 +161,9 @@ def render(
     return rendered
 
 
-def get_table_dir(output_dir, full_table_id):
+def get_table_dir(output_dir, full_table_id, parts=2):
     """Return the output directory for a given table id."""
-    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
 
 
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):

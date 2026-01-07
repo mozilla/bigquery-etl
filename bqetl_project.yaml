@@ -3,7 +3,7 @@ default:
   sql_dir: sql/
   sql_generators_dir: sql_generators/
   test_project: bigquery-etl-integration-test
-  non_user_facing_dataset_suffixes: # suffixes of datasets with non-user-facing views
+  non_user_facing_dataset_suffixes:  # suffixes of datasets with non-user-facing views
   - _derived
   - _external
   - _bi
@@ -12,7 +12,7 @@ default:
   - glam_etl
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill
-  additional_projects: # additional valid projects managed outside of bigquery-etl
+  additional_projects:  # additional valid projects managed outside of bigquery-etl
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7
@@ -27,17 +27,42 @@ monitoring:
   - 508
   - 509
   stable_tables_monitoring:
+    # Firefox Desktop
     firefox_desktop_stable:
     - baseline_v1
-    org_mozilla_firefox_stable:
+    telemetry_stable:
+    - main_v5
+    # Firefox IOS
+    org_mozilla_ios_fennec_stable:
+    - baseline_v1
+    org_mozilla_ios_firefoxbeta_stable:
     - baseline_v1
     org_mozilla_ios_firefox_stable:
     - baseline_v1
-    telemetry_stable:
-    - main_v4
+    # Focus Android
+    org_mozilla_focus_nightly_stable:
+    - baseline_v1
+    org_mozilla_focus_beta_stable:
+    - baseline_v1
+    org_mozilla_focus_stable:
+    - baseline_v1
+    # Focus IOS
+    org_mozilla_ios_focus_stable:
+    - baseline_v1
+    # Firefox (Fenix) Android
+    org_mozilla_fenix_stable:
+    - baseline_v1
+    org_mozilla_fenix_nightly_stable:
+    - baseline_v1
+    org_mozilla_fennec_aurora_stable:
+    - baseline_v1
+    org_mozilla_firefox_beta_stable:
+    - baseline_v1
+    org_mozilla_firefox_stable:
+    - baseline_v1
 
 dry_run:
-  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
@@ -266,7 +291,7 @@ dry_run:
   - moz-fx-data-backfill-31
 
 deprecation:
-  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  retain_dataset_roles:  # the following roles are retain permissions on datasets when a dataset table is deprecated
   - roles/bigquery.dataEditor  # operational access
 
 format:
@@ -351,9 +376,6 @@ metadata:
   validation:
     skip:
     - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
-  deploy:
-    skip:
-    - sql/moz-fx-data-shared-prod/*_stable
 
 generate:
   glean_usage:
@@ -361,7 +383,7 @@ generate:
     - firefox_fire_tv
     - firefox_reality
     - firefox_reality_pc
-    skip_existing: # Skip automatically updating the following artifacts
+    skip_existing:  # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
@@ -408,11 +430,11 @@ generate:
       - org.mozilla.fenix.nightly
       - org.mozilla.fennec.aurora
       skip_pings:
-      - topsites-impression # access denied
-      - serp-categorization # access denied
-      - background-update # table doesn't exist
-      events_tables: # overwrite event tables
-        pine: # Probe info returns pings that don't have tables, only use events_v1
+      - topsites-impression  # access denied
+      - serp-categorization  # access denied
+      - background-update  # table doesn't exist
+      events_tables:  # overwrite event tables
+        pine:  # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
       manual_refresh_apps:  # apps to use manual materialized view refreshes for on-demand billing
       - firefox_desktop
@@ -423,6 +445,11 @@ generate:
       - focus_android
       - fenix
       - firefox_desktop
+    events_first_seen:
+      include_apps:
+      - firefox_desktop
+      # - firefox_ios
+      # - fenix
     metrics_clients_last_seen:
       skip_apps:
       - accounts_cirrus
@@ -599,6 +626,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/fenix_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

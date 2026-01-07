@@ -62,4 +62,4 @@ responses==0.25.8
 # Pin setuptools to v80.8.0 for now to avoid annoying "pkg_resources is deprecated as an API"
 # warnings from Google code (https://github.com/googleapis/google-cloud-python/issues/13974).
 # We can remove this pin when that issue is resolved (or maybe once setuptools v81 is released).
-setuptools<80.9.0
+setuptools<80.10.0

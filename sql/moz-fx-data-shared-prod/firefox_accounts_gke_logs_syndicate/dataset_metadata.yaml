@@ -1,0 +1,18 @@
+friendly_name: Firefox Accounts GKE Logs Syndicate
+description: |-
+  Syndicated views with FxA logs from moz-fx-fxa-prod.gke_fxa_prod_log
+dataset_base_acl: syndicate
+user_facing: false
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-fxa-prod"
+    syndicated_dataset: "gke_fxa_prod_log"
+    syndicated_tables:
+      - stdout
+      - stderr
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

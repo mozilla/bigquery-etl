@@ -20,7 +20,7 @@ SELECT
     ) AS jsonPayload
   ),
 FROM
-  `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
+  `moz-fx-data-shared-prod.firefox_accounts_gke_logs_syndicate.stderr`
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   -- We might see events from fxa-auth-server, fxa-content-server, or fxa-payments-server here.

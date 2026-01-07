@@ -1,0 +1,18 @@
+friendly_name: Google Ads Syndicate
+description: |-
+  Syndicated tables from Google Ads through Fivetran.
+dataset_base_acl: syndicate
+user_facing: false
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-bq-fivetran"
+    syndicated_dataset: "ads_google_mmc_google_ads"
+    syndicated_tables:
+      - google_ads__ad_group_report
+      - google_ads__campaign_report
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

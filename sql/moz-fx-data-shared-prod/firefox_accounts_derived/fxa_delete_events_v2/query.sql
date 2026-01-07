@@ -21,7 +21,7 @@ SELECT
   ) AS hmac_user_id,
   jsonPayload.fields.uid AS user_id_unhashed,
 FROM
-  `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
+  `moz-fx-data-shared-prod.firefox_accounts_gke_logs_syndicate.stderr`
 WHERE
   (
     DATE(_PARTITIONTIME)

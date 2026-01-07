@@ -44,7 +44,7 @@ SELECT
   jsonPayload.fields.senderOS AS sender_os,
   jsonPayload.fields.senderType AS sender_type,
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
+  `moz-fx-data-shared-prod.firefox_accounts_prod_logs_syndicate.docker_fxa_auth`
 WHERE
   jsonPayload.type LIKE 'device.command.%'
   -- Device command metrics were first deployed and stable on 2020-07-08;

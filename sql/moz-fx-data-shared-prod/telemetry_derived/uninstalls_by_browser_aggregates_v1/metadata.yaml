@@ -20,3 +20,4 @@ bigquery:
   clustering:
     fields:
     - user_agent
+level: bronze

@@ -1,0 +1,5 @@
+friendly_name: Onboarding Hourly
+description: |-
+  Contains CFR specific data extracted from messaging_system_v1 at an hourly cadence
+owners:
+- phlee@mozilla.com

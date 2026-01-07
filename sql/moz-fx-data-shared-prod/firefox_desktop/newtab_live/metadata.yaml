@@ -11,5 +11,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:pocket/prefect
-  - workgroup:mozsocial/prefect
   - workgroup:mozsoc-ml/service

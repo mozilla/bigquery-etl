@@ -1,0 +1,6 @@
+friendly_name: Active Hubs Subscription IDs
+description: 'IDs of active Hubs subscriptions by date.
+
+  '
+owners:
+- srose@mozilla.com

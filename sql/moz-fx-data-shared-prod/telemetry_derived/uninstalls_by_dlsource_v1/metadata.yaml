@@ -22,3 +22,4 @@ bigquery:
     fields:
     - attribution_dlsource
 require_column_descriptions: true
+level: bronze

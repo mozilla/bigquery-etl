@@ -1,5 +1,6 @@
 """bigquery-etl CLI metadata command."""
 
+import re
 from datetime import datetime
 from functools import partial
 from multiprocessing.pool import Pool
@@ -227,15 +228,38 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
 )
 @sql_dir_option
 @parallelism_option()
+@click.option(
+    "--skip-stable-datasets",
+    default=True,
+    type=bool,
+    help="Skip metadata publishing for tables in *_stable datasets which are managed by infra deploys.",
+)
 def publish(
-    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+    name: str,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    parallelism: int,
+    skip_stable_datasets: bool,
 ) -> None:
     """Publish Bigquery metadata."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
-    if parallelism > 0:
+    # https://mozilla-hub.atlassian.net/browse/SVCSE-4108
+    if skip_stable_datasets:
+        table_metadata_files = [
+            metadata_file
+            for metadata_file in table_metadata_files
+            if re.fullmatch(
+                r".+/moz-fx-data-shared-prod/[a-z0-9_]+_stable/[a-z0-9_]+/metadata.yaml$",
+                str(metadata_file),
+                flags=re.IGNORECASE,
+            )
+            is None
+        ]
+
+    if parallelism > 1:
         credentials = get_credentials()
 
         with Pool(parallelism) as pool:

@@ -16,3 +16,4 @@ bigquery:
   clustering:
     fields:
     - client_id
+level: bronze

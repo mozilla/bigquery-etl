@@ -9,11 +9,12 @@ from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
-from typing import Dict, List
+from typing import List
 
-import requests
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
+
+from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 
 from ..util.bigquery_id import qualified_table_id
 
@@ -21,7 +22,6 @@ MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
 GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
-GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 @dataclass(frozen=True)
@@ -94,6 +94,7 @@ DeleteIndex = dict[DeleteTarget, DeleteSource | tuple[DeleteSource, ...]]
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
 GLEAN_USAGE_PROFILE_ID = "metrics.uuid.usage_profile_id"
+USAGE_PROFILE_ID = "usage_profile_id"
 IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
@@ -113,6 +114,7 @@ MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
 MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
 NIMBUS_USER_ID = "metrics.string.nimbus_nimbus_user_id"
 # Cirrus events only contain one unique nimbus user id per ping
+# TODO: CIRRUS_EVENTS_NIMBUS_USER_ID doesn't work: https://mozilla-hub.atlassian.net/browse/DENG-10394
 CIRRUS_EVENTS_NIMBUS_USER_ID = '(SELECT value FROM UNNEST(events), UNNEST(extra) WHERE key = "nimbus_user_id" LIMIT 1)'
 
 DESKTOP_SRC = DeleteSource(
@@ -150,6 +152,9 @@ FXA_UNHASHED_SRC = DeleteSource(
 )
 FXA_FRONTEND_GLEAN_SRC = DeleteSource(
     table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
+SUBPLAT_CIRRUS_SRC = DeleteSource(
+    table="subscription_platform_backend_cirrus.delete_events", field="nimbus_user_id"
 )
 EXPERIMENTER_BACKEND_SRC = DeleteSource(
     table="experimenter_backend_stable.data_collection_opt_out_v1",
@@ -211,6 +216,7 @@ LEGACY_MOBILE_IDS = tuple(CLIENT_ID for _ in LEGACY_MOBILE_SOURCES)
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
+usage_profile_id_target = partial(DeleteTarget, field=USAGE_PROFILE_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
@@ -364,6 +370,10 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
+        table="ltv_derived.fenix_client_ltv_v1",
+        field=(),
+    ): (),  # Does not need to be shredded https://mozilla-hub.atlassian.net/browse/DENG-6169
+    DeleteTarget(
         table="ltv_derived.fenix_new_profile_ltv_v1",
         field=(CLIENT_ID),
     ): (DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)),
@@ -453,6 +463,7 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
     ),
+    client_id_target(table="telemetry_derived.crashes_daily_v1"): DESKTOP_SRC,
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)
@@ -695,14 +706,31 @@ DELETE_TARGETS: DeleteIndex = {
         field=NIMBUS_USER_ID,
     ): EXPERIMENTER_BACKEND_SRC,
     # Cirrus tables use sources from the upstream glean app
-    DeleteTarget(
-        table="experimenter_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): EXPERIMENTER_BACKEND_SRC,
-    DeleteTarget(
-        table="experimenter_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): EXPERIMENTER_BACKEND_SRC,
+    # TODO: CIRRUS_EVENTS_NIMBUS_USER_ID doesn't work: https://mozilla-hub.atlassian.net/browse/DENG-10394
+    # DeleteTarget(
+    #     table="experimenter_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): EXPERIMENTER_BACKEND_SRC,
+    # DeleteTarget(
+    #     table="experimenter_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): EXPERIMENTER_BACKEND_SRC,
+    # DeleteTarget(
+    #     table="subscription_platform_backend_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): SUBPLAT_CIRRUS_SRC,
+    # DeleteTarget(
+    #     table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): SUBPLAT_CIRRUS_SRC,
+    # DeleteTarget(
+    #     table="accounts_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): FXA_UNHASHED_SRC,
+    # DeleteTarget(
+    #     table="accounts_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): FXA_UNHASHED_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -789,7 +817,7 @@ def find_glean_targets(
 
     glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID)
 
-    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
 
     # create mapping of dataset -> (tables containing associated deletion requests)
     # construct values as tuples because that is what they must be in the return type
@@ -882,7 +910,7 @@ def find_glean_targets(
                     metric_type_field.name == "uuid"
                     and any(
                         [
-                            metric_field.name == "usage_profile_id"
+                            metric_field.name == USAGE_PROFILE_ID
                             for metric_field in metric_type_field.fields
                         ]
                     )
@@ -894,6 +922,12 @@ def find_glean_targets(
                     qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
                 )
                 usage_reporting_sources[table.dataset_id] += (source,)
+                usage_reporting_sources[
+                    table.dataset_id.replace("stable", "derived")
+                ] += (source,)
+                usage_reporting_sources[
+                    channel_to_app_name[table.dataset_id.replace("_stable", "")]
+                ] += (source,)
 
     return {
         **{
@@ -955,28 +989,20 @@ def find_glean_targets(
             if table.table_id == "usage_reporting_v1"
             and table.dataset_id in usage_reporting_sources
         },
-    }
-
-
-def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
-    """Return a dict where key is the channel app id and the value is the shared app name.
-
-    e.g. {
-        "org_mozilla_firefox": "fenix",
-        "org_mozilla_firefox_beta": "fenix",
-        "org_mozilla_ios_firefox": "firefox_ios",
-        "org_mozilla_ios_firefoxbeta": "firefox_ios",
-    }
-    """
-    response = requests.get(GLEAN_APP_LISTINGS_URL)
-    response.raise_for_status()
-
-    app_listings = response.json()
-
-    return {
-        app["bq_dataset_family"]: app["app_name"]
-        for app in app_listings
-        if "bq_dataset_family" in app and "app_name" in app
+        **{
+            # usage_reporting derived tables that contain usage_profile_id
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(USAGE_PROFILE_ID,)
+                * len(usage_reporting_sources[table.dataset_id]),
+            ): usage_reporting_sources[table.dataset_id]
+            for table in glean_derived_tables
+            if any(field.name == USAGE_PROFILE_ID for field in table.schema)
+            and all(field.name != CLIENT_ID for field in table.schema)
+            and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in skipped_tables
+        },
     }
 
 

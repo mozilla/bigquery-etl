@@ -42,3 +42,4 @@ bigquery:
     - normalized_channel
     - sample_id
 require_column_descriptions: false
+level: bronze

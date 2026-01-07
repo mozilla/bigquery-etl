@@ -62,9 +62,11 @@ function write_clients_daily_aggregates {
     local tables;
     # Pings to exclude
     local excluded_tables=(
-        "use_counters.*"            # Use counters bring too many rows to process and GLAM doesn't support them.
-        "^migration$"               # Migration tables are not supported by GLAM and don't have `is_bot_generated` flag.
-        "^client_deduplication$"    # Client deduplication tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "use_counters.*"             # Use counters bring too many rows to process and GLAM doesn't support them.
+        "^migration$"                # Migration tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^client_deduplication$"     # Client deduplication tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^events$"                   # Not supported by GLAM.
+        "^nimbus-targeting-context$" # Not supported by GLAM.
     )
     local exclude_pattern=$(IFS='|'; echo "${excluded_tables[*]}")
 

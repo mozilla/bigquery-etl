@@ -18,7 +18,7 @@ SELECT
     )
   ) AS user_id
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
+  `moz-fx-data-shared-prod.firefox_accounts_prod_logs_syndicate.docker_fxa_auth`
   {% if not is_init() %}
     WHERE
       DATE(`timestamp`) = @submission_date

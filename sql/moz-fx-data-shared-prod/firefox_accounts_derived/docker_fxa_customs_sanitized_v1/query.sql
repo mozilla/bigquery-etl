@@ -8,7 +8,7 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_customs`
+  `moz-fx-data-shared-prod.firefox_accounts_prod_logs_syndicate.docker_fxa_customs`
 WHERE
   {% if is_init() %}
     DATE(`timestamp`) = "2020-01-01"

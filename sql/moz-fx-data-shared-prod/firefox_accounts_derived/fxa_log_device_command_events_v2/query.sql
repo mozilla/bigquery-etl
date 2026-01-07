@@ -43,7 +43,7 @@ SELECT
   jsonPayload.fields.senderOS AS sender_os,
   jsonPayload.fields.senderType AS sender_type,
 FROM
-  `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
+  `moz-fx-data-shared-prod.firefox_accounts_gke_logs_syndicate.stderr`
 WHERE
   jsonPayload.type LIKE 'device.command.%'
   AND DATE(`timestamp`) = @submission_date

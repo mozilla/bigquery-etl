@@ -2164,7 +2164,7 @@ bqetl_client_attributes:
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2025-02-20'

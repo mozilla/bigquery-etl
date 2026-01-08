@@ -6,7 +6,7 @@ WITH stg_section_items AS (
     TIMESTAMP_SECONDS(contexts_com_pocket_section_1[0].created_at) AS created_at,
     TIMESTAMP_SECONDS(contexts_com_pocket_section_1[0].updated_at) AS updated_at,
     contexts_com_pocket_section_1[0].deactivate_source AS source,
-    contexts_com_pocket_section_1[0].deactivated_at AS deactivated_at,
+    TIMESTAMP_SECONDS(contexts_com_pocket_section_1[0].deactivated_at) AS deactivated_at,
     contexts_com_pocket_section_1[0].disabled AS disabled,
     contexts_com_pocket_section_1[0].description AS description,
     contexts_com_pocket_section_1[0].scheduled_surface_id AS scheduled_surface_id,

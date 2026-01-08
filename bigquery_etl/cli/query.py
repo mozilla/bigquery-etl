@@ -1899,6 +1899,10 @@ def schema():
 
     # Update schema including downstream dependencies (requires GCP)
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+
+    # Skip updating schemas for queries that already have schema.yaml files
+    # (except those with schema.allow_field_addition=true in metadata.yaml)
+    ./bqetl query schema update '*' --skip-existing
     """,
 )
 @click.argument("name", nargs=-1)
@@ -1948,7 +1952,8 @@ def schema():
 @click.option(
     "--skip_existing",
     "--skip-existing",
-    help="Skip updating schemas for existing schema files.",
+    help="Skip updating schemas for existing schema files. "
+    "Queries with schema.allow_field_addition=true in metadata.yaml will still be updated.",
     is_flag=True,
     default=False,
 )
@@ -1980,16 +1985,21 @@ def update(
             name, sql_dir, project_id, files=["query.sql"]
         )
 
-    # Check if query metadata has ALLOW_FIELD_ADDITION
+    # Check if query metadata has allow_field_addition flag or ALLOW_FIELD_ADDITION argument
     def has_allow_field_addition(query_file):
         try:
             metadata = Metadata.of_query_file(str(query_file))
-            if metadata and metadata.scheduling:
-                arguments = metadata.scheduling.get("arguments", [])
-                return any(
-                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
-                    for arg in arguments
-                )
+            if metadata:
+                # Check schema metadata field
+                if metadata.schema and metadata.schema.allow_field_addition:
+                    return True
+                # Check scheduling arguments
+                if metadata.scheduling:
+                    arguments = metadata.scheduling.get("arguments", [])
+                    return any(
+                        "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                        for arg in arguments
+                    )
         except Exception:
             pass
         return False

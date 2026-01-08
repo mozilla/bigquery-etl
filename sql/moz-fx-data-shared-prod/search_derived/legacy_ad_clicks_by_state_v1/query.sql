@@ -5,14 +5,18 @@ WITH ad_click_clients AS (
   SELECT
     submission_date,
     client_id,
-    normalized_engine,
+    `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
     ad_click
   FROM
-    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
   WHERE
     submission_date = @submission_date
     AND country = 'US'
-    AND normalized_engine IN ('Google', 'Bing', 'DuckDuckGo')
+    AND `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) IN (
+      'Bing',
+      'DuckDuckGo',
+      'Google'
+    )
 ),
 ad_click_states AS (
   SELECT
@@ -20,7 +24,7 @@ ad_click_states AS (
     client_id,
     geo_subdivision1 AS `state`
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_daily`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`
   WHERE
     submission_date = @submission_date
     AND country = 'US'

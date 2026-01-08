@@ -46,7 +46,7 @@ log_min_max AS (
     valid_clients_scalar_aggregates
     CROSS JOIN UNNEST(scalar_aggregates)
   WHERE
-    metric_type <> "boolean"
+    metric_type NOT IN ({{ boolean_metric_types }})
   GROUP BY
     metric,
     key

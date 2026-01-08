@@ -13,6 +13,8 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
+schema:
+  allow_field_addition: true
 bigquery:
   clustering:
     fields: ["date"]

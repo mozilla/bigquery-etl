@@ -1,3 +1,5 @@
+# TODO: add field descriptions.
+# TODO: confirm if we want normalized_channel to be included here.
 fields:
 - name: submission_date
   type: DATE

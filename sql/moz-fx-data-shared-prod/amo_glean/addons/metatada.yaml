@@ -1,0 +1,5 @@
+friendly_name: AMO Glean Addons (Firefox Desktop and Fenix)
+description: |-
+  This view unions the addons stable ping data from across Firefox Desktop and Fenix namespaces.
+owners:
+- kik@mozilla.com

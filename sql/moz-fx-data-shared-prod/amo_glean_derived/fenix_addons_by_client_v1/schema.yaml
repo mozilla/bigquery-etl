@@ -1,3 +1,4 @@
+# TODO: add field descriptions.
 fields:
 - name: submission_date
   type: DATE

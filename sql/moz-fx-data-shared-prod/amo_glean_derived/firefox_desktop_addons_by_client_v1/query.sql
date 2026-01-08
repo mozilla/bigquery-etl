@@ -1,34 +1,24 @@
 WITH base AS (
   SELECT
-    submission_timestamp,
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    sample_id,
-    metrics.uuid.legacy_telemetry_client_id,
-    normalized_channel,
-    normalized_country_code,
-    client_info.locale,
-    normalized_os,
-    client_info.app_display_version,
+    *,
     -- merging active_addons and addons_theme into a single addons object
     ARRAY_CONCAT(
       -- COALESCE to make sure array concat returns results if active_addons is empty and addons_theme is not
-      COALESCE(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$'), []),
-      [
-        JSON_QUERY(metrics.object.addons_theme, '$')
-      ] -- wrapping the json object in array to enable array concat
+      COALESCE(JSON_QUERY_ARRAY(addons_active_addons, '$'), []),
+      [JSON_QUERY(addons_theme, '$')] -- wrapping the json object in array to enable array concat
     ) AS active_addons,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.metrics`
+    `moz-fx-data-shared-prod.amo_glean.addons`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND app_name = "firefox_desktop"
+    AND client_id IS NOT NULL
     AND (
       (
-        metrics.object.addons_active_addons IS NOT NULL
-        AND ARRAY_LENGTH(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$')) > 0
+        addons_active_addons IS NOT NULL
+        AND ARRAY_LENGTH(JSON_QUERY_ARRAY(addons_active_addons, '$')) > 0
       )
-      OR metrics.object.addons_theme IS NOT NULL
+      OR addons_theme IS NOT NULL
     )
 ),
 per_clients_without_addons AS (
@@ -39,11 +29,9 @@ per_clients_without_addons AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(legacy_telemetry_client_id ORDER BY submission_timestamp)
     ) AS legacy_telemetry_client_id,
-    ARRAY_AGG(
-      app_display_version
-      ORDER BY
-        mozfun.norm.truncate_version(app_display_version, "minor") DESC
-    )[SAFE_OFFSET(0)] AS app_version,
+    ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(app_version, "minor") DESC)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
     mozfun.stats.mode_last(
       ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp)
     ) AS country,

@@ -39,20 +39,20 @@ per_addon_version AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_addon_version
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_addon_version
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        addon_version AS key,
-        COUNT(DISTINCT client_id) AS value
+        addon_version AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,
@@ -62,14 +62,14 @@ per_app_version AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_version
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_app_version
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        app_version AS key,
-        COUNT(DISTINCT client_id) AS value
+        app_version AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       WHERE
@@ -77,7 +77,7 @@ per_app_version AS (
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,
@@ -87,14 +87,14 @@ per_fenix_build AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_fenix_build
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_fenix_build
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        app_version AS key,
-        COUNT(DISTINCT client_id) AS value
+        app_version AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       WHERE
@@ -102,7 +102,7 @@ per_fenix_build AS (
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,
@@ -112,20 +112,20 @@ per_locale AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_locale
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_locale
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        locale AS key,
-        COUNT(DISTINCT client_id) AS value
+        locale AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,
@@ -135,20 +135,20 @@ per_country AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_country
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_country
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        country AS key,
-        COUNT(DISTINCT client_id) AS value
+        country AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,
@@ -158,20 +158,20 @@ per_app_os AS (
   SELECT
     submission_date,
     addon_id,
-    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_os
+    ARRAY_AGG(STRUCT(`key`, `value`) ORDER BY `value` DESC) AS dau_by_app_os
   FROM
     (
       SELECT
         submission_date,
         addon_id,
-        app_os AS key,
-        COUNT(DISTINCT client_id) AS value
+        app_os AS `key`,
+        COUNT(DISTINCT client_id) AS `value`,
       FROM
         unnested
       GROUP BY
         submission_date,
         addon_id,
-        key
+        `key`
     )
   GROUP BY
     submission_date,

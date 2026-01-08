@@ -1,5 +1,5 @@
-import distutils
 import os
+import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -1038,7 +1038,7 @@ class TestMetadata:
 
     def test_metadata_update_with_no_deprecation(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/"
@@ -1052,14 +1052,14 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:mozilla-confidential",
+            "workgroup:mozilla-confidential/data-viewers",
             "workgroup:test/test",
         ]
         assert "deprecated" not in metadata
 
     def test_metadata_update_with_deprecation(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
@@ -1092,13 +1092,13 @@ class TestMetadata:
                 "role": "roles/bigquery.dataEditor",
             },
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.metadataViewer",
             },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.dataViewer",
             }
         ]
@@ -1113,7 +1113,7 @@ class TestMetadata:
         log.set_threshold(log.WARN)
 
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = (
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
@@ -1165,7 +1165,7 @@ class TestMetadata:
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v2/"
@@ -1174,9 +1174,84 @@ class TestMetadata:
 
         assert mock_bigquery_client().update_table.call_count == 0
 
+    @patch("bigquery_etl.cli.metadata._publish_metadata")
+    def test_metadata_publish_skip_ingestion_true(self, mock_publish, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+
+            def invoke_command(project_id, table_id):
+                runner.invoke(
+                    publish,
+                    [
+                        table_id,
+                        f"--sql-dir={str(tmpdirname)}",
+                        "--skip-stable-datasets=true",
+                        "--parallelism=1",
+                        f"--project-id={project_id}",
+                    ],
+                    catch_exceptions=False,
+                )
+
+            invoke_command("moz-fx-data-shared-prod", "test_derived.test_v1")
+            invoke_command("moz-fx-data-shared-prod", "test_stable.test_v1")
+            invoke_command("glam-fenix-dev", "test_stable.test_v1")
+
+        assert mock_publish.call_count == 2
+        mock_publish.assert_any_call(
+            "moz-fx-data-shared-prod",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "moz-fx-data-shared-prod"
+            / "test_derived"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+        mock_publish.assert_any_call(
+            "glam-fenix-dev",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "glam-fenix-dev"
+            / "test_stable"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+
+    @patch("bigquery_etl.cli.metadata._publish_metadata")
+    def test_metadata_publish_skip_ingestion_false(self, mock_publish, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+
+            def invoke_command(project_id, table_id):
+                runner.invoke(
+                    publish,
+                    [
+                        table_id,
+                        f"--sql-dir={str(tmpdirname)}",
+                        "--skip-stable-datasets=false",
+                        "--parallelism=1",
+                        f"--project-id={project_id}",
+                    ],
+                    catch_exceptions=False,
+                )
+
+            invoke_command("moz-fx-data-shared-prod", "test_derived.test_v1")
+            invoke_command("moz-fx-data-shared-prod", "test_stable.test_v1")
+            invoke_command("glam-fenix-dev", "test_stable.test_v1")
+
+        assert mock_publish.call_count == 3
+        mock_publish.assert_any_call(
+            "moz-fx-data-shared-prod",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "moz-fx-data-shared-prod"
+            / "test_stable"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+
     def test_metadata_deprecate_default_deletion_date(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1200,7 +1275,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_set_deletion_date(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1226,7 +1301,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_set_invalid_deletion_date_should_fail(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1253,7 +1328,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_no_metadata(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = "moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v2"
             result = runner.invoke(

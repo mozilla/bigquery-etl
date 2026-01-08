@@ -114,6 +114,7 @@ MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
 MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
 NIMBUS_USER_ID = "metrics.string.nimbus_nimbus_user_id"
 # Cirrus events only contain one unique nimbus user id per ping
+# TODO: CIRRUS_EVENTS_NIMBUS_USER_ID doesn't work: https://mozilla-hub.atlassian.net/browse/DENG-10394
 CIRRUS_EVENTS_NIMBUS_USER_ID = '(SELECT value FROM UNNEST(events), UNNEST(extra) WHERE key = "nimbus_user_id" LIMIT 1)'
 
 DESKTOP_SRC = DeleteSource(
@@ -705,30 +706,31 @@ DELETE_TARGETS: DeleteIndex = {
         field=NIMBUS_USER_ID,
     ): EXPERIMENTER_BACKEND_SRC,
     # Cirrus tables use sources from the upstream glean app
-    DeleteTarget(
-        table="experimenter_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): EXPERIMENTER_BACKEND_SRC,
-    DeleteTarget(
-        table="experimenter_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): EXPERIMENTER_BACKEND_SRC,
-    DeleteTarget(
-        table="subscription_platform_backend_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): SUBPLAT_CIRRUS_SRC,
-    DeleteTarget(
-        table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): SUBPLAT_CIRRUS_SRC,
-    DeleteTarget(
-        table="accounts_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): FXA_UNHASHED_SRC,
-    DeleteTarget(
-        table="accounts_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
-    ): FXA_UNHASHED_SRC,
+    # TODO: CIRRUS_EVENTS_NIMBUS_USER_ID doesn't work: https://mozilla-hub.atlassian.net/browse/DENG-10394
+    # DeleteTarget(
+    #     table="experimenter_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): EXPERIMENTER_BACKEND_SRC,
+    # DeleteTarget(
+    #     table="experimenter_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): EXPERIMENTER_BACKEND_SRC,
+    # DeleteTarget(
+    #     table="subscription_platform_backend_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): SUBPLAT_CIRRUS_SRC,
+    # DeleteTarget(
+    #     table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): SUBPLAT_CIRRUS_SRC,
+    # DeleteTarget(
+    #     table="accounts_cirrus_stable.enrollment_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): FXA_UNHASHED_SRC,
+    # DeleteTarget(
+    #     table="accounts_cirrus_stable.enrollment_status_v1",
+    #     field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    # ): FXA_UNHASHED_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

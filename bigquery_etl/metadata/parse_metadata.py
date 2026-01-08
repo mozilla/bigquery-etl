@@ -18,7 +18,10 @@ from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_ide
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
-    dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
+    dict(
+        role="roles/bigquery.dataViewer",
+        members=["workgroup:mozilla-confidential/data-viewers"],
+    )
 ]
 DEFAULT_TABLE_WORKGROUP_ACCESS = DEFAULT_WORKGROUP_ACCESS
 

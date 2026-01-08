@@ -1,0 +1,7 @@
+friendly_name: GA4 Sessions Combined - Firefox.com & Mozilla.org
+description: Contains 1 row per session.
+  Primary key is a 3 part key, ga_session_id + ga_client_id + flag.
+  The flag value indicates the website the session is from, i.e. mozilla.org or firefox.com
+owners:
+- kwindau@mozilla.com
+level: bronze

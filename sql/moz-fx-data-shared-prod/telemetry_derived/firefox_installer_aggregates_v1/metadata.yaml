@@ -21,3 +21,4 @@ bigquery:
     fields:
     - sample_id
     - normalized_country_code
+level: bronze

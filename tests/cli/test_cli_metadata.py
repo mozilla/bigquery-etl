@@ -1052,7 +1052,7 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:mozilla-confidential",
+            "workgroup:mozilla-confidential/data-viewers",
             "workgroup:test/test",
         ]
         assert "deprecated" not in metadata
@@ -1092,13 +1092,13 @@ class TestMetadata:
                 "role": "roles/bigquery.dataEditor",
             },
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.metadataViewer",
             },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.dataViewer",
             }
         ]

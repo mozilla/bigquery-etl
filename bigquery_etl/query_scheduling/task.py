@@ -262,7 +262,6 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *",
     ): [
-        "telemetry_stable.main_v4",
         "telemetry_stable.main_v5",
         "telemetry_stable.main_use_counter_v4",
     ],
@@ -271,7 +270,6 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_first_shutdown_ping",
         schedule_interval="0 1 * * *",
     ): [
-        "telemetry_stable.first_shutdown_v4",
         "telemetry_stable.first_shutdown_v5",
         "telemetry_stable.first_shutdown_use_counter_v4",
     ],
@@ -280,7 +278,6 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_saved_session_ping",
         schedule_interval="0 1 * * *",
     ): [
-        "telemetry_stable.saved_session_v4",
         "telemetry_stable.saved_session_v5",
         "telemetry_stable.saved_session_use_counter_v4",
     ],

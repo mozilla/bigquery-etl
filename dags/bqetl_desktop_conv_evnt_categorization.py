@@ -143,20 +143,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__warn_google_ads_derived__conversion_event_categorization__v1 = bigquery_dq_check(
-        task_id="checks__warn_google_ads_derived__conversion_event_categorization__v1",
-        source_table='conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="google_ads_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["report_date:DATE:{{macros.ds_add(ds, -14)}}"]
-        + ["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     checks__warn_google_ads_derived__conversion_event_categorization__v2 = bigquery_dq_check(
         task_id="checks__warn_google_ads_derived__conversion_event_categorization__v2",
         source_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
@@ -183,19 +169,6 @@ with DAG(
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
         + ["submission_date:DATE:{{ds}}"],
         retries=0,
-    )
-
-    google_ads_derived__conversion_event_categorization__v1 = bigquery_etl_query(
-        task_id="google_ads_derived__conversion_event_categorization__v1",
-        destination_table='conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="google_ads_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["report_date:DATE:{{macros.ds_add(ds, -14)}}"]
-        + ["submission_date:DATE:{{ds}}"],
     )
 
     google_ads_derived__conversion_event_categorization__v2 = bigquery_etl_query(
@@ -252,28 +225,12 @@ with DAG(
             google_ads_derived__glean_conversion_event_categorization__v1
         )
 
-    checks__warn_google_ads_derived__conversion_event_categorization__v1.set_upstream(
-        google_ads_derived__conversion_event_categorization__v1
-    )
-
     checks__warn_google_ads_derived__conversion_event_categorization__v2.set_upstream(
         google_ads_derived__conversion_event_categorization__v2
     )
 
     checks__warn_google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
         google_ads_derived__glean_conversion_event_categorization__v1
-    )
-
-    google_ads_derived__conversion_event_categorization__v1.set_upstream(
-        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
-    )
-
-    google_ads_derived__conversion_event_categorization__v1.set_upstream(
-        wait_for_clients_first_seen_v3
-    )
-
-    google_ads_derived__conversion_event_categorization__v1.set_upstream(
-        wait_for_telemetry_derived__clients_first_seen__v1
     )
 
     google_ads_derived__conversion_event_categorization__v2.set_upstream(

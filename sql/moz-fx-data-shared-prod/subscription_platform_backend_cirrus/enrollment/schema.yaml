@@ -347,6 +347,18 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: nimbus_nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the user requesting enrollment
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE

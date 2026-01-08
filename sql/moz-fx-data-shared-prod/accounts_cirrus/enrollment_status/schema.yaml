@@ -350,6 +350,10 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: nimbus_nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+      description: The ID of the user requesting enrollment
   - name: string_list
     type: RECORD
     mode: NULLABLE

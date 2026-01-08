@@ -6,20 +6,11 @@ description: |-
 owners:
 - frank@mozilla.com
 labels:
-  dag: bqetl_fivetran_google_ads
-  owner1: frank
+  incremental: false
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
-    fields:
-    - date
-schema:
-  derived_from: []
-  allow_field_addition: true
-require_column_descriptions: false
-level: null
+    fields: ["date"]

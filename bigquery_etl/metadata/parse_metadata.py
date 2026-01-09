@@ -209,30 +209,12 @@ class Metadata:
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
     require_column_descriptions: bool = attr.ib(False)
-    level: Optional[str] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
         """Check that provided email addresses or github identities for owners are valid."""
         if not all(map(lambda e: is_email_or_github_identity(e), value)):
             raise ValueError(f"Invalid email or Github identity for owners: {value}.")
-
-    @level.validator
-    def validate_level(self, attribute, value):
-        """Check that the level label is a string and one of the expected values."""
-        allowed = [e.value for e in AssetLevel]
-
-        if value is None:
-            return
-
-        if not isinstance(value, str):
-            raise ValueError(
-                f"ERROR. Invalid level in metadata with type '{type(value).__name__}'. Must be a string."
-            )
-        if value not in allowed:
-            raise ValueError(
-                f"ERROR. Invalid level in metadata: {value}. Must be only one of {sorted(allowed)}."
-            )
 
     @labels.validator
     def validate_labels(self, attribute, value):
@@ -305,7 +287,6 @@ class Metadata:
         deletion_date = None
         monitoring = None
         require_column_descriptions = False
-        level = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -393,9 +374,6 @@ class Metadata:
                         "require_column_descriptions"
                     ]
 
-                if "level" in metadata:
-                    level = metadata["level"]
-
                 return cls(
                     friendly_name,
                     description,
@@ -411,7 +389,6 @@ class Metadata:
                     deletion_date,
                     monitoring,
                     require_column_descriptions,
-                    level,
                 )
             except yaml.YAMLError as e:
                 raise e

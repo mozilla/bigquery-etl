@@ -94,7 +94,7 @@
     WHERE
       DATE(first_submission_timestamp) >= '2023-01-01'
       AND DATE(first_submission_timestamp) < @submission_date
-      AND criteria IS NOT DISTINCT FROM {{ ("'" ~ criteria_name ~ "'") }}
+      AND criteria != {{ "'" ~ criteria_name ~ "'" }}
   )
   SELECT
     events_stream_cte.*

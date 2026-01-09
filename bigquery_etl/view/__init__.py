@@ -430,6 +430,17 @@ class View:
                 else:
                     table = existing_view
 
+                # Update schema field descriptions
+                try:
+                    if self.schema_path.is_file():
+                        table = self.schema.deploy(target_view)
+                except Exception as e:
+                    print(f"Could not update field descriptions for {target_view}: {e}")
+
+                # Check and update metadata
+                fields_to_update = []
+
+                if view_exists and not force:
                     # Extract the view query from the SQL (remove CREATE VIEW statement)
                     try:
                         new_view_query = CREATE_VIEW_PATTERN.sub(
@@ -448,17 +459,8 @@ class View:
 
                     # Update view_query to refresh schema
                     table.view_query = new_view_query
-                    client.update_table(table, fields=["view_query"])
+                    fields_to_update.append("view_query")
 
-                # Update schema field descriptions
-                try:
-                    if self.schema_path.is_file():
-                        table = self.schema.deploy(target_view)
-                except Exception as e:
-                    print(f"Could not update field descriptions for {target_view}: {e}")
-
-                # Check and update metadata
-                fields_to_update = []
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
                 else:

@@ -117,22 +117,18 @@ class TestView:
 
         assert metadata_view.is_valid()
         assert metadata_view.publish()
-        # update_table is called twice: once for view_query, once for metadata/labels
-        assert mock_bigquery_client().update_table.call_count == 2
-        # Check the first call is for view_query (fields is a keyword argument)
-        assert "view_query" in mock_bigquery_client().update_table.call_args_list[0][
-            1
-        ].get("fields", [])
-        # Check the second call (metadata/labels update)
+        # update_table is called once for metadata/labels (view query is handled by CREATE OR REPLACE VIEW)
+        assert mock_bigquery_client().update_table.call_count == 1
+        # Check the call has metadata/labels update
         assert (
-            mock_bigquery_client().update_table.call_args_list[1][0][0].friendly_name
+            mock_bigquery_client().update_table.call_args_list[0][0][0].friendly_name
             == "Test metadata file"
         )
         assert (
-            mock_bigquery_client().update_table.call_args_list[1][0][0].description
+            mock_bigquery_client().update_table.call_args_list[0][0][0].description
             == "Test description"
         )
-        assert mock_bigquery_client().update_table.call_args_list[1][0][0].labels == {
+        assert mock_bigquery_client().update_table.call_args_list[0][0][0].labels == {
             "123-432": "valid",
             "1232341234": "valid",
             "1234_abcd": "valid",

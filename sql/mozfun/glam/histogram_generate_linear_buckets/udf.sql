@@ -9,7 +9,7 @@ RETURNS ARRAY<FLOAT64> AS (
     [0.0],
     ARRAY(
       SELECT
-        ROUND((min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2))
+        ROUND((GREATEST(1, min) * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2))
       FROM
         UNNEST(GENERATE_ARRAY(1, LEAST(nBuckets - 1, max, 10000))) AS i
     )
@@ -32,7 +32,12 @@ SELECT
     ],
     glam.histogram_generate_linear_buckets(8, 792, 100)
   ),
-  -- https://telemetry.mozilla.org/histogram-simulator/#low=1&high=6&n_buckets=4&kind=linear&generate=normal
+  -- https://mozilla.github.io/glean/book/reference/metrics/custom_distribution.html?kind=linear&lower-bound=1&upper-bound=6&bucket-count=4
   assert.array_equals([0, 1, 4, 6], glam.histogram_generate_linear_buckets(1, 6, 4)),
-  -- https://telemetry.mozilla.org/histogram-simulator/#low=1&high=20&n_buckets=5&kind=linear&generate=normal
-  assert.array_equals([0, 0, 7, 13, 20], glam.histogram_generate_linear_buckets(0, 20, 5))
+  -- https://mozilla.github.io/glean/book/reference/metrics/custom_distribution.html?kind=linear&lower-bound=0&upper-bound=20&bucket-count=5
+  assert.array_equals([0, 1, 7, 14, 20], glam.histogram_generate_linear_buckets(0, 20, 5)),
+  -- https://mozilla.github.io/glean/book/reference/metrics/custom_distribution.html?kind=linear&lower-bound=0&upper-bound=16&bucket-count=17
+  assert.array_equals(
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    glam.histogram_generate_linear_buckets(0, 16, 17)
+  )

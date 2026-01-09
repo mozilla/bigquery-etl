@@ -8,7 +8,7 @@ default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:fx-quant-user-research/data-viewers
 - role: roles/bigquery.dataEditor
   members:

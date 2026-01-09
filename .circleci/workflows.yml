@@ -301,7 +301,6 @@ jobs:
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
             - *attach_generated_sql
-            - *copy_staged_sql
             - *authenticate
             - run:
                 name: Verify that metadata files are valid
@@ -1205,7 +1204,7 @@ workflows:
             - deploy-changes-to-stage
       - validate-metadata:
           requires:
-            - deploy-changes-to-stage
+            - generate-sql
       - validate-backfills:
           requires:
             - generate-sql

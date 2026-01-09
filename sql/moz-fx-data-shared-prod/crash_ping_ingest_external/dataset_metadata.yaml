@@ -10,7 +10,7 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataops-managed/crash-ping-ingest

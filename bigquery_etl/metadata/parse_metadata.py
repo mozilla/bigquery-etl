@@ -431,9 +431,11 @@ class Metadata:
         if metadata_dict["scheduling"] == {}:
             del metadata_dict["scheduling"]
 
-        if "derived_from" in metadata_dict.get("schema", {}) and metadata_dict["schema"][
-            "derived_from"
-        ] == []:
+        if (
+            metadata_dict.get("schema")
+            and "derived_from" in metadata_dict["schema"]
+            and metadata_dict["schema"]["derived_from"] == []
+        ):
             del metadata_dict["schema"]["derived_from"]
 
         if metadata_dict["labels"]:
@@ -445,7 +447,7 @@ class Metadata:
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
 
-        if metadata_dict["schema"] is None:
+        if metadata_dict.get("schema") is None:
             del metadata_dict["schema"]
 
         if metadata_dict["workgroup_access"] is None:

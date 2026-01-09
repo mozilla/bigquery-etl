@@ -1,0 +1,61 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: event_name
+    description: Snowplow object_update trigger for the section event.
+  - mode: NULLABLE
+    type: STRING
+    name: section_id
+    description: Identifier of the section.
+  - mode: NULLABLE
+    type: STRING
+    name: title
+    description: Title of the section.
+  - mode: NULLABLE
+    type: STRING
+    name: description
+    description: Description of the section.
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_id
+    description: ID of the scheduled surface for the section.
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_name
+    description: Name of the scheduled surface for the section.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: created_at
+    description: Timestamp when the section was created.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: updated_at
+    description: Timestamp when the section was last updated.
+  - mode: NULLABLE
+    type: STRING
+    name: updated_by
+    description: User who updated a section.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: happened_at
+    description: Event creation timestamp from Snowplow derived_tstamp.
+  - mode: NULLABLE
+    type: STRING
+    name: schema_version
+    description: Snowplow context schema version for the section.
+  - mode: NULLABLE
+    type: STRING
+    name: section_id_object_update_trigger_key
+    description: Unique key combining section_id and event name to identify the section event.
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: disabled
+    description: Indicates whether the section is disabled.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: deactivated_at
+    description: Timestamp when the section was deactivated.
+  - mode: NULLABLE
+    type: STRING
+    name: source
+    description: Source associated with the section update. (ML if machine learning)

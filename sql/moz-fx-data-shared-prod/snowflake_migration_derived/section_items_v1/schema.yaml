@@ -1,10 +1,6 @@
 fields:
 - mode: NULLABLE
   type: STRING
-  name: approved_corpus_item_external_id
-  description: Approved corpus item external identifier linked to the section item.
-- mode: NULLABLE
-  type: STRING
   name: event_name
   description: Snowplow object_update trigger for the section item event.
 - mode: NULLABLE
@@ -41,5 +37,5 @@ fields:
   description: Snowplow context schema version for the section item.
 - mode: NULLABLE
   type: STRING
-  name: section_item_id_object_update_trigger_key
-  description: Unique key combining section_item_id and event name to identify the section item event.
+  name: section_id_object_update_trigger_key
+  description: Unique key combining section_id and event name to identify the section event.

@@ -277,7 +277,6 @@ def validate_asset_level(query_dir, metadata):
     Possible levels are only one of [gold, silver, bronze] or no level label.
     """
     is_table = os.path.exists(os.path.join(query_dir, "query.sql"))
-    has_level = LEVEL_LABEL in metadata.labels
 
     class Requirements(Enum):
         description = 1
@@ -296,12 +295,14 @@ def validate_asset_level(query_dir, metadata):
     results = {}
     missing = []
 
-    if not metadata.labels or not has_level:
+    if not metadata.labels or LEVEL_LABEL not in metadata.labels:
         return True
     else:
         level = metadata.labels[LEVEL_LABEL]
 
-        possible_levels = [level_requirement.name for level_requirement in LevelRequirements]
+        possible_levels = [
+            level_requirement.name for level_requirement in LevelRequirements
+        ]
         if level not in possible_levels:
             click.echo(
                 f"Invalid level in metadata: {level}. Must be one of {possible_levels}."

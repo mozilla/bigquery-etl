@@ -26,7 +26,8 @@
         )
         ORDER BY
           submission_timestamp,
-          COALESCE(event_timestamp, '9999-12-31 23:59:59')
+          COALESCE(event_timestamp, '9999-12-31 23:59:59'),
+          document_event_number
         LIMIT
           1
       )[0].*

@@ -2,27 +2,13 @@
 
 """Determine stable and derived table size partitions by performing dry runs."""
 import datetime
-from argparse import ArgumentParser
 from fnmatch import fnmatchcase
 from functools import partial, cache
 from multiprocessing.pool import ThreadPool
 from typing import Any, Dict, List, Optional, Tuple
 
+import click
 from google.cloud import bigquery, exceptions
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--date", required=True, type=datetime.date.fromisoformat, help="Date in yyyy-mm-dd"
-)
-parser.add_argument(
-    "--project",
-    default="moz-fx-data-shared-prod",
-    help="Project of tables to get sizes for",
-)
-parser.add_argument("--dataset", default=("*_derived", "*_stable"))  # pattern
-parser.add_argument("--destination_project", help="Project to write results to. Defaults to --project value.")
-parser.add_argument("--destination_dataset", default="monitoring_derived")
-parser.add_argument("--destination_table", default="stable_and_derived_table_sizes_v1")
 
 
 def get_tables(
@@ -120,6 +106,7 @@ def save_table_sizes(
     )
     job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
     job_config.schema_update_options = bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+    job_config.time_partitioning = bigquery.TimePartitioning(field="submission_date")
 
     partition_date = date.strftime("%Y%m%d")
     client.load_table_from_json(
@@ -129,20 +116,32 @@ def save_table_sizes(
     ).result()
 
 
-def main():
-    args = parser.parse_args()
+@click.command()
+@click.option(
+    "--date", required=True, type=datetime.date.fromisoformat, help="Date in yyyy-mm-dd"
+)
+@click.option(
+    "--project",
+    default="moz-fx-data-shared-prod",
+    help="Project of tables to get sizes for",
+)
+@click.option("--dataset", default=("*_derived", "*_stable"))  # pattern
+@click.option("--destination_project", help="Project to write results to. Defaults to --project value.")
+@click.option("--destination_dataset", default="monitoring_derived")
+@click.option("--destination_table", default="stable_and_derived_table_sizes_v1")
+@click.option("--dry_run", "--dry-run", default=False, is_flag=True)
+def main(date, project, dataset, destination_project, destination_dataset, destination_table, dry_run):
+    if destination_project is None:
+        destination_project = project
 
-    if args.destination_project is None:
-        args.destination_project = args.project
-
-    client = bigquery.Client(args.project)
+    client = bigquery.Client(project)
 
     for datediff in range(2):
         stable_derived_partition_sizes = []
-        current_date = args.date - datetime.timedelta(days=datediff)
+        current_date = date - datetime.timedelta(days=datediff)
         print(f"Getting {current_date}")
 
-        for arg_dataset in args.dataset:
+        for arg_dataset in dataset:
             datasets = [
                 dataset.dataset_id
                 for dataset in list(client.list_datasets())
@@ -165,14 +164,15 @@ def main():
                 partition_sizes = filter(lambda x: x is not None, partition_sizes)
                 stable_derived_partition_sizes.extend(partition_sizes)
 
-        save_table_sizes(
-            client,
-            stable_derived_partition_sizes,
-            current_date,
-            args.destination_project,
-            args.destination_dataset,
-            args.destination_table,
-        )
+        if not dry_run:
+            save_table_sizes(
+                client,
+                stable_derived_partition_sizes,
+                current_date,
+                destination_project,
+                destination_dataset,
+                destination_table,
+            )
 
 
 if __name__ == "__main__":

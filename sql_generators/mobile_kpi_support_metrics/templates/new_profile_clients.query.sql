@@ -17,6 +17,7 @@ SELECT
   {% for attribution_field in product_attribution_fields %}
   attribution.{{ attribution_field }},
   {% endfor %}
+  attribution.paid_vs_organic_gclid,
 FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN

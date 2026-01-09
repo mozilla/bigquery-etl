@@ -628,7 +628,13 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fennec_aurora_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived.events_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta_derived.events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: "bronze"
   incremental: true
   owner1: kwindau
   dag: bqetl_fx_health_ind_dashboard
@@ -20,4 +21,3 @@ bigquery:
     fields:
     - is_default_browser
 require_column_descriptions: true
-level: bronze

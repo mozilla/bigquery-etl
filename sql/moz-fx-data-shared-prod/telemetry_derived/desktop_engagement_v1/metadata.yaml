@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: "bronze"
   incremental: true
   owner1: kwindau
   shredder_mitigation: true
@@ -23,4 +24,3 @@ bigquery:
     - country
     - normalized_os
 require_column_descriptions: true
-level: bronze

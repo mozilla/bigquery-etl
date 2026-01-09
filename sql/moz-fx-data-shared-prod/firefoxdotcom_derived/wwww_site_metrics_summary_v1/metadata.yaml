@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: "bronze"
   incremental: true
   owner1: kwindau
   table_type: aggregate
@@ -24,4 +25,3 @@ bigquery:
     - country
     - browser
 require_column_descriptions: true
-level: bronze

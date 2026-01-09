@@ -5,6 +5,7 @@ owners:
 - kwindau@mozilla.com
 - sherrera@mozilla.com
 labels:
+  level: "bronze"
   incremental: true
   owner1: kwindau
   owner2: sherrera
@@ -24,4 +25,3 @@ bigquery:
     fields:
     - page_location_locale
 require_column_descriptions: true
-level: bronze

@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: "bronze"
   incremental: true
   table_type: aggregate
   dag: bqetl_analytics_aggregations
@@ -24,4 +25,3 @@ bigquery:
     - channel
     - country
 require_column_descriptions: true
-level: bronze

@@ -5,6 +5,7 @@ owners:
 - akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
+  level: "null"
   schedule: daily
   shredder_mitigation: true
   table_type: aggregate
@@ -22,4 +23,3 @@ bigquery:
   range_partitioning: null
   clustering: null
 require_column_descriptions: false
-level: null

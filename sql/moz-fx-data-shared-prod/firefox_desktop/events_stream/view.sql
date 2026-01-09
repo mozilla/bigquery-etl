@@ -198,6 +198,7 @@ SELECT
       LAX_INT64(event_extra.n_tab_deselect) AS `n_tab_deselect`,
       LAX_INT64(event_extra.n_words) AS `n_words`,
       LAX_INT64(event_extra.negotiation_count) AS `negotiation_count`,
+      LAX_INT64(event_extra.note_age_hours) AS `note_age_hours`,
       LAX_INT64(event_extra.num_msections_audio_recvonly) AS `num_msections_audio_recvonly`,
       LAX_INT64(event_extra.num_msections_audio_sendonly) AS `num_msections_audio_sendonly`,
       LAX_INT64(event_extra.num_msections_audio_sendrecv) AS `num_msections_audio_sendrecv`,

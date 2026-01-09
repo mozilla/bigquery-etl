@@ -523,6 +523,14 @@ fields:
       description: 'Whether Firefox is set as the default browser.
 
         '
+    - name: policies_is_enterprise
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Attempt to determine if the user is an enterprise user based on
+        various signals. This metric was generated to correspond to the Legacy Telemetry
+        scalar policies.is_enterprise.
+
+        '
   - name: object
     type: RECORD
     mode: NULLABLE

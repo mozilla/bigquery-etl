@@ -226,7 +226,8 @@ SELECT
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
       metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
-      metrics.labeled_counter.homepage_section_viewed
+      metrics.labeled_counter.homepage_section_viewed,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,
@@ -308,7 +309,13 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context,
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
-    ) AS `object`
+    ) AS `object`,
+    STRUCT(
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -548,7 +555,8 @@ SELECT
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
       metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
-      metrics.labeled_counter.homepage_section_viewed
+      metrics.labeled_counter.homepage_section_viewed,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,
@@ -630,7 +638,13 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context,
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
-    ) AS `object`
+    ) AS `object`,
+    STRUCT(
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -870,7 +884,8 @@ SELECT
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
       metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
-      metrics.labeled_counter.homepage_section_viewed
+      metrics.labeled_counter.homepage_section_viewed,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,
@@ -952,7 +967,13 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context,
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
-    ) AS `object`
+    ) AS `object`,
+    STRUCT(
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

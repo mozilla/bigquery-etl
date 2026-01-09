@@ -1079,7 +1079,8 @@ SELECT
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
-      metrics.labeled_counter.networking_http_3_congestion_event_reason
+      metrics.labeled_counter.networking_http_3_congestion_event_reason,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1866,7 +1867,13 @@ SELECT
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
     ) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`,
     STRUCT(
       metrics.labeled_timing_distribution.network_http3_complete_load,
       metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
@@ -3125,7 +3132,8 @@ SELECT
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
-      metrics.labeled_counter.networking_http_3_congestion_event_reason
+      metrics.labeled_counter.networking_http_3_congestion_event_reason,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3912,7 +3920,13 @@ SELECT
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
     ) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`,
     STRUCT(
       metrics.labeled_timing_distribution.network_http3_complete_load,
       metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
@@ -5191,7 +5205,8 @@ SELECT
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
-      metrics.labeled_counter.networking_http_3_congestion_event_reason
+      metrics.labeled_counter.networking_http_3_congestion_event_reason,
+      metrics.labeled_counter.ads_client_client_operation_total
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5978,7 +5993,13 @@ SELECT
       metrics.object.glean_health_data_directory_info,
       metrics.object.glean_database_load_sizes
     ) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,
+      metrics.labeled_string.ads_client_build_cache_error,
+      metrics.labeled_string.ads_client_client_error,
+      metrics.labeled_string.ads_client_deserialization_error,
+      metrics.labeled_string.ads_client_http_cache_outcome
+    ) AS `labeled_string`,
     STRUCT(
       metrics.labeled_timing_distribution.network_http3_complete_load,
       metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,

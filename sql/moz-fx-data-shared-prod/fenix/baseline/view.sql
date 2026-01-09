@@ -44,7 +44,10 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(
+      metrics.boolean.metrics_default_browser,
+      metrics.boolean.policies_is_enterprise
+    ) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -103,7 +106,10 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(
+      metrics.boolean.metrics_default_browser,
+      metrics.boolean.policies_is_enterprise
+    ) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -182,7 +188,10 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(
+      metrics.boolean.metrics_default_browser,
+      metrics.boolean.policies_is_enterprise
+    ) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -270,7 +279,10 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(
+      metrics.boolean.metrics_default_browser,
+      metrics.boolean.policies_is_enterprise
+    ) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -338,7 +350,10 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(
+      metrics.boolean.metrics_default_browser,
+      metrics.boolean.policies_is_enterprise
+    ) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,

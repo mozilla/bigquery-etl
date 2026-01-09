@@ -11972,6 +11972,62 @@ fields:
         QUIC stack.
 
         '
+    - name: browser_engagement_navigation_aiwindow_assistant
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count URI loads triggered in a subsession from the AI window
+        assistant search handoff button.
+
+        '
+    - name: browser_search_adclicks_aiwindow_assistant
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records clicks of adverts on SERP pages where the search was started\
+        \ from the AI window assistant. The key format is \u2018<provider>:<tagged|organic>\u2019\
+        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
+    - name: browser_search_content_aiwindow_assistant
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for in-content searches where the search was most
+        likely started from the AI window assistant. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+        See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
+
+        '
+    - name: browser_search_withads_aiwindow_assistant
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records counts of SERP pages with adverts displayed where the\
+        \ search was started from the AI window assistant. The key format is \u2018\
+        <provider>:<tagged|organic>\u2019 See https://firefox-source- docs.mozilla.org/browser/search/telemetry.html#browser-search-\
+        \ content.\n"
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -49894,15 +49950,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

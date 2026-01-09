@@ -1,8 +1,9 @@
+import datetime
 import os
 import types
 from datetime import date, timedelta
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import pytest
 import yaml
@@ -10,6 +11,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
     NBR_DAYS_RETAINED,
+    _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
     create,
@@ -714,6 +716,157 @@ class TestQuery:
                 ]
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
+
+    def test_query_backfill_python_script(self, runner):
+        """Valid script backfill should execute script for each backfill date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch(
+                "bigquery_etl.cli.query._backfill_script",
+            ) as mock_backfill_script,
+        ):
+            mock_backfill_script.side_effect = _backfill_script
+
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py", "w"
+            ) as f:
+                f.write("""
+import click
+
+@click.command
+@click.option("--submission-date", help="Date in yyyy-mm-dd")
+@click.option("--table-id")
+def main(submission_date, table_id):
+    print(f"writing to {table_id} for {submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+
+            assert mock_backfill_script.call_count == 2
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 1),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
+            )
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 2),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
+            )
+
+    def test_query_backfill_python_script_invalid_entrypoint(self, runner):
+        """Script backfill should fail if entrypoint is not a click command"""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+def main(submission_date, table_id):
+    print(f"writing to {table_id} for {submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 1
+            assert "must be a Click CLI command" in result.stderr
+
+    def test_query_backfill_python_script_entrypoint_not_found(self, runner):
+        """Script backfill should fail when the entrypoint is not found."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+import click
+
+@click.command
+@click.option("--submission-date", help="Date in yyyy-mm-dd")
+def main(submission_date):
+    print(submission_date)
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            with pytest.raises(AttributeError):
+                runner.invoke(
+                    backfill,
+                    [
+                        "telemetry_derived.query_v1",
+                        "--start_date=2026-01-01",
+                        "--end_date=2026-01-02",
+                        "--parallelism=1",
+                        "--query-script-date-arg=submission-date",
+                        "--query-script-entrypoint=execute",
+                    ],
+                    catch_exceptions=False,
+                )
 
     @patch("bigquery_etl.cli.query.get_credentials")
     @patch("bigquery_etl.cli.query.get_id_token")

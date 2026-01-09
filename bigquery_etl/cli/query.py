@@ -1989,17 +1989,16 @@ def update(
     def has_allow_field_addition(query_file):
         try:
             metadata = Metadata.of_query_file(str(query_file))
-            if metadata:
-                # Check schema metadata field
-                if metadata.schema and metadata.schema.allow_field_addition:
-                    return True
-                # Check scheduling arguments
-                if metadata.scheduling:
-                    arguments = metadata.scheduling.get("arguments", [])
-                    return any(
-                        "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
-                        for arg in arguments
-                    )
+            # Check schema metadata field
+            if metadata.schema and metadata.schema.allow_field_addition:
+                return True
+            # Check scheduling arguments
+            if metadata.scheduling:
+                arguments = metadata.scheduling.get("arguments", [])
+                return any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                )
         except Exception:
             pass
         return False

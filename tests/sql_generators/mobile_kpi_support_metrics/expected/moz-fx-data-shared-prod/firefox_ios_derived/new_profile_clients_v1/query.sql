@@ -20,6 +20,7 @@ SELECT
   attribution.adjust_creative,
   attribution.adjust_network,
   attribution.adjust_attribution_timestamp,
+  attribution.paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.active_users` AS active_users
 LEFT JOIN

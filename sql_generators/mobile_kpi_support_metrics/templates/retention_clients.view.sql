@@ -28,6 +28,7 @@ attribution AS (
     {{ attribution_field }},
     {% endfor %}
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
@@ -50,6 +51,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (

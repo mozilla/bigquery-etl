@@ -16,5 +16,6 @@ SELECT
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
     adjust_info.adjust_network
   ) AS paid_vs_organic,
+  CAST(NULL AS STRING) AS paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1`

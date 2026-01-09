@@ -132,13 +132,13 @@ class AttributionFields:
             {
                 "name": "play_store_attribution_content",
                 "type": "STRING",
-                "description": "",
+                "description": "The name of the utm_content that is responsible for this installation.",
                 "client_only": True,
             },
             {
                 "name": "play_store_attribution_term",
                 "type": "STRING",
-                "description": "",
+                "description": "The name of the utm_term that is responsible for this installation.",
                 "client_only": True,
             },
             {

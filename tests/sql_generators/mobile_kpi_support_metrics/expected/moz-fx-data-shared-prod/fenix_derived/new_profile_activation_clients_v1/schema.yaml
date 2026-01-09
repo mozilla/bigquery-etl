@@ -102,12 +102,12 @@ fields:
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
-  description: 
+  description: The name of the utm_content that is responsible for this installation.
 
 - name: play_store_attribution_term
   type: STRING
   mode: NULLABLE
-  description: 
+  description: The name of the utm_term that is responsible for this installation.
 
 - name: play_store_attribution_install_referrer_response
   type: STRING

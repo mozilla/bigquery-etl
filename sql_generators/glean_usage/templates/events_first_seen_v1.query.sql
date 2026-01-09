@@ -46,11 +46,12 @@
       {% raw %}
       {% endif %}
       {% endraw %}
+      -- remove unnecessary high-volume categories to reduce cost
       AND event_category NOT IN (
         'media.playback',
         'nimbus_events',
         'uptake.remotecontent.result'
-      ) -- remove unnecessary high-volume categories to reduce cost
+      )
       {% if app_id_dataset == 'firefox_desktop' -%}
       AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
       {% endif %}

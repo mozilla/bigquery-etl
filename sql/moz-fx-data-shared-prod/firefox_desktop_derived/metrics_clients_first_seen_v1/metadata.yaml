@@ -25,3 +25,4 @@ bigquery:
     fields:
     - sample_id
 require_column_descriptions: true
+level: bronze

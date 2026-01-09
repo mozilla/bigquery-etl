@@ -67,7 +67,15 @@ active_subscriptions_history AS (
     ) AS valid_to,
     history.subscription,
     history.subscription_is_active,
-    active_subscriptions.first_active_at AS subscription_first_active_at
+    active_subscriptions.first_active_at AS subscription_first_active_at,
+    IF(
+      history.subscription.customer.id IS NOT NULL,
+      MIN(active_subscriptions.first_active_at) OVER (
+        PARTITION BY
+          history.subscription.customer.id
+      ),
+      active_subscriptions.first_active_at
+    ) AS customer_start_date
   FROM
     active_subscriptions
   JOIN
@@ -315,6 +323,15 @@ SELECT
     history.subscription.status AS provider_status,
     history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
+    CASE
+      WHEN history.subscription_first_active_at IS NULL
+        THEN NULL
+      WHEN history.subscription.trial_start IS NOT NULL
+        THEN "Converted Trial"
+      WHEN DATE(history.subscription_first_active_at) = DATE(history.customer_start_date)
+        THEN "New"
+      ELSE "Reactivated"
+    END AS started_reason,
     CASE
       WHEN history.subscription.ended_at IS NULL
         THEN NULL

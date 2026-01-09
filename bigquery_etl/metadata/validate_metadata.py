@@ -277,6 +277,7 @@ def validate_asset_level(query_dir, metadata):
     Possible levels are only one of [gold, silver, bronze] or no level label.
     """
     is_table = os.path.exists(os.path.join(query_dir, "query.sql"))
+    has_level = LEVEL_LABEL in metadata.labels
 
     class Requirements(Enum):
         description = 1
@@ -295,12 +296,16 @@ def validate_asset_level(query_dir, metadata):
     results = {}
     missing = []
 
-    if not metadata.level:
+    if not metadata.labels or not has_level:
         return True
     else:
-        level = (
-            metadata.level[0] if isinstance(metadata.level, list) else metadata.level
-        )
+        level = metadata.labels["level"]
+
+        if level not in list(LevelRequirements.__members__):
+            click.echo(
+                f"Invalid level in metadata: {level}. Must be one of {list(LevelRequirements.__members__)}."
+            )
+            return False
 
         # Check percentage of fields and nested fields with descriptions.
         schema_file = Path(query_dir) / SCHEMA_FILE

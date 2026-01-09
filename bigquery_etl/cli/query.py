@@ -1643,7 +1643,7 @@ def initialize(
                         update,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         update_downstream=False,
                         is_init=True,
                     )
@@ -1652,7 +1652,7 @@ def initialize(
                         deploy,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         force=True,
                         respect_dryrun_skip=False,
                     )

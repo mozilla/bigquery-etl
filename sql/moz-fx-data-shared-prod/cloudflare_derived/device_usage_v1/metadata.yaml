@@ -1,0 +1,27 @@
+friendly_name: Cloudflare Device Usage
+description: |-
+  Contains data from Cloudflare on usage by device type by day
+owners:
+- kwindau@mozilla.com
+labels:
+  level: bronze
+  incremental: false
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_cloudflare_device_market_share
+  date_partition_parameter: dte
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: CLOUDFLARE_AUTH_TOKEN
+    key: bqetl_cloudflare_device_market_share__cloudflare_auth_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: dte
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - location
+    - user_type

@@ -16,6 +16,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
@@ -46,4 +47,3 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
-level: bronze

@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau@mozilla.com
   table_type: aggregate
@@ -24,4 +25,3 @@ bigquery:
     fields:
     - os
     - device_type
-level: bronze

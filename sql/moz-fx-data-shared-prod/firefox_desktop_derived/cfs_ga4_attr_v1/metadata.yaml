@@ -5,6 +5,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: false
   owner1: kwindau
 scheduling:
@@ -21,4 +22,3 @@ bigquery:
     fields:
     - sample_id
 require_column_descriptions: false
-level: bronze

@@ -6,6 +6,7 @@ owners:
 - kwindau@mozilla.com
 - shong@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
   table_type: client_level
@@ -25,4 +26,3 @@ bigquery:
   clustering:
     fields:
     - sample_id
-level: bronze

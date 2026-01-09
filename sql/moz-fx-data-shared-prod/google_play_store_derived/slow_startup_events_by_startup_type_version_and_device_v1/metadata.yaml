@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
 scheduling:
@@ -20,4 +21,3 @@ bigquery:
     expiration_days: null
   range_partitioning: null
 require_column_descriptions: true
-level: bronze

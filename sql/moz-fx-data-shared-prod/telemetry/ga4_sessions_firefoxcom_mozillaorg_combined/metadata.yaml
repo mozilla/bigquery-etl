@@ -4,4 +4,3 @@ description: Contains 1 row per session.
   The flag value indicates the website the session is from, i.e. mozilla.org or firefox.com
 owners:
 - kwindau@mozilla.com
-level: bronze

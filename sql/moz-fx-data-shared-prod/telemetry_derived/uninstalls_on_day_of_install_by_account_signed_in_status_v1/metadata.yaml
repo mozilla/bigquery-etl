@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
   table_type: aggregate
@@ -20,4 +21,3 @@ bigquery:
   clustering:
     fields:
     - account_enabled
-level: bronze

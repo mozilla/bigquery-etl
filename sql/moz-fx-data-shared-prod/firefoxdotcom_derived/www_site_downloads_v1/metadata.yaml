@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
 scheduling:
@@ -28,4 +29,3 @@ bigquery:
     - device_category
     - operating_system
 require_column_descriptions: true
-level: bronze

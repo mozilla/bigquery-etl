@@ -5,7 +5,7 @@ owners:
 - kwindau@mozilla.com
 - sherrera@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   incremental: true
   owner1: kwindau
   owner2: sherrera

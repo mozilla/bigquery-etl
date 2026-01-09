@@ -5,7 +5,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   schedule: daily
   dag: bqetl_glean_usage
   owner1: kwindau

@@ -4,7 +4,7 @@ description: |-
 owners:
 - lmcfall@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   incremental: true
   owner1: lmcfall
   dag: bqetl_firefox_desktop_new_profiles_aggregates

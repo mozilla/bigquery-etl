@@ -4,7 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   incremental: false
   owner1: kwindau
 scheduling:

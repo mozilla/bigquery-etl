@@ -10,7 +10,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   incremental: true
   owner1: kwindau@mozilla.com
 scheduling:

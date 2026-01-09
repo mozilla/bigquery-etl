@@ -3,7 +3,7 @@ description: Contains data from Cloudflare on browser market share by day, devic
 owners:
 - kwindau@mozilla.com
 labels:
-  level: "bronze"
+  level: bronze
   incremental: true
   owner1: kwindau@mozilla.com
   table_type: aggregate

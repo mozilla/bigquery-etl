@@ -69,22 +69,9 @@
   ,
   _previous_cte AS (
     SELECT
-      first_submission_timestamp,
       client_id,
       `event`,
-      event_category,
-      event_name,
       criteria,
-      profile_group_id,
-      sample_id,
-      first_event_timestamp,
-      event_extra,
-      app_version_major,
-      normalized_channel,
-      normalized_country_code,
-      normalized_os,
-      normalized_os_version,
-      windows_build_number
     FROM
       `{{ project_id }}.{{ events_first_seen_table }}`
     WHERE

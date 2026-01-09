@@ -299,11 +299,12 @@ def validate_asset_level(query_dir, metadata):
     if not metadata.labels or not has_level:
         return True
     else:
-        level = metadata.labels["level"]
+        level = metadata.labels[LEVEL_LABEL]
 
-        if level not in list(LevelRequirements.__members__):
+        possible_levels = [level_requirement.name for level_requirement in LevelRequirements]
+        if level not in possible_levels:
             click.echo(
-                f"Invalid level in metadata: {level}. Must be one of {list(LevelRequirements.__members__)}."
+                f"Invalid level in metadata: {level}. Must be one of {possible_levels}."
             )
             return False
 

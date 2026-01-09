@@ -34,19 +34,13 @@
     FROM
       `{{ project_id }}.{{ app_id_dataset }}_derived.events_stream_v1`
     WHERE
-    {% raw %}
-    {% if is_init() %}
-    {% endraw %}
-      DATE(submission_timestamp) >= '2023-01-01' -- initialize by looking over all of history
-      AND sample_id >= @sample_id
-      AND sample_id < @sample_id + @sampling_batch_size
-      {% raw %}
-      {% else %}
-      {% endraw %}
-      DATE(submission_timestamp) = @submission_date
-      {% raw %}
-      {% endif %}
-      {% endraw %}
+      {% raw %}{% if is_init() %}{% endraw %}
+        DATE(submission_timestamp) >= '2023-01-01'  -- initialize by looking over all of history
+        AND sample_id >= @sample_id
+        AND sample_id < @sample_id + @sampling_batch_size
+      {% raw %}{% else %}{% endraw %}
+        DATE(submission_timestamp) = @submission_date
+      {% raw %}{% endif %}{% endraw %}
       -- remove unnecessary high-volume categories to reduce cost
       AND event_category NOT IN (
         'media.playback',

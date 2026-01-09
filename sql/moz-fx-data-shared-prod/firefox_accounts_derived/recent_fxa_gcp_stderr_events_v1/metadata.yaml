@@ -12,6 +12,8 @@ scheduling:
   dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
+schema:
+  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day

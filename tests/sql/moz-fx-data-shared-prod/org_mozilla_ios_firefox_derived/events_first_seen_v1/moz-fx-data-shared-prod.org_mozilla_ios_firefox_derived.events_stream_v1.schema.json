@@ -610,5 +610,12 @@
     "type": "BOOLEAN",
     "description": "",
     "fields": []
+  },
+  {
+    "name": "document_event_number",
+    "mode": "NULLABLE",
+    "type": "INTEGER",
+    "description": "",
+    "fields": []
   }
 ]

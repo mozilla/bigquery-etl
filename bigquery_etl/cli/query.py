@@ -504,6 +504,8 @@ def _backfill_query(
         click.echo("Destination table must be named like: <project>.<dataset>.<table>")
         sys.exit(1)
 
+    metadata = Metadata.of_query_file(str(query_file_path))
+
     backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     query_parameters = [
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
@@ -549,7 +551,6 @@ def _backfill_query(
         ignore_public_dataset=True,
         is_backfill=True,
     )
-
     # Run checks on the query
     checks_file = query_file_path.parent / checks_file_name
     if run_checks and checks_file.exists():
@@ -648,6 +649,7 @@ def _backfill_query(
         "Destination table name results are written to. "
         + "If not set, determines destination table based on query."
     ),
+    metavar="PROJECT.DATASET.TABLE",
 )
 @click.option(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
@@ -730,10 +732,12 @@ def backfill(
 
     if custom_query_path:
         query_files = paths_matching_name_pattern(
-            custom_query_path, sql_dir, project_id
+            custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
         )
     else:
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, files=["query.sql", "query.py"]
+        )
 
     if query_files == []:
         if custom_query_path:
@@ -752,6 +756,8 @@ def backfill(
 
     for query_file in query_files:
         query_file_path = Path(query_file)
+
+        is_python_script = query_file_path.suffix == ".py"
 
         try:
             metadata = Metadata.of_query_file(str(query_file_path))
@@ -790,16 +796,22 @@ def backfill(
             )
 
         client = bigquery.Client(project=project_id)
+        project, dataset, table = extract_from_query_path(query_file_path)
         try:
-            project, dataset, table = extract_from_query_path(query_file_path)
-            client.get_table(f"{project}.{dataset}.{table}")
+            client.get_table(destination_table or f"{project}.{dataset}.{table}")
         except NotFound:
-            ctx.invoke(
-                initialize,
-                name=query_file,
-                dry_run=dry_run,
-                billing_project=billing_project,
-            )
+            if destination_table:
+                raise RuntimeError(
+                    f"Destination table, {destination_table}, must already exist if set"
+                )
+            # scripts can handle table creation in their code
+            if not is_python_script:
+                ctx.invoke(
+                    initialize,
+                    name=query_file,
+                    dry_run=dry_run,
+                    billing_project=billing_project,
+                )
 
         backfill_query = partial(
             _backfill_query,

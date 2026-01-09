@@ -19,7 +19,7 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
-      - event_category
+      - criteria
       - normalized_channel
       - sample_id
-      - normalized_country_code
+      - event_category

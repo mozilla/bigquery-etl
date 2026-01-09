@@ -431,6 +431,11 @@ class Metadata:
         if metadata_dict["scheduling"] == {}:
             del metadata_dict["scheduling"]
 
+        if "derived_from" in metadata_dict.get("schema", {}) and metadata_dict["schema"][
+            "derived_from"
+        ] == []:
+            del metadata_dict["schema"]["derived_from"]
+
         if metadata_dict["labels"]:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags

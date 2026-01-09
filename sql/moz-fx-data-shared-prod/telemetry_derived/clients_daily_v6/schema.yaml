@@ -2373,4 +2373,5 @@ fields:
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.
+  description: True if the user can create backups, i.e. it has not been disabled
+    by a pref or otherwise deemed incompatible.

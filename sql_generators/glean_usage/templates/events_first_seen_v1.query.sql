@@ -59,16 +59,12 @@
       event_name,
       criteria
   )
-  {% raw %}
-  {% if is_init() %}
-  {% endraw %}
+  {% raw %}{% if is_init() %}{% endraw %}
   SELECT
     *
   FROM
     events_stream_cte
-  {% raw %}
-  {% else %}
-  {% endraw %}
+  {% raw %}{% else %}{% endraw %}
     -- query over all of history to see whether the client_id, event and criteria combination has shown up before
   ,
   _previous_cte AS (
@@ -107,9 +103,7 @@
     AND events_stream_cte.criteria = _previous_cte.criteria
   WHERE
     _previous_cte.client_id IS NULL
-    {% raw %}
-    {% endif %}
-    {% endraw %}
+    {% raw %}{% endif %}{% endraw %}
 )
 
 {% if not loop.last -%}

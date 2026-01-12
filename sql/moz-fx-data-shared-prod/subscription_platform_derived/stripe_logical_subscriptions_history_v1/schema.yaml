@@ -169,15 +169,6 @@ fields:
     description: |-
       When the subscription ended.
       This will be null for active subscriptions.
-  - name: started_reason
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Reason why the subscription started.
-      Possible values:
-        * `Converted Trial` - A customer who previously had a trial plan has started a paid plan.
-        * `New` - A new customer started their subscription.
-        * `Reactivated` - A customer reactivated their subscription plan.
   - name: ended_reason
     type: STRING
     mode: NULLABLE

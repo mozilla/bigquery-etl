@@ -21,6 +21,8 @@ bigquery:
   clustering:
     fields:
     - fxa_server
+schema:
+  allow_field_addition: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

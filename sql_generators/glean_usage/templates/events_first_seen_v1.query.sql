@@ -1,9 +1,8 @@
 {{ header }}
 
-{% for criteria_name, criteria_sql in criteria.items() %}
-
-(
-  WITH events_stream_cte AS (
+WITH events_stream_cte AS (
+  {% for criteria_name, criteria_sql in criteria.items() %}
+  (
     SELECT
       MIN(submission_timestamp) AS first_submission_timestamp,
       client_id,
@@ -59,41 +58,41 @@
       event_name,
       criteria
   )
-  {% raw %}{% if is_init() %}{% endraw %}
-  SELECT
-    *
-  FROM
-    events_stream_cte
-  {% raw %}{% else %}{% endraw %}
-    -- query over all of history to see whether the client_id, event and criteria combination has shown up before
-  ,
-  _previous_cte AS (
-    SELECT
-      client_id,
-      `event`,
-      criteria,
-    FROM
-      `{{ project_id }}.{{ events_first_seen_table }}`
-    WHERE
-      DATE(first_submission_timestamp) >= '2023-01-01'
-      AND DATE(first_submission_timestamp) < @submission_date
-      AND criteria = {{ "'" ~ criteria_name ~ "'" }}
-  )
-  SELECT
-    events_stream_cte.*
-  FROM
-    events_stream_cte
-  LEFT JOIN
-    _previous_cte
-    ON events_stream_cte.client_id = _previous_cte.client_id
-    AND events_stream_cte.event = _previous_cte.event
-    AND events_stream_cte.criteria = _previous_cte.criteria
-  WHERE
-    _previous_cte.client_id IS NULL
-    {% raw %}{% endif %}{% endraw %}
+  {% if not loop.last -%}
+  UNION ALL
+  {% endif %}
+  {% endfor %}
 )
 
-{% if not loop.last -%}
-UNION ALL
-{% endif %}
-{% endfor %}
+{% raw %}{% if is_init() %}{% endraw %}
+SELECT
+  *
+FROM
+  events_stream_cte
+{% raw %}{% else %}{% endraw %}
+-- query over all of history to see whether the client_id, event and criteria combination has shown up before
+,
+_previous_cte AS (
+  SELECT
+    client_id,
+    `event`,
+    criteria,
+  FROM
+    `{{ project_id }}.{{ events_first_seen_table }}`
+  WHERE
+    DATE(first_submission_timestamp) >= '2023-01-01'
+    AND DATE(first_submission_timestamp) < @submission_date
+)
+
+SELECT
+  events_stream_cte.*
+FROM
+  events_stream_cte
+LEFT JOIN
+  _previous_cte
+  ON events_stream_cte.client_id = _previous_cte.client_id
+  AND events_stream_cte.event = _previous_cte.event
+  AND events_stream_cte.criteria = _previous_cte.criteria
+WHERE
+  _previous_cte.client_id IS NULL
+{% raw %}{% endif %}{% endraw %}

@@ -125,7 +125,9 @@ def generate(target_project, output_dir, use_cloud_function):
         """Load, render and output unitest template."""
         test_folder = ""
         parts = 2
-        output_path = Path("tests") / output_dir
+        # Handle absolute and relative paths for tests, including ../
+        output_path = Path("tests").joinpath(*output_dir.parts[output_dir.is_absolute():])
+
         for group in templates[template_type]:
             try:
                 for file_name, file_template in group[source].items():
@@ -271,7 +273,33 @@ def generate(target_project, output_dir, use_cloud_function):
                 channels=CHECKS_TEMPLATE_CHANNELS[browser.name],
             )
 
-        # Write query SQL files.
+        # Write table schema YAML.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="schema.yaml",
+            sql=render(
+                table_schema_template,
+                template_folder=THIS_PATH / "templates",
+                format=False,
+            ),
+            skip_existing=False,
+        )
+
+        # Write view schema YAML.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+            basename="schema.yaml",
+            sql=render(
+                view_schema_template,
+                template_folder=THIS_PATH / "templates",
+                format=False,
+            ),
+            skip_existing=False,
+        )
+
+        # Write query SQL.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -280,7 +308,37 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # Write metadata YAML files.
+        # Write view SQL.
+        if browser.name == "focus_android":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    focus_android_view_template.render(
+                        project_id=target_project,
+                        app_name=browser.name,
+                        table_name=TABLE_NAME,
+                    )
+                ),
+                skip_existing=False,
+            )
+        else:
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    view_template.render(
+                        project_id=target_project,
+                        app_name=browser.name,
+                        table_name=TABLE_NAME,
+                    )
+                ),
+                skip_existing=False,
+            )
+
+        # Write metadata YAML.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -296,20 +354,7 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # Write schema YAML files.
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-            basename="schema.yaml",
-            sql=render(
-                table_schema_template,
-                template_folder=THIS_PATH / "templates",
-                format=False,
-            ),
-            skip_existing=False,
-        )
-
-        # Write checks sql files.
+        # Write checks SQL.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -318,61 +363,19 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # Write view sql files.
-        if browser.name == "focus_android":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-                basename="view.sql",
-                sql=reformat(
-                    focus_android_view_template.render(
-                        project_id=target_project,
-                        app_name=browser.name,
-                        table_name=TABLE_NAME,
-                    )
-                ),
-                skip_existing=False,
-            )
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-                basename="schema.yaml",
-                sql=render(
-                    view_schema_template,
-                    template_folder=THIS_PATH / "templates",
-                    format=False,
-                ),
-                skip_existing=False,
-            )
-        elif browser.name != "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-                basename="view.sql",
-                sql=reformat(
-                    view_template.render(
-                        project_id=target_project,
-                        app_name=browser.name,
-                        table_name=TABLE_NAME,
-                    )
-                ),
-                skip_existing=False,
-            )
+        # Write BigEye config YAML.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="bigconfig.yml",
+            sql=bigeye_checks_template.render(
+                app_name=browser.name,
+                format=False,
+            ),
+            skip_existing=False,
+        )
 
-        # Write view schema file for mobile.
-        if browser.name != "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-                basename="schema.yaml",
-                sql=render(
-                    view_schema_template,
-                    template_folder=THIS_PATH / "templates",
-                    format=False,
-                ),
-                skip_existing=False,
-            )
-
+    # Write Mobile unioned view SQL.
     write_sql(
         output_dir=output_dir,
         full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{BASE_NAME}_mobile",
@@ -388,18 +391,6 @@ def generate(target_project, output_dir, use_cloud_function):
                 klar_ios_dataset=Browsers("Klar iOS").name,
                 klar_android_dataset=Browsers("Klar Android").name,
             )
-        ),
-        skip_existing=False,
-    )
-
-    # Write BigEye config files.
-    write_sql(
-        output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-        basename="bigconfig.yml",
-        sql=bigeye_checks_template.render(
-            app_name=browser.name,
-            format=False,
         ),
         skip_existing=False,
     )

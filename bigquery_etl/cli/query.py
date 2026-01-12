@@ -250,7 +250,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+            time_partitioning=PartitionMetadata(
+                field="", type=PartitionType.DAY, require_partition_filter=True
+            ),
             clustering=ClusteringMetadata(fields=[]),
         ),
         require_column_descriptions=True,

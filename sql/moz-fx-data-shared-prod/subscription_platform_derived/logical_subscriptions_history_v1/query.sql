@@ -21,6 +21,38 @@ countries AS (
   FROM
     `moz-fx-data-shared-prod.static.country_codes_v1`
 ),
+subscription_started_reason AS (
+  SELECT
+    history.subscription.id AS subscription_id,
+    CONCAT(
+      IF(
+        DENSE_RANK() OVER ( -- get the customer_subscription_number
+          PARTITION BY
+            COALESCE(
+              history.subscription.mozilla_account_id_sha256,
+              history.subscription.provider_customer_id,
+              history.subscription.provider_subscription_id
+            )
+          ORDER BY
+            history.subscription.started_at,
+            history.subscription.id
+        ) = 1,
+        'New Customer',
+        'Returning Customer'
+      ),
+      IF(history.subscription.is_trial, ' Trial', '')
+    ) AS started_reason,
+  FROM
+    history
+  QUALIFY
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from,
+        history.valid_to
+    )
+),
 subscription_attributions AS (
   SELECT
     subscription_id,
@@ -131,7 +163,8 @@ SELECT
     history.subscription.ongoing_discount_promotion_code,
     history.subscription.ongoing_discount_amount,
     history.subscription.ongoing_discount_ends_at,
-    history.subscription.ended_reason
+    history.subscription.ended_reason,
+    subscription_started_reason.started_reason
   ) AS subscription
 FROM
   history
@@ -141,3 +174,6 @@ LEFT JOIN
 LEFT JOIN
   subscription_attributions
   ON history.subscription.id = subscription_attributions.subscription_id
+LEFT JOIN
+  subscription_started_reason
+  ON history.subscription.id = subscription_starts.subscription_id

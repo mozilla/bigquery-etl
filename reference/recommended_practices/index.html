@@ -1408,6 +1408,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Query Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Schemas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1671,6 +1686,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Query Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Schemas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1854,6 +1884,18 @@
 <ul>
 <li>only labels where value types are eithers integers or strings are published, all other values types are being skipped</li>
 </ul>
+<h3 id="dynamic-schemas">Dynamic Schemas</h3>
+<p>For tables whose schemas may evolve over time (e.g., tables that use <code>--schema_update_option=ALLOW_FIELD_ADDITION</code>), you can indicate this in the metadata to ensure schema updates are not skipped:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">schema</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">allow_field_addition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>This setting ensures that when running <code>./bqetl query schema update --skip-existing</code>, the schema for this query will still be updated even if a <code>schema.yaml</code> file already exists. This is particularly useful for:</p>
+<ul>
+<li>Tables that receive new fields dynamically</li>
+<li>Tables using BigQuery's schema auto-detection</li>
+<li>Tables that use <code>ALLOW_FIELD_ADDITION</code> schema update option</li>
+</ul>
+<p>Without this flag, <code>--skip-existing</code> will skip schema updates for queries that already have a <code>schema.yaml</code> file.</p>
 <h2 id="views">Views</h2>
 <ul>
 <li>Should be defined in files named as <code>sql/&lt;project&gt;/&lt;dataset&gt;/&lt;table&gt;/view.sql</code> e.g.

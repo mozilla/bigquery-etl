@@ -316,12 +316,12 @@ class View:
 
         try:
             expected_view_query = CREATE_VIEW_PATTERN.sub(
-                "", sqlparse.format(self.content, strip_comments=True), count=1
+                "", sqlparse.format(self.content), count=1
             ).strip(";" + string.whitespace)
 
-            actual_view_query = sqlparse.format(
-                table.view_query, strip_comments=True
-            ).strip(";" + string.whitespace)
+            actual_view_query = sqlparse.format(table.view_query).strip(
+                ";" + string.whitespace
+            )
         except TypeError:
             print(
                 f"ERROR: There has been an issue formatting: {target_view_id}",
@@ -445,7 +445,7 @@ class View:
                     try:
                         new_view_query = CREATE_VIEW_PATTERN.sub(
                             "",
-                            sqlparse.format(self.content, strip_comments=True),
+                            sqlparse.format(self.content),
                             count=1,
                         ).strip(";" + string.whitespace)
                     except TypeError:

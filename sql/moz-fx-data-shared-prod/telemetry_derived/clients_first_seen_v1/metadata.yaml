@@ -43,5 +43,3 @@ schema:
     - clients_daily_v6
     exclude:
     - submission_date
-require_column_descriptions: false
-level: null

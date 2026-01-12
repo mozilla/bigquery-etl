@@ -429,6 +429,9 @@ fields:
     - name: crash_cause
       type: STRING
       mode: NULLABLE
+      description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
+
+        '
   - name: timespan
     type: RECORD
     fields:
@@ -476,9 +479,15 @@ fields:
     - name: crash_breadcrumbs
       type: JSON
       mode: NULLABLE
+      description: 'Crash breadcrumb information.
+
+        '
     - name: crash_java_exception
       type: JSON
       mode: NULLABLE
+      description: 'Error and stack trace information for a java exception.
+
+        '
   - name: quantity
     type: RECORD
     fields:
@@ -651,3 +660,4 @@ fields:
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
+  description: App ID of the channel data was received from

@@ -176,4 +176,4 @@ LEFT JOIN
   ON history.subscription.id = subscription_attributions.subscription_id
 LEFT JOIN
   subscription_started_reason
-  ON history.subscription.id = subscription_starts.subscription_id
+  ON history.subscription.id = subscription_started_reason.subscription_id

@@ -134,6 +134,23 @@ labels:
 
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
 
+### Dynamic Schemas
+
+For tables whose schemas may evolve over time (e.g., tables that use `--schema_update_option=ALLOW_FIELD_ADDITION`), you can indicate this in the metadata to ensure schema updates are not skipped:
+
+```yaml
+schema:
+  allow_field_addition: true
+```
+
+This setting ensures that when running `./bqetl query schema update --skip-existing`, the schema for this query will still be updated even if a `schema.yaml` file already exists. This is particularly useful for:
+
+- Tables that receive new fields dynamically
+- Tables using BigQuery's schema auto-detection
+- Tables that use `ALLOW_FIELD_ADDITION` schema update option
+
+Without this flag, `--skip-existing` will skip schema updates for queries that already have a `schema.yaml` file.
+
 ## Views
 
 - Should be defined in files named as `sql/<project>/<dataset>/<table>/view.sql` e.g.

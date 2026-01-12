@@ -24,6 +24,7 @@ owners:
   - lvargas@mozilla.com
   - mozilla/kpi_table_reviewers
 labels:
+  level: gold
   incremental: true
   change_controlled: true
   shredder_mitigation: true
@@ -42,4 +43,3 @@ bigquery:
       - app_name
       - attribution_medium
       - channel
-level: gold

@@ -12,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.fenix.usage_reporting_clients_first_seen
   - moz-fx-data-shared-prod.fenix.usage_reporting_clients_last_seen
 require_column_descriptions: false
-level: null

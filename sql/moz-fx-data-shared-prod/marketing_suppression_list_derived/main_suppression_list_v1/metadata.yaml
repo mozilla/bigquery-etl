@@ -29,4 +29,3 @@ references:
   - moz-fx-data-shared-prod.braze_external.braze_currents_pocket_hard_bounces_v1
   - moz-fx-data-shared-prod.braze_external.braze_currents_pocket_unsubscribe_v1
 require_column_descriptions: false
-level: null

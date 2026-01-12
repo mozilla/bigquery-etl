@@ -358,7 +358,6 @@ SELECT
       JSON_VALUE(event_extra.prefType) AS `prefType`,
       JSON_VALUE(event_extra.previous_language) AS `previous_language`,
       JSON_VALUE(event_extra.previousState) AS `previousState`,
-      JSON_VALUE(event_extra.principal_type) AS `principal_type`,
       JSON_VALUE(event_extra.principalType) AS `principalType`,
       JSON_VALUE(event_extra.process_id) AS `process_id`,
       JSON_VALUE(event_extra.profile_state) AS `profile_state`,

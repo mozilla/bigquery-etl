@@ -35,4 +35,3 @@ references:
   - mozdata.telemetry.desktop_active_users
   - mozdata.telemetry.mobile_active_users
 require_column_descriptions: false
-level: null

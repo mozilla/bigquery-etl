@@ -11,4 +11,3 @@ references:
   udf.sql:
   - test_data
 require_column_descriptions: false
-level: null

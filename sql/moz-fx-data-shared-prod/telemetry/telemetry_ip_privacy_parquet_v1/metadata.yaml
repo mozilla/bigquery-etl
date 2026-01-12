@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.telemetry_ip_privacy_parquet_v1
 require_column_descriptions: false
-level: null

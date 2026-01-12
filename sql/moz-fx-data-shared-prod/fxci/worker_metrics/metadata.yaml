@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fxci_derived.worker_metrics_v1
 require_column_descriptions: false
-level: null

@@ -13,4 +13,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.migration_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.migration_v1
 require_column_descriptions: false
-level: null

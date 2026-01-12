@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
 require_column_descriptions: false
-level: null

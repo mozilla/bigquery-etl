@@ -39,4 +39,3 @@ references:
   - moz-fx-data-shared-prod.fenix_derived.attributable_clients_v2
   - moz-fx-data-shared-prod.fenix_derived.client_adclicks_history_v1
 require_column_descriptions: false
-level: null

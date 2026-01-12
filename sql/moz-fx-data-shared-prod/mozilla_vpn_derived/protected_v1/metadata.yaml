@@ -22,4 +22,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1
   - moz-fx-guardian-prod-bfc7.log_storage.stdout
 require_column_descriptions: false
-level: null

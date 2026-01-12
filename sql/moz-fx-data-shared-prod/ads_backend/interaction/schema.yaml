@@ -450,6 +450,13 @@ fields:
         item used for internal reporting.
 
         '
+    - name: technical_operations_firefox_version
+      type: STRING
+      mode: NULLABLE
+      description: 'Version of the Firefox browser being used by the client. Used
+        for error investigation only, no analytics value.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

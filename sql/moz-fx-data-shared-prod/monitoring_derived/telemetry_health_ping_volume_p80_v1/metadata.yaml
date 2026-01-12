@@ -33,4 +33,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.baseline_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.baseline_v1
 require_column_descriptions: false
-level: null

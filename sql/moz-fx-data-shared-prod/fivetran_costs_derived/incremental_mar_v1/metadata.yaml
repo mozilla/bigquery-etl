@@ -21,4 +21,3 @@ references:
   query.sql:
   - moz-fx-data-bq-fivetran.fivetran_log.incremental_mar
 require_column_descriptions: false
-level: null

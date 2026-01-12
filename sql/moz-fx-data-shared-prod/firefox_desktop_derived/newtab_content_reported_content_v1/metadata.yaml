@@ -35,4 +35,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1
 require_column_descriptions: false
-level: null

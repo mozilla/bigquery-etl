@@ -15,4 +15,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_mach.health
 require_column_descriptions: false
-level: null

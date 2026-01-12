@@ -11,4 +11,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.experimenter_cirrus.events
 require_column_descriptions: false
-level: null

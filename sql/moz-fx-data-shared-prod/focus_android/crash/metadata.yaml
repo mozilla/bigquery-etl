@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.crash
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.crash
 require_column_descriptions: false
-level: null

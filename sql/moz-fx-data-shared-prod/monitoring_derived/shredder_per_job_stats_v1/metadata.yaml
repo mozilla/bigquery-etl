@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1
   - moz-fx-data-shredder.shredder_state.shredder_state
 require_column_descriptions: false
-level: null

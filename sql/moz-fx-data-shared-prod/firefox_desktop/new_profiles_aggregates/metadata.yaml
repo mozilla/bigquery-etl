@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.new_profiles_aggregates_v1
 require_column_descriptions: false
-level: null

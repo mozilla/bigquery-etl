@@ -40,4 +40,3 @@ monitoring:
   volume:
     blocking: false
 require_column_descriptions: false
-level: null

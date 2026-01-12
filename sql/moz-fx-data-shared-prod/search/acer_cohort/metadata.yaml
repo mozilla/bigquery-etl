@@ -18,4 +18,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.search_derived.acer_cohort_v1
 require_column_descriptions: false
-level: null

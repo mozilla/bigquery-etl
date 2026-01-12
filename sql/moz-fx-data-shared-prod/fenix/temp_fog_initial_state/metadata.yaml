@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.temp_fog_initial_state
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.temp_fog_initial_state
 require_column_descriptions: false
-level: null

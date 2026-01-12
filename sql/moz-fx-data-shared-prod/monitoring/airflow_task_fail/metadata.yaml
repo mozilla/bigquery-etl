@@ -14,4 +14,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.airflow_task_fail_v1
 require_column_descriptions: false
-level: null

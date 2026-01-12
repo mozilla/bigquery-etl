@@ -47,4 +47,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline
   - moz-fx-data-shared-prod.org_mozilla_klar.baseline
 require_column_descriptions: false
-level: null

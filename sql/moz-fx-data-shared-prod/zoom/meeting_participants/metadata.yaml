@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-bq-fivetran.zoom.meeting_participant
 require_column_descriptions: false
-level: null

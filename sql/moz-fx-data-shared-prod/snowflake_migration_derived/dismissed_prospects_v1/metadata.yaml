@@ -39,4 +39,3 @@ references:
   - moz-fx-data-shared-prod.snowflake_migration_derived.prospects_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.rejected_corpus_items_v1
 require_column_descriptions: false
-level: null

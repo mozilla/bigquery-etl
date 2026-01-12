@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 require_column_descriptions: true
-level: null

@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.cookie_banner_report_site
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.cookie_banner_report_site
 require_column_descriptions: false
-level: null

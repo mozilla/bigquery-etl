@@ -32,4 +32,3 @@ references:
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true
 require_column_descriptions: false
-level: null

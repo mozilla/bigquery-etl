@@ -16,4 +16,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.looker_usage_unused_explores_v1
 require_column_descriptions: false
-level: null

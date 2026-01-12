@@ -32,4 +32,3 @@ references:
   - moz-fx-data-shared-prod.telemetry.clients_first_seen
   - moz-fx-data-shared-prod.telemetry.desktop_active_users
 require_column_descriptions: false
-level: null

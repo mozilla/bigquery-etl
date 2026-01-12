@@ -15,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.client_probe_counts
   - moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1
 require_column_descriptions: false
-level: null

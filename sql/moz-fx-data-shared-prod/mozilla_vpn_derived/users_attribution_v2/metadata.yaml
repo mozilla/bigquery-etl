@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v1
   - moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1
 require_column_descriptions: false
-level: null

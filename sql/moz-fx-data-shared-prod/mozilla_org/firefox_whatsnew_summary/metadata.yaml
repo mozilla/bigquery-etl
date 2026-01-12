@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_org_derived.firefox_whatsnew_summary_v3
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3
 require_column_descriptions: false
-level: null

@@ -17,4 +17,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_data_cta_uid_map_v1
 require_column_descriptions: false
-level: null

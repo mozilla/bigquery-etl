@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android_beta.health
   - moz-fx-data-shared-prod.net_thunderbird_android_daily.health
 require_column_descriptions: false
-level: null

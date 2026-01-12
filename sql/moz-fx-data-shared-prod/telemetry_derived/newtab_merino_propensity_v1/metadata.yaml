@@ -30,4 +30,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items
 require_column_descriptions: false
-level: null

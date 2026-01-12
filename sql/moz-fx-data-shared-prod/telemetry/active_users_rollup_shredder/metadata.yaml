@@ -15,4 +15,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.active_users_rollup_shredder_v1
 require_column_descriptions: false
-level: null

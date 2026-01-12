@@ -14,4 +14,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.survey_cancellation_of_service_v1
 require_column_descriptions: false
-level: null

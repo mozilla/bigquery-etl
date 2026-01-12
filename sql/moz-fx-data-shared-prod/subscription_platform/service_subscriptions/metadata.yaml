@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.subscription_platform.vat_rates_history
   - moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_v1
 require_column_descriptions: false
-level: null

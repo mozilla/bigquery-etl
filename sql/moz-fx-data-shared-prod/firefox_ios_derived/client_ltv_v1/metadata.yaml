@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios_derived.client_ltv_v1
   - moz-fx-data-shared-prod.firefox_ios_derived.ltv_states_v1
 require_column_descriptions: true
-level: null

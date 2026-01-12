@@ -38,4 +38,3 @@ references:
   - moz-fx-dataops-secrets.airflow_query_keys.fxa_prod
   - moz-fx-fxa-prod.gke_fxa_prod_log.stderr
 require_column_descriptions: false
-level: null

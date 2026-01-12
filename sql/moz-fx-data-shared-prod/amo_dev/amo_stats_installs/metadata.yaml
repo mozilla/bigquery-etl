@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.amo_dev.amo_stats_installs_v3
 require_column_descriptions: false
-level: null

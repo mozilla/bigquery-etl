@@ -15,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.static.fxa_amplitude_export_users_daily
   - moz-fx-data-shared-prod.static.fxa_amplitude_export_users_last_seen
 require_column_descriptions: false
-level: null

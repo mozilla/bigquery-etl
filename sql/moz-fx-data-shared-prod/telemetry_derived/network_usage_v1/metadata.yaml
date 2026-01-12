@@ -27,4 +27,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry.main
 require_column_descriptions: true
-level: bronze

@@ -12,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.active_users_aggregates
   - moz-fx-data-shared-prod.firefox_ios.usage_reporting_active_users_aggregates
 require_column_descriptions: false
-level: null

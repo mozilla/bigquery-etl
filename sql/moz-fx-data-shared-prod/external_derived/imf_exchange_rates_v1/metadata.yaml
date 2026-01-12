@@ -19,4 +19,3 @@ references:
   checks.sql:
   - ..
 require_column_descriptions: true
-level: null

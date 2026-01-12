@@ -15,4 +15,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_tv_firefox.health
 require_column_descriptions: false
-level: null

@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.network_usage_v1
 require_column_descriptions: false
-level: null

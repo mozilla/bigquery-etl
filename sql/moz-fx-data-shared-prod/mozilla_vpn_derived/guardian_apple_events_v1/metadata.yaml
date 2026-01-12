@@ -20,4 +20,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_external.subscriptions_20230117
   - moz-fx-data-shared-prod.mozilla_vpn_external.users_v1
 require_column_descriptions: false
-level: null

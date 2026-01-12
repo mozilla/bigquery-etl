@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.telemetry_health_glean_errors_v1
 require_column_descriptions: false
-level: null

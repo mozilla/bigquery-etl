@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.home_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.metrics_v1
 require_column_descriptions: false
-level: null

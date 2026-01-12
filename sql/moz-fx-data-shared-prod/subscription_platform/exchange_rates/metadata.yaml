@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.exchange_rates_v1
 require_column_descriptions: false
-level: null

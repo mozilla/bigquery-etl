@@ -12,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.apple_ads.campaign_report
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
 require_column_descriptions: false
-level: null

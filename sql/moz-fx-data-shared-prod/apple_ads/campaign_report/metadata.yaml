@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.apple_ads_external.campaign_report_v1
 require_column_descriptions: false
-level: null

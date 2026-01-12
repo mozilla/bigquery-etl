@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.events_unnested
   - moz-fx-data-shared-prod.firefox_ios.metrics
 require_column_descriptions: false
-level: null

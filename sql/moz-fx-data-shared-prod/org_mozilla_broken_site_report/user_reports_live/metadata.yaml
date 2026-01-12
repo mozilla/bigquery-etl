@@ -16,4 +16,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.broken_site_report_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_live.broken_site_report_v1
 require_column_descriptions: false
-level: null

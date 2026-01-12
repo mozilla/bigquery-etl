@@ -26,4 +26,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_installer.install
 require_column_descriptions: false
-level: null

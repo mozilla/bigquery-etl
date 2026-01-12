@@ -14,4 +14,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.uninstalls_by_attr_src_v1
 require_column_descriptions: false
-level: null

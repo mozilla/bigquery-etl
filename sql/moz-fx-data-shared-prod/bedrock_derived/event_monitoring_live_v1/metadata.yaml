@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.bedrock_live.interaction_v1
   - moz-fx-data-shared-prod.bedrock_live.non_interaction_v1
 require_column_descriptions: false
-level: null

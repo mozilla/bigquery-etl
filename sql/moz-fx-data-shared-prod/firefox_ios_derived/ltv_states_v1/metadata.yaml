@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.client_adclicks_history
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
 require_column_descriptions: true
-level: null

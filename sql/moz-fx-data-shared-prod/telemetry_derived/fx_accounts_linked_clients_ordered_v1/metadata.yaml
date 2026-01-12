@@ -25,4 +25,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_first_seen
   - moz-fx-data-shared-prod.telemetry_derived.fx_accounts_linked_clients_v1
 require_column_descriptions: true
-level: bronze

@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.messaging_system_derived.cfr_users_last_seen_v1
 require_column_descriptions: false
-level: null

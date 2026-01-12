@@ -41,4 +41,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_org_derived.blogs_sessions_v2
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
 require_column_descriptions: false
-level: null

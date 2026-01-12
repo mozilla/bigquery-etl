@@ -12,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.pocket_derived.spoc_tile_ids_history_v1
 deprecated: true
 require_column_descriptions: false
-level: null

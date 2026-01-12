@@ -30,4 +30,3 @@ references:
   - moz-fx-data-shared-prod.fenix.baseline
   - moz-fx-data-shared-prod.fenix.events_unnested
 require_column_descriptions: false
-level: null

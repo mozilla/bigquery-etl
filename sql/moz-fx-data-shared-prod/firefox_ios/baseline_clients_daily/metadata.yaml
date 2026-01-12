@@ -13,4 +13,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline_clients_daily
 require_column_descriptions: false
-level: null

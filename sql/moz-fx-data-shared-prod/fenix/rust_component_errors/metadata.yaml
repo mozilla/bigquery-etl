@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.rust_component_errors
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.rust_component_errors
 require_column_descriptions: false
-level: null

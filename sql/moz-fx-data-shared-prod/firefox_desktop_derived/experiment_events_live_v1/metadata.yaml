@@ -15,4 +15,3 @@ references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_live.events_v1
 require_column_descriptions: false
-level: null

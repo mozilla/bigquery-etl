@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen
   - moz-fx-data-shared-prod.firefox_desktop.metrics_clients_first_seen
 require_column_descriptions: false
-level: null

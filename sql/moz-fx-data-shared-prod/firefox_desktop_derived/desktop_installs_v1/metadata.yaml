@@ -30,4 +30,3 @@ references:
   - moz-fx-data-shared-prod.telemetry.install
   - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout
 require_column_descriptions: true
-level: bronze

@@ -12,4 +12,3 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: false
-level: null

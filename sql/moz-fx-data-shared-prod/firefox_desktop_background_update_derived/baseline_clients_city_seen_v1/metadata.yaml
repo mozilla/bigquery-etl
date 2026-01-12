@@ -44,4 +44,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_update_derived.baseline_clients_city_seen_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_update_live.baseline_v1
 require_column_descriptions: false
-level: null

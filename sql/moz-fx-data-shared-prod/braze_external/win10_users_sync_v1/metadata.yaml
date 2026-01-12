@@ -21,4 +21,3 @@ references:
   - moz-fx-data-shared-prod.braze_derived.fxa_win10_users_historical_v1
 deprecated: true
 require_column_descriptions: false
-level: null

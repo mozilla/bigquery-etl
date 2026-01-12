@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.hang_report
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.hang_report
 require_column_descriptions: false
-level: null

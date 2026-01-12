@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.onboarding_v2
 require_column_descriptions: false
-level: null

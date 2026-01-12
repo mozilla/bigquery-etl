@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.internet_outages.global_outages_v1
   - moz-fx-data-shared-prod.internet_outages.global_outages_v2
 require_column_descriptions: false
-level: null

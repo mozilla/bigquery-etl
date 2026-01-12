@@ -13,4 +13,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_bucket_counts_v1
 require_column_descriptions: false
-level: null

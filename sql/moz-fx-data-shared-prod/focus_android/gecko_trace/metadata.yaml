@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.gecko_trace
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.gecko_trace
 require_column_descriptions: false
-level: null

@@ -14,4 +14,3 @@ workgroup_access:
   members:
   - workgroup:ads/data-viewers
 require_column_descriptions: false
-level: null

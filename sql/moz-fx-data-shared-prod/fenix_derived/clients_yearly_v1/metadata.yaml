@@ -35,4 +35,3 @@ references:
   - moz-fx-data-shared-prod.fenix.baseline_clients_daily
   - moz-fx-data-shared-prod.fenix_derived.clients_yearly_v1
 require_column_descriptions: false
-level: null

@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.fenix.topsites_impression
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 require_column_descriptions: false
-level: null

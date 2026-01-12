@@ -22,4 +22,3 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.monthly_active_logical_subscriptions_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.recent_monthly_active_logical_subscriptions_v1
 require_column_descriptions: true
-level: null

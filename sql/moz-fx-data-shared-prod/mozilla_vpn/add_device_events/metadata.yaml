@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.add_device_events_v1
 require_column_descriptions: false
-level: null

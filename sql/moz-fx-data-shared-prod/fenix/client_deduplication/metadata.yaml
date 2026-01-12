@@ -15,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.client_deduplication
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.client_deduplication
 require_column_descriptions: false
-level: null

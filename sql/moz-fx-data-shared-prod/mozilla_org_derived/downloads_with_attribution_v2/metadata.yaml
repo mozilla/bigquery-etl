@@ -63,4 +63,3 @@ references:
   - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout
 deprecated: true
 require_column_descriptions: false
-level: null

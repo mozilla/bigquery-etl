@@ -42,4 +42,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.newtab_content
   - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
 require_column_descriptions: false
-level: null

@@ -30,4 +30,3 @@ references:
   - chrome-ux-report.materialized.country_summary
   - tranco.daily.daily
 require_column_descriptions: false
-level: null

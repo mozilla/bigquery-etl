@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1
 require_column_descriptions: false
-level: null

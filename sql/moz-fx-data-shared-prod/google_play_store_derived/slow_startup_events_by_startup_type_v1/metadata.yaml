@@ -35,4 +35,3 @@ workgroup_access:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: true
-level: bronze

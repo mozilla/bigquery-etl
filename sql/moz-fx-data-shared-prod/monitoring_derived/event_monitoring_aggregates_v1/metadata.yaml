@@ -115,4 +115,3 @@ references:
   - moz-fx-data-shared-prod.syncstorage_stable.events_v1
   - moz-fx-data-shared-prod.thunderbird_desktop_stable.events_v1
 require_column_descriptions: false
-level: null

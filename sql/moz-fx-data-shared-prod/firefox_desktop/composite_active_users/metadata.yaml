@@ -12,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
   - moz-fx-data-shared-prod.firefox_desktop.usage_reporting_active_users
 require_column_descriptions: false
-level: null

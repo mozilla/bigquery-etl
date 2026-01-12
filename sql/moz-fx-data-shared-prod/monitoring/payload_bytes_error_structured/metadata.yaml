@@ -18,4 +18,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.payload_bytes_error.structured
 require_column_descriptions: false
-level: null

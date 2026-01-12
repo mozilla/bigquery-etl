@@ -57,4 +57,3 @@ references:
   - moz-fx-data-shared-prod.accounts_db_external.fxa_verification_reminders_v1 FOR
     SYSTEM_TIME
 require_column_descriptions: false
-level: null

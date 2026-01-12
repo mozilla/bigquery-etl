@@ -39,4 +39,3 @@ references:
   - moz-fx-data-shared-prod.glean_telemetry.active_users
   - moz-fx-data-shared-prod.glean_telemetry_derived.rolling_cohorts_v1
 require_column_descriptions: false
-level: null

@@ -11,4 +11,3 @@ workgroup_access:
   members:
   - workgroup:dataplatform/developers
 require_column_descriptions: false
-level: null

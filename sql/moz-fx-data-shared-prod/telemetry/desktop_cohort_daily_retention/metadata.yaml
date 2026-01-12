@@ -24,4 +24,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.desktop_cohort_daily_retention_v1
 require_column_descriptions: false
-level: null

@@ -41,4 +41,3 @@ references:
   - moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events
   - moz-fx-data-shared-prod.subscription_platform_derived.services_v1
 require_column_descriptions: false
-level: null

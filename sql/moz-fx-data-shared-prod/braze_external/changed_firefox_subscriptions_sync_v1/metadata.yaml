@@ -39,4 +39,3 @@ references:
   - moz-fx-data-shared-prod.braze_derived.subscriptions_v1
   - moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1
 require_column_descriptions: false
-level: null

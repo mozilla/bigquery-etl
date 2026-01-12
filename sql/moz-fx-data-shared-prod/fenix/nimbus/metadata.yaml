@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.nimbus
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.nimbus
 require_column_descriptions: false
-level: null

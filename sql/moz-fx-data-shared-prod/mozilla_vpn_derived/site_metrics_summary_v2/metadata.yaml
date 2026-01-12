@@ -33,4 +33,3 @@ references:
   - moz-fx-data-marketing-prod.analytics_313696158.events_*
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
 require_column_descriptions: false
-level: null

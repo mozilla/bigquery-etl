@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fivetran_costs_derived.daily_connector_costs_v1
 require_column_descriptions: false
-level: null

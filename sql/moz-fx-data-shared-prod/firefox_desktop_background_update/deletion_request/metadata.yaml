@@ -19,4 +19,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.deletion_request_v1
 require_column_descriptions: false
-level: null

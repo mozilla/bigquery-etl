@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.guardian_apple_events_v1
   - moz-fx-fxa-prod-0712.firestore_export.iap_app_store_purchases_raw_changelog
 require_column_descriptions: false
-level: null

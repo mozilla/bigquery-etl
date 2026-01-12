@@ -15,4 +15,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_klar.temp_fog_initial_state
 require_column_descriptions: false
-level: null

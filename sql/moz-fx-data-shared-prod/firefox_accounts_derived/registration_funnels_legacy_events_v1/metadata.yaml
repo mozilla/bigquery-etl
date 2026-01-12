@@ -26,4 +26,3 @@ references:
   query.sql:
   - mozdata.firefox_accounts.fxa_all_events
 require_column_descriptions: false
-level: null

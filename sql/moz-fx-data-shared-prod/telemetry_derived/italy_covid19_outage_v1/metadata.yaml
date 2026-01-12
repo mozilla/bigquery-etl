@@ -52,4 +52,3 @@ references:
   - moz-fx-data-shared-prod.telemetry.health
   - moz-fx-data-shared-prod.telemetry.main
 require_column_descriptions: false
-level: null

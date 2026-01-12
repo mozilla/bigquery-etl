@@ -18,4 +18,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1
 require_column_descriptions: false
-level: null

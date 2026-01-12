@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.pageload
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.pageload
 require_column_descriptions: false
-level: null

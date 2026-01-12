@@ -45,4 +45,3 @@ references:
   - moz-fx-data-marketing-prod.analytics_489412379.events_2*
   - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
 require_column_descriptions: true
-level: bronze

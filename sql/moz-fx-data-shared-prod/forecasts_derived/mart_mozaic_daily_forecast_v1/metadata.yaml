@@ -29,4 +29,3 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-outerbounds-task-default
 require_column_descriptions: true
-level: null

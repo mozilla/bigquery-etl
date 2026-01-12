@@ -15,4 +15,3 @@ references:
   - moz-fx-data-bq-people.composer_workday.worker
   - moz-fx-data-shared-prod.bugzilla_metrics.users
 require_column_descriptions: false
-level: null

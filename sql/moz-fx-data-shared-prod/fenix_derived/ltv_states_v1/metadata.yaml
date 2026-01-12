@@ -32,4 +32,3 @@ references:
   - moz-fx-data-shared-prod.fenix.clients_yearly
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
 require_column_descriptions: false
-level: null

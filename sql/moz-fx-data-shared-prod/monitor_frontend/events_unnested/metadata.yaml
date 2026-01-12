@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitor_frontend.events
 require_column_descriptions: false
-level: null

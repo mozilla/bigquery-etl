@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.suggest_click_rate_live_v1
 require_column_descriptions: false
-level: null

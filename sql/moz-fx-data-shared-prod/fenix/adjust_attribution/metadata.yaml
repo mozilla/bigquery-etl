@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.adjust_attribution
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.adjust_attribution
 require_column_descriptions: false
-level: null

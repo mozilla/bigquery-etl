@@ -10,4 +10,3 @@ workgroup_access:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: false
-level: null

@@ -28,4 +28,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.braze_derived.add_ons_developers_v1
 require_column_descriptions: false
-level: null

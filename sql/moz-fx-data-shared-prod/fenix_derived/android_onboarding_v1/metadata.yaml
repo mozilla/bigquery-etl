@@ -28,4 +28,3 @@ references:
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
   - moz-fx-data-shared-prod.firefox_ios.retention_clients
 require_column_descriptions: false
-level: null

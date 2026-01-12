@@ -13,4 +13,3 @@ references:
   - moz-fx-data-shared-prod.fenix.attribution_clients
   - moz-fx-data-shared-prod.fenix.baseline_clients_daily
 require_column_descriptions: false
-level: null

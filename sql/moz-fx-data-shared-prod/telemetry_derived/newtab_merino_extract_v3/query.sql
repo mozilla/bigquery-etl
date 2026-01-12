@@ -87,6 +87,21 @@ raw_grouped_totals AS (
     format,
     section_position
 ),
+/* Find default propensity for long tail items. We only calculate up to 100 */
+default_propensity AS (
+  SELECT
+    COALESCE(
+      (
+        SELECT
+          AVG(wt.weight)
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
+        WHERE
+          position > 80
+      ),
+      1.0
+    ) AS default_weight
+),
 /* Separate and adjust section events */
 section_events AS (
   SELECT
@@ -94,7 +109,10 @@ section_events AS (
     rw.corpus_item_id,
     rw.raw_impression_count,
     -- apply propensity scaling to impressions only
-    rw.raw_impression_count / COALESCE(wt.weight, 0.2) AS adjusted_impression_count,
+    rw.raw_impression_count / COALESCE(
+      wt.weight,
+      (SELECT default_weight FROM default_propensity LIMIT 1)
+    ) AS adjusted_impression_count,
     rw.report_count,
     rw.click_count
   FROM

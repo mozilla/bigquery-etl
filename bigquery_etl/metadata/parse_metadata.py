@@ -136,9 +136,9 @@ class SchemaDerivedMetadata:
 class SchemaMetadata:
     """Metadata related to additional schema information."""
 
-    derived_from: List[SchemaDerivedMetadata] = attr.ib(None)
+    derived_from: Optional[List[SchemaDerivedMetadata]] = attr.ib(None)
     # indicates that the schema might change over time and should be updated even with --skip-existing
-    allow_field_addition: bool = attr.ib(None)
+    allow_field_addition: Optional[bool] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)

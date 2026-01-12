@@ -40,6 +40,14 @@ fields:
     name: happened_at
     description: Event creation timestamp from Snowplow derived_tstamp.
   - mode: NULLABLE
+    type: TIMESTAMP
+    name: start_date
+    description: Scheduled time after which the section should be available.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: end_date
+    description: Scheduled time after which the section not be available.
+  - mode: NULLABLE
     type: STRING
     name: schema_version
     description: Snowplow context schema version for the section.

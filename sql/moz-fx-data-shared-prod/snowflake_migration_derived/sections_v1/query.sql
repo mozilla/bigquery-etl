@@ -14,7 +14,8 @@ WITH stg_section_items AS (
     contexts_com_pocket_section_1[0].section_external_id AS section_id,
     contexts_com_pocket_section_1[0].title AS title,
     contexts_com_pocket_section_1[0].updated_by AS updated_by,
-    contexts_com_pocket_section_1[0].start_date AS start_date,
+    TIMESTAMP_SECONDS(contexts_com_pocket_section_1[0].start_date) AS start_date,
+    TIMESTAMP_SECONDS(contexts_com_pocket_section_1[0].end_date) AS end_date,
     contexts_com_pocket_section_1[0]._schema_version AS schema_version,
   -- event info
     derived_tstamp AS happened_at,
@@ -44,12 +45,13 @@ SELECT
   s.updated_at,
   s.updated_by,
   s.start_date,
+  s.end_date,
   s.created_at,
   s.happened_at,
   s.schema_version,
   TO_BASE64(
     SHA256(CONCAT(s.section_id, s.object_update_trigger))
-  ) AS section_item_id_object_update_trigger_key
+  ) AS section_id_object_update_trigger_key
 FROM
   stg_section_items AS s
 QUALIFY

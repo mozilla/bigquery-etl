@@ -295,12 +295,19 @@ def validate_asset_level(query_dir, metadata):
     results = {}
     missing = []
 
-    if not metadata.level:
+    if not metadata.labels or LEVEL_LABEL not in metadata.labels:
         return True
     else:
-        level = (
-            metadata.level[0] if isinstance(metadata.level, list) else metadata.level
-        )
+        level = metadata.labels[LEVEL_LABEL]
+
+        possible_levels = [
+            level_requirement.name for level_requirement in LevelRequirements
+        ]
+        if level not in possible_levels:
+            click.echo(
+                f"Invalid level in metadata: {level}. Must be one of {possible_levels}."
+            )
+            return False
 
         # Check percentage of fields and nested fields with descriptions.
         schema_file = Path(query_dir) / SCHEMA_FILE

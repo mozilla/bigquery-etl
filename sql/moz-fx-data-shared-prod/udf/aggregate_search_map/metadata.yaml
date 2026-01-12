@@ -2,10 +2,8 @@ friendly_name: Aggregate Search Map
 description: |-
   Aggregates the total counts of the given search counters
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

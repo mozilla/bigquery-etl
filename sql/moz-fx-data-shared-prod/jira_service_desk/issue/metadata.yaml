@@ -2,7 +2,6 @@ friendly_name: Jira Service Desk Issues
 description: |-
   Jira issues for Service Desk synced via Fivetran.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -16,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.jira_service_desk_syndicate.issue_field_history
   - moz-fx-data-shared-prod.jira_service_desk_syndicate.request
   - moz-fx-data-shared-prod.jira_service_desk_syndicate.request_type
-require_column_descriptions: false

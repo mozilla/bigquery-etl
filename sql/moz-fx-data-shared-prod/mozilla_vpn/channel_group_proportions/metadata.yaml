@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.channel_group_proportions_live
   - moz-fx-data-shared-prod.mozilla_vpn_derived.channel_group_proportions_v1
-require_column_descriptions: false

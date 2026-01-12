@@ -23,8 +23,6 @@ bigquery:
     field: updated_at
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
@@ -33,4 +31,3 @@ references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
   - moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1
-require_column_descriptions: false

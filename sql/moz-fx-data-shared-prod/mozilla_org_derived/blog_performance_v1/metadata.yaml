@@ -20,7 +20,6 @@ bigquery:
     field: event_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - page_title

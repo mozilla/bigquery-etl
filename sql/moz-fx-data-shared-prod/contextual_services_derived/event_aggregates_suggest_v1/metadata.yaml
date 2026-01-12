@@ -16,8 +16,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -30,4 +28,3 @@ references:
   - moz-fx-data-shared-prod.fenix.fx_suggest
   - moz-fx-data-shared-prod.firefox_desktop.quick_suggest
   - moz-fx-data-shared-prod.firefox_ios.fx_suggest
-require_column_descriptions: false

@@ -6,7 +6,6 @@ description: |-
   that changes require the approval of at least one owner.
 owners:
 - mozilla/revenue_forecasting_data_reviewers
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -15,4 +14,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.search_derived.search_dau_aggregates_v1
-require_column_descriptions: false

@@ -2,14 +2,12 @@ friendly_name: Events Daily V1
 description: |-
   Events daily
 owners: []
-labels: {}
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
@@ -17,4 +15,3 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

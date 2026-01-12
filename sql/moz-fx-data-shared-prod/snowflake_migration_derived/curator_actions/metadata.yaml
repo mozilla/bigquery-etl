@@ -22,4 +22,3 @@ references:
   - moz-fx-data-shared-prod.snowflake_migration_derived.dismissed_prospects_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.rejected_corpus_items_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.scheduled_corpus_items
-require_column_descriptions: false

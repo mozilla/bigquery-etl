@@ -11,7 +11,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 7.0
-  range_partitioning: null
   clustering:
     fields:
     - app_version
@@ -20,4 +19,3 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

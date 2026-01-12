@@ -13,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.hubs_derived.active_subscriptions_live
   - moz-fx-data-shared-prod.hubs_derived.active_subscriptions_v1
-require_column_descriptions: false

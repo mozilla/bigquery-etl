@@ -42,7 +42,6 @@ bigquery:
     field: first_seen_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - channel
@@ -61,4 +60,3 @@ references:
   - moz-fx-data-shared-prod.fenix.metrics
   - moz-fx-data-shared-prod.fenix.new_profile_activation
   - moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1
-require_column_descriptions: false

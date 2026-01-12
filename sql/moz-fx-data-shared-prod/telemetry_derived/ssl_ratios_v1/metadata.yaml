@@ -26,11 +26,5 @@ references:
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
 monitoring:
   enabled: true
-  collection: null
   partition_column: submission_date
   partition_column_set: true
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

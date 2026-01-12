@@ -24,8 +24,6 @@ bigquery:
     field: timestamp
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -37,9 +35,6 @@ references:
   - moz-fx-data-shared-prod.stripe_external.subscriptions_changelog_v1
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
   freshness: null
   volume: null
 require_column_descriptions: true

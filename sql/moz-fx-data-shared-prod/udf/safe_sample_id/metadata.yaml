@@ -2,10 +2,8 @@ friendly_name: Safe Sample Id
 description: |-
   Stably hash a client_id to an integer between 0 and 99, or NULL if client_id isn't 36 bytes
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

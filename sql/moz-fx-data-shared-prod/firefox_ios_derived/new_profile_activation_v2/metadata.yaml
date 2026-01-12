@@ -23,7 +23,6 @@ bigquery:
     field: date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
@@ -36,4 +35,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true
-require_column_descriptions: false

@@ -3,8 +3,4 @@ description: |-
   Views related to search terms data
 dataset_base_acl: view_minimal
 user_facing: true
-labels: {}
-default_table_workgroup_access: []
-default_table_expiration_ms: null
 workgroup_access: []
-syndication: {}

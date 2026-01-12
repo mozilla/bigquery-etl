@@ -19,7 +19,6 @@ bigquery:
     field: date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - site
@@ -32,4 +31,3 @@ references:
   - moz-fx-data-marketing-prod.220432379.ga_sessions_*
   - moz-fx-data-marketing-prod.65789850.ga_sessions_*
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
-require_column_descriptions: false

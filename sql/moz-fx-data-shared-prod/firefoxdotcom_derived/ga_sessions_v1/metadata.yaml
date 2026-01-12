@@ -22,7 +22,6 @@ bigquery:
     field: session_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - ga_client_id
@@ -44,11 +43,4 @@ references:
   - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
 require_column_descriptions: true

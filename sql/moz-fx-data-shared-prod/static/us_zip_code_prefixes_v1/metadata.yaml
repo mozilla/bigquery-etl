@@ -4,10 +4,8 @@ description: |
 
   Data source: https://simple.wikipedia.org/wiki/List_of_ZIP_Code_prefixes
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

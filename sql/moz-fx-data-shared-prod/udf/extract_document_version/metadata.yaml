@@ -2,10 +2,8 @@ friendly_name: Extract Document Version
 description: |-
   Extract the document version from a table name e.g. _TABLE_SUFFIX.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -7,13 +7,9 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: aggregate
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

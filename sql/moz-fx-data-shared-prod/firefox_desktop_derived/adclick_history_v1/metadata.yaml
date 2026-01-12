@@ -16,8 +16,6 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - client_id
@@ -31,4 +29,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.adclick_history_v1
   - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
-require_column_descriptions: false

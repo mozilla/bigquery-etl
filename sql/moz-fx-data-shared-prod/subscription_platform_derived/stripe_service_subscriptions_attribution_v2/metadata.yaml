@@ -17,8 +17,6 @@ bigquery:
     field: subscription_started_at
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -29,9 +27,6 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
   freshness: null
   volume: null
 require_column_descriptions: true

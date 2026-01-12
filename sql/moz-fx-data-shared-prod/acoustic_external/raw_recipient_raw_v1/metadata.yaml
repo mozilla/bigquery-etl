@@ -13,7 +13,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - event_type
@@ -21,4 +20,3 @@ bigquery:
     - body_type
 workgroup_access: []
 deprecated: true
-require_column_descriptions: false

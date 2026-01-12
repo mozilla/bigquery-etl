@@ -3,7 +3,6 @@ description: |-
   Most recent major release versions per channel.
   Parsed from https://product-details.mozilla.org/1.0/firefox_versions.json.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.latest_versions_v2
-require_column_descriptions: false

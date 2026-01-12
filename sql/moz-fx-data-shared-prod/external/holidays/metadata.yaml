@@ -4,7 +4,6 @@ description: |-
   holidays on each date.  Also includes an array column which lists all holidays
   occuring on that date.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -13,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.external_derived.calendar_v1
-require_column_descriptions: false

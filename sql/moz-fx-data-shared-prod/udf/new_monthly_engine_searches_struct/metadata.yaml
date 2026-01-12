@@ -2,10 +2,8 @@ friendly_name: New Monthly Engine Searches Struct
 description: |-
   This struct represents the past year's worth of searches. Each month has its own entry, hence 12.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

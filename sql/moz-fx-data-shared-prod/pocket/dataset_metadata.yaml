@@ -3,14 +3,11 @@ description: |-
   Views related to Pocket data
 dataset_base_acl: view
 user_facing: true
-labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-syndication: {}

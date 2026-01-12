@@ -10,8 +10,6 @@ scheduling:
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - country
@@ -23,4 +21,3 @@ references:
   query.sql:
   - mozdata.analysis.android_state_ltvs_v1
 deprecated: true
-require_column_descriptions: false

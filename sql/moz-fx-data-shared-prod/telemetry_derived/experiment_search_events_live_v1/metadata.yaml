@@ -14,4 +14,3 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.telemetry_live.main_v5
-require_column_descriptions: false

@@ -7,4 +7,3 @@ labels:
   owner1: jklukas
 workgroup_access: []
 deprecated: true
-require_column_descriptions: false

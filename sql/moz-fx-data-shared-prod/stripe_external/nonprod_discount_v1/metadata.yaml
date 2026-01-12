@@ -12,10 +12,7 @@ scheduling:
   date_partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_stripe_nonprod
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -27,4 +24,3 @@ workgroup_access:
 references:
   query.sql:
   - dev-fivetran.stripe_nonprod.discount
-require_column_descriptions: false

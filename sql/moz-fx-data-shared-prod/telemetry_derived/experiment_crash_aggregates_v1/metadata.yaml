@@ -18,7 +18,6 @@ bigquery:
     field: window_start
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - experiment
@@ -37,4 +36,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly_stable.crash_v1
   - moz-fx-data-shared-prod.org_mozilla_focus_stable.crash_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_stable.crash_v1
-require_column_descriptions: false

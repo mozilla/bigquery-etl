@@ -23,4 +23,3 @@ labels:
   owner1: lvargas
 workgroup_access: []
 deprecated: true
-require_column_descriptions: false

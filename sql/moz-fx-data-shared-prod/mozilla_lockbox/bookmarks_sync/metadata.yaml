@@ -10,7 +10,6 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -18,4 +17,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_lockbox_stable.bookmarks_sync_v1
-require_column_descriptions: false

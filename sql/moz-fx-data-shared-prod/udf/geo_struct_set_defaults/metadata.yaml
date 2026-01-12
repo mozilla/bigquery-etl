@@ -3,10 +3,8 @@ description: |
   Convert geoip lookup fields to a struct, replacing NULLs with "??".
   This allows for better joins on those fields, but needs to be changed back to NULL at the end of the query.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

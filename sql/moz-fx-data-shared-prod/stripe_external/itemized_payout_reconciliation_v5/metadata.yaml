@@ -25,7 +25,6 @@ bigquery:
     field: automatic_payout_effective_at
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - automatic_payout_effective_at
@@ -36,4 +35,3 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/developers
-require_column_descriptions: false

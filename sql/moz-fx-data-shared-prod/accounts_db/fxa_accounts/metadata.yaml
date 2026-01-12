@@ -18,4 +18,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1
-require_column_descriptions: false

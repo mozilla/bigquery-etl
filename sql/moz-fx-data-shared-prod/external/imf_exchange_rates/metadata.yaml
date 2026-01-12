@@ -2,7 +2,6 @@ friendly_name: Exchange Rates
 description: |-
   Contains data from the IMF API about exchange rates by country & report period
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,4 +10,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.external_derived.imf_exchange_rates_v1
-require_column_descriptions: false

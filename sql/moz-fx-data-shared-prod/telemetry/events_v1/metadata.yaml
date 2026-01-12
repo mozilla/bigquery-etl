@@ -2,7 +2,6 @@ friendly_name: Events V1
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -13,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.event_events_v1
   - moz-fx-data-shared-prod.telemetry_derived.events_v1
   - moz-fx-data-shared-prod.telemetry_derived.main_events_v1
-require_column_descriptions: false

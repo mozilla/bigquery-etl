@@ -31,7 +31,6 @@ bigquery:
     field: first_seen_city_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
@@ -47,4 +46,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.baseline_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.baseline_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1
-require_column_descriptions: false

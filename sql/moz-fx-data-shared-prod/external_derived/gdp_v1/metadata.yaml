@@ -11,8 +11,6 @@ labels:
 scheduling:
   dag_name: bqetl_imf_cpi_data
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - gdp_country_code
@@ -24,4 +22,3 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-require_column_descriptions: false

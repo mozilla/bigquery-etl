@@ -2,7 +2,6 @@ friendly_name: Eng Workflow Build Parquet
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,4 +10,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.eng_workflow_build_parquet_v1
-require_column_descriptions: false

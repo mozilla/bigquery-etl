@@ -3,14 +3,11 @@ description: |-
   Derived data for firefox_reality_derived
 dataset_base_acl: derived
 user_facing: false
-labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-syndication: {}

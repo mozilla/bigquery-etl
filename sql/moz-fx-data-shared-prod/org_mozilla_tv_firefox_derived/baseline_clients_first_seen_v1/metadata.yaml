@@ -29,7 +29,6 @@ bigquery:
     field: first_seen_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
@@ -42,11 +41,3 @@ references:
 deprecated: true
 monitoring:
   enabled: false
-  collection: null
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

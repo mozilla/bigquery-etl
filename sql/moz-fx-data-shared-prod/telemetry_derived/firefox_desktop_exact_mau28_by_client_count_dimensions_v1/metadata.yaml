@@ -20,8 +20,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access: []
 references:
   query.sql:

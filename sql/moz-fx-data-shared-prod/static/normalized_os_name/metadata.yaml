@@ -2,10 +2,8 @@ friendly_name: Normalized OS Name
 description: |
   Mapping of OS name from telemetry to normalized OS name
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

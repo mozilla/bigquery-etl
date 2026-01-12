@@ -2,10 +2,8 @@ friendly_name: Shift One Day
 description: |-
   Returns the bitfield shifted by one day, 0 for NULL
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

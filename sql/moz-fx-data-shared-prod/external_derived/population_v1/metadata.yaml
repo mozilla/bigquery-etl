@@ -28,8 +28,6 @@ scheduling:
   - deploy_target: UN_POPULATION_BEARER_TOKEN
     key: bqetl_un_population__un_population_bearer_token
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - location_id

@@ -23,8 +23,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -35,4 +33,3 @@ references:
   - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1
   - moz-fx-data-shared-prod.firefox_desktop.quick_suggest
   - moz-fx-data-shared-prod.payload_bytes_error.contextual_services
-require_column_descriptions: false

@@ -2,7 +2,6 @@ friendly_name: Mobile New Profiles
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -16,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.focus_ios.new_profiles
   - moz-fx-data-shared-prod.klar_android.new_profiles
   - moz-fx-data-shared-prod.klar_ios.new_profiles
-require_column_descriptions: false

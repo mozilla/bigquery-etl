@@ -14,8 +14,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -30,4 +28,3 @@ references:
   - moz-fx-data-shared-prod.braze_derived.fxa_win10_users_historical_v1
   - moz-fx-data-shared-prod.braze_derived.users_v1
   - moz-fx-data-shared-prod.firefox_desktop.fx_accounts
-require_column_descriptions: false

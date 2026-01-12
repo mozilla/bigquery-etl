@@ -11,7 +11,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 7.0
-  range_partitioning: null
   clustering:
     fields:
     - app_version
@@ -26,4 +25,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v1
   - moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1
   - moz-fx-data-shared-prod.telemetry_derived.latest_versions
-require_column_descriptions: false

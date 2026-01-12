@@ -3,7 +3,6 @@ description: |-
   Daily metrics identified as search revenue levers, including eligible DOU,
   DOU_engaged_w_sap, sap, tagged_sap, tagged_follow_on, search_with_ads, and ad_clicks.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.search_derived.search_revenue_levers_daily_v1
-require_column_descriptions: false

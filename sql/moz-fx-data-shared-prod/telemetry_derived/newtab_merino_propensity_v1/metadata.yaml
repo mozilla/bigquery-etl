@@ -13,10 +13,7 @@ labels:
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -29,4 +26,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1
   - moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items
-require_column_descriptions: false

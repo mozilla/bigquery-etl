@@ -21,12 +21,9 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen
 deprecated: true
 deletion_date: 2025-12-12
-require_column_descriptions: false

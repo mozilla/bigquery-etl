@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.vat_rates_v1
-require_column_descriptions: false

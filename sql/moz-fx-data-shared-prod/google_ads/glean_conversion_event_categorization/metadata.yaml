@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.google_ads_derived.glean_conversion_event_categorization_v1
-require_column_descriptions: false

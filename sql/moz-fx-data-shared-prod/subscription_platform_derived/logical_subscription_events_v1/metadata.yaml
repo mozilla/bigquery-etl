@@ -30,7 +30,6 @@ bigquery:
     field: timestamp
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - type

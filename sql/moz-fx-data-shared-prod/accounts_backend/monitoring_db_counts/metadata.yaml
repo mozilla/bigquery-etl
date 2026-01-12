@@ -4,7 +4,6 @@ description: |-
   Enables to identify trends within accounts data. E.g. "How many
   inactive accounts are there?"
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.accounts_backend_derived.monitoring_db_counts_v1
-require_column_descriptions: false

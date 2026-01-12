@@ -3,7 +3,6 @@ description: |-
   Derived data about Firefox.com from Google Analytics 4
 dataset_base_acl: derived
 user_facing: false
-labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,9 +10,7 @@ default_table_workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:google-managed/external-ads-dataproc
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-syndication: {}

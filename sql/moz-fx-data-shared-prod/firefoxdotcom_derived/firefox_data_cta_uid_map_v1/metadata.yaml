@@ -13,10 +13,7 @@ labels:
   dag: bqetl_firefox_data_cta_uid_map
 scheduling:
   dag_name: bqetl_firefox_data_cta_uid_map
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -24,4 +21,3 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:google-managed/external-ads-dataproc
-require_column_descriptions: false

@@ -22,8 +22,6 @@ bigquery:
     field: activity_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -41,11 +39,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

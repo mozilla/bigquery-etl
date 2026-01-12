@@ -2,10 +2,8 @@ friendly_name: Zeroed Array
 description: |-
   Generates an array if all zeroes, of arbitrary length
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

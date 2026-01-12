@@ -2,10 +2,8 @@ friendly_name: One As 365 Bits
 description: |-
   One represented as a byte array of 365 bits
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -2,7 +2,6 @@ friendly_name: Monthly Inflation
 description: |-
   Contains monthly inflation rate data by country from IMF
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,4 +10,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.external_derived.monthly_inflation_v1
-require_column_descriptions: false

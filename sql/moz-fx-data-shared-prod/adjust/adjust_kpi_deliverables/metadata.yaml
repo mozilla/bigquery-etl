@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.adjust_derived.adjust_deliverables_v1
-require_column_descriptions: false

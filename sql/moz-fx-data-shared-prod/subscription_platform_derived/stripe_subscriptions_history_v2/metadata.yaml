@@ -22,8 +22,6 @@ scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - valid_to
@@ -38,9 +36,6 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_revised_changelog_v1
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
   freshness: null
   volume: null
 require_column_descriptions: true

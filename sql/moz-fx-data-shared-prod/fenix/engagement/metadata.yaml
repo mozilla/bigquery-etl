@@ -2,7 +2,6 @@ friendly_name: Engagement
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -10,4 +9,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.fenix_derived.engagement_v1
-require_column_descriptions: false

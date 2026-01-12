@@ -14,10 +14,7 @@ scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
   referenced_tables: []
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -35,4 +32,3 @@ references:
   - moz-fx-data-shared-prod.ctms_braze.ctms_newsletters
   - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists
   - moz-fx-data-shared-prod.marketing_suppression_list_derived.main_suppression_list_v1
-require_column_descriptions: false

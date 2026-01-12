@@ -27,7 +27,6 @@ bigquery:
     field: log_timestamp
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - flow_id
@@ -40,4 +39,3 @@ references:
   - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   - moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events
   - moz-fx-data-shared-prod.subscription_platform_derived.services_v1
-require_column_descriptions: false

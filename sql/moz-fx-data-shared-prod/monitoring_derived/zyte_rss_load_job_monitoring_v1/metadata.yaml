@@ -19,8 +19,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 180.0
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -35,8 +33,5 @@ monitoring:
   collection: Home Newtab
   partition_column: submission_date
   partition_column_set: true
-  freshness:
-    blocking: false
   volume:
     blocking: false
-require_column_descriptions: false

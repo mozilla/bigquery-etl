@@ -3,10 +3,8 @@ description: |
   One-to-many mapping from country codes or non-standard names to a standardized country name.
   This table is intended to be used to normalize country values from third-party data sources.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -18,7 +18,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - normalized_os_version
@@ -29,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry.uninstall
-require_column_descriptions: false

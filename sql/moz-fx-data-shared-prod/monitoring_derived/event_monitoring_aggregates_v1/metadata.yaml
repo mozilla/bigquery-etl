@@ -23,9 +23,8 @@ bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: true
+    require_partition_filter: null
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - event_name
@@ -114,4 +113,3 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_backend_stable.events_v1
   - moz-fx-data-shared-prod.syncstorage_stable.events_v1
   - moz-fx-data-shared-prod.thunderbird_desktop_stable.events_v1
-require_column_descriptions: false

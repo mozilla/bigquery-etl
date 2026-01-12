@@ -2,10 +2,8 @@ friendly_name: Array 11 Zeroes Then
 description: |-
   An array of 11 zeroes, followed by a supplied value
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

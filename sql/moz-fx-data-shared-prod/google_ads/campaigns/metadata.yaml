@@ -6,7 +6,6 @@ description: |-
   take the name associated with the highest
   spend.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -14,4 +13,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.google_ads_derived.campaigns_v1
-require_column_descriptions: false

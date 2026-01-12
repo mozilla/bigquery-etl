@@ -23,10 +23,3 @@ references:
 monitoring:
   enabled: true
   collection: Test
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

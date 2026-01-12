@@ -10,10 +10,7 @@ labels:
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -26,4 +23,3 @@ references:
   - moz-fx-data-shared-prod.stripe_external.discount_v1
   - moz-fx-data-shared-prod.stripe_external.invoice_discount_v1
   - moz-fx-data-shared-prod.stripe_external.invoice_v1
-require_column_descriptions: false

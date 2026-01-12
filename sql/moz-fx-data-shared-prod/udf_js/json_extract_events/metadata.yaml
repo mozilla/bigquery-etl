@@ -1,9 +1,7 @@
 friendly_name: Json Extract Events
 description: ""
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

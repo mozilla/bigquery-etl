@@ -3,7 +3,6 @@ description: |-
   Data related to the work of Mozilla Ads
 dataset_base_acl: derived_restricted
 user_facing: false
-labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
@@ -11,7 +10,6 @@ default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ads/data-viewers
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
@@ -19,4 +17,3 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:ads/data-viewers
-syndication: {}

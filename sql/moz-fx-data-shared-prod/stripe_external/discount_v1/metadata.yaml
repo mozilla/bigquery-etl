@@ -12,10 +12,7 @@ scheduling:
   date_partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_stripe
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -26,4 +23,3 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-bq-fivetran.stripe.discount
-require_column_descriptions: false

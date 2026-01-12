@@ -4,10 +4,8 @@ description: |
 
   Data source: https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

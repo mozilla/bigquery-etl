@@ -30,7 +30,6 @@ bigquery:
     field: partition_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - country
@@ -44,4 +43,3 @@ references:
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - mozdata.static.csa_gblmkt_languages
 deprecated: true
-require_column_descriptions: false

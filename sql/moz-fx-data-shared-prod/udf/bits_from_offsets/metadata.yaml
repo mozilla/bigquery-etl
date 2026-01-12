@@ -11,10 +11,8 @@ description: |
   Or representing the most recent 28 days (compatible with bits28 functions) via:
   ```sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64) << 36 >> 36 ```
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

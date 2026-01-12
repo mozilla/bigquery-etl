@@ -2,7 +2,6 @@ friendly_name: US Unemployment
 description: |-
   Contains monthly unemployment data for the United States from the BLS Government API
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,4 +10,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.external_derived.us_unemployment_v1
-require_column_descriptions: false

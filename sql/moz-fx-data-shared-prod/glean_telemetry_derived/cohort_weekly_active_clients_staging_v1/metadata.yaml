@@ -22,8 +22,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -22,7 +22,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
@@ -37,11 +36,3 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.baseline_v1
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

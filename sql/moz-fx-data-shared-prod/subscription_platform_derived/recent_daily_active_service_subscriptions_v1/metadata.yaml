@@ -28,7 +28,6 @@ bigquery:
     field: date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - service_id

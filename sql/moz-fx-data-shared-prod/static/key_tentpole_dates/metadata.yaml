@@ -3,10 +3,8 @@ description: |
   Mappings of key tentpoles dates within the Ad industry to track dates and timeframes.
   Data Source: https://www.silverpush.co/blogs/contextual-video-advertising-tentpole-events/
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

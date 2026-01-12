@@ -17,8 +17,6 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - normalized_app_name

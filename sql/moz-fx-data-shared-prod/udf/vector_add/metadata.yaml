@@ -2,10 +2,8 @@ friendly_name: Vector Add
 description: |-
   This function adds two vectors. The two vectors can have different length. If one vector is null, the other vector will be returned directly.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

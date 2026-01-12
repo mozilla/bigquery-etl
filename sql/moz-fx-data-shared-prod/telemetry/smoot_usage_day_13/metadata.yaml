@@ -2,7 +2,6 @@ friendly_name: Smoot Usage Day 13
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -13,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2
-require_column_descriptions: false

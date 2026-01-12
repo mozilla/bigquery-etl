@@ -19,10 +19,7 @@ labels:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -35,4 +32,3 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-require_column_descriptions: false

@@ -2,7 +2,6 @@ friendly_name: Network Usage
 description: |-
   Compares private vs non private network usage
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -11,4 +10,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.network_usage_v1
-require_column_descriptions: false

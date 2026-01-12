@@ -2,7 +2,6 @@ friendly_name: Migration
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.migration_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.migration_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.migration_v1
-require_column_descriptions: false

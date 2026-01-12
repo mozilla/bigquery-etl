@@ -2,7 +2,6 @@ friendly_name: Cloudflare Browser Usage
 description: |-
   Contains data from Cloudflare on browser market share by day, device type, & location
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.cloudflare_derived.browser_usage_v1
   - moz-fx-data-shared-prod.static.country_codes_v1
-require_column_descriptions: false

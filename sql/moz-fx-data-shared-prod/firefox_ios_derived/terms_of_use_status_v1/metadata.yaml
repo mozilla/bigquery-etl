@@ -18,8 +18,6 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
-  time_partitioning: null
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
@@ -33,11 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios_derived.terms_of_use_status_v1
 monitoring:
   enabled: true
-  collection: null
-  partition_column: null
-  partition_column_set: false
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
-require_column_descriptions: false

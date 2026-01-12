@@ -16,10 +16,7 @@ labels:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -32,4 +29,3 @@ references:
   - ..
   script.sql:
   - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
-require_column_descriptions: false

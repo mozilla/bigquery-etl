@@ -13,7 +13,6 @@ bigquery:
     field: last_modified_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - has_opted_out_of_email
@@ -24,4 +23,3 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -14,10 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
-bigquery:
-  time_partitioning: null
-  range_partitioning: null
-  clustering: null
+bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

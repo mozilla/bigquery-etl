@@ -4,7 +4,6 @@ description: |-
   Based on Glean-telemetry data for mobile, & legacy telemetry for desktop.
   Rows are at a client ID, submission date grain.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -14,4 +13,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.desktop_active_users
   - moz-fx-data-shared-prod.telemetry.mobile_active_users
-require_column_descriptions: false

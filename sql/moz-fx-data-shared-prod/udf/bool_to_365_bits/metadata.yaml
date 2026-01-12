@@ -2,10 +2,8 @@ friendly_name: Bool To 365 Bits
 description: |-
   Convert a boolean to 365 bit byte array
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-bq-fivetran.firefox_app_store_v2_apple_store.apple_store__territory_report
-require_column_descriptions: false

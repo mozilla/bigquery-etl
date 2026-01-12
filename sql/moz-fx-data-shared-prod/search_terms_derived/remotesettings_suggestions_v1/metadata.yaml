@@ -18,4 +18,3 @@ workgroup_access:
   members:
   - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
   - workgroup:search-terms/sanitized-writer
-require_column_descriptions: false

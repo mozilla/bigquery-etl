@@ -2,10 +2,8 @@ friendly_name: Search Counts Map Sum
 description: |-
   Calculate the sums of search counts per source and engine
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -13,7 +13,6 @@ description: |-
   appended.
 dataset_base_acl: restricted
 user_facing: false
-labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -23,7 +22,6 @@ default_table_workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
@@ -33,4 +31,3 @@ workgroup_access:
   - workgroup:braze/data-viewers
   - workgroup:braze/ingestion-firefox
   - workgroup:braze/ingestion-mozilla-dev
-syndication: {}

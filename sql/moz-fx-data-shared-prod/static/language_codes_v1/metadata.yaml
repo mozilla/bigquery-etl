@@ -5,10 +5,8 @@ description: |
   Language codes are unique, but language names are not unique.
   All records have alpha-3 codes, but not all records have alpha-2 codes.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

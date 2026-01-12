@@ -2,10 +2,8 @@ friendly_name: Round Timestamp To Minute
 description: |-
   Floor a timestamp object to the given minute interval.
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
-require_column_descriptions: false

@@ -2,7 +2,6 @@ friendly_name: Events Unnested
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -12,4 +11,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.events
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.events
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.events
-require_column_descriptions: false

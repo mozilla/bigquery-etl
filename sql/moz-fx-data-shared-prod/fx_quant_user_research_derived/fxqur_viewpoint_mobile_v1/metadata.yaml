@@ -30,8 +30,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -40,4 +38,3 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:fx-quant-user-research/data-developers
-require_column_descriptions: false

@@ -25,8 +25,6 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
-  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -39,4 +37,3 @@ references:
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - moz-fx-data-shared-prod.telemetry.events
   - moz-fx-data-shared-prod.telemetry.main_remainder_1pct
-require_column_descriptions: false

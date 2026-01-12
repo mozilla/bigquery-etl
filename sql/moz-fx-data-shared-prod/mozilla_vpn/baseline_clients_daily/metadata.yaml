@@ -2,7 +2,6 @@ friendly_name: Baseline Clients Daily
 description: |-
   Please provide a description for the query
 owners: []
-labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -13,4 +12,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline_clients_daily
-require_column_descriptions: false

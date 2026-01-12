@@ -17,9 +17,8 @@ bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: false
+    require_partition_filter: null
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - experiment_id
@@ -46,4 +45,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline
   - moz-fx-data-shared-prod.org_mozilla_klar.baseline
-require_column_descriptions: false

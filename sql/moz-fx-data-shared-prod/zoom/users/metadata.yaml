@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-bq-fivetran.zoom.users
-require_column_descriptions: false

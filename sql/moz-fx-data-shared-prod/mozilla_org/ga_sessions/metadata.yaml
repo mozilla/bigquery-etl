@@ -18,4 +18,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3
-require_column_descriptions: false

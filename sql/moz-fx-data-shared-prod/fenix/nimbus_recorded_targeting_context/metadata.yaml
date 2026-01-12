@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.fenix_derived.nimbus_recorded_targeting_context_v1
-require_column_descriptions: false

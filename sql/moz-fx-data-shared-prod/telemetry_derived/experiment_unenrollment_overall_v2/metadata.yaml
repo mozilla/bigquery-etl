@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v2
-require_column_descriptions: false

@@ -17,4 +17,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.glean_telemetry_derived.cohort_daily_churn_v1
-require_column_descriptions: false

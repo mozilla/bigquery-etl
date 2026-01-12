@@ -5,6 +5,7 @@ owners:
 - akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
+  level: bronze
   schedule: daily
   shredder_mitigation: true
   table_type: aggregate

@@ -8,6 +8,7 @@ description: "Measures 28-day (week-4) retention for Firefox Desktop clients anc
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
   table_type: client_level

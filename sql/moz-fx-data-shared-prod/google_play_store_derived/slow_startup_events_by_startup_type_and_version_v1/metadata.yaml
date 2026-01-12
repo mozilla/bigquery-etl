@@ -10,6 +10,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
   dag: bqetl_google_play_store

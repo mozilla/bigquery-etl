@@ -5,6 +5,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   owner1: kwindau
   dag: bqetl_google_analytics_derived_ga4
 scheduling:

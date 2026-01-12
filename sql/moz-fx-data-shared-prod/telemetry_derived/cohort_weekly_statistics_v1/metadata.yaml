@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   owner1: kwindau
   dag: bqetl_cohort_retention
 scheduling:

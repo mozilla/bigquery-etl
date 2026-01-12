@@ -5,6 +5,7 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
+  level: bronze
 bigquery:
   time_partitioning:
     type: day

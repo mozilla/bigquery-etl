@@ -12,6 +12,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
@@ -42,4 +43,3 @@ bigquery:
     - normalized_channel
     - sample_id
 require_column_descriptions: false
-level: bronze

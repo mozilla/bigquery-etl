@@ -130,19 +130,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_telemetry_derived__newtab_merino_propensity__v1_external",
-    ) as checks__fail_telemetry_derived__newtab_merino_propensity__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_merino_newtab_extract_to_gcs__wait_for_checks__fail_telemetry_derived__newtab_merino_propensity__v1",
-            external_dag_id="bqetl_merino_newtab_extract_to_gcs",
-            external_task_id="wait_for_checks__fail_telemetry_derived__newtab_merino_propensity__v1",
-        )
-
-        checks__fail_telemetry_derived__newtab_merino_propensity__v1_external.set_upstream(
-            checks__fail_telemetry_derived__newtab_merino_propensity__v1
-        )
-
     telemetry_derived__newtab_merino_priors__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_merino_priors__v1",
         destination_table="newtab_merino_priors_v1",

@@ -53,18 +53,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_checks__fail_telemetry_derived__newtab_merino_propensity__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__newtab_merino_propensity__v1",
-        external_dag_id="bqetl_merino_newtab_priors_to_gcs",
-        external_task_id="checks__fail_telemetry_derived__newtab_merino_propensity__v1",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     checks__fail_telemetry_derived__newtab_merino_extract__v3 = bigquery_dq_check(
         task_id="checks__fail_telemetry_derived__newtab_merino_extract__v3",
         source_table="newtab_merino_extract_v3",
@@ -127,10 +115,6 @@ with DAG(
 
     checks__fail_telemetry_derived__newtab_merino_extract__v3.set_upstream(
         telemetry_derived__newtab_merino_extract__v3
-    )
-
-    telemetry_derived__newtab_merino_extract__v3.set_upstream(
-        wait_for_checks__fail_telemetry_derived__newtab_merino_propensity__v1
     )
 
     telemetry_derived__newtab_merino_extract_to_gcs__v3.set_upstream(

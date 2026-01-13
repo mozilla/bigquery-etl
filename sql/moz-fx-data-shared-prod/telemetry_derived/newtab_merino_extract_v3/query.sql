@@ -51,12 +51,7 @@ flattened_newtab_events AS (
     submission_timestamp,
     normalized_country_code,
     unnested_events.name AS event_name,
-    mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
-    SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'position') AS INT64) AS position,
-    mozfun.map.get_key(unnested_events.extra, 'format') AS format,
-    SAFE_CAST(
-      mozfun.map.get_key(unnested_events.extra, 'section_position') AS INT64
-    ) AS section_position
+    mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id
   FROM
     deduplicated_pings dp
   CROSS JOIN
@@ -68,98 +63,16 @@ flattened_newtab_events AS (
     -- Keep only rows with a non-null corpus_item_id
     AND mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') IS NOT NULL
 ),
-raw_grouped_totals AS (
-  SELECT
-    normalized_country_code,
-    corpus_item_id,
-    position,
-    format,
-    section_position,
-    SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
-    SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
-    SUM(CASE WHEN event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count
-  FROM
-    flattened_newtab_events
-  GROUP BY
-    normalized_country_code,
-    corpus_item_id,
-    position,
-    format,
-    section_position
-),
-/* Find default propensity for long tail items. We only calculate up to 100 */
-default_propensity AS (
-  SELECT
-    COALESCE(
-      (
-        SELECT
-          AVG(wt.weight)
-        FROM
-          `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
-        WHERE
-          position > 80
-      ),
-      1.0
-    ) AS default_weight
-),
-/* Separate and adjust section events */
-section_events AS (
-  SELECT
-    rw.normalized_country_code,
-    rw.corpus_item_id,
-    rw.raw_impression_count,
-    -- apply propensity scaling to impressions only
-    rw.raw_impression_count / COALESCE(
-      wt.weight,
-      (SELECT default_weight FROM default_propensity LIMIT 1)
-    ) AS adjusted_impression_count,
-    rw.report_count,
-    rw.click_count
-  FROM
-    raw_grouped_totals rw
-  LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
-    ON SAFE_CAST(wt.position AS INT64) = rw.position
-    AND wt.tile_format = rw.format
-  WHERE
-    rw.section_position IS NOT NULL
-),
-/* Separate non-section (grid) type events */
-non_section_events AS (
-  SELECT
-    normalized_country_code,
-    corpus_item_id,
-    raw_impression_count,
-    raw_impression_count AS adjusted_impression_count, -- pass through unchanged
-    report_count,
-    click_count
-  FROM
-    raw_grouped_totals
-  WHERE
-    section_position IS NULL
-),
-/* Re-join events into single table */
-combined_events AS (
-  SELECT
-    *
-  FROM
-    non_section_events
-  UNION ALL
-  SELECT
-    *
-  FROM
-    section_events
-),
 /* Aggregate clicks, impressions, and reports by corpus_item_id and normalized_country_code. */
 aggregated_events AS (
   SELECT
     fe.corpus_item_id,
     fe.normalized_country_code,
-    SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
-    SUM(click_count) AS click_count,
-    SUM(report_count) AS report_count
+    SUM(CASE WHEN fe.event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
+    SUM(CASE WHEN fe.event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
+    SUM(CASE WHEN fe.event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count
   FROM
-    combined_events fe
+    flattened_newtab_events fe
   GROUP BY
     1,
     2

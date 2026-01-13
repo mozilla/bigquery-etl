@@ -1,12 +1,12 @@
 """bigquery-etl CLI view command."""
 
 import logging
+import multiprocessing
 import re
 import string
 import sys
 from fnmatch import fnmatchcase
 from functools import partial
-from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
@@ -25,6 +25,7 @@ from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
+from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -201,7 +202,11 @@ def publish(
     add_managed_label,
     respect_dryrun_skip,
 ):
-    """Publish views."""
+    """Publish views.
+
+    Views are published in topological order (respecting dependencies) using
+    parallel processing. Change detection happens within the publish method.
+    """
     # set log level
     try:
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
@@ -223,13 +228,7 @@ def publish(
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
-    if not force:
-        has_changes = partial(_view_has_changes, target_project, credentials)
 
-        # only views with changes
-        with Pool(parallelism) as p:
-            changes = p.map(has_changes, views)
-        views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
     view_id_graph = {
@@ -239,27 +238,46 @@ def publish(
         for view in views
     }
 
-    view_id_order = TopologicalSorter(view_id_graph).static_order()
+    manager = multiprocessing.Manager()
+    results = manager.dict()
 
-    client = bigquery.Client(credentials=credentials)
+    callback = partial(
+        _publish_view_callback,
+        views_by_id=views_by_id,
+        target_project=target_project,
+        dry_run=dry_run,
+        force=force,
+        credentials=credentials,
+        results=results,
+    )
 
-    result = []
-    for view_id in view_id_order:
-        try:
-            result.append(views_by_id[view_id].publish(target_project, dry_run, client))
-        except Exception:
-            print(f"Failed to publish view: {view_id}")
-            print_exc()
-            result.append(False)
+    ts = ParallelTopologicalSorter(view_id_graph, parallelism=parallelism)
+    ts.map(callback)
 
-    if not all(result):
+    if not all(results.values()):
         sys.exit(1)
 
     click.echo("All have been published.")
 
 
-def _view_has_changes(target_project, credentials, view):
-    return view.has_changes(target_project, credentials)
+def _publish_view_callback(
+    view_id,
+    followup_queue,
+    views_by_id,
+    target_project,
+    dry_run,
+    force,
+    credentials,
+    results,
+):
+    try:
+        client = bigquery.Client(credentials=credentials)
+        success = views_by_id[view_id].publish(target_project, dry_run, client, force)
+        results[view_id] = success if success is not None else True
+    except Exception:
+        print(f"Failed to publish view: {view_id}")
+        print_exc()
+        results[view_id] = False
 
 
 def _collect_views(

@@ -350,6 +350,14 @@ fields:
       description: 'A running count of how many times the Glean SDK has been initialized.
 
         '
+    - name: glean_error_event_timestamp_clamped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we had to clamp an event timestamp
+
+        for exceeding the range of a signed 64-bit integer (9223372036854775807).
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

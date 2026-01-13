@@ -358,12 +358,23 @@ fields:
     - name: crash_windows_error_reporting
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Indicates if the crash was intercepted by the Windows Error Reporting
+        runtime exception module.
+
+        '
     - name: dll_blocklist_init_failed
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Indicates whether initialization of the DLL blocklist failed.
+
+        '
     - name: dll_blocklist_user32_loaded_before
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Indicates whether `user32.dll` was loaded before the DLL blocklist
+        was initialized.
+
+        '
     - name: environment_headless_mode
       type: BOOLEAN
       mode: NULLABLE
@@ -473,8 +484,8 @@ fields:
     - name: crash_remote_type
       type: STRING
       mode: NULLABLE
-      description: 'Type of the child process, can be set to "web", "file" or "extension"
-        but could also be unavailable.
+      description: 'The type of the content process. See the full list of options
+        [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#remote-process-types).
 
         '
     - name: crash_shutdown_progress
@@ -486,9 +497,18 @@ fields:
     - name: crash_windows_file_dialog_error_code
       type: STRING
       mode: NULLABLE
+      description: 'The HRESULT returned from a Win32 system call leading to termination
+        of the file-dialog utility process. MozCrashReason is expected to provide
+        context for the value.
+
+        '
     - name: windows_package_family_name
       type: STRING
       mode: NULLABLE
+      description: 'The Package Family Name of Firefox, if installed through an MSIX
+        package.
+
+        '
     - name: memory_js_large_allocation_failure
       type: STRING
       mode: NULLABLE
@@ -595,7 +615,7 @@ fields:
     - name: memory_available_commit
       type: INTEGER
       mode: NULLABLE
-      description: 'Available commit space.
+      description: 'Available commit size.
 
         '
     - name: memory_available_physical
@@ -692,7 +712,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized channel name
+  description: Set to "Other" if this message contained an unrecognized channel name
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE

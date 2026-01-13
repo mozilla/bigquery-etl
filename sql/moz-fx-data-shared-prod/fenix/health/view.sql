@@ -22,7 +22,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.glean_error_event_timestamp_clamped
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -92,7 +93,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.glean_error_event_timestamp_clamped
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -162,7 +164,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.glean_error_event_timestamp_clamped
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -232,7 +235,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.glean_error_event_timestamp_clamped
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -302,7 +306,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_health_init_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.glean_error_event_timestamp_clamped
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

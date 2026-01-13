@@ -358,6 +358,14 @@ fields:
         Should never have a value for any session long enough to grow idle.
 
         '
+    - name: glean_error_event_timestamp_clamped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we had to clamp an event timestamp
+
+        for exceeding the range of a signed 64-bit integer (9223372036854775807).
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

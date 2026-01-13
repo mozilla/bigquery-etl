@@ -18,6 +18,8 @@ bigquery:
   clustering:
     fields:
     - date
+schema:
+  allow_field_addition: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

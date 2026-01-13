@@ -35,19 +35,3 @@ fields:
 - name: non_norm_histogram
   type: STRING
   mode: NULLABLE
-- name: aggregates
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: FLOAT
-    mode: NULLABLE
-- name: percentiles
-  type: STRING
-  mode: NULLABLE
-- name: non_norm_percentiles
-  type: STRING
-  mode: NULLABLE

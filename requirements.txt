@@ -2670,9 +2670,9 @@ urllib3==2.5.0 \
     #   requests
     #   responses
     #   types-requests
-virtualenv==20.26.6 \
-    --hash=sha256:280aede09a2a5c317e409a00102e7077c6432c5a38f0ef938e643805a7ad2c48 \
-    --hash=sha256:7345cc5b25405607a624d8418154577459c3e0277f5466dd79c49d5e492995f2
+virtualenv==20.36.1 \
+    --hash=sha256:575a8d6b124ef88f6f51d56d656132389f961062a9177016a50e4f507bbcc19f \
+    --hash=sha256:8befb5c81842c641f8ee658481e42641c68b5eab3521d8e092d18320902466ba
     # via pre-commit
 watchdog==2.2.1 \
     --hash=sha256:102a60093090fc3ff76c983367b19849b7cc24ec414a43c0333680106e62aae1 \

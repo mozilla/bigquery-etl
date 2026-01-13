@@ -25,6 +25,7 @@ attribution AS (
     sample_id,
     normalized_channel,
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.focus_ios.attribution_clients`
 )
@@ -44,6 +45,7 @@ SELECT
   clients_daily.isp,
   active_users.is_mobile,
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (

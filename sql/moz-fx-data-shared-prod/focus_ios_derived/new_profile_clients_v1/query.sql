@@ -14,6 +14,7 @@ SELECT
   device_model,
   device_type,
   is_mobile,
+  attribution.paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.focus_ios.active_users` AS active_users
 LEFT JOIN

@@ -1,216 +1,218 @@
-WITH params AS (
+WITH legacy_pings AS (
   SELECT
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
-    11 AS minutes_to_assume_random_ranking,
-    "US" AS country
-),
-corpus_items AS (
-  SELECT
-    approved_corpus_item_external_id AS corpus_item_id,
-    loaded_from,
-    reviewed_corpus_item_created_at,
-    LANGUAGE,
-    topic
+    submission_timestamp,
+    document_id,
+    events,
+    normalized_country_code
   FROM
-    `moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items`,
-    params
+    `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
-    LANGUAGE ="EN"
-    AND reviewed_corpus_item_created_at >= params.start_timestamp
-    AND reviewed_corpus_item_created_at <= params.end_timestamp
-    AND is_time_sensitive IS FALSE
+    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 ),
-events AS (
+private_pings AS (
   SELECT
-    e.submission_timestamp,
-    DATE(e.submission_timestamp) AS submission_date,
-    metrics.string.newtab_content_experiment_branch AS branch,
-    (SELECT ANY_VALUE(x.value) FROM UNNEST(ev.extra) AS x WHERE x.key = 'format') AS tile_format,
-    CAST(
+    submission_timestamp,
+    document_id,
+    events,
+    metrics.string.newtab_content_country AS normalized_country_code
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
+  WHERE
+    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+),
+combined_pings AS (
+  SELECT
+    *
+  FROM
+    legacy_pings
+  UNION ALL
+  SELECT
+    *
+  FROM
+    private_pings
+),
+deduplicated_pings AS (
+  SELECT
+    *
+  FROM
+    combined_pings
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        DATE(submission_timestamp),
+        document_id
+      ORDER BY
+        submission_timestamp DESC
+    ) = 1
+),
+flattened_newtab_events AS (
+  SELECT
+    document_id,
+    submission_timestamp,
+    normalized_country_code,
+    unnested_events.name AS event_name,
+    mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
+    SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'position') AS INT64) AS position,
+    mozfun.map.get_key(unnested_events.extra, 'format') AS format,
+    SAFE_CAST(
+      mozfun.map.get_key(unnested_events.extra, 'section_position') AS INT64
+    ) AS section_position
+  FROM
+    deduplicated_pings dp
+  CROSS JOIN
+    UNNEST(dp.events) AS unnested_events
+  WHERE
+    -- Filter to relevant events only
+    unnested_events.category IN ('pocket', 'newtab_content')
+    AND unnested_events.name IN ('impression', 'click', 'report_content_submit')
+    -- Keep only rows with a non-null corpus_item_id
+    AND mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') IS NOT NULL
+),
+raw_grouped_totals AS (
+  SELECT
+    normalized_country_code,
+    corpus_item_id,
+    position,
+    format,
+    section_position,
+    SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
+    SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
+    SUM(CASE WHEN event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count,
+  FROM
+    flattened_newtab_events
+  GROUP BY
+    normalized_country_code,
+    corpus_item_id,
+    position,
+    format,
+    section_position
+),
+/* Find default propensity for long tail items. We only calculate up to 100 */
+default_propensity AS (
+  SELECT
+    COALESCE(
       (
         SELECT
-          ANY_VALUE(x.value)
+          AVG(wt.weight)
         FROM
-          UNNEST(ev.extra) AS x
+          `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
         WHERE
-          x.key = 'section_position'
-      ) AS INT64
-    ) AS section_position,
-    CAST(
-      (SELECT ANY_VALUE(x.value) FROM UNNEST(ev.extra) AS x WHERE x.key = 'position') AS INT64
-    ) AS position,
-    (
-      SELECT
-        ANY_VALUE(x.value)
-      FROM
-        UNNEST(ev.extra) AS x
-      WHERE
-        x.key = 'corpus_item_id'
-    ) AS corpus_item_id,
-    ev.name AS event_name
-  FROM
-    params,
-    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1` AS e
-  CROSS JOIN
-    UNNEST(e.events) AS ev
-  WHERE
-    e.submission_timestamp
-    BETWEEN params.start_timestamp
-    AND params.end_timestamp
-    AND ev.name IN ('impression', 'click')
-    AND (
-      metrics.string.newtab_content_experiment_name = ""
-      OR metrics.string.newtab_content_experiment_name IS NULL
-    )
-    AND metrics.string.newtab_content_country = params.country
+          position > 80
+      ),
+      1.0
+    ) AS default_weight
 ),
-base_events_fresh_items AS (
+/* Separate and adjust section events */
+section_events AS (
   SELECT
-    submission_date,
-    branch,
-    tile_format,
-    section_position,
-    position,
+    rw.normalized_country_code,
+    rw.corpus_item_id,
+    rw.raw_impression_count,
+    -- apply propensity scaling to impressions only
+    rw.raw_impression_count / COALESCE(
+      wt.weight,
+      (SELECT default_weight FROM default_propensity LIMIT 1)
+    ) AS adjusted_impression_count,
+    rw.report_count,
+    rw.click_count
+  FROM
+    raw_grouped_totals rw
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
+    ON SAFE_CAST(wt.position AS INT64) = rw.position
+    AND wt.tile_format = rw.format
+  WHERE
+    rw.section_position IS NOT NULL
+),
+/* Separate non-section (grid) type events */
+non_section_events AS (
+  SELECT
+    normalized_country_code,
     corpus_item_id,
-    event_name
+    raw_impression_count,
+    raw_impression_count AS adjusted_impression_count, -- pass through unchanged
+    report_count,
+    click_count
   FROM
-    events ev,
-    params
+    raw_grouped_totals
   WHERE
-    EXISTS(
-      SELECT
-        1
-      FROM
-        corpus_items ci
-      WHERE
-        ci.corpus_item_id = ev.corpus_item_id
-        AND ev.submission_timestamp < TIMESTAMP_ADD(
-          ci.reviewed_corpus_item_created_at,
-          INTERVAL params.minutes_to_assume_random_ranking MINUTE
-        )
-        AND ev.section_position IS NOT NULL
-    )
+    section_position IS NULL
 ),
-aggregates AS (
+/* Re-join events into single table */
+combined_events AS (
   SELECT
-    tile_format,
-    section_position,
-    position,
-    COUNTIF(event_name = 'impression') AS impressions,
-    COUNTIF(event_name = 'click') AS clicks
+    *
   FROM
-    base_events_fresh_items
+    non_section_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    section_events
+),
+/* Aggregate clicks, impressions, and reports by corpus_item_id and normalized_country_code. */
+aggregated_events AS (
+  SELECT
+    fe.corpus_item_id,
+    fe.normalized_country_code,
+    SAFE_CAST(SUM(adjusted_impression_count) AS INT64) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
+  FROM
+    combined_events fe
   GROUP BY
-    tile_format,
-    section_position,
-    position
+    1,
+    2
 ),
-stories_aggregates AS (
+/* Aggregate clicks, impressions, and reports across all countries. */
+global_aggregates AS (
   SELECT
-    position,
-    tile_format,
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
+    corpus_item_id,
+    CAST(NULL AS STRING) AS region,
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count,
+    SUM(report_count) AS report_count
   FROM
-    aggregates
+    aggregated_events
+  GROUP BY
+    corpus_item_id
+),
+/* Aggregate clicks and impressions for country-specific ranking in Merino. */
+country_aggregates AS (
+  SELECT
+    corpus_item_id,
+    normalized_country_code AS region,
+    impression_count,
+    click_count,
+    report_count
+  FROM
+    aggregated_events
   WHERE
-    position >= 0
-    AND position <= 100
-  GROUP BY
-    position,
-    tile_format
+    -- Gather country (a.k.a. region) specific engagement for all countries that share a feed.
+    -- https://mozilla-hub.atlassian.net/wiki/x/JY3LB
+    normalized_country_code IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
 ),
-stories_totals AS (
+/* Combine the "global" (no region) with the "regional" breakdown. */
+combined_results AS (
   SELECT
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
+    *
   FROM
-    stories_aggregates
-),
-stories_weights AS (
+    global_aggregates
+  UNION ALL
   SELECT
-    SAFE_DIVIDE(stories_totals.ctr, NULLIF(ag.ctr, 0)) AS unormalized_weight,
-    ag.impressions,
-    position,
-    tile_format
+    *
   FROM
-    stories_totals,
-    stories_aggregates AS ag
-),
--- Now that we have weights, we want to normalize (scale) all of them in such a way that the overall
--- average CTR is unchanged regardless of whether we apply propensity. This allows non-adjusted and
--- adjusted data to mix freely.
--- We compute denom_sum, which is the re-weighted total impressions and click_sum, which is the total clicks
--- Normalization Factor = target_ctr * denom_sum/click_sum
-base_events_all_items AS (
-  SELECT
-    tile_format,
-    position,
-    event_name
-  FROM
-    events ev,
-    params
-  WHERE
-    ev.section_position IS NOT NULL
-    AND ev.section_position < 100
-),
-aggregates_all_items AS (
-  SELECT
-    tile_format,
-    position,
-    COUNTIF(event_name = 'impression') AS impressions,
-    COUNTIF(event_name = 'click') AS clicks
-  FROM
-    base_events_all_items
-  GROUP BY
-    tile_format,
-    position
-),
-adjust_sums AS (
-  SELECT
-    SUM(
-      SAFE_DIVIDE(aggregates_all_items.impressions, NULLIF(stories_weights.unormalized_weight, 0))
-    ) AS denom_sum,
-    SUM(aggregates_all_items.clicks) AS clicks_sum
-  FROM
-    aggregates_all_items
-  JOIN
-    stories_weights
-    ON stories_weights.position = aggregates_all_items.position
-    AND stories_weights.tile_format = aggregates_all_items.tile_format
-),
-all_items_stats AS (
-  SELECT
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS target_ctr
-  FROM
-    aggregates_all_items
-),
-normalization_factor AS (
-  SELECT
-    SAFE_DIVIDE(
-      all_items_stats.target_ctr * adjust_sums.denom_sum,
-      NULLIF(adjust_sums.clicks_sum, 0)
-    ) AS factor
-  FROM
-    all_items_stats,
-    adjust_sums
+    country_aggregates
 )
 SELECT
-  unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
-  position,
-  tile_format,
-  NULL AS section_position,
-  impressions
+  *
 FROM
-  stories_weights
-CROSS JOIN
-  normalization_factor
-WHERE
-  impressions > 2000
-  AND unormalized_weight IS NOT NULL
-  AND unormalized_weight != 0;
+  combined_results
+ORDER BY
+  impression_count DESC
+LIMIT
+  -- This LIMIT was derived from the 4 MB payload size cap in Merino, the observed average
+  -- record size of ~113 bytes, and recall measurements. At ~20k rows the JSON blob stays
+  -- well below 4 MB while still retaining >99.9% of fresh impressions globally. Smaller
+  -- countries with lower traffic, like BE, still maintain an acceptable recall of about 97%.
+  20000;

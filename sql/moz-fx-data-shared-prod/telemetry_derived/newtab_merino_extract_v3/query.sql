@@ -77,7 +77,7 @@ raw_grouped_totals AS (
     section_position,
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS raw_impression_count,
     SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
-    SUM(CASE WHEN event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count,
+    SUM(CASE WHEN event_name = 'report_content_submit' THEN 1 ELSE 0 END) AS report_count
   FROM
     flattened_newtab_events
   GROUP BY

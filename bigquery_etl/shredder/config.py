@@ -305,11 +305,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.main_v5"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.main_use_counter_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.new_profile_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.saved_session_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.saved_session_v5"): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_stable.saved_session_use_counter_v4"
-    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_icq_v1_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_addon_v3"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_error_v3"): DESKTOP_SRC,

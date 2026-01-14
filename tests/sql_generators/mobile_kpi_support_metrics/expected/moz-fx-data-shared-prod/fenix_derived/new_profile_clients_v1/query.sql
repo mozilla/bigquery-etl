@@ -30,6 +30,7 @@ SELECT
   attribution.adjust_network,
   attribution.adjust_attribution_timestamp,
   attribution.distribution_id,
+  attribution.paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix.active_users` AS active_users
 LEFT JOIN

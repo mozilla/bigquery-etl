@@ -37,6 +37,7 @@ attribution AS (
     {{ attribution_field }},
     {% endfor %}
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
@@ -61,6 +62,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

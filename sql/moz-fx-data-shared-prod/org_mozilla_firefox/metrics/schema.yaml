@@ -48118,6 +48118,27 @@ fields:
           mode: NULLABLE
       description: Fingerprinting detection hits by known fingerprinting string (key)
         and source (category).
+    - name: webgpu_expose_adapter
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of times wgpu-hal tried to expose an adapter. Note
+        that a call to `requestAdapter` might result in multiple calls to expose adapter.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

@@ -1779,7 +1779,8 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
-      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
+      metrics.dual_labeled_counter.webgpu_expose_adapter
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3583,7 +3584,8 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
-      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
+      metrics.dual_labeled_counter.webgpu_expose_adapter
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5387,7 +5389,8 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
-      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2
+      metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
+      metrics.dual_labeled_counter.webgpu_expose_adapter
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

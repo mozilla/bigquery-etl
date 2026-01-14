@@ -10,10 +10,6 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T12:00:00+00:00
   event_extra: {version: "1.0"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 
 # Test 2: Onboarding TOU - INCLUDED
 - first_submission_timestamp: 2025-10-29T11:00:00+00:00
@@ -26,10 +22,6 @@
   sample_id: 1
   first_event_timestamp: 2025-10-29T11:00:00+00:00
   event_extra: {screen: "welcome"}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "MacOS"
-  normalized_os_version: "14"
 
 # Test 3: Multiple TOU - INCLUDED (aggregated to earliest)
 - first_submission_timestamp: 2025-10-29T08:00:00+00:00
@@ -42,10 +34,6 @@
   sample_id: 2
   first_event_timestamp: 2025-10-29T08:00:00+00:00
   event_extra: {attempt: 1}
-  normalized_channel: "release"
-  normalized_country_code: "DE"
-  normalized_os: "Linux"
-  normalized_os_version: "22.04"
 
 # Test 4: Both TOU types - INCLUDED (2 separate rows)
 - first_submission_timestamp: 2025-10-29T10:00:00+00:00
@@ -58,10 +46,6 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T10:00:00+00:00
   event_extra: {type: "tou"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 - first_submission_timestamp: 2025-10-29T11:00:00+00:00
   client_id: client4-both-tou-types
   event: "onboarding#terms_of_service_accepted"
@@ -72,10 +56,6 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T11:00:00+00:00
   event_extra: {type: "onboarding"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 
 # Test 5-11: Various exclusions - NOT IN OUTPUT
 
@@ -90,10 +70,6 @@
   sample_id: 0
   first_event_timestamp: 2023-01-01T00:00:00+00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 
 # Test 13: NULL fields - INCLUDED
 - first_submission_timestamp: 2025-10-29T10:00:00+00:00
@@ -116,10 +92,6 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T10:00:00+00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 - first_submission_timestamp: 2025-10-29T10:00:00+00:00
   client_id: client15-sample-max
   event: "onboarding#terms_of_service_accepted"
@@ -130,10 +102,6 @@
   sample_id: 3
   first_event_timestamp: 2025-10-29T10:00:00+00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 
 # Test 16: client16-sample-excluded - NOT IN OUTPUT (sample_id >= 4)
 
@@ -148,10 +116,6 @@
   sample_id: 0
   first_event_timestamp: 2023-06-15T10:00:00+00:00
   event_extra: {historical: true}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "10"
 
 # Test 18: Event ordering - INCLUDED (picks earliest event_timestamp)
 - first_submission_timestamp: 2025-10-29T10:00:00+00:00
@@ -164,10 +128,6 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T09:00:00+00:00
   event_extra: {order: 1}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
 
 # Test 19: NULL timestamp - INCLUDED (picks the one with timestamp)
 - first_submission_timestamp: 2025-10-29T10:00:00+00:00
@@ -180,7 +140,3 @@
   sample_id: 0
   first_event_timestamp: 2025-10-29T09:00:00+00:00
   event_extra: {has_timestamp: true}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"

@@ -9,12 +9,6 @@
   submission_timestamp: 2025-10-29T12:00:00
   event_timestamp: 2025-10-29T12:00:00
   event_extra: {version: "1.0"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 2: Onboarding TOU accepted (onboarding.terms_of_service_accepted)
 - client_id: client2-onboarding-tou
@@ -26,12 +20,6 @@
   submission_timestamp: 2025-10-29T11:00:00
   event_timestamp: 2025-10-29T11:00:00
   event_extra: {screen: "welcome"}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "MacOS"
-  normalized_os_version: "14"
-  client_info:
-    windows_build_number: null
 
 # Test 3: Multiple TOU events same day - aggregates to earliest
 - client_id: client3-multiple-tou
@@ -43,12 +31,6 @@
   submission_timestamp: 2025-10-29T08:00:00  # Earliest
   event_timestamp: 2025-10-29T08:00:00
   event_extra: {attempt: 1}
-  normalized_channel: "release"
-  normalized_country_code: "DE"
-  normalized_os: "Linux"
-  normalized_os_version: "22.04"
-  client_info:
-    windows_build_number: null
 - client_id: client3-multiple-tou
   profile_group_id: "client3-tou-profile-2"
   sample_id: 2
@@ -58,12 +40,6 @@
   submission_timestamp: 2025-10-29T14:00:00  # Later
   event_timestamp: 2025-10-29T14:00:00
   event_extra: {attempt: 2}
-  normalized_channel: "beta"
-  normalized_country_code: "FR"
-  normalized_os: "Windows"
-  normalized_os_version: "10"
-  client_info:
-    windows_build_number: null
 
 # Test 4: Same client, both TOU event types
 - client_id: client4-both-tou-types
@@ -75,12 +51,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {type: "tou"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 - client_id: client4-both-tou-types
   profile_group_id: "client4-profile"
   sample_id: 0
@@ -90,12 +60,6 @@
   submission_timestamp: 2025-10-29T11:00:00
   event_timestamp: 2025-10-29T11:00:00
   event_extra: {type: "onboarding"}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 5: TOU declined - EXCLUDED (wrong event_name)
 - client_id: client5-tou-declined
@@ -107,12 +71,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 6: Onboarding started - EXCLUDED (wrong event_name)
 - client_id: client6-onboarding-started
@@ -124,12 +82,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 7: Wrong category - EXCLUDED
 - client_id: client7-wrong-category
@@ -141,12 +93,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 8: Excluded event category (media.playback)
 - client_id: client8-excluded-media
@@ -158,12 +104,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 9: Excluded event category (nimbus_events)
 - client_id: client9-excluded-nimbus
@@ -175,12 +115,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 10: Excluded event category (uptake.remotecontent.result)
 - client_id: client10-excluded-uptake
@@ -192,12 +126,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 11: Date before cutoff (< 2023-01-01) - EXCLUDED
 - client_id: client11-before-cutoff
@@ -209,12 +137,6 @@
   submission_timestamp: 2022-12-31T23:59:59
   event_timestamp: 2022-12-31T23:59:59
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 12: Date exactly on cutoff (>= 2023-01-01) - INCLUDED
 - client_id: client12-on-cutoff
@@ -226,12 +148,6 @@
   submission_timestamp: 2023-01-01T00:00:00
   event_timestamp: 2023-01-01T00:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 13: NULL optional fields
 - client_id: client13-nulls
@@ -260,12 +176,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 - client_id: client15-sample-max
   profile_group_id: "client15-profile"
   sample_id: 3  # < 0 + 4 (INCLUDED)
@@ -275,12 +185,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 - client_id: client16-sample-excluded
   profile_group_id: "client16-profile"
   sample_id: 4  # >= 0 + 4 (EXCLUDED)
@@ -290,12 +194,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00
   event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 
 # Test 17: Historical date within range
 - client_id: client17-historical
@@ -307,12 +205,6 @@
   submission_timestamp: 2023-06-15T10:00:00
   event_timestamp: 2023-06-15T10:00:00
   event_extra: {historical: true}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "10"
-  client_info:
-    windows_build_number: null
 
 # Test 18: ARRAY_AGG ordering - same submission, different event_timestamp
 - client_id: client18-event-ordering
@@ -324,12 +216,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T09:00:00  # Earlier (should be picked)
   event_extra: {order: 1}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 - client_id: client18-event-ordering
   profile_group_id: "client18-profile-2"
   sample_id: 0
@@ -339,12 +225,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T10:00:00  # Later
   event_extra: {order: 2}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "MacOS"
-  normalized_os_version: "14"
-  client_info:
-    windows_build_number: null
 
 # Test 19: NULL event_timestamp with COALESCE ordering
 - client_id: client19-null-timestamp
@@ -356,12 +236,6 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: 2025-10-29T09:00:00  # Has timestamp (should be picked)
   event_extra: {has_timestamp: true}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Windows"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
 - client_id: client19-null-timestamp
   profile_group_id: "client19-profile-2"
   sample_id: 0
@@ -371,9 +245,3 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: null  # NULL sorted last
   event_extra: {has_timestamp: false}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "MacOS"
-  normalized_os_version: "14"
-  client_info:
-    windows_build_number: null

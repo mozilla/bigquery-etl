@@ -1,42 +1,46 @@
 ---
 # Historical record for client3-existing (already seen with same criteria)
-- first_submission_timestamp: 2025-10-15T08:00:00+00:00
-  client_id: client3-existing
+- client_id: client3-existing
   event: "terms_of_use#accepted"
-  event_category: "terms_of_use"
-  event_name: "accepted"
   criteria: "tou_accept"
-  profile_group_id: "client3-existing-profile-old"
-  sample_id: 2
-  first_event_timestamp: 2025-10-15T08:00:00+00:00
-  event_extra: {version: "1.0"}
+  first_submission_timestamp: 2025-10-15T08:00:00+00:00
 
 # Historical record for different event (same client, different event key)
 - client_id: client5-both-types
   event: "privacy#accepted"
   criteria: "tou_accept"
+  first_submission_timestamp: 2025-10-18T10:00:00+00:00
+
+# Historical record for one event from client6-partial-history
+- client_id: client16-partial-history
+  event: "terms_of_use#accepted"
+  criteria: "tou_accept"
+  first_submission_timestamp: 2025-10-18T10:00:00+00:00
 
 # Historical record with NULL criteria (should NOT match)
-- client_id: client16-null-criteria
+- client_id: client17-null-criteria
   event: "terms_of_use#accepted"
   criteria: null
 
 # Historical record NOT in current day (should not appear in output)
-- client_id: client17-history-only
+- client_id: client18-history-only
   event: "onboarding#terms_of_service_accepted"
   criteria: "tou_accept"
+  first_submission_timestamp: 2025-10-20T09:00:00+00:00
 
 # Historical record before date filter cutoff (< 2023-01-01) - excluded from _previous
-- client_id: client18-before-cutoff
+- client_id: client19-before-cutoff
   event: "terms_of_use#accepted"
   criteria: "tou_accept"
+  first_submission_timestamp: 2022-12-31T10:00:00+00:00
 
 # Historical record on @submission_date (should be excluded - DATE >= @submission_date)
-- client_id: client19-same-date
+- client_id: client20-same-date
   event: "terms_of_use#accepted"
   criteria: "tou_accept"
+  first_submission_timestamp: 2025-10-29T05:00:00+00:00
 
 # Historical record with different criteria (should NOT match in JOIN)
-- client_id: client20-diff-criteria
+- client_id: client21-diff-criteria
   event: "terms_of_use#accepted"
   criteria: "different_criteria"

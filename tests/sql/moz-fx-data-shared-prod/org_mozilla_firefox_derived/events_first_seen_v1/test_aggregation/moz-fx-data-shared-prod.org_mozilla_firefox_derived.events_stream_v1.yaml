@@ -19,13 +19,12 @@
 
 # Test 3: Event already in history - EXCLUDED
 - client_id: client3-existing
-  profile_group_id: "client3-existing-profile-new"
+  profile_group_id: "client3-existing-profile"
   event_category: "terms_of_use"
   event_name: "accepted"
   event: "terms_of_use#accepted"
   submission_timestamp: 2025-10-29T12:00:00
   event_timestamp: 2025-10-29T12:00:00
-  event_extra: {version: "2.0"}
 
 # Test 4: Multiple TOU events same day (aggregates to earliest) - INCLUDED
 - client_id: client4-multiple
@@ -171,3 +170,23 @@
   submission_timestamp: 2025-10-29T10:00:00
   event_timestamp: null  # NULL sorted last
   event_extra: {has_timestamp: false}
+
+# Test 16: Same client, one event in history, one new
+- client_id: client16-partial-history
+  profile_group_id: "client16-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {type: "old"}
+- client_id: client16-partial-history
+  profile_group_id: "client16-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T11:00:00
+  event_timestamp: 2025-10-29T11:00:00
+  event_extra: {type: "new"}

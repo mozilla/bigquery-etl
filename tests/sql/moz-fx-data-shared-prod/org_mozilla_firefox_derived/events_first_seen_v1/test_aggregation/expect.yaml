@@ -85,4 +85,16 @@
   first_event_timestamp: 2025-10-29T09:00:00+00:00
   event_extra: {has_timestamp: true}
 
-# Test 16-20: client17-history-only - NOT IN OUTPUT (not in current day) ADD NOTE ABOUT OTHER EXCLUSIONS
+# Test 16: Partial history - only new event INCLUDED
+- first_submission_timestamp: 2025-10-29T11:00:00+00:00
+  client_id: client16-partial-history
+  event: "onboarding#terms_of_service_accepted"
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  criteria: "tou_accept"
+  profile_group_id: "client16-profile"
+  sample_id: 0
+  first_event_timestamp: 2025-10-29T11:00:00+00:00
+  event_extra: {type: "new"}
+
+# Test 17-21: various exclusions

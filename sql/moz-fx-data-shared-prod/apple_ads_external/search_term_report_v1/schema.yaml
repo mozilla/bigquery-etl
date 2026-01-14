@@ -80,3 +80,9 @@ fields:
   mode: NULLABLE
   name: spend
   type: BIGNUMERIC
+- mode: NULLABLE
+  name: keyword_text
+  type: STRING
+- mode: NULLABLE
+  name: keyword_id
+  type: INTEGER

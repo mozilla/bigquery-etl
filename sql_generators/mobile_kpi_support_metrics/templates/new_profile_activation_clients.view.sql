@@ -9,10 +9,12 @@ SELECT
   {% else %}
     "Organic" AS paid_vs_organic,
   {% endif %}
-  {% if dataset == 'fenix' %}
+  {% if 'play_store_attribution_install_referrer_response' in product_attribution_fields %}
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(play_store_attribution_install_referrer_response) AS paid_vs_organic_via_gclid_attribution,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(play_store_attribution_install_referrer_response) AS paid_vs_organic_gclid,
   {% else %}
   CAST(NULL AS STRING) AS paid_vs_organic_via_gclid_attribution,
+  CAST(NULL AS STRING) AS paid_vs_organic_gclid,
   {% endif %}
   -- Checking if the client was seen more than once in the first 2 - 7 days
   -- and if they had more than 0 searches within the time window (3 days).

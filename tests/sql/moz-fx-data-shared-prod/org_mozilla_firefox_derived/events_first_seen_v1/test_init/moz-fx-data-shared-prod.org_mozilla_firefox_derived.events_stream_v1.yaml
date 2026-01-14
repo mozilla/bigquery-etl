@@ -1,25 +1,25 @@
 ---
-# Test 1: Single TOU accept event (terms_of_use.accepted)
-- client_id: client1-tou-single
+# Test 1: TOU accepted event (terms_of_use.accepted)
+- client_id: client1-tou-accepted
   profile_group_id: "client1-tou-profile"
   sample_id: 0
   event_category: "terms_of_use"
   event_name: "accepted"
   event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
+  submission_timestamp: 2025-10-29T12:00:00
+  event_timestamp: 2025-10-29T12:00:00
   event_extra: {version: "1.0"}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
-# Test 2: Single onboarding event (onboarding.terms_of_service_accepted)
-- client_id: client2-onboarding-single
+# Test 2: Onboarding TOU accepted (onboarding.terms_of_service_accepted)
+- client_id: client2-onboarding-tou
   profile_group_id: "client2-onboarding-profile"
-  sample_id: 0
+  sample_id: 1
   event_category: "onboarding"
   event_name: "terms_of_service_accepted"
   event: "onboarding#terms_of_service_accepted"
@@ -28,157 +28,46 @@
   event_extra: {screen: "welcome"}
   normalized_channel: "beta"
   normalized_country_code: "CA"
-  normalized_os: "Android"
+  normalized_os: "MacOS"
   normalized_os_version: "14"
   client_info:
     windows_build_number: null
 
-# Test 3: Multiple events - ARRAY_AGG picks earliest submission_timestamp
-- client_id: client3-multiple
-  profile_group_id: "client3-profile-1"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T08:00:00
-  event_timestamp: 2025-10-29T08:30:00
-  event_extra: {attempt: 1}
-  normalized_channel: "release"
-  normalized_country_code: "DE"
-  normalized_os: "Android"
-  normalized_os_version: "12"
-  client_info:
-    windows_build_number: null
-- client_id: client3-multiple
-  profile_group_id: "client3-profile-2"
-  sample_id: 1
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T07:00:00  # Earlier submission (should be picked)
-  event_timestamp: 2025-10-29T09:00:00  # Later event time
-  event_extra: {attempt: 2}
-  normalized_channel: "beta"
-  normalized_country_code: "FR"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-- client_id: client3-multiple
-  profile_group_id: "client3-profile-3"
+# Test 3: Multiple TOU events same day - aggregates to earliest
+- client_id: client3-multiple-tou
+  profile_group_id: "client3-tou-profile-1"
   sample_id: 2
   event_category: "terms_of_use"
   event_name: "accepted"
   event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T09:00:00
-  event_timestamp: 2025-10-29T07:00:00  # Earliest event time, but later submission
-  event_extra: {attempt: 3}
-  normalized_channel: "nightly"
-  normalized_country_code: "ES"
-  normalized_os: "Android"
-  normalized_os_version: "11"
-  client_info:
-    windows_build_number: null
-
-# Test 4: Same submission_timestamp, different event_timestamp
-- client_id: client4-same-submission
-  profile_group_id: "client4-profile-1"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T09:00:00  # Earlier event time (should be picked)
-  event_extra: {order: 1}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-- client_id: client4-same-submission
-  profile_group_id: "client4-profile-2"
-  sample_id: 1
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00  # Same submission
-  event_timestamp: 2025-10-29T10:00:00  # Later event time
-  event_extra: {order: 2}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "Android"
-  normalized_os_version: "14"
-  client_info:
-    windows_build_number: null
-
-# Test 5: NULL event_timestamp - uses COALESCE fallback
-- client_id: client5-null-event-timestamp
-  profile_group_id: "client5-profile-1"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T09:00:00  # Has timestamp (should be picked)
-  event_extra: {has_timestamp: true}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-- client_id: client5-null-event-timestamp
-  profile_group_id: "client5-profile-2"
-  sample_id: 1
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00  # Same submission
-  event_timestamp: null  # NULL gets COALESCE to 9999-12-31, so sorted last
-  event_extra: {has_timestamp: false}
-  normalized_channel: "beta"
-  normalized_country_code: "CA"
-  normalized_os: "Android"
-  normalized_os_version: "14"
-  client_info:
-    windows_build_number: null
-
-# Test 6: Both have NULL event_timestamp
-- client_id: client6-both-null
-  profile_group_id: "client6-profile-1"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T08:00:00  # Earlier submission (should be picked)
-  event_timestamp: null
-  event_extra: {both_null: 1}
+  submission_timestamp: 2025-10-29T08:00:00  # Earliest
+  event_timestamp: 2025-10-29T08:00:00
+  event_extra: {attempt: 1}
   normalized_channel: "release"
   normalized_country_code: "DE"
-  normalized_os: "Android"
-  normalized_os_version: "12"
+  normalized_os: "Linux"
+  normalized_os_version: "22.04"
   client_info:
     windows_build_number: null
-- client_id: client6-both-null
-  profile_group_id: "client6-profile-2"
-  sample_id: 1
+- client_id: client3-multiple-tou
+  profile_group_id: "client3-tou-profile-2"
+  sample_id: 2
   event_category: "terms_of_use"
   event_name: "accepted"
   event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T09:00:00  # Later submission
-  event_timestamp: null
-  event_extra: {both_null: 2}
+  submission_timestamp: 2025-10-29T14:00:00  # Later
+  event_timestamp: 2025-10-29T14:00:00
+  event_extra: {attempt: 2}
   normalized_channel: "beta"
   normalized_country_code: "FR"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "10"
   client_info:
     windows_build_number: null
 
-# Test 7: Different events for same client
-- client_id: client7-diff-events
-  profile_group_id: "client7-profile"
+# Test 4: Same client, both TOU event types
+- client_id: client4-both-tou-types
+  profile_group_id: "client4-profile"
   sample_id: 0
   event_category: "terms_of_use"
   event_name: "accepted"
@@ -188,12 +77,12 @@
   event_extra: {type: "tou"}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
-- client_id: client7-diff-events
-  profile_group_id: "client7-profile"
+- client_id: client4-both-tou-types
+  profile_group_id: "client4-profile"
   sample_id: 0
   event_category: "onboarding"
   event_name: "terms_of_service_accepted"
@@ -203,8 +92,59 @@
   event_extra: {type: "onboarding"}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+
+# Test 5: TOU declined - EXCLUDED (wrong event_name)
+- client_id: client5-tou-declined
+  profile_group_id: "client5-profile"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "declined"
+  event: "terms_of_use#declined"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+
+# Test 6: Onboarding started - EXCLUDED (wrong event_name)
+- client_id: client6-onboarding-started
+  profile_group_id: "client6-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "started"
+  event: "onboarding#started"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+
+# Test 7: Wrong category - EXCLUDED
+- client_id: client7-wrong-category
+  profile_group_id: "client7-profile"
+  sample_id: 0
+  event_category: "privacy"
+  event_name: "accepted"
+  event: "privacy#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
@@ -220,8 +160,8 @@
   event_extra: {}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
@@ -237,8 +177,8 @@
   event_extra: {}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
@@ -254,95 +194,14 @@
   event_extra: {}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
-# Test 11: Wrong event_name for terms_of_use
-- client_id: client11-wrong-name
+# Test 11: Date before cutoff (< 2023-01-01) - EXCLUDED
+- client_id: client11-before-cutoff
   profile_group_id: "client11-profile"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "declined"
-  event: "terms_of_use#declined"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-
-# Test 12: Wrong event_name for onboarding
-- client_id: client12-wrong-onboarding
-  profile_group_id: "client12-profile"
-  sample_id: 0
-  event_category: "onboarding"
-  event_name: "started"
-  event: "onboarding#started"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-
-# Test 13: Sample ID boundary (assuming @sample_id = 0, @sampling_batch_size = 10)
-- client_id: client13-sample-min
-  profile_group_id: "client13-profile"
-  sample_id: 0  # Should be included (>= 0)
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-- client_id: client14-sample-max
-  profile_group_id: "client14-profile"
-  sample_id: 3  # Should be included (< 0 + 4)
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-- client_id: client15-sample-excluded
-  profile_group_id: "client15-profile"
-  sample_id: 10  # Should be excluded (>= 0 + 10)
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-
-# Test 14: Date boundary - before 2023-01-01 (excluded)
-- client_id: client16-before-cutoff
-  profile_group_id: "client16-profile"
   sample_id: 0
   event_category: "terms_of_use"
   event_name: "accepted"
@@ -352,14 +211,14 @@
   event_extra: {}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
   client_info:
     windows_build_number: null
 
-# Test 15: Date boundary - exactly 2023-01-01 (included)
-- client_id: client17-on-cutoff
-  profile_group_id: "client17-profile"
+# Test 12: Date exactly on cutoff (>= 2023-01-01) - INCLUDED
+- client_id: client12-on-cutoff
+  profile_group_id: "client12-profile"
   sample_id: 0
   event_category: "terms_of_use"
   event_name: "accepted"
@@ -369,31 +228,14 @@
   event_extra: {}
   normalized_channel: "release"
   normalized_country_code: "US"
-  normalized_os: "Android"
-  normalized_os_version: "13"
-  client_info:
-    windows_build_number: null
-
-# Test 16: Windows build number (non-null)
-- client_id: client18-windows
-  profile_group_id: "client18-profile"
-  sample_id: 0
-  event_category: "terms_of_use"
-  event_name: "accepted"
-  event: "terms_of_use#accepted"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {}
-  normalized_channel: "release"
-  normalized_country_code: "US"
   normalized_os: "Windows"
   normalized_os_version: "11"
   client_info:
-    windows_build_number: 22000
+    windows_build_number: null
 
-# Test 17: All NULL optional fields
-- client_id: client19-nulls
-  profile_group_id: "client19-profile"
+# Test 13: NULL optional fields
+- client_id: client13-nulls
+  profile_group_id: "client13-profile"
   sample_id: 0
   event_category: "terms_of_use"
   event_name: "accepted"
@@ -405,5 +247,133 @@
   normalized_country_code: null
   normalized_os: null
   normalized_os_version: null
+  client_info:
+    windows_build_number: null
+
+# Test 14-16: Sample ID boundaries (assuming @sample_id = 0, @sampling_batch_size = 4)
+- client_id: client14-sample-min
+  profile_group_id: "client14-profile"
+  sample_id: 0  # >= 0 (INCLUDED)
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+- client_id: client15-sample-max
+  profile_group_id: "client15-profile"
+  sample_id: 3  # < 0 + 4 (INCLUDED)
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+- client_id: client16-sample-excluded
+  profile_group_id: "client16-profile"
+  sample_id: 4  # >= 0 + 4 (EXCLUDED)
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+
+# Test 17: Historical date within range
+- client_id: client17-historical
+  profile_group_id: "client17-profile"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2023-06-15T10:00:00
+  event_timestamp: 2023-06-15T10:00:00
+  event_extra: {historical: true}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "10"
+  client_info:
+    windows_build_number: null
+
+# Test 18: ARRAY_AGG ordering - same submission, different event_timestamp
+- client_id: client18-event-ordering
+  profile_group_id: "client18-profile-1"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T09:00:00  # Earlier (should be picked)
+  event_extra: {order: 1}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+- client_id: client18-event-ordering
+  profile_group_id: "client18-profile-2"
+  sample_id: 0
+  event_category: "terms_of_use"
+  event_name: "accepted"
+  event: "terms_of_use#accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00  # Later
+  event_extra: {order: 2}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "MacOS"
+  normalized_os_version: "14"
+  client_info:
+    windows_build_number: null
+
+# Test 19: NULL event_timestamp with COALESCE ordering
+- client_id: client19-null-timestamp
+  profile_group_id: "client19-profile-1"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T09:00:00  # Has timestamp (should be picked)
+  event_extra: {has_timestamp: true}
+  normalized_channel: "release"
+  normalized_country_code: "US"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  client_info:
+    windows_build_number: null
+- client_id: client19-null-timestamp
+  profile_group_id: "client19-profile-2"
+  sample_id: 0
+  event_category: "onboarding"
+  event_name: "terms_of_service_accepted"
+  event: "onboarding#terms_of_service_accepted"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: null  # NULL sorted last
+  event_extra: {has_timestamp: false}
+  normalized_channel: "beta"
+  normalized_country_code: "CA"
+  normalized_os: "MacOS"
+  normalized_os_version: "14"
   client_info:
     windows_build_number: null

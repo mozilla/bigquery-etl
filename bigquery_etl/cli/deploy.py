@@ -34,6 +34,7 @@ from bigquery_etl.deploy import (
     deploy_table,
 )
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.schema import SCHEMA_FILE
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
@@ -238,6 +239,10 @@ def _build_dependency_graph(
     """
     Build dependency graph.
 
+    For tables with schema.yaml, we skip dependency extraction since we're
+    deploying the schema structure (not running the query), so circular
+    dependencies in the query don't matter.
+
     Returns a dict mapping artifact_id to set of dependencies.
     """
     graph = {}
@@ -249,10 +254,18 @@ def _build_dependency_graph(
                 id_token = get_id_token()
                 view = View.from_file(file_path, id_token=id_token)
                 references = view.table_references
+            elif artifact_type in ["table", "materialized_view"]:
+                # For tables with schema.yaml, skip dependency extraction
+                schema_file = file_path.parent / SCHEMA_FILE
+                if schema_file.exists():
+                    references = []
+                else:
+                    sql_content = render(
+                        file_path.name, template_folder=file_path.parent
+                    )
+                    references = extract_table_references(sql_content)
             else:
-                # For tables and materialized views, render and extract references
-                sql_content = render(file_path.name, template_folder=file_path.parent)
-                references = extract_table_references(sql_content)
+                references = []
 
             dependencies = set()
             for ref in references:

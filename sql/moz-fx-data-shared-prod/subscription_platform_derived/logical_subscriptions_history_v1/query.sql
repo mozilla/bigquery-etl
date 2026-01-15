@@ -25,6 +25,7 @@ subscription_starts AS (
   SELECT
     history.subscription.id AS subscription_id,
     history.subscription.started_at,
+    history.subscription.is_trial AS started_as_trial,
     DENSE_RANK() OVER (
       PARTITION BY
         -- We don't have unhashed Mozilla Account IDs for some historical customers, so we use the hashed IDs instead,
@@ -149,8 +150,12 @@ SELECT
     history.subscription.ongoing_discount_ends_at,
     history.subscription.ended_reason,
     CONCAT(
-      IF(customer_subscription_number = 1, 'New Customer', 'Returning Customer'),
-      IF(history.subscription.is_trial, ' Trial', '')
+      IF(
+        subscription_starts.customer_subscription_number = 1,
+        'New Customer',
+        'Returning Customer'
+      ),
+      IF(subscription_starts.started_as_trial, ' Trial', '')
     ) AS started_reason
   ) AS subscription
 FROM

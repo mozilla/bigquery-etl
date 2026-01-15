@@ -426,7 +426,7 @@ fields:
     description: |-
       Reason why the subscription started.
       Possible values:
-        * `New Customer` - A new customer started their subscription.
-        * `New Customer Trial` - A new customer started their subscription and it is a trial plan.
-        * `Returning Customer` - A customer reactivated their subscription plan.
-        * `Returning Customer Trial` - A customer reactivated their subscription plan and it is a trial plan.
+        * `New Customer` - A new customer started their first subscription.
+        * `New Customer Trial` - A new customer started their first subscription and it is a trial plan.
+        * `Returning Customer` - A customer started a subsequent subscription.
+        * `Returning Customer Trial` - A customer started a subsequent subscription and it is a trial plan.

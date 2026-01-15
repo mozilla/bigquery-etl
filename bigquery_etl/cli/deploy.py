@@ -3,9 +3,10 @@
 import logging
 import multiprocessing
 import sys
+from collections.abc import MutableMapping
 from functools import partial
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import click
 from google.cloud import bigquery
@@ -289,7 +290,7 @@ def _execute_deployment(
     dependency_graph: Dict[str, Set[str]],
     options: dict,
     parallelism: int,
-) -> Dict[str, Tuple[str, str]]:
+) -> Dict[str, Tuple[str, Optional[str]]]:
     """
     Deploy artifacts in parallel with dependency ordering.
 
@@ -324,12 +325,12 @@ def _deploy_artifact_callback(
     _followup_queue,
     artifacts: Dict[str, Tuple[Path, str]],
     options: dict,
-    results: dict,
+    results: MutableMapping[str, Tuple[str, Optional[str]]],
 ):
     """
-    Callback for _execute_deployment.
-
     Deploys a single artifact and tracks results.
+
+    Callback for _execute_deployment.
     """
     file_path, artifact_type = artifacts[artifact_id]
 
@@ -433,9 +434,7 @@ def _deploy_view_artifact(file_path: Path, options: dict):
         raise FailedDeployException(f"View publish failed for {file_path}")
 
 
-def _report_results(results: Dict[str, Tuple[str, str]]):
-    """Print deployment summary."""
-
+def _report_results(results: Dict[str, Tuple[str, Optional[str]]]):
     successes = [k for k, (s, _) in results.items() if s == "success"]
     failures = [k for k, (s, _) in results.items() if s == "failed"]
     skipped = [k for k, (s, _) in results.items() if s == "skipped"]

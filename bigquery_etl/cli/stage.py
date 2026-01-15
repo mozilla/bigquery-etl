@@ -277,7 +277,6 @@ def _view_dependencies(artifact_files, sql_dir):
     With schema.yaml: We deploy the schema structure (not run the query), so
     we don't need the query's dependencies.
     """
-
     view_dependencies = set()
     dependency_files = [
         file

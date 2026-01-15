@@ -11,12 +11,7 @@ from typing import Dict, List, Optional, Set, Tuple
 import click
 from google.cloud import bigquery
 
-from bigquery_etl.cli.stage import (
-    MATERIALIZED_VIEW,
-    QUERY_FILE,
-    QUERY_SCRIPT,
-    VIEW_FILE,
-)
+from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     is_authenticated,
     multi_project_id_option,
@@ -35,7 +30,7 @@ from bigquery_etl.deploy import (
     deploy_table,
 )
 from bigquery_etl.dryrun import get_id_token
-from bigquery_etl.schema import SCHEMA_FILE
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
@@ -47,9 +42,9 @@ log = logging.getLogger(__name__)
 @click.command(
     help="""Deploy BigQuery artifacts with dependency resolution.
 
-    This command deploys tables, views, and materialized views with automatic
-    dependency resolution and parallel execution. You must specify at least one
-    artifact type to deploy using the --tables, --views, or --materialized-views flags.
+    This command deploys tables and views with automatic dependency resolution
+    and parallel execution. You must specify at least one artifact type to
+    deploy using the --tables or --views flags.
 
     Examples:
 
@@ -82,13 +77,6 @@ log = logging.getLogger(__name__)
     is_flag=True,
     default=False,
     help="Deploy views (view.sql files)",
-)
-@click.option(
-    "--materialized-views",
-    "--materialized_views",
-    is_flag=True,
-    default=False,
-    help="Deploy materialized views (materialized_view.sql files)",
 )
 @sql_dir_option
 @multi_project_id_option(
@@ -133,7 +121,6 @@ def deploy(
     paths,
     tables,
     views,
-    materialized_views,
     sql_dir,
     project_ids,
     parallelism,
@@ -146,10 +133,9 @@ def deploy(
     target_project,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views, materialized_views]):
+    if not any([tables, views]):
         raise click.UsageError(
-            "Must specify at least one artifact type: "
-            "--tables, --views, or --materialized-views"
+            "Must specify at least one artifact type: --tables or --views"
         )
 
     if not is_authenticated():
@@ -164,8 +150,6 @@ def deploy(
         artifact_types.append("table")
     if views:
         artifact_types.append("view")
-    if materialized_views:
-        artifact_types.append("materialized_view")
 
     credentials = None
     id_token = get_id_token()
@@ -212,24 +196,33 @@ def _discover_artifacts(
     patterns = {
         "table": [QUERY_FILE, QUERY_SCRIPT],
         "view": [VIEW_FILE],
-        "materialized_view": [MATERIALIZED_VIEW],
     }
 
-    for artifact_type in artifact_types:
-        file_patterns = patterns[artifact_type]
+    file_patterns = [
+        pattern
+        for artifact_type in artifact_types
+        for pattern in patterns[artifact_type]
+    ]
 
-        for project_id in project_ids:
-            files = paths_matching_name_pattern(
-                paths if paths else None,
-                sql_dir,
-                project_id,
-                file_patterns,
+    for project_id in project_ids:
+        files = paths_matching_name_pattern(
+            paths if paths else None,
+            sql_dir,
+            project_id,
+            file_patterns,
+        )
+
+        for file_path in files:
+            project, dataset, name = extract_from_query_path(file_path)
+            artifact_id = f"{project}.{dataset}.{name}"
+
+            # determine artifact type from file name
+            artifact_type = next(
+                atype
+                for atype, file_names in patterns.items()
+                if file_path.name in file_names
             )
-
-            for file_path in files:
-                project, dataset, name = extract_from_query_path(file_path)
-                artifact_id = f"{project}.{dataset}.{name}"
-                artifacts[artifact_id] = (file_path, artifact_type)
+            artifacts[artifact_id] = (file_path, artifact_type)
 
     return artifacts
 
@@ -250,13 +243,13 @@ def _build_dependency_graph(
 
     for artifact_id, (file_path, artifact_type) in artifacts.items():
         try:
-            # Extract dependencies based on artifact type
+            # extract dependencies based on artifact type
             if artifact_type == "view":
                 id_token = get_id_token()
                 view = View.from_file(file_path, id_token=id_token)
                 references = view.table_references
             elif artifact_type in ["table", "materialized_view"]:
-                # For tables with schema.yaml, skip dependency extraction
+                # for tables with schema.yaml, skip dependency extraction
                 schema_file = file_path.parent / SCHEMA_FILE
                 if schema_file.exists():
                     references = []
@@ -339,9 +332,6 @@ def _deploy_artifact_callback(
             _deploy_table_artifact(file_path, options)
         elif artifact_type == "view":
             _deploy_view_artifact(file_path, options)
-        elif artifact_type == "materialized_view":
-            # Deploy materialized views as tables
-            _deploy_table_artifact(file_path, options)
 
         results[artifact_id] = ("success", None)
         click.echo(f"✓ {artifact_id}")
@@ -362,8 +352,6 @@ def _deploy_artifact_callback(
 
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
-    from bigquery_etl.schema import SCHEMA_FILE, Schema
-
     if options["dry_run"]:
         schema_path = file_path.parent / SCHEMA_FILE
         try:
@@ -373,7 +361,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
                 f"Schema missing for {file_path}. Dry run validation failed."
             ) from e
 
-        # Validate schema matches query if not using --force
+        # validate schema matches query if not using --force
         if not options["force"] and str(file_path).endswith(".sql"):
             client = bigquery.Client(credentials=options["credentials"])
             try:

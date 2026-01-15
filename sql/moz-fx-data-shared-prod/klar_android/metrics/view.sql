@@ -277,7 +277,8 @@ SELECT
       metrics.counter.media_mkv_content_count,
       metrics.counter.update_state_write_failure,
       metrics.counter.web_push_declarative,
-      metrics.counter.web_push_declarative_mutable
+      metrics.counter.web_push_declarative_mutable,
+      metrics.counter.pdfjs_tagged
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

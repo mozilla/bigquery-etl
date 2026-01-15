@@ -3127,6 +3127,12 @@ fields:
         mutable: true.
 
         '
+    - name: pdfjs_tagged
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times PDF Viewer was used for tagged pdf.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

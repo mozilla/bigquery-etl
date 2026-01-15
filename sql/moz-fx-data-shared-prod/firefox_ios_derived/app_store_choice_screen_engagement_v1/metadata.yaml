@@ -9,10 +9,10 @@ labels:
   schedule: daily
   incremental: true
   table_type: aggregate
-  dag: bqetl_firefox_ios
+  dag: bqetl_firefox_ios_choice_screen
   owner1: kik
 scheduling:
-  dag_name: bqetl_firefox_ios
+  dag_name: bqetl_firefox_ios_choice_screen
   depends_on_past: false
   arguments:
   - --date={{ds}}

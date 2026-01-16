@@ -2539,3 +2539,24 @@ bqetl_newtab_hourly:
   catchup: true
   tags:
     - impact/tier_2
+
+bqetl_firefox_ios_choice_screen:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - ebrandi@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 0
+    retry_delay: 10m
+    start_date: '2025-01-14'
+  description: Job to pull user choice screen info from Apple.
+  repo: bigquery-etl
+  schedule_interval: daily
+  catchup: true
+  tags:
+    - impact/tier_3
+    - triage/no_triage

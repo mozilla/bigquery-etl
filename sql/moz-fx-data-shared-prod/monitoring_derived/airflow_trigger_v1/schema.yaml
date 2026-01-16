@@ -5,7 +5,7 @@ fields:
   type: INTEGER
 - description:
   mode: NULLABLE
-  name: trigger_id
+  name: triggerer_id
   type: INTEGER
 - description:
   mode: NULLABLE

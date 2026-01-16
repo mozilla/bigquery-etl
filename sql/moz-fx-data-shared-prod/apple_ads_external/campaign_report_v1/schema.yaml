@@ -75,3 +75,27 @@ fields:
   mode: NULLABLE
   name: spend
   type: BIGNUMERIC
+
+- description: |
+    Number of installs.
+  mode: NULLABLE
+  name: installs
+  type: INTEGER
+
+- description: |
+    Number of new installs.
+  mode: NULLABLE
+  name: raw_new_downloads
+  type: INTEGER
+
+- description: |
+    Number of redownloads.
+  mode: NULLABLE
+  name: raw_redownloads
+  type: INTEGER
+
+- description: |
+    Number of total downloads.
+  mode: NULLABLE
+  name: raw_total_downloads
+  type: INTEGER

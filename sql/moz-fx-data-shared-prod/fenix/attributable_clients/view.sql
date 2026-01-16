@@ -4,4 +4,5 @@ AS
 SELECT
   *
 FROM
+  -- test change
   `moz-fx-data-shared-prod.fenix_derived.attributable_clients_v1`

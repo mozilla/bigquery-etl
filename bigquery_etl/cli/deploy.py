@@ -117,6 +117,27 @@ log = logging.getLogger(__name__)
     required=False,
     help="Target project for views (for cross-project publishing)",
 )
+@click.option(
+    "--add-managed-label",
+    "--add_managed_label",
+    is_flag=True,
+    default=False,
+    help='Add a label "managed" to views for lifecycle management',
+)
+@click.option(
+    "--skip-authorized",
+    "--skip_authorized",
+    is_flag=True,
+    default=False,
+    help="Don't deploy views with labels: {authorized: true} in metadata.yaml",
+)
+@click.option(
+    "--authorized-only",
+    "--authorized_only",
+    is_flag=True,
+    default=False,
+    help="Only deploy views with labels: {authorized: true} in metadata.yaml",
+)
 def deploy(
     paths,
     tables,
@@ -131,11 +152,19 @@ def deploy(
     respect_dryrun_skip,
     use_cloud_function,
     target_project,
+    add_managed_label,
+    skip_authorized,
+    authorized_only,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
     if not any([tables, views]):
         raise click.UsageError(
             "Must specify at least one artifact type: --tables or --views"
+        )
+
+    if skip_authorized and authorized_only:
+        raise click.UsageError(
+            "Cannot use both --skip-authorized and --authorized-only"
         )
 
     if not is_authenticated():
@@ -155,6 +184,12 @@ def deploy(
     id_token = get_id_token()
 
     artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
+
+    # filter views based on authorized flags
+    if skip_authorized or authorized_only:
+        artifacts = _filter_views_by_authorization(
+            artifacts, skip_authorized, authorized_only, id_token
+        )
 
     if not artifacts:
         click.echo("No artifacts found matching the specified criteria.")
@@ -179,6 +214,7 @@ def deploy(
         "credentials": credentials,
         "id_token": id_token,
         "target_project": target_project,
+        "add_managed_label": add_managed_label,
     }
 
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
@@ -225,6 +261,43 @@ def _discover_artifacts(
             artifacts[artifact_id] = (file_path, artifact_type)
 
     return artifacts
+
+
+def _filter_views_by_authorization(
+    artifacts: Dict[str, Tuple[Path, str]],
+    skip_authorized: bool,
+    authorized_only: bool,
+    id_token: str,
+) -> Dict[str, Tuple[Path, str]]:
+    """Filter views based on authorized label in metadata.yaml.
+
+    Matches behavior of bqetl view publish:
+    - skip_authorized: Excludes views with {authorized: true}
+    - authorized_only: Includes only views with {authorized: true}
+    - Views without metadata or without authorized label are treated as not authorized
+    """
+    filtered_artifacts = {}
+
+    for artifact_id, (file_path, artifact_type) in artifacts.items():
+        if artifact_type != "view":
+            filtered_artifacts[artifact_id] = (file_path, artifact_type)
+            continue
+
+        view = View.from_file(file_path, id_token=id_token)
+        is_authorized = (
+            view.metadata
+            and view.metadata.labels
+            and view.metadata.labels.get("authorized") == ""
+        )
+
+        if skip_authorized and is_authorized:
+            continue
+        if authorized_only and not is_authorized:
+            continue
+
+        filtered_artifacts[artifact_id] = (file_path, artifact_type)
+
+    return filtered_artifacts
 
 
 def _build_dependency_graph(
@@ -403,6 +476,10 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     """Deploy a view using View.publish method."""
     id_token = options.get("id_token")
     view = View.from_file(file_path, id_token=id_token)
+
+    # Add managed label if requested
+    if options.get("add_managed_label", False):
+        view.labels["managed"] = ""
 
     if options["dry_run"]:
         if not view.is_valid():

@@ -18,7 +18,7 @@ labels:
   table_type: aggregate
   shredder_mitigation: false
 scheduling:
-  dag_name: bqetl_firefox_ios
+  dag_name: bqetl_firefox_ios_choice_screen
   depends_on_past: false
   arguments:
   - --date={{macros.ds_add(ds, -10)}}

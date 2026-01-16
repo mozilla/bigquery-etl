@@ -221,7 +221,7 @@ user_facing: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 ```
 
 ## Publishing data

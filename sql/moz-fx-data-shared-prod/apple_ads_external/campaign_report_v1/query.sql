@@ -14,5 +14,9 @@ SELECT
   tap_total_downloads AS total_downloads,
   impressions,
   spend,
+  tap_installs AS installs,
+  new_downloads AS raw_new_downloads,
+  redownloads AS raw_redownloads,
+  total_downloads AS raw_total_downloads,
 FROM
   `moz-fx-data-bq-fivetran.dbt_fivetran_transformation_apple_search_ads.apple_search_ads__campaign_report`

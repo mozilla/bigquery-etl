@@ -12,6 +12,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary

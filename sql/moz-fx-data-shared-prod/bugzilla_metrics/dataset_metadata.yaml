@@ -14,5 +14,4 @@ syndication:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
-  - workgroup:phabricator-metrics/external
+  - workgroup:mozilla-confidential/data-viewers

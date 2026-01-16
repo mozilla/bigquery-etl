@@ -2717,9 +2717,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The result of Gecko fetching an update.xml from Balrog. This captures
-        3 different data points: success or failure of the request, if cert pinning
-        or content signatures were used to verify the result, and the reason for failure,
-        if the request failed.
+        2 different data points: success or failure of the request, and the reason
+        for failure, if the request failed.
 
         '
     - name: power_cpu_ms_per_thread_content_background

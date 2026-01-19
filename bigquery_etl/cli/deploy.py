@@ -313,12 +313,12 @@ def _build_dependency_graph(
     Returns a dict mapping artifact_id to set of dependencies.
     """
     graph = {}
+    id_token = get_id_token()
 
     for artifact_id, (file_path, artifact_type) in artifacts.items():
         try:
             # extract dependencies based on artifact type
             if artifact_type == "view":
-                id_token = get_id_token()
                 view = View.from_file(file_path, id_token=id_token)
                 references = view.table_references
             elif artifact_type in ["table", "materialized_view"]:

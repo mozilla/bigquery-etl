@@ -12737,8 +12737,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -18139,6 +18138,20 @@ fields:
         mode: NULLABLE
       description: 'The total number of operations attempted by the ads client, labeled
         by operation type. Used as the denominator for client_operation_success_rate.
+
+        '
+    - name: media_capture_stream_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the usage of MediaStream captured from HTMLMediaElement
+        by different capture methods.
 
         '
   - name: quantity

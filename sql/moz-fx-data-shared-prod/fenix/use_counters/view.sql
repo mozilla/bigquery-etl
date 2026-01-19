@@ -2703,7 +2703,11 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
-      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_css_doc_css_alignment_baseline,
+      metrics.counter.use_counter_css_doc_css_baseline_shift,
+      metrics.counter.use_counter_css_page_css_alignment_baseline,
+      metrics.counter.use_counter_css_page_css_baseline_shift
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5430,7 +5434,11 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
-      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_css_doc_css_alignment_baseline,
+      metrics.counter.use_counter_css_doc_css_baseline_shift,
+      metrics.counter.use_counter_css_page_css_alignment_baseline,
+      metrics.counter.use_counter_css_page_css_baseline_shift
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8157,7 +8165,11 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
-      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_css_doc_css_alignment_baseline,
+      metrics.counter.use_counter_css_doc_css_baseline_shift,
+      metrics.counter.use_counter_css_page_css_alignment_baseline,
+      metrics.counter.use_counter_css_page_css_baseline_shift
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10884,7 +10896,11 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
-      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_css_doc_css_alignment_baseline,
+      metrics.counter.use_counter_css_doc_css_baseline_shift,
+      metrics.counter.use_counter_css_page_css_alignment_baseline,
+      metrics.counter.use_counter_css_page_css_baseline_shift
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13611,7 +13627,11 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_page_mozlockorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientation_deprecated,
       metrics.counter.use_counter_deprecated_ops_page_mozorientationchange_deprecated,
-      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated
+      metrics.counter.use_counter_deprecated_ops_page_mozunlockorientation_deprecated,
+      metrics.counter.use_counter_css_doc_css_alignment_baseline,
+      metrics.counter.use_counter_css_doc_css_baseline_shift,
+      metrics.counter.use_counter_css_page_css_alignment_baseline,
+      metrics.counter.use_counter_css_page_css_baseline_shift
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

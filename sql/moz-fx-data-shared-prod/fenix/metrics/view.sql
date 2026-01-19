@@ -1081,7 +1081,8 @@ SELECT
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
-      metrics.labeled_counter.ads_client_client_operation_total
+      metrics.labeled_counter.ads_client_client_operation_total,
+      metrics.labeled_counter.media_capture_stream_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3136,7 +3137,8 @@ SELECT
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
-      metrics.labeled_counter.ads_client_client_operation_total
+      metrics.labeled_counter.ads_client_client_operation_total,
+      metrics.labeled_counter.media_capture_stream_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5211,7 +5213,8 @@ SELECT
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
-      metrics.labeled_counter.ads_client_client_operation_total
+      metrics.labeled_counter.ads_client_client_operation_total,
+      metrics.labeled_counter.media_capture_stream_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

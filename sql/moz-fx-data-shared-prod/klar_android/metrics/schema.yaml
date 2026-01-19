@@ -7997,6 +7997,20 @@ fields:
         QUIC stack.
 
         '
+    - name: media_capture_stream_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the usage of MediaStream captured from HTMLMediaElement
+        by different capture methods.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -655,7 +655,8 @@ SELECT
       metrics.labeled_counter.power_wakeups_per_thread_inference_process,
       metrics.labeled_counter.contentblocking_canvas_fingerprinting_per_tab2,
       metrics.labeled_counter.networking_http_3_slow_start_exited,
-      metrics.labeled_counter.networking_http_3_congestion_event_reason
+      metrics.labeled_counter.networking_http_3_congestion_event_reason,
+      metrics.labeled_counter.media_capture_stream_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

@@ -18141,6 +18141,20 @@ fields:
         by operation type. Used as the denominator for client_operation_success_rate.
 
         '
+    - name: media_capture_stream_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the usage of MediaStream captured from HTMLMediaElement
+        by different capture methods.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -334,7 +334,13 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                 file_path = Path(sql_dir) / project / dataset / name
 
                 file_exists_for_dependency = False
-                for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
+                for file in [
+                    VIEW_FILE,
+                    QUERY_FILE,
+                    QUERY_SCRIPT,
+                    MATERIALIZED_VIEW,
+                    SCHEMA_FILE,
+                ]:
                     if (file_path / file).is_file():
                         if (file_path / file) not in artifact_files:
                             dependency_files.append(file_path / file)

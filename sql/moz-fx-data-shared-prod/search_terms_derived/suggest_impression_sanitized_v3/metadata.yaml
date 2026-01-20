@@ -24,6 +24,10 @@ bigquery:
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  depends_on_table_partitions_existing:
+    - task_id: wait_for_merino_log_sanitized_v3
+      table_id: moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3
+      partition_id: '{{ ds_nodash }}'
 
 workgroup_access:
   - role: roles/bigquery.dataViewer

@@ -557,13 +557,19 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             sql_dir=sql_dir,
             project_ids=[project_id],
             parallelism=8,
-            force=True,
             dry_run=False,
-            skip_existing=False,
-            skip_external_data=True,
             respect_dryrun_skip=False,
             use_cloud_function=True,
-            target_project=None,
+            # Table options
+            table_force=True,
+            table_skip_existing=False,
+            table_skip_external_data=True,
+            # View options
+            view_force=True,
+            view_target_project=None,
+            view_add_managed_label=False,
+            view_skip_authorized=False,
+            view_authorized_only=False,
         )
 
 

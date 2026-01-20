@@ -46,6 +46,8 @@ log = logging.getLogger(__name__)
     and parallel execution. You must specify at least one artifact type to
     deploy using the --tables or --views flags.
 
+    Table-specific options use --table-* prefix, view-specific options use --view-* prefix.
+
     Examples:
 
     \b
@@ -57,8 +59,12 @@ log = logging.getLogger(__name__)
     ./bqetl deploy --tables --views telemetry_derived/clients_daily_v6
 
     \b
-    # Deploy with custom parallelism
-    ./bqetl deploy --tables --views --parallelism 16 telemetry_derived/
+    # Deploy tables with force, views with managed label
+    ./bqetl deploy --tables --views --table-force --view-add-managed-label telemetry_derived/
+
+    \b
+    # Deploy views to different project, skip authorized views
+    ./bqetl deploy --views --view-target-project=mozdata --view-skip-authorized telemetry/
 
     \b
     # Dry run to check dependencies
@@ -84,56 +90,65 @@ log = logging.getLogger(__name__)
 )
 @parallelism_option(default=8)
 @click.option(
-    "--force/--no-force",
-    default=False,
-    help="Deploy without validation",
-)
-@click.option(
     "--dry-run",
     "--dry_run",
     is_flag=True,
     default=False,
     help="Validate only, don't deploy",
 )
+@respect_dryrun_skip_option(default=True)
+@use_cloud_function_option
 @click.option(
-    "--skip-existing",
-    "--skip_existing",
+    "--table-force",
+    "--table_force",
+    is_flag=True,
+    default=False,
+    help="Deploy tables without validation",
+)
+@click.option(
+    "--table-skip-existing",
+    "--table_skip_existing",
     is_flag=True,
     default=False,
     help="Skip updating existing tables",
 )
 @click.option(
-    "--skip-external-data",
-    "--skip_external_data",
+    "--table-skip-external-data",
+    "--table_skip_external_data",
     is_flag=True,
     default=False,
     help="Skip publishing external data tables",
 )
-@respect_dryrun_skip_option(default=True)
-@use_cloud_function_option
 @click.option(
-    "--target-project",
-    "--target_project",
+    "--view-force",
+    "--view_force",
+    is_flag=True,
+    default=False,
+    help="Deploy views even if there are no changes",
+)
+@click.option(
+    "--view-target-project",
+    "--view_target_project",
     required=False,
     help="Target project for views (for cross-project publishing)",
 )
 @click.option(
-    "--add-managed-label",
-    "--add_managed_label",
+    "--view-add-managed-label",
+    "--view_add_managed_label",
     is_flag=True,
     default=False,
     help='Add a label "managed" to views for lifecycle management',
 )
 @click.option(
-    "--skip-authorized",
-    "--skip_authorized",
+    "--view-skip-authorized",
+    "--view_skip_authorized",
     is_flag=True,
     default=False,
     help="Don't deploy views with labels: {authorized: true} in metadata.yaml",
 )
 @click.option(
-    "--authorized-only",
-    "--authorized_only",
+    "--view-authorized-only",
+    "--view_authorized_only",
     is_flag=True,
     default=False,
     help="Only deploy views with labels: {authorized: true} in metadata.yaml",
@@ -145,16 +160,17 @@ def deploy(
     sql_dir,
     project_ids,
     parallelism,
-    force,
     dry_run,
-    skip_existing,
-    skip_external_data,
     respect_dryrun_skip,
     use_cloud_function,
-    target_project,
-    add_managed_label,
-    skip_authorized,
-    authorized_only,
+    table_force,
+    table_skip_existing,
+    table_skip_external_data,
+    view_force,
+    view_target_project,
+    view_add_managed_label,
+    view_skip_authorized,
+    view_authorized_only,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
     if not any([tables, views]):
@@ -162,9 +178,9 @@ def deploy(
             "Must specify at least one artifact type: --tables or --views"
         )
 
-    if skip_authorized and authorized_only:
+    if view_skip_authorized and view_authorized_only:
         raise click.UsageError(
-            "Cannot use both --skip-authorized and --authorized-only"
+            "Cannot use both --view-skip-authorized and --view-authorized-only"
         )
 
     if not is_authenticated():
@@ -186,9 +202,9 @@ def deploy(
     artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
 
     # filter views based on authorized flags
-    if skip_authorized or authorized_only:
+    if view_skip_authorized or view_authorized_only:
         artifacts = _filter_views_by_authorization(
-            artifacts, skip_authorized, authorized_only, id_token
+            artifacts, view_skip_authorized, view_authorized_only, id_token
         )
 
     if not artifacts:
@@ -204,17 +220,20 @@ def deploy(
         sys.exit(1)
 
     options = {
-        "force": force,
         "dry_run": dry_run,
-        "skip_existing": skip_existing,
-        "skip_external_data": skip_external_data,
         "respect_dryrun_skip": respect_dryrun_skip,
         "use_cloud_function": use_cloud_function,
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
-        "target_project": target_project,
-        "add_managed_label": add_managed_label,
+        # Table options
+        "table_force": table_force,
+        "table_skip_existing": table_skip_existing,
+        "table_skip_external_data": table_skip_external_data,
+        # View options
+        "view_force": view_force,
+        "view_target_project": view_target_project,
+        "view_add_managed_label": view_add_managed_label,
     }
 
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
@@ -434,8 +453,8 @@ def _deploy_table_artifact(file_path: Path, options: dict):
                 f"Schema missing for {file_path}. Dry run validation failed."
             ) from e
 
-        # validate schema matches query if not using --force
-        if not options["force"] and str(file_path).endswith(".sql"):
+        # validate schema matches query if not using --table-force
+        if not options["table_force"] and str(file_path).endswith(".sql"):
             client = bigquery.Client(credentials=options["credentials"])
             try:
                 query_schema = Schema.from_query_file(
@@ -461,9 +480,9 @@ def _deploy_table_artifact(file_path: Path, options: dict):
 
     deploy_table(
         artifact_file=file_path,
-        force=options["force"],
-        skip_existing=options["skip_existing"],
-        skip_external_data=options["skip_external_data"],
+        force=options["table_force"],
+        skip_existing=options["table_skip_existing"],
+        skip_external_data=options["table_skip_external_data"],
         use_cloud_function=options["use_cloud_function"],
         respect_dryrun_skip=options["respect_dryrun_skip"],
         sql_dir=options["sql_dir"],
@@ -478,7 +497,7 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     view = View.from_file(file_path, id_token=id_token)
 
     # Add managed label if requested
-    if options.get("add_managed_label", False):
+    if options.get("view_add_managed_label", False):
         view.labels["managed"] = ""
 
     if options["dry_run"]:
@@ -489,8 +508,8 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     client = bigquery.Client(credentials=options["credentials"])
 
     success = view.publish(
-        target_project=options.get("target_project"),
-        force=options["force"],
+        target_project=options.get("view_target_project"),
+        force=options["view_force"],
         client=client,
         dry_run=False,
     )

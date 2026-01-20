@@ -5,3 +5,4 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.fenix_derived.tos_rollout_enrollments_v1`
+-- test

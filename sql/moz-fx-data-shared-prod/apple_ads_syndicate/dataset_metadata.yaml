@@ -1,0 +1,34 @@
+friendly_name: app_store_syndicate
+description: |
+  Syndicated App Store data from Fivetran. User-facing views into this data can be found
+  in the apple_ads namespace.
+
+  The fivetran tables accessed using the syndicates are not raw ingested tables,
+  but instead tables that have been transformed using fivetran transformations
+  power by our DBT project:
+  https://github.com/mozilla/dbt-fivetran-transformations/
+
+  More information on how these models are built can be found here:
+  https://github.com/fivetran/dbt_apple_search_ads/blob/main/models/apple_search_ads.yml
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-bq-fivetran"
+    syndicated_dataset: "firefox_app_store_v2"
+  syndicated_tables:
+    - app_store_discovery_and_engagement_detailed_daily
+    - app_store_discovery_and_engagement_standard_daily
+    - app_store_download_detailed_daily
+    - app_store_download_standard_daily
+    - app_store_installation_and_deletion_detailed_daily
+    - app_store_installation_and_deletion_standard_daily
+    - app_store_review
+    - app_crash_daily
+    - app_session_detailed_daily
+    - app_session_standard_daily
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

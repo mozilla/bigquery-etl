@@ -17150,6 +17150,17 @@ fields:
         by different capture methods.
 
         '
+    - name: mail_account_hub_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Tracks account hub error counts, keyed by data-l10n-id.
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

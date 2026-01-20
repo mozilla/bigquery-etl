@@ -15,7 +15,7 @@ user_facing: false
 syndication:
   prod:
     syndicated_project: "moz-fx-data-bq-fivetran"
-    syndicated_dataset: "firefox_app_store_v2"
+    syndicated_dataset: "dbt_fivetran_transformation_apple_search_ads"
   syndicated_tables:
     - app_store_discovery_and_engagement_detailed_daily
     - app_store_discovery_and_engagement_standard_daily

@@ -23,11 +23,11 @@ particularly important because the source unsanitized dataset has only
 a 2-day retention period, so errors fairly quickly become unrecoverable
 and can impact reporting to partners. If this task errors out, it could
 indicate trouble with an upstream task that runs in a restricted project
-outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
+outside of Airflow.
 
 #### Owner
 
-ctroy@mozilla.com
+najiang@mozilla.com
 
 #### Tags
 
@@ -37,13 +37,12 @@ ctroy@mozilla.com
 
 
 default_args = {
-    "owner": "ctroy@mozilla.com",
+    "owner": "najiang@mozilla.com",
     "start_date": datetime.datetime(2021, 9, 20, 0, 0),
     "end_date": None,
     "email": [
-        "ctroy@mozilla.com",
+        "najiang@mozilla.com",
         "wstuckey@mozilla.com",
-        "rburwei@mozilla.com",
         "telemetry-alerts@mozilla.com",
     ],
     "depends_on_past": False,
@@ -86,9 +85,8 @@ with DAG(
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
         email=[
-            "ctroy@mozilla.com",
             "kwindau@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -105,7 +103,7 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -121,9 +119,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=[
-            "ctroy@mozilla.com",
             "kwindau@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -138,9 +135,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="llisi@mozilla.com",
         email=[
-            "ctroy@mozilla.com",
             "llisi@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -156,7 +152,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="rburwei@mozilla.com",
         email=[
-            "ctroy@mozilla.com",
+            "najiang@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
@@ -174,6 +170,7 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
+            "najiang@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
@@ -191,7 +188,7 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -208,7 +205,7 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "rburwei@mozilla.com",
+            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],

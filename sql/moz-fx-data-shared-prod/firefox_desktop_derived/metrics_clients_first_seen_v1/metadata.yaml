@@ -5,6 +5,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   schedule: daily
   dag: bqetl_glean_usage
   owner1: kwindau
@@ -25,4 +26,3 @@ bigquery:
     fields:
     - sample_id
 require_column_descriptions: true
-level: bronze

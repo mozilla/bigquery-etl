@@ -250,7 +250,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+            time_partitioning=PartitionMetadata(
+                field="", type=PartitionType.DAY, require_partition_filter=True
+            ),
             clustering=ClusteringMetadata(fields=[]),
         ),
         require_column_descriptions=True,
@@ -1643,7 +1645,7 @@ def initialize(
                         update,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         update_downstream=False,
                         is_init=True,
                     )
@@ -1652,7 +1654,7 @@ def initialize(
                         deploy,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         force=True,
                         respect_dryrun_skip=False,
                     )
@@ -1897,6 +1899,10 @@ def schema():
 
     # Update schema including downstream dependencies (requires GCP)
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+
+    # Skip updating schemas for queries that already have schema.yaml files
+    # (except those with schema.allow_field_addition=true in metadata.yaml)
+    ./bqetl query schema update '*' --skip-existing
     """,
 )
 @click.argument("name", nargs=-1)
@@ -1946,7 +1952,8 @@ def schema():
 @click.option(
     "--skip_existing",
     "--skip-existing",
-    help="Skip updating schemas for existing schema files.",
+    help="Skip updating schemas for existing schema files. "
+    "Queries with schema.allow_field_addition=true in metadata.yaml will still be updated.",
     is_flag=True,
     default=False,
 )
@@ -1978,11 +1985,15 @@ def update(
             name, sql_dir, project_id, files=["query.sql"]
         )
 
-    # Check if query metadata has ALLOW_FIELD_ADDITION
+    # Check if query metadata has allow_field_addition flag or ALLOW_FIELD_ADDITION argument
     def has_allow_field_addition(query_file):
         try:
             metadata = Metadata.of_query_file(str(query_file))
-            if metadata and metadata.scheduling:
+            # Check schema metadata field
+            if metadata.schema and metadata.schema.allow_field_addition:
+                return True
+            # Check scheduling arguments
+            if metadata.scheduling:
                 arguments = metadata.scheduling.get("arguments", [])
                 return any(
                     "--schema_update_option=ALLOW_FIELD_ADDITION" in arg

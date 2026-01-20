@@ -92,6 +92,7 @@ DATASET_METADATA_CONF = {
     "friendly_name": "test",
     "description": "test",
     "dataset_base_acl": "derived",
+    "user_facing": False,
     "workgroup_access": VALID_WORKGROUP_ACCESS,
 }
 
@@ -99,6 +100,7 @@ DATASET_METADATA_CONF_EMPTY_WORKGROUP = {
     "friendly_name": "test",
     "description": "test",
     "dataset_base_acl": "derived",
+    "user_facing": False,
     "workgroup_access": [],
     "default_table_workgroup_access": VALID_WORKGROUP_ACCESS,
 }
@@ -1219,6 +1221,7 @@ class TestBackfill:
             "friendly_name": "test",
             "description": "test",
             "dataset_base_acl": "derived",
+            "user_facing": False,
             "workgroup_access": invalid_workgroup_access,
         }
 
@@ -1292,6 +1295,7 @@ class TestBackfill:
             "friendly_name": "test",
             "description": "test",
             "dataset_base_acl": "derived",
+            "user_facing": False,
             "workgroup_access": [
                 dict(
                     role="roles/bigquery.dataViewer",

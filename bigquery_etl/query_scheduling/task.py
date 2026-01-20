@@ -275,14 +275,6 @@ EXTERNAL_TASKS = {
     ],
     TaskRef(
         dag_name="copy_deduplicate",
-        task_id="copy_deduplicate_saved_session_ping",
-        schedule_interval="0 1 * * *",
-    ): [
-        "telemetry_stable.saved_session_v5",
-        "telemetry_stable.saved_session_use_counter_v4",
-    ],
-    TaskRef(
-        dag_name="copy_deduplicate",
         task_id="bq_main_events",
         schedule_interval="0 1 * * *",
     ): ["telemetry_derived.main_events_v1"],

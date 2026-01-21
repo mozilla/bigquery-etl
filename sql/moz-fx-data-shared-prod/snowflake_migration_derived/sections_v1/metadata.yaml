@@ -15,4 +15,4 @@ bigquery:
     type: day
     field: happened_at
     require_partition_filter: false
-    expiration_days: 50000
+    expiration_days: none

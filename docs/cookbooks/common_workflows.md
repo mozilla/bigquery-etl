@@ -224,6 +224,49 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 ```
 
+## Adding a Google Sheets-backed table
+
+BigQuery supports [external tables backed by Google Drive files](https://cloud.google.com/bigquery/docs/external-data-drive). This is a table where the data lives in the file in Drive, and when you query it BigQuery pulls directly from the file; there is no copying of data into a table or sync delay.
+
+See also recent examples from [private-bigquery-etl](https://github.com/mozilla/private-bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/revenue_derived/firefox_ltv_v1/metadata.yaml) and [bigquery-etl](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/static/data_incidents_v1/metadata.yaml)
+
+1. Create a new table via the standard table create process, e.g., `./bqetl query create search_derived.my_table_v1`
+2. In the table folder delete the `query.sql` file and add a `schema.yaml`. Fill out `schema.yaml` with the expected schema
+3. Set up your Google Sheet:
+   1. Headers are optional
+   2. Data in each column should be formatted properly
+      * Dates must be in YYYY-MM-DD format
+      * Datetimes must be in YYYY-MM-DD hh:mm:ss format (note that this is not ISO 8601; there is no "T")
+   3. (Recommended) Set up a test table in a sandbox dataset via the BQ console -- the iteration process can be pretty slow, so checking things this way can save you time. In the `Create Table` workflow, choose
+      * `Create table from`: `Drive`
+      * `Select Drive URI`
+      * `File format`: `Google Sheet`
+      * `Sheet range`
+      * Fill out the intended schema
+      * If there is a header, under `Advanced options` set `Header rows to skip` to 1
+   4. In the sheet, grant access to the following (via the Share button on the sheet):
+      * Editor to `jenkins-node-default@moz-fx-data-terraform-admin.iam.gserviceaccount.com`
+      * If the table is restriced to a specific workgroup, grant Viewer to that group's service account (e.g., `revenue-cat3@mozdata.iam.gserviceaccount.com`)
+4. Fill out the `metadata.yaml` file:
+   ```yaml
+   friendly_name: table name
+   description: description
+   owners:
+      - owner1@mozilla.com
+   labels:
+      incremental: false
+   external_data:
+      source_uris:
+         [
+            https://someurl,
+         ]
+      format: google_sheets
+      options:
+         skip_leading_rows: 1  # If file has a header
+         range: TabName!A:K  # Fill in the correct tab name and columns
+   ```
+5. Follow the normal PR->approval->merge->deploy process
+
 ## Publishing data
 
 See also the reference for [Public Data](../reference/public_data.md).

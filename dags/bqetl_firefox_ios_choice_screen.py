@@ -69,7 +69,7 @@ firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__ap
 
 default_args = {
     "owner": "kik@mozilla.com",
-    "start_date": datetime.datetime(2025, 1, 14, 0, 0),
+    "start_date": datetime.datetime(2026, 1, 10, 0, 0),
     "end_date": None,
     "email": ["kik@mozilla.com", "ebrandi@mozilla.com"],
     "depends_on_past": False,

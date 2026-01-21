@@ -61,7 +61,17 @@ SELECT
       metrics.timespan.mozbuild_tier_libs_duration,
       metrics.timespan.mozbuild_tier_misc_duration,
       metrics.timespan.mozbuild_tier_pre_export_duration,
-      metrics.timespan.mozbuild_tier_tools_duration
+      metrics.timespan.mozbuild_tier_tools_duration,
+      metrics.timespan.mach_try_commit_prep,
+      metrics.timespan.mach_try_fzf_bootstrap_duration,
+      metrics.timespan.mach_try_interactive_duration,
+      metrics.timespan.mach_try_remote_data_fetching_duration,
+      metrics.timespan.mach_try_task_config_generation_duration,
+      metrics.timespan.mach_try_task_filtering_duration,
+      metrics.timespan.mach_try_taskgraph_generation_duration,
+      metrics.timespan.mach_try_vcs_cleanup,
+      metrics.timespan.mach_try_vcs_prep,
+      metrics.timespan.mach_try_vcs_push
     ) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,

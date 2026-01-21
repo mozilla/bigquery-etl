@@ -593,6 +593,129 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: How long it took for the tools tier of the build to complete.
+    - name: mach_try_commit_prep
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent preparing and creating a commit with the try configuration.
+
+        '
+    - name: mach_try_fzf_bootstrap_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Time spent setting up or updating the fzf fuzzy finder tool.
+    - name: mach_try_interactive_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent by the user in interactive task selection (e.g., fzf
+        UI). This measures user think/selection time, not system processing time.
+
+        '
+    - name: mach_try_remote_data_fetching_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent fetching remote data used as part of the try selector.
+
+        '
+    - name: mach_try_task_config_generation_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Time spent generating the try_task_config.json data structure.
+    - name: mach_try_task_filtering_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent filtering tasks based on paths, tags, worker types,
+        or uncommon task filters.
+
+        '
+    - name: mach_try_taskgraph_generation_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Time spent generating the taskgraph for try selection. This is
+        typically the most expensive operation.
+
+        '
+    - name: mach_try_vcs_cleanup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Time spent cleaning up after making a push to try.
+    - name: mach_try_vcs_prep
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Time spent making a push to try.
+    - name: mach_try_vcs_push
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Time spent cleaning up after making a push to try.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

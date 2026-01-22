@@ -6,7 +6,7 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description:
+  description: Country code of the clients.
 - name: clients
   type: INTEGER
   mode: NULLABLE

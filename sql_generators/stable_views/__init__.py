@@ -468,6 +468,12 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         if schema.bq_table_unversioned
         not in skipped_tables_config.get(schema.bq_dataset_family, [])
         and schema.bq_dataset_family not in skipped_datasets_config
+        # Ignore temporary glean v2 schemas: https://mozilla-hub.atlassian.net/browse/DENG-10558
+        and schema.schema_id
+        not in [
+            "moz://mozilla.org/schemas/glean/ping/2",
+            "moz://mozilla.org/schemas/glean-min/ping/2",
+        ]
     ]
     one_schema_per_dataset = [
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)

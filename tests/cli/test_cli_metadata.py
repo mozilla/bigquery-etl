@@ -528,10 +528,7 @@ class TestMetadata:
         self.check_test_level(runner=runner, metadata=metadata, expected_result=True)
 
     def test_level_is_not_string(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": ["gold", "silver"],
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": ["gold", "silver"]}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -541,16 +538,11 @@ class TestMetadata:
 
             with pytest.raises(ValueError) as e:
                 _ = Metadata.from_file(metadata_path)
-            expected_exc = (
-                "ERROR. Invalid level in metadata with type 'list'. Must be a string."
-            )
+            expected_exc = "Invalid label format: ['gold', 'silver']"
             assert (str(e.value)) == expected_exc
 
     def test_level_multiple_values(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "silver, gold",
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": "silver, gold"}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -560,14 +552,27 @@ class TestMetadata:
 
             with pytest.raises(ValueError) as e:
                 _ = Metadata.from_file(metadata_path)
-            expected_exc = "ERROR. Invalid level in metadata: silver, gold. Must be only one of ['bronze', 'gold', 'silver']."
+            expected_exc = "Invalid label format: silver, gold"
             assert (str(e.value)) == expected_exc
 
     def test_level_unknown_value(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "kpi",
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
         }
+        metadata = {"friendly_name": "test", "labels": {"level": "kpi"}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -575,19 +580,27 @@ class TestMetadata:
             with open(metadata_path, "w") as f:
                 f.write(yaml.safe_dump(metadata))
 
-            with pytest.raises(ValueError) as e:
-                _ = Metadata.from_file(metadata_path)
-            expected_exc = "ERROR. Invalid level in metadata: kpi. Must be only one of ['bronze', 'gold', 'silver']."
-            assert (str(e.value)) == expected_exc
+            Metadata.from_file(metadata_path)
+            expected_exception = "Invalid level in metadata: kpi. Must be one of "
+            self.check_test_level(
+                runner=runner,
+                query=query,
+                schema=schema,
+                metadata=metadata,
+                with_unittests=True,
+                with_bigeye_metrics=True,
+                expected_result=False,
+                expected_exception=expected_exception,
+                capfd=capfd,
+            )
 
     def test_level_gold_comply_is_table(self, runner, capfd):
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -624,8 +637,7 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         schema = {
             "fields": [
@@ -660,9 +672,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -698,9 +709,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -736,9 +746,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "silver",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "silver"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -775,9 +784,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -815,8 +823,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
             "scheduling": {"dag_name": "bqetl_default"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
@@ -856,8 +863,7 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -896,8 +902,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "silver",
             "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"level": "silver"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -941,10 +947,7 @@ class TestMetadata:
         )
 
     def test_level_silver_not_comply_missing_all(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "silver",
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": "silver"}}
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
             "fields": [
@@ -991,7 +994,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
-            "level": "bronze",
+            "labels": {"level": "bronze"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
 
@@ -1009,7 +1012,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
-            "level": "bronze",
+            "labels": {"level": "bronze"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -1052,7 +1055,7 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:mozilla-confidential",
+            "workgroup:mozilla-confidential/data-viewers",
             "workgroup:test/test",
         ]
         assert "deprecated" not in metadata
@@ -1092,13 +1095,13 @@ class TestMetadata:
                 "role": "roles/bigquery.dataEditor",
             },
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.metadataViewer",
             },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.dataViewer",
             }
         ]

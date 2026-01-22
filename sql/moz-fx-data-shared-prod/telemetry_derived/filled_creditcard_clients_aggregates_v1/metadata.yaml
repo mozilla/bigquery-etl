@@ -1,19 +1,20 @@
 friendly_name: Filled Creditcard Clients Aggregates
 description: |-
-  Please provide a description for the query
+  An aggregate table for clients that have autofilled their credit card information. This is
+  a daily table that aggregates a sample number of clients by day and by country.
+
+  Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-10212
 owners:
-- example@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: mhirose
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_analytics_aggregations
 bigquery:
   time_partitioning:
     type: day
-    field: ''
-    require_partition_filter: true
+    field: submission_date
+    require_partition_filter: false
     expiration_days: null
-  clustering:
-    fields: []
 require_column_descriptions: true

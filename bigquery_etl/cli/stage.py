@@ -13,11 +13,10 @@ from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
-from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
-from ..cli.view import publish as publish_view
+from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
     ROUTINE_FILES,
@@ -51,6 +50,9 @@ def stage():
 
     Examples:
     ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
+
+    # Deploy with custom test directory
+    ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
     """
 )
 @click.argument(
@@ -91,6 +93,13 @@ def stage():
     help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
     + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
+@click.option(
+    "--test-dir",
+    "--test_dir",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
+    default=TEST_DIR,
+    help="Directory containing test files (default: tests/sql relative to repository root)",
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -101,6 +110,7 @@ def deploy(
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
+    test_dir,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -134,7 +144,7 @@ def deploy(
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment
     artifact_files.update(_udf_dependencies(artifact_files))
-    artifact_files.update(_view_dependencies(artifact_files, sql_dir))
+    artifact_files.update(_collect_artifact_dependencies(artifact_files, sql_dir))
 
     # update references of all deployed artifacts
     # references needs to be set to the stage project and the new dataset identifier
@@ -149,7 +159,7 @@ def deploy(
         artifact_dataset = artifact_file.parent.parent.name
         artifact_name = artifact_file.parent.name
         artifact_test_path = (
-            TEST_DIR / artifact_project / artifact_dataset / artifact_name
+            test_dir / artifact_project / artifact_dataset / artifact_name
         )
 
         if (
@@ -193,7 +203,7 @@ def deploy(
         # copy tests to the right structure
         if artifact_test_path.exists():
             new_artifact_test_path = (
-                TEST_DIR / project_id / new_artifact_dataset / artifact_name
+                test_dir / project_id / new_artifact_dataset / artifact_name
             )
             shutil.copytree(
                 artifact_test_path, new_artifact_test_path, dirs_exist_ok=True
@@ -202,7 +212,7 @@ def deploy(
                 shutil.rmtree(artifact_test_path)
 
     # rename test files
-    for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
+    for test_file_path in map(Path, glob(f"{test_dir}/**/*", recursive=True)):
         test_file_suffix = test_file_path.suffix
         for artifact_file in artifact_files:
             artifact_project = artifact_file.parent.parent.parent.name
@@ -265,23 +275,60 @@ def _udf_dependencies(artifact_files):
     return udf_dependencies
 
 
-def _view_dependencies(artifact_files, sql_dir):
-    """Determine view dependencies."""
-    view_dependencies = set()
-    view_dependency_files = [file for file in artifact_files if file.name == VIEW_FILE]
+def _collect_artifact_dependencies(artifact_files, sql_dir):
+    """Determine view and table dependencies.
+
+    Extracts dependencies from artifacts to ensure all referenced artifacts
+    are deployed to stage environment.
+
+    For views: Always extracts table references and UDF references, since views
+    need their dependencies to exist when created.
+
+    For query files (tables): Only extracts references if there's no schema.yaml.
+    With schema.yaml: We deploy the schema structure (not run the query), so
+    we don't need the query's dependencies.
+    """
+    artifact_dependencies = set()
+    dependency_files = [
+        file
+        for file in artifact_files
+        if file.name in [VIEW_FILE, QUERY_FILE, MATERIALIZED_VIEW]
+    ]
     id_token = get_id_token()
-    for dep_file in view_dependency_files:
-        # all references views and tables need to be deployed in the same stage project
+
+    for dep_file in dependency_files:
+        # all referenced views and tables need to be deployed in the same stage project
         if dep_file not in artifact_files:
-            view_dependencies.add(dep_file)
+            artifact_dependencies.add(dep_file)
 
         if dep_file.name == VIEW_FILE:
             view = View.from_file(dep_file, id_token=id_token)
+            table_references = view.table_references
+        elif dep_file.name in [QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
+            # for query files, only extract references if there's no schema.yaml
+            # if schema.yaml exists, we deploy the schema structure, not run the query,
+            # so we don't need the query's dependencies
+            schema_file = dep_file.parent / SCHEMA_FILE
+            if not schema_file.exists():
+                try:
+                    sql_content = render(dep_file.name, template_folder=dep_file.parent)
+                    table_references = extract_table_references(sql_content)
+                except Exception as e:
+                    print(f"Warning: Could not extract references from {dep_file}: {e}")
+                    table_references = []
+            else:
+                table_references = []
+        else:
+            table_references = []
 
-            for dependency in view.table_references:
+        if table_references:
+            # Get the project from the artifact file path for INFORMATION_SCHEMA references
+            artifact_project = dep_file.parent.parent.parent.name
+
+            for dependency in table_references:
                 dependency_components = dependency.split(".")
                 if dependency_components[1:2] == ["INFORMATION_SCHEMA"]:
-                    dependency_components.insert(0, view.project)
+                    dependency_components.insert(0, artifact_project)
                 if dependency_components[2:3] == ["INFORMATION_SCHEMA"]:
                     # INFORMATION_SCHEMA has more components that will be treated as the table name
                     # no deploys for INFORMATION_SCHEMA will happen later on
@@ -290,7 +337,7 @@ def _view_dependencies(artifact_files, sql_dir):
                     ]
                 if len(dependency_components) != 3:
                     raise ValueError(
-                        f"Invalid table reference {dependency} in view {view.name}. "
+                        f"Invalid table reference {dependency} in {dep_file}. "
                         "Tables should be fully qualified, expected format: project.dataset.table."
                     )
                 project, dataset, name = dependency_components
@@ -301,7 +348,7 @@ def _view_dependencies(artifact_files, sql_dir):
                 for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
                     if (file_path / file).is_file():
                         if (file_path / file) not in artifact_files:
-                            view_dependency_files.append(file_path / file)
+                            dependency_files.append(file_path / file)
 
                         file_exists_for_dependency = True
                         break
@@ -331,13 +378,14 @@ def _view_dependencies(artifact_files, sql_dir):
                         )
                         schema.to_yaml_file(path / SCHEMA_FILE)
 
-                    if not file_exists_for_dependency:
-                        (path / QUERY_SCRIPT).write_text(
-                            "# Table stub generated by stage deploy"
-                        )
-                        view_dependencies.add(path / QUERY_SCRIPT)
+                if not file_exists_for_dependency:
+                    (path / QUERY_SCRIPT).write_text(
+                        "# Table stub generated by stage deploy"
+                    )
+                    artifact_dependencies.add(path / QUERY_SCRIPT)
 
-            # extract UDF references from view definition
+        # Extract UDF dependencies only for views (not for query files)
+        if dep_file.name == VIEW_FILE and table_references:
             raw_routines = read_routine_dir()
             udf_dependencies = set()
 
@@ -346,10 +394,10 @@ def _view_dependencies(artifact_files, sql_dir):
                 udf_dependencies.add(Path(routine.filepath))
 
             # determine UDF dependencies recursively
-            view_dependencies.update(_udf_dependencies(udf_dependencies))
-            view_dependencies.update(udf_dependencies)
+            artifact_dependencies.update(_udf_dependencies(udf_dependencies))
+            artifact_dependencies.update(udf_dependencies)
 
-    return view_dependencies
+    return artifact_dependencies
 
 
 def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
@@ -471,7 +519,6 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         )
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
-    # deploy table schemas
     query_files = list(
         {
             file
@@ -482,43 +529,15 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         }
     )
 
-    if len(query_files) > 0:
-        # checking and creating datasets needs to happen sequentially
-        for query_file in query_files:
-            dataset = query_file.parent.parent.name
-            create_dataset_if_not_exists(
-                project_id=project_id,
-                dataset=dataset,
-                suffix=dataset_suffix,
-                access_entries=dataset_access_entries,
-            )
-
-        ctx.invoke(
-            update_query_schema,
-            name=query_files,
-            sql_dir=sql_dir,
-            project_id=project_id,
-            respect_dryrun_skip=True,
-            is_init=True,
-        )
-        ctx.invoke(
-            deploy_query_schema,
-            name=query_files,
-            sql_dir=sql_dir,
-            project_id=project_id,
-            force=True,
-            respect_dryrun_skip=False,
-            skip_external_data=True,
-        )
-
-    # deploy views
     view_files = [
         file
         for file in artifact_files
         if file.name == VIEW_FILE and str(file) not in DryRun.skipped_files()
     ]
-    for view_file in view_files:
-        dataset = view_file.parent.parent.name
+
+    all_artifacts = query_files + view_files
+    for artifact_file in all_artifacts:
+        dataset = artifact_file.parent.parent.name
         create_dataset_if_not_exists(
             project_id=project_id,
             dataset=dataset,
@@ -526,16 +545,43 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             access_entries=dataset_access_entries,
         )
 
-    ctx.invoke(
-        publish_view,
-        name=None,
-        sql_dir=sql_dir,
-        project_id=project_id,
-        dry_run=False,
-        skip_authorized=False,
-        force=True,
-        respect_dryrun_skip=True,
-    )
+    if len(query_files) > 0:
+        ctx.invoke(
+            update_query_schema,
+            name=query_files,
+            sql_dir=sql_dir,
+            project_ids=[project_id],
+            respect_dryrun_skip=True,
+            is_init=True,
+        )
+
+    if len(all_artifacts) > 0:
+        from ..cli.deploy import deploy as deploy_artifacts_unified
+
+        artifact_paths = [str(f.parent) for f in all_artifacts]
+
+        ctx.invoke(
+            deploy_artifacts_unified,
+            paths=tuple(set(artifact_paths)),
+            tables=len(query_files) > 0,
+            views=len(view_files) > 0,
+            sql_dir=sql_dir,
+            project_ids=[project_id],
+            parallelism=8,
+            dry_run=False,
+            respect_dryrun_skip=False,
+            use_cloud_function=True,
+            # Table options
+            table_force=True,
+            table_skip_existing=False,
+            table_skip_external_data=True,
+            # View options
+            view_force=True,
+            view_target_project=None,
+            view_add_managed_label=False,
+            view_skip_authorized=False,
+            view_authorized_only=False,
+        )
 
 
 def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entries=None):

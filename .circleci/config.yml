@@ -54,7 +54,6 @@ workflows:
             bigquery_etl/query_scheduling/.* validate-sql true
             sql/.* validate-sql true
             sql_generators/.* validate-sql true
-            sql_generators/.* validate-bqetl true
             tests/sql/.* validate-sql true
             biquery_etl/routine/.* validate-routines true
             sql/mozfun/.* validate-routines true

@@ -41,6 +41,7 @@ SELECT
     WHEN reservation_id LIKE '%.metadata-generation'
       OR reservation_id LIKE '%.shredder-all'
       OR reservation_id LIKE '%.shredder-telemetry-main'
+      OR reservation_id LIKE '%.shredder-desktop-metrics'
       THEN (total_slot_ms / (60 * 60 * 1000)) * 0.048
     -- Enterprise Edition queries not using slot commitments cost $0.06 per slot hour.
     ELSE (total_slot_ms / (60 * 60 * 1000)) * 0.06

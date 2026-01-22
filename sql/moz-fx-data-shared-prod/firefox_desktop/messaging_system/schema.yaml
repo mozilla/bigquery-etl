@@ -599,6 +599,17 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: messaging_system_attribution_msclkid
+      type: STRING
+      mode: NULLABLE
+      description: 'A string containing the attribution for a Microsoft Store Ads
+        Campaign ID.
+
+        This differs from a Campaign ID originating from a Microsoft Store URL
+
+        containing attribution.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

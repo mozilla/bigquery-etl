@@ -651,8 +651,10 @@ fields:
         \ Microsoft Store,\n                     and was able to retrieve the \"campaign\
         \ ID\" it was first installed with.\n                     This value is \"\
         true\" if the user was signed into the Microsoft Store\n                 \
-        \    when they first installed, and false otherwise.\n* `dlsource`: identifier\
-        \ that indicate where installations of Firefox originate\n"
+        \    when they first installed, and false otherwise.\n* `msclkid`: only present\
+        \ if the installation was done through the Microsoft Store, and the\n    \
+        \         install is attributable to a Microsoft Store Ads Campaign ID. This\
+        \ differs\n             from a Campaign ID originating "
     - name: glean_distribution_ext
       type: JSON
       mode: NULLABLE

@@ -1,8 +1,8 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
   CASE
-    WHEN country IN ('US', 'CA', 'FR', 'DE', 'GB')
-      THEN country
+    WHEN normalized_country_code IN ('US', 'CA', 'FR', 'DE', 'GB')
+      THEN normalized_country_code
     ELSE 'OTHER'
   END AS country,
   100 * COUNT(DISTINCT m.client_info.client_id) AS clients,

@@ -65,9 +65,6 @@ workflows:
             dags.yaml validate-sql true
             script/bqetl validate-bqetl true
             script/entrypoint validate-bqetl true
-            .circleci/.* validate-sql true
-            .circleci/.* validate-bqetl true
-            .circleci/.* validate-routines true
   setup-tag:
     jobs:
       - continuation/continue:

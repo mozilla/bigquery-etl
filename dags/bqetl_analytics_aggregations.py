@@ -463,6 +463,45 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="bq_main_events",
+        execution_delta=datetime.timedelta(seconds=11700),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_event_events = ExternalTaskSensor(
+        task_id="wait_for_event_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="event_events",
+        execution_delta=datetime.timedelta(seconds=11700),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=11700),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     active_users_aggregates_device_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_device_v1",
         destination_table="active_users_aggregates_device_v1",
@@ -1088,6 +1127,54 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__filled_address_clients_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__filled_address_clients_aggregates__v1",
+        destination_table="filled_address_clients_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__filled_creditcard_clients_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__filled_creditcard_clients_aggregates__v1",
+        destination_table="filled_creditcard_clients_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__filled_login_clients_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__filled_login_clients_aggregates__v1",
+        destination_table="filled_login_clients_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     active_users_aggregates_device_v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
@@ -1362,4 +1449,24 @@ with DAG(
 
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
+    )
+
+    telemetry_derived__filled_address_clients_aggregates__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    telemetry_derived__filled_address_clients_aggregates__v1.set_upstream(
+        wait_for_event_events
+    )
+
+    telemetry_derived__filled_creditcard_clients_aggregates__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    telemetry_derived__filled_creditcard_clients_aggregates__v1.set_upstream(
+        wait_for_event_events
+    )
+
+    telemetry_derived__filled_login_clients_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )

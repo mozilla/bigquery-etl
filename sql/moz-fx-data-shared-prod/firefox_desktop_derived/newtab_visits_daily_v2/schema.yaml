@@ -229,6 +229,10 @@ fields:
   type: STRING
   mode: REPEATED
   description: Array of advertiser names that have been dismissed by the user
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
 - name: organic_content_dismissal_count
   type: INTEGER
   description: Count of organic content dismissals

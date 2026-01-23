@@ -1,0 +1,26 @@
+friendly_name: Claude API Usage
+description: |-
+  Daily usage data from the Anthropic Admin API, grouped by model and API key.
+  Includes token counts (input, output, cached) and web search requests.
+owners:
+- mcastelluccio@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_claude_api
+  owner1: mcastelluccio
+scheduling:
+  dag_name: bqetl_claude_api
+  secrets:
+  - deploy_target: ANTHROPIC_ADMIN_API_KEY
+    key: bqetl_claude_api__admin_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

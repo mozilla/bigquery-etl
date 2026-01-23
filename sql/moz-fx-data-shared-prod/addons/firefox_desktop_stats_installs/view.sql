@@ -22,14 +22,14 @@ SELECT
   ARRAY(
     SELECT AS STRUCT
       IFNULL(`key`, 'Unknown') AS `key`,
-      value
+      `value`
     FROM
       UNNEST(downloads_per_source)
   ) AS downloads_per_source,
   ARRAY(
     SELECT AS STRUCT
       IFNULL(`key`, 'Unknown') AS `key`,
-      value
+      `value`
     FROM
       UNNEST(downloads_per_medium)
   ) AS downloads_per_medium,

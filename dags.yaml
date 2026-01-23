@@ -2551,7 +2551,7 @@ bqetl_firefox_ios_choice_screen:
     owner: kik@mozilla.com
     retries: 0
     retry_delay: 10m
-    start_date: '2025-01-14'
+    start_date: '2026-01-10'
   description: Job to pull user choice screen info from Apple.
   repo: bigquery-etl
   schedule_interval: daily

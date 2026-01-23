@@ -50,6 +50,9 @@ def stage():
 
     Examples:
     ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
+
+    # Deploy with custom test directory
+    ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
     """
 )
 @click.argument(
@@ -90,6 +93,13 @@ def stage():
     help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
     + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
+@click.option(
+    "--test-dir",
+    "--test_dir",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
+    default=TEST_DIR,
+    help="Directory containing test files (default: tests/sql relative to repository root)",
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -100,6 +110,7 @@ def deploy(
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
+    test_dir,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -148,7 +159,7 @@ def deploy(
         artifact_dataset = artifact_file.parent.parent.name
         artifact_name = artifact_file.parent.name
         artifact_test_path = (
-            TEST_DIR / artifact_project / artifact_dataset / artifact_name
+            test_dir / artifact_project / artifact_dataset / artifact_name
         )
 
         if (
@@ -192,7 +203,7 @@ def deploy(
         # copy tests to the right structure
         if artifact_test_path.exists():
             new_artifact_test_path = (
-                TEST_DIR / project_id / new_artifact_dataset / artifact_name
+                test_dir / project_id / new_artifact_dataset / artifact_name
             )
             shutil.copytree(
                 artifact_test_path, new_artifact_test_path, dirs_exist_ok=True
@@ -201,7 +212,7 @@ def deploy(
                 shutil.rmtree(artifact_test_path)
 
     # rename test files
-    for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
+    for test_file_path in map(Path, glob(f"{test_dir}/**/*", recursive=True)):
         test_file_suffix = test_file_path.suffix
         for artifact_file in artifact_files:
             artifact_project = artifact_file.parent.parent.parent.name

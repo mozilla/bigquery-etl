@@ -1,32 +1,18 @@
-CREATE TEMP FUNCTION extract_addon_info(addon_info ANY TYPE)
-RETURNS STRUCT<
-  hashed_addon_id STRING,
-  utm_content STRING,
-  utm_campaign STRING,
-  utm_source STRING,
-  utm_medium STRING
-> AS (
-  STRUCT(
-    mozfun.map.get_key(addon_info, "hashed_addon_id") AS hashed_addon_id,
-    mozfun.map.get_key(addon_info, "utm_content") AS utm_content,
-    mozfun.map.get_key(addon_info, "utm_campaign") AS utm_campaign,
-    mozfun.map.get_key(addon_info, "utm_source") AS utm_source,
-    mozfun.map.get_key(addon_info, "utm_medium") AS utm_medium
-  )
-);
-
 WITH install_stats AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    extract_addon_info(event.extra).*,
+    client_id,
+    extras.string.hashed_addon_id,
+    extras.string.utm_content,
+    extras.string.utm_campaign,
+    extras.string.utm_source,
+    extras.string.utm_medium,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events`,
-    UNNEST(events) AS `event`
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND event.category = "addons_manager"
-    AND event.name = "install_stats"
+    AND event_category = "addons_manager"
+    AND event_name = "install_stats"
   GROUP BY
     ALL
 ),

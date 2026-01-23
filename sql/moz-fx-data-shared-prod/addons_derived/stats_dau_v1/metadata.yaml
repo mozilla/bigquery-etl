@@ -24,6 +24,3 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-  clustering:
-    fields:
-      - addon_id

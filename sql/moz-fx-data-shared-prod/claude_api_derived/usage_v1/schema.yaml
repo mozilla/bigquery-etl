@@ -1,0 +1,37 @@
+fields:
+- name: date
+  type: DATE
+  mode: REQUIRED
+  description: Date of the usage bucket
+- name: api_key_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the API key used. Null for usage in the Anthropic Console.
+- name: model
+  type: STRING
+  mode: NULLABLE
+  description: Model used (e.g., claude-sonnet-4-20250514)
+- name: uncached_input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of uncached input tokens processed
+- name: cache_read_input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input tokens read from the cache
+- name: cache_creation_5m_input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input tokens used to create the 5-minute cache entry
+- name: cache_creation_1h_input_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of input tokens used to create the 1-hour cache entry
+- name: output_tokens
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of output tokens generated
+- name: web_search_requests
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of web search requests made via server-side tools

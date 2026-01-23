@@ -2559,3 +2559,23 @@ bqetl_firefox_ios_choice_screen:
   tags:
     - impact/tier_3
     - triage/no_triage
+
+bqetl_claude_api:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-01-21'
+  description: |
+    Pulls daily API usage data from the Anthropic Admin API.
+    Tracks token consumption by model and API key.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3

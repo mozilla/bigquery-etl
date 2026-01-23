@@ -162,4 +162,5 @@ def main():
     integration.run(args)
 
 
-main()
+if __name__ == "__main__":
+    main()

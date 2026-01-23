@@ -1,7 +1,7 @@
 fields:
 - name: date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Date of the usage bucket
 - name: api_key_id
   type: STRING

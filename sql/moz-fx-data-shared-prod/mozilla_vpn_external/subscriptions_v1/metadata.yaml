@@ -29,5 +29,5 @@ workgroup_access:
   - workgroup:dataplatform/developers
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
+  - EXTERNAL_QUERY('moz-fx-vpn-prod.us.vpn-bq-connection-prod', @external_database_query)
   - moz-fx-data-shared-prod.mozilla_vpn_external.subscriptions_v1

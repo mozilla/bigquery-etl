@@ -429,6 +429,11 @@ fields:
         * `New Customer Trial` - A new customer started their first subscription and it is a trial plan.
         * `Returning Customer` - A customer started a subsequent subscription.
         * `Returning Customer Trial` - A customer started a subsequent subscription and it is a trial plan.
+  - name: payment_method_id
+    type: STRING
+    mode: NULLABLE
+    description: ID of a payment method that's attached to the customer, to be used as
+      the customer's default payment method for subscriptions and invoices.
 - name: was_active_at_month_start
   type: BOOLEAN
   mode: NULLABLE

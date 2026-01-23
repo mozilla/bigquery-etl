@@ -42,6 +42,11 @@ fields:
     description: |-
       Payment provider for the subscription.
       For Stripe subscriptions this will be "Stripe" or "PayPal".
+  - name: payment_method_id
+    type: STRING
+    mode: NULLABLE
+    description: ID of a payment method that's attached to the customer, to be used as
+      the customer's default payment method for subscriptions and invoices.
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE

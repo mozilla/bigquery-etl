@@ -378,7 +378,11 @@ SELECT
     ) AS ongoing_discount_amount,
     ongoing_discounts.ends_at AS ongoing_discount_ends_at,
     COALESCE(invoice_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges,
+    COALESCE(
+      history.subscription.default_payment_method_id,
+      history.subscription.customer.invoice_settings.default_payment_method_id
+    ) AS payment_method_id
   ) AS subscription
 FROM
   active_subscriptions_history AS history

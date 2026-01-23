@@ -170,7 +170,8 @@ subscriptions_history AS (
           'Returning Customer'
         ),
         IF(subscriptions_history_periods.started_as_trial, ' Trial', '')
-      ) AS started_reason
+      ) AS started_reason,
+      history.subscription.payment_method_id
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history

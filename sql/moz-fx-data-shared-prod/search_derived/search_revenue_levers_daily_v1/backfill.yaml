@@ -1,3 +1,12 @@
+2024-10-08:
+  start_date: 2023-07-14
+  end_date: 2024-10-04
+  reason: Add serp_events history
+  watchers:
+  - mbowerman@mozilla.com
+  - akommasani@mozilla.com
+  status: Initiate
+
 2024-09-04:
   start_date: 2018-01-01
   end_date: 2024-09-04

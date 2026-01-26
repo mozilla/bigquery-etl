@@ -28,6 +28,7 @@ from .config import (
     find_experiment_analysis_targets,
     find_glean_targets,
     find_pioneer_targets,
+    unnest_and_remove_metrics,
 )
 
 NULL_PARTITION_ID = "__NULL__"
@@ -129,6 +130,7 @@ parser.add_argument(
     "--sampling-tables",
     "--sampling_tables",
     nargs="+",
+    metavar="DATASET.TABLE",
     dest="sampling_tables",
     help="Create tasks per sample id for the given table(s).  Table format is dataset.table_name.",
     default=[],
@@ -160,6 +162,17 @@ parser.add_argument(
     metavar="projects/{project}/locations/{location}/reservations/{reservation}",
     help="Override the reservation assigned to the billing projects, e.g. "
     "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
+# Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+parser.add_argument(
+    "--column-removal-backfill-tables",
+    "--column_removal_backfill_tables",
+    nargs="+",
+    metavar="DATASET.TABLE",
+    help="List of tables (dataset.table format) on which to run a modified query to remove "
+    "fields and backfill to another table. "
+    "Tables are expected to be in a *_stable dataset and have a _v1 prefix.",
+    default=[],
 )
 
 
@@ -318,6 +331,7 @@ def delete_from_partition(
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
     reservation_override: Optional[str] = None,
+    column_removal_backfill: Optional[bool] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
@@ -332,6 +346,8 @@ def delete_from_partition(
     if partition.id is None or partition.is_special:
         use_dml = True
     elif sample_id_range is not None:
+        # sample_id shredding can't use DML because of performance, and it will result in
+        # partially shredded partitions
         use_dml = False
         job_config.destination = (
             f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
@@ -339,8 +355,13 @@ def delete_from_partition(
         )
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
-    elif not use_dml:
-        job_config.destination = f"{sql_table_id(target)}${partition.id}"
+    elif not use_dml or column_removal_backfill:
+        destination_table = f"{sql_table_id(target)}${partition.id}"
+        if column_removal_backfill:
+            # column removal requires a transformation using a SELECT query
+            use_dml = False
+            destination_table = destination_table.replace("_v1$", "_v2$")
+        job_config.destination = destination_table
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client) -> bigquery.QueryJob:
@@ -429,13 +450,13 @@ def delete_from_partition(
             query = reformat(
                 f"""
                 SELECT
-                  _target.*,
+                  {"_target.*" if not column_removal_backfill else unnest_and_remove_metrics(client, sql_table_id(target))},
                 FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE
-                  ({field_conditions})
-                  AND ({partition_condition})
+                  {f"({field_conditions}) AND " if field_conditions else ""}
+                  ({partition_condition})
                   {f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}" if sample_id_range is not None else ""}
                 """
             )
@@ -460,6 +481,7 @@ def delete_from_partition_with_sampling(
     sampling_batch_size: int,
     temp_dataset: str,
     reservation_override: str,
+    column_removal_backfill: bool,
     **wait_for_job_kwargs,
 ):
     """Return callable to delete from a partition of a target table per sample id."""
@@ -488,6 +510,7 @@ def delete_from_partition_with_sampling(
                 clustering_fields=intermediate_clustering_fields,
                 check_table_existence=True,
                 reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
@@ -652,10 +675,11 @@ def delete_from_table(
     use_sampling,
     temp_dataset,
     reservation_override,
+    column_removal_backfill,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
-    if len(sources) == 0:
+    if len(sources) == 0 and not column_removal_backfill:
         logging.info(
             f"Skipping {sql_table_id(target)} due to no deletion request sources"
         )
@@ -667,7 +691,13 @@ def delete_from_table(
         return ()  # type: ignore
     partition_expr = get_partition_expr(table)
     for partition in list_partitions(
-        client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
+        client,
+        table,
+        partition_expr,
+        end_date,
+        # column removal cannot use DML
+        0 if column_removal_backfill else max_single_dml_bytes,
+        partition_limit,
     ):
         # no sampling for __NULL__ partition
         if use_sampling and not partition.is_special:
@@ -697,6 +727,7 @@ def delete_from_table(
                 end_date=end_date,
                 temp_dataset=temp_dataset,
                 reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
                 **kwargs,
             ),
         )
@@ -768,7 +799,11 @@ def main():
 
     if args.environment == "telemetry":
         with ThreadPool(6) as pool:
-            glean_targets = find_glean_targets(pool, client)
+            glean_targets = find_glean_targets(
+                pool,
+                client,
+                column_removal_backfill_tables=args.column_removal_backfill_tables,
+            )
         targets_with_sources = (
             *DELETE_TARGETS.items(),
             *glean_targets.items(),
@@ -818,6 +853,7 @@ def main():
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
             reservation_override=args.reservation_override,
+            column_removal_backfill=target.table in args.column_removal_backfill_tables,
         )
     ]
 

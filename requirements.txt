@@ -2232,9 +2232,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.9.5 \
-    --hash=sha256:48120531493f1533828da80e13e839d471979ec8d7d0ca7b35f86a1379cc74b6 \
-    --hash=sha256:9b195721a773b1acf0e16ff9ec68cef1e7d237e53471e6e3f7ade462f86c403a
+rich-click==1.9.6 \
+    --hash=sha256:463bd3dbef54a812282bfa93dde80c471bce359823fc1301be368eab63391cb2 \
+    --hash=sha256:e78d71e3f73a55548e573ccfd964e18503936e2e736a4a1f74c6c29479a2a054
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

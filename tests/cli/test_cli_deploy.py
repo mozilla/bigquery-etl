@@ -1,4 +1,8 @@
-from bigquery_etl.cli.deploy import _build_dependency_graph, _discover_artifacts
+from bigquery_etl.cli.deploy import (
+    _build_dependency_graph,
+    _discover_artifacts,
+    _needs_schema_update,
+)
 
 
 class TestArtifactDiscovery:
@@ -210,3 +214,46 @@ class TestDependencyGraph:
             "test-project.test_dataset.view_layer1"
             in graph["test-project.test_dataset.view_layer2"]
         )
+
+
+class TestSchemaUpdate:
+    def test_needs_schema_update_missing_schema(self, tmp_path):
+        """Test that schema update is needed when schema.yaml is missing."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+
+        assert _needs_schema_update(table_dir / "query.sql") is True
+
+    def test_needs_schema_update_with_existing_schema(self, tmp_path):
+        """Test that schema update is not needed when schema.yaml exists."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+
+        assert _needs_schema_update(table_dir / "query.sql") is False
+
+    def test_needs_schema_update_with_allow_field_addition(self, tmp_path):
+        """Test that schema update is needed when allow_field_addition is set."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+        (table_dir / "metadata.yaml").write_text(
+            "friendly_name: Test Table\nschema:\n  allow_field_addition: true"
+        )
+
+        assert _needs_schema_update(table_dir / "query.sql") is True
+
+    def test_needs_schema_update_non_sql_file(self, tmp_path):
+        """Test that schema update is not needed for non-SQL files."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.py").write_text("# Python query")
+
+        assert _needs_schema_update(table_dir / "query.py") is False

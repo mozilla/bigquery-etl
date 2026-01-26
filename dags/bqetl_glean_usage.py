@@ -3797,9 +3797,8 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "vsabino@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -5218,6 +5217,23 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    org_mozilla_fenix_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fenix_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_fenix,
+    )
+
     org_mozilla_fenix_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -5304,6 +5320,23 @@ with DAG(
         )
     )
 
+    org_mozilla_fenix_nightly_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fenix_nightly_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_fenix_nightly_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_fenix,
+    )
+
     org_mozilla_fenix_nightly_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_nightly_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -5388,6 +5421,23 @@ with DAG(
             depends_on_past=True,
             task_group=task_group_fenix,
         )
+    )
+
+    org_mozilla_fennec_aurora_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fennec_aurora_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_fennec_aurora_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_fenix,
     )
 
     org_mozilla_fennec_aurora_derived__events_stream__v1 = bigquery_etl_query(
@@ -5478,6 +5528,23 @@ with DAG(
         )
     )
 
+    org_mozilla_firefox_beta_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_beta_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_firefox_beta_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_fenix,
+    )
+
     org_mozilla_firefox_beta_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefox_beta_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -5557,6 +5624,23 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_fenix,
+    )
+
+    org_mozilla_firefox_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         task_group=task_group_fenix,
@@ -5948,6 +6032,23 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
+    org_mozilla_ios_fennec_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_fennec_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_ios_fennec_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_firefox_ios,
+    )
+
     org_mozilla_ios_fennec_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_ios_fennec_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -6036,6 +6137,23 @@ with DAG(
         )
     )
 
+    org_mozilla_ios_firefox_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_firefox_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_ios_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_firefox_ios,
+    )
+
     org_mozilla_ios_firefox_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_ios_firefox_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -6117,6 +6235,23 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_firefox_ios,
+    )
+
+    org_mozilla_ios_firefoxbeta_derived__events_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_firefoxbeta_derived__events_first_seen__v1",
+        destination_table="events_first_seen_v1",
+        dataset_id="org_mozilla_ios_firefoxbeta_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         task_group=task_group_firefox_ios,
@@ -8106,6 +8241,10 @@ with DAG(
         bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_fenix_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_fenix_derived__events_stream__v1
+    )
+
     org_mozilla_fenix_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8128,6 +8267,10 @@ with DAG(
 
     org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+
+    org_mozilla_fenix_nightly_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__events_stream__v1
     )
 
     org_mozilla_fenix_nightly_derived__events_stream__v1.set_upstream(
@@ -8154,6 +8297,10 @@ with DAG(
         bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_fennec_aurora_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__events_stream__v1
+    )
+
     org_mozilla_fennec_aurora_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8178,6 +8325,10 @@ with DAG(
         bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_firefox_beta_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__events_stream__v1
+    )
+
     org_mozilla_firefox_beta_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8200,6 +8351,10 @@ with DAG(
 
     org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+
+    org_mozilla_firefox_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_firefox_derived__events_stream__v1
     )
 
     org_mozilla_firefox_derived__events_stream__v1.set_upstream(
@@ -8318,6 +8473,10 @@ with DAG(
         bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_ios_fennec_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__events_stream__v1
+    )
+
     org_mozilla_ios_fennec_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8342,6 +8501,10 @@ with DAG(
         bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_ios_firefox_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__events_stream__v1
+    )
+
     org_mozilla_ios_firefox_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8364,6 +8527,10 @@ with DAG(
 
     org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
         bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
+    )
+
+    org_mozilla_ios_firefoxbeta_derived__events_first_seen__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__events_stream__v1
     )
 
     org_mozilla_ios_firefoxbeta_derived__events_stream__v1.set_upstream(

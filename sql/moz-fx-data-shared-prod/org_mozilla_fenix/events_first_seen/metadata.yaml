@@ -1,0 +1,16 @@
+friendly_name: Events First Seen
+description: |-
+  Captures the earliest date that we observe an event for a particular client in the events_stream_v1 table.
+owners:
+- kbammarito@mozilla.com
+- vsabino@mozilla.com
+labels:
+  owner1: kbammarito
+  owner2: vsabino
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_derived.events_first_seen_v1

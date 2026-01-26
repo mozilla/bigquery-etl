@@ -470,6 +470,9 @@ def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -
     if file_path.name != "query.sql":
         return False
 
+    if not skip_existing_schemas:
+        return True
+
     schema_path = file_path.parent / SCHEMA_FILE
     schema_missing = not schema_path.exists()
 

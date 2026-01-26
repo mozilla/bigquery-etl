@@ -17161,6 +17161,23 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Tracks account hub error counts, keyed by data-l10n-id.
+    - name: dns_trr_http3_0rtt_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Outcome of 0-RTT usage for TRR HTTP/3 connections: - "not_used":
+        0RTT was not used - "succeeded": 0RTT was used and succeeded - "rejected":
+        0RTT was used but rejected by the server - "conn_error": 0RTT was used but
+        connection error occurred - "conn_closed_by_necko": 0RTT was used but connection
+        was closed by necko
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -41251,6 +41268,57 @@ fields:
         per reason it was rebuilt.
 
         Previously reported in "main" ping `simpleMeasurements`.
+
+        '
+    - name: dns_trr_http3_0rtt_state_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time a TRR HTTP/3 connection was in the 0-RTT state before
+        transitioning to a final outcome.
 
         '
   - name: labeled_custom_distribution

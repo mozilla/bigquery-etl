@@ -1082,7 +1082,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
       metrics.labeled_counter.ads_client_client_operation_total,
-      metrics.labeled_counter.media_capture_stream_usage
+      metrics.labeled_counter.media_capture_stream_usage,
+      metrics.labeled_counter.dns_trr_http3_0rtt_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1940,7 +1941,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
-      metrics.labeled_timing_distribution.xpi_database_rebuilds
+      metrics.labeled_timing_distribution.xpi_database_rebuilds,
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -3138,7 +3140,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
       metrics.labeled_counter.ads_client_client_operation_total,
-      metrics.labeled_counter.media_capture_stream_usage
+      metrics.labeled_counter.media_capture_stream_usage,
+      metrics.labeled_counter.dns_trr_http3_0rtt_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3996,7 +3999,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
-      metrics.labeled_timing_distribution.xpi_database_rebuilds
+      metrics.labeled_timing_distribution.xpi_database_rebuilds,
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -5214,7 +5218,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
       metrics.labeled_counter.ads_client_client_operation_total,
-      metrics.labeled_counter.media_capture_stream_usage
+      metrics.labeled_counter.media_capture_stream_usage,
+      metrics.labeled_counter.dns_trr_http3_0rtt_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6072,7 +6077,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
-      metrics.labeled_timing_distribution.xpi_database_rebuilds
+      metrics.labeled_timing_distribution.xpi_database_rebuilds,
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

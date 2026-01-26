@@ -6,6 +6,7 @@ fields:
 - name: addon_id
   type: STRING
   mode: NULLABLE
+  description: Unique identifier of an addon.
 - name: dau
   type: INTEGER
   mode: NULLABLE
@@ -13,60 +14,78 @@ fields:
 - name: dau_by_addon_version
   type: RECORD
   mode: REPEATED
+  description: Record containing addon version and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Addon version.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding addon version.
 - name: dau_by_app_version
   type: RECORD
   mode: REPEATED
+  description: Record containing app version and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: App version.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding app version.
 - name: dau_by_fenix_build
   type: RECORD
   mode: REPEATED
+  description: Record containing fenix build and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Build identifier.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding fenix build.
 - name: dau_by_locale
   type: RECORD
   mode: REPEATED
+  description: Record containing locale and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: locale.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding locale.
 - name: dau_by_country
   type: RECORD
   mode: REPEATED
+  description: Record containing country and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Country.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding country.
 - name: dau_by_app_os
   type: RECORD
   mode: REPEATED
+  description: Record containing os and the corresponding DAU count.
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: OS.
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: DAU count for the corresponding os.

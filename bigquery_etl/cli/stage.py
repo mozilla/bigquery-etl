@@ -563,8 +563,9 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             use_cloud_function=True,
             # Table options
             table_force=True,
-            table_skip_existing=True,
+            table_skip_existing=False,
             table_skip_external_data=True,
+            table_skip_existing_schemas=True,
             # View options
             view_force=True,
             view_target_project=None,

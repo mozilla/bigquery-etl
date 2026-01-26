@@ -36,35 +36,36 @@ apps:
       tou_accept: |
         (
           event_category = 'terms_of_use'
-          AND event_name = "accepted"
-          AND JSON_VALUE(event_extra.surface) = "bottom_sheet"
+          AND event_name = 'accepted'
+          AND JSON_VALUE(event_extra.surface) = 'bottom_sheet'
         ) OR (
             event_category = 'onboarding'
-            AND event_name = "terms_of_service_accepted"
+            AND event_name = 'terms_of_service_accepted'
           )
       tou_impressions: |
         (
           event_category = 'terms_of_use'
-          AND event_name in ("impression", "shown")
+          AND event_name in ('impression', 'shown')
+          AND JSON_VALUE(event_extra.surface) = 'bottom_sheet'
         ) OR (
             event_category = 'onboarding'
-            AND event_name = "terms_of_service_card"
+            AND event_name = 'terms_of_service_card'
           )
   fenix:
     criteria:
       tou_accept: |
         (
           event_category = 'terms_of_use'
-          AND event_name = "accepted"
+          AND event_name = 'accepted'
         ) OR (
             event_category = 'onboarding'
-            AND event_name = "terms_of_service_accepted"
+            AND event_name = 'terms_of_service_accepted'
           )
       tou_impressions: |
         (
           event_category = 'terms_of_use'
-          AND event_name in ("impression", "shown")
+          AND event_name in ('impression', 'shown')
         ) OR (
             event_category = 'onboarding'
-            AND event_name = "terms_of_service_card"
+            AND event_name = 'terms_of_service_card'
           )

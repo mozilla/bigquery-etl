@@ -60,3 +60,8 @@ fields:
     mode: NULLABLE
     description: |-
       Last-touch attribution UTM term.
+  - name: utm_group
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Categorized marketing channel group (Direct, Marketing Owned, Marketing Paid, Product Owned, or Miscellaneous)

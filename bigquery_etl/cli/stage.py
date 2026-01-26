@@ -13,7 +13,6 @@ from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
-from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references

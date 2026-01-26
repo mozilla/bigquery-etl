@@ -1,0 +1,13 @@
+friendly_name: UTM Source Mapping V1
+description: |
+  Maps UTM source values to categorized UTM groups for attribution analysis.
+
+  Groups include:
+  - Direct: Direct product page visits and organic channels
+  - Marketing Owned: Mozilla-owned marketing channels (email, blog, product pages)
+  - Marketing Paid: Paid advertising channels (Facebook, Google, Reddit, etc.)
+  - Product Owned: Firefox and Mozilla product surfaces (browser, add-ons, FxA)
+  - Miscellaneous: Uncategorized or test sources
+
+  Used to categorize subscription attribution data by standardizing utm_source
+  and utm_medium values into meaningful marketing channel groups.

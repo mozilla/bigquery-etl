@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_search_terms_daily
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

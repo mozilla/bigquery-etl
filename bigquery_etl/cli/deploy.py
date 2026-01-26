@@ -71,6 +71,10 @@ log = logging.getLogger(__name__)
     \b
     # Dry run to check dependencies
     ./bqetl deploy --tables --views --dry-run telemetry_derived/
+
+    \b
+    # Skip schema updates for tables with existing schema.yaml files
+    ./bqetl deploy --tables --table-skip-existing-schemas telemetry_derived/
     """,
 )
 @click.argument("paths", nargs=-1, required=False)
@@ -122,6 +126,14 @@ log = logging.getLogger(__name__)
     help="Skip publishing external data tables",
 )
 @click.option(
+    "--table-skip-existing-schemas",
+    "--table_skip_existing_schemas",
+    is_flag=True,
+    default=False,
+    help="Skip automatic schema updates for tables with existing schema.yaml files. "
+    "Tables with allow_field_addition=true will still be updated.",
+)
+@click.option(
     "--view-force",
     "--view_force",
     is_flag=True,
@@ -168,6 +180,7 @@ def deploy(
     table_force,
     table_skip_existing,
     table_skip_external_data,
+    table_skip_existing_schemas,
     view_force,
     view_target_project,
     view_add_managed_label,
@@ -232,6 +245,7 @@ def deploy(
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
         "table_skip_external_data": table_skip_external_data,
+        "table_skip_existing_schemas": table_skip_existing_schemas,
         # View options
         "view_force": view_force,
         "view_target_project": view_target_project,
@@ -444,11 +458,14 @@ def _deploy_artifact_callback(
         click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
 
 
-def _needs_schema_update(file_path: Path) -> bool:
+def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -> bool:
     """Check if a table needs schema update.
 
     Returns true if query schema.yaml is missing or metadata has
-    allow_field_addition=true or ALLOW_FIELD_ADDITION in scheduling arguments
+    allow_field_addition=true or ALLOW_FIELD_ADDITION in scheduling arguments.
+
+    When skip_existing_schemas is True, only update if schema.yaml is missing
+    or has allow_field_addition (matches query schema update --skip-existing behavior).
     """
     if file_path.name != "query.sql":
         return False
@@ -472,7 +489,10 @@ def _needs_schema_update(file_path: Path) -> bool:
     except Exception:
         pass
 
-    return schema_missing or has_allow_field_addition
+    if skip_existing_schemas:
+        return schema_missing or has_allow_field_addition
+    else:
+        return True
 
 
 def _update_table_schema(file_path: Path, options: dict):
@@ -505,7 +525,10 @@ def _update_table_schema(file_path: Path, options: dict):
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
     # Check if schema update is needed before deployment
-    if not options["dry_run"] and _needs_schema_update(file_path):
+    if not options["dry_run"] and _needs_schema_update(
+        file_path,
+        skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+    ):
         _update_table_schema(file_path, options)
 
     if options["dry_run"]:

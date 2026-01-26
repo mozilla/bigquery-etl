@@ -234,7 +234,10 @@ class TestSchemaUpdate:
             "fields:\n- name: value\n  type: INTEGER"
         )
 
-        assert _needs_schema_update(table_dir / "query.sql") is False
+        assert (
+            _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=True)
+            is False
+        )
 
     def test_needs_schema_update_with_allow_field_addition(self, tmp_path):
         """Test that schema update is needed when allow_field_addition is set."""
@@ -257,3 +260,51 @@ class TestSchemaUpdate:
         (table_dir / "query.py").write_text("# Python query")
 
         assert _needs_schema_update(table_dir / "query.py") is False
+
+    def test_needs_schema_update_skip_existing_with_schema(self, tmp_path):
+        """Test that schema update is skipped when skip_existing_schemas=True and schema exists."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+
+        assert (
+            _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=True)
+            is False
+        )
+
+    def test_needs_schema_update_skip_existing_with_allow_field_addition(
+        self, tmp_path
+    ):
+        """Test that schema update happens when skip_existing_schemas=True but allow_field_addition is set."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+        (table_dir / "metadata.yaml").write_text(
+            "friendly_name: Test Table\nschema:\n  allow_field_addition: true"
+        )
+
+        assert (
+            _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=True)
+            is True
+        )
+
+    def test_needs_schema_update_default_always_updates(self, tmp_path):
+        """Test that schema update happens by default even when schema exists."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1 as value")
+        (table_dir / "schema.yaml").write_text(
+            "fields:\n- name: value\n  type: INTEGER"
+        )
+
+        # Default behavior: always update (skip_existing_schemas=False)
+        assert (
+            _needs_schema_update(table_dir / "query.sql", skip_existing_schemas=False)
+            is True
+        )

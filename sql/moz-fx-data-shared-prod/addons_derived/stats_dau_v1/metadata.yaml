@@ -1,0 +1,36 @@
+friendly_name: AMO Stats DAU
+description: |-
+  Daily user statistics to power addons.mozilla.org stats pages.
+  See: bug-1572873.
+
+  Each row in this table represents a particular addon on a particular day
+  and provides all the information needed to populate the various
+  "Daily Users" plots for the AMO stats dashboard.
+
+  NOTE: Includes only clients that reported major app_version 148 or higher.
+owners:
+- kik@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  dag: bqetl_amo_stats
+  owner1: kik
+scheduling:
+  dag_name: bqetl_amo_stats
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/prod
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.addons_derived.fenix_addons_by_client_v1
+  - moz-fx-data-shared-prod.addons_derived.firefox_desktop_addons_by_client_v1

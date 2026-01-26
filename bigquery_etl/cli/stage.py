@@ -545,16 +545,6 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             access_entries=dataset_access_entries,
         )
 
-    if len(query_files) > 0:
-        ctx.invoke(
-            update_query_schema,
-            name=query_files,
-            sql_dir=sql_dir,
-            project_ids=[project_id],
-            respect_dryrun_skip=True,
-            is_init=True,
-        )
-
     if len(all_artifacts) > 0:
         from ..cli.deploy import deploy as deploy_artifacts_unified
 
@@ -573,7 +563,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             use_cloud_function=True,
             # Table options
             table_force=True,
-            table_skip_existing=False,
+            table_skip_existing=True,
             table_skip_external_data=True,
             # View options
             view_force=True,

@@ -89,7 +89,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/claude_api_derived/usage_v1/query.py",
         ]
-        + [],
+        + ["--date={{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mcastelluccio@mozilla.com",
         email=["mcastelluccio@mozilla.com", "telemetry-alerts@mozilla.com"],

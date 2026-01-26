@@ -11,6 +11,8 @@ labels:
   owner1: mcastelluccio
 scheduling:
   dag_name: bqetl_claude_api
+  arguments:
+  - --date={{ds}}
   secrets:
   - deploy_target: ANTHROPIC_ADMIN_API_KEY
     key: bqetl_claude_api__admin_api_key

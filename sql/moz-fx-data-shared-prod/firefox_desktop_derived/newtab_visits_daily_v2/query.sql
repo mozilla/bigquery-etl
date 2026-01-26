@@ -25,6 +25,8 @@ WITH events_unnested AS (
     metrics.quantity.topsites_rows AS topsite_rows,
     metrics.quantity.topsites_sponsored_tiles_configured AS topsite_sponsored_tiles_configured,
     metrics.string_list.newtab_blocked_sponsors AS newtab_blocked_sponsors,
+    metrics.string.newtab_locale AS newtab_locale,
+    metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     ping_info AS ping_info,
     mozfun.newtab.is_default_ui_v1(
       category,
@@ -319,6 +321,10 @@ core_visit_metrics AS (
     ANY_VALUE(topsite_rows) AS topsite_rows,
     ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
     ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
+    IFNULL(
+      ANY_VALUE(newtab_content_surface_id),
+      mozfun.newtab.scheduled_surface_id_v1(ANY_VALUE(country), ANY_VALUE(newtab_locale))
+    ) AS newtab_content_surface_id,
     IF(
       LOGICAL_OR(is_default_ui),
       COUNTIF(

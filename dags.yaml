@@ -679,14 +679,13 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
-      - ctroy@mozilla.com
+      - najiang@mozilla.com
       - wstuckey@mozilla.com
-      - rburwei@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: ctroy@mozilla.com
+    owner: najiang@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-09-20'
@@ -698,7 +697,7 @@ bqetl_search_terms_daily:
     a 2-day retention period, so errors fairly quickly become unrecoverable
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
-    outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
+    outside of Airflow.
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_1
@@ -2539,3 +2538,44 @@ bqetl_newtab_hourly:
   catchup: true
   tags:
     - impact/tier_2
+
+bqetl_firefox_ios_choice_screen:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - ebrandi@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 0
+    retry_delay: 10m
+    start_date: '2026-01-10'
+  description: Job to pull user choice screen info from Apple.
+  repo: bigquery-etl
+  schedule_interval: daily
+  catchup: true
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_claude_api:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-01-21'
+  description: |
+    Pulls daily API usage data from the Anthropic Admin API.
+    Tracks token consumption by model and API key.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3

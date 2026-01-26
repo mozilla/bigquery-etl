@@ -12,3 +12,4 @@ SELECT
   {% endif %}
 FROM
   `{{ project_id }}.{{ events_stream_table }}`
+-- test change

@@ -1076,26 +1076,6 @@ bqetl_fenix_external:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
-bqetl_fivetran_apple_ads:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - kik@mozilla.com
-    email_on_failure: true
-    email_on_retry: true
-    end_date: null
-    owner: kik@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2023-05-25'
-  description: |
-    Copies over apple_ads data coming from Fivetran
-    into our data BQ project. Fivetran syncs this data
-    every hour. We copy the data every 3 hours to our project.
-  schedule_interval: 0 3 * * *
-  tags:
-    - impact/tier_2
 bqetl_fivetran_copied_tables:
   default_args:
     depends_on_past: false

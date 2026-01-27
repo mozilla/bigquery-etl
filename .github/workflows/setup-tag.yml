@@ -1,0 +1,41 @@
+# This workflow is triggered on tag pushes. It demonstrates a secure deployment to PyPI.
+# The original CircleCI configuration was a 'setup' workflow that triggered another
+# configuration file on tags. In GitHub Actions, this is handled by a single workflow
+# with a tag trigger.
+
+name: Tagged Deploy
+
+on:
+  push:
+    tags:
+
+jobs:
+  deploy:
+    name: Deploy to PyPI
+    if: github.event.base_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC trusted publishing
+      contents: read
+    environment:
+      name: pypi
+      url: https://pypi.org/p/<package-name> # TODO: Replace <package-name> with your PyPI package name
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # TODO: Use the project's actual Python version
+
+      - name: Install build dependencies
+        run: python -m pip install --upgrade build
+
+      - name: Build distribution files
+        run: python -m build --sdist
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

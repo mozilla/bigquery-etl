@@ -27,7 +27,7 @@ from bigquery_etl.cli.utils import (
     table_matches_patterns,
 )
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.schema import Schema, generate_compatible_select_expression
+from bigquery_etl.schema import generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
@@ -282,7 +282,7 @@ def _run_deduplication_query(
 def _copy_join_parts(client, stable_table, query_jobs, write_to_v2=False):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
 
-    v1_table_id = stable_table.replace('_v2$', '_v1$')
+    v1_table_id = stable_table.replace("_v2$", "_v1$")
 
     if query_jobs[0].dry_run:
         api_repr = json.dumps(query_jobs[0].to_api_repr())
@@ -292,9 +292,7 @@ def _copy_join_parts(client, stable_table, query_jobs, write_to_v2=False):
         else:
             logging.info(f"Would process {total_bytes} bytes: {api_repr}")
         if write_to_v2:
-            logging.info(
-                f"Would copy from {stable_table} to {v1_table_id}"
-            )
+            logging.info(f"Would copy from {stable_table} to {v1_table_id}")
     else:
         total_slot_hours = round(
             sum(query.slot_millis for query in query_jobs) / 1000 / 60 / 60, 3

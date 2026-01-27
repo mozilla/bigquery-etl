@@ -18,6 +18,7 @@ from google.cloud import bigquery
 from google.cloud.bigquery import CopyJob, QueryJob
 
 from bigquery_etl.schema import generate_compatible_select_expression
+
 from ..format_sql.formatter import reformat
 from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id

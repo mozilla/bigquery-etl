@@ -2,7 +2,6 @@
 
 """Meta data about tables and ids for self serve deletion."""
 
-import functools
 import logging
 import re
 from collections import defaultdict
@@ -17,7 +16,6 @@ from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 
-from ..schema import Schema
 from ..util.bigquery_id import qualified_table_id
 
 MOZDATA = "mozdata"

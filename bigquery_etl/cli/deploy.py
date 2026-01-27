@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Set, Tuple
 import click
 from google.cloud import bigquery
 
+from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     is_authenticated,
@@ -30,6 +31,7 @@ from bigquery_etl.deploy import (
     deploy_table,
 )
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import render
@@ -69,6 +71,10 @@ log = logging.getLogger(__name__)
     \b
     # Dry run to check dependencies
     ./bqetl deploy --tables --views --dry-run telemetry_derived/
+
+    \b
+    # Skip schema updates for tables with existing schema.yaml files
+    ./bqetl deploy --tables --table-skip-existing-schemas telemetry_derived/
     """,
 )
 @click.argument("paths", nargs=-1, required=False)
@@ -120,6 +126,14 @@ log = logging.getLogger(__name__)
     help="Skip publishing external data tables",
 )
 @click.option(
+    "--table-skip-existing-schemas",
+    "--table_skip_existing_schemas",
+    is_flag=True,
+    default=False,
+    help="Skip automatic schema updates for tables with existing schema.yaml files. "
+    "Tables with allow_field_addition=true will still be updated.",
+)
+@click.option(
     "--view-force",
     "--view_force",
     is_flag=True,
@@ -166,6 +180,7 @@ def deploy(
     table_force,
     table_skip_existing,
     table_skip_external_data,
+    table_skip_existing_schemas,
     view_force,
     view_target_project,
     view_add_managed_label,
@@ -230,6 +245,7 @@ def deploy(
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
         "table_skip_external_data": table_skip_external_data,
+        "table_skip_existing_schemas": table_skip_existing_schemas,
         # View options
         "view_force": view_force,
         "view_target_project": view_target_project,
@@ -442,8 +458,82 @@ def _deploy_artifact_callback(
         click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
 
 
+def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -> bool:
+    """Check if a table needs schema update.
+
+    Returns true if query schema.yaml is missing or metadata has
+    allow_field_addition=true or ALLOW_FIELD_ADDITION in scheduling arguments.
+
+    When skip_existing_schemas is True, only update if schema.yaml is missing
+    or has allow_field_addition (matches query schema update --skip-existing behavior).
+    """
+    if file_path.name != "query.sql":
+        return False
+
+    if not skip_existing_schemas:
+        return True
+
+    schema_path = file_path.parent / SCHEMA_FILE
+    schema_missing = not schema_path.exists()
+
+    # Check if metadata has allow_field_addition
+    has_allow_field_addition = False
+    try:
+        metadata = Metadata.of_query_file(file_path)
+        if metadata.schema and metadata.schema.allow_field_addition:
+            has_allow_field_addition = True
+        elif metadata.scheduling:
+            arguments = metadata.scheduling.get("arguments", [])
+            if any(
+                "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                for arg in arguments
+            ):
+                has_allow_field_addition = True
+    except Exception:
+        pass
+
+    if skip_existing_schemas:
+        return schema_missing or has_allow_field_addition
+    else:
+        return True
+
+
+def _update_table_schema(file_path: Path, options: dict):
+    """Update the schema for a table using the existing query schema update logic."""
+    log.info(f"Updating schema for {file_path}")
+
+    try:
+        project_id, _, _ = extract_from_query_path(file_path)
+
+        _update_query_schema(
+            query_file=file_path,
+            sql_dir=options["sql_dir"],
+            project_id=project_id,
+            tmp_dataset="tmp",  # Default dataset for temporary tables during schema updates
+            tmp_tables={},
+            use_cloud_function=options["use_cloud_function"],
+            respect_dryrun_skip=options["respect_dryrun_skip"],
+            is_init=False,
+            credentials=options["credentials"],
+            id_token=options["id_token"],
+            use_dataset_schema=False,
+            use_global_schema=False,
+        )
+    except Exception as e:
+        raise FailedDeployException(
+            f"Failed to update schema for {file_path}: {e}"
+        ) from e
+
+
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
+    # Check if schema update is needed before deployment
+    if not options["dry_run"] and _needs_schema_update(
+        file_path,
+        skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+    ):
+        _update_table_schema(file_path, options)
+
     if options["dry_run"]:
         schema_path = file_path.parent / SCHEMA_FILE
         try:

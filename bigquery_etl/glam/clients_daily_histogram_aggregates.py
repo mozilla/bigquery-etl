@@ -88,8 +88,7 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
     unlabeled = []
     for name, metric_type, value_path in sorted(items):
         if metric_type.startswith("labeled"):
-            labeled.append(
-                f"""
+            labeled.append(f"""
                 (
                     "{name}",
                     "{metric_type}",
@@ -99,8 +98,7 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
                         FROM UNNEST(metrics.{metric_type}.{name})
                     )
                 )
-                """
-            )
+                """)
         else:
             unlabeled.append(f"""('', "{name}", "{metric_type}", {value_path})""")
 

@@ -6,6 +6,10 @@ description: |-
 
   This table allows removal of PII and slightly longer retention than
   the underlying ping table.
+
+  Note: This table processes data from 2 days ago,allowing time for the
+  upstream Merino sanitization job (~16 hours) to complete.
+  This is a temporary measure until the sanitization job is further optimized.
 owners:
 - ctroy@mozilla.com
 labels:
@@ -16,6 +20,7 @@ scheduling:
   dag_name: bqetl_search_terms_daily
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

@@ -1,6 +1,10 @@
 friendly_name: Search Terms Daily
 description: |-
   Daily count of terminal search terms collected by Merino.
+
+  Note: This table processes data from 2 days ago, allowing time for the
+  upstream Merino sanitization job (~16 hours) to complete.
+  This is a temporary measure until the sanitization job is further optimized.
 owners:
   - ctroy@mozilla.com
   - rburwei@mozilla.com

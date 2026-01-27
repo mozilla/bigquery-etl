@@ -52,45 +52,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_glam_client_probe_counts_beta_extract = ExternalTaskSensor(
-        task_id="wait_for_glam_client_probe_counts_beta_extract",
-        external_dag_id="glam",
-        external_task_id="extracts.glam_client_probe_counts_beta_extract",
-        execution_delta=datetime.timedelta(days=-1, seconds=57600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_glam_client_probe_counts_nightly_extract = ExternalTaskSensor(
-        task_id="wait_for_glam_client_probe_counts_nightly_extract",
-        external_dag_id="glam",
-        external_task_id="extracts.glam_client_probe_counts_nightly_extract",
-        execution_delta=datetime.timedelta(days=-1, seconds=57600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_glam_client_probe_counts_release_extract = ExternalTaskSensor(
-        task_id="wait_for_glam_client_probe_counts_release_extract",
-        external_dag_id="glam",
-        external_task_id="extracts.glam_client_probe_counts_release_extract",
-        execution_delta=datetime.timedelta(days=-1, seconds=57600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1 = ExternalTaskSensor(
         task_id="wait_for_query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1",
         external_dag_id="glam_fenix",
@@ -143,42 +104,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    glam_etl__glam_desktop_beta_aggregates__v1 = bigquery_etl_query(
-        task_id="glam_etl__glam_desktop_beta_aggregates__v1",
-        destination_table=None,
-        dataset_id="glam_etl",
-        project_id="moz-fx-glam-prod",
-        owner="efilho@mozilla.com",
-        email=["efilho@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_desktop_beta_aggregates_v1/script.sql",
-    )
-
-    glam_etl__glam_desktop_nightly_aggregates__v1 = bigquery_etl_query(
-        task_id="glam_etl__glam_desktop_nightly_aggregates__v1",
-        destination_table=None,
-        dataset_id="glam_etl",
-        project_id="moz-fx-glam-prod",
-        owner="efilho@mozilla.com",
-        email=["efilho@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_desktop_nightly_aggregates_v1/script.sql",
-    )
-
-    glam_etl__glam_desktop_release_aggregates__v1 = bigquery_etl_query(
-        task_id="glam_etl__glam_desktop_release_aggregates__v1",
-        destination_table=None,
-        dataset_id="glam_etl",
-        project_id="moz-fx-glam-prod",
-        owner="efilho@mozilla.com",
-        email=["efilho@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_desktop_release_aggregates_v1/script.sql",
-    )
-
     glam_etl__glam_fenix_beta_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fenix_beta_aggregates__v1",
         destination_table=None,
@@ -225,18 +150,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fog_nightly_aggregates_v1/script.sql",
-    )
-
-    glam_etl__glam_desktop_beta_aggregates__v1.set_upstream(
-        wait_for_glam_client_probe_counts_beta_extract
-    )
-
-    glam_etl__glam_desktop_nightly_aggregates__v1.set_upstream(
-        wait_for_glam_client_probe_counts_nightly_extract
-    )
-
-    glam_etl__glam_desktop_release_aggregates__v1.set_upstream(
-        wait_for_glam_client_probe_counts_release_extract
     )
 
     glam_etl__glam_fenix_beta_aggregates__v1.set_upstream(

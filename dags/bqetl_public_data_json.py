@@ -98,32 +98,6 @@ with DAG(
         image=docker_image,
     )
 
-    export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1 = GKEPodOperator(
-        task_id="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1",
-        name="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1",
-        arguments=["script/publish_public_data_json"]
-        + [
-            "--query_file=sql/moz-fx-data-shared-prod/glam_derived/client_probe_counts_firefox_desktop_beta_v1/query.sql"
-        ]
-        + ["--destination_table=client_probe_counts_firefox_desktop_beta"]
-        + ["--dataset_id=glam_derived"]
-        + ["--project_id=moz-fx-data-shared-prod"],
-        image=docker_image,
-    )
-
-    export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1 = GKEPodOperator(
-        task_id="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1",
-        name="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1",
-        arguments=["script/publish_public_data_json"]
-        + [
-            "--query_file=sql/moz-fx-data-shared-prod/glam_derived/client_probe_counts_firefox_desktop_nightly_v1/query.sql"
-        ]
-        + ["--destination_table=client_probe_counts_firefox_desktop_nightly"]
-        + ["--dataset_id=glam_derived"]
-        + ["--project_id=moz-fx-data-shared-prod"],
-        image=docker_image,
-    )
-
     export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1 = GKEPodOperator(
         task_id="export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1",
         name="export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1",
@@ -287,8 +261,6 @@ with DAG(
             export_public_data_json_client_probe_processes__v1,
             export_public_data_json_fenix_derived__fenix_use_counters__v2,
             export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2,
-            export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1,
-            export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1,
             export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1,
             export_public_data_json_mozregression_aggregates__v1,
             export_public_data_json_telemetry_derived__doh_adoption_rate__v1,

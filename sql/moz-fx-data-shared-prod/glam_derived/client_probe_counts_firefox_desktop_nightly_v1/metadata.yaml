@@ -9,17 +9,8 @@ labels:
   public_json: true
   review_bugs:
   - '1866889'
-  dag: bqetl_glam_export
   owner1: ascholtz
   owner2: efilho
-scheduling:
-  dag_name: bqetl_glam_export
-  date_partition_parameter: null
-  depends_on:
-  - task_id: glam_client_probe_counts_nightly_extract
-    task_group: extracts
-    dag_name: glam
-    execution_delta: 6h
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

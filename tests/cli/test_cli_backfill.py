@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 from click.testing import CliRunner
+from click.utils import strip_ansi
 from google.api_core.exceptions import NotFound
 
 from bigquery_etl.backfill.parse import (
@@ -1041,7 +1042,7 @@ class TestBackfill:
         )
 
         assert result.exit_code == 2
-        assert "Invalid value for '--status'" in result.output
+        assert "Invalid value for '--status'" in strip_ansi(result.output)
 
     def test_get_entries_from_qualified_table_name(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"

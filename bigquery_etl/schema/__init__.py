@@ -2,6 +2,7 @@
 
 import json
 import os
+from functools import cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -462,3 +463,21 @@ class Schema:
             max_unnest_depth,
             unnest_allowlist,
         )
+
+
+@cache
+def generate_compatible_select_expression(
+    client: bigquery.Client, v1_table_id: str, v2_table_id: str
+):
+    """Generate a select expression that conforms the v1 table schema to the v2 table schema.
+
+    The expression will be compatible with the v2 table. Fields that are in v1 but not v2 will
+    not be included. Fields that are in v2 but not v1 will be set to null.
+    """
+    v1_table = client.get_table(v1_table_id)
+    v2_table = client.get_table(v2_table_id)
+
+    v1_schema = Schema.from_bigquery_schema(v1_table.schema)
+    v2_schema = Schema.from_bigquery_schema(v2_table.schema)
+
+    return v1_schema.generate_compatible_select_expression(v2_schema)

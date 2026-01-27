@@ -27,6 +27,7 @@ from bigquery_etl.cli.utils import (
     table_matches_patterns,
 )
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.schema import Schema, generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
@@ -58,7 +59,7 @@ WITH
   -- A single slice of a live ping table.
   base AS (
   SELECT
-    *
+    {select_expression}
   FROM
     `{live_table}`
   JOIN
@@ -165,10 +166,26 @@ def _get_query_job_configs(
     preceding_days,
     num_retries,
     temp_dataset,
+    write_to_v2,
 ):
-    replace_geo = _select_geo(live_table, client)
-    sql = QUERY_TEMPLATE.format(live_table=live_table, replace_geo=replace_geo)
     stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
+    v2_table = stable_table.replace("_v1$", "_v2$")
+
+    replace_geo = _select_geo(live_table, client)
+    select_expression = (
+        "*"
+        if not write_to_v2
+        else generate_compatible_select_expression(client, stable_table, v2_table)
+    )
+    sql = QUERY_TEMPLATE.format(
+        live_table=live_table,
+        replace_geo=replace_geo,
+        select_expression=select_expression,
+    )
+
+    if write_to_v2:
+        stable_table = v2_table
+
     kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
     start_time = datetime(*date.timetuple()[:6])
     end_time = start_time + timedelta(days=1)
@@ -423,6 +440,12 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     multiple=True,
     help="Process only the given tables",
 )
+# For https://mozilla-hub.atlassian.net/browse/DENG-8494
+@click.option(
+    "--write-to-v2",
+    multiple=True,
+    help="Write to the v2 stable table instead of v1 for the given (Glean) table",
+)
 def copy_deduplicate(
     project_id,
     dates,
@@ -438,6 +461,7 @@ def copy_deduplicate(
     billing_projects,
     exclude,
     only,
+    write_to_v2,
 ):
     """Copy a day's data from live to stable ping tables, dedup on document_id."""
     # create a queue for balancing load across projects
@@ -478,6 +502,7 @@ def copy_deduplicate(
                             preceding_days,
                             num_retries,
                             temp_dataset,
+                            live_table.replace(f"{project_id}.", "") in write_to_v2,
                         )
                         for live_table in live_tables
                         for date in dates
@@ -492,4 +517,5 @@ def copy_deduplicate(
             (_copy_join_parts, stable_table, [query_job for _, query_job in group])
             for stable_table, group in groupby(results, key=lambda result: result[0])
         ]
+        # TODO: Copy v2 to v1
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)

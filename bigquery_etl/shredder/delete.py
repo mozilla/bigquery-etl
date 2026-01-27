@@ -1,6 +1,7 @@
 """Delete user data from long term storage."""
 
 import logging
+import re
 import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
@@ -16,6 +17,7 @@ from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import CopyJob, QueryJob
 
+from bigquery_etl.schema import generate_compatible_select_expression
 from ..format_sql.formatter import reformat
 from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
@@ -28,7 +30,6 @@ from .config import (
     find_experiment_analysis_targets,
     find_glean_targets,
     find_pioneer_targets,
-    unnest_and_remove_metrics,
 )
 
 NULL_PARTITION_ID = "__NULL__"
@@ -442,9 +443,19 @@ def delete_from_partition(
             else:
                 partition_condition = partition.condition
 
+            select_expression = (
+                "_target.*"
+                if not column_removal_backfill
+                else generate_compatible_select_expression(
+                    client,
+                    sql_table_id(target),
+                    re.sub("_v1$", "_v2", sql_table_id(target)),
+                )
+            )
+
             query = reformat(f"""
                 SELECT
-                  {"_target.*" if not column_removal_backfill else unnest_and_remove_metrics(client, sql_table_id(target))},
+                  {select_expression},
                 FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}

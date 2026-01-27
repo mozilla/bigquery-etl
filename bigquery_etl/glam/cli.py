@@ -37,8 +37,7 @@ def list_daily(project, dataset):
     """List the start and end dates for clients daily tables."""
     _check_root()
     client = bigquery.Client()
-    app_df = client.query(
-        rf"""
+    app_df = client.query(rf"""
         WITH
         extracted AS (
             SELECT
@@ -55,13 +54,11 @@ def list_daily(project, dataset):
         ORDER BY
             is_logical,
             app_id
-    """
-    ).to_dataframe()
+    """).to_dataframe()
 
     query = []
     for row in app_df.itertuples():
-        query += [
-            f"""
+        query += [f"""
             SELECT
                 "{row.app_id}" as app_id,
                 {row.is_logical} as is_logical,
@@ -69,8 +66,7 @@ def list_daily(project, dataset):
                 date(max(submission_date)) as latest
             FROM
                 `{project}`.{dataset}.{row.app_id}__view_clients_daily_scalar_aggregates_v1
-            """
-        ]
+            """]
 
     range_df = (
         client.query("\nUNION ALL\n".join(query))

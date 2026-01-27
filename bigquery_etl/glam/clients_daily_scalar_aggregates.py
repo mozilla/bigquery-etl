@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
+
 import argparse
 import sys
 from collections import defaultdict

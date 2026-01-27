@@ -1,5 +1,6 @@
 """bigquery-etl CLI metadata command."""
 
+import re
 from datetime import datetime
 from functools import partial
 from multiprocessing.pool import Pool
@@ -33,11 +34,9 @@ from ..dryrun import get_credentials
 from ..util import extract_from_query_path
 
 
-@click.group(
-    help="""
+@click.group(help="""
         Commands for managing bqetl metadata.
-        """
-)
+        """)
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
@@ -227,16 +226,38 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
 )
 @sql_dir_option
 @parallelism_option()
+@click.option(
+    "--skip-stable-datasets",
+    default=True,
+    type=bool,
+    help="Skip metadata publishing for tables in *_stable datasets which are managed by infra deploys.",
+)
 def publish(
-    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+    name: str,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    parallelism: int,
+    skip_stable_datasets: bool,
 ) -> None:
     """Publish Bigquery metadata."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
-    skip_deploy = ConfigLoader.get("metadata", "deploy", "skip", fallback=[])
 
-    if parallelism > 0:
+    # https://mozilla-hub.atlassian.net/browse/SVCSE-4108
+    if skip_stable_datasets:
+        table_metadata_files = [
+            metadata_file
+            for metadata_file in table_metadata_files
+            if re.fullmatch(
+                r".+/moz-fx-data-shared-prod/[a-z0-9_]+_stable/[a-z0-9_]+/metadata.yaml$",
+                str(metadata_file),
+                flags=re.IGNORECASE,
+            )
+            is None
+        ]
+
+    if parallelism > 1:
         credentials = get_credentials()
 
         with Pool(parallelism) as pool:
@@ -246,10 +267,7 @@ def publish(
             )
     else:
         for metadata_file in table_metadata_files:
-            if str(metadata_file) not in skip_deploy:
-                _publish_metadata(
-                    project_id, credentials=None, metadata_file=metadata_file
-                )
+            _publish_metadata(project_id, credentials=None, metadata_file=metadata_file)
 
 
 def _publish_metadata(project_id, credentials, metadata_file):
@@ -267,15 +285,13 @@ def _publish_metadata(project_id, credentials, metadata_file):
         print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@metadata.command(
-    help="""
+@metadata.command(help="""
     Deprecate BigQuery table by updating metadata.yaml file.
     Deletion date is by default 3 months from current date if not provided.
 
     Example:
      ./bqetl metadata deprecate ga_derived.downloads_with_attribution_v2 --deletion_date=2024-03-02
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -316,14 +332,12 @@ def deprecate(
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
 
 
-@metadata.command(
-    help="""
+@metadata.command(help="""
     Validate workgroup_access and default_table_workgroup_access configurations.
 
     Example:
      ./bqetl metadata validate-workgroups ga_derived.downloads_with_attribution_v2
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")

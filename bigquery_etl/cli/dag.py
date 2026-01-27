@@ -222,8 +222,7 @@ def create(
     click.echo(f"Added new DAG definition to {dags_config}")
 
 
-@dag.command(
-    help="""Generate Airflow DAGs from DAG definitions.
+@dag.command(help="""Generate Airflow DAGs from DAG definitions.
 
     Examples:
 
@@ -232,8 +231,7 @@ def create(
 
     # Generate a specific DAG
     ./bqetl dag generate bqetl_ssl_ratios
-    """
-)
+    """)
 @click.argument("name", required=False)
 @dags_config_option
 @sql_dir_option
@@ -257,8 +255,7 @@ def generate(name, dags_config, sql_dir, output_dir):
         click.echo("DAG generation complete.")
 
 
-@dag.command(
-    help="""Remove a DAG.
+@dag.command(help="""Remove a DAG.
     This will also remove the scheduling information from the queries that were scheduled
     as part of the DAG.
 
@@ -266,8 +263,7 @@ def generate(name, dags_config, sql_dir, output_dir):
 
     # Remove a specific DAG
     ./bqetl dag remove bqetl_vrbrowser
-    """
-)
+    """)
 @click.argument("name", required=False)
 @dags_config_option
 @sql_dir_option

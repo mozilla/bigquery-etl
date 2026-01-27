@@ -679,14 +679,14 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
-      - ctroy@mozilla.com
+      - cbeck@mozilla.com
+      - najiang@mozilla.com
       - wstuckey@mozilla.com
-      - rburwei@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: ctroy@mozilla.com
+    owner: najiang@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-09-20'
@@ -698,7 +698,12 @@ bqetl_search_terms_daily:
     a 2-day retention period, so errors fairly quickly become unrecoverable
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
-    outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
+    outside of Airflow.
+
+    Tables that depend on merino_log_sanitized_v3 use date_partition_offset: -1 to
+    process data from 2 days ago, allowing time for the upstream Merino sanitization
+    job (~16 hours) to complete. This is a temporary measure until the sanitization
+    job is further optimized.
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_1
@@ -1972,24 +1977,6 @@ bqetl_default_browser_aggregates:
   tags:
     - impact/tier_3
 
-bqetl_dsktp_acqstn_fnnl:
-  description: |
-    This DAG builds the Desktop Acquisiton Funnel aggregate table
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2025-01-08"
-    retries: 2
-    retry_delay: 5m
-  tags:
-    - impact/tier_2
-  repo: bigquery-etl
-  schedule_interval: 30 11 * * *
-
 bqetl_ltv:
   default_args:
     depends_on_past: false
@@ -2557,3 +2544,44 @@ bqetl_newtab_hourly:
   catchup: true
   tags:
     - impact/tier_2
+
+bqetl_firefox_ios_choice_screen:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - ebrandi@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 0
+    retry_delay: 10m
+    start_date: '2026-01-10'
+  description: Job to pull user choice screen info from Apple.
+  repo: bigquery-etl
+  schedule_interval: daily
+  catchup: true
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_claude_api:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-01-21'
+  description: |
+    Pulls daily API usage data from the Anthropic Admin API.
+    Tracks token consumption by model and API key.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3

@@ -208,15 +208,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
-            reformat(
-                f"""CREATE OR REPLACE VIEW
+        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
-            )
-            + "\n"
-        )
+                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -232,15 +227,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"
@@ -250,7 +240,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+            time_partitioning=PartitionMetadata(
+                field="", type=PartitionType.DAY, require_partition_filter=True
+            ),
             clustering=ClusteringMetadata(fields=[]),
         ),
         require_column_descriptions=True,
@@ -1643,7 +1635,7 @@ def initialize(
                         update,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         update_downstream=False,
                         is_init=True,
                     )
@@ -1652,7 +1644,7 @@ def initialize(
                         deploy,
                         name=full_table_id,
                         sql_dir=sql_dir,
-                        project_id=project,
+                        project_ids=[project],
                         force=True,
                         respect_dryrun_skip=False,
                     )
@@ -1897,6 +1889,10 @@ def schema():
 
     # Update schema including downstream dependencies (requires GCP)
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+
+    # Skip updating schemas for queries that already have schema.yaml files
+    # (except those with schema.allow_field_addition=true in metadata.yaml)
+    ./bqetl query schema update '*' --skip-existing
     """,
 )
 @click.argument("name", nargs=-1)
@@ -1946,7 +1942,8 @@ def schema():
 @click.option(
     "--skip_existing",
     "--skip-existing",
-    help="Skip updating schemas for existing schema files.",
+    help="Skip updating schemas for existing schema files. "
+    "Queries with schema.allow_field_addition=true in metadata.yaml will still be updated.",
     is_flag=True,
     default=False,
 )
@@ -1977,13 +1974,36 @@ def update(
         query_files += paths_matching_name_pattern(
             name, sql_dir, project_id, files=["query.sql"]
         )
+
+    # Check if query metadata has allow_field_addition flag or ALLOW_FIELD_ADDITION argument
+    def has_allow_field_addition(query_file):
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            # Check schema metadata field
+            if metadata.schema and metadata.schema.allow_field_addition:
+                return True
+            # Check scheduling arguments
+            if metadata.scheduling:
+                arguments = metadata.scheduling.get("arguments", [])
+                return any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                )
+        except Exception:
+            pass
+        return False
+
     # skip updating schemas that are not to be deployed
     query_files = [
         query_file
         for query_file in query_files
         if str(query_file)
         not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
-        and (not skip_existing or (query_file.parent / SCHEMA_FILE).exists() is False)
+        and (
+            not skip_existing
+            or (query_file.parent / SCHEMA_FILE).exists() is False
+            or has_allow_field_addition(query_file)
+        )
     ]
 
     if len(query_files) == 0:

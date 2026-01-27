@@ -242,8 +242,7 @@ class TestRunQuery:
     def test_extract_and_run_temp_udfs(self, mock_client):
         mock_client.return_value = mock_client
 
-        udf_sql = dedent(
-            """
+        udf_sql = dedent("""
             CREATE TEMP FUNCTION f1(arr ARRAY<INT64>) AS (
               (SELECT SUM(a) FROM UNNEST(arr) AS a)
             );
@@ -269,16 +268,13 @@ class TestRunQuery:
             CREATE TEMP FUNCTION f5()
             RETURNS STRING LANGUAGE js
             AS "return 'abc'";
-            """
-        )
-        query_sql = dedent(
-            """
+            """)
+        query_sql = dedent("""
             WITH abc AS (
               SELECT * FROM UNNEST([1, 2, 3]) AS n
             )
             SELECT "CREATE TEMP FUNCTION f3() AS (1);", * FROM abc
-            """
-        )
+            """)
         sql = f"{udf_sql}{query_sql}"
 
         updated_query = extract_and_run_temp_udfs(

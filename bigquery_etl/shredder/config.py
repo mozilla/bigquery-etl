@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 """Meta data about tables and ids for self serve deletion."""
+
 import functools
 import logging
 import re

@@ -124,15 +124,10 @@ class View:
         if not base_table:
             base_table = f"{project}.{dataset}_derived.{name}_v1"
 
-        path.write_text(
-            reformat(
-                f"""
+        path.write_text(reformat(f"""
                 CREATE OR REPLACE VIEW `{project}.{dataset}.{name}` AS
                 SELECT * FROM `{base_table}`
-                """
-            )
-            + "\n"
-        )
+                """) + "\n")
         return cls(path, name, dataset, project)
 
     def skip_validation(self):
@@ -210,16 +205,14 @@ class View:
                 if self.partition_column
                 else "FALSE"
             )
-            schema_query = dedent(
-                f"""
+            schema_query = dedent(f"""
                 WITH view_query AS (
                     {CREATE_VIEW_PATTERN.sub("", self.content)}
                 )
                 SELECT *
                 FROM view_query
                 WHERE {schema_query_filter}
-                """
-            )
+                """)
             return Schema.from_query_file(
                 Path(self.path), content=schema_query, id_token=self.id_token
             )

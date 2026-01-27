@@ -208,15 +208,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
-            reformat(
-                f"""CREATE OR REPLACE VIEW
+        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
-            )
-            + "\n"
-        )
+                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -232,15 +227,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"

@@ -374,8 +374,7 @@ def delete_from_partition(
             return expr
 
         if use_dml:
-            field_condition = " OR ".join(
-                f"""
+            field_condition = " OR ".join(f"""
                 {normalized_expr(field)} IN (
                   SELECT
                     {normalized_expr(source.field)}
@@ -384,9 +383,7 @@ def delete_from_partition(
                   WHERE
                     {" AND ".join((source_condition, *source.conditions))}
                 )
-                """
-                for field, source in zip(target.fields, sources)
-            )
+                """ for field, source in zip(target.fields, sources))
 
             # Temporary workaround for fxa_id nested in event extras in relay_backend_stable.events_v1
             # We'll be able to remove this once fxa_id is migrated to string metric
@@ -395,15 +392,13 @@ def delete_from_partition(
                 field_condition, target, sources, source_condition
             )
 
-            query = reformat(
-                f"""
+            query = reformat(f"""
                 DELETE
                   `{sql_table_id(target)}`
                 WHERE
                   ({field_condition})
                   AND ({partition.condition})
-                """
-            )
+                """)
         else:
             field_joins = "".join(
                 (
@@ -447,8 +442,7 @@ def delete_from_partition(
             else:
                 partition_condition = partition.condition
 
-            query = reformat(
-                f"""
+            query = reformat(f"""
                 SELECT
                   {"_target.*" if not column_removal_backfill else unnest_and_remove_metrics(client, sql_table_id(target))},
                 FROM
@@ -458,8 +452,7 @@ def delete_from_partition(
                   {f"({field_conditions}) AND " if field_conditions else ""}
                   ({partition_condition})
                   {f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}" if sample_id_range is not None else ""}
-                """
-            )
+                """)
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
         return client.query(query, job_config=job_config)
@@ -618,14 +611,12 @@ def list_partitions(
             [
                 get_partition(table, partition_expr, end_date, row["partition_id"])
                 for row in client.query(
-                    dedent(
-                        f"""
+                    dedent(f"""
                         SELECT
                           partition_id
                         FROM
                           [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
-                        """
-                    ).strip(),
+                        """).strip(),
                     bigquery.QueryJobConfig(use_legacy_sql=True),
                 ).result()
             ]
@@ -779,10 +770,7 @@ def main():
                 )
                 state_table_exists = True
         if state_table_exists:
-            states = dict(
-                client.query(
-                    reformat(
-                        f"""
+            states = dict(client.query(reformat(f"""
                         SELECT
                           task_id,
                           job_id,
@@ -792,10 +780,7 @@ def main():
                           end_date = '{args.end_date}'
                         ORDER BY
                           job_created
-                        """
-                    )
-                ).result()
-            )
+                        """)).result())
 
     if args.environment == "telemetry":
         with ThreadPool(6) as pool:
@@ -894,16 +879,14 @@ def main():
                         client.query,
                         [
                             (
-                                reformat(
-                                    f"""
+                                reformat(f"""
                                     SELECT
                                       {source.field}
                                     FROM
                                       `{sql_table_id(source)}`
                                     WHERE
                                       {source_condition}
-                                    """
-                                ),
+                                    """),
                                 bigquery.QueryJobConfig(dry_run=True),
                             )
                             for source in sources

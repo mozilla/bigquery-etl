@@ -425,8 +425,7 @@ def test_delete_from_partition_with_column_removal_true():
 
     assert mock_client.query.call_count == 1
 
-    expected_query = reformat(
-        """
+    expected_query = reformat("""
     SELECT
       document_id,
       STRUCT(
@@ -440,8 +439,7 @@ def test_delete_from_partition_with_column_removal_true():
         STRUCT(metrics.quantity.quantity1) AS `quantity`
       ) AS `metrics`,
     FROM `test_project.firefox.metrics_v1`
-    """
-    )
+    """)
 
     assert mock_client.query.call_args.args[0].startswith(reformat(expected_query))
     assert (

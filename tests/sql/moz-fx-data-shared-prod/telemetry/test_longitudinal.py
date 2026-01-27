@@ -16,8 +16,7 @@ def test_basic():
             "20190401",
         ]
     ).decode("ascii")
-    assert results == textwrap.dedent(
-        """
+    assert results == textwrap.dedent("""
       WITH aggregated AS (
         SELECT
          ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date_s3) AS _n,
@@ -35,8 +34,7 @@ def test_basic():
       WHERE
         _n = 1
 
-        """  # noqa: E501
-    )
+        """)  # noqa: E501
 
 
 def test_everything():
@@ -62,8 +60,7 @@ def test_everything():
             "10000",
         ]
     ).decode("ascii")
-    assert results == textwrap.dedent(
-        """
+    assert results == textwrap.dedent("""
       WITH aggregated AS (
         SELECT
          ROW_NUMBER() OVER (PARTITION BY os ORDER BY submission_date, app_name) AS _n,
@@ -82,8 +79,7 @@ def test_everything():
       WHERE
         _n = 1
 
-        """  # noqa: E501
-    )
+        """)  # noqa: E501
 
 
 def test_column_conflict():

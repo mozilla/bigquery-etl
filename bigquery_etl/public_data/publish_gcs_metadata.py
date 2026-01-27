@@ -59,7 +59,7 @@ class GcsTableMetadata:
         self.files_path = self.blobs[0].name.split("files")[0] + "files"
         self.files_uri = endpoint + self.files_path
 
-        (self.dataset, self.table, self.version) = dataset_table_version_from_gcs_blob(
+        self.dataset, self.table, self.version = dataset_table_version_from_gcs_blob(
             self.blobs[0]
         )
         self.metadata = Metadata.of_table(

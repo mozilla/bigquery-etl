@@ -235,6 +235,7 @@ def _get_query_job_configs(
         return [
             (
                 sql,
+                live_table,
                 stable_table,
                 bigquery.QueryJobConfig(
                     destination=stable_table,
@@ -257,7 +258,9 @@ def _get_query_job_configs(
         ]
 
 
-def _run_deduplication_query(client, sql, stable_table, job_config, num_retries):
+def _run_deduplication_query(
+    client, sql, live_table, stable_table, job_config, num_retries
+):
     query_job = client.query(sql, job_config, job_id_prefix="copy_dedup_")
     if not query_job.dry_run:
         try:
@@ -267,17 +270,20 @@ def _run_deduplication_query(client, sql, stable_table, job_config, num_retries)
                 raise
             logging.warn("Encountered bad request, retrying: ", e)
             return _run_deduplication_query(
-                client, sql, stable_table, job_config, num_retries - 1
+                client, sql, live_table, stable_table, job_config, num_retries - 1
             )
     logging.info(
         f"Completed query job {query_job.job_id} for {stable_table}"
         f" with params: {job_config.query_parameters}"
     )
-    return stable_table, query_job
+    return live_table, stable_table, query_job
 
 
-def _copy_join_parts(client, stable_table, query_jobs):
+def _copy_join_parts(client, stable_table, query_jobs, write_to_v2=False):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
+
+    v1_table_id = stable_table.replace('_v2$', '_v1$')
+
     if query_jobs[0].dry_run:
         api_repr = json.dumps(query_jobs[0].to_api_repr())
         if len(query_jobs) > 1:
@@ -285,6 +291,10 @@ def _copy_join_parts(client, stable_table, query_jobs):
             logging.info(f"Would copy {len(query_jobs)} results to {stable_table}")
         else:
             logging.info(f"Would process {total_bytes} bytes: {api_repr}")
+        if write_to_v2:
+            logging.info(
+                f"Would copy from {stable_table} to {v1_table_id}"
+            )
     else:
         total_slot_hours = round(
             sum(query.slot_millis for query in query_jobs) / 1000 / 60 / 60, 3
@@ -307,6 +317,16 @@ def _copy_join_parts(client, stable_table, query_jobs):
             for job in query_jobs:
                 client.delete_table(job.destination)
             logging.info(f"Deleted {len(query_jobs)} temporary tables")
+        if write_to_v2:
+            v2_copy_job = client.copy_table(
+                stable_table,
+                v1_table_id,
+                job_config=bigquery.CopyJobConfig(
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+                ),
+            )
+            v2_copy_job.result()
+            logging.info(f"Copied {stable_table} to {v1_table_id}")
 
 
 def _contains_glob(patterns):
@@ -514,8 +534,15 @@ def copy_deduplicate(
         # preserve query_jobs order so results stay sorted by stable_table for groupby
         results = pool.starmap(client_q.with_client, query_jobs, chunksize=1)
         copy_jobs = [
-            (_copy_join_parts, stable_table, [query_job for _, query_job in group])
-            for stable_table, group in groupby(results, key=lambda result: result[0])
+            (
+                _copy_join_parts,
+                stable_table,
+                [query_job for _, _, query_job in group],
+                # remove project and partition id, replace live
+                live_table.replace(f"{project_id}.", "") in write_to_v2,
+            )
+            for (live_table, stable_table), group in groupby(
+                results, key=lambda result: result[:2]
+            )
         ]
-        # TODO: Copy v2 to v1
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)

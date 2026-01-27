@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner
+from click.utils import strip_ansi
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
@@ -308,7 +309,7 @@ class TestView:
             assert result.exit_code != 0
             assert (
                 "Cannot use both --skip-authorized and --authorized-only"
-                in result.output
+                in strip_ansi(result.output)
             )
 
     def test_clean_authorized_only_mutually_exclusive(self, runner):
@@ -328,5 +329,5 @@ class TestView:
                 assert result.exit_code != 0
                 assert (
                     "Cannot use both --skip-authorized and --authorized-only"
-                    in result.output
+                    in strip_ansi(result.output)
                 )

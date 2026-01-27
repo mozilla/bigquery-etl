@@ -215,6 +215,87 @@ class TestDependencyGraph:
             in graph["test-project.test_dataset.view_layer2"]
         )
 
+    def test_query_with_derived_from_ignores_self_reference(self, tmp_path):
+        """Test that queries with derived_from don't have circular dependencies on themselves."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/incremental_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text(
+            "SELECT * FROM `test-project.test_dataset.incremental_table_v1`\n"
+            "UNION ALL\n"
+            "SELECT * FROM new_data"
+        )
+        (table_dir / "metadata.yaml").write_text(
+            "friendly_name: Incremental Table\n"
+            "schema:\n"
+            "  derived_from:\n"
+            "    - table:\n"
+            "        - test-project\n"
+            "        - test_dataset\n"
+            "        - base_table_v1"
+        )
+
+        artifacts = {
+            "test-project.test_dataset.incremental_table_v1": (
+                table_dir / "query.sql",
+                "table",
+            ),
+        }
+
+        graph = _build_dependency_graph(artifacts)
+
+        assert len(graph["test-project.test_dataset.incremental_table_v1"]) == 0
+
+    def test_query_with_derived_from_depends_on_parent(self, tmp_path):
+        """Test that queries with derived_from depend on their parent queries."""
+        base_table_dir = tmp_path / "sql/test-project/test_dataset/base_table_v1"
+        base_table_dir.mkdir(parents=True)
+        (base_table_dir / "query.sql").write_text("SELECT 1 as id, 'test' as name")
+        (base_table_dir / "schema.yaml").write_text(
+            "fields:\n"
+            "- name: id\n"
+            "  type: INTEGER\n"
+            "- name: name\n"
+            "  type: STRING"
+        )
+
+        derived_table_dir = (
+            tmp_path / "sql/test-project/test_dataset/incremental_table_v1"
+        )
+        derived_table_dir.mkdir(parents=True)
+        (derived_table_dir / "query.sql").write_text(
+            "SELECT * FROM `test-project.test_dataset.incremental_table_v1`\n"
+            "UNION ALL\n"
+            "SELECT * FROM new_data"
+        )
+        (derived_table_dir / "metadata.yaml").write_text(
+            "friendly_name: Incremental Table\n"
+            "schema:\n"
+            "  derived_from:\n"
+            "    - table:\n"
+            "        - test-project\n"
+            "        - test_dataset\n"
+            "        - base_table_v1"
+        )
+
+        artifacts = {
+            "test-project.test_dataset.base_table_v1": (
+                base_table_dir / "query.sql",
+                "table",
+            ),
+            "test-project.test_dataset.incremental_table_v1": (
+                derived_table_dir / "query.sql",
+                "table",
+            ),
+        }
+
+        graph = _build_dependency_graph(artifacts)
+
+        assert (
+            "test-project.test_dataset.base_table_v1"
+            in graph["test-project.test_dataset.incremental_table_v1"]
+        )
+        assert len(graph["test-project.test_dataset.base_table_v1"]) == 0
+
 
 class TestSchemaUpdate:
     def test_needs_schema_update_missing_schema(self, tmp_path):

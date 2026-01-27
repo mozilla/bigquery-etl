@@ -345,6 +345,10 @@ def _build_dependency_graph(
     deploying the schema structure (not running the query), so circular
     dependencies in the query don't matter.
 
+    For tables with derived_from in metadata:
+    - Self-references are excluded (schema derived from parent, not from query)
+    - Parent queries are added as dependencies (must be deployed first)
+
     Returns a dict mapping artifact_id to set of dependencies.
     """
     graph = {}
@@ -373,6 +377,20 @@ def _build_dependency_graph(
             for ref in references:
                 if ref in artifacts:
                     dependencies.add(ref)
+
+            try:
+                metadata = Metadata.of_query_file(file_path)
+                if metadata and metadata.schema and metadata.schema.derived_from:
+                    # Remove self-references to avoid false circular dependencies
+                    dependencies.discard(artifact_id)
+
+                    # Add parent queries as dependencies
+                    for derived_from in metadata.schema.derived_from:
+                        parent_table_id = ".".join(derived_from.table)
+                        if parent_table_id in artifacts:
+                            dependencies.add(parent_table_id)
+            except Exception:
+                pass
 
             graph[artifact_id] = dependencies
 

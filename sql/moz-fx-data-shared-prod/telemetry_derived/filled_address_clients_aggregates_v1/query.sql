@@ -16,7 +16,7 @@ WHERE
   AND event_method = 'filled'
   AND normalized_channel = "release"
   AND browser_version_info.major_version > 110
-  AND sample_id = 0
+  AND sample_id < 10
 GROUP BY
   submission_date,
   country

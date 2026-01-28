@@ -17,7 +17,7 @@ WHERE
   AND normalized_channel = 'release'
   AND normalized_app_name = 'Firefox'
   AND DATE(submission_timestamp) = @submission_date
-  AND sample_id = 0
+  AND sample_id < 10
 GROUP BY
   submission_date,
   country

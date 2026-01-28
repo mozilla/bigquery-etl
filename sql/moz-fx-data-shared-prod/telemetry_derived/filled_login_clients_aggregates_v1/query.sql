@@ -5,8 +5,8 @@ SELECT
       THEN normalized_country_code
     ELSE 'OTHER'
   END AS country,
-  10 * COUNT(DISTINCT m.client_info.client_id) AS clients,
-  10 * SUM(p.value) AS fill_counts
+  100 * COUNT(DISTINCT m.client_info.client_id) AS clients,
+  100 * SUM(p.value) AS fill_counts
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 CROSS JOIN
@@ -17,7 +17,7 @@ WHERE
   AND normalized_channel = 'release'
   AND normalized_app_name = 'Firefox'
   AND DATE(submission_timestamp) = @submission_date
-  AND sample_id < 10
+  AND sample_id = 0
 GROUP BY
   submission_date,
   country

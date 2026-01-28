@@ -98,6 +98,3 @@ fields:
 - name: cumulative_migration_count
   type: INTEGER
   mode: NULLABLE
-- mode: NULLABLE
-  name: is_migrated_count
-  type: INTEGER

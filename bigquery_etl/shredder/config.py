@@ -2,7 +2,6 @@
 
 """Meta data about tables and ids for self serve deletion."""
 
-import functools
 import logging
 import re
 from collections import defaultdict
@@ -17,7 +16,6 @@ from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 
-from ..schema import Schema
 from ..util.bigquery_id import qualified_table_id
 
 MOZDATA = "mozdata"
@@ -1225,18 +1223,3 @@ def find_pioneer_targets(
             for table in _get_tables_with_pioneer_id(dataset)
         },
     }
-
-
-@functools.cache
-def unnest_and_remove_metrics(client: bigquery.Client, target_table_id: str):
-    """Unnest metrics struct, removing unused dist fields and blocklisted metrics.
-
-    Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
-    """
-    v1_table = client.get_table(target_table_id)
-    v2_table = client.get_table(re.sub("_v1$", "_v2", target_table_id))
-
-    v1_schema = Schema.from_bigquery_schema(v1_table.schema)
-    v2_schema = Schema.from_bigquery_schema(v2_table.schema)
-
-    return v1_schema.generate_compatible_select_expression(v2_schema)

@@ -1,3 +1,6 @@
+import unittest.mock
+from datetime import date
+from functools import partial
 from unittest.mock import Mock, patch
 
 import pytest
@@ -7,7 +10,13 @@ from google.cloud import bigquery
 from bigquery_etl.cli.query import (  # noqa: F401  # keeps circular import from exploding
     run,
 )
-from bigquery_etl.copy_deduplicate import _has_field_path, _select_geo, copy_deduplicate
+from bigquery_etl.copy_deduplicate import (
+    _copy_join_parts,
+    _get_query_job_configs,
+    _has_field_path,
+    _select_geo,
+    copy_deduplicate,
+)
 
 PROJECT_ID = "moz-fx-data-shared-prod"
 
@@ -124,13 +133,13 @@ class TestCopyDeduplicate:
                 captured_calls = []
 
                 def _run_dedup_side_effect(
-                    client, sql, stable_table, job_config, num_retries
+                    client, sql, live_table, stable_table, job_config, num_retries
                 ):
                     captured_calls.append(
-                        (client, sql, stable_table, job_config, num_retries)
+                        (client, sql, live_table, stable_table, job_config, num_retries)
                     )
                     fake_job = Mock()
-                    return stable_table, fake_job
+                    return live_table, stable_table, fake_job
 
                 run_dedup_side_effect = _run_dedup_side_effect
 
@@ -186,37 +195,41 @@ class TestCopyDeduplicate:
         partition = submission_date.replace("-", "")
 
         # 1) org_mozilla_firefox_live.baseline_v1: should include geo REPLACE clause
-        _, sql_arg, stable_table_arg, _, _ = captured_calls[0]
+        _, sql_arg, live_table_arg, stable_table_arg, _, _ = captured_calls[0]
         assert "REPLACE (" in sql_arg
         assert "CAST(NULL AS STRING) AS city" in sql_arg
         assert (
             f"{mock_list_live_tables.return_value[0].replace('_live', '_stable')}${partition}"
             == stable_table_arg
         )
+        assert mock_list_live_tables.return_value[0] == live_table_arg
 
         # 2) newtab_v1: should be skipped by skip_tables
-        _, sql_arg, stable_table_arg, _, _ = captured_calls[1]
+        _, sql_arg, live_table_arg, stable_table_arg, _, _ = captured_calls[1]
         assert "REPLACE (" not in sql_arg
         assert (
             f"{mock_list_live_tables.return_value[1].replace('_live', '_stable')}${partition}"
             == stable_table_arg
         )
+        assert mock_list_live_tables.return_value[1] == live_table_arg
 
         # 3) ads_backend_live: should be skipped by skip_apps
-        _, sql_arg, stable_table_arg, _, _ = captured_calls[2]
+        _, sql_arg, live_table_arg, stable_table_arg, _, _ = captured_calls[2]
         assert "REPLACE (" not in sql_arg
         assert (
             f"{mock_list_live_tables.return_value[2].replace('_live', '_stable')}${partition}"
             == stable_table_arg
         )
+        assert mock_list_live_tables.return_value[2] == live_table_arg
 
         # 4) telemetry_live: not in GLEAN_MAPPING
-        _, sql_arg, stable_table_arg, _, _ = captured_calls[3]
+        _, sql_arg, live_table_arg, stable_table_arg, _, _ = captured_calls[3]
         assert "REPLACE (" not in sql_arg
         assert (
             f"{mock_list_live_tables.return_value[3].replace('_live', '_stable')}${partition}"
             == stable_table_arg
         )
+        assert mock_list_live_tables.return_value[3] == live_table_arg
 
     def test_has_field_path_top_level_and_nested(self):
         # top-level field
@@ -451,3 +464,104 @@ class TestCopyDeduplicate:
             invalid_geo_deprecation_schema, ["metadata", "geo", "city"]
         )
         assert sql == ""
+
+    def test_get_query_job_configs(self):
+        mock_client = Mock(spec=bigquery.Client)
+
+        def get_table(table_name):
+            base_schema = [
+                bigquery.SchemaField(
+                    "metrics",
+                    "RECORD",
+                    fields=[
+                        bigquery.SchemaField(
+                            "string",
+                            "RECORD",
+                            fields=(
+                                [bigquery.SchemaField("metric1", "STRING")]
+                                + (
+                                    [bigquery.SchemaField("metric2", "STRING")]
+                                    if table_name.split("$")[0].endswith("_v1")
+                                    else []
+                                )
+                            ),
+                        )
+                    ],
+                ),
+            ]
+            mock_table = Mock(spec=bigquery.Table)
+            mock_table.schema = base_schema
+            return mock_table
+
+        mock_client.get_table.side_effect = get_table
+
+        get_query_job_configs_partial = partial(
+            _get_query_job_configs,
+            client=mock_client,
+            live_table="moz-fx-data-shared-prod.firefox_desktop_live.metrics_v1",
+            date=date(2026, 1, 1),
+            dry_run=False,
+            slices=1,
+            priority="INTERACTIVE",
+            preceding_days=0,
+            num_retries=0,
+            temp_dataset="",
+        )
+
+        true_job_config = get_query_job_configs_partial(write_to_v2=True)
+
+        # query string
+        assert "metrics.string.metric1" in true_job_config[0][0]
+        assert "metrics.string.metric2" not in true_job_config[0][0]
+        # stable table
+        assert (
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101"
+            == str(true_job_config[0][2])
+        )
+        # QueryJobConfig
+        assert (
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101"
+            == str(true_job_config[0][3].destination)
+        )
+
+        false_job_config = get_query_job_configs_partial(write_to_v2=False)
+
+        # query string
+        assert "metrics.string.metric1" not in false_job_config[0][0]
+        assert "metrics.string.metric2" not in false_job_config[0][0]
+        # stable table
+        assert (
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101"
+            == str(false_job_config[0][2])
+        )
+        # QueryJobConfig
+        assert (
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101"
+            == str(false_job_config[0][3].destination)
+        )
+
+    def test_copy_join_parts_write_to_v2_true(self):
+        mock_client = Mock(spec=bigquery.Client)
+        _copy_join_parts(
+            client=mock_client,
+            stable_table="moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101",
+            query_jobs=[Mock(total_bytes_processed=1, dry_run=False, slot_millis=1)],
+            write_to_v2=True,
+        )
+
+        mock_client.copy_table.assert_called_once_with(
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v2$20260101",
+            "moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101",
+            job_config=unittest.mock.ANY,
+        )
+
+    def test_copy_join_parts_write_to_v2_false(self):
+        mock_client = Mock(spec=bigquery.Client)
+        _copy_join_parts(
+            client=mock_client,
+            stable_table="moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1$20260101",
+            query_jobs=[Mock(total_bytes_processed=1, dry_run=False, slot_millis=1)],
+            write_to_v2=False,
+        )
+
+        assert mock_client.copy_table.call_count == 0

@@ -428,15 +428,31 @@ def test_delete_from_partition_with_column_removal_true():
     expected_query = reformat("""
     SELECT
       document_id,
-      STRUCT(
+      IF(
+        metrics IS NULL,
+        NULL,
         STRUCT(
-          STRUCT(
-            metrics.timing_distribution.timing_dist_1.sum,
-            metrics.timing_distribution.timing_dist_1.values
-          ) AS `timing_dist_1`
-        ) AS `timing_distribution`,
-        metrics.string,
-        STRUCT(metrics.quantity.quantity1) AS `quantity`
+          IF(
+            metrics.timing_distribution IS NULL,
+            NULL,
+            STRUCT(
+              IF(
+                metrics.timing_distribution.timing_dist_1 IS NULL,
+                NULL,
+                STRUCT(
+                  metrics.timing_distribution.timing_dist_1.sum,
+                  metrics.timing_distribution.timing_dist_1.values
+                )
+              ) AS `timing_dist_1`
+            )
+          ) AS `timing_distribution`,
+          metrics.string,
+          IF(
+            metrics.quantity IS NULL,
+            NULL,
+            STRUCT(metrics.quantity.quantity1)
+          ) AS `quantity`
+        )
       ) AS `metrics`,
     FROM `test_project.firefox.metrics_v1`
     """)

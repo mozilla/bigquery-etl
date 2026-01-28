@@ -5,8 +5,8 @@ SELECT
       THEN country
     ELSE 'OTHER'
   END AS country,
-  10 * COUNT(DISTINCT client_id) AS clients,
-  10 * COUNT(*) AS fill_counts
+  100 * COUNT(DISTINCT client_id) AS clients,
+  100 * COUNT(*) AS fill_counts
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE

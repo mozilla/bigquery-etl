@@ -1,0 +1,94 @@
+name: Setup PR Validations
+
+on:
+  pull_request:
+    branches:
+
+permissions:
+  contents: read
+
+jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      validate_bqetl: ${{ steps.bqetl_files.outputs.any_changed }}
+      validate_sql: ${{ steps.sql_files.outputs.any_changed }}
+      validate_routines: ${{ steps.routines_files.outputs.any_changed }}
+      trigger_sql_generation: ${{ steps.sql_gen_files.outputs.any_changed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Get changed bqetl files
+        id: bqetl_files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            requirements.txt
+            bigquery_etl/**
+            tests/**
+            script/bqetl
+            script/entrypoint
+            .circleci/**
+
+      - name: Get changed sql files
+        id: sql_files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            requirements.txt
+            bigquery_etl/query_scheduling/**
+            sql/**
+            sql_generators/**
+            tests/sql/**
+            bqetl_project.yaml
+            dags.yaml
+            .circleci/**
+
+      - name: Get changed routines files
+        id: routines_files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            requirements.txt
+            bigquery_etl/routine/**
+            sql/mozfun/**
+            sql/moz-fx-data-shared-prod/udf/**
+            sql/moz-fx-data-shared-prod/udf_js/**
+            bqetl_project.yaml
+            .circleci/**
+
+      - name: Get changed sql-generation files
+        id: sql_gen_files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            requirements.txt
+            bqetl_project.yaml
+
+  validate-bqetl:
+    needs: filter
+    if: needs.filter.outputs.validate_bqetl == 'true'
+    uses: ./.github/workflows/validate-bqetl.yml
+    secrets: inherit
+
+  validate-sql:
+    needs: filter
+    if: needs.filter.outputs.validate_sql == 'true'
+    uses: ./.github/workflows/validate-sql.yml
+    secrets: inherit
+
+  validate-routines:
+    needs: filter
+    if: needs.filter.outputs.validate_routines == 'true'
+    uses: ./.github/workflows/validate-routines.yml
+    secrets: inherit
+
+  trigger-sql-generation:
+    needs: filter
+    if: needs.filter.outputs.trigger_sql_generation == 'true'
+    uses: ./.github/workflows/trigger-sql-generation.yml
+    secrets: inherit

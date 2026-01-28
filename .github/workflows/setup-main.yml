@@ -1,0 +1,10 @@
+name: Main Branch Workflow
+on:
+  push:
+    branches:
+
+jobs:
+  main-logic:
+    uses: ./.github/workflows/workflows.yml
+    with:
+      deploy: true

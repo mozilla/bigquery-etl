@@ -14,7 +14,7 @@ fields:
   - mode: NULLABLE
     name: data_source
     type: STRING
-    description: "Describes whether a row is from the glean_desktop, legacy_desktop, or mobile_desktop source tables."
+    description: "Describes whether a row is from the glean_desktop, legacy_desktop, or glean_mobile source tables."
   - mode: NULLABLE
     name: target_date
     type: STRING
@@ -31,10 +31,6 @@ fields:
     name: app_name
     type: STRING
     description: "One of: firefox_ios, focus_ios, fenix_android, focus_android, other_mobile, desktop, ALL MOBILE (aggregation), ALL (aggregation)."
-  - mode: NULLABLE
-    name: app_category
-    type: STRING
-    description: "Convenience category, one of Mobile, Desktop, ALL"
   - mode: NULLABLE
     name: segment
     type: STRING

@@ -523,6 +523,108 @@ def test_generate_compatible_select_expression():
     assert reformat(select_expr) == reformat(expected_expr)
 
 
+def test_generate_compatible_select_expression_match_column_order_false():
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_1", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_3", "type": "DATE"},
+                ],
+            },
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_3", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_1", "type": "DATE"},
+                ],
+            },
+        ]
+    }
+    expected_expr = "record"
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False, match_column_order=False
+    )
+    assert reformat(select_expr) == reformat(expected_expr)
+
+
+def test_generate_compatible_select_expression_retain_null_structs():
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_1", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                ],
+            },
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "value", "type": "STRING"},
+                    {"name": "key", "type": "STRING"},
+                ],
+            },
+            {"name": "string", "type": "STRING"},
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_1", "type": "DATE"},
+                ],
+            },
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "value", "type": "STRING"},
+                    {"name": "key", "type": "STRING"},
+                ],
+            },
+            {"name": "string", "type": "STRING"},
+        ]
+    }
+    expected_expr = """
+    IF(
+        record IS NULL,
+        NULL,
+        STRUCT(record.nested_2, record.nested_1)
+    ) AS `record`,
+    array_record,
+    string
+    """
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False, retain_null_structs=True
+    )
+    assert reformat(select_expr) == reformat(expected_expr)
+
+
 def test_generate_select_expression_unnest_struct():
     """unnest_struct argument should unnest records even when they match."""
     source_schema = {

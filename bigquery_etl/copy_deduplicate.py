@@ -27,6 +27,7 @@ from bigquery_etl.cli.utils import (
     table_matches_patterns,
 )
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
@@ -261,6 +262,7 @@ def _get_query_job_configs(
 def _run_deduplication_query(
     client, sql, live_table, stable_table, job_config, num_retries
 ):
+    sql = reformat(sql)
     query_job = client.query(sql, job_config, job_id_prefix="copy_dedup_")
     if not query_job.dry_run:
         try:

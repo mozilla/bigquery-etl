@@ -335,7 +335,8 @@ SELECT
         )
       ).*,
       CAST(NULL AS BOOL) AS has_refunds,
-      CAST(NULL AS BOOL) AS has_fraudulent_charges
+      CAST(NULL AS BOOL) AS has_fraudulent_charges,
+      CAST(NULL AS STRING) AS payment_method_id
   ) AS subscription
 FROM
   subscriptions_history AS history

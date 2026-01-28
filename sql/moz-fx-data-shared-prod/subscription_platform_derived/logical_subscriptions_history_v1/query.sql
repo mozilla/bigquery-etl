@@ -156,7 +156,8 @@ SELECT
         'Returning Customer'
       ),
       IF(subscription_starts.started_as_trial, ' Trial', '')
-    ) AS started_reason
+    ) AS started_reason,
+    history.subscription.payment_method_id
   ) AS subscription
 FROM
   history

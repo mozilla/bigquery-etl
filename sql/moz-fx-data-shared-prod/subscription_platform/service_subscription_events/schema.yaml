@@ -423,6 +423,11 @@ fields:
         * `New Customer Trial` - A new customer started their first subscription to this service and it is a trial plan.
         * `Returning Customer` - A customer started a subsequent subscription to this service.
         * `Returning Customer Trial` - A customer started a subsequent subscription to this service and it is a trial plan.
+  - name: payment_method_id
+    type: STRING
+    mode: NULLABLE
+    description: ID of a payment method that's attached to the customer, to be used as
+      the customer's default payment method for subscriptions and invoices.
 - name: old_subscription
   type: RECORD
   mode: NULLABLE
@@ -817,3 +822,8 @@ fields:
         * `New Customer Trial` - A new customer started their first subscription to this service and it is a trial plan.
         * `Returning Customer` - A customer started a subsequent subscription to this service.
         * `Returning Customer Trial` - A customer started a subsequent subscription to this service and it is a trial plan.
+  - name: payment_method_id
+    type: STRING
+    mode: NULLABLE
+    description: ID of a payment method that's attached to the customer, to be used as
+      the customer's default payment method for subscriptions and invoices.

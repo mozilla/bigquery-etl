@@ -97,6 +97,7 @@ SELECT
       LAX_BOOL(event_extra.origin_fixable) AS `origin_fixable`,
       LAX_BOOL(event_extra.overridden_by_third_party) AS `overridden_by_third_party`,
       LAX_BOOL(event_extra.poisoned) AS `poisoned`,
+      LAX_BOOL(event_extra.psi_available) AS `psi_available`,
       LAX_BOOL(event_extra.reader_mode) AS `reader_mode`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.saved) AS `saved`,

@@ -657,7 +657,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exited,
       metrics.labeled_counter.networking_http_3_congestion_event_reason,
       metrics.labeled_counter.media_capture_stream_usage,
-      metrics.labeled_counter.dns_trr_http3_0rtt_state
+      metrics.labeled_counter.dns_trr_http3_0rtt_state,
+      metrics.labeled_counter.oskeystore_dummy_storage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

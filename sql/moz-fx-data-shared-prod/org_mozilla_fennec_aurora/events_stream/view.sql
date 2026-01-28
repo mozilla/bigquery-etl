@@ -75,6 +75,7 @@ SELECT
       LAX_BOOL(event_extra.opt_in) AS `opt_in`,
       LAX_BOOL(event_extra.origin_fixable) AS `origin_fixable`,
       LAX_BOOL(event_extra.poisoned) AS `poisoned`,
+      LAX_BOOL(event_extra.psi_available) AS `psi_available`,
       LAX_BOOL(event_extra.referrer_is_fenix) AS `referrer_is_fenix`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.saved) AS `saved`,

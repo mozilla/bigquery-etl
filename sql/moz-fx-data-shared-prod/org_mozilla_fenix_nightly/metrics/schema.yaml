@@ -8940,6 +8940,17 @@ fields:
         was closed by necko
 
         '
+    - name: oskeystore_dummy_storage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Whether or not each step of the OSKeyStore self test succeeded.
   - name: string
     type: RECORD
     mode: NULLABLE

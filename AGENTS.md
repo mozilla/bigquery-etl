@@ -24,7 +24,7 @@ dags.yaml                              # Airflow DAG definitions
 - `pytest -k <test_name>` - run specific tests
 
 ### SQL Generation
-Generate SQL files with `./bqetl generate`. When running locally, add `--use_cloud_function=False` and `--output_dir=/tmp/sql_test_{suffix}` flags to speed up generation and avoid writing to `sql` directory directly. Omit or specify `{suffix}` as needed, for example if comparing different runs.
+Generate SQL files with `./bqetl generate`. When running locally, add `--output_dir=/tmp/sql_test_{suffix}` flag to avoid writing to `sql` directory directly. Omit or specify `{suffix}` as needed, for example if comparing different runs.
 
 ## Documentation
 - Creating queries: `docs/cookbooks/creating_a_derived_dataset.md`

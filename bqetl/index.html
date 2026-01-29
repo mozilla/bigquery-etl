@@ -3155,7 +3155,10 @@ Options:
 --override_retention_range_limit:<span class="w"> </span>True<span class="w"> </span>to<span class="w"> </span>allow<span class="w"> </span>running<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span>outside<span class="w"> </span>the<span class="w"> </span>retention<span class="w"> </span>policy<span class="w"> </span>limit.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Backfill for specific date range</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Backfill for specific date range</span>
 <span class="c1"># second comment line</span>
 ./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
@@ -3190,7 +3193,10 @@ Options:
 --dataset_id:<span class="w"> </span>Destination<span class="w"> </span>dataset<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>dataset<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Run a query by name</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Run a query by name</span>
 ./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1
 
 
@@ -3222,7 +3228,10 @@ Options:
 --schema_update_options:<span class="w"> </span>Optional<span class="w"> </span>options<span class="w"> </span><span class="k">for</span><span class="w"> </span>updating<span class="w"> </span>the<span class="w"> </span>schema.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Run a multipart query</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Run a multipart query</span>
 ./bqetl<span class="w"> </span>query<span class="w"> </span>run_multipart<span class="w"> </span>/path/to/query.sql
 </code></pre></div>
 <h4 id="validate"><code>validate</code></h4>
@@ -3275,7 +3284,9 @@ Options:
 --sampling_batch_size:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>sample<span class="w"> </span>IDs<span class="w"> </span>per<span class="w"> </span>initialization<span class="w"> </span>batch<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span><span class="m">0</span>–3,<span class="w"> </span><span class="m">4</span>–7,<span class="w"> </span>etc.<span class="o">)</span>.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>Examples:
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+<span class="w">   </span>Examples:
 <span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>init.sql<span class="w"> </span>files:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
 <span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>query.sql<span class="w"> </span>files<span class="w"> </span>and<span class="w"> </span>parallel<span class="w"> </span>run:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
 </code></pre></div>
@@ -3344,7 +3355,9 @@ Options:
 --parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6
 </code></pre></div>
 <h5 id="validate_1"><code>validate</code></h5>
 <p>Validate the query schema</p>
@@ -3604,7 +3617,10 @@ Options:
 --dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Publish all routines</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Publish all routines</span>
 ./bqetl<span class="w"> </span>routine<span class="w"> </span>publish
 
 
@@ -3705,6 +3721,9 @@ Options:
 --gcs_bucket:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
 --gcs_path:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
 --dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
 </code></pre></div>
 <h4 id="rename_1"><code>rename</code></h4>
 <p>Rename mozfun routine or mozfun routine dataset.
@@ -3851,7 +3870,11 @@ Options:
 --project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Initiate backfill entry for specific table</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+
+<span class="c1"># Initiate backfill entry for specific table</span>
 ./bqetl<span class="w"> </span>backfill<span class="w"> </span>initiate<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
 Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>
@@ -3868,7 +3891,11 @@ Options:
 --project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Complete backfill entry for specific table</span>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+
+<span class="c1"># Complete backfill entry for specific table</span>
 ./bqetl<span class="w"> </span>backfill<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
 Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>

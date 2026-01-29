@@ -7,6 +7,7 @@ import rich_click as click
 import yaml
 from google.cloud import bigquery
 
+from ..cli.utils import exit_if_running_under_coding_agent
 from .utils import get_schema, run
 
 ROOT = Path(__file__).parent.parent.parent
@@ -82,7 +83,11 @@ def list_daily(project, dataset):
 @click.argument("end-date", type=str)
 @click.option("--dataset", type=str, default="glam_etl_dev")
 def backfill_daily(app_id, start_date, end_date, dataset):
-    """Backfill the daily tables."""
+    """Backfill the daily tables.
+
+    Coding agents aren't allowed to run this command.
+    """
+    exit_if_running_under_coding_agent()
     _check_root()
     run(
         "script/glam/generate_glean_sql",
@@ -116,7 +121,10 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 
     To rebuild the table from scratch, drop the clients_scalar_aggregates and
     clients_histogram_aggregates tables.
+
+    Coding agents aren't allowed to run this command.
     """
+    exit_if_running_under_coding_agent()
     _check_root()
     run(
         "script/glam/generate_glean_sql",
@@ -146,7 +154,11 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 @click.option("--dataset", type=str, default="glam_etl_dev")
 @click.option("--bucket", default="glam-fenix-dev-testing")
 def export(app_id, project, dataset, bucket):
-    """Run the export ETL and write the final csv to a gcs bucket."""
+    """Run the export ETL and write the final csv to a gcs bucket.
+
+    Coding agents aren't allowed to run this command.
+    """
+    exit_if_running_under_coding_agent()
     _check_root()
     run(
         "script/glam/generate_glean_sql",

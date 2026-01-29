@@ -49,6 +49,7 @@ from ..backfill.validate import (
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
     billing_project_option,
+    exit_if_running_under_coding_agent,
     is_authenticated,
     project_id_option,
     sql_dir_option,
@@ -491,6 +492,8 @@ def scheduled(
 @backfill.command(
     help="""Process entry in backfill.yaml with Initiate status that has not yet been processed.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -522,6 +525,8 @@ def initiate(
     project_id,
 ):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
+    exit_if_running_under_coding_agent()
+
     click.echo("Backfill processing (initiate) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
@@ -812,6 +817,8 @@ def _initialize_previous_partition(
 @backfill.command(
     help="""Complete entry in backfill.yaml with Complete status that has not yet been processed..
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -829,6 +836,8 @@ def _initialize_previous_partition(
 @click.pass_context
 def complete(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with complete status in backfill.yaml file(s)."""
+    exit_if_running_under_coding_agent()
+
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "

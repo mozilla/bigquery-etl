@@ -24,6 +24,7 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -35,8 +36,8 @@ from ..util import extract_from_query_path
 
 
 @click.group(help="""
-        Commands for managing bqetl metadata.
-        """)
+    Commands for managing bqetl metadata.
+    """)
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
@@ -212,6 +213,8 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     help="""
     Publish all metadata based on metadata.yaml file.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
      ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
     """,
@@ -240,6 +243,8 @@ def publish(
     skip_stable_datasets: bool,
 ) -> None:
     """Publish Bigquery metadata."""
+    exit_if_running_under_coding_agent()
+
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )

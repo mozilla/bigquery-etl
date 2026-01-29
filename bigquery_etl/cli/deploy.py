@@ -14,6 +14,7 @@ from google.cloud import bigquery
 from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
+    exit_if_running_under_coding_agent,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
@@ -49,6 +50,8 @@ log = logging.getLogger(__name__)
     deploy using the --tables or --views flags.
 
     Table-specific options use --table-* prefix, view-specific options use --view-* prefix.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
 
@@ -188,6 +191,8 @@ def deploy(
     view_authorized_only,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
+    exit_if_running_under_coding_agent()
+
     if not any([tables, views]):
         raise click.UsageError(
             "Must specify at least one artifact type: --tables or --views"

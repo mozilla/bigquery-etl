@@ -14,6 +14,8 @@ import rich_click as click
 from authlib.jose import jwt
 from google.cloud import bigquery
 
+from bigquery_etl.cli.utils import exit_if_running_under_coding_agent
+
 SUBSCRIBER_SCHEMA = [
     bigquery.SchemaField("report_date", "DATE"),
     bigquery.SchemaField("event_date", "DATE"),
@@ -129,7 +131,12 @@ def apple_import(
     date: Optional[datetime],
     table: Optional[str],
 ):
-    """Import Apple Subscriber report into BigQuery."""
+    """Import Apple Subscriber report into BigQuery.
+
+    Coding agents aren't allowed to run this command.
+    """
+    exit_if_running_under_coding_agent()
+
     auth_options = (key_id, issuer_id, private_key, vendor_number)
     if any(auth_options) and not all(auth_options):
         raise click.ClickException(

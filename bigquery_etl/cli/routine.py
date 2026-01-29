@@ -16,6 +16,7 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -369,6 +370,8 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -406,6 +409,8 @@ Examples:
 @click.pass_context
 def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
     """Publish routines."""
+    exit_if_running_under_coding_agent()
+
     project_id = get_project_id(ctx, project_id)
 
     public = False
@@ -432,7 +437,10 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
 
 mozfun.add_command(copy.copy(publish))
 mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
-by Airflow only."""
+by Airflow only.
+
+Coding agents aren't allowed to run this command.
+"""
 
 
 @routine.command(

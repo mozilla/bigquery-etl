@@ -12745,7 +12745,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -18190,6 +18191,81 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Whether or not each step of the OSKeyStore self test succeeded.
+    - name: geolocation_geoclue_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the error code when Linux GeoClue geolocation fails. The
+        GeoClue DBUS error domain is G_DBUS_ERROR and can usually be used to get a
+        human readable error for these values.  Records up to 16 codes. Note that
+        errors G_DBUS_ERROR_LIMITS_EXCEEDED (8), G_DBUS_ERROR_ACCESS_DENIED(9), and
+        G_DBUS_ERROR_AUTH_FAILED (10) are considered by Firefox to mean that permission
+        is not granted, as opposed to an internal error.
+
+        '
+    - name: geolocation_geolocation_cache_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times was a geolocation request serviced by the given
+        cache.
+
+        '
+    - name: geolocation_geolocation_service
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many geolocation requests were issued to the system provider,
+        the network wifi-lookup provider, the network ip-lookup provider, and the
+        Linux GeoClue service?  Wifi and IP currently use the same provider.
+
+        '
+    - name: geolocation_linux_portal_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the reason for failures in the PortalLocationProvider.
+
+        '
+    - name: geolocation_macos_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the error code when MacOS CoreLocation geolocation fails.
+        The CoreLocation error domain is kCLErrorDomain and can usually be used to
+        get a human readable error for these values.  Records up to 16 codes.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -48243,6 +48319,27 @@ fields:
           mode: NULLABLE
       description: 'The number of times wgpu-hal tried to expose an adapter. Note
         that a call to `requestAdapter` might result in multiple calls to expose adapter.
+
+        '
+    - name: geolocation_windows_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Records the reason the WindowsLocationChild reported failure to
+        get location.
 
         '
   - name: text2

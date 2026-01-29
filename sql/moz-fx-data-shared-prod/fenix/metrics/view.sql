@@ -1084,7 +1084,12 @@ SELECT
       metrics.labeled_counter.ads_client_client_operation_total,
       metrics.labeled_counter.media_capture_stream_usage,
       metrics.labeled_counter.dns_trr_http3_0rtt_state,
-      metrics.labeled_counter.oskeystore_dummy_storage
+      metrics.labeled_counter.oskeystore_dummy_storage,
+      metrics.labeled_counter.geolocation_geoclue_error_code,
+      metrics.labeled_counter.geolocation_geolocation_cache_hit,
+      metrics.labeled_counter.geolocation_geolocation_service,
+      metrics.labeled_counter.geolocation_linux_portal_error,
+      metrics.labeled_counter.geolocation_macos_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2033,7 +2038,8 @@ SELECT
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
-      metrics.dual_labeled_counter.webgpu_expose_adapter
+      metrics.dual_labeled_counter.webgpu_expose_adapter,
+      metrics.dual_labeled_counter.geolocation_windows_failure
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3143,7 +3149,12 @@ SELECT
       metrics.labeled_counter.ads_client_client_operation_total,
       metrics.labeled_counter.media_capture_stream_usage,
       metrics.labeled_counter.dns_trr_http3_0rtt_state,
-      metrics.labeled_counter.oskeystore_dummy_storage
+      metrics.labeled_counter.oskeystore_dummy_storage,
+      metrics.labeled_counter.geolocation_geoclue_error_code,
+      metrics.labeled_counter.geolocation_geolocation_cache_hit,
+      metrics.labeled_counter.geolocation_geolocation_service,
+      metrics.labeled_counter.geolocation_linux_portal_error,
+      metrics.labeled_counter.geolocation_macos_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4092,7 +4103,8 @@ SELECT
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
-      metrics.dual_labeled_counter.webgpu_expose_adapter
+      metrics.dual_labeled_counter.webgpu_expose_adapter,
+      metrics.dual_labeled_counter.geolocation_windows_failure
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5222,7 +5234,12 @@ SELECT
       metrics.labeled_counter.ads_client_client_operation_total,
       metrics.labeled_counter.media_capture_stream_usage,
       metrics.labeled_counter.dns_trr_http3_0rtt_state,
-      metrics.labeled_counter.oskeystore_dummy_storage
+      metrics.labeled_counter.oskeystore_dummy_storage,
+      metrics.labeled_counter.geolocation_geoclue_error_code,
+      metrics.labeled_counter.geolocation_geolocation_cache_hit,
+      metrics.labeled_counter.geolocation_geolocation_service,
+      metrics.labeled_counter.geolocation_linux_portal_error,
+      metrics.labeled_counter.geolocation_macos_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6171,7 +6188,8 @@ SELECT
       metrics.dual_labeled_counter.urlclassifier_complete_timeout,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
-      metrics.dual_labeled_counter.webgpu_expose_adapter
+      metrics.dual_labeled_counter.webgpu_expose_adapter,
+      metrics.dual_labeled_counter.geolocation_windows_failure
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

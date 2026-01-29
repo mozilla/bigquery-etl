@@ -56,32 +56,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_firefox_desktop_derived__events_stream__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_desktop_derived__events_stream__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_desktop.firefox_desktop_derived__events_stream__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
@@ -108,6 +82,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -121,6 +108,52 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_firefox_desktop_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.firefox_desktop_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    addons_derived__amo_stats_dau_historical__v1 = bigquery_etl_query(
+        task_id="addons_derived__amo_stats_dau_historical__v1",
+        destination_table="amo_stats_dau_historical_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    addons_derived__amo_stats_dau_legacy_source__v1 = bigquery_etl_query(
+        task_id="addons_derived__amo_stats_dau_legacy_source__v1",
+        destination_table="amo_stats_dau_legacy_source_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    addons_derived__amo_stats_installs_legacy_source__v1 = bigquery_etl_query(
+        task_id="addons_derived__amo_stats_installs_legacy_source__v1",
+        destination_table="amo_stats_installs_legacy_source_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     addons_derived__fenix_addons_by_client__v1 = bigquery_etl_query(
         task_id="addons_derived__fenix_addons_by_client__v1",
         destination_table="fenix_addons_by_client_v1",
@@ -132,9 +165,31 @@ with DAG(
         depends_on_past=False,
     )
 
+    addons_derived__fenix_addons_by_client_legacy_source__v1 = bigquery_etl_query(
+        task_id="addons_derived__fenix_addons_by_client_legacy_source__v1",
+        destination_table="fenix_addons_by_client_legacy_source_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     addons_derived__firefox_desktop_addons_by_client__v1 = bigquery_etl_query(
         task_id="addons_derived__firefox_desktop_addons_by_client__v1",
         destination_table="firefox_desktop_addons_by_client_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    addons_derived__firefox_desktop_addons_by_client_legacy_source__v1 = bigquery_etl_query(
+        task_id="addons_derived__firefox_desktop_addons_by_client_legacy_source__v1",
+        destination_table="firefox_desktop_addons_by_client_legacy_source_v1",
         dataset_id="addons_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -253,12 +308,44 @@ with DAG(
         depends_on_past=False,
     )
 
+    addons_derived__amo_stats_dau_historical__v1.set_upstream(
+        addons_derived__fenix_addons_by_client_legacy_source__v1
+    )
+
+    addons_derived__amo_stats_dau_historical__v1.set_upstream(
+        addons_derived__firefox_desktop_addons_by_client_legacy_source__v1
+    )
+
+    addons_derived__amo_stats_dau_legacy_source__v1.set_upstream(
+        addons_derived__fenix_addons_by_client_legacy_source__v1
+    )
+
+    addons_derived__amo_stats_dau_legacy_source__v1.set_upstream(
+        addons_derived__firefox_desktop_addons_by_client_legacy_source__v1
+    )
+
+    addons_derived__amo_stats_installs_legacy_source__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    addons_derived__amo_stats_installs_legacy_source__v1.set_upstream(
+        wait_for_event_events
+    )
+
     addons_derived__fenix_addons_by_client__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    addons_derived__fenix_addons_by_client_legacy_source__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     addons_derived__firefox_desktop_addons_by_client__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    addons_derived__firefox_desktop_addons_by_client_legacy_source__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
     )
 
     addons_derived__firefox_desktop_stats_installs__v1.set_upstream(

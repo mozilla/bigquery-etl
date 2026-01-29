@@ -12434,7 +12434,7 @@ fields:
       - name: value
         type: BOOLEAN
         mode: NULLABLE
-      description: 'The widgets in the toolbars. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+      description: 'The widgets in the toolbars. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.toolbar_widgets.
 
         '
@@ -15181,9 +15181,8 @@ fields:
         mode: NULLABLE
       description: "Records clicks of adverts on SERP pages where the search was started\
         \ from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source- docs.mozilla.org/browser/search/telemetry.html#browser-search-\
-        \ content This metric was generated to correspond to the Legacy Telemetry\
-        \ scalar browser.search.adclicks.about_home.\n"
+        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
+        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.about_home.\n"
     - name: browser_search_adclicks_about_newtab
       type: RECORD
       mode: REPEATED
@@ -15210,7 +15209,7 @@ fields:
         mode: NULLABLE
       description: "Records clicks of adverts on SERP pages where the search was started\
         \ from the context menu. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
+        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
         \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.contextmenu.\n"
     - name: browser_search_adclicks_reload
       type: RECORD
@@ -15294,9 +15293,8 @@ fields:
         mode: NULLABLE
       description: "Records clicks of adverts on SERP pages where the search was started\
         \ from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source- docs.mozilla.org/browser/search/telemetry.html#browser-search-\
-        \ content This metric was generated to correspond to the Legacy Telemetry\
-        \ scalar browser.search.adclicks.urlbar.\n"
+        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
+        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.adclicks.urlbar.\n"
     - name: browser_search_adclicks_urlbar_handoff
       type: RECORD
       mode: REPEATED
@@ -15645,7 +15643,7 @@ fields:
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
         \ search was started from the system, e.g. command line. The key format is\
-        \ \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
+        \ \u2018<provider>:<tagged|organic>\u2019. See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
         \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.system.\n"
     - name: browser_search_withads_tabhistory
       type: RECORD
@@ -15673,8 +15671,7 @@ fields:
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
         \ search was started from a place not categorized by the other scalars. The\
-        \ key format is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-\
-        \ source-docs.mozilla.org/browser/search/telemetry.html#browser- search-content\
+        \ key format is \u2018<provider>:<tagged|organic>\u2019. See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
         \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.unknown.\n"
     - name: browser_search_withads_urlbar
       type: RECORD
@@ -15745,9 +15742,8 @@ fields:
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
         \ search was started from a webextension. The key format is \u2018<provider>:<tagged|organic>\u2019\
-        \ See https://firefox-source- docs.mozilla.org/browser/search/telemetry.html#browser-search-\
-        \ content This metric was generated to correspond to the Legacy Telemetry\
-        \ scalar browser.search.withads.webextension.\n"
+        . See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\
+        \ This metric was generated to correspond to the Legacy Telemetry scalar browser.search.withads.webextension.\n"
     - name: browser_ui_interaction_app_menu
       type: RECORD
       mode: REPEATED
@@ -15759,7 +15755,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the app menu. See
-        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.app_menu.
 
         '
@@ -15774,7 +15770,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the bookmarks bar.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.bookmarks_bar.
 
         '
@@ -15789,7 +15785,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the content context
-        menu. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        menu. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.content_context.
 
         '
@@ -15804,7 +15800,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the menu bar. See
-        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.menu_bar.
 
         '
@@ -15819,7 +15815,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the nav bar. See
-        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.nav_bar.
 
         '
@@ -15834,7 +15830,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the overflow menu.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.overflow_menu.
 
         '
@@ -15849,7 +15845,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with page action items in the
-        panel. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        panel. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.pageaction_panel.
 
         '
@@ -15864,7 +15860,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with page action items in the
-        url bar. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        url bar. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.pageaction_urlbar.
 
         '
@@ -15879,7 +15875,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the pinned area
-        of the overflow menu. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        of the overflow menu. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.pinned_overflow_menu.
 
         '
@@ -15894,7 +15890,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Containers section of
-        preferences. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneContainers.
 
         '
@@ -15909,7 +15905,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Experimental section
-        of preferences. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneExperimental.
 
         '
@@ -15924,7 +15920,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the General section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneGeneral.
 
         '
@@ -15939,7 +15935,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Home section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneHome.
 
         '
@@ -15954,7 +15950,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the More From Mozilla section
-        of preferences. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneMoreFromMozilla.
 
         '
@@ -15969,7 +15965,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Privacy section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_panePrivacy.
 
         '
@@ -15984,7 +15980,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Search section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneSearch.
 
         '
@@ -15999,7 +15995,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Search results section
-        of preferences. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneSearchResults.
 
         '
@@ -16014,7 +16010,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in the Sync section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneSync.
 
         '
@@ -16029,7 +16025,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records the items interacted with in any other section of preferences.
-        See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.preferences_paneUnknown.
 
         '
@@ -16044,7 +16040,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the tab bar. See
-        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.tabs_bar.
 
         '
@@ -16059,7 +16055,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the tab context
-        menu. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        menu. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.tabs_context.
 
         '
@@ -16074,9 +16070,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count for each entrypoint (the container of the trigger
-        node) when an item from the tabs context menu is selected. See https://firefox-source-
-        docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
-        to correspond to the Legacy Telemetry scalar browser.ui.interaction.tabs_context_entrypoint.
+        node) when an item from the tabs context menu is selected. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.tabs_context_entrypoint.
 
         '
     - name: browser_ui_interaction_unified_extensions_area
@@ -16090,7 +16085,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the Unified Extensions
-        area. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        area. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.unified_extensions_area.
 
         '
@@ -16105,7 +16100,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records a count of interactions with items in the vertical tab
-        bar. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        bar. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.interaction.vertical_tabs_container.
 
         '
@@ -16368,7 +16363,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records when widgets are added, removed or moved in the UI. See
-        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.customized_widgets.
 
         '
@@ -19869,8 +19864,7 @@ fields:
         mode: NULLABLE
       description: "Records counts of SERP pages with adverts displayed where the\
         \ search was started from the AI window assistant. The key format is \u2018\
-        <provider>:<tagged|organic>\u2019 See https://firefox-source- docs.mozilla.org/browser/search/telemetry.html#browser-search-\
-        \ content.\n"
+        <provider>:<tagged|organic>\u2019. See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
     - name: media_capture_stream_usage
       type: RECORD
       mode: REPEATED
@@ -19913,6 +19907,95 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Whether or not each step of the OSKeyStore self test succeeded.
+    - name: browser_ui_interaction_preferences_pane_ai
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the items interacted with in the AI Controls section of
+        preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+        '
+    - name: geolocation_geoclue_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the error code when Linux GeoClue geolocation fails. The
+        GeoClue DBUS error domain is G_DBUS_ERROR and can usually be used to get a
+        human readable error for these values.  Records up to 16 codes. Note that
+        errors G_DBUS_ERROR_LIMITS_EXCEEDED (8), G_DBUS_ERROR_ACCESS_DENIED(9), and
+        G_DBUS_ERROR_AUTH_FAILED (10) are considered by Firefox to mean that permission
+        is not granted, as opposed to an internal error.
+
+        '
+    - name: geolocation_geolocation_cache_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times was a geolocation request serviced by the given
+        cache.
+
+        '
+    - name: geolocation_geolocation_service
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many geolocation requests were issued to the system provider,
+        the network wifi-lookup provider, the network ip-lookup provider, and the
+        Linux GeoClue service?  Wifi and IP currently use the same provider.
+
+        '
+    - name: geolocation_linux_portal_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the reason for failures in the PortalLocationProvider.
+
+        '
+    - name: geolocation_macos_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the error code when MacOS CoreLocation geolocation fails.
+        The CoreLocation error domain is kCLErrorDomain and can usually be used to
+        get a human readable error for these values.  Records up to 16 codes.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -48361,6 +48444,27 @@ fields:
           mode: NULLABLE
       description: 'The number of times wgpu-hal tried to expose an adapter. Note
         that a call to `requestAdapter` might result in multiple calls to expose adapter.
+
+        '
+    - name: geolocation_windows_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Records the reason the WindowsLocationChild reported failure to
+        get location.
 
         '
   - name: text2

@@ -21,6 +21,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import (
+    exit_if_running_under_coding_agent,
     get_glean_app_id_to_app_name_mapping,
     parallelism_option,
     project_id_option,
@@ -324,7 +325,10 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
 
 @click.command(
     "copy_deduplicate",
-    help="Copy a day's data from live to stable ping tables, deduplicating on document_id",
+    help="""Copy a day's data from live to stable ping tables, deduplicating on document_id
+
+    Coding agents aren't allowed to run this command.
+    """,
 )
 @project_id_option("moz-fx-data-shar-nonprod-efed")
 @click.option(
@@ -440,6 +444,8 @@ def copy_deduplicate(
     only,
 ):
     """Copy a day's data from live to stable ping tables, dedup on document_id."""
+    exit_if_running_under_coding_agent()
+
     # create a queue for balancing load across projects
     client_q = ClientQueue(billing_projects, parallelism)
 

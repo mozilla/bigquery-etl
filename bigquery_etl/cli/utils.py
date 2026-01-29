@@ -3,6 +3,7 @@
 import fnmatch
 import os
 import re
+import sys
 from fnmatch import fnmatchcase
 from functools import cache
 from glob import glob
@@ -49,6 +50,25 @@ def is_authenticated():
     except DefaultCredentialsError:
         return False
     return True
+
+
+@cache
+def is_running_under_coding_agent():
+    """Check if `bqetl` is running under a coding agent."""
+    # Based on https://searchfox.org/firefox-main/rev/a771bf78b90de89e0ea9d17caaa64ffa240ecd7e/python/mozbuild/mozbuild/util.py#74-80
+    return bool(
+        os.environ.get("CLAUDECODE")
+        or os.environ.get("CODEX_SANDBOX")
+        or os.environ.get("GEMINI_CLI")
+        or os.environ.get("OPENCODE")
+    )
+
+
+def exit_if_running_under_coding_agent():
+    """Exit if `bqetl` is running under a coding agent."""
+    if is_running_under_coding_agent():
+        click.echo("Coding agents aren't allowed to run this command.", err=True)
+        sys.exit(1)
 
 
 def is_valid_project(ctx, param, value):

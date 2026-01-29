@@ -14,6 +14,7 @@ import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -119,6 +120,9 @@ def _view_is_valid(v: View) -> bool:
 
 
 @view.command(help="""Publish views.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Publish all views
@@ -203,6 +207,8 @@ def publish(
     Views are published in topological order (respecting dependencies) using
     parallel processing. Change detection happens within the publish method.
     """
+    exit_if_running_under_coding_agent()
+
     # set log level
     try:
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
@@ -313,6 +319,9 @@ def _collect_views(
 
 
 @view.command(help="""Remove managed views that are not present in the sql dir.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Clean managed views in shared prod
@@ -375,6 +384,8 @@ def clean(
     authorized_only,
 ):
     """Clean managed views."""
+    exit_if_running_under_coding_agent()
+
     # set log level
     try:
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")

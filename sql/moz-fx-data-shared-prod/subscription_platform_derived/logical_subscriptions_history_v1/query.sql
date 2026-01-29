@@ -157,7 +157,7 @@ SELECT
       ),
       IF(subscription_starts.started_as_trial, ' Trial', '')
     ) AS started_reason,
-    history.subscription.payment_method_id
+    history.subscription.payment_method
   ) AS subscription
 FROM
   history

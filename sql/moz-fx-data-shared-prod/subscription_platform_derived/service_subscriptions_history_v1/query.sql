@@ -171,7 +171,7 @@ subscriptions_history AS (
         ),
         IF(subscriptions_history_periods.started_as_trial, ' Trial', '')
       ) AS started_reason,
-      history.subscription.payment_method_id
+      history.subscription.payment_method
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history

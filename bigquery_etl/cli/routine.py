@@ -91,8 +91,7 @@ def mozfun(ctx):
     ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("routine", "project")
 
 
-@routine.command(
-    help="""Create a new routine. Specify whether the routine is a UDF or
+@routine.command(help="""Create a new routine. Specify whether the routine is a UDF or
     stored procedure by adding a --udf or --stored_prodecure flag.
 
     Examples:
@@ -108,8 +107,7 @@ def mozfun(ctx):
     \b
     # Create a UDF in a project other than shared-prod
     ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
-    """
-)
+    """)
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
@@ -230,8 +228,7 @@ Examples:
 """
 
 
-@routine.command(
-    help="""Get routine information.
+@routine.command(help="""Get routine information.
 
     Examples:
 
@@ -242,8 +239,7 @@ Examples:
     \b
     # Get usage information of specific routine
     ./bqetl routine info --usages udf.get_key
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()

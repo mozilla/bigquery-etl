@@ -83,15 +83,13 @@ def create(name, sql_dir, project_id, owner):
     click.echo(f"Created new view {view.path}")
 
 
-@view.command(
-    help="""Validate a view.
+@view.command(help="""Validate a view.
     Checks formatting, naming, references and dry runs the view.
 
     Examples:
 
     ./bqetl view validate telemetry.clients_daily
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -121,8 +119,7 @@ def _view_is_valid(v: View) -> bool:
     return v.is_valid()
 
 
-@view.command(
-    help="""Publish views.
+@view.command(help="""Publish views.
 
     Coding agents aren't allowed to run this command.
 
@@ -133,8 +130,7 @@ def _view_is_valid(v: View) -> bool:
 
     # Publish a specific view
     ./bqetl view publish telemetry.clients_daily
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -322,8 +318,7 @@ def _collect_views(
     return views
 
 
-@view.command(
-    help="""Remove managed views that are not present in the sql dir.
+@view.command(help="""Remove managed views that are not present in the sql dir.
 
     Coding agents aren't allowed to run this command.
 
@@ -334,8 +329,7 @@ def _collect_views(
 
     # Clean managed user facing views in mozdata
     ./bqetl view clean --target-project=mozdata --user-facing-only --skip-authorized
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -501,8 +495,7 @@ def _remove_view(client, view_id, dry_run):
         client.delete_table(view_id)
 
 
-@view.command(
-    help="""List broken views.
+@view.command(help="""List broken views.
     Examples:
 
     # Publish all views
@@ -510,8 +503,7 @@ def _remove_view(client, view_id, dry_run):
 
     # Publish a specific view
     ./bqetl view list-broken --only telemetry
-    """
-)
+    """)
 @project_id_option()
 @parallelism_option()
 @click.option(

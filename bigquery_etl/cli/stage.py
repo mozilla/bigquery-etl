@@ -46,8 +46,7 @@ def stage():
     pass
 
 
-@stage.command(
-    help="""
+@stage.command(help="""
     Deploy artifacts to the configured stage project. The order of deployment is:
     UDFs, views, tables.
 
@@ -58,8 +57,7 @@ def stage():
 
     # Deploy with custom test directory
     ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
-    """
-)
+    """)
 @click.argument(
     "paths",
     nargs=-1,
@@ -606,16 +604,14 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     )
 
 
-@stage.command(
-    help="""
+@stage.command(help="""
     Remove deployed artifacts from stage environment
 
     Coding agents aren't allowed to run this command.
 
     Examples:
     ./bqetl stage clean
-    """
-)
+    """)
 @click.option(
     "--project-id",
     "--project_id",

@@ -2,6 +2,7 @@
 
 import json
 import os
+from functools import cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -319,6 +320,8 @@ class Schema:
         unnest_structs: bool = False,
         max_unnest_depth: int = 0,
         unnest_allowlist: Optional[Iterable[str]] = None,
+        match_column_order: bool = True,
+        retain_null_structs: bool = False,
     ) -> str:
         """Generate the select expression for the source schema based on the target schema.
 
@@ -335,6 +338,10 @@ class Schema:
         :param max_unnest_depth: Maximum level of struct nesting to explicitly unnest in
             the expression.
         :param unnest_allowlist: If set, only the given top-level structs are unnested.
+        :param match_column_order: If true, structs will be unnested if the order of the nested
+            fields does not match. This is needed if column order matters, e.g. UNION queries.
+        :param retain_null_structs: If true, structs will be set to null if they are null in the
+            source. Otherwise, structs will always be non-null with nested fields explicitly set.
         """
 
         def _type_info(node):
@@ -383,6 +390,17 @@ class Schema:
                             dtype != "RECORD"
                             or node["fields"]
                             == source_schema_nodes[node_name]["fields"]
+                            or (
+                                # check if top-level fields match in any order
+                                not match_column_order
+                                and len(node["fields"])
+                                == len(source_schema_nodes[node_name]["fields"])
+                                and sorted(
+                                    source_schema_nodes[node_name]["fields"],
+                                    key=lambda f: f["name"],
+                                )
+                                == sorted(node["fields"], key=lambda f: f["name"])
+                            )
                         )
                         and (
                             # don't need to unnest scalar
@@ -422,15 +440,25 @@ class Schema:
                                     ) AS `{node_name}`
                                 """)
                         else:  # select struct fields
-                            select_expr.append(f"""
-                                    STRUCT(
-                                        {recurse_fields(
-                                            source_schema_nodes[node_name]['fields'],
-                                            node['fields'],
-                                            node_path,
-                                        )}
+                            struct_expr = f"""
+                            STRUCT(
+                                {recurse_fields(
+                                    source_schema_nodes[node_name]['fields'],
+                                    node['fields'],
+                                    node_path,
+                                )}
+                            )
+                            """
+                            if retain_null_structs:
+                                select_expr.append(f"""
+                                    IF(
+                                        {node_path_str} IS NULL,
+                                        NULL,
+                                        {struct_expr}
                                     ) AS `{node_name}`
                                 """)
+                            else:
+                                select_expr.append(f"{struct_expr} AS `{node_name}`")
                     else:  # scalar value doesn't match, e.g. different types
                         select_expr.append(
                             f"CAST(NULL AS {_type_info(node)}) AS `{node_name}`"
@@ -462,3 +490,23 @@ class Schema:
             max_unnest_depth,
             unnest_allowlist,
         )
+
+
+@cache
+def generate_compatible_select_expression(
+    client: bigquery.Client, v1_table_id: str, v2_table_id: str
+):
+    """Generate a select expression that conforms the v1 table schema to the v2 table schema.
+
+    The expression will be compatible with the v2 table. Fields that are in v1 but not v2 will
+    not be included. Fields that are in v2 but not v1 will be set to null.
+    """
+    v1_table = client.get_table(v1_table_id)
+    v2_table = client.get_table(v2_table_id)
+
+    v1_schema = Schema.from_bigquery_schema(v1_table.schema)
+    v2_schema = Schema.from_bigquery_schema(v2_table.schema)
+
+    return v1_schema.generate_compatible_select_expression(
+        v2_schema, match_column_order=False, retain_null_structs=True
+    )

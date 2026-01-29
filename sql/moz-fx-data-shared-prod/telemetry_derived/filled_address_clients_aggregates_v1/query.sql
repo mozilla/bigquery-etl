@@ -5,8 +5,8 @@ SELECT
       THEN country
     ELSE 'OTHER'
   END AS country,
-  100 * COUNT(DISTINCT client_id) AS clients,
-  100 * COUNT(*) AS fill_counts
+  10 * COUNT(DISTINCT client_id) AS clients,
+  10 * COUNT(*) AS fill_counts
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE
@@ -16,7 +16,7 @@ WHERE
   AND event_method = 'filled'
   AND normalized_channel = "release"
   AND browser_version_info.major_version > 110
-  AND sample_id = 0
+  AND sample_id < 10
 GROUP BY
   submission_date,
   country

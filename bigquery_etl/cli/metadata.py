@@ -24,6 +24,7 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -34,9 +35,11 @@ from ..dryrun import get_credentials
 from ..util import extract_from_query_path
 
 
-@click.group(help="""
-        Commands for managing bqetl metadata.
-        """)
+@click.group(
+    help="""
+    Commands for managing bqetl metadata.
+    """
+)
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
@@ -212,6 +215,8 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     help="""
     Publish all metadata based on metadata.yaml file.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
      ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
     """,
@@ -240,6 +245,8 @@ def publish(
     skip_stable_datasets: bool,
 ) -> None:
     """Publish Bigquery metadata."""
+    exit_if_running_under_coding_agent()
+
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
@@ -285,13 +292,15 @@ def _publish_metadata(project_id, credentials, metadata_file):
         print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@metadata.command(help="""
+@metadata.command(
+    help="""
     Deprecate BigQuery table by updating metadata.yaml file.
     Deletion date is by default 3 months from current date if not provided.
 
     Example:
      ./bqetl metadata deprecate ga_derived.downloads_with_attribution_v2 --deletion_date=2024-03-02
-    """)
+    """
+)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -332,12 +341,14 @@ def deprecate(
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
 
 
-@metadata.command(help="""
+@metadata.command(
+    help="""
     Validate workgroup_access and default_table_workgroup_access configurations.
 
     Example:
      ./bqetl metadata validate-workgroups ga_derived.downloads_with_attribution_v2
-    """)
+    """
+)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")

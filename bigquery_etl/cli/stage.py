@@ -14,7 +14,11 @@ from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import (
+    exit_if_running_under_coding_agent,
+    paths_matching_name_pattern,
+    sql_dir_option,
+)
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
@@ -42,16 +46,20 @@ def stage():
     pass
 
 
-@stage.command(help="""
-        Deploy artifacts to the configured stage project. The order of deployment is:
-        UDFs, views, tables.
+@stage.command(
+    help="""
+    Deploy artifacts to the configured stage project. The order of deployment is:
+    UDFs, views, tables.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
     ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
 
     # Deploy with custom test directory
     ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
-    """)
+    """
+)
 @click.argument(
     "paths",
     nargs=-1,
@@ -110,6 +118,8 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
+    exit_if_running_under_coding_agent()
+
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -596,12 +606,16 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     )
 
 
-@stage.command(help="""
-        Remove deployed artifacts from stage environment
+@stage.command(
+    help="""
+    Remove deployed artifacts from stage environment
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
     ./bqetl stage clean
-    """)
+    """
+)
 @click.option(
     "--project-id",
     "--project_id",
@@ -622,6 +636,8 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 )
 def clean(project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
+    exit_if_running_under_coding_agent()
+
     client = bigquery.Client(project_id)
 
     dataset_filter = (

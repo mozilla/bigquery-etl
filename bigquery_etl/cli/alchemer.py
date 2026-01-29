@@ -5,9 +5,11 @@ from datetime import date, datetime, timedelta
 import rich_click as click
 
 from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
+from bigquery_etl.cli.utils import exit_if_running_under_coding_agent
 
 
-@click.group(help="""Commands for importing alchemer data.
+@click.group(
+    help="""Commands for importing alchemer data.
 
     Examples:
 
@@ -21,7 +23,8 @@ from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
         --api_secret=xxxxxxxxxxxxxxx \\
         --destination_table=moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes \\
         --include_url_variables
-    """)
+    """
+)
 def alchemer():
     """Create the CLI group for the alchemer command."""
     pass
@@ -49,7 +52,11 @@ def backfill(
     """Import data from alchemer (surveygizmo) surveys into BigQuery.
 
     The date range is inclusive of the start and end values.
+
+    Coding agents aren't allowed to run this command.
     """
+    exit_if_running_under_coding_agent()
+
     print(
         f"Runing backfill of {survey_id} from {start_date} to {end_date}"
         " into {destination_table}"

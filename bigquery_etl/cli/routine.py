@@ -16,6 +16,7 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -90,7 +91,8 @@ def mozfun(ctx):
     ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("routine", "project")
 
 
-@routine.command(help="""Create a new routine. Specify whether the routine is a UDF or
+@routine.command(
+    help="""Create a new routine. Specify whether the routine is a UDF or
     stored procedure by adding a --udf or --stored_prodecure flag.
 
     Examples:
@@ -106,7 +108,8 @@ def mozfun(ctx):
     \b
     # Create a UDF in a project other than shared-prod
     ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
-    """)
+    """
+)
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
@@ -227,7 +230,8 @@ Examples:
 """
 
 
-@routine.command(help="""Get routine information.
+@routine.command(
+    help="""Get routine information.
 
     Examples:
 
@@ -238,7 +242,8 @@ Examples:
     \b
     # Get usage information of specific routine
     ./bqetl routine info --usages udf.get_key
-    """)
+    """
+)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()
@@ -369,6 +374,8 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -406,6 +413,8 @@ Examples:
 @click.pass_context
 def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
     """Publish routines."""
+    exit_if_running_under_coding_agent()
+
     project_id = get_project_id(ctx, project_id)
 
     public = False
@@ -432,7 +441,10 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
 
 mozfun.add_command(copy.copy(publish))
 mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
-by Airflow only."""
+by Airflow only.
+
+Coding agents aren't allowed to run this command.
+"""
 
 
 @routine.command(

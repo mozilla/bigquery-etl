@@ -499,7 +499,7 @@ class TestCopyDeduplicate:
             _get_query_job_configs,
             client=mock_client,
             live_table="moz-fx-data-shared-prod.firefox_desktop_live.metrics_v1",
-            date=date(2026, 1, 1),
+            submission_date=date(2026, 1, 1),
             dry_run=False,
             slices=1,
             priority="INTERACTIVE",

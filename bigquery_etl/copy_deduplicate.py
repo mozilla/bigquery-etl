@@ -10,11 +10,11 @@ or to process only a specific list of tables.
 import json
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-from typing import List
+from typing import List, Tuple
 
 import click
 from google.api_core.exceptions import BadRequest
@@ -159,18 +159,20 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
 
 
 def _get_query_job_configs(
-    client,
-    live_table,
-    date,
-    dry_run,
-    slices,
-    priority,
-    preceding_days,
-    num_retries,
-    temp_dataset,
-    write_to_v2,
-):
-    stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
+    client: bigquery.Client,
+    live_table: str,
+    submission_date: date,
+    dry_run: bool,
+    slices: int,
+    priority: str,
+    preceding_days: int,
+    num_retries: int,
+    temp_dataset: TempDatasetReference,
+    write_to_v2: bool,
+) -> List[Tuple[str, str, str, bigquery.QueryJobConfig, int]]:
+    stable_table = (
+        f"{live_table.replace('_live.', '_stable.', 1)}${submission_date:%Y%m%d}"
+    )
     v2_table = stable_table.replace("_v1$", "_v2$")
 
     replace_geo = _select_geo(live_table, client)
@@ -189,16 +191,16 @@ def _get_query_job_configs(
         stable_table = v2_table
 
     kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
-    start_time = datetime(*date.timetuple()[:6])
+    start_time = datetime(*submission_date.timetuple()[:6])
     end_time = start_time + timedelta(days=1)
     if slices > 1:
         # create temporary tables with stable_table's time_partitioning and
         # clustering_fields, and a 1-day expiration
-        stable_table = client.get_table(stable_table)
+        stable_table_obj = client.get_table(stable_table)
         ddl = "CREATE TABLE\n  `{dest}`"
-        ddl += f"\nPARTITION BY\n  DATE({stable_table.time_partitioning.field})"
-        if stable_table.clustering_fields:
-            ddl += f"\nCLUSTER BY\n  {', '.join(stable_table.clustering_fields)}"
+        ddl += f"\nPARTITION BY\n  DATE({stable_table_obj.time_partitioning.field})"
+        if stable_table_obj.clustering_fields:
+            ddl += f"\nCLUSTER BY\n  {', '.join(stable_table_obj.clustering_fields)}"
         ddl += (
             "\nOPTIONS"
             "\n  ("
@@ -214,6 +216,7 @@ def _get_query_job_configs(
         return [
             (
                 f"{ddl.format(dest=temp_dataset.temp_table())}\nAS\n{sql.strip()}",
+                live_table,
                 stable_table,
                 bigquery.QueryJobConfig(
                     query_parameters=[
@@ -261,8 +264,13 @@ def _get_query_job_configs(
 
 
 def _run_deduplication_query(
-    client, sql, live_table, stable_table, job_config, num_retries
-):
+    client: bigquery.Client,
+    sql: str,
+    live_table: str,
+    stable_table: str,
+    job_config: bigquery.QueryJobConfig,
+    num_retries: int,
+) -> Tuple[str, str, bigquery.QueryJob]:
     sql = reformat(sql)
     query_job = client.query(sql, job_config, job_id_prefix="copy_dedup_")
     if not query_job.dry_run:
@@ -271,7 +279,7 @@ def _run_deduplication_query(
         except BadRequest as e:
             if num_retries <= 0:
                 raise
-            logging.warn("Encountered bad request, retrying: ", e)
+            logging.warning("Encountered bad request, retrying: ", e)
             return _run_deduplication_query(
                 client, sql, live_table, stable_table, job_config, num_retries - 1
             )
@@ -282,7 +290,12 @@ def _run_deduplication_query(
     return live_table, stable_table, query_job
 
 
-def _copy_join_parts(client, stable_table, query_jobs, write_to_v2=False):
+def _copy_join_parts(
+    client: bigquery.Client,
+    stable_table: str,
+    query_jobs: List[bigquery.QueryJob],
+    write_to_v2: bool = False,
+):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
 
     v1_table_id = stable_table.replace("_v2$", "_v1$")
@@ -305,7 +318,7 @@ def _copy_join_parts(client, stable_table, query_jobs, write_to_v2=False):
             f" slot hours to populate {stable_table}"
         )
         if len(query_jobs) > 1:
-            partition_id = stable_table.table_id.split("$", 1)[1]
+            partition_id = stable_table.split("$", 1)[1]
             sources = [
                 f"{sql_table_id(job.destination)}${partition_id}" for job in query_jobs
             ]
@@ -382,13 +395,6 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     "--dry-run",
     is_flag=True,
     help="Do not make changes, only log actions that would be taken",
-)
-@click.option(
-    "--log-level",
-    "--log_level",
-    help="Log level.",
-    default=logging.getLevelName(logging.INFO),
-    type=str.upper,
 )
 @click.option(
     "--priority",
@@ -475,7 +481,6 @@ def copy_deduplicate(
     dates,
     parallelism,
     dry_run,
-    log_level,
     priority,
     temp_dataset,
     slices,
@@ -521,7 +526,7 @@ def copy_deduplicate(
                         (
                             client,  # only use one client to create temp tables
                             live_table,
-                            date,
+                            submission_date,
                             dry_run,
                             slices,
                             priority,
@@ -531,7 +536,7 @@ def copy_deduplicate(
                             live_table.replace(f"{project_id}.", "") in write_to_v2,
                         )
                         for live_table in live_tables
-                        for date in dates
+                        for submission_date in dates
                     ],
                 )
                 for args in jobs
@@ -552,3 +557,7 @@ def copy_deduplicate(
             )
         ]
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)
+
+
+if __name__ == "__main__":
+    copy_deduplicate()

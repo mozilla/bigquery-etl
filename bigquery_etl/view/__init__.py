@@ -423,13 +423,6 @@ class View:
                 else:
                     table = existing_view
 
-                # Update schema field descriptions
-                try:
-                    if self.schema_path.is_file():
-                        table = self.schema.deploy(target_view)
-                except Exception as e:
-                    print(f"Could not update field descriptions for {target_view}: {e}")
-
                 # Check and update metadata
                 fields_to_update = []
 
@@ -481,6 +474,13 @@ class View:
                 # Update metadata and labels if needed
                 if fields_to_update:
                     client.update_table(table, fields_to_update)
+
+                # Update schema field descriptions after view query is updated
+                try:
+                    if self.schema_path.is_file():
+                        self.schema.deploy(target_view)
+                except Exception as e:
+                    print(f"Could not update field descriptions for {target_view}: {e}")
 
                 print(f"Published view {target_view}")
         else:

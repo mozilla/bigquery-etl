@@ -382,6 +382,9 @@ fields:
         or `--backgroundtask`.
 
         '
+    - name: crash_dom_fission_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -526,9 +529,30 @@ fields:
     - name: crash_cause
       type: STRING
       mode: NULLABLE
-      description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
-
-        '
+    - name: crash_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: crash_crash_type
+      type: STRING
+      mode: NULLABLE
+    - name: crash_hang
+      type: STRING
+      mode: NULLABLE
+    - name: crash_linux_memory_psi
+      type: STRING
+      mode: NULLABLE
+    - name: crash_minidump_sha_256_hash
+      type: STRING
+      mode: NULLABLE
+    - name: crash_product_id
+      type: STRING
+      mode: NULLABLE
+    - name: crash_product_name
+      type: STRING
+      mode: NULLABLE
+    - name: crash_shutdown_reason
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -560,6 +584,26 @@ fields:
       description: 'The start time of the application.
 
         '
+    - name: crash_last_interaction_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: crash_time_since_last_crash
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: object
     type: RECORD
     mode: NULLABLE
@@ -587,15 +631,9 @@ fields:
     - name: crash_breadcrumbs
       type: JSON
       mode: NULLABLE
-      description: 'Crash breadcrumb information.
-
-        '
     - name: crash_java_exception
       type: JSON
       mode: NULLABLE
-      description: 'Error and stack trace information for a java exception.
-
-        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -797,4 +835,3 @@ fields:
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
-  description: App ID of the channel data was received from

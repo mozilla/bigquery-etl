@@ -41,13 +41,7 @@ SELECT
   document_id,
   events,
   STRUCT(
-    STRUCT(
-      metadata.geo.city,
-      metadata.geo.country,
-      metadata.geo.db_version,
-      metadata.geo.subdivision1,
-      metadata.geo.subdivision2
-    ) AS `geo`,
+    metadata.geo,
     STRUCT(
       metadata.header.date,
       metadata.header.dnt,
@@ -62,7 +56,7 @@ SELECT
       CAST(NULL AS STRUCT<`tls_version` STRING, `tls_cipher_hex` STRING>) AS `parsed_x_lb_tags`
     ) AS `header`,
     metadata.user_agent,
-    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
+    metadata.isp
   ) AS `metadata`,
   STRUCT(
     STRUCT(
@@ -195,10 +189,79 @@ SELECT
   ).channel AS normalized_channel,
   CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.telemetry_sdk_build,
+    client_info.build_date,
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id,
+    STRUCT(
+      client_info.attribution.campaign,
+      client_info.attribution.content,
+      client_info.attribution.medium,
+      client_info.attribution.source,
+      client_info.attribution.term,
+      client_info.attribution.ext
+    ) AS `attribution`,
+    STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+  ) AS `client_info`,
   document_id,
-  events,
-  metadata,
+  ARRAY(
+    SELECT
+      STRUCT(
+        events.category,
+        ARRAY(
+          SELECT
+            STRUCT(extra.key, extra.value)
+          FROM
+            UNNEST(events.extra) AS `extra`
+        ) AS `extra`,
+        events.name,
+        events.timestamp
+      )
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
+  STRUCT(
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      metadata.header.parsed_date,
+      metadata.header.parsed_x_source_tags,
+      metadata.header.parsed_x_lb_tags
+    ) AS `header`,
+    STRUCT(
+      metadata.user_agent.browser,
+      metadata.user_agent.os,
+      metadata.user_agent.version
+    ) AS `user_agent`,
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
+  ) AS `metadata`,
   STRUCT(
     STRUCT(
       metrics.boolean.migration_addons_any_failures,
@@ -255,15 +318,65 @@ SELECT
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS `datetime`,
     STRUCT(
-      metrics.labeled_counter.glean_error_invalid_label,
-      metrics.labeled_counter.glean_error_invalid_overflow,
-      metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.migration_bookmarks_migrated,
-      metrics.labeled_counter.migration_history_migrated,
-      metrics.labeled_counter.migration_logins_failure_counts
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_label.key, glean_error_invalid_label.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS `glean_error_invalid_label`
+      ) AS `glean_error_invalid_label`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_overflow.key, glean_error_invalid_overflow.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.glean_error_invalid_overflow
+          ) AS `glean_error_invalid_overflow`
+      ) AS `glean_error_invalid_overflow`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_state.key, glean_error_invalid_state.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS `glean_error_invalid_state`
+      ) AS `glean_error_invalid_state`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_value.key, glean_error_invalid_value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS `glean_error_invalid_value`
+      ) AS `glean_error_invalid_value`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_bookmarks_migrated.key, migration_bookmarks_migrated.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_bookmarks_migrated
+          ) AS `migration_bookmarks_migrated`
+      ) AS `migration_bookmarks_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_history_migrated.key, migration_history_migrated.value)
+        FROM
+          UNNEST(metrics.labeled_counter.migration_history_migrated) AS `migration_history_migrated`
+      ) AS `migration_history_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_logins_failure_counts.key, migration_logins_failure_counts.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_logins_failure_counts
+          ) AS `migration_logins_failure_counts`
+      ) AS `migration_logins_failure_counts`
     ) AS `labeled_counter`,
-    STRUCT(metrics.labeled_string.migration_migration_versions) AS `labeled_string`,
+    STRUCT(
+      ARRAY(
+        SELECT
+          STRUCT(migration_migration_versions.key, migration_migration_versions.value)
+        FROM
+          UNNEST(
+            metrics.labeled_string.migration_migration_versions
+          ) AS `migration_migration_versions`
+      ) AS `migration_migration_versions`
+    ) AS `labeled_string`,
     STRUCT(
       metrics.string.migration_fxa_bad_auth_state,
       metrics.string.migration_fxa_failure_reason_rust,
@@ -273,19 +386,58 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timespan.migration_bookmarks_duration,
-      metrics.timespan.migration_history_duration,
-      metrics.timespan.migration_addons_total_duration,
-      metrics.timespan.migration_bookmarks_total_duration,
-      metrics.timespan.migration_fxa_total_duration,
-      metrics.timespan.migration_gecko_total_duration,
-      metrics.timespan.migration_history_total_duration,
-      metrics.timespan.migration_logins_total_duration,
-      metrics.timespan.migration_open_tabs_total_duration,
-      metrics.timespan.migration_pinned_sites_total_duration,
-      metrics.timespan.migration_search_total_duration,
-      metrics.timespan.migration_settings_total_duration,
-      metrics.timespan.migration_telemetry_identifiers_total_duration
+      STRUCT(
+        metrics.timespan.migration_bookmarks_duration.time_unit,
+        metrics.timespan.migration_bookmarks_duration.value
+      ) AS `migration_bookmarks_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_duration.time_unit,
+        metrics.timespan.migration_history_duration.value
+      ) AS `migration_history_duration`,
+      STRUCT(
+        metrics.timespan.migration_addons_total_duration.time_unit,
+        metrics.timespan.migration_addons_total_duration.value
+      ) AS `migration_addons_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_bookmarks_total_duration.time_unit,
+        metrics.timespan.migration_bookmarks_total_duration.value
+      ) AS `migration_bookmarks_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_fxa_total_duration.time_unit,
+        metrics.timespan.migration_fxa_total_duration.value
+      ) AS `migration_fxa_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_gecko_total_duration.time_unit,
+        metrics.timespan.migration_gecko_total_duration.value
+      ) AS `migration_gecko_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_total_duration.time_unit,
+        metrics.timespan.migration_history_total_duration.value
+      ) AS `migration_history_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_logins_total_duration.time_unit,
+        metrics.timespan.migration_logins_total_duration.value
+      ) AS `migration_logins_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_open_tabs_total_duration.time_unit,
+        metrics.timespan.migration_open_tabs_total_duration.value
+      ) AS `migration_open_tabs_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_pinned_sites_total_duration.time_unit,
+        metrics.timespan.migration_pinned_sites_total_duration.value
+      ) AS `migration_pinned_sites_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_search_total_duration.time_unit,
+        metrics.timespan.migration_search_total_duration.value
+      ) AS `migration_search_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_settings_total_duration.time_unit,
+        metrics.timespan.migration_settings_total_duration.value
+      ) AS `migration_settings_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_telemetry_identifiers_total_duration.time_unit,
+        metrics.timespan.migration_telemetry_identifiers_total_duration.value
+      ) AS `migration_telemetry_identifiers_total_duration`
     ) AS `timespan`,
     STRUCT(metrics.uuid.migration_telemetry_identifiers_fennec_client_id) AS `uuid`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
@@ -309,7 +461,27 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ARRAY(
+      SELECT
+        STRUCT(
+          experiments.key,
+          STRUCT(
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
+        )
+      FROM
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,
@@ -327,10 +499,79 @@ SELECT
   ).channel AS normalized_channel,
   CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.telemetry_sdk_build,
+    client_info.build_date,
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id,
+    STRUCT(
+      client_info.attribution.campaign,
+      client_info.attribution.content,
+      client_info.attribution.medium,
+      client_info.attribution.source,
+      client_info.attribution.term,
+      client_info.attribution.ext
+    ) AS `attribution`,
+    STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+  ) AS `client_info`,
   document_id,
-  events,
-  metadata,
+  ARRAY(
+    SELECT
+      STRUCT(
+        events.category,
+        ARRAY(
+          SELECT
+            STRUCT(extra.key, extra.value)
+          FROM
+            UNNEST(events.extra) AS `extra`
+        ) AS `extra`,
+        events.name,
+        events.timestamp
+      )
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
+  STRUCT(
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      metadata.header.parsed_date,
+      metadata.header.parsed_x_source_tags,
+      metadata.header.parsed_x_lb_tags
+    ) AS `header`,
+    STRUCT(
+      metadata.user_agent.browser,
+      metadata.user_agent.os,
+      metadata.user_agent.version
+    ) AS `user_agent`,
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
+  ) AS `metadata`,
   STRUCT(
     STRUCT(
       metrics.boolean.migration_addons_any_failures,
@@ -387,15 +628,65 @@ SELECT
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS `datetime`,
     STRUCT(
-      metrics.labeled_counter.glean_error_invalid_label,
-      metrics.labeled_counter.glean_error_invalid_overflow,
-      metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.migration_bookmarks_migrated,
-      metrics.labeled_counter.migration_history_migrated,
-      metrics.labeled_counter.migration_logins_failure_counts
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_label.key, glean_error_invalid_label.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS `glean_error_invalid_label`
+      ) AS `glean_error_invalid_label`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_overflow.key, glean_error_invalid_overflow.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.glean_error_invalid_overflow
+          ) AS `glean_error_invalid_overflow`
+      ) AS `glean_error_invalid_overflow`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_state.key, glean_error_invalid_state.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS `glean_error_invalid_state`
+      ) AS `glean_error_invalid_state`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_value.key, glean_error_invalid_value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS `glean_error_invalid_value`
+      ) AS `glean_error_invalid_value`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_bookmarks_migrated.key, migration_bookmarks_migrated.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_bookmarks_migrated
+          ) AS `migration_bookmarks_migrated`
+      ) AS `migration_bookmarks_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_history_migrated.key, migration_history_migrated.value)
+        FROM
+          UNNEST(metrics.labeled_counter.migration_history_migrated) AS `migration_history_migrated`
+      ) AS `migration_history_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_logins_failure_counts.key, migration_logins_failure_counts.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_logins_failure_counts
+          ) AS `migration_logins_failure_counts`
+      ) AS `migration_logins_failure_counts`
     ) AS `labeled_counter`,
-    STRUCT(metrics.labeled_string.migration_migration_versions) AS `labeled_string`,
+    STRUCT(
+      ARRAY(
+        SELECT
+          STRUCT(migration_migration_versions.key, migration_migration_versions.value)
+        FROM
+          UNNEST(
+            metrics.labeled_string.migration_migration_versions
+          ) AS `migration_migration_versions`
+      ) AS `migration_migration_versions`
+    ) AS `labeled_string`,
     STRUCT(
       metrics.string.migration_fxa_bad_auth_state,
       metrics.string.migration_fxa_failure_reason_rust,
@@ -405,19 +696,58 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timespan.migration_bookmarks_duration,
-      metrics.timespan.migration_history_duration,
-      metrics.timespan.migration_addons_total_duration,
-      metrics.timespan.migration_bookmarks_total_duration,
-      metrics.timespan.migration_fxa_total_duration,
-      metrics.timespan.migration_gecko_total_duration,
-      metrics.timespan.migration_history_total_duration,
-      metrics.timespan.migration_logins_total_duration,
-      metrics.timespan.migration_open_tabs_total_duration,
-      metrics.timespan.migration_pinned_sites_total_duration,
-      metrics.timespan.migration_search_total_duration,
-      metrics.timespan.migration_settings_total_duration,
-      metrics.timespan.migration_telemetry_identifiers_total_duration
+      STRUCT(
+        metrics.timespan.migration_bookmarks_duration.time_unit,
+        metrics.timespan.migration_bookmarks_duration.value
+      ) AS `migration_bookmarks_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_duration.time_unit,
+        metrics.timespan.migration_history_duration.value
+      ) AS `migration_history_duration`,
+      STRUCT(
+        metrics.timespan.migration_addons_total_duration.time_unit,
+        metrics.timespan.migration_addons_total_duration.value
+      ) AS `migration_addons_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_bookmarks_total_duration.time_unit,
+        metrics.timespan.migration_bookmarks_total_duration.value
+      ) AS `migration_bookmarks_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_fxa_total_duration.time_unit,
+        metrics.timespan.migration_fxa_total_duration.value
+      ) AS `migration_fxa_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_gecko_total_duration.time_unit,
+        metrics.timespan.migration_gecko_total_duration.value
+      ) AS `migration_gecko_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_total_duration.time_unit,
+        metrics.timespan.migration_history_total_duration.value
+      ) AS `migration_history_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_logins_total_duration.time_unit,
+        metrics.timespan.migration_logins_total_duration.value
+      ) AS `migration_logins_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_open_tabs_total_duration.time_unit,
+        metrics.timespan.migration_open_tabs_total_duration.value
+      ) AS `migration_open_tabs_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_pinned_sites_total_duration.time_unit,
+        metrics.timespan.migration_pinned_sites_total_duration.value
+      ) AS `migration_pinned_sites_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_search_total_duration.time_unit,
+        metrics.timespan.migration_search_total_duration.value
+      ) AS `migration_search_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_settings_total_duration.time_unit,
+        metrics.timespan.migration_settings_total_duration.value
+      ) AS `migration_settings_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_telemetry_identifiers_total_duration.time_unit,
+        metrics.timespan.migration_telemetry_identifiers_total_duration.value
+      ) AS `migration_telemetry_identifiers_total_duration`
     ) AS `timespan`,
     STRUCT(metrics.uuid.migration_telemetry_identifiers_fennec_client_id) AS `uuid`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
@@ -441,7 +771,27 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ARRAY(
+      SELECT
+        STRUCT(
+          experiments.key,
+          STRUCT(
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
+        )
+      FROM
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,
@@ -459,10 +809,79 @@ SELECT
   ).channel AS normalized_channel,
   CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.telemetry_sdk_build,
+    client_info.build_date,
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id,
+    STRUCT(
+      client_info.attribution.campaign,
+      client_info.attribution.content,
+      client_info.attribution.medium,
+      client_info.attribution.source,
+      client_info.attribution.term,
+      client_info.attribution.ext
+    ) AS `attribution`,
+    STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+  ) AS `client_info`,
   document_id,
-  events,
-  metadata,
+  ARRAY(
+    SELECT
+      STRUCT(
+        events.category,
+        ARRAY(
+          SELECT
+            STRUCT(extra.key, extra.value)
+          FROM
+            UNNEST(events.extra) AS `extra`
+        ) AS `extra`,
+        events.name,
+        events.timestamp
+      )
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
+  STRUCT(
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      metadata.header.parsed_date,
+      metadata.header.parsed_x_source_tags,
+      metadata.header.parsed_x_lb_tags
+    ) AS `header`,
+    STRUCT(
+      metadata.user_agent.browser,
+      metadata.user_agent.os,
+      metadata.user_agent.version
+    ) AS `user_agent`,
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
+  ) AS `metadata`,
   STRUCT(
     STRUCT(
       metrics.boolean.migration_addons_any_failures,
@@ -519,15 +938,65 @@ SELECT
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS `datetime`,
     STRUCT(
-      metrics.labeled_counter.glean_error_invalid_label,
-      metrics.labeled_counter.glean_error_invalid_overflow,
-      metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.migration_bookmarks_migrated,
-      metrics.labeled_counter.migration_history_migrated,
-      metrics.labeled_counter.migration_logins_failure_counts
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_label.key, glean_error_invalid_label.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS `glean_error_invalid_label`
+      ) AS `glean_error_invalid_label`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_overflow.key, glean_error_invalid_overflow.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.glean_error_invalid_overflow
+          ) AS `glean_error_invalid_overflow`
+      ) AS `glean_error_invalid_overflow`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_state.key, glean_error_invalid_state.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS `glean_error_invalid_state`
+      ) AS `glean_error_invalid_state`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_value.key, glean_error_invalid_value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS `glean_error_invalid_value`
+      ) AS `glean_error_invalid_value`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_bookmarks_migrated.key, migration_bookmarks_migrated.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_bookmarks_migrated
+          ) AS `migration_bookmarks_migrated`
+      ) AS `migration_bookmarks_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_history_migrated.key, migration_history_migrated.value)
+        FROM
+          UNNEST(metrics.labeled_counter.migration_history_migrated) AS `migration_history_migrated`
+      ) AS `migration_history_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_logins_failure_counts.key, migration_logins_failure_counts.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_logins_failure_counts
+          ) AS `migration_logins_failure_counts`
+      ) AS `migration_logins_failure_counts`
     ) AS `labeled_counter`,
-    STRUCT(metrics.labeled_string.migration_migration_versions) AS `labeled_string`,
+    STRUCT(
+      ARRAY(
+        SELECT
+          STRUCT(migration_migration_versions.key, migration_migration_versions.value)
+        FROM
+          UNNEST(
+            metrics.labeled_string.migration_migration_versions
+          ) AS `migration_migration_versions`
+      ) AS `migration_migration_versions`
+    ) AS `labeled_string`,
     STRUCT(
       metrics.string.migration_fxa_bad_auth_state,
       metrics.string.migration_fxa_failure_reason_rust,
@@ -537,19 +1006,58 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timespan.migration_bookmarks_duration,
-      metrics.timespan.migration_history_duration,
-      metrics.timespan.migration_addons_total_duration,
-      metrics.timespan.migration_bookmarks_total_duration,
-      metrics.timespan.migration_fxa_total_duration,
-      metrics.timespan.migration_gecko_total_duration,
-      metrics.timespan.migration_history_total_duration,
-      metrics.timespan.migration_logins_total_duration,
-      metrics.timespan.migration_open_tabs_total_duration,
-      metrics.timespan.migration_pinned_sites_total_duration,
-      metrics.timespan.migration_search_total_duration,
-      metrics.timespan.migration_settings_total_duration,
-      metrics.timespan.migration_telemetry_identifiers_total_duration
+      STRUCT(
+        metrics.timespan.migration_bookmarks_duration.time_unit,
+        metrics.timespan.migration_bookmarks_duration.value
+      ) AS `migration_bookmarks_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_duration.time_unit,
+        metrics.timespan.migration_history_duration.value
+      ) AS `migration_history_duration`,
+      STRUCT(
+        metrics.timespan.migration_addons_total_duration.time_unit,
+        metrics.timespan.migration_addons_total_duration.value
+      ) AS `migration_addons_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_bookmarks_total_duration.time_unit,
+        metrics.timespan.migration_bookmarks_total_duration.value
+      ) AS `migration_bookmarks_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_fxa_total_duration.time_unit,
+        metrics.timespan.migration_fxa_total_duration.value
+      ) AS `migration_fxa_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_gecko_total_duration.time_unit,
+        metrics.timespan.migration_gecko_total_duration.value
+      ) AS `migration_gecko_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_total_duration.time_unit,
+        metrics.timespan.migration_history_total_duration.value
+      ) AS `migration_history_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_logins_total_duration.time_unit,
+        metrics.timespan.migration_logins_total_duration.value
+      ) AS `migration_logins_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_open_tabs_total_duration.time_unit,
+        metrics.timespan.migration_open_tabs_total_duration.value
+      ) AS `migration_open_tabs_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_pinned_sites_total_duration.time_unit,
+        metrics.timespan.migration_pinned_sites_total_duration.value
+      ) AS `migration_pinned_sites_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_search_total_duration.time_unit,
+        metrics.timespan.migration_search_total_duration.value
+      ) AS `migration_search_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_settings_total_duration.time_unit,
+        metrics.timespan.migration_settings_total_duration.value
+      ) AS `migration_settings_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_telemetry_identifiers_total_duration.time_unit,
+        metrics.timespan.migration_telemetry_identifiers_total_duration.value
+      ) AS `migration_telemetry_identifiers_total_duration`
     ) AS `timespan`,
     STRUCT(metrics.uuid.migration_telemetry_identifiers_fennec_client_id) AS `uuid`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
@@ -573,7 +1081,27 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ARRAY(
+      SELECT
+        STRUCT(
+          experiments.key,
+          STRUCT(
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
+        )
+      FROM
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,
@@ -591,10 +1119,79 @@ SELECT
   ).channel AS normalized_channel,
   CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.telemetry_sdk_build,
+    client_info.build_date,
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id,
+    STRUCT(
+      client_info.attribution.campaign,
+      client_info.attribution.content,
+      client_info.attribution.medium,
+      client_info.attribution.source,
+      client_info.attribution.term,
+      client_info.attribution.ext
+    ) AS `attribution`,
+    STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+  ) AS `client_info`,
   document_id,
-  events,
-  metadata,
+  ARRAY(
+    SELECT
+      STRUCT(
+        events.category,
+        ARRAY(
+          SELECT
+            STRUCT(extra.key, extra.value)
+          FROM
+            UNNEST(events.extra) AS `extra`
+        ) AS `extra`,
+        events.name,
+        events.timestamp
+      )
+    FROM
+      UNNEST(events) AS `events`
+  ) AS `events`,
+  STRUCT(
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      metadata.header.parsed_date,
+      metadata.header.parsed_x_source_tags,
+      metadata.header.parsed_x_lb_tags
+    ) AS `header`,
+    STRUCT(
+      metadata.user_agent.browser,
+      metadata.user_agent.os,
+      metadata.user_agent.version
+    ) AS `user_agent`,
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
+  ) AS `metadata`,
   STRUCT(
     STRUCT(
       metrics.boolean.migration_addons_any_failures,
@@ -651,15 +1248,65 @@ SELECT
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS `datetime`,
     STRUCT(
-      metrics.labeled_counter.glean_error_invalid_label,
-      metrics.labeled_counter.glean_error_invalid_overflow,
-      metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value,
-      metrics.labeled_counter.migration_bookmarks_migrated,
-      metrics.labeled_counter.migration_history_migrated,
-      metrics.labeled_counter.migration_logins_failure_counts
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_label.key, glean_error_invalid_label.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_label) AS `glean_error_invalid_label`
+      ) AS `glean_error_invalid_label`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_overflow.key, glean_error_invalid_overflow.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.glean_error_invalid_overflow
+          ) AS `glean_error_invalid_overflow`
+      ) AS `glean_error_invalid_overflow`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_state.key, glean_error_invalid_state.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_state) AS `glean_error_invalid_state`
+      ) AS `glean_error_invalid_state`,
+      ARRAY(
+        SELECT
+          STRUCT(glean_error_invalid_value.key, glean_error_invalid_value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.glean_error_invalid_value) AS `glean_error_invalid_value`
+      ) AS `glean_error_invalid_value`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_bookmarks_migrated.key, migration_bookmarks_migrated.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_bookmarks_migrated
+          ) AS `migration_bookmarks_migrated`
+      ) AS `migration_bookmarks_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_history_migrated.key, migration_history_migrated.value)
+        FROM
+          UNNEST(metrics.labeled_counter.migration_history_migrated) AS `migration_history_migrated`
+      ) AS `migration_history_migrated`,
+      ARRAY(
+        SELECT
+          STRUCT(migration_logins_failure_counts.key, migration_logins_failure_counts.value)
+        FROM
+          UNNEST(
+            metrics.labeled_counter.migration_logins_failure_counts
+          ) AS `migration_logins_failure_counts`
+      ) AS `migration_logins_failure_counts`
     ) AS `labeled_counter`,
-    STRUCT(metrics.labeled_string.migration_migration_versions) AS `labeled_string`,
+    STRUCT(
+      ARRAY(
+        SELECT
+          STRUCT(migration_migration_versions.key, migration_migration_versions.value)
+        FROM
+          UNNEST(
+            metrics.labeled_string.migration_migration_versions
+          ) AS `migration_migration_versions`
+      ) AS `migration_migration_versions`
+    ) AS `labeled_string`,
     STRUCT(
       metrics.string.migration_fxa_bad_auth_state,
       metrics.string.migration_fxa_failure_reason_rust,
@@ -669,19 +1316,58 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(
-      metrics.timespan.migration_bookmarks_duration,
-      metrics.timespan.migration_history_duration,
-      metrics.timespan.migration_addons_total_duration,
-      metrics.timespan.migration_bookmarks_total_duration,
-      metrics.timespan.migration_fxa_total_duration,
-      metrics.timespan.migration_gecko_total_duration,
-      metrics.timespan.migration_history_total_duration,
-      metrics.timespan.migration_logins_total_duration,
-      metrics.timespan.migration_open_tabs_total_duration,
-      metrics.timespan.migration_pinned_sites_total_duration,
-      metrics.timespan.migration_search_total_duration,
-      metrics.timespan.migration_settings_total_duration,
-      metrics.timespan.migration_telemetry_identifiers_total_duration
+      STRUCT(
+        metrics.timespan.migration_bookmarks_duration.time_unit,
+        metrics.timespan.migration_bookmarks_duration.value
+      ) AS `migration_bookmarks_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_duration.time_unit,
+        metrics.timespan.migration_history_duration.value
+      ) AS `migration_history_duration`,
+      STRUCT(
+        metrics.timespan.migration_addons_total_duration.time_unit,
+        metrics.timespan.migration_addons_total_duration.value
+      ) AS `migration_addons_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_bookmarks_total_duration.time_unit,
+        metrics.timespan.migration_bookmarks_total_duration.value
+      ) AS `migration_bookmarks_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_fxa_total_duration.time_unit,
+        metrics.timespan.migration_fxa_total_duration.value
+      ) AS `migration_fxa_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_gecko_total_duration.time_unit,
+        metrics.timespan.migration_gecko_total_duration.value
+      ) AS `migration_gecko_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_history_total_duration.time_unit,
+        metrics.timespan.migration_history_total_duration.value
+      ) AS `migration_history_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_logins_total_duration.time_unit,
+        metrics.timespan.migration_logins_total_duration.value
+      ) AS `migration_logins_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_open_tabs_total_duration.time_unit,
+        metrics.timespan.migration_open_tabs_total_duration.value
+      ) AS `migration_open_tabs_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_pinned_sites_total_duration.time_unit,
+        metrics.timespan.migration_pinned_sites_total_duration.value
+      ) AS `migration_pinned_sites_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_search_total_duration.time_unit,
+        metrics.timespan.migration_search_total_duration.value
+      ) AS `migration_search_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_settings_total_duration.time_unit,
+        metrics.timespan.migration_settings_total_duration.value
+      ) AS `migration_settings_total_duration`,
+      STRUCT(
+        metrics.timespan.migration_telemetry_identifiers_total_duration.time_unit,
+        metrics.timespan.migration_telemetry_identifiers_total_duration.value
+      ) AS `migration_telemetry_identifiers_total_duration`
     ) AS `timespan`,
     STRUCT(metrics.uuid.migration_telemetry_identifiers_fennec_client_id) AS `uuid`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
@@ -705,7 +1391,27 @@ SELECT
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ARRAY(
+      SELECT
+        STRUCT(
+          experiments.key,
+          STRUCT(
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
+        )
+      FROM
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp,
   app_version_major,

@@ -341,6 +341,14 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
+    # Resources exceeded
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_with_ads_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_ad_clicks/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_ad_clicks_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_with_ads_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_live_v1/view.sql
 
 schema:
   base_schemas_dir: bigquery_etl/schema

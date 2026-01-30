@@ -202,11 +202,7 @@ def publish(
     add_managed_label,
     respect_dryrun_skip,
 ):
-    """Publish views.
-
-    Views are published in topological order (respecting dependencies) using
-    parallel processing. Change detection happens within the publish method.
-    """
+    """Publish views."""
     exit_if_running_under_coding_agent()
 
     # set log level
@@ -230,7 +226,13 @@ def publish(
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
+    if not force:
+        has_changes = partial(_view_has_changes, target_project, credentials)
 
+        # only views with changes
+        with Pool(parallelism) as p:
+            changes = p.map(has_changes, views)
+        views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
     view_id_graph = {
@@ -248,7 +250,6 @@ def publish(
         views_by_id=views_by_id,
         target_project=target_project,
         dry_run=dry_run,
-        force=force,
         credentials=credentials,
         results=results,
     )
@@ -262,19 +263,22 @@ def publish(
     click.echo("All have been published.")
 
 
+def _view_has_changes(target_project, credentials, view):
+    return view.has_changes(target_project, credentials)
+
+
 def _publish_view_callback(
     view_id,
     followup_queue,
     views_by_id,
     target_project,
     dry_run,
-    force,
     credentials,
     results,
 ):
     try:
         client = bigquery.Client(credentials=credentials)
-        success = views_by_id[view_id].publish(target_project, dry_run, client, force)
+        success = views_by_id[view_id].publish(target_project, dry_run, client)
         results[view_id] = success if success is not None else True
     except Exception:
         print(f"Failed to publish view: {view_id}")

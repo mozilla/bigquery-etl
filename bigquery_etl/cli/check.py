@@ -68,11 +68,9 @@ def _parse_check_output(output: str) -> str:
     return output
 
 
-@click.group(
-    help="""
+@click.group(help="""
         Commands for managing and running bqetl data checks.
-    """
-)
+    """)
 @click.pass_context
 def check(ctx):
     """Create the CLI group for the check command."""

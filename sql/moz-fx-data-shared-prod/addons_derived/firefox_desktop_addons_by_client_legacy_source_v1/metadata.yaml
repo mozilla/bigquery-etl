@@ -1,0 +1,26 @@
+---
+friendly_name: Desktop addons by client
+description: >-
+  Clients_daily-like table that records only the dimensions and addon info
+  necessary to power daily the `amo_stats_dau_historical_v1` query.
+
+  NOTE: This tables has been moved from `amo_prod.desktop_addons_by_client_v1`.
+        This table is built using legacy telemetry and a new version based on Glean exists: `addons_derived.firefox_desktop_addons_by_client_v1`
+owners:
+  - kik@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+  table_table: client_level
+scheduling:
+  dag_name: bqetl_amo_stats
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - sample_id

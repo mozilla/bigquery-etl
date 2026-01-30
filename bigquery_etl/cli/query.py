@@ -33,6 +33,7 @@ from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
+    exit_if_running_under_coding_agent,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -208,15 +209,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
-            reformat(
-                f"""CREATE OR REPLACE VIEW
+        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
-            )
-            + "\n"
-        )
+                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -232,15 +228,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"
@@ -581,6 +572,8 @@ def _backfill_query(
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -711,6 +704,8 @@ def backfill(
     override_retention_range_limit,
 ):
     """Run a backfill."""
+    exit_if_running_under_coding_agent()
+
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
@@ -859,6 +854,8 @@ def backfill(
     Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
     Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -923,6 +920,8 @@ def run(
     dataset_id,
 ):
     """Run a query."""
+    exit_if_running_under_coding_agent()
+
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
@@ -1208,6 +1207,8 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
 @query.command(
     help="""Run a multipart query.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -1316,6 +1317,8 @@ def run_multipart(
     schema_update_options,
 ):
     """Run a multipart query."""
+    exit_if_running_under_coding_agent()
+
     if dataset_id is not None and "." not in dataset_id and project_id is not None:
         dataset_id = f"{project_id}.{dataset_id}"
     if "." not in destination_table and dataset_id is not None:
@@ -1526,6 +1529,8 @@ def _initialize_in_parallel(
        It supports `query.sql` files that use the is_init() pattern.
        To run in parallel per sample_id, include a @sample_id parameter in the query.
 
+       Coding agents aren't allowed to run this command.
+
        Examples:
        - For init.sql files: ./bqetl query initialize telemetry_derived.ssl_ratios_v1
        - For query.sql files and parallel run: ./bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
@@ -1577,6 +1582,8 @@ def initialize(
     sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
+    exit_if_running_under_coding_agent()
+
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
@@ -2466,6 +2473,8 @@ def _update_query_schema(
 @schema.command(
     help="""Deploy the query schema.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
@@ -2524,6 +2533,8 @@ def deploy(
     parallelism,
 ):
     """CLI command for deploying destination table schemas."""
+    exit_if_running_under_coding_agent()
+
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "

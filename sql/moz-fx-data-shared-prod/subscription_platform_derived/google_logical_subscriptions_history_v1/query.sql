@@ -335,7 +335,8 @@ SELECT
         )
       ).*,
       CAST(NULL AS BOOL) AS has_refunds,
-      CAST(NULL AS BOOL) AS has_fraudulent_charges
+      CAST(NULL AS BOOL) AS has_fraudulent_charges,
+      'Google Play Store' AS payment_method
   ) AS subscription
 FROM
   subscriptions_history AS history

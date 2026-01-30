@@ -1,0 +1,12 @@
+SELECT
+  id,
+  billing_detail_address_country,
+  billing_detail_address_postal_code,
+  billing_detail_address_state,
+  created,
+  metadata,
+  type,
+  customer_id,
+  _fivetran_synced,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.payment_method

@@ -9,6 +9,11 @@ fields:
   mode: NULLABLE
   description: |-
     Provider of the subscription ("Stripe", "Google", or "Apple").
+- name: payment_method_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of a payment method that's attached to the customer, to be used as
+    the customer's default payment method for subscriptions and invoices.
 - name: payment_provider
   type: STRING
   mode: NULLABLE

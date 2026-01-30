@@ -19399,6 +19399,22 @@ fields:
       description: 'How often a certificate''s trust is in the cache already.
 
         '
+    - name: web_notification_show_safe_browsing_block
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The rate of notification show attempts that are blocked because
+        the origin is on the Safe Browsing blocklist (phishing, malware, etc.). The
+        numerator is the number of blocked attempts, and the denominator is the total
+        number of show attempts that passed the initial permission check.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

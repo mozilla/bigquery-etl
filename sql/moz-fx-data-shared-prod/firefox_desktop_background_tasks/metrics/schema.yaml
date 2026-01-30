@@ -435,6 +435,14 @@ fields:
       description: 'True when the browser was started in kiosk mode.
 
         '
+    - name: browser_global_ai_control_is_blocking
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Status of the global AI enhancements setting.
+
+        When true, enhancements are blocked.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

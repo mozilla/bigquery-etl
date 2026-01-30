@@ -1848,7 +1848,8 @@ SELECT
       metrics.rate.parsing_svg_unusual_pcdata,
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
-      metrics.rate.cert_trust_cache_hits
+      metrics.rate.cert_trust_cache_hits,
+      metrics.rate.web_notification_show_safe_browsing_block
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -3913,7 +3914,8 @@ SELECT
       metrics.rate.parsing_svg_unusual_pcdata,
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
-      metrics.rate.cert_trust_cache_hits
+      metrics.rate.cert_trust_cache_hits,
+      metrics.rate.web_notification_show_safe_browsing_block
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -5998,7 +6000,8 @@ SELECT
       metrics.rate.parsing_svg_unusual_pcdata,
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
-      metrics.rate.cert_trust_cache_hits
+      metrics.rate.cert_trust_cache_hits,
+      metrics.rate.web_notification_show_safe_browsing_block
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(

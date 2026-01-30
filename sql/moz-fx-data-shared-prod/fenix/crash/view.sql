@@ -17,7 +17,11 @@ SELECT
     STRUCT(
       metrics.boolean.crash_startup,
       metrics.boolean.crash_is_garbage_collecting,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled,
+      metrics.boolean.crash_windows_error_reporting,
+      metrics.boolean.dll_blocklist_init_failed,
+      metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
@@ -43,9 +47,24 @@ SELECT
       metrics.string.crash_profiler_child_shutdown_phase,
       metrics.string.crash_shutdown_progress,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_windows_file_dialog_error_code,
+      metrics.string.windows_package_family_name
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.timespan.crash_uptime,
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
+    ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
       metrics.object.crash_breadcrumbs,
@@ -71,7 +90,10 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       metrics.string_list.environment_experimental_features,
-      metrics.string_list.glean_ping_uploader_capabilities
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.crash_utility_actors_name,
+      metrics.string_list.dll_blocklist_list,
+      metrics.string_list.environment_nimbus_enrollments
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -103,7 +125,11 @@ SELECT
     STRUCT(
       metrics.boolean.crash_startup,
       metrics.boolean.crash_is_garbage_collecting,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled,
+      metrics.boolean.crash_windows_error_reporting,
+      metrics.boolean.dll_blocklist_init_failed,
+      metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
@@ -129,9 +155,24 @@ SELECT
       metrics.string.crash_profiler_child_shutdown_phase,
       metrics.string.crash_shutdown_progress,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_windows_file_dialog_error_code,
+      metrics.string.windows_package_family_name
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.timespan.crash_uptime,
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
+    ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
       metrics.object.crash_breadcrumbs,
@@ -157,7 +198,10 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       metrics.string_list.environment_experimental_features,
-      metrics.string_list.glean_ping_uploader_capabilities
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.crash_utility_actors_name,
+      metrics.string_list.dll_blocklist_list,
+      metrics.string_list.environment_nimbus_enrollments
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -189,7 +233,11 @@ SELECT
     STRUCT(
       metrics.boolean.crash_startup,
       metrics.boolean.crash_is_garbage_collecting,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled,
+      metrics.boolean.crash_windows_error_reporting,
+      metrics.boolean.dll_blocklist_init_failed,
+      metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
@@ -215,9 +263,24 @@ SELECT
       metrics.string.crash_profiler_child_shutdown_phase,
       metrics.string.crash_shutdown_progress,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_windows_file_dialog_error_code,
+      metrics.string.windows_package_family_name
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.timespan.crash_uptime,
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
+    ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
       metrics.object.crash_breadcrumbs,
@@ -243,7 +306,10 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       metrics.string_list.environment_experimental_features,
-      metrics.string_list.glean_ping_uploader_capabilities
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.crash_utility_actors_name,
+      metrics.string_list.dll_blocklist_list,
+      metrics.string_list.environment_nimbus_enrollments
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -275,7 +341,11 @@ SELECT
     STRUCT(
       metrics.boolean.crash_startup,
       metrics.boolean.crash_is_garbage_collecting,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled,
+      metrics.boolean.crash_windows_error_reporting,
+      metrics.boolean.dll_blocklist_init_failed,
+      metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
@@ -301,9 +371,24 @@ SELECT
       metrics.string.crash_profiler_child_shutdown_phase,
       metrics.string.crash_shutdown_progress,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_windows_file_dialog_error_code,
+      metrics.string.windows_package_family_name
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.timespan.crash_uptime,
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
+    ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
       metrics.object.crash_breadcrumbs,
@@ -329,7 +414,10 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       metrics.string_list.environment_experimental_features,
-      metrics.string_list.glean_ping_uploader_capabilities
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.crash_utility_actors_name,
+      metrics.string_list.dll_blocklist_list,
+      metrics.string_list.environment_nimbus_enrollments
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -361,7 +449,11 @@ SELECT
     STRUCT(
       metrics.boolean.crash_startup,
       metrics.boolean.crash_is_garbage_collecting,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled,
+      metrics.boolean.crash_windows_error_reporting,
+      metrics.boolean.dll_blocklist_init_failed,
+      metrics.boolean.dll_blocklist_user32_loaded_before
     ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
@@ -387,9 +479,24 @@ SELECT
       metrics.string.crash_profiler_child_shutdown_phase,
       metrics.string.crash_shutdown_progress,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_windows_file_dialog_error_code,
+      metrics.string.windows_package_family_name
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.timespan.crash_uptime,
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
+    ) AS `timespan`,
     STRUCT(
       metrics.object.crash_async_shutdown_timeout,
       metrics.object.crash_breadcrumbs,
@@ -415,7 +522,10 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       metrics.string_list.environment_experimental_features,
-      metrics.string_list.glean_ping_uploader_capabilities
+      metrics.string_list.glean_ping_uploader_capabilities,
+      metrics.string_list.crash_utility_actors_name,
+      metrics.string_list.dll_blocklist_list,
+      metrics.string_list.environment_nimbus_enrollments
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,

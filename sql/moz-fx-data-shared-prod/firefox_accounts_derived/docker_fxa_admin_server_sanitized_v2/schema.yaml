@@ -585,6 +585,15 @@ fields:
       - name: skip_metric
         type: STRING
         mode: NULLABLE
+      - name: ratelimit
+        type: STRING
+        mode: NULLABLE
+      - name: overrideexcludefromalerting
+        type: STRING
+        mode: NULLABLE
+      - name: skip_rld
+        type: STRING
+        mode: NULLABLE
   - name: path
     type: STRING
     mode: NULLABLE
@@ -806,6 +815,49 @@ fields:
       type: STRING
       mode: NULLABLE
 - name: apphubDestination
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: application
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: container
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: id
+      type: STRING
+      mode: NULLABLE
+  - name: service
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: environmentType
+      type: STRING
+      mode: NULLABLE
+    - name: criticalityType
+      type: STRING
+      mode: NULLABLE
+  - name: workload
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: environmentType
+      type: STRING
+      mode: NULLABLE
+    - name: criticalityType
+      type: STRING
+      mode: NULLABLE
+- name: apphubSource
   type: RECORD
   mode: NULLABLE
   fields:

@@ -388,10 +388,6 @@ class View:
             query_job = client.query(sql, job_config)
 
             if dry_run:
-                job_config = bigquery.QueryJobConfig(
-                    use_legacy_sql=False, dry_run=dry_run
-                )
-                client.query(sql, job_config)
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
                 try:

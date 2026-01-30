@@ -126,10 +126,10 @@ class TestQuery:
                 exists = "dag_name: bqetl_test" in file.read()
                 assert exists
 
-    def test_create_use_live_query(self, runner):
+    def test_create_live_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test_derived")
-            result = runner.invoke(create, ["test.test_query", "--use_live"])
+            result = runner.invoke(create, ["test.test_query", "--live"])
             assert result.exit_code == 0
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod")) == [
                 "test",
@@ -137,7 +137,7 @@ class TestQuery:
             ]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test_derived")) == [
                 "dataset_metadata.yaml",
-                "test_query_use_live_v1",
+                "test_query_live_v1",
                 "test_query_v1",
                 "test_query_v1_macros.jinja",
             ]
@@ -146,7 +146,7 @@ class TestQuery:
             ) == ["metadata.yaml", "query.sql"]
             assert sorted(
                 os.listdir(
-                    "sql/moz-fx-data-shared-prod/test_derived/test_query_use_live_v1"
+                    "sql/moz-fx-data-shared-prod/test_derived/test_query_live_v1"
                 )
             ) == ["metadata.yaml", "query.sql"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [

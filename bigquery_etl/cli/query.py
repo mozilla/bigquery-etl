@@ -153,8 +153,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.option(
-    "--use_live",
-    "--use-live",
+    "--live",
     help=(
         """Using this option creates a query that consists of two tables with
         different schedules based on a single base query, one that runs daily
@@ -168,7 +167,7 @@ def query(ctx):
 @click.option(
     "--hourly",
     help=(
-        """This options is a special case of the --use-live option for
+        """This options is a special case of the --live option for
         tables that update hourly.
 
         Using this option creates a query that consists of two tables with
@@ -181,7 +180,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, hourly):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -205,11 +204,11 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
     view_exist_ok = False
     path = Path(sql_dir)
     if hourly:
-        use_live = True
-        use_live_slug = "_hourly"
+        live = True
+        live_slug = "_hourly"
         no_schedule = True
-    elif use_live:
-        use_live_slug = "_use_live"
+    elif live:
+        live_slug = "_live"
         no_schedule = True
 
     if dataset.endswith("_derived"):
@@ -227,10 +226,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
     table_name = name + version
     derived_path = path / project_id / dataset / table_name
     derived_path.mkdir(parents=True)
-    if use_live:
-        use_live_table_name = name + use_live_slug + version
-        use_live_path = path / project_id / dataset / (name + use_live_slug + version)
-        use_live_path.mkdir(parents=True)
+    if live:
+        live_table_name = name + live_slug + version
+        live_path = path / project_id / dataset / (name + live_slug + version)
+        live_path.mkdir(parents=True)
     if create_view_path:
         view_path = path / project_id / dataset.replace("_derived", "") / name
         view_path.mkdir(parents=True, exist_ok=view_exist_ok)
@@ -239,14 +238,14 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
         # Don't overwrite the view_file if it already exists
         view_dataset = dataset.replace("_derived", "")
 
-        if use_live:
+        if live:
             view_text = f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
                   `{project_id}.{dataset}.{table_name}`
                 UNION ALL
                 SELECT * FROM
-                  `{project_id}.{dataset}.{use_live_table_name}`
+                  `{project_id}.{dataset}.{live_table_name}`
                 WHERE submission_date > (
                   SELECT MAX(submission_date)
                   FROM `{project_id}.{dataset}.{table_name}`
@@ -273,22 +272,22 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
         click.echo(f"Created view in {view_path}")
 
     # create query.sql file
-    if use_live:
+    if live:
         macro_file = path / project_id / dataset / (table_name + "_macros.jinja")
         if hourly:
             macro_file.write_text(
                 reformat(
-                    f"""{{% macro {table_name}(use_live) %}}
+                    f"""{{% macro {table_name}(live) %}}
                         SELECT
                             *
                         FROM
-                            {{% if use_live %}}
+                            {{% if live %}}
                             table_live
                             {{% else %}}
                             table_stable
                             {{% endif %}}
                         WHERE
-                            {{% if use_live %}}
+                            {{% if live %}}
                             TIMESTAMP_TRUNC(submission_timestamp, HOUR) = @submission_hour
                             {{% else %}}
                             TIMESTAMP_TRUNC(submission_date, DAY) = @submission_date
@@ -300,23 +299,23 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
         else:
             macro_file.write_text(
                 reformat(
-                    f"""{{% macro {table_name}(use_live) %}}
+                    f"""{{% macro {table_name}(live) %}}
                         SELECT
                             *
                         FROM
-                            {{% if use_live %}}
+                            {{% if live %}}
                             table_live
                             {{% else %}}
                             table_stable
                             {{% endif %}}
                         WHERE
-                            {{% if use_live %}}
+                            {{% if live %}}
                             submission_timestamp >= @interval_start
                             AND submission_timestamp < @interval_end
                             {{% else %}}
                             TIMESTAMP_TRUNC(submission_date, DAY) = @submission_date
                             {{% endif %}}
-                        {{% if use_live %}}
+                        {{% if live %}}
                         -- Overwrite the daily partition with a combination of new records for
                         -- the given interval (above) and existing records outside the given
                         -- interval (below)
@@ -324,7 +323,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                         SELECT
                             *
                         FROM
-                            {project_id}.{dataset}.{use_live_table_name}
+                            {project_id}.{dataset}.{live_table_name}
                         WHERE
                             TIMESTAMP_TRUNC(submission_date, DAY) = TIMESTAMP_TRUNC(@interval_start, DAY)
                             AND (
@@ -344,18 +343,18 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
                 {{% from "{macro_file}" import {table_name} %}}
-                {{{{ {table_name}(use_live=false) }}}}"""
+                {{{{ {table_name}(live=false) }}}}"""
             )
             + "\n"
         )
-        use_live_file = use_live_path / "query.sql"
-        use_live_file.write_text(
+        live_file = live_path / "query.sql"
+        live_file.write_text(
             reformat(
-                f"""-- Query for {dataset}.{use_live_table_name}
+                f"""-- Query for {dataset}.{live_table_name}
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
                 {{% from "{macro_file}" import {table_name} %}}
-                {{{{ {table_name}(use_live=true) }}}}"""
+                {{{{ {table_name}(live=true) }}}}"""
             )
             + "\n"
         )
@@ -387,8 +386,8 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
     metadata.write(metadata_file)
     click.echo(f"Created query in {derived_path}")
 
-    if use_live:
-        use_live_metadata_file = use_live_path / "metadata.yaml"
+    if live:
+        live_metadata_file = live_path / "metadata.yaml"
         if hourly:
             labels = {"incremental": True, "schedule": hourly}
             time_partitioning = PartitionMetadata(
@@ -399,7 +398,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
             parameters = [
                 "submission_hour:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d %h:00:00')}}",
             ]
-            destination_table = f"{use_live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d%h)}}}}"
+            destination_table = f"{live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d%h)}}}}"
         else:
             labels = {"incremental": True}
             time_partitioning = PartitionMetadata(
@@ -411,9 +410,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 "interval_start:DATE:{{}}",
                 "interval_end:DATE:{{(execution_date - macros.timedelta(hours=1).strftime('%Y-%m-%d %h:%m:%s'))}}",
             ]
-            destination_table = f"{use_live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d)}}}}"
-        use_live_metadata = Metadata(
-            friendly_name=string.capwords((name + use_live_slug).replace("_", " ")),
+            destination_table = f"{live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d)}}}}"
+        live_metadata = Metadata(
+            friendly_name=string.capwords((name + live_slug).replace("_", " ")),
             description="Please provide a description for the query",
             owners=[owner],
             labels=labels,
@@ -422,7 +421,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
                 "date_partition_parameter": None,
                 "parameters": parameters,
                 "destination_table": destination_table,
-                "query_file_path": use_live_path / "query.sql",
+                "query_file_path": live_path / "query.sql",
             },
             bigquery=BigQueryMetadata(
                 time_partitioning=time_partitioning,
@@ -430,8 +429,8 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, use_live, ho
             ),
             require_column_descriptions=True,
         )
-        use_live_metadata.write(use_live_metadata_file)
-        click.echo(f"Created use_live query in {use_live_path}")
+        live_metadata.write(live_metadata_file)
+        click.echo(f"Created live query in {live_path}")
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():

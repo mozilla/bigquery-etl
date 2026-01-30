@@ -385,6 +385,8 @@ fields:
     - name: crash_dom_fission_enabled
       type: BOOLEAN
       mode: NULLABLE
+      description: Set to 1 when DOM fission is enabled, and subframes are potentially
+        loaded in a separate process.
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -529,30 +531,44 @@ fields:
     - name: crash_cause
       type: STRING
       mode: NULLABLE
+      description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
+
+        '
     - name: crash_build_id
       type: STRING
       mode: NULLABLE
+      description: Application build ID, the format is YYYYMMDDHHMMSS.
     - name: crash_crash_type
       type: STRING
       mode: NULLABLE
+      description: The type of crash that occurred (Android-only).
     - name: crash_hang
       type: STRING
       mode: NULLABLE
+      description: Set if the crash was the result of a hang, with a value which describes
+        the type of hang (e.g. "ui" or "shutdown").
     - name: crash_linux_memory_psi
       type: STRING
       mode: NULLABLE
+      description: 'Memory PSI (Pressure Stall Information) values from /proc/pressure/memory
+        as comma-separated list: some_avg10,some_avg60,some_avg300,some_total,full_avg10,full_avg60,full_avg300,full_total'
     - name: crash_minidump_sha_256_hash
       type: STRING
       mode: NULLABLE
+      description: The sha256 hash of the minidump file, if available.
     - name: crash_product_id
       type: STRING
       mode: NULLABLE
+      description: Application UUID (e.g. ec8030f7-c20a-464f-9b0e-13a3a9e97384).
     - name: crash_product_name
       type: STRING
       mode: NULLABLE
+      description: Application name (e.g. Firefox).
     - name: crash_shutdown_reason
       type: STRING
       mode: NULLABLE
+      description: One out of "Unknown", "AppClose", "AppRestart", "OSForceClose",
+        "OSSessionEnd" or "OSShutdown".
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -594,6 +610,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: How long the user had been inactive in seconds if the user was
+        inactive at crash.  The value is not set if the user state was active.
     - name: crash_time_since_last_crash
       type: RECORD
       mode: NULLABLE
@@ -604,6 +622,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: Time in seconds since the last crash occurred.
   - name: object
     type: RECORD
     mode: NULLABLE
@@ -631,9 +650,14 @@ fields:
     - name: crash_breadcrumbs
       type: JSON
       mode: NULLABLE
+      description: 'Crash breadcrumb information.
+
+        '
     - name: crash_java_exception
       type: JSON
       mode: NULLABLE
+      description: JSON structured Java stack trace, only present on Firefox for Android
+        if we encounter an uncaught Java exception.
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -835,3 +859,4 @@ fields:
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
+  description: App ID of the channel data was received from

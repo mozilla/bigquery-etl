@@ -9,6 +9,7 @@ AS
     window_start,
     window_end,
     crash_process_type,
+    crash_signature,
     crash_count
   FROM
     `moz-fx-data-shared-prod.{{ app_dataset }}_derived.experiment_crash_events_live_v1`
@@ -22,6 +23,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.experiment_crash_aggregates_v1`

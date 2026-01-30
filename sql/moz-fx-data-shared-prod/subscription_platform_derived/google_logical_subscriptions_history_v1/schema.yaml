@@ -266,8 +266,8 @@ fields:
     description: |-
       Whether the subscription has had fraudulent charges.
       This will be null for Google subscriptions.
-  - name: payment_method_id
+  - name: payment_method
     type: STRING
     mode: NULLABLE
-    description: ID of a payment method that's attached to the customer, to be used as
-      the customer's default payment method for subscriptions and invoices.
+    description: |-
+      The type of payment method used for the subscription (e.g. "Card", "PayPal", "Apple Pay", "Google Pay").

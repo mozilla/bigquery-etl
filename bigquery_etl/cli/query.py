@@ -3,6 +3,7 @@
 import concurrent.futures
 import copy
 import datetime
+import importlib
 import json
 import logging
 import multiprocessing
@@ -19,7 +20,7 @@ from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from traceback import print_exc
-from typing import Optional
+from typing import Optional, Iterable
 
 import rich_click as click
 import sqlparse
@@ -504,8 +505,6 @@ def _backfill_query(
         click.echo("Destination table must be named like: <project>.<dataset>.<table>")
         sys.exit(1)
 
-    metadata = Metadata.of_query_file(str(query_file_path))
-
     backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     query_parameters = [
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
@@ -570,6 +569,19 @@ def _backfill_query(
     return True
 
 
+def _backfill_script(
+    backfill_date: date,
+    entrypoint_command: click.Command,
+    query_script_date_arg: str,
+    query_script_args: Iterable[str],
+):
+    entrypoint_command(
+        [f"--{query_script_date_arg}", backfill_date.isoformat(), *query_script_args],
+        standalone_mode=False,
+    )
+    print(backfill_date)
+
+
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
@@ -625,7 +637,9 @@ def _backfill_query(
     default=[],
 )
 @click.option(
-    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run the backfill"
+    "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
+    help="Dry run the backfill.  Cannot be used with query.py backfills.",
 )
 @click.option(
     "--max_rows",
@@ -685,6 +699,21 @@ def _backfill_query(
     help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )
+@click.option(
+    "--query-script-entrypoint",
+    help="Name of the Click command in the query.py to use in the backfill. "
+    "Must be a @click.command() function.",
+)
+@click.option(
+    "--query-script-date-arg",
+    help="Name of the date argument of the query.py accepting a YYYY-MM-DD string.",
+)
+@click.option(
+    "--query-script-arg",
+    help="CLI arguments to pass into query.py if backfilling a python script. "
+    "Specified like `--query-script-arg \"--project=abc\"`",
+    multiple=True,
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -704,6 +733,9 @@ def backfill(
     custom_query_path,
     scheduling_overrides,
     override_retention_range_limit,
+    query_script_entrypoint,
+    query_script_date_arg,
+    query_script_arg,
 ):
     """Run a backfill."""
     exit_if_running_under_coding_agent()
@@ -769,15 +801,6 @@ def backfill(
         # If date_partition_parameter isn't set it's assumed to be submission_date:
         # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
 
-        # adding copy logic for cleaner handling of overrides
-        scheduling_metadata = metadata.scheduling.copy()
-        scheduling_metadata.update(json.loads(scheduling_overrides))
-        date_partition_parameter = scheduling_metadata.get(
-            "date_partition_parameter", "submission_date"
-        )
-        scheduling_parameters = scheduling_metadata.get("parameters", [])
-        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
-
         partitioning_type = None
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type
@@ -795,17 +818,74 @@ def backfill(
                 f"following dates will be excluded from the backfill: {exclude}"
             )
 
-        client = bigquery.Client(project=project_id)
-        project, dataset, table = extract_from_query_path(query_file_path)
-        try:
-            client.get_table(destination_table or f"{project}.{dataset}.{table}")
-        except NotFound:
-            if destination_table:
-                raise RuntimeError(
-                    f"Destination table, {destination_table}, must already exist if set"
+        if is_python_script:
+            if query_script_entrypoint is None or query_script_date_arg is None:
+                raise click.ClickException(
+                    "Backfill for query scripts require --query-script-entrypoint and "
+                    f"--query-script-date-arg arguments: {query_file_path}"
                 )
-            # scripts can handle table creation in their code
-            if not is_python_script:
+
+            if dry_run:
+                raise click.ClickException(
+                    "--dry-run argument is not compatible with query scripts. Dry run must be "
+                    "implemented in the script and controlled via an argument, "
+                    "e.g. --query-script-arg '--dry-run'"
+                )
+
+            query_module = importlib.import_module(
+                str(query_file_path).replace(".py", "").replace("/", "."),
+                query_script_entrypoint,
+            )
+            entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
+
+            if not isinstance(entrypoint_command, click.Command):
+                raise click.ClickException(
+                    f"Script entrypoint `{query_script_entrypoint}` must be a Click CLI command."
+                )
+
+            backfill_query = partial(
+                _backfill_script,
+                entrypoint_command=entrypoint_command,
+                query_script_date_arg=query_script_date_arg,
+                query_script_args=query_script_arg,
+            )
+        else:
+            client = bigquery.Client(project=project_id)
+            project, dataset, table = extract_from_query_path(query_file_path)
+            try:
+                client.get_table(destination_table or f"{project}.{dataset}.{table}")
+            except NotFound:
+                if destination_table:
+                    raise RuntimeError(
+                        f"Destination table, {destination_table}, must already exist if set"
+                    )
+                # scripts can handle table creation in their code
+                if not is_python_script:
+                    ctx.invoke(
+                        initialize,
+                        name=query_file,
+                        dry_run=dry_run,
+                        billing_project=billing_project,
+                    )
+
+            # adding copy logic for cleaner handling of overrides
+            scheduling_metadata = metadata.scheduling.copy()
+            scheduling_metadata.update(json.loads(scheduling_overrides))
+            date_partition_parameter = scheduling_metadata.get(
+                "date_partition_parameter", "submission_date"
+            )
+            scheduling_parameters = scheduling_metadata.get("parameters", [])
+            date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
+
+            client = bigquery.Client(project=project_id)
+            project, dataset, table = extract_from_query_path(query_file_path)
+            try:
+                client.get_table(destination_table or f"{project}.{dataset}.{table}")
+            except NotFound:
+                if destination_table:
+                    raise RuntimeError(
+                        f"Destination table, {destination_table}, must already exist if set"
+                    )
                 ctx.invoke(
                     initialize,
                     name=query_file,
@@ -813,24 +893,24 @@ def backfill(
                     billing_project=billing_project,
                 )
 
-        backfill_query = partial(
-            _backfill_query,
-            query_file_path,
-            project_id,
-            date_partition_parameter,
-            date_partition_offset,
-            max_rows,
-            dry_run,
-            scheduling_parameters,
-            ctx.args,
-            partitioning_type,
-            destination_table=destination_table,
-            run_checks=checks,
-            checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
-            billing_project=billing_project,
-        )
+            backfill_query = partial(
+                _backfill_query,
+                query_file_path,
+                project_id,
+                date_partition_parameter,
+                date_partition_offset,
+                max_rows,
+                dry_run,
+                scheduling_parameters,
+                ctx.args,
+                partitioning_type,
+                destination_table=destination_table,
+                run_checks=checks,
+                checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+                billing_project=billing_project,
+            )
 
-        if not depends_on_past and parallelism > 0:
+        if not depends_on_past and parallelism > 1:
             # run backfill for dates in parallel if depends_on_past is false
             failed_backfills = []
             with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
@@ -843,10 +923,10 @@ def backfill(
                     try:
                         future.result()
                     except Exception as e:  # TODO: More specific exception(s)
-                        print(f"Encountered exception {e}: {backfill_date}.")
+                        click.echo(f"Encountered exception {e}: {backfill_date}.")
                         failed_backfills.append(backfill_date)
                     else:
-                        print(f"Completed processing: {backfill_date}.")
+                        click.echo(f"Completed processing: {backfill_date}.")
             if failed_backfills:
                 raise RuntimeError(
                     f"Backfill processing failed for the following backfill dates: {failed_backfills}"
@@ -854,6 +934,7 @@ def backfill(
         else:
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in date_range:
+                click.echo(f"Running backfill for {backfill_date}")
                 backfill_query(backfill_date)
 
 

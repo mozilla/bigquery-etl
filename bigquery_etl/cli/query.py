@@ -246,8 +246,8 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 UNION ALL
                 SELECT * FROM
                   `{project_id}.{dataset}.{live_table_name}`
-                WHERE submission_date > (
-                  SELECT MAX(submission_date)
+                WHERE TIMESTAMP_TRUNC(submission_timestamp, DAY) > (
+                  SELECT MAX(TIMESTAMP_TRUNC(submission_timestamp, DAY))
                   FROM `{project_id}.{dataset}.{table_name}`
                 )"""
         else:
@@ -290,7 +290,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             {{% if live %}}
                             TIMESTAMP_TRUNC(submission_timestamp, HOUR) = @submission_hour
                             {{% else %}}
-                            TIMESTAMP_TRUNC(submission_date, DAY) = @submission_date
+                            TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
                             {{% endif %}}
                         {{% endmacro %}}"""
                 )
@@ -313,7 +313,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             submission_timestamp >= @interval_start
                             AND submission_timestamp < @interval_end
                             {{% else %}}
-                            TIMESTAMP_TRUNC(submission_date, DAY) = @submission_date
+                            TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
                             {{% endif %}}
                         {{% if live %}}
                         -- Overwrite the daily partition with a combination of new records for
@@ -325,7 +325,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                         FROM
                             {project_id}.{dataset}.{live_table_name}
                         WHERE
-                            TIMESTAMP_TRUNC(submission_date, DAY) = TIMESTAMP_TRUNC(@interval_start, DAY)
+                            TIMESTAMP_TRUNC(submission_timestamp, DAY) = TIMESTAMP_TRUNC(@interval_start, DAY)
                             AND (
                                 submission_timestamp < @interval_start
                                 OR submission_timestamp >= @interval_end

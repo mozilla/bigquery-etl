@@ -256,7 +256,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 AS SELECT * FROM
                   `{project_id}.{dataset}.{table_name}`"""
 
-        view_file.write_text(reformat(view_text) + "\n")
+        view_file.write_text(reformat(view_text, trailing_newline=True))
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -292,9 +292,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             {{% else %}}
                             TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
                             {{% endif %}}
-                        {{% endmacro %}}"""
+                        {{% endmacro %}}""",
+                    trailing_newline=True,
                 )
-                + "\n"
             )
         else:
             macro_file.write_text(
@@ -331,9 +331,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                                 OR submission_timestamp >= @interval_end
                             )
                         {{% endif %}}
-                        {{% endmacro %}}"""
+                        {{% endmacro %}}""",
+                    trailing_newline=True,
                 )
-                + "\n"
             )
         click.echo(f"Created base query in {macro_file}")
         query_file = derived_path / "query.sql"
@@ -343,9 +343,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
                 {{% from "{macro_file}" import {table_name} %}}
-                {{{{ {table_name}(live=false) }}}}"""
+                {{{{ {table_name}(live=false) }}}}""",
+                trailing_newline=True,
             )
-            + "\n"
         )
         live_file = live_path / "query.sql"
         live_file.write_text(
@@ -354,9 +354,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
                 {{% from "{macro_file}" import {table_name} %}}
-                {{{{ {table_name}(live=true) }}}}"""
+                {{{{ {table_name}(live=true) }}}}""",
+                trailing_newline=True,
             )
-            + "\n"
         )
     else:
         query_file = derived_path / "query.sql"
@@ -365,9 +365,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 f"""-- Query for {dataset}.{name}{version}
                 -- For more information on writing queries see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-                SELECT * FROM table WHERE submission_date = @submission_date"""
+                SELECT * FROM table WHERE submission_date = @submission_date""",
+                trailing_newline=True,
             )
-            + "\n"
         )
 
     # create default metadata.yaml

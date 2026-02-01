@@ -83,6 +83,7 @@ DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 3
 INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
+QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
 NBR_DAYS_RETAINED = 775
@@ -342,7 +343,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 )
             )
         click.echo(f"Created base query in {macro_file}")
-        query_file = derived_path / "query.sql"
+        query_file = derived_path / QUERY_FILE
         query_file.write_text(
             reformat(
                 f"""-- Query for {dataset}.{table_name}
@@ -353,7 +354,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 trailing_newline=True,
             )
         )
-        live_file = live_path / "query.sql"
+        live_file = live_path / QUERY_FILE
         live_file.write_text(
             reformat(
                 f"""-- Query for {dataset}.{live_table_name}
@@ -365,7 +366,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
             )
         )
     else:
-        query_file = derived_path / "query.sql"
+        query_file = derived_path / QUERY_FILE
         query_file.write_text(
             reformat(
                 f"""-- Query for {dataset}.{name}{version}
@@ -395,14 +396,14 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
     if live:
         live_metadata_file = live_path / "metadata.yaml"
         if hourly:
-            labels = {"incremental": True, "schedule": hourly}
+            labels = {"incremental": True, "schedule": "hourly"}
             time_partitioning = PartitionMetadata(
                 field="submission_hour",
                 type=PartitionType.HOUR,
                 expiration_days=30,
             )
             parameters = [
-                "submission_hour:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d %h:00:00')}}",
+                "submission_hour:TIMESTAMP:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d %H:00:00')}}",
             ]
             destination_table = f"{live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d%h)}}}}"
         else:
@@ -413,8 +414,8 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 expiration_days=30,
             )
             parameters = [
-                "interval_start:DATE:{{}}",
-                "interval_end:DATE:{{(execution_date - macros.timedelta(hours=1).strftime('%Y-%m-%d %h:%m:%s'))}}",
+                "interval_start:TIMESTAMP:{{}}",
+                "interval_end:TIMESTAMP:{{(execution_date - macros.timedelta(hours=1).strftime('%Y-%m-%d %H:%M:%S'))}}",
             ]
             destination_table = f"{live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d)}}}}"
         live_metadata = Metadata(
@@ -427,7 +428,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 "date_partition_parameter": None,
                 "parameters": parameters,
                 "destination_table": destination_table,
-                "query_file_path": live_path / "query.sql",
+                "query_file_path": live_path / QUERY_FILE,
             },
             bigquery=BigQueryMetadata(
                 time_partitioning=time_partitioning,
@@ -2145,7 +2146,7 @@ def update(
         )
         sys.exit(1)
     query_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, files=["query.sql"]
+        name, sql_dir, project_id, files=[QUERY_FILE]
     )
     # skip updating schemas that are not to be deployed
     query_files = [
@@ -2365,7 +2366,7 @@ def _update_query_schema_with_downstream(
                     p
                     for k, refs in dependency_graph.items()
                     for p in paths_matching_name_pattern(
-                        k, sql_dir, project_id, files=("query.sql",)
+                        k, sql_dir, project_id, files=(QUERY_FILE,)
                     )
                     if identifier in refs
                 ]

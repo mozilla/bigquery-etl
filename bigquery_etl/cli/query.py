@@ -329,7 +329,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                         SELECT
                             *
                         FROM
-                            {project_id}.{dataset}.{live_table_name}
+                            `{project_id}.{dataset}.{live_table_name}`
                         WHERE
                             TIMESTAMP_TRUNC(submission_timestamp, DAY) = TIMESTAMP_TRUNC(@interval_start, DAY)
                             AND (

@@ -282,9 +282,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             *
                         FROM
                             {{% if live %}}
-                            table_live
+                            live_table
                             {{% else %}}
-                            table_stable
+                            stable_table
                             {{% endif %}}
                         WHERE
                             {{% if live %}}
@@ -304,9 +304,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             *
                         FROM
                             {{% if live %}}
-                            table_live
+                            live_table
                             {{% else %}}
-                            table_stable
+                            stable_table
                             {{% endif %}}
                         WHERE
                             {{% if live %}}

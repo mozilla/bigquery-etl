@@ -282,6 +282,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             *
                         FROM
                             {{% if live %}}
+                            -- Live tables may contain duplicate records; you may need to
+                            -- add logic to dedupe. For this and other considerations, see
+                            -- https://docs.telemetry.mozilla.org/cookbooks/live_data.html?highlight=live%20table#1-querying-live-tables-directly
                             live_table
                             {{% else %}}
                             stable_table
@@ -304,6 +307,9 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             *
                         FROM
                             {{% if live %}}
+                            -- Live tables may contain duplicate records; you may need to
+                            -- add logic to dedupe. For this and other considerations, see
+                            -- https://docs.telemetry.mozilla.org/cookbooks/live_data.html?highlight=live%20table#1-querying-live-tables-directly
                             live_table
                             {{% else %}}
                             stable_table

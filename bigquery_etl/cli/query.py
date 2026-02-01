@@ -293,7 +293,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             {{% if live %}}
                             TIMESTAMP_TRUNC(submission_timestamp, HOUR) = @submission_hour
                             {{% else %}}
-                            TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
+                            DATE(submission_timestamp) = @submission_date
                             {{% endif %}}
                         {{% endmacro %}}""",
                     trailing_newline=True,
@@ -319,7 +319,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                             submission_timestamp >= @interval_start
                             AND submission_timestamp < @interval_end
                             {{% else %}}
-                            TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
+                            DATE(submission_timestamp) = @submission_date
                             {{% endif %}}
                         {{% if live %}}
                         -- Overwrite the daily partition with a combination of new records for

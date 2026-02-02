@@ -878,12 +878,8 @@ def backfill(
             client = bigquery.Client(project=project_id)
             project, dataset, table = extract_from_query_path(query_file_path)
             try:
-                client.get_table(destination_table or f"{project}.{dataset}.{table}")
+                client.get_table(f"{project}.{dataset}.{table}")
             except NotFound:
-                if destination_table:
-                    raise RuntimeError(
-                        f"Destination table, {destination_table}, must already exist if set"
-                    )
                 ctx.invoke(
                     initialize,
                     name=query_file,

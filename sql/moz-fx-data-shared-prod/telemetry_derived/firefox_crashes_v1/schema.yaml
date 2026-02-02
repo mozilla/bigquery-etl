@@ -347,9 +347,7 @@ fields:
       description: Name of the currently executing nsIRunnable on the main thread.
     - name: crash_minidump_sha256_hash
       type: STRING
-      description: 'The SHA256 hash of the associated minidump file, if any.
-
-        '
+      description: The sha256 hash of the minidump file, if available.
     - name: crash_moz_crash_reason
       type: STRING
       description: Plaintext description of why Firefox crashed, this is usually set

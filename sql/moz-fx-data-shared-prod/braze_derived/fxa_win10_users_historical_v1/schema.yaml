@@ -1,0 +1,16 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: external_id
+  type: STRING
+  mode: NULLABLE
+- name: email
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: fxa_id_sha256
+  type: STRING
+  mode: NULLABLE

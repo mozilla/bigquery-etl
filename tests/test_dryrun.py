@@ -38,14 +38,12 @@ class TestDryRun:
 
     def test_view_file_valid(self, tmp_query_path):
         view_file = tmp_query_path / "view.sql"
-        view_file.write_text(
-            """
+        view_file.write_text("""
             SELECT
             *
             FROM
             `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-        """
-        )
+        """)
 
         # this view file is only valid with strip_dml flag
         dryrun = DryRun(sqlfile=str(view_file), strip_dml=True)
@@ -90,8 +88,7 @@ class TestDryRun:
         assert query_dryrun[0]["tableId"] == "clients_daily_v6"
 
         view_file = tmp_query_path / "view.sql"
-        view_file.write_text(
-            """
+        view_file.write_text("""
             CREATE OR REPLACE VIEW
             `moz-fx-data-shared-prod.telemetry.clients_daily`
             AS
@@ -99,16 +96,14 @@ class TestDryRun:
             *
             FROM
             `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-        """
-        )
+        """)
         view_dryrun = DryRun(str(view_file), strip_dml=True).get_referenced_tables()
 
         assert len(view_dryrun) == 1
         assert view_dryrun[0]["datasetId"] == "telemetry_derived"
         assert view_dryrun[0]["tableId"] == "clients_daily_v6"
 
-        view_file.write_text(
-            """
+        view_file.write_text("""
         SELECT document_id
         FROM mozdata.org_mozilla_firefox.baseline
         WHERE submission_timestamp > current_timestamp()
@@ -116,8 +111,7 @@ class TestDryRun:
         SELECT document_id
         FROM mozdata.org_mozilla_fenix.baseline
         WHERE submission_timestamp > current_timestamp()
-        """
-        )
+        """)
         multiple_tables = DryRun(str(view_file)).get_referenced_tables()
         multiple_tables.sort(key=lambda x: x["datasetId"])
 
@@ -130,8 +124,7 @@ class TestDryRun:
     def test_get_error(self, tmp_query_path):
         view_file = tmp_query_path / "view.sql"
 
-        view_file.write_text(
-            """
+        view_file.write_text("""
         CREATE OR REPLACE VIEW
           `moz-fx-data-shared-prod.telemetry.clients_daily`
         AS
@@ -139,8 +132,7 @@ class TestDryRun:
         *
         FROM
           `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-        """
-        )
+        """)
 
         valid_dml_stripped = """
         SELECT
@@ -177,8 +169,7 @@ class TestDryRun:
 
     def test_dryrun_metrics_query(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text(
-            """
+        query_file.write_text("""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['days_of_use', 'uri_count', 'ad_clicks'],
@@ -187,8 +178,7 @@ class TestDryRun:
                     where='submission_date = "2023-01-01"'
                 ) }}
             )
-            """
-        )
+            """)
 
         dryrun = DryRun(sqlfile=str(query_file))
         assert dryrun.is_valid()

@@ -57,7 +57,8 @@ SELECT
       metrics.boolean.crash_windows_error_reporting,
       metrics.boolean.dll_blocklist_init_failed,
       metrics.boolean.dll_blocklist_user32_loaded_before,
-      metrics.boolean.environment_headless_mode
+      metrics.boolean.environment_headless_mode,
+      metrics.boolean.crash_dom_fission_enabled
     ) AS `boolean`,
     metrics.datetime,
     STRUCT(
@@ -78,11 +79,21 @@ SELECT
       metrics.string.crash_windows_file_dialog_error_code,
       metrics.string.windows_package_family_name,
       metrics.string.memory_js_large_allocation_failure,
-      metrics.string.memory_js_out_of_memory
+      metrics.string.memory_js_out_of_memory,
+      metrics.string.crash_build_id,
+      metrics.string.crash_crash_type,
+      metrics.string.crash_hang,
+      metrics.string.crash_linux_memory_psi,
+      metrics.string.crash_minidump_sha_256_hash,
+      metrics.string.crash_product_id,
+      metrics.string.crash_product_name,
+      metrics.string.crash_shutdown_reason
     ) AS `string`,
     STRUCT(
       CAST(NULL AS STRUCT<`time_unit` STRING, `value` INTEGER>) AS `crash_uptime`,
-      metrics.timespan.environment_uptime
+      metrics.timespan.environment_uptime,
+      metrics.timespan.crash_last_interaction_duration,
+      metrics.timespan.crash_time_since_last_crash
     ) AS `timespan`,
     metrics.object,
     metrics.quantity,

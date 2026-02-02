@@ -781,14 +781,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -844,14 +842,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -908,14 +904,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",

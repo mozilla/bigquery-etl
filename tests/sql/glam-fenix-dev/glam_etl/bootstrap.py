@@ -4,6 +4,7 @@ Script for initializing tests for queries related to glam-fenix-dev.
 
 This only needs to be run once for the initial testing.
 """
+
 import json
 import shutil
 import warnings

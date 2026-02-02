@@ -10,7 +10,7 @@ import rich_click as click
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
-from bigquery_etl.cli.utils import project_id_option
+from bigquery_etl.cli.utils import exit_if_running_under_coding_agent, project_id_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -31,10 +31,18 @@ def static_():
     pass
 
 
-@static_.command("publish", help="Publish CSV files as BigQuery tables.")
+@static_.command(
+    "publish",
+    help="""Publish CSV files as BigQuery tables.
+
+    Coding agents aren't allowed to run this command.
+    """,
+)
 @project_id_option()
 def publish(project_id):
     """Publish CSV files as BigQuery tables."""
+    exit_if_running_under_coding_agent()
+
     source_project = project_id
     target_project = project_id
     if target_project == ConfigLoader.get(

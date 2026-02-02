@@ -679,6 +679,7 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
+      - cbeck@mozilla.com
       - najiang@mozilla.com
       - wstuckey@mozilla.com
       - telemetry-alerts@mozilla.com
@@ -698,6 +699,11 @@ bqetl_search_terms_daily:
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
     outside of Airflow.
+
+    Tables that depend on merino_log_sanitized_v3 use date_partition_offset: -1 to
+    process data from 2 days ago, allowing time for the upstream Merino sanitization
+    job (~16 hours) to complete. This is a temporary measure until the sanitization
+    job is further optimized.
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_1

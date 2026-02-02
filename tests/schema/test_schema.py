@@ -54,8 +54,7 @@ class TestQuerySchema:
         empty_schema = Schema.from_json({"fields": {}})
         assert empty_schema.equal(empty_schema)
 
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -73,11 +72,9 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: client_id
@@ -96,8 +93,7 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -106,23 +102,19 @@ class TestQuerySchema:
         assert schema_2.equal(schema_1) is True
 
     def test_schemas_unequal_attributes(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               type: DATE
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               type: INTEGER
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -131,8 +123,7 @@ class TestQuerySchema:
         assert schema_2.equal(schema_1) is False
 
     def test_schemas_unequal_fields(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -140,17 +131,14 @@ class TestQuerySchema:
             - mode: NULLABLE
               name: client_id
               type: STRING
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: client_id
               type: STRING
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -159,8 +147,7 @@ class TestQuerySchema:
         assert schema_2.equal(schema_1) is False
 
     def test_schemas_unequal_nested_record(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - fields:
               - mode: NULLABLE
@@ -169,11 +156,9 @@ class TestQuerySchema:
             mode: REPEATED
             name: active_addons
             type: RECORD
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - fields:
               - mode: NULLABLE
@@ -182,8 +167,7 @@ class TestQuerySchema:
             mode: REPEATED
             name: active_addons
             type: RECORD
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -192,25 +176,21 @@ class TestQuerySchema:
         assert schema_2.equal(schema_1) is False
 
     def test_schemas_different_descriptions(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               description: "The submission_date"
               type: DATE
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               description: "Date of the submission"
               type: DATE
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -219,17 +199,14 @@ class TestQuerySchema:
         assert schema_2.equal(schema_1) is True
 
     def test_schemas_compatible(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               type: DATE
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -237,8 +214,7 @@ class TestQuerySchema:
             - mode: NULLABLE
               name: client_id
               type: STRING
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -247,8 +223,7 @@ class TestQuerySchema:
         assert schema_2.compatible(schema_1) is False
 
     def test_merge_empty_schema(self):
-        schema_yaml = dedent(
-            """
+        schema_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -266,8 +241,7 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
         schema = Schema.from_json(yaml.safe_load(schema_yaml))
         empty_schema = Schema.from_json({"fields": []})
@@ -284,8 +258,7 @@ class TestQuerySchema:
         )
 
     def test_merge_compatible_schemas(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -303,11 +276,9 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -326,8 +297,7 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -342,25 +312,21 @@ class TestQuerySchema:
         assert len(schema_2.schema["fields"]) == 4
 
     def test_merge_different_descriptions(self):
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               description: "The submission_date"
               type: DATE
-            """
-        )
+            """)
 
-        schema_2_yaml = dedent(
-            """
+        schema_2_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               description: "Date of the submission"
               type: DATE
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
@@ -368,14 +334,12 @@ class TestQuerySchema:
 
         assert schema_1.schema["fields"][0]["description"] == "The submission_date"
 
-        schema_1_yaml = dedent(
-            """
+        schema_1_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
               type: DATE
-            """
-        )
+            """)
 
         schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
         schema_1.merge(schema_2)
@@ -416,8 +380,7 @@ class TestQuerySchema:
         assert schema.schema["fields"][0]["fields"][0]["type"] == "STRING"
         assert schema.schema["fields"][1]["name"] == "normal_field"
 
-        schema_yaml = dedent(
-            """
+        schema_yaml = dedent("""
             fields:
             - mode: NULLABLE
               name: submission_date
@@ -433,8 +396,7 @@ class TestQuerySchema:
               mode: NULLABLE
               name: attribution
               type: RECORD
-            """
-        )
+            """)
 
         schema = Schema.from_json(yaml.safe_load(schema_yaml))
         bq_schema = schema.to_bigquery_schema()
@@ -557,6 +519,108 @@ def test_generate_compatible_select_expression():
 
     select_expr = source.generate_compatible_select_expression(
         target, unnest_structs=False
+    )
+    assert reformat(select_expr) == reformat(expected_expr)
+
+
+def test_generate_compatible_select_expression_match_column_order_false():
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_1", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_3", "type": "DATE"},
+                ],
+            },
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_3", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_1", "type": "DATE"},
+                ],
+            },
+        ]
+    }
+    expected_expr = "record"
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False, match_column_order=False
+    )
+    assert reformat(select_expr) == reformat(expected_expr)
+
+
+def test_generate_compatible_select_expression_retain_null_structs():
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_1", "type": "DATE"},
+                    {"name": "nested_2", "type": "DATE"},
+                ],
+            },
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "value", "type": "STRING"},
+                    {"name": "key", "type": "STRING"},
+                ],
+            },
+            {"name": "string", "type": "STRING"},
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_2", "type": "DATE"},
+                    {"name": "nested_1", "type": "DATE"},
+                ],
+            },
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "value", "type": "STRING"},
+                    {"name": "key", "type": "STRING"},
+                ],
+            },
+            {"name": "string", "type": "STRING"},
+        ]
+    }
+    expected_expr = """
+    IF(
+        record IS NULL,
+        NULL,
+        STRUCT(record.nested_2, record.nested_1)
+    ) AS `record`,
+    array_record,
+    string
+    """
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False, retain_null_structs=True
     )
     assert reformat(select_expr) == reformat(expected_expr)
 

@@ -250,14 +250,11 @@ class TestParseRoutine:
         assert result.name == "procedure.test_procedure"
         assert result.dataset == "procedure"
         assert len(result.definitions) == 1
-        assert (
-            result.definitions[0]
-            == """CREATE OR REPLACE PROCEDURE
+        assert result.definitions[0] == """CREATE OR REPLACE PROCEDURE
   procedure.test_procedure(out STRING)
 BEGIN
   SET out = mozfun.json.mode_last('{}');
 END;"""
-        )
         assert result.tests == [result.definitions[0].strip()]
         assert result.dependencies == ["json.mode_last"]
 

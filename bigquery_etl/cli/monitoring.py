@@ -40,6 +40,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 from ..cli.utils import (
+    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -62,24 +63,22 @@ METRIC_STATUS_FAILURES = [
 ]
 
 
-@click.group(
-    help="""
-        Commands for managing monitoring of datasets.
-        """
-)
+@click.group(help="""
+    Commands for managing monitoring of datasets.
+    """)
 @click.pass_context
 def monitoring(ctx):
     """Create the CLI group for the monitoring command."""
     pass
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy monitors defined in the BigConfig files to Bigeye.
 
     Requires BigConfig API key to be set via BIGEYE_API_KEY env variable.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
@@ -113,6 +112,8 @@ def deploy(
     dry_run: bool,
 ) -> None:
     """Deploy Bigeye config."""
+    exit_if_running_under_coding_agent()
+
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -233,11 +234,11 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
     return statements
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy custom SQL rules.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -260,6 +261,8 @@ def deploy_custom_rules(
     workspace: int,
 ) -> None:
     """Deploy custom SQL rules for files."""
+    exit_if_running_under_coding_agent()
+
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -478,13 +481,11 @@ def _update_bigconfig(
             )
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Update BigConfig files based on monitoring metadata.
 
     Requires BigConfig credentials to be set via BIGEYE_API_CRED_FILE env variable.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -546,11 +547,9 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
         print(f"Error processing {metadata_file}: {e}")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Validate BigConfig files.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -595,11 +594,11 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
     click.echo("All BigConfig files are valid.")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Set partition column for view or table in Bigeye.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -622,6 +621,8 @@ def set_partition_column(
     workspace: int,
 ) -> None:
     """Validate BigConfig file."""
+    exit_if_running_under_coding_agent()
+
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -698,11 +699,11 @@ def set_partition_column(
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Delete deployed monitors. Use --custom-sql and/or --metrics flags to select which types of monitors to delete.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -740,6 +741,8 @@ def delete(
     metrics: bool,
 ) -> None:
     """Validate BigConfig file."""
+    exit_if_running_under_coding_agent()
+
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -785,6 +788,8 @@ def delete(
     help="""
     Runs Bigeye monitors.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
 
     \t./bqetl monitoring run ga_derived.downloads_with_attribution_v2
@@ -811,6 +816,8 @@ def delete(
 @click.option("--marker", default="", help="Marker to filter checks.")
 def run(name, project_id, sql_dir, workspace, base_url, marker):
     """Run Bigeye checks."""
+    exit_if_running_under_coding_agent()
+
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -914,13 +921,11 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
 
 # TODO: remove this command once checks have been migrated
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Create BigConfig files from ETL check.sql files.
 
     This is a temporary command and will be removed after checks have been migrated.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option

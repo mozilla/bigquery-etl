@@ -272,6 +272,7 @@ SELECT
       JSON_VALUE(event_extra.blocklist_state) AS `blocklist_state`,
       JSON_VALUE(event_extra.branch) AS `branch`,
       JSON_VALUE(event_extra.branches) AS `branches`,
+      JSON_VALUE(event_extra.breach_name) AS `breach_name`,
       JSON_VALUE(event_extra.bundle_policy) AS `bundle_policy`,
       JSON_VALUE(event_extra.caller) AS `caller`,
       JSON_VALUE(event_extra.canaries) AS `canaries`,

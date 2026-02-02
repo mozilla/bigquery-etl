@@ -1,0 +1,20 @@
+friendly_name: Site Engagement Events
+description: |-
+  Flattened GA4 event-level data from firefox.com, excluding What's New Page (WNP) events.
+  Includes extracted event parameters, device/geo dimensions, and traffic source attribution
+  (first-touch, event-level, and session last-click). Intended as a base table for Looker dashboards.
+owners:
+- sherrera@mozilla.com
+labels:
+  owner: sherrera
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.site_engagement_events_v1

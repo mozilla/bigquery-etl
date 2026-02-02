@@ -4,6 +4,6 @@
   reason: Schema changes requiring reprocessing
   watchers:
   - lmcfall@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false

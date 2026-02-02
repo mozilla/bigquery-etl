@@ -42,11 +42,6 @@ fields:
     description: |-
       Payment provider for the subscription.
       For Stripe subscriptions this will be "Stripe" or "PayPal".
-  - name: payment_method
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      The type of payment method used for the subscription (e.g. "Card", "PayPal", "Apple Pay", "Google Pay").
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
@@ -262,3 +257,8 @@ fields:
     mode: NULLABLE
     description: |-
       Whether the subscription has had fraudulent charges.
+  - name: payment_method
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The type of payment method used for the subscription (e.g. "Card", "PayPal", "Apple Pay", "Google Pay").

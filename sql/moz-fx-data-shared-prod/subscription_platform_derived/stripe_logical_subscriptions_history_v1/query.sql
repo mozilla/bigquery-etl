@@ -418,11 +418,11 @@ LEFT JOIN
   ON latest_invoices.charge_id = latest_invoice_charges.id
   AND latest_invoice_charges.created < history.valid_to
 LEFT JOIN
-  `moz-fx-data-bq-fivetran.stripe_external.payment_method_v1` AS payment_method
+  `moz-fx-data-shared-prod.stripe_external.payment_method_v1` AS payment_method
   ON COALESCE(
     history.subscription.default_payment_method_id,
     history.subscription.customer.invoice_settings.default_payment_method_id
   ) = payment_method.id
 LEFT JOIN
-  `moz-fx-data-bq-fivetran.stripe_external.payment_method_card_v1` AS payment_method_card
+  `moz-fx-data-shared-prod.stripe_external.payment_method_card_v1` AS payment_method_card
   ON payment_method.id = payment_method_card.payment_method_id

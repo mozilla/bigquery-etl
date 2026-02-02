@@ -437,9 +437,7 @@ fields:
     - name: crash_minidump_sha256_hash
       type: STRING
       mode: NULLABLE
-      description: 'The SHA256 hash of the associated minidump file, if any.
-
-        '
+      description: The sha256 hash of the minidump file, if available.
     - name: crash_moz_crash_reason
       type: STRING
       mode: NULLABLE

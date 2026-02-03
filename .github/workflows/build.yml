@@ -25,12 +25,14 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
+          fetch-depth: 0
       - id: changed-files-routines
         uses: tj-actions/changed-files@v47
         with:
           files: |
             routines/**
             .github/workflows/**
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
       - id: changed-files-sql
         uses: tj-actions/changed-files@v47
         with:
@@ -39,6 +41,7 @@ jobs:
             sql_generators/**
             dags.yaml
             .github/workflows/**
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
       - id: changed-files-bqetl
         uses: tj-actions/changed-files@v47
         with:
@@ -49,6 +52,7 @@ jobs:
             requirements.txt
             requirements.in
             .github/workflows/**
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
       - name: Decide which jobs to run
         id: set-flags
         run: |

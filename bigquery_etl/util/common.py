@@ -9,9 +9,9 @@ import string
 import sys
 import tempfile
 import warnings
-from functools import cache
+from functools import cache, wraps
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Callable, List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click
@@ -440,3 +440,14 @@ def exit_if_running_under_coding_agent():
     if is_running_under_coding_agent():
         click.echo("Coding agents aren't allowed to run this command.", err=True)
         sys.exit(1)
+
+
+def block_coding_agents(function: Callable) -> Callable:
+    """Wrap a function so that it exits if `bqetl` is running under a coding agent."""
+
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        exit_if_running_under_coding_agent()
+        return function(*args, **kwargs)
+
+    return wrapper

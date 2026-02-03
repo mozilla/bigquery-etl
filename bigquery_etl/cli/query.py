@@ -71,7 +71,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.common import exit_if_running_under_coding_agent, random_str
+from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun
@@ -595,6 +595,7 @@ def _backfill_query(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
 @project_id_option(required=True)
@@ -703,8 +704,6 @@ def backfill(
     override_retention_range_limit,
 ):
     """Run a backfill."""
-    exit_if_running_under_coding_agent()
-
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
@@ -877,6 +876,7 @@ def backfill(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
@@ -919,8 +919,6 @@ def run(
     dataset_id,
 ):
     """Run a query."""
-    exit_if_running_under_coding_agent()
-
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
@@ -1219,6 +1217,7 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument(
     "query_dir",
     type=click.Path(file_okay=False),
@@ -1316,8 +1315,6 @@ def run_multipart(
     schema_update_options,
 ):
     """Run a multipart query."""
-    exit_if_running_under_coding_agent()
-
     if dataset_id is not None and "." not in dataset_id and project_id is not None:
         dataset_id = f"{project_id}.{dataset_id}"
     if "." not in destination_table and dataset_id is not None:
@@ -1535,6 +1532,7 @@ def _initialize_in_parallel(
        - For query.sql files and parallel run: ./bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
        """,
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
 @multi_project_id_option(
@@ -1581,8 +1579,6 @@ def initialize(
     sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
-    exit_if_running_under_coding_agent()
-
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
@@ -2479,6 +2475,7 @@ def _update_query_schema(
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
+@block_coding_agents
 @click.argument("name", nargs=-1)
 @sql_dir_option
 @multi_project_id_option(
@@ -2532,8 +2529,6 @@ def deploy(
     parallelism,
 ):
     """CLI command for deploying destination table schemas."""
-    exit_if_running_under_coding_agent()
-
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "

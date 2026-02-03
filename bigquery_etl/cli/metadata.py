@@ -24,7 +24,6 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
-    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -33,6 +32,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import get_credentials
 from ..util import extract_from_query_path
+from ..util.common import exit_if_running_under_coding_agent
 
 
 @click.group(help="""

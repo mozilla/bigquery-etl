@@ -16,7 +16,6 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import (
-    exit_if_running_under_coding_agent,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -27,7 +26,7 @@ from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..util.common import project_dirs
+from ..util.common import exit_if_running_under_coding_agent, project_dirs
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")

@@ -7,7 +7,7 @@ import rich_click as click
 import yaml
 from google.cloud import bigquery
 
-from ..cli.utils import exit_if_running_under_coding_agent
+from ..util.common import exit_if_running_under_coding_agent
 from .utils import get_schema, run
 
 ROOT = Path(__file__).parent.parent.parent

@@ -561,9 +561,17 @@ core_visit_metrics AS (
       COUNTIF(event_category = 'newtab' AND event_name IN ('sections_impression')),
       0
     ) AS other_impression_count,
-    MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(
-      IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL)
-    ) AS newtab_visit_duration,
+    CASE
+      WHEN (
+          MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(
+            IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL)
+          )
+        ) < 0
+        THEN NULL
+      ELSE MAX(
+          IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)
+        ) - MIN(IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL))
+    END AS newtab_visit_duration,
     MIN(
       IF(
         event_category = 'newtab'

@@ -1,5 +1,5 @@
 2026-02-03:
-  start_date: 2025-01-01
+  start_date: 2025-05-01
   end_date: 2026-02-02
   reason: Backdate GA4 data. See JIRA WT-633
   watchers:

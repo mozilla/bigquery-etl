@@ -563,7 +563,7 @@ core_visit_metrics AS (
     ) AS other_impression_count,
     CASE
       WHEN (
-          MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(
+          MAX(IF(LOWER(event_category) = 'newtab' AND LOWER(event_name) = "closed", event_timestamp, NULL)) - MIN(
             IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL)
           )
         ) < 0

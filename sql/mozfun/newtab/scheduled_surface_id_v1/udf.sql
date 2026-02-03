@@ -99,7 +99,7 @@ SELECT
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, 'en-cA')),
   -- # region can vary in case.
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('gB', 'en')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('Ie', 'en')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('Ie', 'en')),
   assert.equals('NEW_TAB_EN_INTL', newtab.scheduled_surface_id_v1('in', 'en')),
   -- # Default to international NewTab when region is unknown.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('XX', 'en')),
@@ -107,5 +107,5 @@ SELECT
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'xx')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'xx')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('GB', 'xx')),
-  assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'xx')),
+  assert.equals('NEW_TAB_EN_IE', newtab.scheduled_surface_id_v1('IE', 'xx')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('YY', 'xx'));

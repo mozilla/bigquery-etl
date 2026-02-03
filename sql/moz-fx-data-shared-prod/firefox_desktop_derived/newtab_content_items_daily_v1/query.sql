@@ -4,7 +4,11 @@ WITH newtab_events_unnested AS (
     mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS app_version,
     normalized_channel AS channel,
     metrics.string.newtab_locale AS locale,
-    normalized_country_code AS country,
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      metrics.string.newtab_locale,
+      normalized_country_code
+    ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,

@@ -731,6 +731,82 @@ class TestQuery:
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
 
             with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+from argparse import ArgumentParser
+
+def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--submission-date")
+    parser.add_argument("--table-id")
+    args = parser.parse_args()
+    submission_date = args.submission_date
+    table_id = args.table_id
+    print(f"writing to {table_id} for {submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+
+            assert mock_backfill_script.call_count == 2
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 1),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-01"
+                in result.output
+            )
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 2),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-02"
+                in result.output
+            )
+
+    def test_query_backfill_python_script_click(self, runner):
+        """Valid script backfill with click command should execute script for each backfill date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch(
+                "bigquery_etl.cli.query._backfill_script",
+            ) as mock_backfill_script,
+        ):
+            mock_backfill_script.side_effect = _backfill_script
+
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py", "w"
             ) as f:
                 f.write("""

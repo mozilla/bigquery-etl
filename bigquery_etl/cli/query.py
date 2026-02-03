@@ -20,7 +20,7 @@ from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from traceback import print_exc
-from typing import Iterable, Optional
+from typing import Callable, Iterable, Optional
 
 import rich_click as click
 import sqlparse
@@ -571,7 +571,7 @@ def _backfill_query(
 
 def _backfill_script(
     backfill_date: date,
-    entrypoint_command: click.Command,
+    entrypoint_command: Callable,
     query_script_date_arg: str,
     query_script_args: Iterable[str],
 ):
@@ -581,7 +581,15 @@ def _backfill_script(
         *query_script_args,
     ]
     print(f"Backfilling script for {backfill_date} with {' '.join(script_args)}")
-    entrypoint_command(script_args, standalone_mode=False)
+    if isinstance(entrypoint_command, click.Command):
+        entrypoint_command(script_args, standalone_mode=False)
+    else:
+        original_argv = sys.argv.copy()
+        try:
+            sys.argv = ["query.py"] + script_args
+            entrypoint_command()
+        finally:
+            sys.argv = original_argv
 
 
 @query.command(
@@ -854,9 +862,9 @@ def backfill(
             query_spec.loader.exec_module(query_module)
             entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            if not isinstance(entrypoint_command, click.Command):
+            if not isinstance(entrypoint_command, Callable):
                 raise click.ClickException(
-                    f"Script entrypoint `{query_script_entrypoint}` must be a Click CLI command."
+                    f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
                 )
 
             backfill_query = partial(

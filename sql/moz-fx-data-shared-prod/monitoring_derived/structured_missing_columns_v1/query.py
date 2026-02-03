@@ -4,7 +4,6 @@
 import datetime
 import json
 from argparse import ArgumentParser
-from collections import defaultdict
 
 from google.cloud import bigquery
 
@@ -90,10 +89,15 @@ USING (submission_date, document_namespace, document_type, document_version)
 """
 
 
-def structured_missing_columns(
-    date, project, destination_dataset, destination_table, skip_exceptions
-):
+def structured_missing_columns():
     """Get missing columns for structured ingestion."""
+    args = parse_args()
+    date = args.date
+    project = args.project
+    destination_dataset = args.destination_dataset
+    destination_table = args.destination_table
+    skip_exceptions = args.skip_exceptions
+
     client = bigquery.Client(project=project)
     print("Getting the list of namespaces...")
     namespaces = [
@@ -152,11 +156,4 @@ def parse_args():
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    structured_missing_columns(
-        args.date,
-        args.project,
-        args.destination_dataset,
-        args.destination_table,
-        args.skip_exceptions,
-    )
+    structured_missing_columns()

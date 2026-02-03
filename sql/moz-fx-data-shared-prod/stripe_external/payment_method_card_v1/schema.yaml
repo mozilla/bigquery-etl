@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: payment_method_id
+  type: STRING
+- mode: NULLABLE
+  name: brand
+  type: STRING
+- mode: NULLABLE
+  name: fingerprint
+  type: STRING
+- mode: NULLABLE
+  name: three_d_secure_usage_supported
+  type: BOOLEAN
+- mode: NULLABLE
+  name: type
+  type: STRING
+- mode: NULLABLE
+  name: charge_id
+  type: STRING
+- mode: NULLABLE
+  name: wallet_type
+  type: STRING
+- mode: NULLABLE
+  name: _fivetran_synced
+  type: TIMESTAMP

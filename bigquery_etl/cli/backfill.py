@@ -62,7 +62,7 @@ from ..metadata.validate_metadata import (
     MetadataValidationError,
 )
 from ..schema import SCHEMA_FILE, Schema
-from ..util.common import exit_if_running_under_coding_agent
+from ..util.common import block_coding_agents
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -505,6 +505,7 @@ def scheduled(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @click.option(
     "--parallelism",
@@ -525,8 +526,6 @@ def initiate(
     project_id,
 ):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
-    exit_if_running_under_coding_agent()
-
     click.echo("Backfill processing (initiate) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
@@ -830,14 +829,13 @@ def _initialize_previous_partition(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")
 @click.pass_context
 def complete(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with complete status in backfill.yaml file(s)."""
-    exit_if_running_under_coding_agent()
-
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "

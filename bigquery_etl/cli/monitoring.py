@@ -46,7 +46,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..util import extract_from_query_path
-from ..util.common import exit_if_running_under_coding_agent
+from ..util.common import block_coding_agents
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
@@ -79,6 +79,7 @@ def monitoring(ctx):
 
     Coding agents aren't allowed to run this command.
     """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
@@ -112,8 +113,6 @@ def deploy(
     dry_run: bool,
 ) -> None:
     """Deploy Bigeye config."""
-    exit_if_running_under_coding_agent()
-
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -239,6 +238,7 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
 
     Coding agents aren't allowed to run this command.
     """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -261,8 +261,6 @@ def deploy_custom_rules(
     workspace: int,
 ) -> None:
     """Deploy custom SQL rules for files."""
-    exit_if_running_under_coding_agent()
-
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -599,6 +597,7 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 
     Coding agents aren't allowed to run this command.
     """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -621,8 +620,6 @@ def set_partition_column(
     workspace: int,
 ) -> None:
     """Validate BigConfig file."""
-    exit_if_running_under_coding_agent()
-
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -704,6 +701,7 @@ def set_partition_column(
 
     Coding agents aren't allowed to run this command.
     """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -741,8 +739,6 @@ def delete(
     metrics: bool,
 ) -> None:
     """Validate BigConfig file."""
-    exit_if_running_under_coding_agent()
-
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(
@@ -799,6 +795,7 @@ def delete(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -816,8 +813,6 @@ def delete(
 @click.option("--marker", default="", help="Marker to filter checks.")
 def run(name, project_id, sql_dir, workspace, base_url, marker):
     """Run Bigeye checks."""
-    exit_if_running_under_coding_agent()
-
     api_key = os.environ.get("BIGEYE_API_KEY")
     if api_key is None:
         click.echo(

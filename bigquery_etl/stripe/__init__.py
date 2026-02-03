@@ -17,7 +17,7 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from requests.auth import HTTPBasicAuth
 
-from bigquery_etl.util.common import exit_if_running_under_coding_agent
+from bigquery_etl.util.common import block_coding_agents
 
 
 def _get_report_rows(
@@ -78,6 +78,7 @@ def stripe_():
     Coding agents aren't allowed to run this command.
     """,
 )
+@block_coding_agents
 @click.option(
     "--api-key",
     help="Stripe API key to use for authentication; If not set resources will be read "
@@ -146,8 +147,6 @@ def stripe_import(
     time_partitioning_type: str,
 ):
     """Import Stripe data into BigQuery."""
-    exit_if_running_under_coding_agent()
-
     if after_date:
         after_date = after_date.replace(tzinfo=timezone.utc)
     if before_date:

@@ -25,7 +25,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
-from ..util.common import exit_if_running_under_coding_agent, render
+from ..util.common import block_coding_agents, render
 from ..view import View
 
 VIEW_FILE = "view.sql"
@@ -54,6 +54,7 @@ def stage():
     # Deploy with custom test directory
     ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
     """)
+@block_coding_agents
 @click.argument(
     "paths",
     nargs=-1,
@@ -112,8 +113,6 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
-    exit_if_running_under_coding_agent()
-
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -608,6 +607,7 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     Examples:
     ./bqetl stage clean
     """)
+@block_coding_agents
 @click.option(
     "--project-id",
     "--project_id",
@@ -628,8 +628,6 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 )
 def clean(project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
-    exit_if_running_under_coding_agent()
-
     client = bigquery.Client(project_id)
 
     dataset_filter = (

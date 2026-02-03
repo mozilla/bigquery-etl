@@ -489,6 +489,38 @@ with DAG(
         task_concurrency=1,
     )
 
+    stripe_external__payment_method__v1 = bigquery_etl_query(
+        task_id="stripe_external__payment_method__v1",
+        destination_table="payment_method_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=[
+            "phlee@mozilla.com",
+            "srose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    stripe_external__payment_method_card__v1 = bigquery_etl_query(
+        task_id="stripe_external__payment_method_card__v1",
+        destination_table="payment_method_card_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=[
+            "phlee@mozilla.com",
+            "srose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     stripe_external__plan__v1 = bigquery_etl_query(
         task_id="stripe_external__plan__v1",
         destination_table="plan_v1",
@@ -1302,6 +1334,10 @@ with DAG(
 
     stripe_external__invoice_line_item__v1.set_upstream(fivetran_stripe_sync_start)
 
+    stripe_external__payment_method__v1.set_upstream(fivetran_stripe_sync_start)
+
+    stripe_external__payment_method_card__v1.set_upstream(fivetran_stripe_sync_start)
+
     stripe_external__plan__v1.set_upstream(fivetran_stripe_sync_start)
 
     stripe_external__product__v1.set_upstream(fivetran_stripe_sync_start)
@@ -1552,6 +1588,14 @@ with DAG(
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
         stripe_external__invoice_line_item__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__payment_method__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__payment_method_card__v1
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(

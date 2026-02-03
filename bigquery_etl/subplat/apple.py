@@ -14,7 +14,7 @@ import rich_click as click
 from authlib.jose import jwt
 from google.cloud import bigquery
 
-from bigquery_etl.cli.utils import exit_if_running_under_coding_agent
+from bigquery_etl.util.common import exit_if_running_under_coding_agent
 
 SUBSCRIBER_SCHEMA = [
     bigquery.SchemaField("report_date", "DATE"),

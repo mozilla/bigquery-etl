@@ -49,7 +49,6 @@ from ..backfill.validate import (
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
     billing_project_option,
-    exit_if_running_under_coding_agent,
     is_authenticated,
     project_id_option,
     sql_dir_option,
@@ -63,6 +62,7 @@ from ..metadata.validate_metadata import (
     MetadataValidationError,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util.common import exit_if_running_under_coding_agent
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)

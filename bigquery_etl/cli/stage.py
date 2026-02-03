@@ -14,11 +14,7 @@ from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import (
-    exit_if_running_under_coding_agent,
-    paths_matching_name_pattern,
-    sql_dir_option,
-)
+from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
@@ -29,7 +25,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
-from ..util.common import render
+from ..util.common import exit_if_running_under_coding_agent, render
 from ..view import View
 
 VIEW_FILE = "view.sql"

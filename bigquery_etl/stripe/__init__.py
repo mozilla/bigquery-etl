@@ -17,7 +17,7 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from requests.auth import HTTPBasicAuth
 
-from bigquery_etl.cli.utils import exit_if_running_under_coding_agent
+from bigquery_etl.util.common import exit_if_running_under_coding_agent
 
 
 def _get_report_rows(

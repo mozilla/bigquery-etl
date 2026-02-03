@@ -10,7 +10,7 @@ import rich_click as click
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
-from bigquery_etl.cli.utils import exit_if_running_under_coding_agent, project_id_option
+from bigquery_etl.cli.utils import project_id_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -20,7 +20,7 @@ from bigquery_etl.metadata.parse_metadata import (
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
-from bigquery_etl.util.common import project_dirs
+from bigquery_etl.util.common import exit_if_running_under_coding_agent, project_dirs
 
 DATA_FILENAME = "data.csv"
 

@@ -3144,15 +3144,18 @@ Options:
 --start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
 --end_date:<span class="w"> </span>Last<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
 --exclude:<span class="w"> </span>Dates<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>backfill.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
---dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w">  </span>Cannot<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>with<span class="w"> </span>query.py<span class="w"> </span>backfills.
 --max_rows:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>rows<span class="w"> </span>to<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>result
 --parallelism:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>threads<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>backfill<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel
 --destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
 --checks:<span class="w"> </span>Whether<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>checks<span class="w"> </span>during<span class="w"> </span>backfill
---custom_query_path:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>given,<span class="w"> </span>the<span class="w"> </span>proces<span class="w"> </span>runs<span class="w"> </span>as<span class="w"> </span>usual.
+--custom_query_path:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>given,<span class="w"> </span>the<span class="w"> </span>process<span class="w"> </span>runs<span class="w"> </span>as<span class="w"> </span>usual.
 --checks_file_name:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>file<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>after<span class="w"> </span>each<span class="w"> </span>partition<span class="w"> </span>backfill.<span class="w"> </span>E.g.<span class="w"> </span>custom_checks.sql.<span class="w"> </span>Optional.
 --scheduling_overrides:<span class="w"> </span>Pass<span class="w"> </span>overrides<span class="w"> </span>as<span class="w"> </span>a<span class="w"> </span>JSON<span class="w"> </span>string<span class="w"> </span><span class="k">for</span><span class="w"> </span>scheduling<span class="w"> </span>sections:<span class="w"> </span>parameters<span class="w"> </span>and/or<span class="w"> </span>date_partition_parameter<span class="w"> </span>as<span class="w"> </span>needed.
 --override_retention_range_limit:<span class="w"> </span>True<span class="w"> </span>to<span class="w"> </span>allow<span class="w"> </span>running<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span>outside<span class="w"> </span>the<span class="w"> </span>retention<span class="w"> </span>policy<span class="w"> </span>limit.
+--query_script_entrypoint:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>Click<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>query.py<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>Must<span class="w"> </span>be<span class="w"> </span>a<span class="w"> </span>@click.command<span class="o">()</span><span class="w"> </span><span class="k">function</span>.
+--query_script_date_arg:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>date<span class="w"> </span>argument<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>query.py<span class="w"> </span>accepting<span class="w"> </span>a<span class="w"> </span>YYYY-MM-DD<span class="w"> </span>string.
+--query_script_arg:<span class="w"> </span>CLI<span class="w"> </span>arguments<span class="w"> </span>to<span class="w"> </span>pass<span class="w"> </span>into<span class="w"> </span>query.py<span class="w"> </span><span class="k">if</span><span class="w"> </span>backfilling<span class="w"> </span>a<span class="w"> </span>python<span class="w"> </span>script.<span class="w"> </span>Specified<span class="w"> </span>like<span class="w"> </span><span class="sb">`</span>--query-script-arg<span class="o">=</span><span class="s2">&quot;--project=abc&quot;</span><span class="sb">`</span>
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
@@ -3161,16 +3164,28 @@ Options:
 <span class="c1"># Backfill for specific date range</span>
 <span class="c1"># second comment line</span>
 ./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project-id<span class="w"> </span>moz-fx-data-shared-prod<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31
 
 
 <span class="c1"># Dryrun backfill for specific date range and exclude date</span>
 ./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project-id<span class="w"> </span>moz-fx-data-shared-prod
 <span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--dry_run
+
+
+<span class="c1"># Backfill a query with a query.py</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>monitoring_derived.stable_and_derived_table_sizes_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-entrypoint<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-date-arg<span class="w"> </span>date<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-arg<span class="w"> </span><span class="s2">&quot;--dry-run&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-arg<span class="w"> </span><span class="s2">&quot;--project=moz-fx-data-shared-prod&quot;</span>
 </code></pre></div>
 <h4 id="run"><code>run</code></h4>
 <p>Run a query. Additional parameters will get passed to bq.<br />

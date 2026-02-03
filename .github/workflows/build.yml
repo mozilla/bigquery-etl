@@ -6,6 +6,24 @@ on:
     types:
       - opened
   merge_group:
+  workflow_dispatch:
+    inputs:
+      skip-stage-deploys:
+        description: 'Skip stage deployments'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      trigger-sql-generation:
+        description: 'Force SQL generation to run'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 
 env:
@@ -289,6 +307,8 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
+      - name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: Export ID Token for Python
         env:
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
@@ -312,6 +332,7 @@ jobs:
             echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
           fi
 
+          # Get the state in which main was in when the generated-sql branch was created and pushed
           cd ~
           git clone -b main https://github.com/mozilla/bigquery-etl ~/remote-bigquery-etl-main
           cd ~/remote-bigquery-etl-main
@@ -388,11 +409,54 @@ jobs:
           name: schema-cache
           path: /tmp/workspace/schema-cache
 
+  docs:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [generate-sql]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - name: Set up Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+      - name: Restore cached virtualenv
+        uses: actions/cache/restore@v4
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          path: .venv
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - name: Move generated SQL into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql/
+      - name: Generate documentation
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl docs generate --output_dir=generated_docs/
+      - name: Deploy documentation to GitHub Pages
+        run: |
+          cd generated_docs/
+          git config --global user.name "GitHub Actions docs job"
+          git config --global user.email "dataops@mozilla.com"
+          PATH="../.venv/bin:$PATH" mkdocs gh-deploy \
+            --remote-name https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+            -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
+
   deploy-changes-to-stage:
     name: Deploy Changes to Stage
     runs-on: ubuntu-latest
-    # needs: [generate-sql]
-    needs: [decide-runs, build]
+    needs: [generate-sql]
     permissions:
       id-token: write
       contents: read
@@ -414,42 +478,73 @@ jobs:
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: generated-sql
-      #     path: /tmp/workspace/generated-sql
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: schema-cache
-      #     path: /tmp/workspace/schema-cache
-      # - name: Restore schema cache from generate-sql job
-      #   run: |
-      #     if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
-      #       cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
-      #       echo "Restored schema cache from generate-sql job"
-      #     fi
-      # - name: Move generated-sql into place
-      #   run: |
-      #     rm -rf sql/
-      #     cp -r /tmp/workspace/generated-sql/sql sql
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - name: Download schema cache if available
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: schema-cache
+          path: /tmp/workspace/schema-cache
+      - name: Restore schema cache from generate-sql job
+        run: |
+          if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
+            cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
+            echo "Restored schema cache from generate-sql job"
+          fi
+      - name: Move generated-sql into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql
       - name: Pull in generated-sql branch from remote
         run: |
           git clone --single-branch --branch generated-sql \
             https://github.com/mozilla/bigquery-etl \
             generated-sql
-      - name: Authenticate to GCP (OIDC)
-        id: auth
+          # Normalize file permissions to avoid false positives in diffs
+          find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
+          find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
+      - name: Authenticate to GCP for ID Token (Dryrun SA)
+        id: auth-dryrun
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
+          token_format: 'id_token'
+          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
+          id_token_include_email: true
+          create_credentials_file: false
+      - name: Export ID Token for deployment
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - name: Authenticate to GCP for credentials file (Stage SA)
+        id: auth-stage
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+          access_token_lifetime: 3600s
       - name: Deploy changes to stage
         timeout-minutes: 30
         run: |
-          if [ "${{ github.event.inputs.skip-stage-deploys }}" = "false" ]; then
+          if [ "${{ github.event.inputs.skip-stage-deploys }}" != "true" ]; then
+            echo "=== DEBUG: Files in generated-sql/sql ==="
+            find generated-sql/sql -type f | head -20
+            echo "=== DEBUG: Files in sql ==="
+            find sql -type f | head -20
+            echo "=== DEBUG: Running diff ==="
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+            echo "=== DEBUG: Detected paths ==="
             echo $PATHS
+            echo "=== DEBUG: Number of paths: $(echo $PATHS | wc -w) ==="
+            echo "=== DEBUG: Sample diff output ==="
+            git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
             PATH=".venv/bin:$PATH" script/bqetl stage deploy \
+              --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" \
+              --remove-updated-artifacts \
               $PATHS
           fi
       - name: Copy generated SQL to temporary stage directory
@@ -568,14 +663,9 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+      - name: Set project ID for integration tests
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: Run SQL tests
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
@@ -616,19 +706,6 @@ jobs:
           cp -r /tmp/workspace/staged-generated-sql/sql sql
           rm -rf tests/
           cp -r /tmp/workspace/staged-generated-sql/tests tests
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
       - name: Run routine tests
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
@@ -676,10 +753,14 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
+      - name: Export ID Token for Python
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
       - name: Validate views
         run: |
           PATH=".venv/bin:$PATH" script/bqetl view validate
@@ -811,6 +892,8 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
+      - name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: Export ID Token for Python
         env:
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
@@ -853,6 +936,101 @@ jobs:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
 
+  main-generate-sql-and-dags:
+    name: Generate SQL and DAGs from Main Branch
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name == 'pull_request'
+    permissions:
+      id-token: write
+      contents: read
+    environment: GH Actions
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fetch and checkout main branch
+        run: |
+          git fetch origin main:main
+          git checkout main
+      - name: Set up Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+      - name: Build virtualenv
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --no-deps -r requirements.txt
+          pip-sync --pip-args=--no-deps
+      - name: Authenticate to GCP (OIDC)
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
+          token_format: 'id_token'
+          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
+          id_token_include_email: true
+      - name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
+      - name: Export ID Token for Python
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - name: Setup SSH key for private repo
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Generate SQL from main branch
+        run: |
+          export PATH="$PWD/.venv/bin:$PATH"
+          export PYTHONPATH="$PWD:$PYTHONPATH"
+          bqetl_script="$PWD/script/bqetl"
+
+          # Generate SQL
+          $bqetl_script generate all \
+            --ignore derived_view_schemas \
+            --target-project moz-fx-data-shared-prod
+          $bqetl_script format sql/
+          $bqetl_script dependency record --skip-existing sql/
+          $bqetl_script metadata update sql/
+          $bqetl_script monitoring update sql/
+
+          mkdir -p /tmp/workspace/main-generated-sql
+          cp -r sql /tmp/workspace/main-generated-sql/sql
+
+          # Generate private SQL
+          git clone --branch main --depth 1 \
+            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+          cd ~/private-bigquery-etl
+          $bqetl_script generate all --target-project moz-fx-data-shared-prod
+          $bqetl_script format sql/
+          $bqetl_script dependency record --skip-existing sql/
+          $bqetl_script metadata update sql/
+          $bqetl_script monitoring update sql/
+
+          # Merge private SQL into main SQL
+          cd "$GITHUB_WORKSPACE"
+          cp -rf ~/private-bigquery-etl/sql/. sql
+          cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
+          # Generate DAGs
+          mkdir -p /tmp/workspace/main-generated-sql/dags
+          $bqetl_script dag generate \
+            --output-dir /tmp/workspace/main-generated-sql/dags
+          rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-generated-sql
+          path: /tmp/workspace/main-generated-sql
+
   generate-dags:
     name: Generate DAGs
     runs-on: ubuntu-latest
@@ -878,7 +1056,9 @@ jobs:
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
-      - uses: actions/download-artifact@v4
+      - name: Download schema cache if available
+        uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -897,10 +1077,16 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
+      - name: Export ID Token for Python
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
@@ -977,6 +1163,66 @@ jobs:
         with:
           name: dag-test-results
           path: ~/telemetry-airflow/test-results/junit.xml
+
+  generate-diff:
+    name: Generate and Post SQL Diff
+    runs-on: ubuntu-latest
+    needs: [generate-dags, main-generate-sql-and-dags]
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - name: Create workspace directory
+        run: mkdir -p /tmp/workspace
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-sql-with-dags
+          path: /tmp/workspace/generated-sql
+      - uses: actions/download-artifact@v4
+        with:
+          name: main-generated-sql
+          path: /tmp/workspace/main-generated-sql
+      - name: Generate diff
+        run: |
+          diff -qr --no-dereference \
+            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+            | grep '^Only in' \
+            > /tmp/workspace/sql.diff || true
+          diff -bur --no-dereference --new-file \
+            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+            >> /tmp/workspace/sql.diff || true
+          diff -qr --no-dereference \
+            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+            | grep '^Only in' \
+            >> /tmp/workspace/sql.diff || true
+          diff -bur --no-dereference --new-file \
+            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+            >> /tmp/workspace/sql.diff || true
+      - name: Upload diff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-diff
+          path: /tmp/workspace/sql.diff
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+      - name: Install diff dependencies
+        run: npm i @octokit/graphql@7.0.2
+      - name: Post diff to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_ID: ${{ github.run_id }}
+          COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
+        run: node .github/workflows/post-diff.js
 
   push-generated-sql:
     name: Push Generated SQL
@@ -1150,17 +1396,104 @@ jobs:
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
-      - name: Authenticate to GCP (OIDC)
+      - name: Authenticate to GCP and Generate ID Token
         id: auth
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-          token_format: id_token
-          # yamllint disable-line rule:line-length
-          id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
-          id_token_include_email: true
-          create_credentials_file: false
+          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+      - name: Set project ID for integration tests
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: Delete stage datasets
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
+
+  deploy-to-pypi:
+    name: Deploy to PyPI
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mozilla-bigquery-etl
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify tag is on main branch
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor $GITHUB_SHA origin/main; then
+            echo "Error: Tag is not on main branch. Only tags on main can be deployed to PyPI."
+            exit 1
+          fi
+          echo "Verified: Tag is on main branch"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install deployment tools
+        run: pip install --upgrade build setuptools wheel twine
+      - name: Build distribution files
+        run: python -m build --sdist --wheel
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  sync-bigquery-etl-submodule:
+    name: 🔃 Synchronize bigquery-etl submodule
+    runs-on: ubuntu-latest
+    needs: [push-generated-sql]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Setup SSH keys for telemetry-airflow-dags
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Configure git
+        run: |
+          git config --global user.email "dataops@mozilla.com"
+          git config --global user.name "GitHub Actions sync-dags-repo job"
+      - name: Clone telemetry-airflow-dags and update bigquery-etl submodule
+        run: |
+          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+          cd telemetry-airflow-dags
+          git submodule update --init --recursive --depth 1
+          cd bigquery-etl
+          git pull origin generated-sql
+          cd ..
+          git add bigquery-etl
+          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
+          git push origin main
+
+  sync-private-bigquery-etl-submodule:
+    name: 🔃 Synchronize private-bigquery-etl submodule
+    runs-on: ubuntu-latest
+    needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Setup SSH keys for telemetry-airflow-dags
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Configure git
+        run: |
+          git config --global user.email "dataops@mozilla.com"
+          git config --global user.name "GitHub Actions sync-dags-repo job"
+      - name: Clone telemetry-airflow-dags and update private-bigquery-etl submodule
+        run: |
+          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+          cd telemetry-airflow-dags
+          git submodule update --init --recursive --depth 1
+          cd private-bigquery-etl
+          git pull origin private-generated-sql
+          cd ..
+          git add private-bigquery-etl
+          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
+          git push origin main

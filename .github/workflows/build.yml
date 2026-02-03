@@ -715,15 +715,6 @@ jobs:
       - name: Validate workgroup access configuration on main
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
-      - name: Download generated SQL
-        uses: actions/download-artifact@v4
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - name: Move generated SQL into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/generated-sql/sql sql
       - name: Authenticate to GCP and Generate ID Token
         id: auth
         uses: google-github-actions/auth@v2

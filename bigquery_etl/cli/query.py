@@ -34,7 +34,6 @@ from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
-    exit_if_running_under_coding_agent,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -73,7 +72,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.common import random_str
+from ..util.common import exit_if_running_under_coding_agent, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun

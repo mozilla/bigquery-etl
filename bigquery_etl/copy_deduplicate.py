@@ -21,7 +21,6 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import (
-    exit_if_running_under_coding_agent,
     get_glean_app_id_to_app_name_mapping,
     parallelism_option,
     project_id_option,
@@ -32,7 +31,10 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
-from bigquery_etl.util.common import TempDatasetReference
+from bigquery_etl.util.common import (
+    TempDatasetReference,
+    exit_if_running_under_coding_agent,
+)
 
 QUERY_TEMPLATE = """
 WITH

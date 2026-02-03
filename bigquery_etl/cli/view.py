@@ -14,7 +14,6 @@ import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.utils import (
-    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -26,6 +25,7 @@ from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
+from ..util.common import exit_if_running_under_coding_agent
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
 

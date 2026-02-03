@@ -778,8 +778,7 @@ def main():
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-01"
-                in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
             )
 
             mock_backfill_script.assert_any_call(
@@ -789,8 +788,7 @@ def main():
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-02"
-                in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
             )
 
     def test_query_backfill_python_script_click(self, runner):
@@ -864,7 +862,7 @@ def main(submission_date, table_id):
             )
 
     def test_query_backfill_python_script_invalid_entrypoint(self, runner):
-        """Script backfill should fail if entrypoint is not a click command"""
+        """Script backfill should fail if entrypoint is not a function."""
         with (
             runner.isolated_filesystem(),
             patch("google.cloud.bigquery.Client", autospec=True),
@@ -875,10 +873,7 @@ def main(submission_date, table_id):
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
                 "w",
             ) as f:
-                f.write("""
-def main(submission_date, table_id):
-    print(f"writing to {table_id} for {submission_date}")
-                """)
+                f.write('main = "abc"')
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
@@ -901,7 +896,7 @@ def main(submission_date, table_id):
             )
 
             assert result.exit_code == 1
-            assert "must be a Click CLI command" in result.stderr
+            assert "must be a function" in result.stderr
 
     def test_query_backfill_python_script_entrypoint_not_found(self, runner):
         """Script backfill should fail when the entrypoint is not found."""

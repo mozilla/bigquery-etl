@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 """Generates the list of missing columns in structured datasets."""
+
 import datetime
 import json
 from argparse import ArgumentParser

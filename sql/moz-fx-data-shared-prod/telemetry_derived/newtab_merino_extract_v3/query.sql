@@ -3,7 +3,11 @@ WITH legacy_pings AS (
     submission_timestamp,
     document_id,
     events,
-    normalized_country_code
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      metrics.string.newtab_locale,
+      normalized_country_code
+    ) AS normalized_country_code
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE

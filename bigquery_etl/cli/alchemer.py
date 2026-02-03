@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 import rich_click as click
 
 from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
-from bigquery_etl.cli.utils import exit_if_running_under_coding_agent
+from bigquery_etl.util.common import exit_if_running_under_coding_agent
 
 
 @click.group(help="""Commands for importing alchemer data.

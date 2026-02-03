@@ -40,13 +40,13 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 from ..cli.utils import (
-    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
     sql_dir_option,
 )
 from ..util import extract_from_query_path
+from ..util.common import exit_if_running_under_coding_agent
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"

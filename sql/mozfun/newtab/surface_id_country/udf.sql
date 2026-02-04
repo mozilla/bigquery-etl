@@ -13,7 +13,12 @@ RETURNS STRING AS (
     WHEN surface_id = 'NEW_TAB_EN_INTL'
       THEN 'INTL'
     WHEN surface_id LIKE 'NEW_TAB_%'
-      THEN RIGHT(surface_id, 2)
+      THEN
+        CASE
+          WHEN country IS NOT NULL
+            THEN country
+          ELSE RIGHT(surface_id, 2)
+        END
     WHEN surface_id IS NULL
       OR surface_id = ''
       THEN UPPER(RIGHT(LOWER(locale), 2))
@@ -24,10 +29,12 @@ RETURNS STRING AS (
 -- Tests
 SELECT
   assert.equals('INTL', newtab.surface_id_country('NEW_TAB_EN_INTL', LOWER('en-US'), NULL)),
-  assert.equals('DE', newtab.surface_id_country('NEW_TAB_DE_DE', LOWER('de'), NULL)),
   assert.equals('FR', newtab.surface_id_country('NEW_TAB_FR_FR', LOWER('fr'), NULL)),
   assert.equals('GB', newtab.surface_id_country('NEW_TAB_EN_GB', LOWER('en-US'), NULL)),
   assert.equals('US', newtab.surface_id_country('NEW_TAB_EN_US', LOWER('en-US'), NULL)),
+  assert.equals('DE', newtab.surface_id_country('NEW_TAB_DE_DE', LOWER('de'), 'DE')),
+  assert.equals('DE', newtab.surface_id_country('NEW_TAB_DE_DE', LOWER('de'), NULL)),
+  assert.equals('AT', newtab.surface_id_country('NEW_TAB_DE_DE', LOWER('de'), 'AT')),
   assert.equals('CA', newtab.surface_id_country(NULL, LOWER('en-CA'), NULL)),
   assert.equals('CN', newtab.surface_id_country(NULL, LOWER('zh-CN'), NULL)),
   assert.equals('FR', newtab.surface_id_country(NULL, LOWER('fr'), NULL)),

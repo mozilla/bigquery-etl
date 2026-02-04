@@ -1,9 +1,0 @@
-fields:
-- name: utm_source
-  description: UTM source or medium value from marketing attribution data (e.g., 'google-play', 'email', 'firefox-browser')
-  type: STRING
-  mode: REQUIRED
-- name: utm_group
-  description: Categorized marketing channel group (Direct, Marketing Owned, Marketing Paid, Product Owned, or Miscellaneous)
-  type: STRING
-  mode: REQUIRED

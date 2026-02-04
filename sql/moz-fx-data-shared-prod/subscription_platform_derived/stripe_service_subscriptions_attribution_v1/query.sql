@@ -121,8 +121,7 @@ SELECT
         customer_attribution_impressions.utm_content,
         customer_attribution_impressions.utm_medium,
         customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term,
-        COALESCE(utm_mapping.utm_group, 'Uncategorized') AS utm_group
+        customer_attribution_impressions.utm_term
         -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
       ),
       customer_attribution_impressions.impression_at
@@ -141,8 +140,7 @@ SELECT
         customer_attribution_impressions.utm_content,
         customer_attribution_impressions.utm_medium,
         customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term,
-        COALESCE(utm_mapping.utm_group, 'Uncategorized') AS utm_group
+        customer_attribution_impressions.utm_term
         -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
       ),
       customer_attribution_impressions.impression_at
@@ -163,10 +161,6 @@ LEFT JOIN
   AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
   AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
   AND subscription_starts.started_at > subscription_starts.logical_subscription_started_at
-LEFT JOIN
-  `moz-fx-data-shared-prod.static.utm_source_mapping_v1` AS utm_mapping
-  ON customer_attribution_impressions.utm_source = utm_mapping.utm_source
-  OR customer_attribution_impressions.utm_medium = utm_mapping.utm_source
 WHERE
   IF(
     subscription_starts.started_at = subscription_starts.logical_subscription_started_at,

@@ -26,8 +26,7 @@ SELECT
     history.subscription.metadata.utm_content,
     history.subscription.metadata.utm_medium,
     history.subscription.metadata.utm_source,
-    history.subscription.metadata.utm_term,
-    COALESCE(utm_mapping.utm_group, 'Uncategorized') AS utm_group
+    history.subscription.metadata.utm_term
   ) AS last_touch_attribution
 FROM
   subscription_starts
@@ -35,10 +34,6 @@ JOIN
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
   ON subscription_starts.stripe_subscriptions_history_id = history.id
   AND history.valid_to > history.valid_from
-LEFT JOIN
-  `moz-fx-data-shared-prod.static.utm_source_mapping_v1` AS utm_mapping
-  ON history.subscription.metadata.utm_source = utm_mapping.utm_source
-  OR history.subscription.metadata.utm_medium = utm_mapping.utm_source
 WHERE
   history.subscription.metadata.session_flow_id IS NOT NULL
   OR history.subscription.metadata.session_entrypoint IS NOT NULL

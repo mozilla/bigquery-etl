@@ -6,5 +6,5 @@ In general, it should be used for content recommendations in the `newtab_content
 
 For tables:
 
-- `moz-fx-data-shared-prod.firefox_desktop_....newtab_v1`
-- `moz-fx-data-shared-prod.firefox_desktop_....newtab_content_v1`
+- `moz-fx-data-shared-prod.firefox_desktop_*.newtab_v1`
+- `moz-fx-data-shared-prod.firefox_desktop_*.newtab_content_v1`

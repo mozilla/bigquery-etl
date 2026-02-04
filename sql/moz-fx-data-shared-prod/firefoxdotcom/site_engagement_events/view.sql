@@ -12,4 +12,4 @@ JOIN
   ON e.ga_client_id = s.ga_client_id
   AND e.ga_session_id = s.ga_session_id
 WHERE
-  REGEXP_CONTAINS(s.ga_client_id || '-' || s.ga_session_id, r"^[0-9]+\.{1}[0-9]+\-{1}[0-9]+$")
+  REGEXP_CONTAINS(s.ga_client_id || '-' || s.ga_session_id, r"^[0-9]+\.[0-9]+\-[0-9]+$")

@@ -1,0 +1,11 @@
+friendly_name: Shared Rust Components Derived
+description: |-
+  Derived data for shared Rust components
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

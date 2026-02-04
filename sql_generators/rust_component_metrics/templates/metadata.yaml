@@ -1,0 +1,18 @@
+friendly_name: {{ ping }}.{{ category }}.{{ metric.name }} aggregates
+description:
+  Aggregated metric data derived from {{ ping }}.{{ category }}.{{ metric.name }}
+labels:
+  incremental: true
+owners:
+  - sync-team@mozilla.com
+scheduling:
+  dag_name: bqetl_rust_component_metrics
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - application

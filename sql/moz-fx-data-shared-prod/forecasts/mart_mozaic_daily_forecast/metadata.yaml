@@ -17,4 +17,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
-  - moz-fx-data-shared-prod.forecasts_derived.mart_mozaic_daily_forecast_v1
+  - moz-fx-data-shared-prod.forecasts_derived.mart_mozaic_daily_forecast_v2

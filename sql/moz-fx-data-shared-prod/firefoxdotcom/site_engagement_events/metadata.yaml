@@ -17,4 +17,5 @@ workgroup_access:
   - workgroup:google-managed/external-ads-dataproc
 references:
   view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
   - moz-fx-data-shared-prod.firefoxdotcom_derived.site_engagement_events_v1

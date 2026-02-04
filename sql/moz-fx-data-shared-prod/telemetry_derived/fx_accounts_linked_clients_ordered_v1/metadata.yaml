@@ -14,4 +14,7 @@ scheduling:
   depends_on_past: true
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
+  arguments: [
+    "--billing-project=moz-fx-data-backfill-4"
+  ]
 require_column_descriptions: true

@@ -10,5 +10,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ads/external-tapclicks
-  - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers

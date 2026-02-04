@@ -7,10 +7,8 @@ default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-  - workgroup:dataops-managed/external-fides
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
 syndication: {}

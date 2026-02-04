@@ -2707,7 +2707,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_alignment_baseline,
       metrics.counter.use_counter_css_doc_css_baseline_shift,
       metrics.counter.use_counter_css_page_css_alignment_baseline,
-      metrics.counter.use_counter_css_page_css_baseline_shift
+      metrics.counter.use_counter_css_page_css_baseline_shift,
+      metrics.counter.use_counter_css_doc_css_text_box,
+      metrics.counter.use_counter_css_doc_css_text_box_edge,
+      metrics.counter.use_counter_css_doc_css_text_box_trim,
+      metrics.counter.use_counter_css_page_css_text_box,
+      metrics.counter.use_counter_css_page_css_text_box_edge,
+      metrics.counter.use_counter_css_page_css_text_box_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5438,7 +5444,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_alignment_baseline,
       metrics.counter.use_counter_css_doc_css_baseline_shift,
       metrics.counter.use_counter_css_page_css_alignment_baseline,
-      metrics.counter.use_counter_css_page_css_baseline_shift
+      metrics.counter.use_counter_css_page_css_baseline_shift,
+      metrics.counter.use_counter_css_doc_css_text_box,
+      metrics.counter.use_counter_css_doc_css_text_box_edge,
+      metrics.counter.use_counter_css_doc_css_text_box_trim,
+      metrics.counter.use_counter_css_page_css_text_box,
+      metrics.counter.use_counter_css_page_css_text_box_edge,
+      metrics.counter.use_counter_css_page_css_text_box_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8169,7 +8181,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_alignment_baseline,
       metrics.counter.use_counter_css_doc_css_baseline_shift,
       metrics.counter.use_counter_css_page_css_alignment_baseline,
-      metrics.counter.use_counter_css_page_css_baseline_shift
+      metrics.counter.use_counter_css_page_css_baseline_shift,
+      metrics.counter.use_counter_css_doc_css_text_box,
+      metrics.counter.use_counter_css_doc_css_text_box_edge,
+      metrics.counter.use_counter_css_doc_css_text_box_trim,
+      metrics.counter.use_counter_css_page_css_text_box,
+      metrics.counter.use_counter_css_page_css_text_box_edge,
+      metrics.counter.use_counter_css_page_css_text_box_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10900,7 +10918,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_alignment_baseline,
       metrics.counter.use_counter_css_doc_css_baseline_shift,
       metrics.counter.use_counter_css_page_css_alignment_baseline,
-      metrics.counter.use_counter_css_page_css_baseline_shift
+      metrics.counter.use_counter_css_page_css_baseline_shift,
+      metrics.counter.use_counter_css_doc_css_text_box,
+      metrics.counter.use_counter_css_doc_css_text_box_edge,
+      metrics.counter.use_counter_css_doc_css_text_box_trim,
+      metrics.counter.use_counter_css_page_css_text_box,
+      metrics.counter.use_counter_css_page_css_text_box_edge,
+      metrics.counter.use_counter_css_page_css_text_box_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13631,7 +13655,13 @@ SELECT
       metrics.counter.use_counter_css_doc_css_alignment_baseline,
       metrics.counter.use_counter_css_doc_css_baseline_shift,
       metrics.counter.use_counter_css_page_css_alignment_baseline,
-      metrics.counter.use_counter_css_page_css_baseline_shift
+      metrics.counter.use_counter_css_page_css_baseline_shift,
+      metrics.counter.use_counter_css_doc_css_text_box,
+      metrics.counter.use_counter_css_doc_css_text_box_edge,
+      metrics.counter.use_counter_css_doc_css_text_box_trim,
+      metrics.counter.use_counter_css_page_css_text_box,
+      metrics.counter.use_counter_css_page_css_text_box_edge,
+      metrics.counter.use_counter_css_page_css_text_box_trim
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

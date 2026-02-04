@@ -24,7 +24,6 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-dataproc
 references:
   query.sql:

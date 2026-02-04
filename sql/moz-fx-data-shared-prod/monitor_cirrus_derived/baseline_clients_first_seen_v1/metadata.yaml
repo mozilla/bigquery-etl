@@ -39,7 +39,6 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:

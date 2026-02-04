@@ -17264,6 +17264,34 @@ fields:
         get a human readable error for these values.  Records up to 16 codes.
 
         '
+    - name: mailnews_ews_server_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many EWS accounts are hosted by an on-premise server or Office365.
+
+        '
+    - name: mailnews_ews_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many EWS accounts are hosted by each known version of Exchange
+        Server. Exchange Server 2013 SP1 can also be used to designate a more recent
+        server version.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

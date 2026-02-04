@@ -10,7 +10,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/crash-ping-ingest
-  - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
 references:

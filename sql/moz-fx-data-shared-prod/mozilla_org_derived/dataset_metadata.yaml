@@ -10,7 +10,6 @@ default_table_workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:google-managed/external-ads-dataproc
-  - workgroup:dataops-managed/external-fides
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:

@@ -20405,6 +20405,48 @@ fields:
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_css_doc_css_text_box
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property text-box. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_doc_css_text_box_edge
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property text-box-edge. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_doc_css_text_box_trim
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property text-box-trim. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_page_css_text_box
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property text-box. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_page_css_text_box_edge
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property text-box-edge. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_css_page_css_text_box_trim
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property text-box-trim. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

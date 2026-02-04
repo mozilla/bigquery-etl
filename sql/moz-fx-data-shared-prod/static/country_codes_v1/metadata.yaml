@@ -10,7 +10,6 @@ workgroup_access:
   members:
   - workgroup:ads/external-tapclicks
   - workgroup:dataops-managed/external-census
-  - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:mozilla-confidential/data-viewers

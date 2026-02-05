@@ -39,7 +39,8 @@ jobs:
       validate-sql: ${{ steps.set-flags.outputs.validate-sql }}
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
     steps:
-      - uses: actions/checkout@v4
+      - &checkout-with-history
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           filter: blob:none
@@ -87,11 +88,13 @@ jobs:
     name: Build Environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - &checkout
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           filter: blob:none
-      - name: Set up Python
+      - &setup-python
+        name: Set up Python
         id: setup_python
         uses: actions/setup-python@v5
         with:
@@ -116,18 +119,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
+      - *checkout
+      - *setup-python
+      - &restore-venv
+        name: Restore cached virtualenv
         uses: actions/cache/restore@v4
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
@@ -142,22 +137,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *checkout
+      - *setup-python
+      - *restore-venv
       - name: Yamllint Test
         run: PATH=".venv/bin:$PATH" yamllint -c .yamllint.yaml .
 
@@ -167,22 +149,9 @@ jobs:
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *checkout
+      - *setup-python
+      - *restore-venv
       - name: Verify that SQL is correctly formatted
         run: |
           PATH=".venv/bin:$PATH" script/bqetl format --check \
@@ -198,23 +167,11 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - name: Authenticate to GCP (OIDC)
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &auth-gcp-dryrun
+        name: Authenticate to GCP (OIDC)
         id: auth
         uses: google-github-actions/auth@v3
         with:
@@ -223,7 +180,8 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
-      - name: Export ID Token for Python
+      - &export-id-token
+        name: Export ID Token for Python
         env:
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
@@ -246,29 +204,18 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - name: Authenticate to GCP and Generate ID Token
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &auth-gcp-stage
+        name: Authenticate to GCP and Generate ID Token
         id: auth
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - name: Set project ID for integration tests
+      - &set-project-id
+        name: Set project ID for integration tests
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
       - name: PyTest Integration Test
         timeout-minutes: 30
@@ -287,22 +234,13 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
+      - &checkout-with-creds
+        uses: actions/checkout@v4
         with:
           persist-credentials: true
           fetch-depth: 0
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *setup-python
+      - *restore-venv
       - name: Authenticate to GCP (OIDC)
         id: auth
         uses: google-github-actions/auth@v3
@@ -422,27 +360,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &download-generated-sql
+        uses: actions/download-artifact@v4
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - name: Move generated SQL into place
+      - &copy-generated-sql
+        name: Move generated SQL into place
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql/
@@ -467,26 +394,10 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
       - name: Download schema cache if available
         uses: actions/download-artifact@v4
         continue-on-error: true
@@ -571,45 +482,23 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &download-staged-sql
+        uses: actions/download-artifact@v4
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
-      - name: Move sql deployed on stage into place
+      - &copy-staged-sql
+        name: Move sql deployed on stage into place
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/staged-generated-sql/sql sql
           rm -rf tests/
           cp -r /tmp/workspace/staged-generated-sql/tests tests
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - *auth-gcp-dryrun
+      - *export-id-token
       - name: Dry run queries
         run: |
           if [ "${{ github.ref_name }}" = main ]; then
@@ -637,40 +526,13 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: staged-generated-sql
-          path: /tmp/workspace/staged-generated-sql
-      - name: Move sql deployed on stage into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/staged-generated-sql/sql sql
-          rm -rf tests/
-          cp -r /tmp/workspace/staged-generated-sql/tests tests
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-stage
+      - *set-project-id
       - name: Run SQL tests
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
@@ -685,46 +547,20 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: staged-generated-sql
-          path: /tmp/workspace/staged-generated-sql
-      - name: Move sql deployed on stage into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/staged-generated-sql/sql sql
-          rm -rf tests/
-          cp -r /tmp/workspace/staged-generated-sql/tests tests
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
-      - name: Run routine tests
-        run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
-      - name: Validate doc examples
-        run: |
-          PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-stage
+      - *set-project-id
+      # todo: use once stage test account has access to bucket
+      # - name: Run routine tests
+      #   run: |
+      #     PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+      # - name: Validate doc examples
+      #   run: |
+      #     PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
 
   validate-views:
     name: Validate Views
@@ -735,45 +571,13 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: staged-generated-sql
-          path: /tmp/workspace/staged-generated-sql
-      - name: Move sql deployed on stage into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/staged-generated-sql/sql sql
-          rm -rf tests/
-          cp -r /tmp/workspace/staged-generated-sql/tests tests
-      - name: Authenticate to GCP (OIDC)
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-dryrun
+      - *export-id-token
       - name: Validate views
         run: |
           PATH=".venv/bin:$PATH" script/bqetl view validate
@@ -787,38 +591,14 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *checkout
+      - *setup-python
+      - *restore-venv
       - name: Validate workgroup access configuration on main
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - *auth-gcp-dryrun
+      - *export-id-token
       - name: Verify that metadata files are valid
         run: |
           PATH=".venv/bin:$PATH" script/bqetl query validate \
@@ -839,30 +619,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-sql]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - name: Move generated-sql into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/generated-sql/sql sql
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *copy-generated-sql
       - name: Verify that backfill.yaml files are valid
         run: |
           PATH=".venv/bin:$PATH" script/bqetl backfill validate
@@ -876,41 +637,13 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - uses: actions/download-artifact@v4
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - name: Authenticate to GCP (OIDC)
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *auth-gcp-dryrun
+      - *set-project-id
+      - *export-id-token
       - name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
@@ -953,27 +686,18 @@ jobs:
     name: Generate SQL and DAGs from Main Branch
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.event_name == 'pull_request'
+    if: github.ref != 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - *checkout-with-history
       - name: Fetch and checkout main branch
         run: |
           git fetch origin main:main
           git checkout main
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
+      - *setup-python
       - name: Build virtualenv
         run: |
           python3 -m venv .venv
@@ -991,10 +715,8 @@ jobs:
           id_token_include_email: true
       - name: Set project ID
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - name: Export ID token
+        run: echo "ID_TOKEN=${{ steps.auth.outputs.id_token }}" >> $GITHUB_ENV
       - name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
@@ -1053,22 +775,9 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *checkout
+      - *setup-python
+      - *restore-venv
       - name: Download schema cache if available
         uses: actions/download-artifact@v4
         continue-on-error: true
@@ -1085,21 +794,9 @@ jobs:
             cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
             echo "Restored schema cache from generate-sql job"
           fi
-      - name: Authenticate to GCP (OIDC)
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
-      - name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
+      - *auth-gcp-dryrun
+      - *export-id-token
+      - *set-project-id
       - name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
@@ -1135,10 +832,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-dags]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
+      - *checkout
       - name: Pull telemetry-airflow
         run: |
           git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
@@ -1182,14 +876,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-dags, main-generate-sql-and-dags]
     if: github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
+      - *checkout
       - name: Create workspace directory
         run: mkdir -p /tmp/workspace
       - uses: actions/download-artifact@v4
@@ -1263,6 +955,7 @@ jobs:
           cp -r /tmp/workspace/generated-sql/dags dags
           git add .
           git commit -m "Auto-push due to change on main branch [ci skip]" \
+            -m "Created from ${{ github.sha }}" \
             && git tag c-${{ github.sha }} \
             && git push \
             && git push origin c-${{ github.sha }} \
@@ -1305,6 +998,7 @@ jobs:
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
 
           git commit -m "Auto-push due to change on main branch [ci skip]" \
+            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
             && git push \
             || echo "Skipping push since it looks like there were no changes"
 
@@ -1317,14 +1011,8 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - uses: actions/download-artifact@v4
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
+      - *checkout
+      - *download-generated-sql
       - uses: actions/download-artifact@v4
         with:
           name: private-generated-sql
@@ -1333,6 +1021,7 @@ jobs:
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/private-generated-sql/sql sql
+          # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
           yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") \
             *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' > bqetl_project.yaml
       - name: Build the Docker image
@@ -1371,12 +1060,15 @@ jobs:
           id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
           id_token_include_email: true
           create_credentials_file: false
-      - name: Prepare DAG run note
-        # yamllint disable-line rule:line-length
-        run: echo "DAGRUN_NOTE=DAG triggered by **[${{ github.actor }}](https://github.com/${{ github.actor }})** from ${{ github.repository }} CI build [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_ENV
+      - name: Generate API Token and DAG run note
+        run: |
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+          RUN_URL="${REPO_URL}/actions/runs/${{ github.run_id }}"
+          NOTE="DAG triggered by **[${{ github.actor }}](https://github.com/${{ github.actor }})** "
+          NOTE="${NOTE}from ${{ github.repository }} CI build [${{ github.run_number }}](${RUN_URL})"
+          echo "DAGRUN_NOTE=${NOTE}" >> $GITHUB_ENV
+          echo "ID_TOKEN=${{ steps.auth.outputs.id_token }}" >> $GITHUB_ENV
       - name: Trigger bqetl-artifact-deployment in Airflow
-        env:
-          ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         run: |
           curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
             -H "Authorization: bearer ${ID_TOKEN}" \
@@ -1393,30 +1085,11 @@ jobs:
       contents: read
     environment: GH Actions
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-      - name: Set up Python
-        id: setup_python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
-      - name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *auth-gcp-stage
+      - *set-project-id
       - name: Delete stage datasets
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
@@ -1432,10 +1105,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/mozilla-bigquery-etl
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - *checkout-with-history
       - name: Verify tag is on main branch
         run: |
           git fetch origin main

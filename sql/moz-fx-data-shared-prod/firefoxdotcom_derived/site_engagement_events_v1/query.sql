@@ -19,7 +19,6 @@ WITH all_events AS (
           1
       ) AS STRING
     ) AS ga_session_id,
-    -- Session number (1 = new user, >1 = returning)
     (
       SELECT
         value.int_value
@@ -30,23 +29,21 @@ WITH all_events AS (
       LIMIT
         1
     ) AS ga_session_number,
-    -- Session engaged flag (1 = engaged session)
-    COALESCE(
-      (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'session_engaged' LIMIT 1),
-      CAST(
+    (
+      SELECT
+        IF(x = 1, 1, 0)
+      FROM
         (
           SELECT
-            value.string_value
+            COALESCE(value.int_value, SAFE_CAST(value.string_value AS INT64)) AS x
           FROM
             UNNEST(event_params)
           WHERE
             key = 'session_engaged'
           LIMIT
             1
-        ) AS INT64
-      )
+        )
     ) AS session_engaged,
-    -- Page location
     (
       SELECT
         value.string_value
@@ -57,7 +54,6 @@ WITH all_events AS (
       LIMIT
         1
     ) AS page_location,
-    -- Engagement time
     (
       SELECT
         value.int_value
@@ -66,12 +62,10 @@ WITH all_events AS (
       WHERE
         key = 'engagement_time_msec'
     ) AS engagement_time_msec,
-    -- Device & Geo
     platform,
     device.category AS device_category,
     device.operating_system AS operating_system,
     geo.country AS geo_country,
-    -- Session last-click attribution
     session_traffic_source_last_click.manual_campaign.campaign_id AS campaign_id,
     session_traffic_source_last_click.manual_campaign.campaign_name AS campaign_name,
     session_traffic_source_last_click.manual_campaign.source AS source,
@@ -95,7 +89,6 @@ SELECT
   ga_client_id,
   ga_session_id,
   ga_session_number,
-  -- Is this a new user? (first session)
   CASE
     WHEN ga_session_number = 1
       THEN TRUE
@@ -114,14 +107,12 @@ SELECT
   google_ads_campaign_name,
   google_ads_ad_group_name,
   page_location,
-  -- Locale extracted from URL
   TRIM(
     SPLIT(REGEXP_REPLACE(page_location, r'^https?://(www\.)?firefox\.com', ''), '/')[
       SAFE_OFFSET(1)
     ],
     '/'
   ) AS page_location_locale,
-  -- Page path WITHOUT locale (for grouping acquisition pages across locales)
   REGEXP_REPLACE(
     REGEXP_REPLACE(page_location, r'^https?://(www\.)?firefox\.com/[a-z]{2}(-[A-Z]{2})?', ''),
     r'\?.*$',

@@ -26,7 +26,7 @@ from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..util.common import exit_if_running_under_coding_agent, project_dirs
+from ..util.common import block_coding_agents, project_dirs
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -382,6 +382,7 @@ Examples:
     ./bqetl routine validate udf.*
     """,
 )
+@block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
 @click.option(
@@ -408,8 +409,6 @@ Examples:
 @click.pass_context
 def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
     """Publish routines."""
-    exit_if_running_under_coding_agent()
-
     project_id = get_project_id(ctx, project_id)
 
     public = False

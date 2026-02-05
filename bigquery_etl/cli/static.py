@@ -20,7 +20,7 @@ from bigquery_etl.metadata.parse_metadata import (
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
-from bigquery_etl.util.common import exit_if_running_under_coding_agent, project_dirs
+from bigquery_etl.util.common import block_coding_agents, project_dirs
 
 DATA_FILENAME = "data.csv"
 
@@ -38,11 +38,10 @@ def static_():
     Coding agents aren't allowed to run this command.
     """,
 )
+@block_coding_agents
 @project_id_option()
 def publish(project_id):
     """Publish CSV files as BigQuery tables."""
-    exit_if_running_under_coding_agent()
-
     source_project = project_id
     target_project = project_id
     if target_project == ConfigLoader.get(

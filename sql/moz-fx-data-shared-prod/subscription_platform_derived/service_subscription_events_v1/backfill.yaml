@@ -1,6 +1,6 @@
-2026-02-04:
+2026-02-05:
   start_date: 2019-10-10
-  end_date: 2026-02-04
+  end_date: 2026-01-26
   reason: Populate the new `payment_method` field (DENG-9664).
   watchers:
   - srose@mozilla.com

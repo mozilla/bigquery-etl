@@ -53,6 +53,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -92,19 +105,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily_joined__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_clients_first_seen_v3 = ExternalTaskSensor(
         task_id="wait_for_clients_first_seen_v3",
         external_dag_id="bqetl_analytics_tables",
@@ -116,6 +116,22 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__legacy_ad_clicks_by_state__v1 = bigquery_etl_query(
+        task_id="search_derived__legacy_ad_clicks_by_state__v1",
+        destination_table="legacy_ad_clicks_by_state_v1",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kbammarito@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "cmorales@mozilla.com",
+            "kbammarito@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     search_derived__search_aggregates__v8 = bigquery_etl_query(
@@ -314,6 +330,14 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    search_derived__legacy_ad_clicks_by_state__v1.set_upstream(
+        search_derived__search_clients_daily__v8
+    )
+
+    search_derived__legacy_ad_clicks_by_state__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
     search_derived__search_aggregates__v8.set_upstream(

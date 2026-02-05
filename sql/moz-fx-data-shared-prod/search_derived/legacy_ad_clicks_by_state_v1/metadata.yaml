@@ -1,0 +1,31 @@
+friendly_name: Legacy Ad Clicks By State
+description: |-
+  Aggregate table that sums ad clicks by day, state, and engine.
+owners:
+- kbammarito@mozilla.com
+labels:
+  incremental: true
+  owner1: kbammarito
+  table_type: aggregate
+  shredder_mitigation: true
+  dag: bqetl_search
+scheduling:
+  dag_name: bqetl_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_engine
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
+require_column_descriptions: true

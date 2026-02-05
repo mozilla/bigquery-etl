@@ -1,0 +1,16 @@
+friendly_name: Legacy Ad Clicks By State
+description: |-
+  Aggregate table that pivots and sums ad clicks by month, state, and engine.
+owners:
+- kbammarito@mozilla.com
+labels:
+  owner: kbammarito
+  owner1: kbammarito
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.legacy_ad_clicks_by_state_v1
+require_column_descriptions: false

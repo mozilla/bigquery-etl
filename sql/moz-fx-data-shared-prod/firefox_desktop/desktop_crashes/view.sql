@@ -87,7 +87,8 @@ SELECT
       metrics.string.crash_minidump_sha_256_hash,
       metrics.string.crash_product_id,
       metrics.string.crash_product_name,
-      metrics.string.crash_shutdown_reason
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_application_build_id
     ) AS `string`,
     STRUCT(
       CAST(NULL AS STRUCT<`time_unit` STRING, `value` INTEGER>) AS `crash_uptime`,

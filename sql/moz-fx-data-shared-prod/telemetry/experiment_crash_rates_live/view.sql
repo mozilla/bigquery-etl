@@ -8,6 +8,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_crash_events_live_v1`
@@ -20,6 +21,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_crash_events_live_v1`
@@ -32,6 +34,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_derived.experiment_crash_events_live_v1`
@@ -44,6 +47,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.experiment_crash_events_live_v1`
@@ -56,6 +60,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_crash_events_live_v1`
@@ -68,6 +73,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_derived.experiment_crash_events_live_v1`
@@ -80,6 +86,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.experiment_crash_events_live_v1`
@@ -92,6 +99,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.experiment_crash_events_live_v1`
@@ -104,6 +112,7 @@ SELECT
   window_start,
   window_end,
   crash_process_type,
+  crash_signature,
   crash_count
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.experiment_crash_aggregates_v1`

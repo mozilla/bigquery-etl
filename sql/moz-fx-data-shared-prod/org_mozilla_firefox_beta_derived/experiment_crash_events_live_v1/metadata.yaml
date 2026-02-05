@@ -13,4 +13,5 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   materialized_view.sql:
+  - moz-fx-data-shared-prod.crash_ping_ingest_external.ingest_output
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.crash_v1

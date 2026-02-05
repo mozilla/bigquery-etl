@@ -60,20 +60,24 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
-    # Pings to include (opt-in list)
-    local included_tables=(
-        "^baseline$"
-        "^metrics$"
+    # Pings to exclude
+    local excluded_tables=(
+        "use_counters.*"             # Use counters bring too many rows to process and GLAM doesn't support them.
+        "^migration$"                # Migration tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^client_deduplication$"     # Client deduplication tables are not supported by GLAM and don't have `is_bot_generated` flag.
+        "^events$"                   # Not supported by GLAM.
+        "^nimbus-targeting-context$" # Not supported by GLAM.
     )
-    local include_pattern=$(IFS='|'; echo "${included_tables[*]}")
+    local exclude_pattern=$(IFS='|'; echo "${excluded_tables[*]}")
 
     # GLAM only supports tables with glean_ping_* schema.
-    # Using opt-in approach: only including tables matching patterns in included_tables list
+    # Also excluding tables matching patterns in excluded_tables list
+    # because they are not supported or their generated query is too big to run
     tables=$(bq ls --format=json "$qualified" | \
-        jq -r --arg include_pattern "$include_pattern" '.[] |
+        jq -r --arg exclude_pattern "$exclude_pattern" '.[] |
         select(.labels.schema_id | test("^glean_ping_[0-9]+")) |
         select(.type == "TABLE") |
-        select(.tableReference.tableId | test($include_pattern)) |
+        select(.tableReference.tableId | test($exclude_pattern) | not) |
         "\(.tableReference.tableId)"')
 
     # generate schemas in parallel

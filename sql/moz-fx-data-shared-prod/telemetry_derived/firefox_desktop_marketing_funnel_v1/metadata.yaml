@@ -1,0 +1,43 @@
+friendly_name: Firefox Desktop Marketing Funnel - Temporary Analysis Table
+description: |-
+  PURPOSE:
+  Creates a unified funnel metrics table combining web analytics (GA4) with
+  Firefox telemetry data to track the full user journey:
+    Visits -> Downloads -> Installs -> New Profiles -> Repeat Users -> Retained Week 4
+
+  FUNNEL TYPES:
+    - mozorg windows funnel: Windows users from mozilla.org (full funnel with installs)
+    - mozorg mac funnel: Mac users from mozilla.org (no install data - Mac has no installer telemetry)
+    - partner: Partner distribution channels (no visits/downloads - starts at profiles)
+    - Unknown: EU countries and unattributed "other" traffic
+
+  KEY EXCLUSIONS:
+    - EU countries excluded from core funnels due to cookie banner impact on tracking
+    - Existing Firefox users excluded from visits (browser != Firefox/Mozilla)
+    - Internal cross-site traffic excluded (mozilla.org <-> firefox.com referrals)
+
+  ATTRIBUTION:
+    - Uses dltoken (download token) to link GA4 sessions -> installs -> profiles
+    - Campaign attribution from Google Ads with campaigns_v2 fallback
+    - Channel derived from campaign presence and GA4 channel grouping
+owners:
+- kik@mozilla.com
+- sbedwell@mozilla.com
+labels:
+  level: bronze
+  incremental: false
+  owner1: kik
+  table_type: aggregate
+  dag: bqetl_marketing_analysis
+scheduling:
+  dag_name: bqetl_marketing_analysis
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+require_column_descriptions: true

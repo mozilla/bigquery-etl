@@ -21,11 +21,11 @@ description: |-
     - Campaign attribution from Google Ads with campaigns_v2 fallback
     - Channel derived from campaign presence and GA4 channel grouping
 owners:
-- kik@mozilla.com
 - sbedwell@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
-  incremental: false
+  incremental: true
   owner1: kik
   table_type: aggregate
   dag: bqetl_marketing_analysis

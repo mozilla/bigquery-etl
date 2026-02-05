@@ -5,92 +5,92 @@
 -- Metrics: Visits (sessions) and Downloads (click events)
 -- Granularity: Daily, by country, funnel type, and attribution dimensions
 -- =============================================================================
-WITH TOF AS (
+WITH top_of_funnel_base AS (
   SELECT
     session_date AS submission_date,
+    country_names.code AS country_code,
+    LOWER(os) AS os,
+    -- Attribution dimensions for channel/campaign analysis
+    ad_crosschannel_primary_channel_group AS channel_raw,
+    ad_google_campaign_id AS campaign_id,
+    IFNULL(
+      ad_google_campaign,
+      campaigns_v2.campaign_name
+    ) AS campaign,  -- TODO: should this be a COALESCE?
+    ad_crosschannel_source AS `source`,
+    ad_crosschannel_medium AS medium,
+    -- Logic: Exclude sessions where mozilla.org referred to firefox.com or vice versa
+    -- This prevents double-counting users who navigate between our properties
+    COALESCE(
+      (
+        -- Exclude: mozilla.org traffic landing on firefox.com
+        (
+          (
+            REGEXP_CONTAINS(manual_source, r'(?i)^(.*www.)?mozilla.org.*')
+            OR REGEXP_CONTAINS(first_source_from_event_params, r'(?i)^(.*www.)?mozilla.org.*')
+          )
+          AND flag = 'FIREFOX.COM'
+        )
+        -- Exclude: firefox.com traffic landing on mozilla.org
+        OR (
+          (
+            LOWER(manual_source) IN ('www.firefox.com', 'firefox.com', 'firefox-com')
+            OR LOWER(first_source_from_event_params) IN (
+              'www.firefox.com',
+              'firefox.com',
+              'firefox-com'
+            )
+          )
+          AND flag = 'MOZILLA.ORG'
+        )
+      ),
+      FALSE
+    ) IS FALSE AS has_visits,
+    firefox_desktop_downloads,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined` AS ga4
+  LEFT JOIN
+    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` AS campaigns_v2
+    ON SAFE_CAST(ga4.first_gad_campaignid_from_event_params AS INT64) = campaigns_v2.campaign_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
+    ON ga4.country = country_names.name
+  WHERE
+    session_date = @submission_date
+    AND device_category = 'desktop'
+    -- Exclude existing Firefox users - we want new acquisition only
+    AND COALESCE(browser NOT IN ('Firefox', 'Mozilla'), FALSE)
+),
+top_of_funnel AS (
+  SELECT
+    top_of_funnel_base.* EXCEPT (os, country_code, has_visits, firefox_desktop_downloads),
     -- Country format: "US (Tier 1)" or "ROW" for Rest of World (Tier 3)
-    CASE
-      WHEN COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3'
-        THEN 'ROW'
-      ELSE tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    END AS country,
+    IF(
+      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
+      "ROW",
+      tier_mapping.country_code || " (" || tier_mapping.tier || ")"  -- TODO: can we expect tier_mapping country_code or tier to be null here?
+    ) AS country,
     -- Determine funnel type based on OS
     CASE
-      WHEN LOWER(os) = 'windows'
+      WHEN os = 'windows'
         THEN 'mozorg windows funnel'
-      WHEN LOWER(os) = 'macintosh'
+      WHEN os = 'macintosh'
         THEN 'mozorg mac funnel'
       ELSE 'mozorg other'
     END AS funnel_derived,
-    -- Attribution dimensions for channel/campaign analysis
-    ad_crosschannel_primary_channel_group AS channel_raw,
-    IFNULL(ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
-    ad_google_campaign_id AS campaign_id,
-    ad_crosschannel_source AS source,
-    ad_crosschannel_medium AS medium,
     -- VISITS: Count sessions, excluding internal cross-site traffic
-    -- Logic: Exclude sessions where mozilla.org referred to firefox.com or vice versa
-    -- This prevents double-counting users who navigate between our properties
-    COUNTIF(
-      COALESCE(
-        (
-        -- Exclude: mozilla.org traffic landing on firefox.com
-          (
-            (
-              REGEXP_CONTAINS(manual_source, r'(?i)^(.*www.)?mozilla.org.*')
-              OR REGEXP_CONTAINS(first_source_from_event_params, r'(?i)^(.*www.)?mozilla.org.*')
-            )
-            AND flag = 'FIREFOX.COM'
-          )
-        -- Exclude: firefox.com traffic landing on mozilla.org
-          OR (
-            (
-              LOWER(manual_source) IN ('www.firefox.com', 'firefox.com', 'firefox-com')
-              OR LOWER(first_source_from_event_params) IN (
-                'www.firefox.com',
-                'firefox.com',
-                'firefox-com'
-              )
-            )
-            AND flag = 'MOZILLA.ORG'
-          )
-        ),
-        FALSE
-      ) IS FALSE
-    ) AS visits,
+    COUNTIF(NOT has_visits) AS visits,
     -- DOWNLOADS: Count sessions with at least one Firefox desktop download
     COUNTIF(firefox_desktop_downloads > 0) AS downloads
   FROM
-    `mozdata.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined` ga4
+    top_of_funnel_base
   LEFT JOIN
-    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
-    -- TODO: Should use country normalization table for cleaner mapping
-    ON
-    CASE
-      WHEN ga4.country = 'Türkiye'
-        THEN 'Turkey'
-      ELSE ga4.country
-    END
-    =tier_mapping.country
-  LEFT JOIN
-    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` campaigns_v2
-    ON SAFE_CAST(ga4.first_gad_campaignid_from_event_params AS INT64) = campaigns_v2.campaign_id
+    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping  -- What builds this? TODO: check if this should be a static table.
+    USING (country_code)
   WHERE
-    session_date >= '2021-01-01'
-    AND device_category = 'desktop'
-    -- Exclude existing Firefox users - we want new acquisition only
-    AND COALESCE(browser, '') NOT IN ('Firefox', 'Mozilla')
-    -- Exclude EU due to cookie consent banner reducing tracking coverage
-    AND NOT COALESCE(tier_mapping.is_eu, FALSE)
+    NOT COALESCE(tier_mapping.is_eu, FALSE)
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
+    ALL
 ),
 -- =============================================================================
 -- CTE 2: ga4_attr_by_dltoken - Deduplicated Attribution by Download Token
@@ -104,50 +104,55 @@ WITH TOF AS (
 --   3. client_id as tiebreaker
 -- USED BY: installs CTE for attribution lookup
 -- =============================================================================
+-- deduplicated attribution data (prevents many-to-many explosion)
+ga4_attribution_by_dltoken_dedup AS (
+  SELECT
+    client_id,
+    first_seen_date,
+    ga4_session_date,
+    attribution_dltoken AS dltoken,
+    ga4_ad_crosschannel_primary_channel_group AS channel_raw,
+    ga4_ad_google_campaign,
+    ga4_ad_google_campaign_id AS campaign_id,
+    ga4_ad_crosschannel_source AS `source`,
+    ga4_ad_crosschannel_medium AS medium,
+    ga4_first_gad_campaignid_from_event_params,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr`
+  WHERE
+    attribution_dltoken IS NOT NULL
+  -- Keep only the best record per dltoken
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        attribution_dltoken
+      ORDER BY
+        CASE
+          WHEN ga4_ad_crosschannel_primary_channel_group IS NOT NULL
+            THEN 0
+          ELSE 1
+        END,
+        first_seen_date,
+        client_id
+    ) = 1
+),
 ga4_attr_by_dltoken AS (
   SELECT
-    sub.attribution_dltoken AS dltoken,
-    sub.ga4_ad_crosschannel_primary_channel_group AS channel_raw,
-    IFNULL(sub.ga4_ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
-    sub.ga4_ad_google_campaign_id AS campaign_id,
-    sub.ga4_ad_crosschannel_source AS source,
-    sub.ga4_ad_crosschannel_medium AS medium
+    ga4_attr.client_id,
+    ga4_attr.dltoken,
+    ga4_attr.channel_raw,
+    ga4_attr.campaign_id,
+    ga4_attr.`source`,
+    ga4_attr.medium,
+    ga4_session_date,
+    IFNULL(ga4_attr.ga4_ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
   FROM
-    (
-      SELECT
-        attribution_dltoken,
-        ga4_ad_crosschannel_primary_channel_group,
-        ga4_ad_google_campaign,
-        ga4_ad_google_campaign_id,
-        ga4_ad_crosschannel_source,
-        ga4_ad_crosschannel_medium,
-        ga4_first_gad_campaignid_from_event_params,
-        first_seen_date,
-        client_id,
-      -- Rank records per dltoken, preferring those with attribution data
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            attribution_dltoken
-          ORDER BY
-            CASE
-              WHEN ga4_ad_crosschannel_primary_channel_group IS NOT NULL
-                THEN 0
-              ELSE 1
-            END,
-            first_seen_date,
-            client_id
-        ) AS rn
-      FROM
-        `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr`
-      WHERE
-        attribution_dltoken IS NOT NULL
-    ) sub
+    ga4_attribution_by_dltoken_dedup AS ga4_attr
   LEFT JOIN
     `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` campaigns_v2
-    ON SAFE_CAST(sub.ga4_first_gad_campaignid_from_event_params AS INT64) = campaigns_v2.campaign_id
-  -- Keep only the best record per dltoken
-  WHERE
-    rn = 1
+    ON SAFE_CAST(
+      ga4_attr.ga4_first_gad_campaignid_from_event_params AS INT64
+    ) = campaigns_v2.campaign_id
 ),
 -- =============================================================================
 -- CTE 3: installs - Windows Installer Telemetry
@@ -157,58 +162,50 @@ ga4_attr_by_dltoken AS (
 -- Attribution: Joined to ga4_attr_by_dltoken via dltoken extracted from attribution URL
 -- Note: ~10% of dltokens map to multiple profiles, hence the deduplication above
 -- =============================================================================
-installs AS (
+windows_installer_installs_base AS (
   SELECT
-    DATE(i.submission_timestamp) AS submission_date,
-    CASE
-      WHEN COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3'
-        THEN 'ROW'
-      ELSE tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    END AS country,
-    'mozorg windows funnel' AS funnel_derived,  -- Always Windows (Mac has no installer data)
-    -- Get attribution from deduplicated ga4_attr lookup
-    ga4_attr.channel_raw,
-    ga4_attr.campaign,
-    ga4_attr.campaign_id,
-    ga4_attr.source,
-    ga4_attr.medium,
-    COUNT(*) AS installs
+    DATE(submission_timestamp) AS submission_date,
+    normalized_country_code AS country_code,
+  -- Extract dltoken from URL-encoded attribution string
+    REGEXP_EXTRACT(attribution, r'dltoken%3D([^%&]+)') AS dltoken,
   FROM
-    (
-    -- Subquery to extract dltoken and filter install records
-      SELECT
-        submission_timestamp,
-        normalized_country_code,
-      -- Extract dltoken from URL-encoded attribution string
-        REGEXP_EXTRACT(attribution, r'dltoken%3D([^%&]+)') AS dltoken
-      FROM
-        `mozdata.firefox_installer.install`
-      WHERE
-        DATE(submission_timestamp) >= '2021-01-01'
-        AND succeeded = TRUE              -- Only successful installs
-        AND had_old_install IS NOT TRUE   -- Exclude upgrades/reinstalls (new installs only)
-        AND DATE_DIFF(CURRENT_DATE(), DATE(submission_timestamp), DAY) > 1  -- Data maturity lag
-      -- Only count installs from tracked mozilla.org downloads
-        AND funnel_derived = 'mozorg windows funnel'
-    ) i
+    `moz-fx-data-shared-prod.firefox_installer.install` AS installs
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND succeeded  -- Only successful installs
+    AND NOT had_old_install  -- Exclude upgrades/reinstalls (new installs only)
+  -- Only count installs from tracked mozilla.org downloads
+    AND funnel_derived = 'mozorg windows funnel'
+),
+windows_installer_installs AS (
+  SELECT
+    submission_date,
+    -- Country format: "US (Tier 1)" or "ROW" for Rest of World (Tier 3)
+    IF(
+      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
+      "ROW",
+      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
+    ) AS country,
+    'mozorg windows funnel' AS funnel_derived,  -- Always Windows (Mac has no installer data)
+    -- Get attribution from ga4_attr_by_dltoken lookup
+    channel_raw,
+    campaign,
+    campaign_id,
+    `source`,
+    medium,
+    COUNT(*) AS installs,
+  FROM
+    windows_installer_installs_base
   LEFT JOIN
     `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
-    ON i.normalized_country_code = tier_mapping.country_code
-  -- Join to deduplicated attribution data (prevents many-to-many explosion)
+    USING (country_code)
   LEFT JOIN
-    ga4_attr_by_dltoken ga4_attr
-    ON i.dltoken = ga4_attr.dltoken
+    ga4_attr_by_dltoken
+    USING (dltoken)
   WHERE
     NOT COALESCE(tier_mapping.is_eu, FALSE)
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
+    ALL
 ),
 -- =============================================================================
 -- CTE 4: fresh_download_profiles - Profile Filtering (Currently Unused)
@@ -220,40 +217,32 @@ installs AS (
 -- =============================================================================
 fresh_download_profiles AS (
   SELECT
-    client_id,
-    first_seen_date
+    cfs.client_id,
+    cfs.first_seen_date,
+    cfs.attribution_dltoken,
   FROM
-    (
-      SELECT
-        cfs.client_id,
-        cfs.first_seen_date,
-        cfs.attribution_dltoken,
-      -- Rank profiles per download to identify the first one
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            cfs.attribution_dltoken
-          ORDER BY
-            cfs.first_seen_date,
-            cfs.client_id
-        ) AS profile_rank
-      FROM
-        `mozdata.telemetry.clients_first_seen_28_days_later` cfs
-      INNER JOIN
-        `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr` ga4_attr
-        ON cfs.client_id = ga4_attr.client_id
-      WHERE
-        cfs.funnel_derived IN ('mozorg windows funnel', 'mozorg mac funnel')
-        AND cfs.first_seen_date >= '2021-01-01'
-        AND cfs.is_desktop = TRUE
-        AND cfs.attribution_dltoken IS NOT NULL
-      -- Download must have occurred within 30 days before profile creation
-        AND ga4_attr.ga4_session_date
-        BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 30 DAY)
-        AND cfs.first_seen_date
-    )
-  -- Only keep the first profile created from each download
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs
+  INNER JOIN
+    ga4_attr_by_dltoken AS ga4_attr
+    USING (client_id)
   WHERE
-    profile_rank = 1
+    cfs.funnel_derived IN ('mozorg windows funnel', 'mozorg mac funnel')
+    AND cfs.first_seen_date = @submission_date
+    AND cfs.is_desktop
+    AND cfs.attribution_dltoken IS NOT NULL
+  -- Download must have occurred within 30 days before profile creation
+    AND ga4_attr.ga4_session_date
+    BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 30 DAY)
+    AND cfs.first_seen_date
+  -- Assign row id to profiles per download to identify the first one
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        cfs.attribution_dltoken
+      ORDER BY
+        cfs.first_seen_date,
+        cfs.client_id
+    ) = 1
 ),
 -- =============================================================================
 -- CTE 5: desktop_funnels_telemetry - Firefox Profile Metrics
@@ -268,74 +257,56 @@ fresh_download_profiles AS (
 desktop_funnels_telemetry AS (
   SELECT
     cfs28.first_seen_date AS submission_date,
-    CASE
-      WHEN COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3'
-        THEN 'ROW'
-      ELSE tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    END AS country,
+    IF(
+      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
+      "ROW",
+      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
+    ) AS country,
     -- Reclassify "other" and EU countries as "Unknown" funnel
-    CASE
-      WHEN cfs28.funnel_derived = 'other'
-        OR tier_mapping.is_eu
-        THEN 'Unknown'
-      ELSE cfs28.funnel_derived
-    END AS funnel_derived,
+    IF(
+      cfs28.funnel_derived = 'other'
+      OR tier_mapping.is_eu,
+      'Unknown',
+      cfs28.funnel_derived
+    ) AS funnel_derived,
     cfs28.normalized_os,
     -- Partner-specific dimensions (NULL for non-partner funnels to reduce cardinality)
-    CASE
-      WHEN cfs28.funnel_derived = 'partner'
-        THEN cfs28.partner_org
-    END AS partner_org,
-    CASE
-      WHEN cfs28.funnel_derived = 'partner'
-        THEN cfs28.distribution_model
-    END AS distribution_model,
-    CASE
-      WHEN cfs28.funnel_derived = 'partner'
-        THEN cfs28.distribution_id
-    END AS distribution_id,
+    IF(cfs28.funnel_derived = 'partner', cfs28.partner_org, CAST(NULL AS STRING)) AS partner_org,
+    IF(
+      cfs28.funnel_derived = 'partner',
+      cfs28.distribution_model,
+      CAST(NULL AS STRING)
+    ) AS distribution_model,
+    IF(
+      cfs28.funnel_derived = 'partner',
+      cfs28.distribution_id,
+      CAST(NULL AS STRING)
+    ) AS distribution_id,
     -- Attribution dimensions from GA4
-    ga4_attr.ga4_ad_crosschannel_primary_channel_group AS channel_raw,
-    IFNULL(ga4_attr.ga4_ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
-    ga4_attr.ga4_ad_google_campaign_id AS campaign_id,
-    ga4_attr.ga4_ad_crosschannel_source AS source,
-    ga4_attr.ga4_ad_crosschannel_medium AS medium,
+    ga4_attr.channel_raw,
+    ga4_attr.campaign,
+    ga4_attr.campaign_id,
+    ga4_attr.`source`,
+    ga4_attr.medium,
     -- Profile metrics
     COUNT(*) AS new_profiles,
     COUNTIF(qualified_second_day) AS return_user,      -- Active on day 2
     COUNTIF(qualified_week4) AS retained_week4         -- Active in week 4
   FROM
-    `mozdata.telemetry.clients_first_seen_28_days_later` cfs28
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs28
   LEFT JOIN
     `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
     ON cfs28.country = tier_mapping.country_code
-  -- Join to GA4 attribution (1:1 via client_id, no deduplication needed here)
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr` ga4_attr
-    ON cfs28.client_id = ga4_attr.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` campaigns_v2
-    ON SAFE_CAST(
-      ga4_attr.ga4_first_gad_campaignid_from_event_params AS INT64
-    ) = campaigns_v2.campaign_id
+    ga4_attr_by_dltoken AS ga4_attr
+    USING (client_id)
   WHERE
-    cfs28.first_seen_date >= '2021-01-01'
-    AND cfs28.is_desktop = TRUE
+    cfs28.first_seen_date = @submission_date
+    AND cfs28.is_desktop
     -- Exclude EU for core funnels, but keep partner funnel metrics
     AND (NOT COALESCE(tier_mapping.is_eu, FALSE) OR cfs28.funnel_derived = 'partner')
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
+    ALL
 ),
 -- =============================================================================
 -- CTE 6: final - Unified Funnel Metrics
@@ -347,67 +318,111 @@ desktop_funnels_telemetry AS (
 final AS (
   SELECT
     -- Use COALESCE to get dimensions from whichever source has data (TOF, installs, or telemetry)
-    COALESCE(t.submission_date, i.submission_date, d.submission_date) AS submission_date,
-    COALESCE(t.country, i.country, d.country) AS country,
-    COALESCE(t.funnel_derived, i.funnel_derived, d.funnel_derived) AS funnel_derived,
-    COALESCE(t.channel_raw, i.channel_raw, d.channel_raw) AS channel_raw,
-    COALESCE(t.campaign, i.campaign, d.campaign) AS campaign,
-    COALESCE(t.campaign_id, i.campaign_id, d.campaign_id) AS campaign_id,
-    COALESCE(t.source, i.source, d.source) AS source,
-    COALESCE(t.medium, i.medium, d.medium) AS medium,
-    d.normalized_os,
-    d.partner_org,
-    d.distribution_model,
-    d.distribution_id,
+    COALESCE(
+      top_of_funnel.submission_date,
+      windows_installer.submission_date,
+      desktop_funnels_telemetry.submission_date
+    ) AS submission_date,
+    COALESCE(
+      top_of_funnel.country,
+      windows_installer.country,
+      desktop_funnels_telemetry.country
+    ) AS country,
+    COALESCE(
+      top_of_funnel.funnel_derived,
+      windows_installer.funnel_derived,
+      desktop_funnels_telemetry.funnel_derived
+    ) AS funnel_derived,
+    COALESCE(
+      top_of_funnel.channel_raw,
+      windows_installer.channel_raw,
+      desktop_funnels_telemetry.channel_raw
+    ) AS channel_raw,
+    COALESCE(
+      top_of_funnel.campaign,
+      windows_installer.campaign,
+      desktop_funnels_telemetry.campaign
+    ) AS campaign,
+    COALESCE(
+      top_of_funnel.campaign_id,
+      windows_installer.campaign_id,
+      desktop_funnels_telemetry.campaign_id
+    ) AS campaign_id,
+    COALESCE(
+      top_of_funnel.`source`,
+      windows_installer.`source`,
+      desktop_funnels_telemetry.`source`
+    ) AS `source`,
+    COALESCE(
+      top_of_funnel.medium,
+      windows_installer.medium,
+      desktop_funnels_telemetry.medium
+    ) AS medium,
+    desktop_funnels_telemetry.normalized_os,
+    desktop_funnels_telemetry.partner_org,
+    desktop_funnels_telemetry.distribution_model,
+    desktop_funnels_telemetry.distribution_id,
     -- Partner funnel has no web visits/downloads (starts at profiles)
-    CASE
-      WHEN d.funnel_derived = 'partner'
-        THEN NULL
-      ELSE COALESCE(t.visits, 0)
-    END AS visits,
-    CASE
-      WHEN d.funnel_derived = 'partner'
-        THEN NULL
-      ELSE COALESCE(t.downloads, 0)
-    END AS downloads,
+    IF(
+      desktop_funnels_telemetry.funnel_derived = 'partner',
+      CAST(NULL AS INTEGER),
+      COALESCE(top_of_funnel.visits, 0)
+    ) AS visits,
+    IF(
+      desktop_funnels_telemetry.funnel_derived = 'partner',
+      CAST(NULL AS INTEGER),
+      COALESCE(top_of_funnel.downloads, 0)
+    ) AS downloads,
     -- Installs only available for Windows funnel (Mac has no installer telemetry)
     CASE
-      WHEN COALESCE(t.funnel_derived, d.funnel_derived) = 'mozorg windows funnel'
-        THEN COALESCE(i.installs, 0)
-      WHEN COALESCE(t.funnel_derived, d.funnel_derived) = 'mozorg mac funnel'
-        THEN NULL
-      ELSE NULL
+      WHEN COALESCE(
+          top_of_funnel.funnel_derived,
+          desktop_funnels_telemetry.funnel_derived
+        ) = 'mozorg windows funnel'
+        THEN COALESCE(windows_installer.installs, 0)
+      WHEN COALESCE(
+          top_of_funnel.funnel_derived,
+          desktop_funnels_telemetry.funnel_derived
+        ) = 'mozorg mac funnel'
+        THEN CAST(NULL AS INTEGER)  -- TODO: do we want this to be null or default to 0?
+      ELSE CAST(NULL AS INTEGER)
     END AS installs,
-    COALESCE(d.new_profiles, 0) AS new_profiles,
-    COALESCE(d.return_user, 0) AS return_user,
-    COALESCE(d.retained_week4, 0) AS retained_week4
+    COALESCE(desktop_funnels_telemetry.new_profiles, 0) AS new_profiles,
+    COALESCE(desktop_funnels_telemetry.return_user, 0) AS return_user,
+    COALESCE(desktop_funnels_telemetry.retained_week4, 0) AS retained_week4
   FROM
-    TOF t
+    top_of_funnel
   -- Join installs on all attribution dimensions
   FULL JOIN
-    installs i
-    ON t.submission_date = i.submission_date
-    AND t.country = i.country
-    AND t.funnel_derived = i.funnel_derived
-    AND COALESCE(t.channel_raw, '') = COALESCE(i.channel_raw, '')
-    AND COALESCE(t.campaign, '') = COALESCE(i.campaign, '')
-    AND COALESCE(t.campaign_id, '') = COALESCE(i.campaign_id, '')
-    AND COALESCE(t.source, '') = COALESCE(i.source, '')
-    AND COALESCE(t.medium, '') = COALESCE(i.medium, '')
+    windows_installer_installs AS windows_installer
+    ON top_of_funnel.submission_date = windows_installer.submission_date
+    AND top_of_funnel.country = windows_installer.country
+    AND top_of_funnel.funnel_derived = windows_installer.funnel_derived
+    AND COALESCE(top_of_funnel.channel_raw, '') = COALESCE(windows_installer.channel_raw, '')
+    AND COALESCE(top_of_funnel.campaign, '') = COALESCE(windows_installer.campaign, '')
+    AND COALESCE(top_of_funnel.campaign_id, '') = COALESCE(windows_installer.campaign_id, '')
+    AND COALESCE(top_of_funnel.source, '') = COALESCE(windows_installer.source, '')
+    AND COALESCE(top_of_funnel.medium, '') = COALESCE(windows_installer.medium, '')
   -- Join telemetry (profiles) on all attribution dimensions
   FULL JOIN
-    desktop_funnels_telemetry d
-    ON t.submission_date = d.submission_date
-    AND t.country = d.country
-    AND t.funnel_derived = d.funnel_derived
-    AND COALESCE(t.channel_raw, '') = COALESCE(d.channel_raw, '')
-    AND COALESCE(t.campaign, '') = COALESCE(d.campaign, '')
-    AND COALESCE(t.campaign_id, '') = COALESCE(d.campaign_id, '')
-    AND COALESCE(t.source, '') = COALESCE(d.source, '')
-    AND COALESCE(t.medium, '') = COALESCE(d.medium, '')
-  -- Only include dates where telemetry data has matured (28-day metrics need time)
+    desktop_funnels_telemetry
+    ON top_of_funnel.submission_date = desktop_funnels_telemetry.submission_date
+    AND top_of_funnel.country = desktop_funnels_telemetry.country
+    AND top_of_funnel.funnel_derived = desktop_funnels_telemetry.funnel_derived
+    AND COALESCE(top_of_funnel.channel_raw, '') = COALESCE(
+      desktop_funnels_telemetry.channel_raw,
+      ''
+    )
+    AND COALESCE(top_of_funnel.campaign, '') = COALESCE(desktop_funnels_telemetry.campaign, '')
+    AND COALESCE(top_of_funnel.campaign_id, '') = COALESCE(
+      desktop_funnels_telemetry.campaign_id,
+      ''
+    )
+    AND COALESCE(top_of_funnel.source, '') = COALESCE(desktop_funnels_telemetry.source, '')
+    AND COALESCE(top_of_funnel.medium, '') = COALESCE(desktop_funnels_telemetry.medium, '')
+  -- Only include dates where telemetry data has matured (28-day metrics need time)  -- TODO: Does this mean this should run with a 28 day lag?
   WHERE
-    COALESCE(t.submission_date, d.submission_date) <= (
+    COALESCE(top_of_funnel.submission_date, desktop_funnels_telemetry.submission_date) <= (
       SELECT
         MAX(submission_date)
       FROM
@@ -418,21 +433,21 @@ final AS (
 -- Final SELECT: Add Derived Dimensions and Year-over-Year Metrics
 -- =============================================================================
 SELECT
-  f.* REPLACE (
+  final.* REPLACE (
     -- Remap tier names to user-friendly labels: Tier 1 -> Core, Tier 2 -> Growth, ROW -> Emerging
     CASE
-      WHEN f.country = 'ROW'
+      WHEN final.country = 'ROW'
         THEN 'Emerging'
-      ELSE REGEXP_REPLACE(REGEXP_REPLACE(f.country, r'Tier 1', 'Core'), r'Tier 2', 'Growth')
+      ELSE REGEXP_REPLACE(REGEXP_REPLACE(final.country, r'Tier 1', 'Core'), r'Tier 2', 'Growth')
     END AS country
   ),
   -- Country tier as separate dimension for filtering
   CASE
-    WHEN f.country = 'ROW'
+    WHEN final.country = 'ROW'
       THEN 'Emerging'
-    WHEN f.country LIKE '%(Tier 1)'
+    WHEN final.country LIKE '%(Tier 1)'
       THEN 'Core'
-    WHEN f.country LIKE '%(Tier 2)'
+    WHEN final.country LIKE '%(Tier 2)'
       THEN 'Growth'
     ELSE 'Unknown'
   END AS country_tier,
@@ -441,52 +456,53 @@ SELECT
   --   - Organic Search: GA4 classified as Organic Search
   --   - Web - Organic/Other: Everything else (direct, referral, social, etc.)
   CASE
-    WHEN f.campaign IS NOT NULL
+    WHEN final.campaign IS NOT NULL
       THEN 'Paid Search'
-    WHEN f.channel_raw = 'Organic Search'
+    WHEN final.channel_raw = 'Organic Search'
       THEN 'Organic Search'
     ELSE 'Web - Organic/Other'
   END AS channel,
   -- Subchannel: Campaign type classification for Paid Search
   -- Based on naming conventions: _brand_, _nonbrand_, _comp_, pmax
   CASE
-    WHEN f.campaign IS NOT NULL
+    WHEN final.campaign IS NOT NULL
       THEN
         CASE
-          WHEN REGEXP_CONTAINS(f.campaign, r'_brand_')
+          WHEN REGEXP_CONTAINS(final.campaign, r'_brand_')
             THEN 'Brand'
-          WHEN REGEXP_CONTAINS(f.campaign, r'_nonbrand_')
+          WHEN REGEXP_CONTAINS(final.campaign, r'_nonbrand_')
             THEN 'Non-Brand'
-          WHEN REGEXP_CONTAINS(f.campaign, r'_comp_')
+          WHEN REGEXP_CONTAINS(final.campaign, r'_comp_')
             THEN 'Competitor'
-          WHEN REGEXP_CONTAINS(LOWER(f.campaign), r'pmax')
+          WHEN REGEXP_CONTAINS(LOWER(final.campaign), r'pmax')
             THEN 'PMax'
           ELSE 'Other'
         END
     ELSE 'All'  -- Non-Paid Search has no subchannel
   END AS subchannel,
   -- Year-over-year metrics (364 days to align day-of-week)
-  COALESCE(ly.visits, 0) AS visits_ly,
-  COALESCE(ly.downloads, 0) AS downloads_ly,
-  COALESCE(ly.installs, 0) AS installs_ly,
-  COALESCE(ly.new_profiles, 0) AS new_profiles_ly,
-  COALESCE(ly.return_user, 0) AS return_user_ly,
-  COALESCE(ly.retained_week4, 0) AS retained_week4_ly
+  COALESCE(last_year.visits, 0) AS visits_ly,
+  COALESCE(last_year.downloads, 0) AS downloads_ly,
+  COALESCE(last_year.installs, 0) AS installs_ly,
+  COALESCE(last_year.new_profiles, 0) AS new_profiles_ly,
+  COALESCE(last_year.return_user, 0) AS return_user_ly,
+  COALESCE(last_year.retained_week4, 0) AS retained_week4_ly
 FROM
-  final f
+  final
 -- Self-join to get last year's metrics for YoY comparison
 -- Using 364 days (52 weeks) to align day-of-week for fair comparison
+-- TODO: we need to self reference here. Perhaps we should do the yoy pull as a separate view?
 LEFT JOIN
-  final ly
-  ON f.submission_date = ly.submission_date + INTERVAL 364 DAY
-  AND f.country = ly.country
-  AND f.funnel_derived = ly.funnel_derived
-  AND COALESCE(f.channel_raw, '') = COALESCE(ly.channel_raw, '')
-  AND COALESCE(f.campaign, '') = COALESCE(ly.campaign, '')
-  AND COALESCE(f.campaign_id, '') = COALESCE(ly.campaign_id, '')
-  AND COALESCE(f.source, '') = COALESCE(ly.source, '')
-  AND COALESCE(f.medium, '') = COALESCE(ly.medium, '')
-  AND COALESCE(f.normalized_os, '') = COALESCE(ly.normalized_os, '')
-  AND COALESCE(f.partner_org, '') = COALESCE(ly.partner_org, '')
-  AND COALESCE(f.distribution_model, '') = COALESCE(ly.distribution_model, '')
-  AND COALESCE(f.distribution_id, '') = COALESCE(ly.distribution_id, '')
+  `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_marketing_funnel_v1` AS last_year
+  ON final.submission_date = last_year.submission_date + INTERVAL 364 DAY  -- TODO: is this meant to be - 364 days?
+  AND final.country = last_year.country
+  AND final.funnel_derived = last_year.funnel_derived
+  AND COALESCE(final.channel_raw, '') = COALESCE(last_year.channel_raw, '')
+  AND COALESCE(final.campaign, '') = COALESCE(last_year.campaign, '')
+  AND COALESCE(final.campaign_id, '') = COALESCE(last_year.campaign_id, '')
+  AND COALESCE(final.source, '') = COALESCE(last_year.source, '')
+  AND COALESCE(final.medium, '') = COALESCE(last_year.medium, '')
+  AND COALESCE(final.normalized_os, '') = COALESCE(last_year.normalized_os, '')
+  AND COALESCE(final.partner_org, '') = COALESCE(last_year.partner_org, '')
+  AND COALESCE(final.distribution_model, '') = COALESCE(last_year.distribution_model, '')
+  AND COALESCE(final.distribution_id, '') = COALESCE(last_year.distribution_id, '');

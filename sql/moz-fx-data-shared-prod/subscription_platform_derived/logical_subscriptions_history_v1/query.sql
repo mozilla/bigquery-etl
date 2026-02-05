@@ -21,6 +21,35 @@ countries AS (
   FROM
     `moz-fx-data-shared-prod.static.country_codes_v1`
 ),
+subscription_starts AS (
+  SELECT
+    history.subscription.id AS subscription_id,
+    history.subscription.started_at,
+    history.subscription.is_trial AS started_as_trial,
+    DENSE_RANK() OVER (
+      PARTITION BY
+        -- We don't have unhashed Mozilla Account IDs for some historical customers, so we use the hashed IDs instead,
+        -- and if we don't have any Mozilla Account ID data we fall back to the provider's customer/subscription IDs.
+        COALESCE(
+          history.subscription.mozilla_account_id_sha256,
+          history.subscription.provider_customer_id,
+          history.subscription.provider_subscription_id
+        )
+      ORDER BY
+        history.subscription.started_at,
+        history.subscription.id
+    ) AS customer_subscription_number
+  FROM
+    history
+  QUALIFY
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from,
+        history.valid_to
+    )
+),
 subscription_attributions AS (
   SELECT
     subscription_id,
@@ -55,19 +84,7 @@ SELECT
     history.subscription.provider_customer_id,
     history.subscription.mozilla_account_id,
     history.subscription.mozilla_account_id_sha256,
-    DENSE_RANK() OVER (
-      PARTITION BY
-        -- We don't have unhashed Mozilla Account IDs for some historical customers, so we use the hashed IDs instead,
-        -- and if we don't have any Mozilla Account ID data we fall back to the provider's customer/subscription IDs.
-        COALESCE(
-          history.subscription.mozilla_account_id_sha256,
-          history.subscription.provider_customer_id,
-          history.subscription.provider_subscription_id
-        )
-      ORDER BY
-        history.subscription.started_at,
-        history.subscription.id
-    ) AS customer_subscription_number,
+    subscription_starts.customer_subscription_number,
     history.subscription.country_code,
     COALESCE(countries.name, history.subscription.country_code, 'Unknown') AS country_name,
     history.subscription.services,
@@ -131,10 +148,22 @@ SELECT
     history.subscription.ongoing_discount_promotion_code,
     history.subscription.ongoing_discount_amount,
     history.subscription.ongoing_discount_ends_at,
-    history.subscription.ended_reason
+    history.subscription.ended_reason,
+    CONCAT(
+      IF(
+        subscription_starts.customer_subscription_number = 1,
+        'New Customer',
+        'Returning Customer'
+      ),
+      IF(subscription_starts.started_as_trial, ' Trial', '')
+    ) AS started_reason,
+    history.subscription.payment_method
   ) AS subscription
 FROM
   history
+INNER JOIN
+  subscription_starts
+  ON history.subscription.id = subscription_starts.subscription_id
 LEFT JOIN
   countries
   ON history.subscription.country_code = countries.code

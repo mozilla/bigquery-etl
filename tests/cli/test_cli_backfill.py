@@ -62,7 +62,7 @@ BACKFILL_YAML_TEMPLATE = (
 VALID_WORKGROUP_ACCESS = [
     dict(
         role="roles/bigquery.dataViewer",
-        members=["workgroup:mozilla-confidential"],
+        members=["workgroup:mozilla-confidential/data-viewers"],
     )
 ]
 
@@ -92,6 +92,7 @@ DATASET_METADATA_CONF = {
     "friendly_name": "test",
     "description": "test",
     "dataset_base_acl": "derived",
+    "user_facing": False,
     "workgroup_access": VALID_WORKGROUP_ACCESS,
 }
 
@@ -99,6 +100,7 @@ DATASET_METADATA_CONF_EMPTY_WORKGROUP = {
     "friendly_name": "test",
     "description": "test",
     "dataset_base_acl": "derived",
+    "user_facing": False,
     "workgroup_access": [],
     "default_table_workgroup_access": VALID_WORKGROUP_ACCESS,
 }
@@ -1219,6 +1221,7 @@ class TestBackfill:
             "friendly_name": "test",
             "description": "test",
             "dataset_base_acl": "derived",
+            "user_facing": False,
             "workgroup_access": invalid_workgroup_access,
         }
 
@@ -1292,11 +1295,12 @@ class TestBackfill:
             "friendly_name": "test",
             "description": "test",
             "dataset_base_acl": "derived",
+            "user_facing": False,
             "workgroup_access": [
                 dict(
                     role="roles/bigquery.dataViewer",
                     members=[
-                        "workgroup:mozilla-confidential",
+                        "workgroup:mozilla-confidential/data-viewers",
                         "workgroup:something-else",
                     ],
                 )
@@ -1327,7 +1331,7 @@ class TestBackfill:
                             dict(
                                 role="roles/bigquery.dataViewer",
                                 members=[
-                                    "workgroup:mozilla-confidential",
+                                    "workgroup:mozilla-confidential/data-viewers",
                                     "workgroup:something-else",
                                 ],
                             )
@@ -1374,17 +1378,14 @@ class TestBackfill:
         ]
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            BACKFILL_YAML_TEMPLATE
-            + """
+        backfill_file.write_text(BACKFILL_YAML_TEMPLATE + """
 2021-05-03:
   start_date: 2021-01-03
   end_date: 2021-05-03
   reason: test_reason
   watchers:
   - test@example.org
-  status: Complete"""
-        )
+  status: Complete""")
 
         result = runner.invoke(
             scheduled,
@@ -1473,16 +1474,14 @@ class TestBackfill:
             f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            """
+        backfill_file.write_text("""
 2021-05-03:
   start_date: 2021-01-03
   end_date: 2021-01-13
   reason: test_reason
   watchers:
   - test@example.org
-  status: Complete"""
-        )
+  status: Complete""")
 
         result = runner.invoke(
             complete,
@@ -1544,16 +1543,14 @@ class TestBackfill:
             f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            """
+        backfill_file.write_text("""
 2021-05-03:
   start_date: 2021-01-03
   end_date: 2021-01-13
   reason: test_reason
   watchers:
   - test@example.org
-  status: Complete"""
-        )
+  status: Complete""")
 
         result = runner.invoke(
             complete,
@@ -1619,8 +1616,7 @@ class TestBackfill:
             f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            """
+        backfill_file.write_text("""
         2021-05-03:
           start_date: 2021-01-03
           end_date: 2021-01-08
@@ -1628,8 +1624,7 @@ class TestBackfill:
           watchers:
           - test@example.org
           status: Initiate
-          override_retention_limit: True"""
-        )
+          override_retention_limit: True""")
 
         result = runner.invoke(
             initiate,
@@ -1700,8 +1695,7 @@ class TestBackfill:
             f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            """
+        backfill_file.write_text("""
         2021-05-03:
           start_date: 2021-01-03
           end_date: 2021-01-08
@@ -1709,8 +1703,7 @@ class TestBackfill:
           watchers:
           - test@example.org
           status: Initiate
-          override_retention_limit: true"""
-        )
+          override_retention_limit: true""")
 
         result = runner.invoke(
             initiate,
@@ -1787,8 +1780,7 @@ class TestBackfill:
             f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            f"""
+        backfill_file.write_text(f"""
         2021-05-03:
           start_date: 2021-01-03
           end_date: 2021-01-08
@@ -1798,8 +1790,7 @@ class TestBackfill:
           status: Initiate
           billing_project: {VALID_BILLING_PROJECT}
           override_retention_limit: true
-          """
-        )
+          """)
 
         result = runner.invoke(
             initiate,
@@ -1864,8 +1855,7 @@ class TestBackfill:
         query_path = Path(QUERY_DIR) / QUERY_FILE
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            """
+        backfill_file.write_text("""
         2021-05-03:
           start_date: 2021-01-03
           end_date: 2021-01-08
@@ -1873,8 +1863,7 @@ class TestBackfill:
           watchers:
           - test@example.org
           status: Initiate
-          """
-        )
+          """)
 
         result = runner.invoke(
             initiate,
@@ -1915,8 +1904,7 @@ class TestBackfill:
         ]
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            f"""
+        backfill_file.write_text(f"""
         2021-05-03:
           start_date: 2021-01-03
           end_date: 2021-01-08
@@ -1925,8 +1913,7 @@ class TestBackfill:
           - test@example.org
           status: Initiate
           billing_project: {INVALID_BILLING_PROJECT}
-          """
-        )
+          """)
 
         result = runner.invoke(
             initiate,

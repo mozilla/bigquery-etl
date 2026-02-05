@@ -16,6 +16,7 @@ WITH subscription_starts AS (
     subscription.mozilla_account_id_sha256,
     subscription.provider_customer_id,
     subscription.provider_subscription_id,
+    subscription.is_trial AS started_as_trial,
     IF(
       valid_from = subscription.started_at,
       STRUCT(subscription.initial_discount_name, subscription.initial_discount_promotion_code),
@@ -66,6 +67,7 @@ subscriptions_history_periods AS (
         next_subscription_change_at,
         subscription_id
     ) AS customer_service_subscription_number,
+    started_as_trial,
     initial_discount_name,
     initial_discount_promotion_code
   FROM
@@ -160,7 +162,16 @@ subscriptions_history AS (
       history.subscription.has_fraudulent_charges,
       subscription_attributions.first_touch_attribution,
       subscription_attributions.last_touch_attribution,
-      history.subscription.ended_reason
+      history.subscription.ended_reason,
+      CONCAT(
+        IF(
+          subscriptions_history_periods.customer_service_subscription_number = 1,
+          'New Customer',
+          'Returning Customer'
+        ),
+        IF(subscriptions_history_periods.started_as_trial, ' Trial', '')
+      ) AS started_reason,
+      history.subscription.payment_method
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history

@@ -6,6 +6,8 @@ owners:
 - data-platform-infra-wg@mozilla.com
 labels:
   table_type: client_level
+schema:
+  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day

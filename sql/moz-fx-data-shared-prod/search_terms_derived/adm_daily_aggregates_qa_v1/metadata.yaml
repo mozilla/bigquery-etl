@@ -1,6 +1,10 @@
 friendly_name: Adm Daily Aggregates QA
 description: |-
   This is a table that is used to alert if there are less than 100 rows produced on a given date
+
+  Note: This table processes data from 2 days ago, matching the offset of the upstream
+  adm_daily_aggregates_v1 table it validates.
+  This is a temporary measure until the Merino sanitization job is further optimized.
 owners:
 - kwindau@mozilla.com
 labels:
@@ -8,6 +12,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_search_terms_daily
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

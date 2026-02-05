@@ -131,7 +131,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
   - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
-  - sql/**/apple_ads_external*/**/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
@@ -341,6 +340,14 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
+    # Resources exceeded
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_with_ads_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_ad_clicks/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_ad_clicks_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_with_ads_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_live_v1/view.sql
 
 schema:
   base_schemas_dir: bigquery_etl/schema
@@ -448,8 +455,8 @@ generate:
     events_first_seen:
       include_apps:
       - firefox_desktop
-      # - firefox_ios
-      # - fenix
+      - fenix
+      - firefox_ios
     metrics_clients_last_seen:
       skip_apps:
       - accounts_cirrus
@@ -627,6 +634,14 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fennec_aurora_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta_derived.events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

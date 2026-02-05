@@ -17,6 +17,8 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from requests.auth import HTTPBasicAuth
 
+from bigquery_etl.util.common import block_coding_agents
+
 
 def _get_report_rows(
     api_key: Optional[str],
@@ -69,7 +71,14 @@ def stripe_():
     pass
 
 
-@stripe_.command("import", help=__doc__)
+@stripe_.command(
+    "import",
+    help="""Import Stripe reports into BigQuery.
+
+    Coding agents aren't allowed to run this command.
+    """,
+)
+@block_coding_agents
 @click.option(
     "--api-key",
     help="Stripe API key to use for authentication; If not set resources will be read "

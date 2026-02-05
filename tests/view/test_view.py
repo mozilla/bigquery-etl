@@ -117,7 +117,9 @@ class TestView:
 
         assert metadata_view.is_valid()
         assert metadata_view.publish()
+        # update_table is called once for metadata/labels (view query is handled by CREATE OR REPLACE VIEW)
         assert mock_bigquery_client().update_table.call_count == 1
+        # Check the call has metadata/labels update
         assert (
             mock_bigquery_client().update_table.call_args[0][0].friendly_name
             == "Test metadata file"

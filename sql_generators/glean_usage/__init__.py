@@ -74,16 +74,19 @@ GLEAN_TABLES = [
     "-x",
     "exclude",
     help="Process all tables except for the given tables",
+    default=None,  # Needed to avoid cross-process unpickling error for click's `Sentinel.UNSET`.
 )
 @click.option(
     "--only",
     "-o",
     help="Process only the given tables",
+    default=None,  # Needed to avoid cross-process unpickling error for click's `Sentinel.UNSET`.
 )
 @click.option(
     "--app_name",
     "--app-name",
     help="App to generate per-app dataset metadata and union views for.",
+    default=None,  # Needed to avoid cross-process unpickling error for click's `Sentinel.UNSET`.
 )
 @use_cloud_function_option
 def generate(

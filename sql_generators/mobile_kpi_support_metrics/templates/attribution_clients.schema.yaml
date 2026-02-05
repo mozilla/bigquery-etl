@@ -19,27 +19,28 @@ fields:
   name: normalized_channel
   type: STRING
   description: The normalized channel the application is being distributed on.
-{% for attribution_group in product_attribution_groups %}
-{% if attribution_group.name in ["meta", "adjust", "play_store"] -%}
+
+{%- for attribution_group in product_attribution_groups %}
+{% if attribution_group.name in ["meta", "adjust", "play_store"] %}
 - mode: NULLABLE
   name: {{ attribution_group.name }}_info
   type: RECORD
   description:
   fields:
-    {% for attribution_group_field in attribution_group.fields -%}
-    - mode: NULLABLE
-      name: {{ attribution_group_field.name }}
-      type: {{ attribution_group_field.type }}
-      description: |
-        {{ attribution_group_field.description }}
-    {% endfor %}
-{%- else -%}
-{% for attribution_group_field in attribution_group.fields -%}
+  {%- for attribution_group_field in attribution_group.fields %}
+  - mode: NULLABLE
+    name: {{ attribution_group_field.name }}
+    type: {{ attribution_group_field.type }}
+    description: |
+      {{ attribution_group_field.description }}
+  {%- endfor %}
+{%- else %}
+{%- for attribution_group_field in attribution_group.fields %}
 - mode: NULLABLE
   name: {{ attribution_group_field.name }}
   type: {{ attribution_group_field.type }}
   description: |
     {{ attribution_group_field.description }}
-{% endfor -%}
-{% endif -%}
-{% endfor -%}
+{%- endfor %}
+{%- endif %}
+{%- endfor %}

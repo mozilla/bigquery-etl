@@ -32,13 +32,12 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import get_credentials
 from ..util import extract_from_query_path
+from ..util.common import block_coding_agents
 
 
-@click.group(
-    help="""
-        Commands for managing bqetl metadata.
-        """
-)
+@click.group(help="""
+    Commands for managing bqetl metadata.
+    """)
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
@@ -214,6 +213,8 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     help="""
     Publish all metadata based on metadata.yaml file.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
      ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
     """,
@@ -222,6 +223,7 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -287,15 +289,13 @@ def _publish_metadata(project_id, credentials, metadata_file):
         print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@metadata.command(
-    help="""
+@metadata.command(help="""
     Deprecate BigQuery table by updating metadata.yaml file.
     Deletion date is by default 3 months from current date if not provided.
 
     Example:
      ./bqetl metadata deprecate ga_derived.downloads_with_attribution_v2 --deletion_date=2024-03-02
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -336,14 +336,12 @@ def deprecate(
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
 
 
-@metadata.command(
-    help="""
+@metadata.command(help="""
     Validate workgroup_access and default_table_workgroup_access configurations.
 
     Example:
      ./bqetl metadata validate-workgroups ga_derived.downloads_with_attribution_v2
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")

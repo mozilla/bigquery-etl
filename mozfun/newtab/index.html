@@ -2276,8 +2276,37 @@ country STRING, locale STRING
 <div class="highlight"><pre><span></span><code>**OUTPUTS**
 </code></pre></div>
 STRING
+<div class="highlight"><pre><span></span><code>[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1/metadata.yaml)
+
+
+## surface_id_country (UDF)
+
+Parse country from surface_id for use in Newtab entities
+
+## Surface ID Country UDF
+
+This function derives `country` from `surface_id` string, particularly when `country` is `null`.
+
+In general, it should be used for content recommendations in the `newtab_content` ping, which is based on country rather than surface.
+
+For tables:
+
+- `moz-fx-data-shared-prod.firefox_desktop_*.newtab_v1`
+- `moz-fx-data-shared-prod.firefox_desktop_*.newtab_content_v1`
+
+
+
+### Parameters
+
+
+**INPUTS**
+</code></pre></div>
+surface_id STRING, locale STRING, country STRING
+<div class="highlight"><pre><span></span><code>**OUTPUTS**
+</code></pre></div>
+STRING
 ```</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/surface_id_country">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/surface_id_country/metadata.yaml">Edit</a></p>
 
 
 

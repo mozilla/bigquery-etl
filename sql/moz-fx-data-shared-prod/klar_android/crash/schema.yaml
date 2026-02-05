@@ -424,7 +424,7 @@ fields:
     - name: crash_app_build
       type: STRING
       mode: NULLABLE
-      description: Product application's build ID.
+      description: Application build ID, the format is YYYYMMDDHHMMSS.
     - name: crash_app_channel
       type: STRING
       mode: NULLABLE
@@ -535,6 +535,10 @@ fields:
 
         The package family name is only included when it is likely to have been produced
         by Mozilla: it starts "Mozilla." or "MozillaCorporation.".'
+    - name: crash_application_build_id
+      type: STRING
+      mode: NULLABLE
+      description: The Android application's build ID.
   - name: timespan
     type: RECORD
     mode: NULLABLE

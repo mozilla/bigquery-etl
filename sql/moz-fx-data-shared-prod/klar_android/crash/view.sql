@@ -54,7 +54,8 @@ SELECT
       metrics.string.crash_product_name,
       metrics.string.crash_shutdown_reason,
       metrics.string.crash_windows_file_dialog_error_code,
-      metrics.string.windows_package_family_name
+      metrics.string.windows_package_family_name,
+      metrics.string.crash_application_build_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,

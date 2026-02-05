@@ -406,7 +406,7 @@ fields:
     - name: crash_app_build
       type: STRING
       mode: NULLABLE
-      description: Product application's build ID.
+      description: Application build ID, the format is YYYYMMDDHHMMSS.
     - name: crash_app_channel
       type: STRING
       mode: NULLABLE
@@ -521,6 +521,10 @@ fields:
       mode: NULLABLE
       description: One out of "Unknown", "AppClose", "AppRestart", "OSForceClose",
         "OSSessionEnd" or "OSShutdown".
+    - name: crash_application_build_id
+      type: STRING
+      mode: NULLABLE
+      description: The Android application's build ID.
   - name: timespan
     type: RECORD
     mode: NULLABLE

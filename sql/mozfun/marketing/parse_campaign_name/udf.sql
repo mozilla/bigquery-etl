@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION marketing.parse_campaign_name(campaign_name STRING)
 RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
   CASE
-    -- Campaign Artifact Schema - Google Ads - version 2
-    WHEN REGEXP_CONTAINS(campaign_name, r"^(gads_v2)")
+    -- Campaign Artifact Schema - Google Ads - version 2 or 3
+    WHEN REGEXP_CONTAINS(campaign_name, r"^(gads_v[2-3])")
       THEN
         CASE
           WHEN ARRAY_LENGTH(SPLIT(campaign_name, "_")) = 18
@@ -191,6 +191,21 @@ SELECT
   mozfun.assert.null(
     marketing.parse_campaign_name(
       'asa_v2_monitorPlus_challengeTheDefault_expansion_pl_all_ypt_pl_mobile_android_appCampaign_conversion_search_tcpa_install_id123_po#123456789'
+    )
+  ),
+  -- Test - Campaign Artifact Schema - Google Ads - version 3
+  mozfun.assert.equals(
+    ARRAY_LENGTH(
+      marketing.parse_campaign_name(
+        'gads_v3_monitorPlus_challengeTheDefault_expansion_pl_all_ypt_pl_mobile_android_appCampaign_conversion_search_tcpa_install_id123_po#123456789'
+      )
+    ),
+    18
+  ),
+  mozfun.assert.null(marketing.parse_campaign_name('gads_v3_123')),
+  mozfun.assert.null(
+    marketing.parse_campaign_name(
+      'asa_v3_monitorPlus_challengeTheDefault_expansion_pl_all_ypt_pl_mobile_android_appCampaign_conversion_search_tcpa_install_id123_po#123456789'
     )
   ),
   -- Test - Campaign Artifact Schema - Google Ads - version 1

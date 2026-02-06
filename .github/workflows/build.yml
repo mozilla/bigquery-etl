@@ -693,46 +693,69 @@ jobs:
     environment: GH Actions
     steps:
       - *checkout-with-history
-      - name: Fetch and checkout main branch
-        run: |
-          git fetch origin main:main
-          git checkout main
       - *setup-python
-      - name: Build virtualenv
-        run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install --no-deps -r requirements.txt
-          pip-sync --pip-args=--no-deps
-      - name: Authenticate to GCP (OIDC)
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
-      - name: Export ID token
-        run: echo "ID_TOKEN=${{ steps.auth.outputs.id_token }}" >> $GITHUB_ENV
+      - *restore-venv
+      - *auth-gcp-dryrun
+      - *export-id-token
+      - *set-project-id
       - name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - name: Generate SQL from main branch
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      - name: Generate SQL and DAGs
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
           export PYTHONPATH="$PWD:$PYTHONPATH"
+          bigquery_etl="$PWD"
           bqetl_script="$PWD/script/bqetl"
 
-          # Generate SQL
-          $bqetl_script generate all \
-            --ignore derived_view_schemas \
-            --target-project moz-fx-data-shared-prod
+          # Get parent commit on main from which this branch diverged
+          MAIN_MERGE_BASE=$(git merge-base HEAD origin/main || true)
+          echo "merge base with main: $MAIN_MERGE_BASE"
+
+          # Check if the generated-sql branch can be re-used
+          git clone -b generated-sql git@github.com:mozilla/bigquery-etl.git ~/remote-generated-sql
+          cd ~/remote-generated-sql
+
+          # Check if main merge base has been pushed to generated-sql yet, otherwise use latest
+          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
+            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
+            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
+          else
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main
+            export LATEST_TAG_GENERATED_SQL=$(git describe --tags --abbrev=0)
+            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+          fi
+
+          cd "$bigquery_etl"
+          export GENERATED_SQL_CHANGED=false
+
+          # If SQL generators changed, re-run SQL generation
+          if [[ $(git diff --name-only --diff-filter=d ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql_generators) ]]; then
+            echo "SQL generator changed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          # If a SQL file was removed or renamed, re-run SQL generation
+          if [[ $(git diff --name-only --diff-filter=DR ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql) ]]; then
+            echo "SQL file was removed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+            # Re-run SQL generation
+            $bqetl_script generate all \
+              --ignore derived_view_schemas \
+              --target-project moz-fx-data-shared-prod
+          else
+            echo "Changes don't affect generated SQL. Use content from generated-sql branch"
+            # Merge files from the generated-sql branch, preserving those that changed in this PR
+            cp -rn ~/remote-generated-sql/sql/. sql
+          fi
+
           $bqetl_script format sql/
           $bqetl_script dependency record --skip-existing sql/
           $bqetl_script metadata update sql/
@@ -742,8 +765,7 @@ jobs:
           cp -r sql /tmp/workspace/main-generated-sql/sql
 
           # Generate private SQL
-          git clone --branch main --depth 1 \
-            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+          git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
           cd ~/private-bigquery-etl
           $bqetl_script generate all --target-project moz-fx-data-shared-prod
           $bqetl_script format sql/
@@ -751,8 +773,7 @@ jobs:
           $bqetl_script metadata update sql/
           $bqetl_script monitoring update sql/
 
-          # Merge private SQL into main SQL
-          cd "$GITHUB_WORKSPACE"
+          cd "$bigquery_etl"
           cp -rf ~/private-bigquery-etl/sql/. sql
           cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
 
@@ -875,8 +896,7 @@ jobs:
     name: Generate and Post SQL Diff
     runs-on: ubuntu-latest
     needs: [generate-dags, main-generate-sql-and-dags]
-    if: github.event_name == 'pull_request'
-      && github.event.pull_request.head.repo.full_name == github.repository
+    if: github.ref != 'refs/heads/main'
     permissions:
       contents: read
       pull-requests: write
@@ -1026,16 +1046,22 @@ jobs:
             *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' > bqetl_project.yaml
       - name: Build the Docker image
         run: |
-          docker build . \
-            -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest \
-            -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
       - name: Push Docker image to GAR
         uses: mozilla-it/deploy-actions/docker-push@v4.3.2
         with:
           project_id: moz-fx-data-artifacts-prod
-          image_tags: |
-            us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
-            us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
+          workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
+          service_account_name: bigquery-etl
+      - name: Build the tagged Docker image
+        run: |
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+      - name: Push tagged Docker image to GAR
+        uses: mozilla-it/deploy-actions/docker-push@v4.3.2
+        with:
+          project_id: moz-fx-data-artifacts-prod
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
           workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
           service_account_name: bigquery-etl
 
@@ -1054,7 +1080,7 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          service_account: ${{ secrets.GCP_DEPLOYMENT_SERVICE_ACCOUNT_EMAIL }}
           token_format: id_token
           # yamllint disable-line rule:line-length
           id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
@@ -1078,7 +1104,7 @@ jobs:
   reset-stage-env:
     name: Reset Stage Environment
     runs-on: ubuntu-latest
-    needs: [push-generated-sql, test-sql, validate-views, validate-metadata, dry-run-sql, test-routines]
+    needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines]
     if: github.ref == 'refs/heads/main'
     permissions:
       id-token: write

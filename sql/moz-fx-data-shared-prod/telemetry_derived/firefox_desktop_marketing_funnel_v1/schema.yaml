@@ -104,33 +104,3 @@ fields:
   name: subchannel
   type: STRING
   description:
-
-- mode: NULLABLE
-  name: visits_ly
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: downloads_ly
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: installs_ly
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: new_profiles_ly
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: return_user_ly
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: retained_week4_ly
-  type: INTEGER
-  description:

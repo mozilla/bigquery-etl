@@ -1,0 +1,106 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: funnel_derived
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: channel_raw
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: campaign_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: partner_org
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: distribution_model
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: visits
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: downloads
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: installs
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: new_profiles
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: return_user
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: retained_week4
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: country_tier
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: subchannel
+  type: STRING
+  description:

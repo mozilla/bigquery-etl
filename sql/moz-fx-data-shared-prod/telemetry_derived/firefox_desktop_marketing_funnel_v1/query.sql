@@ -79,7 +79,7 @@ top_of_funnel AS (
       ELSE 'mozorg other'
     END AS funnel_derived,
     -- VISITS: Count sessions, excluding internal cross-site traffic
-    COUNTIF(NOT has_visits) AS visits,
+    COUNTIF(has_visits) AS visits,
     -- DOWNLOADS: Count sessions with at least one Firefox desktop download
     COUNTIF(firefox_desktop_downloads > 0) AS downloads
   FROM
@@ -363,7 +363,7 @@ final AS (
     desktop_funnels_telemetry.normalized_os,
     desktop_funnels_telemetry.partner_org,
     desktop_funnels_telemetry.distribution_model,
-    desktop_funnels_telemetry.distribution_id,
+    NULLIF(desktop_funnels_telemetry.distribution_id, "") AS distribution_id,
     -- Partner funnel has no web visits/downloads (starts at profiles)
     IF(
       desktop_funnels_telemetry.funnel_derived = 'partner',
@@ -482,29 +482,5 @@ SELECT
         END
     ELSE 'All'  -- Non-Paid Search has no subchannel
   END AS subchannel,
-  -- Year-over-year metrics (364 days to align day-of-week)
-  COALESCE(last_year.visits, 0) AS visits_ly,
-  COALESCE(last_year.downloads, 0) AS downloads_ly,
-  COALESCE(last_year.installs, 0) AS installs_ly,
-  COALESCE(last_year.new_profiles, 0) AS new_profiles_ly,
-  COALESCE(last_year.return_user, 0) AS return_user_ly,
-  COALESCE(last_year.retained_week4, 0) AS retained_week4_ly
 FROM
   final
--- Self-join to get last year's metrics for YoY comparison
--- Using 364 days (52 weeks) to align day-of-week for fair comparison
--- TODO: we need to self reference here. Perhaps we should do the yoy pull as a separate view?
-LEFT JOIN
-  `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_marketing_funnel_v1` AS last_year
-  ON final.submission_date = last_year.submission_date + INTERVAL 364 DAY  -- TODO: is this meant to be - 364 days?
-  AND final.country = last_year.country
-  AND final.funnel_derived = last_year.funnel_derived
-  AND COALESCE(final.channel_raw, '') = COALESCE(last_year.channel_raw, '')
-  AND COALESCE(final.campaign, '') = COALESCE(last_year.campaign, '')
-  AND COALESCE(final.campaign_id, '') = COALESCE(last_year.campaign_id, '')
-  AND COALESCE(final.source, '') = COALESCE(last_year.source, '')
-  AND COALESCE(final.medium, '') = COALESCE(last_year.medium, '')
-  AND COALESCE(final.normalized_os, '') = COALESCE(last_year.normalized_os, '')
-  AND COALESCE(final.partner_org, '') = COALESCE(last_year.partner_org, '')
-  AND COALESCE(final.distribution_model, '') = COALESCE(last_year.distribution_model, '')
-  AND COALESCE(final.distribution_id, '') = COALESCE(last_year.distribution_id, '');

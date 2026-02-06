@@ -29,7 +29,6 @@ labels:
   owner1: kik
   table_type: aggregate
   dag: bqetl_marketing_analysis
-# TODO: this query should run with a 28 day delay to make sure the week 4 retention metric is available.
 scheduling:
   dag_name: bqetl_marketing_analysis
   date_partition_offset: -27
@@ -39,7 +38,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: funnel_date
     require_partition_filter: true
     expiration_days: null
 require_column_descriptions: true

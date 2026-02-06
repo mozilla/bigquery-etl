@@ -321,7 +321,7 @@ final AS (
       top_of_funnel.submission_date,
       windows_installer.submission_date,
       desktop_funnels_telemetry.submission_date
-    ) AS submission_date,
+    ) AS funnel_date,
     COALESCE(
       top_of_funnel.country,
       windows_installer.country,
@@ -424,21 +424,21 @@ final AS (
 -- Final SELECT: Add Derived Dimensions and Year-over-Year Metrics
 -- =============================================================================
 SELECT
-  final.* REPLACE (
+  * REPLACE (
     -- Remap tier names to user-friendly labels: Tier 1 -> Core, Tier 2 -> Growth, ROW -> Emerging
     CASE
-      WHEN final.country = 'ROW'
+      WHEN country = 'ROW'
         THEN 'Emerging'
-      ELSE REGEXP_REPLACE(REGEXP_REPLACE(final.country, r'Tier 1', 'Core'), r'Tier 2', 'Growth')
+      ELSE REGEXP_REPLACE(REGEXP_REPLACE(country, r'Tier 1', 'Core'), r'Tier 2', 'Growth')
     END AS country
   ),
   -- Country tier as separate dimension for filtering
   CASE
-    WHEN final.country = 'ROW'
+    WHEN country = 'ROW'
       THEN 'Emerging'
-    WHEN final.country LIKE '%(Tier 1)'
+    WHEN country LIKE '%(Tier 1)'
       THEN 'Core'
-    WHEN final.country LIKE '%(Tier 2)'
+    WHEN country LIKE '%(Tier 2)'
       THEN 'Growth'
     ELSE 'Unknown'
   END AS country_tier,
@@ -447,25 +447,25 @@ SELECT
   --   - Organic Search: GA4 classified as Organic Search
   --   - Web - Organic/Other: Everything else (direct, referral, social, etc.)
   CASE
-    WHEN final.campaign IS NOT NULL
+    WHEN campaign IS NOT NULL
       THEN 'Paid Search'
-    WHEN final.channel_raw = 'Organic Search'
+    WHEN channel_raw = 'Organic Search'
       THEN 'Organic Search'
     ELSE 'Web - Organic/Other'
   END AS channel,
   -- Subchannel: Campaign type classification for Paid Search
   -- Based on naming conventions: _brand_, _nonbrand_, _comp_, pmax
   CASE
-    WHEN final.campaign IS NOT NULL
+    WHEN campaign IS NOT NULL
       THEN
         CASE
-          WHEN REGEXP_CONTAINS(final.campaign, r'_brand_')
+          WHEN REGEXP_CONTAINS(campaign, r'_brand_')
             THEN 'Brand'
-          WHEN REGEXP_CONTAINS(final.campaign, r'_nonbrand_')
+          WHEN REGEXP_CONTAINS(campaign, r'_nonbrand_')
             THEN 'Non-Brand'
-          WHEN REGEXP_CONTAINS(final.campaign, r'_comp_')
+          WHEN REGEXP_CONTAINS(campaign, r'_comp_')
             THEN 'Competitor'
-          WHEN REGEXP_CONTAINS(LOWER(final.campaign), r'pmax')
+          WHEN REGEXP_CONTAINS(LOWER(campaign), r'pmax')
             THEN 'PMax'
           ELSE 'Other'
         END

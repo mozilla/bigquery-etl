@@ -1,7 +1,7 @@
 fields:
 
 - mode: NULLABLE
-  name: submission_date
+  name: funnel_date
   type: DATE
   description:
 

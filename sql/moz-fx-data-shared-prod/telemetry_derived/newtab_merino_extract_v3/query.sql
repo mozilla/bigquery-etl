@@ -21,7 +21,7 @@ private_pings AS (
     mozfun.newtab.surface_id_country(
       metrics.string.newtab_content_surface_id,
       NULL,
-      normalized_country_code
+      metrics.string.newtab_content_country
     ) AS normalized_country_code
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`

@@ -214,6 +214,7 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+          access_token_lifetime: 3600s
       - &set-project-id
         name: Set project ID for integration tests
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
@@ -447,16 +448,8 @@ jobs:
         timeout-minutes: 30
         run: |
           if [ "${{ github.event.inputs.skip-stage-deploys }}" != "true" ]; then
-            echo "=== DEBUG: Files in generated-sql/sql ==="
-            find generated-sql/sql -type f | head -20
-            echo "=== DEBUG: Files in sql ==="
-            find sql -type f | head -20
-            echo "=== DEBUG: Running diff ==="
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
-            echo "=== DEBUG: Detected paths ==="
             echo $PATHS
-            echo "=== DEBUG: Number of paths: $(echo $PATHS | wc -w) ==="
-            echo "=== DEBUG: Sample diff output ==="
             git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
             PATH=".venv/bin:$PATH" script/bqetl stage deploy \
               --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" \
@@ -511,8 +504,12 @@ jobs:
             PATHS=sql
           elif [ "${{ github.event.inputs.skip-stage-deploys }}" = "true" ]; then
             PATHS=sql
+          elif [ -d "sql/moz-fx-data-integration-tests" ]; then
+            PATHS="sql/moz-fx-data-integration-tests"
           else
-            PATHS="sql/bigquery-etl-integration-test"
+            # If integration tests dir doesn't exist, skip dryrun
+            echo "Integration tests directory not found, skipping dryrun"
+            exit 0
           fi
           echo $PATHS
           PATH=".venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
@@ -554,12 +551,12 @@ jobs:
       - *copy-staged-sql
       - *auth-gcp-stage
       - *set-project-id
-      # - name: Run routine tests
-      #   run: |
-      #     PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
-      # - name: Validate doc examples
-      #   run: |
-      #     PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
+      - name: Run routine tests
+        run: |
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+      - name: Validate doc examples
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
 
   validate-views:
     name: Validate Views
@@ -806,6 +803,10 @@ jobs:
           path: /tmp/workspace/schema-cache
       - uses: actions/download-artifact@v4
         with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - uses: actions/download-artifact@v4
+        with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
       - name: Restore schema cache from generate-sql job
@@ -830,12 +831,13 @@ jobs:
       - name: Generate DAGs
         run: |
           rm -rf sql/
-          cp -r /tmp/workspace/private-generated-sql/sql sql
+          cp -rf /tmp/workspace/private-generated-sql/sql sql/
 
           cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
 
           mkdir -p /tmp/workspace/generated-sql/dags
           PATH=".venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
+
           mkdir -p /tmp/workspace/private-generated-sql/dags
           mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
       - uses: actions/upload-artifact@v4
@@ -968,59 +970,40 @@ jobs:
     name: Push Generated SQL
     runs-on: ubuntu-latest
     needs: [validate-dags]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: generated-sql
+          name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      # - name: Push to generated-sql branch
-      #   run: |
-      #     git config --global user.name "GitHub Actions generate-sql job"
-      #     git config --global user.email "dataops+generated-sql@mozilla.com"
-      #     git clone --single-branch --branch generated-sql \
-      #       https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
-      #       generated-sql
-      #     cd generated-sql/
-      #     rm -rf sql/
-      #     cp -r /tmp/workspace/generated-sql/sql sql
-      #     rm -rf dags/
-      #     cp -r /tmp/workspace/generated-sql/dags dags
-      #     git add .
-      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
-      #       -m "Created from ${{ github.sha }}" \
-      #       && git tag c-${{ github.sha }} \
-      #       && git push \
-      #       && git push origin c-${{ github.sha }} \
-      #       || echo "Skipping push since it looks like there were no changes"
-      - name: Push to gha-test-generated-sql branch (TESTING)
+      - name: Push to generated-sql branch
         run: |
           git config --global user.name "GitHub Actions generate-sql job"
           git config --global user.email "dataops+generated-sql@mozilla.com"
           git clone --single-branch --branch generated-sql \
             https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
-            gha-test-generated-sql
-          cd gha-test-generated-sql/
-          git checkout -B gha-test-generated-sql
+            generated-sql
+          cd generated-sql/
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
           rm -rf dags/
           cp -r /tmp/workspace/generated-sql/dags dags
           git add .
-          git commit -m "Auto-push for GHA testing [ci skip]" \
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
             -m "Created from ${{ github.sha }}" \
-            && git tag -f c-${{ github.sha }} \
-            && git push -f origin gha-test-generated-sql \
-            && git push -f origin c-${{ github.sha }} \
+            && git tag c-${{ github.sha }} \
+            && git push \
+            && git push origin c-${{ github.sha }} \
             || echo "Skipping push since it looks like there were no changes"
 
   push-private-generated-sql:
     name: Push Private Generated SQL
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
+    environment: dev
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -1036,46 +1019,25 @@ jobs:
           echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-      # - name: Push to private-generated-sql branch
-      #   run: |
-      #     git config --global user.name "GitHub Actions private-generate-sql job"
-      #     git config --global user.email "dataops+private-generated-sql@mozilla.com"
-      #     git clone --single-branch --branch private-generated-sql \
-      #       git@github.com:mozilla/private-bigquery-etl \
-      #       private-generated-sql
-      #     cd private-generated-sql/
-      #     rm -rf sql/
-      #     cp -r /tmp/workspace/private-generated-sql/sql sql
-      #     rm -rf dags/
-      #     cp -r /tmp/workspace/private-generated-sql/dags dags
-      #     git add .
-      #
-      #     private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
-      #
-      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
-      #       -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-      #       && git push \
-      #       || echo "Skipping push since it looks like there were no changes"
-      - name: Push to gha-test-generated-sql branch (TESTING)
+      - name: Push to private-generated-sql branch
         run: |
           git config --global user.name "GitHub Actions private-generate-sql job"
           git config --global user.email "dataops+private-generated-sql@mozilla.com"
           git clone --single-branch --branch private-generated-sql \
-            git@github.com:mozilla/private-bigquery-etl.git \
-            gha-test-generated-sql
-          cd gha-test-generated-sql/
-          git checkout -B gha-test-generated-sql
+            git@github.com:mozilla/private-bigquery-etl \
+            private-generated-sql
+          cd private-generated-sql/
           rm -rf sql/
           cp -r /tmp/workspace/private-generated-sql/sql sql
           rm -rf dags/
           cp -r /tmp/workspace/private-generated-sql/dags dags
           git add .
-
+      
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
-
-          git commit -m "Auto-push for GHA testing [ci skip]" \
+      
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
             -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-            && git push -f origin gha-test-generated-sql \
+            && git push \
             || echo "Skipping push since it looks like there were no changes"
 
   deploy-to-private-gar:

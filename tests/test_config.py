@@ -26,7 +26,7 @@ class TestConfig:
 
         assert (
             ConfigLoader.get("default", "test_project")
-            == "bigquery-etl-integration-test"
+            == "moz-fx-data-integration-tests"
         )
 
         assert len(ConfigLoader.get("dry_run", "skip")) > 0

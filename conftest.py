@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from google.cloud import bigquery, storage
 
-TEST_BUCKET = "bigquery-etl-integration-test-bucket"
+TEST_BUCKET = "moz-fx-data-integration-tests-bigquery-etl"
 
 
 pytest_plugins = [

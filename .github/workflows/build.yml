@@ -165,7 +165,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -202,7 +202,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -232,7 +232,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - &checkout-with-creds
         uses: actions/checkout@v4
@@ -392,7 +392,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -480,7 +480,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -524,7 +524,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -545,7 +545,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -554,7 +554,6 @@ jobs:
       - *copy-staged-sql
       - *auth-gcp-stage
       - *set-project-id
-      # todo: use once stage test account has access to bucket
       # - name: Run routine tests
       #   run: |
       #     PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
@@ -569,7 +568,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -589,7 +588,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -635,7 +634,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -690,7 +689,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout-with-history
       - *setup-python
@@ -794,7 +793,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -906,7 +905,7 @@ jobs:
         run: mkdir -p /tmp/workspace
       - uses: actions/download-artifact@v4
         with:
-          name: generated-sql-with-dags
+          name: generated-sql
           path: /tmp/workspace/generated-sql
       - uses: actions/download-artifact@v4
         with:
@@ -939,53 +938,89 @@ jobs:
           node-version: '21'
       - name: Install diff dependencies
         run: npm i @octokit/graphql@7.0.2
+      - name: Find PR number
+        id: find-pr
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          else
+            # Use gh CLI to find PR for this branch
+            PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
+            PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
+            PR_TITLE=$(echo "$PR_JSON" | jq -r '.title // empty')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Post diff to GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ steps.find-pr.outputs.pr_number }}
           RUN_ID: ${{ github.run_id }}
-          COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
+          COMMIT_MESSAGE: ${{ steps.find-pr.outputs.pr_title }}
         run: node .github/workflows/post-diff.js
 
   push-generated-sql:
     name: Push Generated SQL
     runs-on: ubuntu-latest
     needs: [validate-dags]
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: generated-sql-with-dags
+          name: generated-sql
           path: /tmp/workspace/generated-sql
-      - name: Push to generated-sql branch
+      # - name: Push to generated-sql branch
+      #   run: |
+      #     git config --global user.name "GitHub Actions generate-sql job"
+      #     git config --global user.email "dataops+generated-sql@mozilla.com"
+      #     git clone --single-branch --branch generated-sql \
+      #       https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+      #       generated-sql
+      #     cd generated-sql/
+      #     rm -rf sql/
+      #     cp -r /tmp/workspace/generated-sql/sql sql
+      #     rm -rf dags/
+      #     cp -r /tmp/workspace/generated-sql/dags dags
+      #     git add .
+      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
+      #       -m "Created from ${{ github.sha }}" \
+      #       && git tag c-${{ github.sha }} \
+      #       && git push \
+      #       && git push origin c-${{ github.sha }} \
+      #       || echo "Skipping push since it looks like there were no changes"
+      - name: Push to gha-test-generated-sql branch (TESTING)
         run: |
           git config --global user.name "GitHub Actions generate-sql job"
           git config --global user.email "dataops+generated-sql@mozilla.com"
           git clone --single-branch --branch generated-sql \
             https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
-            generated-sql
-          cd generated-sql/
+            gha-test-generated-sql
+          cd gha-test-generated-sql/
+          git checkout -B gha-test-generated-sql
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
           rm -rf dags/
           cp -r /tmp/workspace/generated-sql/dags dags
           git add .
-          git commit -m "Auto-push due to change on main branch [ci skip]" \
+          git commit -m "Auto-push for GHA testing [ci skip]" \
             -m "Created from ${{ github.sha }}" \
-            && git tag c-${{ github.sha }} \
-            && git push \
-            && git push origin c-${{ github.sha }} \
+            && git tag -f c-${{ github.sha }} \
+            && git push -f origin gha-test-generated-sql \
+            && git push -f origin c-${{ github.sha }} \
             || echo "Skipping push since it looks like there were no changes"
 
   push-private-generated-sql:
     name: Push Private Generated SQL
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -1001,14 +1036,35 @@ jobs:
           echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - name: Push to private-generated-sql branch
+      # - name: Push to private-generated-sql branch
+      #   run: |
+      #     git config --global user.name "GitHub Actions private-generate-sql job"
+      #     git config --global user.email "dataops+private-generated-sql@mozilla.com"
+      #     git clone --single-branch --branch private-generated-sql \
+      #       git@github.com:mozilla/private-bigquery-etl \
+      #       private-generated-sql
+      #     cd private-generated-sql/
+      #     rm -rf sql/
+      #     cp -r /tmp/workspace/private-generated-sql/sql sql
+      #     rm -rf dags/
+      #     cp -r /tmp/workspace/private-generated-sql/dags dags
+      #     git add .
+      #
+      #     private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
+      #
+      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
+      #       -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
+      #       && git push \
+      #       || echo "Skipping push since it looks like there were no changes"
+      - name: Push to gha-test-generated-sql branch (TESTING)
         run: |
           git config --global user.name "GitHub Actions private-generate-sql job"
           git config --global user.email "dataops+private-generated-sql@mozilla.com"
           git clone --single-branch --branch private-generated-sql \
-            git@github.com:mozilla/private-bigquery-etl \
-            private-generated-sql
-          cd private-generated-sql/
+            git@github.com:mozilla/private-bigquery-etl.git \
+            gha-test-generated-sql
+          cd gha-test-generated-sql/
+          git checkout -B gha-test-generated-sql
           rm -rf sql/
           cp -r /tmp/workspace/private-generated-sql/sql sql
           rm -rf dags/
@@ -1017,9 +1073,9 @@ jobs:
 
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
 
-          git commit -m "Auto-push due to change on main branch [ci skip]" \
+          git commit -m "Auto-push for GHA testing [ci skip]" \
             -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-            && git push \
+            && git push -f origin gha-test-generated-sql \
             || echo "Skipping push since it looks like there were no changes"
 
   deploy-to-private-gar:
@@ -1042,8 +1098,8 @@ jobs:
           rm -rf sql/
           cp -r /tmp/workspace/private-generated-sql/sql sql
           # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
-          yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") \
-            *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' > bqetl_project.yaml
+          yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' \
+            > bqetl_project.yaml
       - name: Build the Docker image
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
@@ -1073,7 +1129,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - name: Authenticate to GCP and Generate ID Token
         id: auth
@@ -1105,11 +1161,10 @@ jobs:
     name: Reset Stage Environment
     runs-on: ubuntu-latest
     needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines]
-    if: github.ref == 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python

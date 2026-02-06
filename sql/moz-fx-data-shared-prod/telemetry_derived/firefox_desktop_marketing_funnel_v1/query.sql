@@ -13,10 +13,7 @@ WITH top_of_funnel_base AS (
     -- Attribution dimensions for channel/campaign analysis
     ad_crosschannel_primary_channel_group AS channel_raw,
     ad_google_campaign_id AS campaign_id,
-    IFNULL(
-      ad_google_campaign,
-      campaigns_v2.campaign_name
-    ) AS campaign,  -- TODO: should this be a COALESCE?
+    COALESCE(ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
     ad_crosschannel_source AS `source`,
     ad_crosschannel_medium AS medium,
     -- Logic: Exclude sessions where mozilla.org referred to firefox.com or vice versa
@@ -59,7 +56,7 @@ WITH top_of_funnel_base AS (
     session_date = @submission_date
     AND device_category = 'desktop'
     -- Exclude existing Firefox users - we want new acquisition only
-    AND COALESCE(browser NOT IN ('Firefox', 'Mozilla'), FALSE)
+    AND COALESCE(browser, '') NOT IN ('Firefox', 'Mozilla')
 ),
 top_of_funnel AS (
   SELECT
@@ -68,7 +65,7 @@ top_of_funnel AS (
     IF(
       COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
       "ROW",
-      tier_mapping.country_code || " (" || tier_mapping.tier || ")"  -- TODO: can we expect tier_mapping country_code or tier to be null here?
+      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
     ) AS country,
     -- Determine funnel type based on OS
     CASE
@@ -85,7 +82,7 @@ top_of_funnel AS (
   FROM
     top_of_funnel_base
   LEFT JOIN
-    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping  -- What builds this? TODO: check if this should be a static table.
+    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping  -- TODO: a follow-up item. This should be managed as a `static` table.
     USING (country_code)
   WHERE
     NOT COALESCE(tier_mapping.is_eu, FALSE)
@@ -386,7 +383,7 @@ final AS (
           top_of_funnel.funnel_derived,
           desktop_funnels_telemetry.funnel_derived
         ) = 'mozorg mac funnel'
-        THEN CAST(NULL AS INTEGER)  -- TODO: do we want this to be null or default to 0?
+        THEN CAST(NULL AS INTEGER)
       ELSE CAST(NULL AS INTEGER)
     END AS installs,
     COALESCE(desktop_funnels_telemetry.new_profiles, 0) AS new_profiles,
@@ -422,14 +419,6 @@ final AS (
     )
     AND COALESCE(top_of_funnel.source, '') = COALESCE(desktop_funnels_telemetry.source, '')
     AND COALESCE(top_of_funnel.medium, '') = COALESCE(desktop_funnels_telemetry.medium, '')
-  -- Only include dates where telemetry data has matured (28-day metrics need time)  -- TODO: Does this mean this should run with a 28 day lag?
-  WHERE
-    COALESCE(top_of_funnel.submission_date, desktop_funnels_telemetry.submission_date) <= (
-      SELECT
-        MAX(submission_date)
-      FROM
-        desktop_funnels_telemetry
-    )
 )
 -- =============================================================================
 -- Final SELECT: Add Derived Dimensions and Year-over-Year Metrics

@@ -41,7 +41,4 @@ bigquery:
     field: funnel_date
     require_partition_filter: true
     expiration_days: null
-  clustering:
-    fields:
-    - country
 require_column_descriptions: true

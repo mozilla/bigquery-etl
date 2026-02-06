@@ -176,6 +176,7 @@ windows_installer_installs_base AS (
     AND NOT had_old_install  -- Exclude upgrades/reinstalls (new installs only)
   -- Only count installs from tracked mozilla.org downloads
     AND funnel_derived = 'mozorg windows funnel'
+    AND build_channel = 'release'
 ),
 windows_installer_installs AS (
   SELECT
@@ -303,6 +304,7 @@ desktop_funnels_telemetry AS (
   WHERE
     cfs28.first_seen_date = @submission_date
     AND cfs28.is_desktop
+    AND cfs28.normalized_channel = 'release'
     -- Exclude EU for core funnels, but keep partner funnel metrics
     AND (NOT COALESCE(tier_mapping.is_eu, FALSE) OR cfs28.funnel_derived = 'partner')
   GROUP BY

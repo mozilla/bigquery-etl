@@ -270,3 +270,8 @@ fields:
     description: |-
       Whether the subscription has had fraudulent charges.
       This will be null for Apple subscriptions.
+  - name: payment_method
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The type of payment method used for the subscription (e.g. "Card", "PayPal", "Apple Pay", "Google Pay").

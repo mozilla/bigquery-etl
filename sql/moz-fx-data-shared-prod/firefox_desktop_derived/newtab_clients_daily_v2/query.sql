@@ -129,8 +129,10 @@ SELECT
   SUM(widget_impression_count) AS widget_impression_count,
   SUM(other_interaction_count) AS other_interaction_count,
   SUM(other_impression_count) AS other_impression_count,
-  AVG(newtab_visit_duration) AS avg_newtab_visit_duration,
-  SUM(newtab_visit_duration) AS cumulative_newtab_visit_duration,
+  AVG(SAFE_CAST(newtab_visit_duration AS FLOAT64)) AS avg_newtab_visit_duration,
+  SAFE_CAST(
+    SUM(CAST(newtab_visit_duration AS FLOAT64)) AS INT64
+  ) AS cumulative_newtab_visit_duration,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2`
 WHERE

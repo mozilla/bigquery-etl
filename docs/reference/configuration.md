@@ -10,7 +10,7 @@ dry_run:
   test_project: bigquery-etl-integration-test
   skip:
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
-  - sql/**/apple_ads_external*/**/query.sql
+  - sql/**/braze_external*/**/query.sql
   # - ...
 
 views:

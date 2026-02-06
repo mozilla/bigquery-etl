@@ -1,0 +1,62 @@
+fields:
+- mode: REQUIRED
+  name: document_id
+  type: STRING
+  description: Identifier matching the document_id of a submitted ping.
+- mode: REQUIRED
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: The submission timestamp matching that of the submitted ping (used for partitioning).
+- mode: NULLABLE
+  name: crash_type
+  type: STRING
+  description: The crash type, extracted from the ping stack trace data for convenience.
+- mode: NULLABLE
+  name: signature
+  type: STRING
+  description: The crash signature generated from the symbolicated stack frames.
+- mode: REPEATED
+  name: stack
+  type: RECORD
+  description: Symbolicated stack frames for the crash ping.
+  fields:
+  - name: function
+    type: STRING
+    mode: NULLABLE
+    description: The function symbol corresponding to the stack frame.
+  - name: function_offset
+    type: STRING
+    mode: NULLABLE
+    description: The offset into the function, as a hex string.
+  - name: file
+    type: STRING
+    mode: NULLABLE
+    description: The source file corresponding to the stack frame.
+  - name: line
+    type: INTEGER
+    mode: NULLABLE
+    description: The source line corresponding to the stack frame.
+  - name: module
+    type: STRING
+    mode: NULLABLE
+    description: The module corresponding to the stack frame.
+  - name: module_offset
+    type: STRING
+    mode: NULLABLE
+    description: The offset into the module, as a hex string.
+  - name: omitted
+    type: INTEGER
+    mode: NULLABLE
+    description: Whether frames were omitted. If this field is present, no other fields will be present.
+  - name: error
+    type: STRING
+    mode: NULLABLE
+    description: An error message when generating the stack frame. If this field is present, no other fields will be present.
+  - name: offset
+    type: STRING
+    mode: NULLABLE
+    description: The absolute offset of the frame.
+- mode: NULLABLE
+  name: config_id
+  type: INTEGER
+  description: The id of the configuration partition that this ping was in.

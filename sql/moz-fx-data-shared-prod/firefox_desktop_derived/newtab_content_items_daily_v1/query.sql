@@ -102,7 +102,11 @@ newtab_content_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     normalized_channel AS channel,
-    IFNULL(metrics.string.newtab_content_country, normalized_country_code) AS country,
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      NULL,
+      normalized_country_code
+    ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,

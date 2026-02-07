@@ -1,0 +1,9 @@
+friendly_name: Shared Rust Components
+description: |-
+  Metrics for shared Rust components
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

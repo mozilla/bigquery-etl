@@ -271,6 +271,13 @@ fields:
       description: 'Whether the user''s device is using accelerated canvas
 
         '
+    - name: characteristics_wgpu_is_fallback_adapter
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'WebGPU adapter isFallbackAdapter property. Indicates whether the
+        adapter is a software renderer (true) or hardware GPU (false).
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1986,6 +1993,365 @@ fields:
         font shipped with Firefox rendered normally.
 
         '
+    - name: characteristics_clientrects_element_gbcr_01
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        1. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_02
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        2. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_03
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        3. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_04
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        4. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_05
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        5. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_06
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        6. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_07
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        7. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_08
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        8. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_09
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        9. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_10
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        10. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_11
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        11. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gbcr_12
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() for test element
+        12. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_01
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        1. Element style: border 2.715px, padding 3.98px, margin-left 12.12px. Format:
+        {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_02
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        2. Element style: transform skewY(23.1753218deg) rotate3d(10.00099, 90, 0.100000000100009,
+        60000000000008.00000009deg). Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_03
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        3. Element style: transform skewY(-23.1753218deg) scale(1099.0000000099, 1.89)
+        matrix(1.11, 2.0001, -1.0001, 1.009, 150, 94.4). Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_04
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        4. Element style: transform matrix(1.11, 2.0001, -1.0001, 1.009, 150, 94.4),
+        position absolute. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_05
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        5. Element style: margin-left 42.395pt (point units). Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_06
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        6. Element style: transform perspective(12890px) translateZ(101.5px). Format:
+        {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_07
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        7. Element style: margin-top -350.552px, margin-left 0.9099rem, position absolute.
+        Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_08
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        8. Element style: margin-top -150.552px, margin-left 15.9099rem, position
+        absolute. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_09
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        9. Element style: margin-top -110.552px, margin-left 15.9099rem, position
+        absolute. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_10
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        10. Element style: margin-top -315.552px, margin-left 15.9099rem, position
+        absolute. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_11
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        11. Element style: width 10px, height 10px, margin-left 15.0000009099rem.
+        Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_element_gcr_12
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getClientRects()[0] for test element
+        12. Element style: identical to element 11 (for equal-element consistency
+        check). Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_emoji_01
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F47E (alien monster).\
+        \ Format: JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_02
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F916 (robot). Format:\
+        \ JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_03
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F984 (unicorn). Format:\
+        \ JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_04
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F383 (jack-o-lantern).\
+        \ Format: JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_05
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F3A8 (artist palette).\
+        \ Format: JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_06
+      type: STRING
+      mode: NULLABLE
+      description: "Bounding rect dimensions for emoji \U0001F308 (rainbow). Format:\
+        \ JSON object with w,h keys."
+    - name: characteristics_clientrects_emoji_font_family
+      type: STRING
+      mode: NULLABLE
+      description: 'The computed font-family used for emoji elements in clientrects
+        measurements.
+
+        '
+    - name: characteristics_clientrects_ghost_dimensions
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON for .rect-ghost element (0x0px, should be all zeros).
+        Non-zero values indicate API tampering or lie detection failure. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_known_dimensions
+      type: STRING
+      mode: NULLABLE
+      description: 'Full DOMRect JSON for .rect-known element (100x100px, transform
+        rotate(45deg)). Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_01
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 1. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_02
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 2. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_03
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 3. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_04
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 4. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_05
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 5. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_06
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 6. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_07
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 7. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_08
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 8. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_09
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 9. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_10
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 10. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_11
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 11. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gbcr_12
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Element.getBoundingClientRect() after Range.selectNode()
+        for test element 12. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_01
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 1. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_02
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 2. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_03
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 3. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_04
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 4. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_05
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 5. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_06
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 6. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_07
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 7. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_08
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 8. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_09
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 9. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_10
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 10. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_11
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 11. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_range_gcr_12
+      type: STRING
+      mode: NULLABLE
+      description: 'DOMRect JSON from Range.getClientRects()[0] after Range.selectNode()
+        for test element 12. Format: {"b":N,"h":N,"l":N,"r":N,"t":N,"w":N,"x":N,"y":N}'
+    - name: characteristics_clientrects_text_font_family
+      type: STRING
+      mode: NULLABLE
+      description: 'The computed font-family used for text elements in clientrects
+        measurements.
+
+        '
+    - name: characteristics_fonts_variant_c_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried of variant C
+
+        '
+    - name: characteristics_fonts_variant_c_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried of variant C
+
+        '
+    - name: characteristics_fonts_variant_d_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried of variant D
+
+        '
+    - name: characteristics_fonts_variant_d_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried of variant D
+
+        '
+    - name: characteristics_fonts_variant_e_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried of variant E
+
+        '
+    - name: characteristics_fonts_variant_e_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried of variant E
+
+        '
+    - name: characteristics_mathml_diag_font_family
+      type: STRING
+      mode: NULLABLE
+      description: 'The computed font-family value from a MathML element on the page.
+        Shows what font is actually being used for MathML rendering.
+
+        '
+    - name: characteristics_mathml_diag_prefs_modified
+      type: STRING
+      mode: NULLABLE
+      description: 'MathML prefs that have been modified from defaults. Format is
+        "shortname=val,..." (e.g. "dis=1,fnt=0"). Empty if no prefs modified. Shortnames:
+        dis=disabled, str=scale_stretchy_operators, spc=mathspace_names, rtl=rtl_operator_mirroring,
+        var=mathvariant_styling_fallback, shf=math_shift, acc=operator_dictionary_accent,
+        leg=legacy_mathvariant_attribute, fnt=font_family_math. Values are 1 (true)
+        or 0 (false).
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -2613,6 +2979,15 @@ fields:
         values, which can vary by OS and be used for fingerprinting. This metric collects
         computed fontSize + fontFamily for each font keyword/name tested. Data format:
         [{"caption": "11px system-ui"}, {"Arial": "16px Arial"}, ...].
+
+        '
+    - name: characteristics_mathml_diag_values
+      type: STRING
+      mode: NULLABLE
+      description: 'Array of widths from all MathML elements, collected similar to
+        math_ops. Each element represents the getBoundingClientRect().width of a rendered
+        MathML element. The array index corresponds to the element''s id number. Format
+        is a JSON stringified array like: ["123.456", "789.012", ...]
 
         '
   - name: uuid

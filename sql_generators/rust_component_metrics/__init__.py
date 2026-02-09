@@ -55,7 +55,7 @@ def all_metric_groups() -> list["MetricGroup"]:
             metrics=[
                 LabeledDistribution("ingest_download_time", DistributionType.timing),
                 LabeledDistribution("ingest_time", DistributionType.timing),
-                LabeledDistribution("ingest_query_time", DistributionType.timing),
+                LabeledDistribution("query_time", DistributionType.timing),
             ],
         ),
     ]

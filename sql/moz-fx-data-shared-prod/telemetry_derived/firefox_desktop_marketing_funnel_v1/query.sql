@@ -82,7 +82,7 @@ top_of_funnel AS (
   FROM
     top_of_funnel_base
   LEFT JOIN
-    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping  -- TODO: a follow-up item. This should be managed as a `static` table.
+    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
     USING (country_code)
   WHERE
     NOT COALESCE(tier_mapping.is_eu, FALSE)
@@ -195,7 +195,7 @@ windows_installer_installs AS (
   FROM
     windows_installer_installs_base
   LEFT JOIN
-    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
+    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
     USING (country_code)
   LEFT JOIN
     ga4_attr_by_dltoken_dedup
@@ -297,7 +297,7 @@ desktop_funnels_telemetry AS (
     ga4_attribution AS ga4_attr
     USING (client_id)
   LEFT JOIN
-    `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
+    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
     ON cfs28.country = tier_mapping.country_code
   WHERE
     cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)

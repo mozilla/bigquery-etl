@@ -1,0 +1,84 @@
+fields:
+
+- mode: NULLABLE
+  name: report_date
+  type: DATE
+  description: The date used to report the first 7 days of activity, 9 days after
+    the client's first seen date.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: Date the server received the first baseline ping for this client_id.
+
+- mode: NULLABLE
+  name: first_week_end_date
+  type: DATE
+  description: TODO
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: A unique identifier (UUID) for the client.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |-
+    'ISO 3166-1 alpha-2 code for the country in which the activity took
+    place, as determined by the IP geolocation.'
+
+- mode: NULLABLE
+  name: gclid
+  type: STRING
+  description: TODO
+
+- mode: NULLABLE
+  name: marketing_card_optin_first_week
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d0
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d1
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d2
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d3
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d4
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d5
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: active_d6
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: activation_1
+  type: INTEGER
+  description: TODO
+
+- mode: NULLABLE
+  name: activation_2
+  type: INTEGER
+  description: TODO

@@ -100,7 +100,7 @@ Adding a new field to a table schema also means that the field has to propagate 
    * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
 1. Open a new PR with these changes.
 1. PR reviewed and approved.
-1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
+1. Find and run again the [CI pipeline](https://github.com/mozilla/bigquery-etl/actions) for the PR.
    * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)

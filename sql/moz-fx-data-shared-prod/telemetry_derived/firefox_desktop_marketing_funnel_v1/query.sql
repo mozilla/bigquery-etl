@@ -102,54 +102,54 @@ top_of_funnel AS (
 -- USED BY: installs CTE for attribution lookup
 -- =============================================================================
 -- deduplicated attribution data (prevents many-to-many explosion)
-ga4_attribution_by_dltoken_dedup AS (
+ga4_attribution AS (
+  SELECT
+    ga4_attr.client_id,
+    ga4_attr.first_seen_date,
+    ga4_attr.ga4_session_date,
+    ga4_attr.attribution_dltoken AS dltoken,
+    ga4_attr.ga4_ad_crosschannel_primary_channel_group AS channel_raw,
+    ga4_attr.ga4_ad_google_campaign,
+    ga4_attr.ga4_ad_google_campaign_id AS campaign_id,
+    ga4_attr.ga4_ad_crosschannel_source AS `source`,
+    ga4_attr.ga4_ad_crosschannel_medium AS medium,
+    ga4_attr.ga4_first_gad_campaignid_from_event_params,
+    COALESCE(ga4_attr.ga4_ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr` AS ga4_attr
+  LEFT JOIN
+    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` AS campaigns_v2
+    ON SAFE_CAST(ga4_first_gad_campaignid_from_event_params AS INT64) = campaigns_v2.campaign_id
+  WHERE
+    attribution_dltoken IS NOT NULL
+),
+ga4_attr_by_dltoken_dedup AS (
   SELECT
     client_id,
     first_seen_date,
     ga4_session_date,
-    attribution_dltoken AS dltoken,
-    ga4_ad_crosschannel_primary_channel_group AS channel_raw,
-    ga4_ad_google_campaign,
-    ga4_ad_google_campaign_id AS campaign_id,
-    ga4_ad_crosschannel_source AS `source`,
-    ga4_ad_crosschannel_medium AS medium,
+    dltoken,
+    channel_raw,
+    `source`,
+    medium,
     ga4_first_gad_campaignid_from_event_params,
+    campaign_id,
+    campaign,
   FROM
-    `moz-fx-data-shared-prod.telemetry.cfs_ga4_attr`
-  WHERE
-    attribution_dltoken IS NOT NULL
-  -- Keep only the best record per dltoken
+    ga4_attribution
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
-        attribution_dltoken
+        dltoken
       ORDER BY
         CASE
-          WHEN ga4_ad_crosschannel_primary_channel_group IS NOT NULL
+          WHEN channel_raw IS NOT NULL
             THEN 0
           ELSE 1
         END,
         first_seen_date,
         client_id
     ) = 1
-),
-ga4_attr_by_dltoken AS (
-  SELECT
-    ga4_attr.client_id,
-    ga4_attr.dltoken,
-    ga4_attr.channel_raw,
-    ga4_attr.campaign_id,
-    ga4_attr.`source`,
-    ga4_attr.medium,
-    ga4_session_date,
-    IFNULL(ga4_attr.ga4_ad_google_campaign, campaigns_v2.campaign_name) AS campaign,
-  FROM
-    ga4_attribution_by_dltoken_dedup AS ga4_attr
-  LEFT JOIN
-    `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` campaigns_v2
-    ON SAFE_CAST(
-      ga4_attr.ga4_first_gad_campaignid_from_event_params AS INT64
-    ) = campaigns_v2.campaign_id
 ),
 -- =============================================================================
 -- CTE 3: installs - Windows Installer Telemetry
@@ -198,7 +198,7 @@ windows_installer_installs AS (
     `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
     USING (country_code)
   LEFT JOIN
-    ga4_attr_by_dltoken
+    ga4_attr_by_dltoken_dedup
     USING (dltoken)
   WHERE
     NOT COALESCE(tier_mapping.is_eu, FALSE)
@@ -221,7 +221,7 @@ fresh_download_profiles AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs
   INNER JOIN
-    ga4_attr_by_dltoken AS ga4_attr
+    ga4_attr_by_dltoken_dedup AS ga4_attr
     USING (client_id)
   WHERE
     cfs.funnel_derived IN ('mozorg windows funnel', 'mozorg mac funnel')
@@ -292,12 +292,13 @@ desktop_funnels_telemetry AS (
     COUNTIF(qualified_week4) AS retained_week4         -- Active in week 4
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs28
+  -- Join to GA4 attribution directly (no dltoken dedup here as multiple client_ids could come from the same dltoken)
+  LEFT JOIN
+    ga4_attribution AS ga4_attr
+    USING (client_id)
   LEFT JOIN
     `mozdata.analysis.marketing_country_tier_mapping` AS tier_mapping
     ON cfs28.country = tier_mapping.country_code
-  LEFT JOIN
-    ga4_attr_by_dltoken AS ga4_attr
-    USING (client_id)
   WHERE
     cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
     AND cfs28.is_desktop

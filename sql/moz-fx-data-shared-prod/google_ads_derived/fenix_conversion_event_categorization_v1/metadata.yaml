@@ -10,7 +10,7 @@ labels:
 scheduling:
   dag_name: bqetl_marketing_analysis
   depends_on_past: false
-  date_partition_parameter: null
+  date_partition_parameter: report_date
   # date_partition_offset: -2
   parameters:
   - submission_date:DATE:{{ds}}

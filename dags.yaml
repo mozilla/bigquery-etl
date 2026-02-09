@@ -2565,3 +2565,15 @@ bqetl_claude_api:
   schedule_interval: 0 6 * * *
   tags:
     - impact/tier_3
+
+bqetl_rust_component_metrics:
+  schedule_interval: 0 3 * * *
+  description: The DAG schedules rust component metric queries.
+  default_args:
+    owner: sync-team@mozilla.com
+    start_date: "2026-02-05"
+    email: ["telemetry-alerts@mozilla.com", "sync-team@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

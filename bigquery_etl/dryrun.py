@@ -4,7 +4,7 @@ Dry run query files.
 Passes all queries to a Cloud Function that will run the
 queries with the dry_run option enabled.
 
-We could provision BigQuery credentials to the CircleCI job to allow it to run
+We could provision BigQuery credentials to the CI job to allow it to run
 the queries directly, but there is no way to restrict permissions such that
 only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we

@@ -34,7 +34,7 @@ from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.util.common import render
+from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.view import View
 
@@ -49,6 +49,8 @@ log = logging.getLogger(__name__)
     deploy using the --tables or --views flags.
 
     Table-specific options use --table-* prefix, view-specific options use --view-* prefix.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
 
@@ -77,6 +79,7 @@ log = logging.getLogger(__name__)
     ./bqetl deploy --tables --table-skip-existing-schemas telemetry_derived/
     """,
 )
+@block_coding_agents
 @click.argument("paths", nargs=-1, required=False)
 @click.option(
     "--tables",

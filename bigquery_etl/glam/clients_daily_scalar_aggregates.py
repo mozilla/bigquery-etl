@@ -39,9 +39,17 @@ def get_labeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     probes_struct = []
     for metric_type, _probes in probes.items():
         for probe in _probes:
-            probes_struct.append(
-                f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
-            )
+            if metric_type == "labeled_boolean":
+                probes_struct.append(
+                    (
+                        f"('{probe}', '{metric_type}', "
+                        f"cast_labeled_boolean(metrics.{metric_type}.{probe}))"
+                    )
+                )
+            else:
+                probes_struct.append(
+                    f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
+                )
 
     probes_struct.sort()
     probes_arr = ",\n".join(probes_struct)
@@ -98,7 +106,7 @@ def get_scalar_metrics(
     assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
-        "labeled": ["labeled_counter"],
+        "labeled": ["labeled_counter", "labeled_boolean"],
         "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {

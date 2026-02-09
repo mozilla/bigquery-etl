@@ -131,7 +131,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
   - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
-  - sql/**/apple_ads_external*/**/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
@@ -341,6 +340,14 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
+    # Resources exceeded
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_with_ads_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_ad_clicks/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_ad_clicks_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_with_ads_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_live_v1/view.sql
 
 schema:
   base_schemas_dir: bigquery_etl/schema

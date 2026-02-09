@@ -26,7 +26,7 @@ from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..util.common import project_dirs
+from ..util.common import block_coding_agents, project_dirs
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -369,6 +369,8 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -380,6 +382,7 @@ Examples:
     ./bqetl routine validate udf.*
     """,
 )
+@block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
 @click.option(
@@ -432,7 +435,10 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
 
 mozfun.add_command(copy.copy(publish))
 mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
-by Airflow only."""
+by Airflow only.
+
+Coding agents aren't allowed to run this command.
+"""
 
 
 @routine.command(

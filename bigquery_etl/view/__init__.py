@@ -353,7 +353,6 @@ class View:
         Publish this view to BigQuery.
 
         If `target_project` is set, it will replace the project ID in the view definition.
-        If `force` is set, the view will be created/updated as if it doesn't exist.
         """
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             print(f"Skipping {self.path}")
@@ -385,86 +384,45 @@ class View:
                     flags=re.MULTILINE,
                 )
 
+            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
+            query_job = client.query(sql, job_config)
+
             if dry_run:
-                job_config = bigquery.QueryJobConfig(
-                    use_legacy_sql=False, dry_run=dry_run
-                )
-                client.query(sql, job_config)
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
-                view_exists = False
-                if not force:
-                    try:
-                        existing_view = client.get_table(target_view)
-                        view_exists = True
-                    except NotFound:
-                        view_exists = False
+                try:
+                    job_id = query_job.result().job_id
+                except BadRequest as e:
+                    if "Invalid snapshot time" in e.message:
+                        # This occasionally happens due to dependent views being
+                        # published concurrently; we wait briefly and give it one
+                        # extra try in this situation.
+                        time.sleep(1)
+                        job_id = client.query(sql, job_config).result().job_id
+                    else:
+                        raise
 
-                if not view_exists or force:
-                    job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
-                    query_job = client.query(sql, job_config)
-                    try:
-                        query_job.result()
-                    except BadRequest as e:
-                        if "Invalid snapshot time" in e.message:
-                            time.sleep(1)
-                            client.query(sql, job_config).result()
-                        else:
-                            raise
+                try:
+                    table = client.get_table(target_view)
+                except NotFound:
+                    print(
+                        f"{target_view} failed to publish to the correct location, verify job id {job_id}",
+                        file=sys.stderr,
+                    )
+                    return False
 
-                    try:
-                        table = client.get_table(target_view)
-                    except NotFound:
-                        print(
-                            f"{target_view} failed to publish",
-                            file=sys.stderr,
-                        )
-                        return False
-                else:
-                    table = existing_view
-
-                # Update schema field descriptions
                 try:
                     if self.schema_path.is_file():
                         table = self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
-                # Check and update metadata
-                fields_to_update = []
-
-                if view_exists and not force:
-                    # Extract the view query from the SQL (remove CREATE VIEW statement)
-                    try:
-                        new_view_query = CREATE_VIEW_PATTERN.sub(
-                            "",
-                            sqlparse.format(self.content),
-                            count=1,
-                        ).strip(";" + string.whitespace)
-                    except TypeError:
-                        print(
-                            f"ERROR: There has been an issue formatting: {target_view}",
-                            file=sys.stderr,
-                        )
-                        new_view_query = CREATE_VIEW_PATTERN.sub(
-                            "", self.content, count=1
-                        ).strip(";" + string.whitespace)
-
-                    # Update view_query to refresh schema
-                    table.view_query = new_view_query
-                    fields_to_update.append("view_query")
-
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
                 else:
-                    if table.description != self.metadata.description:
-                        table.description = self.metadata.description
-                        fields_to_update.append("description")
-                    if table.friendly_name != self.metadata.friendly_name:
-                        table.friendly_name = self.metadata.friendly_name
-                        fields_to_update.append("friendly_name")
+                    table.description = self.metadata.description
+                    table.friendly_name = self.metadata.friendly_name
 
-                # Check and update labels
                 if table.labels != self.labels:
                     labels = self.labels.copy()
                     for key in table.labels:
@@ -476,11 +434,11 @@ class View:
                         for key, value in labels.items()
                         if isinstance(value, str)
                     }
-                    fields_to_update.append("labels")
-
-                # Update metadata and labels if needed
-                if fields_to_update:
-                    client.update_table(table, fields_to_update)
+                    client.update_table(
+                        table, ["labels", "description", "friendly_name"]
+                    )
+                else:
+                    client.update_table(table, ["description", "friendly_name"])
 
                 print(f"Published view {target_view}")
         else:

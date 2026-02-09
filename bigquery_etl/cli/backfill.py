@@ -62,6 +62,7 @@ from ..metadata.validate_metadata import (
     MetadataValidationError,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util.common import block_coding_agents
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -491,6 +492,8 @@ def scheduled(
 @backfill.command(
     help="""Process entry in backfill.yaml with Initiate status that has not yet been processed.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -502,6 +505,7 @@ def scheduled(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @click.option(
     "--parallelism",
@@ -812,6 +816,8 @@ def _initialize_previous_partition(
 @backfill.command(
     help="""Complete entry in backfill.yaml with Complete status that has not yet been processed..
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -823,6 +829,7 @@ def _initialize_previous_partition(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")

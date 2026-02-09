@@ -32,11 +32,12 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import get_credentials
 from ..util import extract_from_query_path
+from ..util.common import block_coding_agents
 
 
 @click.group(help="""
-        Commands for managing bqetl metadata.
-        """)
+    Commands for managing bqetl metadata.
+    """)
 @click.pass_context
 def metadata(ctx):
     """Create the CLI group for the metadata command."""
@@ -212,6 +213,8 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     help="""
     Publish all metadata based on metadata.yaml file.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
      ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
     """,
@@ -220,6 +223,7 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")

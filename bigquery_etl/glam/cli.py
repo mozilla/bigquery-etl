@@ -7,6 +7,7 @@ import rich_click as click
 import yaml
 from google.cloud import bigquery
 
+from ..util.common import block_coding_agents
 from .utils import get_schema, run
 
 ROOT = Path(__file__).parent.parent.parent
@@ -77,12 +78,16 @@ def list_daily(project, dataset):
 
 
 @glean.command()
+@block_coding_agents
 @click.argument("app-id", type=str)
 @click.argument("start-date", type=str)
 @click.argument("end-date", type=str)
 @click.option("--dataset", type=str, default="glam_etl_dev")
 def backfill_daily(app_id, start_date, end_date, dataset):
-    """Backfill the daily tables."""
+    """Backfill the daily tables.
+
+    Coding agents aren't allowed to run this command.
+    """
     _check_root()
     run(
         "script/glam/generate_glean_sql",
@@ -107,6 +112,7 @@ def backfill_daily(app_id, start_date, end_date, dataset):
 
 
 @glean.command()
+@block_coding_agents
 @click.argument("app-id", type=str)
 @click.argument("start-date", type=str)
 @click.argument("end-date", type=str)
@@ -116,6 +122,8 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 
     To rebuild the table from scratch, drop the clients_scalar_aggregates and
     clients_histogram_aggregates tables.
+
+    Coding agents aren't allowed to run this command.
     """
     _check_root()
     run(
@@ -141,12 +149,16 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 
 
 @glean.command()
+@block_coding_agents
 @click.argument("app-id", type=str)
 @click.option("--project", default="glam-fenix-dev")
 @click.option("--dataset", type=str, default="glam_etl_dev")
 @click.option("--bucket", default="glam-fenix-dev-testing")
 def export(app_id, project, dataset, bucket):
-    """Run the export ETL and write the final csv to a gcs bucket."""
+    """Run the export ETL and write the final csv to a gcs bucket.
+
+    Coding agents aren't allowed to run this command.
+    """
     _check_root()
     run(
         "script/glam/generate_glean_sql",

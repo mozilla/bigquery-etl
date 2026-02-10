@@ -1,0 +1,13 @@
+2026-02-10:
+  start_date: 2025-10-01
+  end_date: 2026-02-10
+  reason: |-
+    Initial backfill of the table (DENG-10674).
+  watchers:
+  - kik@mozilla.com
+  - ahe@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

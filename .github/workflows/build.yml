@@ -51,7 +51,7 @@ jobs:
           files: |
             routines/**
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
+          since_last_remote_commit: true
       - id: changed-files-sql
         uses: tj-actions/changed-files@v47
         with:
@@ -60,7 +60,7 @@ jobs:
             sql_generators/**
             dags.yaml
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
+          since_last_remote_commit: true
       - id: changed-files-bqetl
         uses: tj-actions/changed-files@v47
         with:
@@ -71,7 +71,7 @@ jobs:
             requirements.txt
             requirements.in
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
+          since_last_remote_commit: true
       - name: Decide which jobs to run
         id: set-flags
         run: |

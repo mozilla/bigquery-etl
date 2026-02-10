@@ -5,3 +5,4 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.fenix_derived.attributable_clients_v1`
+-- test change

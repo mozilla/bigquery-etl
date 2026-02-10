@@ -65,9 +65,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    rust_components_derived__db_size_after_maintenance__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__db_size_after_maintenance__v1",
-        destination_table="db_size_after_maintenance_v1",
+    rust_components_derived__metrics_logins_store_key_regenerated_corrupt__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_logins_store_key_regenerated_corrupt__v1",
+        destination_table="metrics_logins_store_key_regenerated_corrupt_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -76,9 +76,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__ingest_download_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__ingest_download_time__v1",
-        destination_table="ingest_download_time_v1",
+    rust_components_derived__metrics_logins_store_key_regenerated_lost__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_logins_store_key_regenerated_lost__v1",
+        destination_table="metrics_logins_store_key_regenerated_lost_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -87,9 +87,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__ingest_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__ingest_time__v1",
-        destination_table="ingest_time_v1",
+    rust_components_derived__metrics_logins_store_key_regenerated_other__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_logins_store_key_regenerated_other__v1",
+        destination_table="metrics_logins_store_key_regenerated_other_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -98,9 +98,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__key_regenerated_corrupt__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__key_regenerated_corrupt__v1",
-        destination_table="key_regenerated_corrupt_v1",
+    rust_components_derived__metrics_logins_store_mirror_undecryptable_deleted__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_logins_store_mirror_undecryptable_deleted__v1",
+        destination_table="metrics_logins_store_mirror_undecryptable_deleted_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -109,9 +109,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__key_regenerated_lost__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__key_regenerated_lost__v1",
-        destination_table="key_regenerated_lost_v1",
+    rust_components_derived__metrics_places_manager_db_size_after_maintenance__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_db_size_after_maintenance__v1",
+        destination_table="metrics_places_manager_db_size_after_maintenance_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -120,9 +120,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__key_regenerated_other__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__key_regenerated_other__v1",
-        destination_table="key_regenerated_other_v1",
+    rust_components_derived__metrics_places_manager_run_maintenance_chk_pnt_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_run_maintenance_chk_pnt_time__v1",
+        destination_table="metrics_places_manager_run_maintenance_chk_pnt_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -131,9 +131,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__mirror_undecryptable_deleted__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__mirror_undecryptable_deleted__v1",
-        destination_table="mirror_undecryptable_deleted_v1",
+    rust_components_derived__metrics_places_manager_run_maintenance_optimize_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_run_maintenance_optimize_time__v1",
+        destination_table="metrics_places_manager_run_maintenance_optimize_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -142,9 +142,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__query_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__query_time__v1",
-        destination_table="query_time_v1",
+    rust_components_derived__metrics_places_manager_run_maintenance_prune_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_run_maintenance_prune_time__v1",
+        destination_table="metrics_places_manager_run_maintenance_prune_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -153,9 +153,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__run_maintenance_chk_pnt_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__run_maintenance_chk_pnt_time__v1",
-        destination_table="run_maintenance_chk_pnt_time_v1",
+    rust_components_derived__metrics_places_manager_run_maintenance_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_run_maintenance_time__v1",
+        destination_table="metrics_places_manager_run_maintenance_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -164,9 +164,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__run_maintenance_optimize_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__run_maintenance_optimize_time__v1",
-        destination_table="run_maintenance_optimize_time_v1",
+    rust_components_derived__metrics_places_manager_run_maintenance_vacuum_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_places_manager_run_maintenance_vacuum_time__v1",
+        destination_table="metrics_places_manager_run_maintenance_vacuum_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -175,9 +175,22 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__run_maintenance_prune_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__run_maintenance_prune_time__v1",
-        destination_table="run_maintenance_prune_time_v1",
+    rust_components_derived__metrics_suggest_ingest_download_time__v1 = (
+        bigquery_etl_query(
+            task_id="rust_components_derived__metrics_suggest_ingest_download_time__v1",
+            destination_table="metrics_suggest_ingest_download_time_v1",
+            dataset_id="rust_components_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="sync-team@mozilla.com",
+            email=["sync-team@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
+    rust_components_derived__metrics_suggest_ingest_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_suggest_ingest_time__v1",
+        destination_table="metrics_suggest_ingest_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -186,9 +199,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__run_maintenance_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__run_maintenance_time__v1",
-        destination_table="run_maintenance_time_v1",
+    rust_components_derived__metrics_suggest_query_time__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_suggest_query_time__v1",
+        destination_table="metrics_suggest_query_time_v1",
         dataset_id="rust_components_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sync-team@mozilla.com",
@@ -197,61 +210,54 @@ with DAG(
         depends_on_past=False,
     )
 
-    rust_components_derived__run_maintenance_vacuum_time__v1 = bigquery_etl_query(
-        task_id="rust_components_derived__run_maintenance_vacuum_time__v1",
-        destination_table="run_maintenance_vacuum_time_v1",
-        dataset_id="rust_components_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="sync-team@mozilla.com",
-        email=["sync-team@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    rust_components_derived__db_size_after_maintenance__v1.set_upstream(
+    rust_components_derived__metrics_logins_store_key_regenerated_corrupt__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__ingest_download_time__v1.set_upstream(
+    rust_components_derived__metrics_logins_store_key_regenerated_lost__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__ingest_time__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    rust_components_derived__key_regenerated_corrupt__v1.set_upstream(
+    rust_components_derived__metrics_logins_store_key_regenerated_other__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__key_regenerated_lost__v1.set_upstream(
+    rust_components_derived__metrics_logins_store_mirror_undecryptable_deleted__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__key_regenerated_other__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_db_size_after_maintenance__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__mirror_undecryptable_deleted__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_run_maintenance_chk_pnt_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__query_time__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    rust_components_derived__run_maintenance_chk_pnt_time__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_run_maintenance_optimize_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__run_maintenance_optimize_time__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_run_maintenance_prune_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__run_maintenance_prune_time__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_run_maintenance_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__run_maintenance_time__v1.set_upstream(
+    rust_components_derived__metrics_places_manager_run_maintenance_vacuum_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    rust_components_derived__run_maintenance_vacuum_time__v1.set_upstream(
+    rust_components_derived__metrics_suggest_ingest_download_time__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    rust_components_derived__metrics_suggest_ingest_time__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    rust_components_derived__metrics_suggest_query_time__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

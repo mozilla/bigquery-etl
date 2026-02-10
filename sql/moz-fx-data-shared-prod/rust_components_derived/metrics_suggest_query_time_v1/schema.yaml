@@ -1,0 +1,38 @@
+fields:
+- name: submission_date
+  type: DATE
+  description: |-
+    Date the metric was submitted
+- name: application
+  type: STRING
+  description: |-
+    Application the metric was collected for
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
+- name: label
+  type: STRING
+  description: |-
+    Label for the distribution
+- name: q001
+  type: INTEGER
+  description: 0.1th percentile (nanoseconds)
+- name: q01
+  type: INTEGER
+  description: 1st percentile (nanoseconds)
+- name: q05
+  type: INTEGER
+  description: 5th percentile (nanoseconds)
+- name: q50
+  type: INTEGER
+  description: 50th percentile (nanoseconds)
+- name: q95
+  type: INTEGER
+  description: 95th percentile (nanoseconds)
+- name: q99
+  type: INTEGER
+  description: 99th percentile (nanoseconds)
+- name: q999
+  type: INTEGER
+  description: 99.9th percentile (nanoseconds)

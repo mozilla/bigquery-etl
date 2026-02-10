@@ -1,0 +1,11 @@
+friendly_name: Metrics Logins Store Key Regenerated Corrupt
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.rust_components_derived.metrics_logins_store_key_regenerated_corrupt_v1

@@ -1,0 +1,27 @@
+friendly_name: metrics.places_manager.run_maintenance_vacuum_time aggregates
+description: |-
+  Aggregated metric data derived from metrics.places_manager.run_maintenance_vacuum_time
+owners:
+- sync-team@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_rust_component_metrics
+  owner1: sync-team
+scheduling:
+  dag_name: bqetl_rust_component_metrics
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - application
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - mozdata.fenix.metrics

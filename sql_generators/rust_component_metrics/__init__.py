@@ -163,8 +163,9 @@ def generate(target_project, output_dir, use_cloud_function):
 
     for metric_group in all_metric_groups():
         for metric in metric_group.metrics:
-            full_table_id = f"{target_project}.rust_components_derived.{metric.name}_v1"
-            full_view_id = f"{target_project}.rust_components.{metric.name}"
+            full_metric_id = f"{metric_group.ping}_{metric_group.category}_{metric.name}"
+            full_table_id = f"{target_project}.rust_components_derived.{full_metric_id}_v1"
+            full_view_id = f"{target_project}.rust_components.{full_metric_id}"
             metric_data = get_metric_data(metric)
 
             query_sql_parts = [

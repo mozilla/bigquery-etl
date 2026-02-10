@@ -5,7 +5,9 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
     WHEN REGEXP_CONTAINS(campaign_name, r"^(gads_v[2-3])")
       THEN
         CASE
-          WHEN ARRAY_LENGTH(SPLIT(campaign_name, "_")) = 18
+          WHEN ARRAY_LENGTH(
+              SPLIT(REGEXP_REPLACE(campaign_name, r"_(f[i]?rst_open)_", "_firstopen_"), "_")
+            ) = 18
             THEN mozfun.map.from_lists(
                 [
                   'ad_network',
@@ -27,7 +29,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
                   'ad_gap_id',
                   'po'
                 ],
-                SPLIT(campaign_name, "_")
+                SPLIT(REGEXP_REPLACE(campaign_name, r"_(f[i]?rst_open)_", "_firstopen_"), "_")
               )
           ELSE NULL
         END
@@ -198,6 +200,30 @@ SELECT
     ARRAY_LENGTH(
       marketing.parse_campaign_name(
         'gads_v3_monitorPlus_challengeTheDefault_expansion_pl_all_ypt_pl_mobile_android_appCampaign_conversion_search_tcpa_install_id123_po#123456789'
+      )
+    ),
+    18
+  ),
+  mozfun.assert.equals(
+    ARRAY_LENGTH(
+      marketing.parse_campaign_name(
+        'gads_v3_firefox_challengeTheDefault_na_us_all_all_en_mobile_iOS_appCampaign_conversion_uac_tcpa_install_adGap_POUS2003046'
+      )
+    ),
+    18
+  ),
+  mozfun.assert.equals(
+    ARRAY_LENGTH(
+      marketing.parse_campaign_name(
+        'gads_v3_firefox_challengeTheDefault_apac_in_all_all_en_mobile_android_appCampaign_conversion_uac_tcpa_frst_open_adGap_po#2002280'  -- misspelled frst_open
+      )
+    ),
+    18
+  ),
+  mozfun.assert.equals(
+    ARRAY_LENGTH(
+      marketing.parse_campaign_name(
+        'gads_v3_firefox_challengeTheDefault_apac_id_all_all_id_mobile_android_appCampaign_conversion_uac_tcpa_first_open_adGap_po#2002280'
       )
     ),
     18

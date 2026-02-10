@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  description: |-
+    Date the metric was submitted
+- name: application
+  type: STRING
+  description: |-
+    Application the metric was collected for
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
+- name: q001
+  type: INTEGER
+  description: 0.1th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q01
+  type: INTEGER
+  description: 1st percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q05
+  type: INTEGER
+  description: 5th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q50
+  type: INTEGER
+  description: 50th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q95
+  type: INTEGER
+  description: 95th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q99
+  type: INTEGER
+  description: 99th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: q999
+  type: INTEGER
+  description: 99.9th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}

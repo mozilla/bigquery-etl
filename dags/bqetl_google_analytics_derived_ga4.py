@@ -191,6 +191,19 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_telemetry_derived__cfs_ga4_attr__v1_external",
+    ) as checks__fail_telemetry_derived__cfs_ga4_attr__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1",
+        )
+
+        checks__fail_telemetry_derived__cfs_ga4_attr__v1_external.set_upstream(
+            checks__fail_telemetry_derived__cfs_ga4_attr__v1
+        )
+
     checks__warn_mozilla_org_derived__blogs_goals__v2 = bigquery_dq_check(
         task_id="checks__warn_mozilla_org_derived__blogs_goals__v2",
         source_table="blogs_goals_v2",
@@ -375,6 +388,19 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v3/script.sql",
     )
+
+    with TaskGroup(
+        "mozilla_org_derived__ga_sessions__v3_external",
+    ) as mozilla_org_derived__ga_sessions__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_mozilla_org_derived__ga_sessions__v3",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_mozilla_org_derived__ga_sessions__v3",
+        )
+
+        mozilla_org_derived__ga_sessions__v3_external.set_upstream(
+            mozilla_org_derived__ga_sessions__v3
+        )
 
     mozilla_org_derived__www_site_downloads__v3 = bigquery_etl_query(
         task_id="mozilla_org_derived__www_site_downloads__v3",

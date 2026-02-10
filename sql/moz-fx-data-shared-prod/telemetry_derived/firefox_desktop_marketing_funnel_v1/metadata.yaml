@@ -1,0 +1,58 @@
+friendly_name: Firefox Desktop Marketing Funnel - Temporary Analysis Table
+description: |-
+  PURPOSE:
+  Creates a unified funnel metrics table combining web analytics (GA4) with
+  Firefox telemetry data to track the full user journey:
+    Visits -> Downloads -> Installs -> New Profiles -> Repeat Users -> Retained Week 4
+
+  FUNNEL TYPES:
+    - mozorg windows funnel: Windows users from mozilla.org (full funnel with installs)
+    - mozorg mac funnel: Mac users from mozilla.org (no install data - Mac has no installer telemetry)
+    - partner: Partner distribution channels (no visits/downloads - starts at profiles)
+    - Unknown: EU countries and unattributed "other" traffic
+
+  KEY EXCLUSIONS:
+    - EU countries excluded from core funnels due to cookie banner impact on tracking
+    - Existing Firefox users excluded from visits (browser != Firefox/Mozilla)
+    - Internal cross-site traffic excluded (mozilla.org <-> firefox.com referrals)
+
+  ATTRIBUTION:
+    - Uses dltoken (download token) to link GA4 sessions -> installs -> profiles
+    - Campaign attribution from Google Ads with campaigns_v2 fallback
+    - Channel derived from campaign presence and GA4 channel grouping
+owners:
+- sbedwell@mozilla.com
+- kik@mozilla.com
+labels:
+  level: bronze
+  incremental: true
+  owner1: sbedwell
+  table_type: aggregate
+  dag: bqetl_marketing_analysis
+  owner2: kik
+scheduling:
+  dag_name: bqetl_marketing_analysis
+  date_partition_offset: -27
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: funnel_date
+    require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_installer.install
+  - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
+  - moz-fx-data-shared-prod.static.country_names_v1
+  - moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1
+  - moz-fx-data-shared-prod.telemetry.cfs_ga4_attr
+  - moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later
+  - moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined
+require_column_descriptions: true

@@ -333,6 +333,84 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_google_ads_derived__campaigns__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_google_ads_derived__campaigns__v2",
+        external_dag_id="bqetl_fivetran_google_ads",
+        external_task_id="checks__fail_google_ads_derived__campaigns__v2",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1",
+        external_dag_id="bqetl_google_analytics_derived_ga4",
+        external_task_id="checks__fail_telemetry_derived__cfs_ga4_attr__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=39600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefoxdotcom_derived__ga_sessions__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefoxdotcom_derived__ga_sessions__v2",
+        external_dag_id="bqetl_ga4_firefoxdotcom",
+        external_task_id="firefoxdotcom_derived__ga_sessions__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_mozilla_org_derived__ga_sessions__v3 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v3",
+        external_dag_id="bqetl_google_analytics_derived_ga4",
+        external_task_id="mozilla_org_derived__ga_sessions__v3",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_first_seen_28_days_later__v3 = (
+        ExternalTaskSensor(
+            task_id="wait_for_telemetry_derived__clients_first_seen_28_days_later__v3",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="telemetry_derived__clients_first_seen_28_days_later__v3",
+            execution_delta=datetime.timedelta(seconds=36000),
+            check_existence=True,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=5),
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1 = bigquery_etl_query(
         task_id="fenix_derived__new_profile_metrics_marketing_geo_testing__v1",
         destination_table='new_profile_metrics_marketing_geo_testing_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -379,6 +457,19 @@ with DAG(
         email=["kik@mozilla.com", "shong@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__firefox_desktop_marketing_funnel__v1",
+        destination_table='firefox_desktop_marketing_funnel_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="sbedwell@mozilla.com",
+        email=["kik@mozilla.com", "sbedwell@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
@@ -507,4 +598,28 @@ with DAG(
 
     firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_checks__fail_google_ads_derived__campaigns__v2
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_firefoxdotcom_derived__ga_sessions__v2
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_mozilla_org_derived__ga_sessions__v3
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_telemetry_derived__clients_first_seen_28_days_later__v3
     )

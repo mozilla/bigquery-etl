@@ -331,6 +331,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_firefoxdotcom_derived__ga_sessions__v2",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_firefoxdotcom_derived__ga_sessions__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
         firefoxdotcom_derived__ga_sessions__v2_external.set_upstream(
             firefoxdotcom_derived__ga_sessions__v2
         )

@@ -263,6 +263,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_google_ads_derived__campaigns__v2_external",
+    ) as checks__fail_google_ads_derived__campaigns__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_checks__fail_google_ads_derived__campaigns__v2",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_checks__fail_google_ads_derived__campaigns__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        checks__fail_google_ads_derived__campaigns__v2_external.set_upstream(
+            checks__fail_google_ads_derived__campaigns__v2
+        )
+
     checks__fail_google_ads_derived__daily_campaign_stats__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__daily_campaign_stats__v1",
         source_table="daily_campaign_stats_v1",

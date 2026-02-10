@@ -784,6 +784,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "telemetry_derived__clients_first_seen_28_days_later__v3_external",
+    ) as telemetry_derived__clients_first_seen_28_days_later__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_telemetry_derived__clients_first_seen_28_days_later__v3",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_telemetry_derived__clients_first_seen_28_days_later__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        telemetry_derived__clients_first_seen_28_days_later__v3_external.set_upstream(
+            telemetry_derived__clients_first_seen_28_days_later__v3
+        )
+
     bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1.set_upstream(
         firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )

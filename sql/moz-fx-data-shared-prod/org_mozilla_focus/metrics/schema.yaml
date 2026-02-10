@@ -2412,6 +2412,18 @@ fields:
       description: 'How many times PDF Viewer was used for tagged pdf.
 
         '
+    - name: javascript_self_hosted_cache_total
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many self-hosted cache accesses are performed.
+
+        '
+    - name: update_blocked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of downloads blocked by the WAF.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -37633,6 +37645,20 @@ fields:
         the origin is on the Safe Browsing blocklist (phishing, malware, etc.). The
         numerator is the number of blocked attempts, and the denominator is the total
         number of show attempts that passed the initial permission check.
+
+        '
+    - name: javascript_self_hosted_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The proportion of self-hosted cache accesses that found an existing
+        entry.
 
         '
   - name: uuid

@@ -371,7 +371,9 @@ SELECT
       metrics.counter.update_state_write_failure,
       metrics.counter.web_push_declarative,
       metrics.counter.web_push_declarative_mutable,
-      metrics.counter.pdfjs_tagged
+      metrics.counter.pdfjs_tagged,
+      metrics.counter.javascript_self_hosted_cache_total,
+      metrics.counter.update_blocked
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1849,7 +1851,8 @@ SELECT
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
-      metrics.rate.web_notification_show_safe_browsing_block
+      metrics.rate.web_notification_show_safe_browsing_block,
+      metrics.rate.javascript_self_hosted_cache_hits
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -2437,7 +2440,9 @@ SELECT
       metrics.counter.update_state_write_failure,
       metrics.counter.web_push_declarative,
       metrics.counter.web_push_declarative_mutable,
-      metrics.counter.pdfjs_tagged
+      metrics.counter.pdfjs_tagged,
+      metrics.counter.javascript_self_hosted_cache_total,
+      metrics.counter.update_blocked
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3915,7 +3920,8 @@ SELECT
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
-      metrics.rate.web_notification_show_safe_browsing_block
+      metrics.rate.web_notification_show_safe_browsing_block,
+      metrics.rate.javascript_self_hosted_cache_hits
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -4523,7 +4529,9 @@ SELECT
       metrics.counter.update_state_write_failure,
       metrics.counter.web_push_declarative,
       metrics.counter.web_push_declarative_mutable,
-      metrics.counter.pdfjs_tagged
+      metrics.counter.pdfjs_tagged,
+      metrics.counter.javascript_self_hosted_cache_total,
+      metrics.counter.update_blocked
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6001,7 +6009,8 @@ SELECT
       metrics.rate.cert_signature_cache_hits,
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
-      metrics.rate.web_notification_show_safe_browsing_block
+      metrics.rate.web_notification_show_safe_browsing_block,
+      metrics.rate.javascript_self_hosted_cache_hits
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(

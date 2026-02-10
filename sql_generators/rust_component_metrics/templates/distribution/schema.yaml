@@ -7,6 +7,10 @@ fields:
   type: STRING
   description: |-
     Application the metric was collected for
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
 - name: q001
   type: INTEGER
   description: 0.1th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}

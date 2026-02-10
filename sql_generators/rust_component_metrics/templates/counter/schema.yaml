@@ -3,6 +3,10 @@ fields:
   type: DATE
   description: |-
     Date the metric was submitted
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
 - name: application
   type: STRING
   description: |-

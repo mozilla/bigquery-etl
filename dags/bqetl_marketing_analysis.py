@@ -333,6 +333,71 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_org_mozilla_fenix_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_beta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_google_ads_derived__campaigns__v2 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_google_ads_derived__campaigns__v2",
         external_dag_id="bqetl_fivetran_google_ads",
@@ -457,6 +522,18 @@ with DAG(
         email=["kik@mozilla.com", "shong@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__fenix_conversion_event_categorization__v1",
+        destination_table="fenix_conversion_event_categorization_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["ahe@mozilla.com", "kik@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter="report_date",
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     telemetry_derived__firefox_desktop_marketing_funnel__v1 = bigquery_etl_query(
@@ -598,6 +675,50 @@ with DAG(
 
     firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__fenix_derived__new_profile_clients__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__events_stream__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__events_stream__v1
+    )
+
+    google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__events_stream__v1
     )
 
     telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(

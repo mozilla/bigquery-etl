@@ -1,0 +1,17 @@
+friendly_name: Glean Conversion Event Categorization (Fenix)
+description: |-
+  Creates classifications of new clients based on activity within their first 7 days
+  (9 days after a client was seen for the first time).
+owners:
+- kik@mozilla.com
+- ahe@mozilla.com
+labels:
+  owner1: kik
+  owner2: ahe
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.fenix_conversion_event_categorization_v1

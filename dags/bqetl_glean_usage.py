@@ -5277,6 +5277,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_org_mozilla_fenix_derived__events_stream__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_org_mozilla_fenix_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
         org_mozilla_fenix_derived__events_stream__v1_external.set_upstream(
             org_mozilla_fenix_derived__events_stream__v1
         )
@@ -5380,6 +5387,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
         org_mozilla_fenix_nightly_derived__events_stream__v1_external.set_upstream(
             org_mozilla_fenix_nightly_derived__events_stream__v1
         )
@@ -5481,6 +5495,13 @@ with DAG(
             external_dag_id="bqetl_experiments_daily",
             external_task_id="wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
         org_mozilla_fennec_aurora_derived__events_stream__v1_external.set_upstream(
@@ -5588,6 +5609,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_org_mozilla_firefox_beta_derived__events_stream__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_org_mozilla_firefox_beta_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
         org_mozilla_firefox_beta_derived__events_stream__v1_external.set_upstream(
             org_mozilla_firefox_beta_derived__events_stream__v1
         )
@@ -5687,6 +5715,13 @@ with DAG(
             external_dag_id="bqetl_experiments_daily",
             external_task_id="wait_for_org_mozilla_firefox_derived__events_stream__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_org_mozilla_firefox_derived__events_stream__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_org_mozilla_firefox_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
         org_mozilla_firefox_derived__events_stream__v1_external.set_upstream(

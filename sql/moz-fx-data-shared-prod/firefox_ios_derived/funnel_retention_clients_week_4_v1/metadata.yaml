@@ -11,14 +11,16 @@ labels:
   schedule: daily
   incremental: true
   table_type: client_level
+  owner1: kik
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
     - sample_id
     - first_seen_date
+workgroup_access: []
 deprecated: true

@@ -1,3 +1,8 @@
----
-description: ''
 friendly_name: Histogram Merge
+description: ""
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

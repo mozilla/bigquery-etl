@@ -1,0 +1,27 @@
+type: BIGCONFIG_FILE
+table_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.terms_of_use_status_v1
+    columns:
+    - column_name: submission_date
+      metrics:
+      - saved_metric_id: is_not_null
+    - column_name: client_id
+      metrics:
+      - saved_metric_id: is_not_null
+      - saved_metric_id: is_unique
+        rct_overrides:
+        - FULL_SCAN
+    - column_name: normalized_country_code
+      metrics:
+      - saved_metric_id: is_2_char_len
+    - column_name: normalized_channel
+      metrics:
+      - saved_metric_id: is_99_percent_valid_normalized_channel
+    table_metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

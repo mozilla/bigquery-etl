@@ -6,14 +6,26 @@ owners:
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   table_type: client_level
+  dag: bqetl_firefox_desktop_ad_click_history
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
   depends_on_past: true
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   clustering:
     fields:
     - client_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.adclick_history_v1
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8

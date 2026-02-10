@@ -3,3 +3,15 @@ description: |-
   Data about downloads from firefox.com from GA4
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_downloads_v1

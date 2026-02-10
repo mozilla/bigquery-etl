@@ -1,0 +1,17 @@
+fields:
+- name: submission_date
+  type: DATE
+  description: |-
+    Date the metric was submitted
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
+- name: application
+  type: STRING
+  description: |-
+    Application the metric was collected for
+- name: count
+  type: INTEGER
+  description: |-
+    Total count

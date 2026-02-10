@@ -1,7 +1,21 @@
+friendly_name: App-specific view for Glean ping "crash"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.crash, org_mozilla_firefox_beta.crash, org_mozilla_fenix.crash, org_mozilla_fenix_nightly.crash, org_mozilla_fennec_aurora.crash).
+
+  It is used by Looker.
+owners: []
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  # https://mozilla-hub.atlassian.net/browse/DENG-8189
   - workgroup:dataops-managed/crash-ping-ingest
-  # https://mozilla-hub.atlassian.net/browse/DENG-8424
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.crash
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.crash
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.crash
+  - moz-fx-data-shared-prod.org_mozilla_firefox.crash
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.crash

@@ -7,4 +7,13 @@ description: |-
 
   See also: `baseline_clients_daily`
 owners:
-  - frank@mozilla.com
+- frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.baseline_clients_yearly_v1

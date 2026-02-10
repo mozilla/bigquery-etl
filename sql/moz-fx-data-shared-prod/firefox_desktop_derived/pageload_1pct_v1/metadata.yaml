@@ -8,17 +8,28 @@ owners:
 labels:
   incremental: true
   table_type: client_level
+  dag: bqetl_pageload_v1
+  owner1: wichan
+  owner2: acreskey
+  owner3: dpalmeiro
 scheduling:
   dag_name: bqetl_pageload_v1
   task_name: firefox_desktop_pageload_1pct__v1
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 775
-  range_partitioning: null
+    expiration_days: 775.0
   clustering:
     fields:
     - normalized_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.pageload

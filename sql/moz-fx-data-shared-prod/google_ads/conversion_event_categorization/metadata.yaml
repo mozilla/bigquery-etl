@@ -1,4 +1,14 @@
 friendly_name: Conversion Event Categorization
-description: Classifies conversion events
+description: |-
+  Classifies conversion events
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2

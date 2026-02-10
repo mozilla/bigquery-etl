@@ -8,11 +8,18 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
   table_type: aggregate
-  shredder_mitigation: false
+  dag: bqetl_releases
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_releases
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  bigeye_custom_rules.sql:
+  - ..
 monitoring:
   enabled: true
   collection: Test

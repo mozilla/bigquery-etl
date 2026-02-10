@@ -10,12 +10,23 @@ description: |-
     - partner
     - version
     - normalized_channel
+owners:
+- akomar@mozilla.com
 labels:
   shredder_mitigation: true
   table_type: aggregate
-owners:
-  - akomar@mozilla.com
+  owner1: akomar
 bigquery:
   time_partitioning:
     type: day
+    field: null
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.telemetry.events

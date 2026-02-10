@@ -1,4 +1,14 @@
 friendly_name: Install Vs Uninstall Ratio
-description: Calculates ratio of installs v uninstalls
+description: |-
+  Calculates ratio of installs v uninstalls
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.install_vs_uninstall_ratio_v1

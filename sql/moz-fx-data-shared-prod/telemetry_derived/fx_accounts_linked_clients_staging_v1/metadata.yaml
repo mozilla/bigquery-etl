@@ -9,6 +9,7 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: client_level
+  dag: bqetl_client_attributes
 scheduling:
   dag_name: bqetl_client_attributes
 bigquery:
@@ -16,6 +17,14 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 90
-  range_partitioning: null
+    expiration_days: 90.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.fx_accounts
 require_column_descriptions: true

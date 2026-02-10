@@ -5,3 +5,15 @@ description: |-
   This view filters out invalid GA client IDs and invalid GA session IDs.
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3

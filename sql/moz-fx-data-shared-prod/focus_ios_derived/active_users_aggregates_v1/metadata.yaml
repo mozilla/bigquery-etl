@@ -19,4 +19,7 @@ description: |-
 owners:
 - lvargas@mozilla.com
 - mozilla/kpi_table_reviewers
+labels:
+  owner1: lvargas
+workgroup_access: []
 deprecated: true

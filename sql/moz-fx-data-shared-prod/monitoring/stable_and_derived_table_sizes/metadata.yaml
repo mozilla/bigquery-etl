@@ -1,6 +1,14 @@
 friendly_name: Stable & Derived Table Sizes
-description: 'Table sizes of stable and derived tables, partitioned by day.
-
-  '
+description: |
+  Table sizes of stable and derived tables, partitioned by day.
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1

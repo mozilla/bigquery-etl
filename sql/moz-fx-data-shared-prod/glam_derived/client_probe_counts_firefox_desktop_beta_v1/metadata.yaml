@@ -5,8 +5,16 @@ owners:
 - ascholtz@mozilla.com
 - efilho@mozilla.com
 labels:
-  incremental: false
   public_bigquery: true
   public_json: true
   review_bugs:
   - '1866889'
+  owner1: ascholtz
+  owner2: efilho
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.glam_extract_firefox_beta_v1

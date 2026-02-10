@@ -1,6 +1,9 @@
----
-description: Return the frequency, recency, and T from a BYTE array, as
-  defined in
-  https://lifetimes.readthedocs.io/en/latest/Quickstart.html#the-shape-of-your-data
-  RFM refers to Recency, Frequency, and Monetary value.
 friendly_name: Days Seen Bytes To Rfm
+description: |-
+  Return the frequency, recency, and T from a BYTE array, as defined in https://lifetimes.readthedocs.io/en/latest/Quickstart.html#the-shape-of-your-data RFM refers to Recency, Frequency, and Monetary value.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

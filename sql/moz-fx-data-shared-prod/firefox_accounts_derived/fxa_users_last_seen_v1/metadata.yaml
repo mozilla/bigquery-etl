@@ -14,8 +14,8 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
-# TODO: Once fxa_users_last_seen_v2 backfill is completed and data confirmed to be heatlhy
-# this query should be descheduled, description and the corresponding view updated.
+  dag: bqetl_fxa_events
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
@@ -29,3 +29,11 @@ bigquery:
   clustering:
     fields:
     - user_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_accounts.fxa_users_daily
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1

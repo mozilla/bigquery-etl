@@ -1,4 +1,9 @@
----
-description: Given a BYTE, get the number of days the user was seen.
-  NULL input returns NULL output.
 friendly_name: Bits To Days Seen
+description: |-
+  Given a BYTE, get the number of days the user was seen. NULL input returns NULL output.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

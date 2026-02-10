@@ -4,3 +4,12 @@ description: |-
   The underlying table will be populated on 2nd of every month for the previous month
 owners:
 - akommasani@mozilla.com
+labels:
+  owner1: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.desktop_mobile_search_clients_monthly_v1

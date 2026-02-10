@@ -4,8 +4,8 @@ description: |-
 owners:
 - lmcfall@mozilla.com
 labels:
-  incremental: false
   owner1: lmcfall
+  dag: bqetl_pocket_users_historical
 scheduling:
   dag_name: bqetl_pocket_users_historical
   arguments:
@@ -15,4 +15,12 @@ scheduling:
   - --source-bucket=moz-fx-data-prod-external-pocket-data
   - --source-prefix=braze_pocket_historical
   - --source-file=pocket_users_historical
-bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers

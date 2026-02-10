@@ -3,3 +3,12 @@ description: |-
   Data used for reporting DAU, WAU, and MAU KPIs.
   Based on Glean-telemetry data for mobile, & legacy telemetry for desktop.
   Rows are at a client ID, submission date grain.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users
+  - moz-fx-data-shared-prod.telemetry.mobile_active_users

@@ -1,5 +1,14 @@
 friendly_name: Uninstalls On Day Of Install By Country
-description: Uninstalls by country split by if the uninstall was on date of installation
-  or not
+description: |-
+  Uninstalls by country split by if the uninstall was on date of installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_on_day_of_install_by_country_v1

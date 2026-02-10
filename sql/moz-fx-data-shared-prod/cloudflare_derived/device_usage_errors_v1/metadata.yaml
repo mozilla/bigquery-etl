@@ -1,10 +1,10 @@
 friendly_name: Cloudflare Device Usage Errors
-description: Log table for any errors from cloudflare_device_usage DAG
+description: |-
+  Log table for any errors from cloudflare_device_usage DAG
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: false
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   level: bronze
 bigquery:
   time_partitioning:
@@ -15,3 +15,7 @@ bigquery:
   clustering:
     fields:
     - location
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

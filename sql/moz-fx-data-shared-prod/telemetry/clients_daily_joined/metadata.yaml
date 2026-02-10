@@ -1,2 +1,11 @@
 friendly_name: Clients Daily Joined
-description: Joined clients_daily view
+description: |-
+  Joined clients_daily view
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1

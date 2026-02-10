@@ -1,9 +1,17 @@
 friendly_name: FxA Log Content Events
-description: 'A subset of FxA content server logs that is sometimes useful
-
+description: |-
+  A subset of FxA content server logs that is sometimes useful
   for ad hoc longitudinal analysis.
 
-
-  See https://bugzilla.mozilla.org/show_bug.cgi?id=1628708'
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1628708
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_log_content_events_v1

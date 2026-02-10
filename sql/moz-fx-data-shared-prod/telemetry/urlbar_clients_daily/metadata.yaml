@@ -1,4 +1,14 @@
 friendly_name: Urlbar Clients Daily
-description: Daily per-client metrics related to urlbar usage
+description: |-
+  Daily per-client metrics related to urlbar usage
 owners:
 - akommasani@mozilla.com
+labels:
+  owner1: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.urlbar_clients_daily_v1

@@ -3,14 +3,16 @@ description: |-
   Interactions on the newtab page, roughly one row per newtab "visit" per-day
   (identified by the visit id).
 owners:
-  - cbeck@mozilla.com
-  - mbowerman@mozilla.com
+- cbeck@mozilla.com
+- mbowerman@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
-  owner1: mbowerman
+  owner1: cbeck
   table_type: client_level
+  dag: bqetl_newtab
+  owner2: mbowerman
 scheduling:
   dag_name: bqetl_newtab
 bigquery:
@@ -18,8 +20,16 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
-      - channel
-      - country_code
+    - channel
+    - country_code
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users

@@ -4,7 +4,6 @@ tag_deployments:
     name: Operational Checks
     notification_channels:
     - slack: '#de-bigeye-triage'
-
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.submission_date

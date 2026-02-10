@@ -1,12 +1,18 @@
 friendly_name: Docker Fxa Customs Sanitized
-description: 'Sanitized version of customs events from GCP based FxA service stderr
-  table (PII is hashed).
+description: |-
+  Sanitized version of customs events from GCP based FxA service stderr table (PII is hashed).
 
-
-  The migration started on 2023-09-07, since then we have been receiving events from
-  the GCP deployment
-
-  which are available via this table. Previous data (from the AWS deployment) is available
-  in the v1 of this table.'
+  The migration started on 2023-09-07, since then we have been receiving events from the GCP deployment
+  which are available via this table. Previous data (from the AWS deployment) is available in the v1 of this table.
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_customs_sanitized_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_customs_sanitized_v2

@@ -1,5 +1,3 @@
----
-# yamllint disable rule:line-length
 friendly_name: Live Pings for `firefox-desktop/newtab`
 description: |-
   A live view of pings sent for the
@@ -7,8 +5,13 @@ description: |-
   document type.
 
   Clustering fields: `submission_timestamp`
+owners: []
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:pocket/prefect
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:mozsoc-ml/service
+  - workgroup:pocket/prefect
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1

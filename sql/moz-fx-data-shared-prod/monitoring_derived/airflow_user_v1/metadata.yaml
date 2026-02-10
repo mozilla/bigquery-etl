@@ -1,11 +1,21 @@
 friendly_name: Airflow Users
-description: Most recent record of Airflow users
-labels:
-  incremental: false
+description: |-
+  Most recent record of Airflow users
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
+labels:
+  dag: bqetl_monitoring_airflow
+  owner1: kik
 scheduling:
   dag_name: bqetl_monitoring_airflow
   date_partition_parameter: null
   depends_on_fivetran:
-    - task_id: fivetran_airflow_metadata_import
+  - task_id: fivetran_airflow_metadata_import
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.ab_user
+  - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.ab_user_role

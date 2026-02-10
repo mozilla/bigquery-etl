@@ -1,0 +1,15 @@
+friendly_name: Events Stream
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_derived.events_stream_v1

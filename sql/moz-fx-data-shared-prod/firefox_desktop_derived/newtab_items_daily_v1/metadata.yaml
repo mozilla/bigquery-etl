@@ -3,7 +3,7 @@ description: |-
   A daily aggregation of newtab actions on content/items (example: impressions, clicks, dismissals)
   for Firefox desktop, partitioned by day.
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   application: newtab
   incremental: true
@@ -19,13 +19,17 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
-      - channel
-      - country
+    - channel
+    - country
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozsoc-ml/service
-      - workgroup:mozsoc-ml/developers
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1

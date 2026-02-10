@@ -19,3 +19,12 @@ bigquery:
   clustering:
     fields:
     - experiment_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:pocket/external
+  - workgroup:pocket/prefect
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.activity_stream_bi.impression_stats_flat_v1

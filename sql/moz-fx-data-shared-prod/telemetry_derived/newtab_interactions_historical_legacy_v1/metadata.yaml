@@ -4,8 +4,8 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: false
   owner1: cbeck
+  dag: bqetl_newtab_historical
 scheduling:
   dag_name: bqetl_newtab_historical
   arguments:
@@ -15,4 +15,7 @@ scheduling:
   - --source-bucket=moz-fx-data-prod-external-pocket-data
   - --source-prefix=newtab_interactions_historical
   - --source-file=firefox_newtab_legacy_interactions
-bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

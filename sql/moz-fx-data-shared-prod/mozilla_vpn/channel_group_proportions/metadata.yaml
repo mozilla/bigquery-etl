@@ -1,7 +1,15 @@
 friendly_name: Channel Group Proportions
-description: 'Count of new subscriptions by utm values, and by channel group as a
-  percent of the total for that date
-
-  '
+description: |
+  Count of new subscriptions by utm values, and by channel group as a percent of the total for that date
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.channel_group_proportions_live
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.channel_group_proportions_v1

@@ -1,7 +1,6 @@
 friendly_name: Firefox Desktop Exact MAU by Dimensions
-description: >
-  Monthly active users with desktop clients aggregated across
-  unique sets of dimensions.
+description: |
+  Monthly active users with desktop clients aggregated across unique sets of dimensions.
 owners:
 - ascholtz@mozilla.com
 labels:
@@ -10,6 +9,8 @@ labels:
   incremental: true
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_main_summary
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_main_summary
   task_name: firefox_desktop_exact_mau28_by_dimensions
@@ -18,6 +19,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-  clustering: null
+    expiration_days: null
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.static.country_codes_v1
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen_v1
 deprecated: true
 deletion_date: 2025-12-12

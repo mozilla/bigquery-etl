@@ -4,4 +4,14 @@ description: |-
   identified through SchemaNotFoundExceptions during data ingestion.
   This view is used for data platform health checks.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
+  - moz-fx-data-shared-prod.static.monitoring_missing_document_namespaces_notes_v1

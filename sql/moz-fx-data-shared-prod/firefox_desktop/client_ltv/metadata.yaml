@@ -4,3 +4,11 @@ description: |-
   such as first seen date, attribution information, first reported country,
   predicted ad clicks and total historic ad clicks.
   Primary Key: client_id
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.client_ltv_v1

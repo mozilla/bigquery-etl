@@ -1,36 +1,33 @@
 friendly_name: Firefox Clients (iOS)
-description: 'First observations for Firefox iOS clients,
-
+description: |-
+  First observations for Firefox iOS clients,
   retrieved from the earliest pings: baseline, first_session and metrics.
-
   The attributes stored in this table include the first attribution,
-
   device, OS and ISP details.
 
-
   This table should be accessed through the user-facing view
-
   `firefox_ios.firefox_ios_clients`.
 
-
   For analysis purposes, use first_seen_date to query clients that
-
   effectively appeared on that date.
 
-
-  Note that the query for this table overwrites the whole table instead of writing
-  to
-
+  Note that the query for this table overwrites the whole table instead of writing to
   a single partition.
 
-
   Proposal:
-
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
 
-
   For more details about attribution and campaign structure see:
-
-  https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.'
+  https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios.clients_activation
+  - moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1

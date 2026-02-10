@@ -6,12 +6,22 @@ description: |-
   as users convert.
 owners:
 - frank@mozilla.com
+labels:
+  dag: bqetl_fivetran_google_ads
+  owner1: frank
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
   date_partition_parameter: null
-labels:
-  incremental: false
 bigquery:
   clustering:
-    fields: ["date"]
+    fields:
+    - date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.ads_google_mmc.campaign_conversions_by_date
+  - moz-fx-data-shared-prod.google_ads_derived.campaign_names_map_v1

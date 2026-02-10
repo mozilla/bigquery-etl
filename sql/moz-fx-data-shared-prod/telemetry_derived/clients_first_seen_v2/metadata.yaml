@@ -27,6 +27,7 @@ labels:
   schedule: daily
   depends_on_past: true
   owner1: lvargas
+  dag: bqetl_analytics_tables
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: clients_first_seen_v2
@@ -46,3 +47,17 @@ bigquery:
     - sample_id
     - country
     - normalized_os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  - ..clients_daily_v6
+  - .telemetry.new_profile
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.first_shutdown
+  - moz-fx-data-shared-prod.telemetry.new_profile
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2

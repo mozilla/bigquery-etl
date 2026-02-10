@@ -1,11 +1,18 @@
 friendly_name: Events 1 percent
-description: 'A materialized 1 percent sample of desktop events, intended as a performance
-
+description: |-
+  A materialized 1 percent sample of desktop events, intended as a performance
   optimization for exploratory queries. It contains only the most recent
-
   six months of data.
 
-
-  Accessed via the `telemetry.events_1pct` view.'
+  Accessed via the `telemetry.events_1pct` view.
 owners:
 - jklukas@mozilla.com
+labels:
+  owner1: jklukas
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.events_1pct_v1

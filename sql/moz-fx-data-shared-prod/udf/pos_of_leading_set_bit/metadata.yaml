@@ -1,4 +1,9 @@
----
-description: Returns the 0-based index of the first set bit.
-  No set bits returns NULL.
 friendly_name: Pos Of Leading Set Bit
+description: |-
+  Returns the 0-based index of the first set bit. No set bits returns NULL.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

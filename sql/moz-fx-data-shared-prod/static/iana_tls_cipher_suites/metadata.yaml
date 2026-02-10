@@ -4,3 +4,8 @@ description: |
   via a direct import of https://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv.
 
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1740392 for details.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

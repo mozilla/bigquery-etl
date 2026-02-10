@@ -1,4 +1,14 @@
 friendly_name: Broken site Root Domain Weekly Trends
-description: Weekly trend computation for broken site reports.
+description: |-
+  Weekly trend computation for broken site reports.
 owners:
 - gkatre@mozilla.com
+labels:
+  owner1: gkatre
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_broken_site_report_derived.broken_site_root_domain_weekly_trend_v1

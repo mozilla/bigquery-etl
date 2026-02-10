@@ -6,9 +6,10 @@ owners:
 labels:
   level: bronze
   incremental: true
-  owner1: example
+  owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_desktop_installs_v1
 scheduling:
   dag_name: bqetl_desktop_installs_v1
 bigquery:
@@ -20,4 +21,12 @@ bigquery:
   clustering:
     fields:
     - version
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.install
+  - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout
 require_column_descriptions: true

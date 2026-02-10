@@ -1,9 +1,23 @@
+friendly_name: Historical Pings for `firefox-desktop/crash`
+description: |-
+  A historical view of pings sent for the
+  `firefox-desktop/crash`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+owners: []
 labels:
   authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  # https://mozilla-hub.atlassian.net/browse/DENG-8189
   - workgroup:dataops-managed/crash-ping-ingest
-  # https://mozilla-hub.atlassian.net/browse/DENG-8977
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.crash_v1

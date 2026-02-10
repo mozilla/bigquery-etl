@@ -3,3 +3,12 @@ description: |
   A daily aggregate of crashes
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.crash_aggregates_v1

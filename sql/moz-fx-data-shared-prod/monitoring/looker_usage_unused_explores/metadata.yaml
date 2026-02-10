@@ -1,7 +1,16 @@
 friendly_name: Looker Usage Unused Explores
-description: 'Looker unused explores via henry.
+description: |-
+  Looker unused explores via henry.
 
-
-  This is run via docker-etl.'
+  This is run via docker-etl.
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.looker_usage_unused_explores_v1

@@ -9,10 +9,12 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: client_level
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
   depends_on:
   - task_id: wait_for_wmo_events_table
     dag_name: bqetl_google_analytics_derived_ga4
@@ -21,15 +23,25 @@ bigquery:
     type: day
     field: session_date
     require_partition_filter: false
-    expiration_days: 775
-  range_partitioning: null
+    expiration_days: 775.0
   clustering:
     fields:
     - ga_client_id
     - country
-require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  checks.sql:
+  - ..
+  script.sql:
+  - moz-fx-data-marketing-prod.analytics_313696158.events_*
+  - moz-fx-data-marketing-prod.analytics_313696158.events_2*
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3
+require_column_descriptions: true

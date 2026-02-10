@@ -1,5 +1,7 @@
 friendly_name: Events Daily V1
-description: Events daily
+description: |-
+  Events daily
+owners: []
 bigquery:
   time_partitioning:
     type: day
@@ -9,3 +11,7 @@ bigquery:
   clustering:
     fields:
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,0 +1,13 @@
+friendly_name: Retention Clients
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.active_users
+  - moz-fx-data-shared-prod.fenix.attribution_clients
+  - moz-fx-data-shared-prod.fenix.baseline_clients_daily

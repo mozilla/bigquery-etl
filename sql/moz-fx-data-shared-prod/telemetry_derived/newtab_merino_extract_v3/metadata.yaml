@@ -6,12 +6,23 @@ owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
 labels:
-  incremental: false
   owner: cbeck
-bigquery:
-  time_partitioning: null
+  dag: bqetl_merino_newtab_extract_to_gcs
+  owner1: mmiermans
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_extract_to_gcs
   date_partition_parameter: null
-  # This dag runs more frequently than upstream propensity table calculation
   referenced_tables: []
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1

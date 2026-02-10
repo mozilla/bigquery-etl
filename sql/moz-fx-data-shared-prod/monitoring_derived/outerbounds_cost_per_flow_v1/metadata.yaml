@@ -1,0 +1,12 @@
+friendly_name: Outerbounds Cost Per Flow V1
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.outerbounds_cost_per_flow_run_v1
+  - moz-fx-data-shared-prod.monitoring_derived.outerbounds_flow_description_v1

@@ -1,5 +1,14 @@
 friendly_name: Uninstalls By Addon
-description: 'Aggregate table calculating # unique clients with uninstalls by add
-  on and date'
+description: |-
+  Aggregate table calculating # unique clients with uninstalls by add on and date
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_by_addon_v1

@@ -1,5 +1,12 @@
----
+friendly_name: Events Live
+description: |-
+  Please provide a description for the query
+owners: []
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:cloudops-managed/telescope
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_live.event_v4

@@ -1,5 +1,14 @@
 friendly_name: Cohort Daily Churn
-description: Calculates churn for new users over time, for users first seen in last
-  180 days
+description: |-
+  Calculates churn for new users over time, for users first seen in last 180 days
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_daily_churn_v1

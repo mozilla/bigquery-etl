@@ -3,10 +3,12 @@ description: |-
   Data from external sources, such as calendar data, inflation data, GDP data, etc.
 dataset_base_acl: derived
 user_facing: false
-labels: {}
-default_table_expiration_ms: null
-workgroup_access:
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+workgroup_access:
+- role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
 syndication: {}

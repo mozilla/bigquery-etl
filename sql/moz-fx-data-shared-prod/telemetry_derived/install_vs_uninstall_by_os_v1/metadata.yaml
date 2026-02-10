@@ -7,6 +7,7 @@ labels:
   level: bronze
   incremental: true
   owner1: kwindau
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -15,7 +16,14 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - normalized_os_version
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_installer.install
+  - moz-fx-data-shared-prod.telemetry.uninstall

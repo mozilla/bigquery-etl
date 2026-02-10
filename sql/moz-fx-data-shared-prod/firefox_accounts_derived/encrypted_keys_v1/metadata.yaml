@@ -1,2 +1,8 @@
 friendly_name: Encrypted Keys V1
-description: Encrypted keys
+description: |-
+  Encrypted keys
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

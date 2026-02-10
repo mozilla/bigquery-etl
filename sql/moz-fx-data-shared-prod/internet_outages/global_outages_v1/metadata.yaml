@@ -1,5 +1,4 @@
 friendly_name: Internet Outages (Version 1)
-# yamllint disable rule:line-length
 description: |-
   This contains a set aggregated metrics that correlate to internet
   outages for different countries in the world.
@@ -62,6 +61,8 @@ labels:
   incremental: true
   review_bugs:
   - '1640204'
+  dag: bqetl_internet_outages
+  owner1: aplacitelli
 scheduling:
   dag_name: bqetl_internet_outages
 bigquery:
@@ -69,7 +70,21 @@ bigquery:
     type: day
     field: datetime
     require_partition_filter: null
+    expiration_days: null
   clustering:
     fields:
     - country
     - city
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:internet-outages/external-data-viewers
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - C
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry.health
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

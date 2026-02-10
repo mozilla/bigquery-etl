@@ -1,0 +1,20 @@
+friendly_name: Nondesktop Clients Last Seen V1
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_lockbox.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_focus.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_lockbox.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_klar.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_reference_browser.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.telemetry.core_clients_last_seen
+  - moz-fx-data-shared-prod.telemetry.fenix_clients_last_seen

@@ -3,10 +3,9 @@ description: |-
   Daily conversion factors allowing the translation of (Glean) Newtab visits to (PingCentre) Activity Stream sessions.
   This calculation only considers Desktop--Mobile's not in PingCentre.
 owners:
-  - sbetancourt@mozilla.com
-  - mozilla/ads_data_team
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozilla-confidential/data-viewers
+- sbetancourt@mozilla.com
+- mozilla/ads_data_team
+labels:
+  owner1: sbetancourt
+workgroup_access: []
 deprecated: true

@@ -9,7 +9,9 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
   date_partition_parameter: null
   secrets:
   - deploy_target: LOOKER_API_CLIENT_ID
@@ -21,3 +23,8 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

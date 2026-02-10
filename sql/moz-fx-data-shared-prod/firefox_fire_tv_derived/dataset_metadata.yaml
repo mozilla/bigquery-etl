@@ -1,0 +1,13 @@
+friendly_name: Firefox Fire Tv Derived
+description: |-
+  Derived data for firefox_fire_tv_derived
+dataset_base_acl: derived
+user_facing: false
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

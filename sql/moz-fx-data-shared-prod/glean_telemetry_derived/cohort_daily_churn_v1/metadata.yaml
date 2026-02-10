@@ -12,15 +12,24 @@ labels:
   incremental: true
   owner1: mhirose
   owner2: pissac
+  dag: bqetl_cohort_daily_churn
 scheduling:
   dag_name: bqetl_cohort_daily_churn
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
     field: cohort_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.glean_telemetry.active_users
+  - moz-fx-data-shared-prod.glean_telemetry_derived.rolling_cohorts_v1
 require_column_descriptions: true

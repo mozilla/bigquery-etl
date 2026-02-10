@@ -1,8 +1,9 @@
----
-description: This function selects most frequently occuring value for
-  each addon_id, using the latest value in the input among ties. The
-  type for active_addons is ARRAY<STRUCT<addon_id STRING, ...>>, i.e.
-  the output of `SELECT ARRAY_CONCAT_AGG(active_addons) FROM
-  telemetry.main_summary_v4`, and is left unspecified to allow changes
-  to the fields of the STRUCT.
 friendly_name: Aggregate Active Addons
+description: |-
+  This function selects most frequently occuring value for each addon_id, using the latest value in the input among ties. The type for active_addons is ARRAY<STRUCT<addon_id STRING, ...>>, i.e. the output of `SELECT ARRAY_CONCAT_AGG(active_addons) FROM telemetry.main_summary_v4`, and is left unspecified to allow changes to the fields of the STRUCT.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

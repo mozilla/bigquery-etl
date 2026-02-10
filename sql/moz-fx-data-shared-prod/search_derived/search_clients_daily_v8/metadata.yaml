@@ -9,6 +9,9 @@ owners:
 labels:
   schedule: daily
   table_type: client_level
+  dag: bqetl_search
+  owner1: akommasani
+  owner2: cmorales
 scheduling:
   dag_name: bqetl_search
   external_downstream_tasks:
@@ -23,7 +26,17 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.revenue.monetization_blocking_addons
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

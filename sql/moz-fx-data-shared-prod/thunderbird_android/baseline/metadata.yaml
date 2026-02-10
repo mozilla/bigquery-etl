@@ -1,0 +1,17 @@
+friendly_name: App-specific view for Glean ping "baseline"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Thunderbird for Android"
+  (net_thunderbird_android.baseline, net_thunderbird_android_beta.baseline, net_thunderbird_android_daily.baseline).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.net_thunderbird_android.baseline
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta.baseline
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily.baseline

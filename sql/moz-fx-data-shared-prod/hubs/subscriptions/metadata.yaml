@@ -1,6 +1,14 @@
 friendly_name: All Hubs Subscriptions
-description: 'Hubs subscriptions.
-
-  '
+description: |
+  Hubs subscriptions.
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.hubs_derived.subscriptions_v1

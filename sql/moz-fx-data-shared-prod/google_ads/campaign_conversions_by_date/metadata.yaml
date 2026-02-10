@@ -3,5 +3,12 @@ description: |-
   Number of conversions and installs by campaign & date.
 owners:
 - frank@mozilla.com
-labels: {}
-bigquery: null
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.campaign_conversions_by_date_v1

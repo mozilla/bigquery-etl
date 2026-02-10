@@ -3,7 +3,7 @@ description: |-
   A daily computation of newtab visit metrics.
   one row per visit (newtab_visit_id) per-day
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   application: newtab
   incremental: true
@@ -18,10 +18,16 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
-  range_partitioning: null
+    expiration_days: 775.0
   clustering:
     fields:
-      - channel
-      - country
-      - newtab_category
+    - channel
+    - country
+    - newtab_category
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1

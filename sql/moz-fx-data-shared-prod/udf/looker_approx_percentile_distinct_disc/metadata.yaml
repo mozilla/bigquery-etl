@@ -1,3 +1,9 @@
----
-description: 'This UDF is used to compute percentiles on Looker performance data, which can have duplicates'
 friendly_name: Looker Approximate Distinct Percentiles
+description: |-
+  This UDF is used to compute percentiles on Looker performance data, which can have duplicates
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

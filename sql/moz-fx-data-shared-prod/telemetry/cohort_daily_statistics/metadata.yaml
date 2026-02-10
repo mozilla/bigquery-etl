@@ -1,13 +1,19 @@
 friendly_name: Cohort Daily Statistics V2
-description: 'Cohort Daily Statistics tracks retention for a cohort with
-
+description: |-
+  Cohort Daily Statistics tracks retention for a cohort with
   the same first seen date and same set of attributes over the next 180 days
 
-
   Note that the values for client attributes are based on the
-
   attributes at the time the cohort started (rather than the
-
-  values at activity time)'
+  values at activity time)
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_daily_statistics_v2

@@ -8,4 +8,11 @@ owners:
 - kignasiak@mozilla.com
 labels:
   owner1: kwindau
-  owner2: kik
+  owner2: kignasiak
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_active_users_aggregates_v2

@@ -5,11 +5,12 @@ description: |-
   Used to alert when failures exceed ten percent of the BigQuery change table limit (200 failures/day).
   Data is retained for 180 days for historical trending.
 owners:
-  - chelseybeck@mozilla.com
+- chelseybeck@mozilla.com
 labels:
   incremental: true
   schedule: daily
   owner1: chelseybeck
+  dag: bqetl_monitoring
 scheduling:
   dag_name: bqetl_monitoring
 bigquery:
@@ -17,12 +18,20 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 180
+    expiration_days: 180.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  bigeye_custom_rules.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1
 monitoring:
   enabled: true
-  partition_column: submission_date
   collection: Home Newtab
+  partition_column: submission_date
+  partition_column_set: true
   volume:
-    blocking: false
-  freshness:
     blocking: false

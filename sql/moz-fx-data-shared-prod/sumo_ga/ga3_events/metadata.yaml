@@ -3,3 +3,13 @@ description: |-
   GA3 Events Data for SUMO (support.mozilla.org)
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_ga_derived.ga3_events_v1

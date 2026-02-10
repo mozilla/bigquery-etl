@@ -1,5 +1,14 @@
 friendly_name: Firefox Health Indicator Clients Daily OS Aggregates
-description: Calculates active hrs, subsession hrs, and searches per user on a 1%
-  client sample
+description: |-
+  Calculates active hrs, subsession hrs, and searches per user on a 1% client sample
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_clients_daily_by_os_v1

@@ -4,6 +4,12 @@ description: |-
   https://docs.google.com/spreadsheets/d/1joJXR9A8pjdpxEVKAXphXqPh-vy8yRZXs57UZwmUZVs/edit
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
 external_data:
   format: google_sheets
   source_uris:

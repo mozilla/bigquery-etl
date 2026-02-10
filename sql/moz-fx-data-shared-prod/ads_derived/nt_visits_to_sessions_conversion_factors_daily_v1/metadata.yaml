@@ -3,17 +3,19 @@ description: |-
   Daily conversion factors allowing the translation of (Glean) Newtab visits to (PingCentre) Activity Stream sessions.
   This calculation only considers Desktop--Mobile's not in PingCentre.
 owners:
-  - sbetancourt@mozilla.com
-  - mozilla/ads_data_team
+- sbetancourt@mozilla.com
+- mozilla/ads_data_team
+labels:
+  owner1: sbetancourt
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
-  clustering: null
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozilla-confidential/data-viewers
+workgroup_access: []
+references:
+  query.sql:
+  - mozdata.activity_stream.sessions
+  - mozdata.firefox_desktop.newtab
 deprecated: true

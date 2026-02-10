@@ -1,7 +1,14 @@
 friendly_name: Nondesktop Day 2-7 Activation
-description: 'Table to calculate the Day 2-7 activation rate of nondesktop products.
-  Cohorts calculated based on profile_creation date + 6 day window.
-
-  '
+description: |
+  Table to calculate the Day 2-7 activation rate of nondesktop products. Cohorts calculated based on profile_creation date + 6 day window.
 owners:
 - gkaberere@mozilla.com
+labels:
+  owner1: gkaberere
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.firefox_nondesktop_day_2_7_activation_v1

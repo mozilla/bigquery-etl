@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "topsites-impression"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.topsites_impression, org_mozilla_firefox_beta.topsites_impression, org_mozilla_fenix.topsites_impression, org_mozilla_fenix_nightly.topsites_impression, org_mozilla_fennec_aurora.topsites_impression).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression

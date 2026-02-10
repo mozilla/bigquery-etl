@@ -1,7 +1,14 @@
 friendly_name: Suppression List
-description: >
-  Suppression List from Acoustic.
-  As of 2025-04-15 no longer updated, but still required for main_suppression_list_v1.
+description: |
+  Suppression List from Acoustic. As of 2025-04-15 no longer updated, but still required for main_suppression_list_v1.
 owners:
-  - cbeck@mozilla.com
-bigquery: null
+- cbeck@mozilla.com
+labels:
+  owner1: cbeck
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers

@@ -1,0 +1,16 @@
+friendly_name: Mobile Retention Clients
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.retention_clients
+  - moz-fx-data-shared-prod.firefox_ios.retention_clients
+  - moz-fx-data-shared-prod.focus_android.retention_clients
+  - moz-fx-data-shared-prod.focus_ios.retention_clients
+  - moz-fx-data-shared-prod.klar_android.retention_clients
+  - moz-fx-data-shared-prod.klar_ios.retention_clients

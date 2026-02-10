@@ -1,7 +1,16 @@
 friendly_name: (DEPRECATED) Fenix New Profile Activation
-description: 'DEPRECATED, please use `new_profile_activation_clients` instead.
+description: |-
+  DEPRECATED, please use `new_profile_activation_clients` instead.
 
-
-  Mobile activation metric used for Marketing campaign performance'
+  Mobile activation metric used for Marketing campaign performance
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.new_profile_activation_v1

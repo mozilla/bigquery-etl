@@ -6,25 +6,36 @@ owners:
 labels:
   incremental: true
   schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
 scheduling:
-  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: date
-  # Override `referenced_tables` to ignore the reference to `subplat_attribution_impressions_v1`,
-  # because DAG generation would otherwise output an external task sensor for that which would only
-  # work for one bqetl_subplat_hourly DAG run per day.
   referenced_tables:
-  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'recent_subplat_attribution_impressions_v1']
-  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'stripe_logical_subscriptions_history_v1']
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - recent_subplat_attribution_impressions_v1
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - stripe_logical_subscriptions_history_v1
 bigquery:
   time_partitioning:
     type: day
     field: subscription_started_at
     require_partition_filter: false
     expiration_days: null
-  clustering: null
-require_column_descriptions: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v2
+  - moz-fx-data-shared-prod.subscription_platform_derived.recent_subplat_attribution_impressions_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1
 monitoring:
   enabled: true
   freshness: null
   volume: null
+require_column_descriptions: true

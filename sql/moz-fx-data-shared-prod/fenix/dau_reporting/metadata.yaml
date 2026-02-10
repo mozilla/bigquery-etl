@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "dau-reporting"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.dau_reporting, org_mozilla_firefox_beta.dau_reporting, org_mozilla_fenix.dau_reporting, org_mozilla_fenix_nightly.dau_reporting, org_mozilla_fennec_aurora.dau_reporting).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.dau_reporting
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.dau_reporting
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.dau_reporting
+  - moz-fx-data-shared-prod.org_mozilla_firefox.dau_reporting
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.dau_reporting

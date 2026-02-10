@@ -5,16 +5,24 @@ description: |-
 owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozsoc-ml/service
-  - workgroup:mozsoc-ml/developers
 labels:
-  incremental: false
   owner: cbeck
-bigquery:
-  time_partitioning: null
+  dag: bqetl_merino_newtab_priors_to_gcs
+  owner1: mmiermans
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items

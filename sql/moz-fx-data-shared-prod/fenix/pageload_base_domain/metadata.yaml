@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "pageload-base-domain"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.pageload_base_domain, org_mozilla_firefox_beta.pageload_base_domain, org_mozilla_fenix.pageload_base_domain, org_mozilla_fenix_nightly.pageload_base_domain, org_mozilla_fennec_aurora.pageload_base_domain).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.pageload_base_domain
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.pageload_base_domain
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.pageload_base_domain
+  - moz-fx-data-shared-prod.org_mozilla_firefox.pageload_base_domain
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.pageload_base_domain

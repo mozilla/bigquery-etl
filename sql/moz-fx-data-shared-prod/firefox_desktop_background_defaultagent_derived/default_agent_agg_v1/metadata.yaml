@@ -5,9 +5,10 @@ owners:
 - wichan@mozilla.com
 labels:
   incremental: true
-  owner1: wichan@mozilla.com
+  owner1: wichan
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_default_browser_aggregates
 scheduling:
   dag_name: bqetl_default_browser_aggregates
 bigquery:
@@ -16,4 +17,10 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent.default_agent

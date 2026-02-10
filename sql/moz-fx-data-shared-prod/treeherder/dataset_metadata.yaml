@@ -1,0 +1,9 @@
+friendly_name: treeherder
+description: |-
+  User-facing views related to document namespace treeherder; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/treeherder
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

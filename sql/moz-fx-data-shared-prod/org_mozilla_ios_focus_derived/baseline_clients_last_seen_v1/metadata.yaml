@@ -23,7 +23,6 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
@@ -34,7 +33,6 @@ schema:
     - moz-fx-data-shared-prod
     - org_mozilla_ios_focus_derived
     - baseline_clients_daily_v1
-    exclude: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

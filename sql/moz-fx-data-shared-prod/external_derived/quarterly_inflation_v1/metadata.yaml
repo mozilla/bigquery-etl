@@ -7,10 +7,17 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: aggregate
+  dag: bqetl_imf_cpi_data
 scheduling:
   dag_name: bqetl_imf_cpi_data
 bigquery:
-  range_partitioning: null
   clustering:
     fields:
     - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..

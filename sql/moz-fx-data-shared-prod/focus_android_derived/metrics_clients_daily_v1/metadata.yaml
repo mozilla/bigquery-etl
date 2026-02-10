@@ -1,0 +1,35 @@
+friendly_name: Metrics Clients Daily
+description: |-
+  Daily per-client aggregates on top of metrics pings
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_glean_usage
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: focus_android
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus.metrics
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.metrics
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.metrics
+monitoring:
+  enabled: false

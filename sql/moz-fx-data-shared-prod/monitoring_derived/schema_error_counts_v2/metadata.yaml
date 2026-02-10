@@ -22,3 +22,11 @@ bigquery:
     - document_type
     - path
     - job_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_all
+  - moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1

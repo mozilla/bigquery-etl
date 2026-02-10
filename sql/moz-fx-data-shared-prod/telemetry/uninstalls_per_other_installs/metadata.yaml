@@ -1,4 +1,14 @@
 friendly_name: Uninstalls Per Other Installs
-description: Calculates uninstallations per number of other installs
+description: |-
+  Calculates uninstallations per number of other installs
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_per_other_installs_v1

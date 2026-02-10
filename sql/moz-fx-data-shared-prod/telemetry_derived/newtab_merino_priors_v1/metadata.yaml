@@ -6,16 +6,25 @@ owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
 labels:
-  incremental: false
   owner: cbeck
-bigquery:
-  time_partitioning: null
+  dag: bqetl_merino_newtab_priors_to_gcs
+  owner1: mmiermans
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
-  # Adjust the execution delta for task dependencies in the bqetl_content_ml_hourly DAG
-  # to wait for the most recent bqetl_content_ml_hourly DAG tasks to complete.
   depends_on:
   - dag_name: bqetl_content_ml_hourly
     task_id: snowflake_migration_derived__corpus_items_updated__v1
     execution_delta: -22h30m
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_combined_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1

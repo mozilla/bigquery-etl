@@ -17,10 +17,21 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
     - country
     - normalized_os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen
+  - moz-fx-data-shared-prod.firefox_desktop_stable.deletion_request_v1
 require_column_descriptions: true

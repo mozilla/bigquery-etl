@@ -3,10 +3,18 @@ description: |-
   Destinations Table for Fivetran Costs.
 owners:
 - srose@mozilla.com
-labels: {}
+labels:
+  dag: bqetl_fivetran_costs
+  owner1: srose
 scheduling:
   dag_name: bqetl_fivetran_costs
   date_partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_log_prod
-bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.fivetran_log.destination

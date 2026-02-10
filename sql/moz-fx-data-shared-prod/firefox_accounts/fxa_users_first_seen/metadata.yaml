@@ -1,11 +1,18 @@
 friendly_name: FxA Users First Seen
-description: 'Contains the first entry seen inside fxa_users_daily_v2
-
+description: |-
+  Contains the first entry seen inside fxa_users_daily_v2
   for each user along with some attributes.
 
-
   Partitioned by submission_date,
-
-  clustered by seen_in_tier1_country, country, os_name'
+  clustered by seen_in_tier1_country, country, os_name
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_first_seen_v1

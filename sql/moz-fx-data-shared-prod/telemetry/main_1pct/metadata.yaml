@@ -1,4 +1,3 @@
----
 friendly_name: Main 1 percent
 description: |-
   A materialized 1 percent sample of main pings without use counters
@@ -25,6 +24,14 @@ description: |-
 
   See also: `main_nightly`
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.main_remainder_1pct_v1

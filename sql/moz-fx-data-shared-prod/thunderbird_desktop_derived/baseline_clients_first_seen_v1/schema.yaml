@@ -1,0 +1,52 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The date when the telemetry ping is received on the server side.
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: Date when the server first received a ping from this client.
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: A unique identifier (UUID) for the client.
+- mode: NULLABLE
+  name: attribution
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: campaign
+    type: STRING
+    description: The attribution campaign (e.g. 'mozilla-org').
+  - mode: NULLABLE
+    name: content
+    type: STRING
+    description: The attribution content (e.g. 'firefoxview').
+  - mode: NULLABLE
+    name: medium
+    type: STRING
+    description: The attribution medium (e.g. 'organic' for a search engine).
+  - mode: NULLABLE
+    name: source
+    type: STRING
+    description: The attribution source (e.g. 'google-play').
+  - mode: NULLABLE
+    name: term
+    type: STRING
+    description: The attribution term (e.g. 'browser with developer tools for android').
+- mode: NULLABLE
+  name: distribution
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: name
+    type: STRING
+    description: The distribution name (e.g. 'MozillaOnline').
+
+

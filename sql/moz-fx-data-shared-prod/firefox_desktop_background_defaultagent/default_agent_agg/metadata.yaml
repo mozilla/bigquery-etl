@@ -4,3 +4,12 @@ description: |-
   grouped by major version, release channel, default browser, etc.
 owners:
 - wichan@mozilla.com
+labels:
+  owner1: wichan
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_derived.default_agent_agg_v1

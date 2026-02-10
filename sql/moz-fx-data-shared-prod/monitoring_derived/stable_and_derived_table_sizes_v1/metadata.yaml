@@ -1,22 +1,35 @@
----
 friendly_name: Stable & Derived Table Sizes
-description: >
+description: |
   Table sizes of stable and derived tables, partitioned by day.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   schedule: daily
   incremental: true
+  dag: bqetl_monitoring
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  # Each run will process ds and ds-1 to get derived tables that may take more time to populate.
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
   referenced_tables:
-    - ['moz-fx-data-shared-prod', '*_stable', '*']
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v5']
-    - ['moz-fx-data-shared-prod', '*_derived', '*']
+  - - moz-fx-data-shared-prod
+    - '*_stable'
+    - '*'
+  - - moz-fx-data-shared-prod
+    - telemetry_stable
+    - main_v5
+  - - moz-fx-data-shared-prod
+    - '*_derived'
+    - '*'
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,4 +1,12 @@
----
 friendly_name: Jira Service Desk Issue Field History
 description: |-
   Jira issue field history for Service Desk synced via Fivetran.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:service-desk/data-developers
+  - workgroup:service-desk/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.issue_field_history

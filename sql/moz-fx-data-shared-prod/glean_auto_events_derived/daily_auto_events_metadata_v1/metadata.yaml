@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: efilho
+  dag: bqetl_glean_dictionary
 scheduling:
   dag_name: bqetl_glean_dictionary
   depends_on_past: true
@@ -14,7 +15,15 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - app
     - event_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.accounts_frontend.events_stream

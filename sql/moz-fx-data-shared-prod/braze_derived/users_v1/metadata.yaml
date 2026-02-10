@@ -6,15 +6,29 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: false
   schedule: daily
   owner: cbeck
-bigquery:
-  time_partitioning: null
+  dag: bqetl_braze
+  owner1: cbeck
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
-  # this dag runs more frequently than the upstream tables and relies
-  # mostly on data replicated into bq from ctms cloud sql
-  # once suppression latency is at an hour, we can remove the below
   referenced_tables: []
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
+  - moz-fx-data-shared-prod.ctms_braze.ctms_emails
+  - moz-fx-data-shared-prod.ctms_braze.ctms_fxa
+  - moz-fx-data-shared-prod.ctms_braze.ctms_newsletters
+  - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists
+  - moz-fx-data-shared-prod.marketing_suppression_list_derived.main_suppression_list_v1

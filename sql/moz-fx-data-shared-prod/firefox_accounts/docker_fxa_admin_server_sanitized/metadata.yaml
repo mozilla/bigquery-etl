@@ -1,9 +1,18 @@
 friendly_name: Docker Fxa Admin Server Sanitized
-description: 'Sanitized version of docker_fxa_admin_server from FxA.
-
+description: |-
+  Sanitized version of docker_fxa_admin_server from FxA.
   PII is hashed.
 
-
-  (contains events coming from the GCP deployment of this service)'
+  (contains events coming from the GCP deployment of this service)
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_admin_server_sanitized_v2

@@ -8,21 +8,27 @@ labels:
   incremental: true
   schedule: monthly
   table_type: client_level
+  dag: bqetl_desktop_mobile_search_monthly
+  owner1: akommasani
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
   date_partition_parameter: null
-  destination_table:
-    >-
-    desktop_mobile_search_clients_monthly_v1${{
-    (execution_date +
-    macros.dateutil.relativedelta.relativedelta(months=-1,
-    day=1)).strftime("%Y%m")
+  destination_table: desktop_mobile_search_clients_monthly_v1${{ (execution_date +
+    macros.dateutil.relativedelta.relativedelta(months=-1, day=1)).strftime("%Y%m")
     }}
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: month
     field: submission_month
     require_partition_filter: true
-    expiration_days: 775
-  clustering: null
+    expiration_days: 775.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily

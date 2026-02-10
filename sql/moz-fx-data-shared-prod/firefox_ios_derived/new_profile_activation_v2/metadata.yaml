@@ -10,17 +10,28 @@ owners:
 labels:
   incremental: true
   table_type: client_level
+  dag: bqetl_firefox_ios
+  owner1: vsabino
+  owner2: kik
+scheduling:
+  dag_name: bqetl_firefox_ios
+  date_partition_parameter: submission_date
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
     - sample_id
-scheduling:
-  dag_name: bqetl_firefox_ios
-  date_partition_parameter: submission_date
-  depends_on_past: true
+workgroup_access: []
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2
+  - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true

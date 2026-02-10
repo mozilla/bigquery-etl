@@ -1,5 +1,14 @@
 friendly_name: Uninstalls By Download Source
-description: Number of unique clients uninstalling by submission date and download
-  source
+description: |-
+  Number of unique clients uninstalling by submission date and download source
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_by_dlsource_v1

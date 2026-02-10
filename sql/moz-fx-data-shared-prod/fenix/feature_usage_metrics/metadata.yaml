@@ -1,5 +1,16 @@
 friendly_name: Feature Usage Metrics (Android - Fenix)
-description: Metrics from metrics pings for mobile feature usage dashboards (Fenix)
+description: |-
+  Metrics from metrics pings for mobile feature usage dashboards (Fenix)
 owners:
 - rzhao@mozilla.com
 - vsabino@mozilla.com
+labels:
+  owner1: rzhao
+  owner2: vsabino
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.feature_usage_metrics_v2

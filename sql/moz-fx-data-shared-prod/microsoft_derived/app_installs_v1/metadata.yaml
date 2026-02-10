@@ -1,23 +1,24 @@
 friendly_name: App Installs
-description: >
-  This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly
-  The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/installs?
-  Note: this DAG often fails on the first or second run
+description: |
+  This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/installs? Note: this DAG often fails on the first or second run
 owners:
 - mhirose@mozilla.com
 labels:
-  incremental: false
-  owner1: mhirose@mozilla.com
+  owner1: mhirose
   table_type: aggregate
 scheduling:
-  arguments: ["--date", "{{ ds }}"]
-tags:
-- impact/tier_3
-- triage/no_triage
-monitoring:
-  enabled: true
+  arguments:
+  - --date
+  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
     field: DATE
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+monitoring:
+  enabled: true

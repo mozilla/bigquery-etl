@@ -1,6 +1,14 @@
 friendly_name: Shredder Rows Deleted
-description: 'Record of rows deleted by shredder.
-
-  '
+description: |
+  Record of rows deleted by shredder.
 owners:
 - akomar@mozilla.com
+labels:
+  owner1: akomar
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1

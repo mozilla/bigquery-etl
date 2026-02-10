@@ -1,0 +1,15 @@
+friendly_name: Nonprod Fxa All Events
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_auth_events_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_content_events_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stderr_events_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stdout_events_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_stdout_events_v1

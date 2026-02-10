@@ -13,8 +13,15 @@ description: |-
   - Newtab Content Ping Rollout Doc: https://mozilla-hub.atlassian.net/wiki/spaces/FPS/pages/1517617439/Rollout+of+NewTab+Content+Ping
 owners:
 - lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozsoc-ml/service
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1

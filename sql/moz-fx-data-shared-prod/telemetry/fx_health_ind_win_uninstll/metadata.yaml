@@ -1,4 +1,14 @@
 friendly_name: Fx Health Ind Win Uninstll
-description: Aggregate view of Windows uninstalls by day
+description: |-
+  Aggregate view of Windows uninstalls by day
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_win_uninstll_v1

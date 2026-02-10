@@ -8,9 +8,12 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_market_intel_bot
 scheduling:
   dag_name: bqetl_market_intel_bot
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   depends_on:
   - task_id: read_release_data
     dag_name: web_scraping
@@ -21,3 +24,7 @@ scheduling:
     key: bqetl_market_intel_bot__github_token
   - deploy_target: SLACK_MARKET_INTEL_BOT_WEBHOOK_URL
     key: bqetl_market_intel_bot__webhook_url
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

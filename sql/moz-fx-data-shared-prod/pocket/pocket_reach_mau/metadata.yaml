@@ -1,0 +1,11 @@
+friendly_name: Pocket Reach Mau
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - pocket-airflow-prod.data_from_pocket.pocket_reach_mau

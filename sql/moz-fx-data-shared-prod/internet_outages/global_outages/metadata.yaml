@@ -1,8 +1,19 @@
 friendly_name: Global Outages
-description: |-
-  This query creates a unified view of global internet outage metrics by combining two historical datasets,
-  v1 and v2, and selecting the appropriate version based on date.
-  It ensures analysts can query a single table to track outage indicators—such as timeouts,
-  unreachable rates, DNS performance, and SSL errors—across all regions and time periods.
+description: "This query creates a unified view of global internet outage metrics\
+  \ by combining two historical datasets,\nv1 and v2, and selecting the appropriate\
+  \ version based on date.\nIt ensures analysts can query a single table to track\
+  \ outage indicators\u2014such as timeouts,\nunreachable rates, DNS performance,\
+  \ and SSL errors\u2014across all regions and time periods."
 owners:
 - aplacitelli@mozilla.com
+labels:
+  owner1: aplacitelli
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:internet-outages/external-data-viewers
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.internet_outages.global_outages_v1
+  - moz-fx-data-shared-prod.internet_outages.global_outages_v2

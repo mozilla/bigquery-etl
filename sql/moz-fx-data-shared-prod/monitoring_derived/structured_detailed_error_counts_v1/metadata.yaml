@@ -1,0 +1,12 @@
+friendly_name: Structured Detailed Error Counts V1
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
+  - moz-fx-data-shared-prod.monitoring.structured_error_counts

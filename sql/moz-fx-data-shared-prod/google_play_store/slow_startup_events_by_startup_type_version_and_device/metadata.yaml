@@ -1,4 +1,14 @@
 friendly_name: Slow Startup Events By Startup Type Version And Device
-description: Break out slow startup frequency by device info
+description: |-
+  Break out slow startup frequency by device info
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_version_and_device_v1

@@ -7,6 +7,7 @@ owners:
 labels:
   incremental: true
   owner1: benwu
+  dag: bqetl_crashes
 scheduling:
   dag_name: bqetl_crashes
 bigquery:
@@ -14,18 +15,23 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
     - normalized_app_id
     - normalized_channel
     - sample_id
-# schema is generated based on ping tables
-require_column_descriptions: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  # https://mozilla-hub.atlassian.net/browse/DENG-8189
   - workgroup:dataops-managed/crash-ping-ingest
-  # https://mozilla-hub.atlassian.net/browse/DENG-8424
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.crash
+  - moz-fx-data-shared-prod.firefox_crashreporter.crash
+  - moz-fx-data-shared-prod.firefox_desktop.crash
+  - moz-fx-data-shared-prod.focus_android.crash
+  - moz-fx-data-shared-prod.klar_android.crash
+require_column_descriptions: false

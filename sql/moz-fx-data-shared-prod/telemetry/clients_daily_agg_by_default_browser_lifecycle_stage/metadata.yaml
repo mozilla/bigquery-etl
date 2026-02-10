@@ -1,4 +1,14 @@
 friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
-description: Aggregate table for clients daily by default browser lifecycle stage
+description: |-
+  Aggregate table for clients daily by default browser lifecycle stage
 owners:
 - wichan@mozilla.com
+labels:
+  owner1: wichan
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_agg_by_default_browser_lifecycle_stage_v1

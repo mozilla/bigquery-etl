@@ -1,7 +1,14 @@
 friendly_name: Mozilla VPN FxA Login Flows
-description: 'A list of users that attempted to login to FxA, to sign up for or login
-  to Mozilla VPN.
-
-  '
+description: |
+  A list of users that attempted to login to FxA, to sign up for or login to Mozilla VPN.
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.login_flows_v1

@@ -1,6 +1,14 @@
----
 friendly_name: Search Clients Engines Sources Daily
 description: |
   A daily aggregate of desktop searches per (client_id, engine, source).
 owners:
-  - akomar@mozilla.com
+- akomar@mozilla.com
+labels:
+  owner1: akomar
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8

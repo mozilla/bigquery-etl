@@ -3,3 +3,12 @@ description: |-
   Each record represents the daily ad performance of each ad group.
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.apple_ads_syndicate.apple_search_ads__ad_group_report

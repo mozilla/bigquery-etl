@@ -1,0 +1,11 @@
+friendly_name: Baseline Clients First Seen
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_mach.baseline_clients_first_seen

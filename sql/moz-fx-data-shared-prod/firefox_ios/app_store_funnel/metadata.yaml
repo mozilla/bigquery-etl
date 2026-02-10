@@ -1,10 +1,16 @@
 friendly_name: Funnel iOS
-description: 'Derived dataset for supporting (Apple) app store funnel analysis (iOS).
+description: |
+  Derived dataset for supporting (Apple) app store funnel analysis (iOS).
 
-
-  Runs with a 7 day lag due to the data being available only a around few days later
-  to us.
-
-  '
+  Runs with a 7 day lag due to the data being available only a around few days later to us.
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1

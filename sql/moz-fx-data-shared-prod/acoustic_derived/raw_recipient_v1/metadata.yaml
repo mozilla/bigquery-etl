@@ -1,23 +1,24 @@
 friendly_name: Raw Recipient (Acoustic data)
-
-description: >
-  Import Raw Recipient file exported from Acoustic (CSV data).
-  This includes metrics around email performance (clicks, opens, etc).
-
+description: |
+  Import Raw Recipient file exported from Acoustic (CSV data). This includes metrics around email performance (clicks, opens, etc).
+owners:
+- cbeck@mozilla.com
 labels:
   incremental: true
   table_type: client_level
-owners:
-  - cbeck@mozilla.com
-
+  owner1: cbeck
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
-      - event_type
-      - recipient_type
-      - body_type
+    - event_type
+    - recipient_type
+    - body_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -15,3 +15,12 @@ description: |-
   >
 owners:
 - gleonard@mozilla.com
+labels:
+  owner1: gleonard
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_installer.install

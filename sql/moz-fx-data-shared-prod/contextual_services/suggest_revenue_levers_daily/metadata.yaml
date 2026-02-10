@@ -1,12 +1,18 @@
 friendly_name: Suggest Revenue Levers Daily
-description: 'Daily metrics identified as Suggest revenue levers, including DOU,
-
-  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest
-  ad clicks.
-
+description: |-
+  Daily metrics identified as Suggest revenue levers, including DOU,
+  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest ad clicks.
   The table is labeled as "change_controlled", which implies
-
-  that changes require the approval of at least one owner.'
+  that changes require the approval of at least one owner.
 owners:
 - skahmann@mozilla.com
 - mozilla/revenue_forecasting_data_reviewers
+labels:
+  owner1: skahmann
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.contextual_services_derived.suggest_revenue_levers_daily_v1

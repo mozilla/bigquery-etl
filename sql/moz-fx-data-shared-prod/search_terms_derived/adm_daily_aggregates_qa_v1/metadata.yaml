@@ -10,6 +10,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_search_terms_daily
 scheduling:
   dag_name: bqetl_search_terms_daily
   date_partition_offset: -1
@@ -19,4 +20,13 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
+  - workgroup:search-terms/sanitized-writer
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.search_terms_derived.adm_daily_aggregates_v1

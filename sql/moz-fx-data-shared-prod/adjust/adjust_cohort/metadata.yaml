@@ -1,6 +1,14 @@
 friendly_name: Cohort data from external source Adjust
-description: >
-  This table represents data downloaded from Adjust
-  using the https://api.adjust.com/kpis/v1/{app token}/cohorts link.
+description: |
+  This table represents data downloaded from Adjust using the https://api.adjust.com/kpis/v1/{app token}/cohorts link.
 owners:
-  - mhirose@mozilla.com
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1

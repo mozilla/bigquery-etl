@@ -7,12 +7,29 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
+  owner1: mhirose
+  dag: bqetl_google_analytics_derived_ga4
+  owner2: kwindau
 scheduling:
   depends_on_past: true
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
-  parameters: ["session_date:DATE:{{ds}}"]
+  parameters:
+  - session_date:DATE:{{ds}}
 bigquery:
   clustering:
-    fields: ["first_seen_date"]
+    fields:
+    - first_seen_date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v2
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2

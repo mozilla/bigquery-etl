@@ -1,3 +1,11 @@
 friendly_name: Uninstalls By Default
 description: |-
   Number of clients uninstalling by date, broken by those having Fx as default browser vs not
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_by_default_v1

@@ -5,3 +5,13 @@ description: |-
 owners:
 - akommasani@mozilla.com
 - cmorales@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: cmorales
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_aggregates_v8

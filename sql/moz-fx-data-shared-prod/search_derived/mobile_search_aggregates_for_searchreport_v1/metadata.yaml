@@ -30,3 +30,10 @@ bigquery:
     - country
     - product
     - normalized_engine
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily

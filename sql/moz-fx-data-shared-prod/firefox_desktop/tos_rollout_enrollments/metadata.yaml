@@ -3,3 +3,12 @@ description: |-
   A client-level dataset from clients enrolled in the desktop ToS scaled rollout experiments.
 owners:
 - dberry@mozilla.com
+labels:
+  owner1: dberry
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.tos_rollout_enrollments_v1

@@ -1,0 +1,13 @@
+friendly_name: Events V1
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.event_events_v1
+  - moz-fx-data-shared-prod.telemetry_derived.events_v1
+  - moz-fx-data-shared-prod.telemetry_derived.main_events_v1

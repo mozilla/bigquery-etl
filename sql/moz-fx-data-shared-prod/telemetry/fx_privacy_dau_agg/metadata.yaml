@@ -1,3 +1,11 @@
 friendly_name: Firefox Health Indicator Privacy Daily Active Users Aggregates
 description: |-
   Count of events and users for events in category security.ui.protectionspopup
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_privacy_dau_agg_v1

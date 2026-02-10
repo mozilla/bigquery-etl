@@ -47,16 +47,16 @@ labels:
   incremental: true
   schedule: daily
   owner1: gleonard
-#scheduling:
-#  dag_name: bqetl_download_funnel_attribution
-#  task_name: mozilla_org_derived__downloads_with_attribution__v2
-#  date_partition_parameter: download_date
-#  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day
     field: download_date
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.65789850.ga_sessions_*
+  - moz-fx-data-shared-prod.static.country_names_v1
+  - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout
 deprecated: true

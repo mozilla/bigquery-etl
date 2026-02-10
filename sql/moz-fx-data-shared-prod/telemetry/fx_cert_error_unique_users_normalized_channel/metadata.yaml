@@ -1,4 +1,14 @@
 friendly_name: Firefox Cert Error Dashboard - Unique users by normalized channel
-description: Unique users experiencing cert error page per day per channel
+description: |-
+  Unique users experiencing cert error page per day per channel
 owners:
 - akommasani@mozilla.com
+labels:
+  owner1: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_cert_error_unique_users_normalized_channel_v1

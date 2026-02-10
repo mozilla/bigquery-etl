@@ -1,0 +1,106 @@
+friendly_name: Table Partition Expirations
+description: |-
+  Earliest partitions and partition expiration info per stable table per day.
+owners:
+- bewu@mozilla.cam
+labels:
+  incremental: true
+  owner1: bewu
+  dag: bqetl_monitoring
+scheduling:
+  dag_name: bqetl_monitoring
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: run_date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.accounts_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.accounts_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.accounts_frontend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.activity_stream_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.ads_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.bedrock_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.burnham_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.contextual_services_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.coverage_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.debug_ping_view_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.default_browser_agent_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.eng_workflow_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.experimenter_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.experimenter_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_accounts_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_installer_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_launcher_process_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_translations_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.glam_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.glean_dictionary_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.gleanjs_docs_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mdn_fred_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mdn_yari_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.messaging_system_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mobile_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.monitor_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.monitor_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.monitor_frontend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.monitoring_derived.table_partition_expirations_v1
+  - moz-fx-data-shared-prod.moso_mastodon_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.moso_mastodon_web_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mozilla_lockbox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mozilla_mach_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mozillavpn_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mozphab_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_bergamot_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_connect_firefox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_fenix_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_firefox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_focus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_ios_lockbox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_klar_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_mozregression_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_reference_browser_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_social_nightly_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_tv_firefox_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.org_mozilla_vrbrowser_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.pine_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.pocket_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS
+  - moz-fx-data-shared-prod.relay_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.subscription_platform_backend_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.subscription_platform_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.syncstorage_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.thunderbird_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.treeherder_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.viu_politica_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.webpagetest_stable.INFORMATION_SCHEMA.PARTITIONS

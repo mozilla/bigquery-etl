@@ -1,4 +1,14 @@
 friendly_name: Looker Dashboard Load Times
-description: Looker dashboard load times imported from Looker.
+description: |-
+  Looker dashboard load times imported from Looker.
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.looker_dashboard_load_times_v1

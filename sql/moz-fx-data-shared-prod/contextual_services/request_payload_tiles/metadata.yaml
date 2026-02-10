@@ -1,11 +1,20 @@
 friendly_name: Contextual Services Tiles Request Payload
-description: 'Derived dataset for contextual services tiles request payload
-
+description: |-
+  Derived dataset for contextual services tiles request payload
 
   The table is labeled as "change_controlled", which implies
-
-  that changes require the approval of at least one owner.'
+  that changes require the approval of at least one owner.
 owners:
 - skahmann@mozilla.com
 - akommasani@mozilla.com
 - mozilla/request_payload_reviewers
+labels:
+  owner1: skahmann
+  owner2: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.contextual_services_derived.request_payload_tiles_v2

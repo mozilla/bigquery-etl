@@ -1,9 +1,17 @@
 friendly_name: Review checker events data
-description: 'The events table includes telemetry related to the review checker sidebar
-  including user
-
-  interaction with the sidebar, open and closed states, and the status of reviews
-  (stale, unavailable, etc.)'
+description: |-
+  The events table includes telemetry related to the review checker sidebar including user
+  interaction with the sidebar, open and closed states, and the status of reviews (stale, unavailable, etc.)
 owners:
 - akommasani@mozilla.com
 - betling@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: betling
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.review_checker_events_v1

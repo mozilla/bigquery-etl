@@ -12,9 +12,12 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - project
     - zone
     - instance_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

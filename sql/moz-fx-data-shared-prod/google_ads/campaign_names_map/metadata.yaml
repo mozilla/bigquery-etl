@@ -1,4 +1,14 @@
 friendly_name: Campaign Names Map
-description: A mapping from campaign_id to campaign_name for google_ads campaigns.
+description: |-
+  A mapping from campaign_id to campaign_name for google_ads campaigns.
 owners:
 - frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.campaign_names_map_v1

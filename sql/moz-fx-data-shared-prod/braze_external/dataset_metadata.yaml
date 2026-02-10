@@ -11,16 +11,23 @@ description: |-
   Buckets holding current data can be found inside of the moz-fx-data-marketing-prod
   project. Each Braze workspace has a corresponding bucket with braze-workspace_name
   appended.
-
 dataset_base_acl: restricted
 user_facing: false
-labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-mozilla-dev
+  - workgroup:braze/ingestion-firefox
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:braze/data-viewers
-      - workgroup:braze/ingestion-mozilla-dev
-      - workgroup:braze/ingestion-firefox
-  - role: roles/bigquery.dataEditor
-    members:
-      - workgroup:braze/data-developers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev

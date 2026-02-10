@@ -7,5 +7,12 @@ description: |-
   For use with LTV.
 owners:
 - frank@mozilla.com
-labels: {}
-bigquery: null
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.client_adclicks_history_v1

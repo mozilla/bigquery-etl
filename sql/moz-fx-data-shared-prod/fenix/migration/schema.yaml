@@ -1,0 +1,622 @@
+fields:
+- name: normalized_app_id
+  mode: NULLABLE
+  type: STRING
+  description: App ID of the channel data was received from
+- name: normalized_channel
+  mode: NULLABLE
+  type: STRING
+  description: Normalized channel name
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: additional_properties
+  type: STRING
+  description: A JSON string containing any payload properties not present in the
+    schema
+- mode: NULLABLE
+  name: client_info
+  type: RECORD
+  fields:
+  - name: android_sdk_version
+    type: STRING
+  - name: app_build
+    type: STRING
+  - name: app_channel
+    type: STRING
+  - name: app_display_version
+    type: STRING
+  - name: architecture
+    type: STRING
+  - name: client_id
+    type: STRING
+  - name: device_manufacturer
+    type: STRING
+  - name: device_model
+    type: STRING
+  - name: first_run_date
+    type: STRING
+  - name: locale
+    type: STRING
+  - name: os
+    type: STRING
+  - name: os_version
+    type: STRING
+  - name: telemetry_sdk_build
+    type: STRING
+  - name: build_date
+    type: STRING
+  - name: windows_build_number
+    type: INTEGER
+  - name: session_count
+    type: INTEGER
+  - name: session_id
+    type: STRING
+  - name: attribution
+    type: RECORD
+    fields:
+    - name: campaign
+      type: STRING
+    - name: content
+      type: STRING
+    - name: medium
+      type: STRING
+    - name: source
+      type: STRING
+    - name: term
+      type: STRING
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+  - name: distribution
+    type: RECORD
+    fields:
+    - name: name
+      type: STRING
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+- mode: NULLABLE
+  name: document_id
+  type: STRING
+  description: The document ID specified in the URI when the client sent this message
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: STRING
+  - name: name
+    type: STRING
+  - name: timestamp
+    type: INTEGER
+- mode: NULLABLE
+  name: metadata
+  type: RECORD
+  fields:
+  - name: geo
+    type: RECORD
+    fields:
+    - name: city
+      type: STRING
+    - name: country
+      type: STRING
+    - name: db_version
+      type: STRING
+    - name: subdivision1
+      type: STRING
+    - name: subdivision2
+      type: STRING
+  - name: header
+    type: RECORD
+    fields:
+    - name: date
+      type: STRING
+    - name: dnt
+      type: STRING
+    - name: x_debug_id
+      type: STRING
+    - name: x_pingsender_version
+      type: STRING
+    - name: x_source_tags
+      type: STRING
+    - name: x_telemetry_agent
+      type: STRING
+    - name: x_foxsec_ip_reputation
+      type: STRING
+    - name: x_lb_tags
+      type: STRING
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+  - name: user_agent
+    type: RECORD
+    fields:
+    - name: browser
+      type: STRING
+    - name: os
+      type: STRING
+    - name: version
+      type: STRING
+  - name: isp
+    type: RECORD
+    fields:
+    - name: db_version
+      type: STRING
+    - name: name
+      type: STRING
+    - name: organization
+      type: STRING
+- mode: NULLABLE
+  name: metrics
+  type: RECORD
+  fields:
+  - name: boolean
+    type: RECORD
+    fields:
+    - name: migration_addons_any_failures
+      type: BOOLEAN
+    - name: migration_bookmarks_any_failures
+      type: BOOLEAN
+    - name: migration_fxa_any_failures
+      type: BOOLEAN
+    - name: migration_fxa_has_custom_idp_server
+      type: BOOLEAN
+    - name: migration_fxa_has_custom_token_server
+      type: BOOLEAN
+    - name: migration_gecko_any_failures
+      type: BOOLEAN
+    - name: migration_history_any_failures
+      type: BOOLEAN
+    - name: migration_logins_any_failures
+      type: BOOLEAN
+    - name: migration_open_tabs_any_failures
+      type: BOOLEAN
+    - name: migration_settings_any_failures
+      type: BOOLEAN
+    - name: migration_settings_telemetry_enabled
+      type: BOOLEAN
+    - name: migration_telemetry_identifiers_any_failures
+      type: BOOLEAN
+    - name: migration_search_any_failures
+      type: BOOLEAN
+    - name: migration_pinned_sites_any_failures
+      type: BOOLEAN
+  - name: counter
+    type: RECORD
+    fields:
+    - name: migration_addons_failed_addons
+      type: INTEGER
+    - name: migration_addons_failure_reason
+      type: INTEGER
+    - name: migration_addons_migrated_addons
+      type: INTEGER
+    - name: migration_addons_success_reason
+      type: INTEGER
+    - name: migration_bookmarks_detected
+      type: INTEGER
+    - name: migration_fxa_failure_reason
+      type: INTEGER
+    - name: migration_fxa_success_reason
+      type: INTEGER
+    - name: migration_history_detected
+      type: INTEGER
+    - name: migration_logins_detected
+      type: INTEGER
+    - name: migration_logins_failure_reason
+      type: INTEGER
+    - name: migration_logins_success_reason
+      type: INTEGER
+    - name: migration_logins_unsupported_db_version
+      type: INTEGER
+    - name: migration_open_tabs_detected
+      type: INTEGER
+    - name: migration_open_tabs_migrated
+      type: INTEGER
+    - name: migration_settings_failure_reason
+      type: INTEGER
+    - name: migration_settings_success_reason
+      type: INTEGER
+    - name: migration_bookmarks_failure_reason
+      type: INTEGER
+    - name: migration_bookmarks_success_reason
+      type: INTEGER
+    - name: migration_gecko_failure_reason
+      type: INTEGER
+    - name: migration_gecko_success_reason
+      type: INTEGER
+    - name: migration_history_failure_reason
+      type: INTEGER
+    - name: migration_history_success_reason
+      type: INTEGER
+    - name: migration_open_tabs_failure_reason
+      type: INTEGER
+    - name: migration_open_tabs_success_reason
+      type: INTEGER
+    - name: migration_telemetry_identifiers_failure_reason
+      type: INTEGER
+    - name: migration_telemetry_identifiers_success_reason
+      type: INTEGER
+    - name: migration_search_failure_reason
+      type: INTEGER
+    - name: migration_search_success_reason
+      type: INTEGER
+    - name: migration_pinned_sites_detected_pinned_sites
+      type: INTEGER
+    - name: migration_pinned_sites_failure_reason
+      type: INTEGER
+    - name: migration_pinned_sites_migrated_pinned_sites
+      type: INTEGER
+    - name: migration_pinned_sites_success_reason
+      type: INTEGER
+  - name: datetime
+    type: RECORD
+    fields:
+    - name: migration_telemetry_identifiers_fennec_profile_creation_date
+      type: STRING
+    - name: raw_migration_telemetry_identifiers_fennec_profile_creation_date
+      type: STRING
+      mode: NULLABLE
+  - name: labeled_counter
+    type: RECORD
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counts the number of times a metric was set with an invalid label.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counts the number of times a metric was set a value that overflowed.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counts the number of times a timing metric was used incorrectly.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counts the number of times a metric was set to an invalid value.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: migration_bookmarks_migrated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counters describing how bookmark migration went; should add-up
+        to ''migration.bookmarks.detected''.
+
+        '
+    - name: migration_history_migrated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'Counters describing how history migration went; should add-up
+        to ''migration.history.detected''.
+
+        '
+    - name: migration_logins_failure_counts
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: INTEGER
+      description: 'How many logins failed to be migrated, and in which ways?
+
+        '
+  - name: labeled_string
+    type: RECORD
+    fields:
+    - name: migration_migration_versions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: STRING
+      description: 'Versions of the migrations which were executed.
+
+        '
+  - name: string
+    type: RECORD
+    fields:
+    - name: migration_fxa_bad_auth_state
+      type: STRING
+    - name: migration_fxa_failure_reason_rust
+      type: STRING
+    - name: migration_fxa_unsupported_account_version
+      type: STRING
+    - name: migration_fxa_unsupported_pickle_version
+      type: STRING
+    - name: migration_fxa_unsupported_state_version
+      type: STRING
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+  - name: timespan
+    type: RECORD
+    fields:
+    - name: migration_bookmarks_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_history_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_addons_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_bookmarks_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_fxa_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_gecko_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_history_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_logins_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_open_tabs_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_pinned_sites_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_search_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_settings_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+    - name: migration_telemetry_identifiers_total_duration
+      type: RECORD
+      fields:
+      - name: time_unit
+        type: STRING
+      - name: value
+        type: INTEGER
+  - name: uuid
+    type: RECORD
+    fields:
+    - name: migration_telemetry_identifiers_fennec_client_id
+      type: STRING
+  - name: jwe
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: STRING
+  - name: labeled_rate
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: RECORD
+        fields:
+        - name: denominator
+          type: INTEGER
+        - name: numerator
+          type: INTEGER
+  - name: url
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: STRING
+  - name: text
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: STRING
+  - name: string_list
+    type: RECORD
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: Set to "Other" if this message contained an unrecognized app name
+- mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+  description: An ISO 3166-1 alpha-2 country code
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Set to "Other" if this message contained an unrecognized OS name
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- mode: NULLABLE
+  name: ping_info
+  type: RECORD
+  fields:
+  - name: end_time
+    type: STRING
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: RECORD
+      fields:
+      - name: branch
+        type: STRING
+      - name: extra
+        type: RECORD
+        fields:
+        - name: type
+          type: STRING
+        - name: enrollment_id
+          type: STRING
+  - name: ping_type
+    type: STRING
+  - name: reason
+    type: STRING
+  - name: seq
+    type: INTEGER
+  - name: start_time
+    type: STRING
+  - name: parsed_start_time
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: parsed_end_time
+    type: TIMESTAMP
+    mode: NULLABLE
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: Time when the ingestion edge server accepted this message
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

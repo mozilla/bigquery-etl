@@ -1,5 +1,9 @@
----
 friendly_name: Remove label from metric path
-description: >
-  Removes the label name from the column path of a Glean labeled metric.
-  e.g. metric.labeled_counter.name.label -> metric.labeled_counter.name
+description: |
+  Removes the label name from the column path of a Glean labeled metric. e.g. metric.labeled_counter.name.label -> metric.labeled_counter.name
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

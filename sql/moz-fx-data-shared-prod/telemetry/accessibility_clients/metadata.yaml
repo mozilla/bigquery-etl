@@ -1,6 +1,14 @@
 friendly_name: Platform Accessibility Usage
-description: >
-  A daily number of platform accessibility clients (assistive technology),
-  partitioned by day.
+description: |
+  A daily number of platform accessibility clients (assistive technology), partitioned by day.
 owners:
-  - yzenevich@mozilla.com
+- yzenevich@mozilla.com
+labels:
+  owner1: yzenevich
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.accessibility_clients_v1

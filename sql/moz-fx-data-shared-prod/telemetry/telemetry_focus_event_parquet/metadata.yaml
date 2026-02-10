@@ -1,0 +1,11 @@
+friendly_name: Telemetry Focus Event Parquet
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.telemetry_focus_event_parquet_v1

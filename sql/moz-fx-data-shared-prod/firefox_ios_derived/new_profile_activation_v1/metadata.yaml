@@ -8,15 +8,25 @@ owners:
 labels:
   incremental: true
   table_type: client_level
+  dag: bqetl_mobile_activation
+  owner1: kik
+scheduling:
+  dag_name: bqetl_mobile_activation
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
-    fields: [sample_id, country]
-scheduling:
-  dag_name: bqetl_mobile_activation
-  date_partition_parameter: submission_date
+    fields:
+    - sample_id
+    - country
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 deprecated: true

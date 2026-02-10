@@ -13,8 +13,9 @@ owners:
 labels:
   incremental: true
   schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
 scheduling:
-  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: date
 bigquery:
@@ -23,9 +24,17 @@ bigquery:
     field: timestamp
     require_partition_filter: false
     expiration_days: null
-  clustering: null
-require_column_descriptions: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.stripe_external.customers_changelog_v1
+  - moz-fx-data-shared-prod.stripe_external.pre_fivetran_customers_v2
+  - moz-fx-data-shared-prod.stripe_external.subscriptions_changelog_v1
 monitoring:
   enabled: true
   freshness: null
   volume: null
+require_column_descriptions: true

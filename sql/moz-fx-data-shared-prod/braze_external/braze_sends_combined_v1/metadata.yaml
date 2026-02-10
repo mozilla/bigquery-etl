@@ -20,6 +20,18 @@ bigquery:
     field: click_time
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_external.braze_clicks_v1
+  - moz-fx-data-shared-prod.braze_external.braze_opens_v1
+  - moz-fx-data-shared-prod.braze_external.braze_sends_v1
 require_column_descriptions: false

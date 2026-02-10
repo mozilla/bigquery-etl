@@ -1,0 +1,11 @@
+friendly_name: Experiment Enrollment Overall V2
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_overall_v2

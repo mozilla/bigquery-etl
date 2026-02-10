@@ -1,25 +1,35 @@
 friendly_name: Funnel Product to Subscribed
-description: Funnel from Mozilla VPN Product page to completing payment
+description: |-
+  Funnel from Mozilla VPN Product page to completing payment
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
-  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
-  # to wait for the concurrent bqetl_subplat_hourly DAG tasks to complete so the
-  # dependent tables are in a consistent state.
   depends_on:
-    - dag_name: bqetl_subplat_hourly
-      task_id: stripe_external__plan__v1
-      execution_delta: -23h
-    - dag_name: bqetl_subplat_hourly
-      task_id: stripe_external__product__v1
-      execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__plan__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__product__v1
+    execution_delta: -23h
 bigquery:
   time_partitioning:
     type: day
     field: partition_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
+  - moz-fx-data-shared-prod.stripe_external.plan_v1
+  - moz-fx-data-shared-prod.stripe_external.product_v1

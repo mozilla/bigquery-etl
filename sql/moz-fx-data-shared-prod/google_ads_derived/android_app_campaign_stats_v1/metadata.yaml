@@ -11,9 +11,10 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_fivetran_google_ads
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
@@ -26,6 +27,18 @@ bigquery:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access: []
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.firefox_android_clients
+  - moz-fx-data-shared-prod.fenix.retention
+  - moz-fx-data-shared-prod.google_ads_derived.ad_groups_v1
+  - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
+  - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
+  - moz-fx-data-shared-prod.ltv.fenix_client_ltv
+deprecated: true
 monitoring:
   enabled: false
-deprecated: true

@@ -1,0 +1,12 @@
+friendly_name: Fenix And Firefox Use Counters
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - mozilla-public-data.fenix_derived.fenix_use_counters_v2
+  - mozilla-public-data.firefox_desktop_derived.firefox_desktop_use_counters_v2

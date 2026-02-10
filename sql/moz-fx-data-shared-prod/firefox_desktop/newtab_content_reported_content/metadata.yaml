@@ -6,3 +6,12 @@ description: |-
   day will first be available at 2:00am.
 owners:
 - lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_reported_content_v1

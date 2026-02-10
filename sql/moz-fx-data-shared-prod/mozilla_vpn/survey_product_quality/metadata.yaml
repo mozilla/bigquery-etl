@@ -1,9 +1,15 @@
 friendly_name: Mozilla VPN Product Quality Survey (2019+)
-description: 'An import of survey data from Alchemer (SurveyGizmo) for the Mozilla
-  VPN Product Quality Survey (2019+).
-
+description: |
+  An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN Product Quality Survey (2019+).
   Survey extraction turned off in https://mozilla-hub.atlassian.net/browse/DENG-211
-
-  '
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.survey_product_quality_v1

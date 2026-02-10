@@ -1,3 +1,7 @@
 friendly_name: Experiment Enrollment Aggregates Base
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access: []
 deprecated: true
 deletion_date: 2024-05-31

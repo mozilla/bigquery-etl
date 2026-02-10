@@ -1,15 +1,15 @@
----
 friendly_name: AMO Stats DAU dev/stage
-description: >-
+description: |-
   Reduced stats table for dev and stage versions of the AMO service.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: amo
   incremental: true
   schedule: daily
   table_type: aggregate
-  shredder_mitigation: false
+  dag: bqetl_amo_stats
+  owner1: kik
 scheduling:
   dag_name: bqetl_amo_stats
 bigquery:
@@ -17,6 +17,15 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-      - addon_id
+    - addon_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/nonprod
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2

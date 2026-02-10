@@ -1,0 +1,35 @@
+friendly_name: Event Monitoring Live
+description: |-
+  Materialized view of experimentation related events coming from firefox_desktop.
+  This view is refreshed using manual refreshes scheduled in Airflow to run with on-demand billing.
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com
+labels:
+  materialized_view: true
+  dag: bqetl_materialized_view_refresh
+  owner1: ascholtz
+  owner2: akomar
+scheduling:
+  dag_name: bqetl_materialized_view_refresh
+  query_file_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/event_monitoring_live_v1/script.sql
+  arguments:
+  - --use_legacy_sql=false
+  - --billing-project=moz-fx-data-backfill-3
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  materialized_view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.data_leak_blocker_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.events_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.nimbus_targeting_context_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.post_profile_restore_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.profile_restore_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.profiles_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.sync_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.urlbar_keyword_exposure_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.urlbar_potential_exposure_v1

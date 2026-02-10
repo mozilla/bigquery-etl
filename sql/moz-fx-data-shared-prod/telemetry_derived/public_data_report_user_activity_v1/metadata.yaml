@@ -1,5 +1,4 @@
-friendly_name: |-
-  Firefox Public Data Report User Activity
+friendly_name: Firefox Public Data Report User Activity
 description: |-
   Data used to populate https://data.firefox.com/dashboard/user-activity.
   A row for every country in static.country_names_v1 is created, including duplicates if
@@ -9,3 +8,15 @@ description: |-
   [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl/tree/main/public_data_report/user_activity).
 owners:
 - bewu@mozilla.com
+labels:
+  owner1: bewu
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.static.country_names_v1
+  - moz-fx-data-shared-prod.telemetry.active_users_aggregates
+  - moz-fx-data-shared-prod.telemetry.buildhub2
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen

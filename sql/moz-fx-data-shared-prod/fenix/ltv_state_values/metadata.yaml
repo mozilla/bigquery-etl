@@ -4,3 +4,12 @@ description: |-
   Each country has their own ad click LTV for each state.
 owners:
 - frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2

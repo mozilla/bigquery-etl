@@ -1,0 +1,9 @@
+friendly_name: thunderbird-desktop
+description: |-
+  User-facing views related to document namespace thunderbird-desktop; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/thunderbird-desktop
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

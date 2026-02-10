@@ -1,4 +1,15 @@
 friendly_name: FxA Users Services Daily
-description: Usage aggregations per FxA user per FxA service per day
+description: |-
+  Usage aggregations per FxA user per FxA service per day
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v1
+  - moz-fx-data-shared-prod.static.country_names_v1

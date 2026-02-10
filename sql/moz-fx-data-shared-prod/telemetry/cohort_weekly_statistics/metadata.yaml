@@ -1,5 +1,14 @@
 friendly_name: Cohort Weekly Statistics
-description: Contains weekly retention by multiple different attributes as of first
-  seen date
+description: |-
+  Contains weekly retention by multiple different attributes as of first seen date
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_statistics_v1

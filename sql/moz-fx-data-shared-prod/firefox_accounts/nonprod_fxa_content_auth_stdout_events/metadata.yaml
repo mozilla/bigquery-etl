@@ -1,0 +1,11 @@
+friendly_name: Nonprod Fxa Content Auth Stdout Events
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts.nonprod_fxa_all_events

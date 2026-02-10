@@ -18,6 +18,15 @@ description: |-
 
   For queries that should cover data going back as far as 2024-04-23,
   consider using `mdn.legacy_page_v1` instead.
-
 owners:
-  - caugner@mozilla.com
+- caugner@mozilla.com
+labels:
+  owner1: caugner
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mdn_fred.events_stream
+  - moz-fx-data-shared-prod.mdn_yari.events_stream

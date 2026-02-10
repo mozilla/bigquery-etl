@@ -1,4 +1,14 @@
 friendly_name: Users Services Daily
-description: Activity aggregates per Mozilla Account per service per day
+description: |-
+  Activity aggregates per Mozilla Account per service per day
 owners:
 - ksiegler@mozilla.com
+labels:
+  owner1: ksiegler
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.accounts_backend_derived.users_services_daily_v1

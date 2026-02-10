@@ -1,0 +1,16 @@
+friendly_name: Itemized Payout Reconciliation
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.stripe.itemized_tax_transactions
+  - moz-fx-data-shared-prod.stripe_external.card_v1
+  - moz-fx-data-shared-prod.stripe_external.charge_v1
+  - moz-fx-data-shared-prod.stripe_external.customer_v1
+  - moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5
+  - moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions

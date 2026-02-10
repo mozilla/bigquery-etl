@@ -3,3 +3,12 @@ description: |-
   This view aggregates the number of new profiles on a given day.
 owners:
 - lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.new_profiles_aggregates_v1

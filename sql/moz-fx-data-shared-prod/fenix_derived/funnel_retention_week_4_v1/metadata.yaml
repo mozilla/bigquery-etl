@@ -11,13 +11,16 @@ labels:
   incremental: true
   shredder_mitigation: true
   table_type: aggregate
+  owner1: kik
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - first_reported_country
     - adjust_network
+workgroup_access: []
 deprecated: true

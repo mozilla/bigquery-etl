@@ -10,8 +10,16 @@ owners:
 - cbeck@mozilla.com
 - lmcfall@mozilla.com
 labels:
-  incremental: false
   owner: cbeck
+  owner1: cbeck
+  owner2: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
 external_data:
   format: google_sheets
   source_uris:

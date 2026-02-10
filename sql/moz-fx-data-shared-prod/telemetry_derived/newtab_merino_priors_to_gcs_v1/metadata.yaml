@@ -7,8 +7,9 @@ owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
 labels:
-  incremental: false
-  owner1: cbeck
+  owner1: mmiermans
+  dag: bqetl_merino_newtab_priors_to_gcs
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   arguments:
@@ -20,5 +21,10 @@ scheduling:
   - --destination-prefix=newtab-merino-exports/priors
   - --deletion-days-old=90
   referenced_tables:
-  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_priors_v1']
-bigquery: null
+  - - moz-fx-data-shared-prod
+    - telemetry_derived
+    - newtab_merino_priors_v1
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

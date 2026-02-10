@@ -8,13 +8,14 @@ labels:
   schedule: daily
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
-# scheduling:
-#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.66602784.ga_sessions_*
 deprecated: true

@@ -1,0 +1,49 @@
+friendly_name: Mobile Search Clients Daily
+description: |
+  A daily aggregate of baseline pings that have
+  searches from each (client_id, engine, source) combination,
+  partitioned by day.
+  Aug 2024 onwards this table contains only baseline pings related data.
+  The historical data i.e. prior to Aug 2024 is all from metrics (joined with baseline)
+  has been moved to `mobile_search_client_daily_historical_pre202408`.
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com
+labels:
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_mobile_search
+  owner1: cmorales
+  owner2: akommasani
+scheduling:
+  dag_name: bqetl_mobile_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.baseline
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline
+  - moz-fx-data-shared-prod.org_mozilla_firefox.baseline
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_focus.baseline
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline
+  - moz-fx-data-shared-prod.org_mozilla_klar.baseline
+  - moz-fx-data-shared-prod.telemetry.core

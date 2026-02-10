@@ -5,3 +5,12 @@ description: |-
   2024-10-08.
 owners:
 - rzhao@mozilla.com
+labels:
+  owner1: rzhao
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.feature_usage_events_v1

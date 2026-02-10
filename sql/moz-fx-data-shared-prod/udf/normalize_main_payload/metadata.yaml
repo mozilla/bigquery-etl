@@ -1,5 +1,9 @@
----
-description: Accepts a pipeline metadata struct as input and returns
-  a modified struct that includes a few parsed or normalized variants
-  of the input metadata fields.
 friendly_name: Normalize Main Payload
+description: |-
+  Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

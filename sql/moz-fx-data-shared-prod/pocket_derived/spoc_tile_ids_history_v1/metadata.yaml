@@ -2,14 +2,16 @@ friendly_name: Sponsored Content (Spoc) Tile IDs History
 description: |-
   Historical log of daily exports of Pocket tile metadata for sponsored content.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
   table_type: tile_id
-  shredder_mitigation: false
+  owner1: kik
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access: []
 deprecated: true

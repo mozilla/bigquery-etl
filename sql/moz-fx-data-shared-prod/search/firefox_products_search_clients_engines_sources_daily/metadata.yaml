@@ -1,0 +1,12 @@
+friendly_name: Firefox Products Search Clients Engines Sources Daily
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily

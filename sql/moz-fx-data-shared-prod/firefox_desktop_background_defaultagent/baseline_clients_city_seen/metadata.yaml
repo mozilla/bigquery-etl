@@ -1,0 +1,11 @@
+friendly_name: Baseline Clients City Seen
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_derived.baseline_clients_city_seen_v1

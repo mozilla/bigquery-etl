@@ -1,20 +1,22 @@
 friendly_name: Rolling Cohorts
-description: 'Rolling Cohorts consists of one row per client & row_source per date
-  (each date
-
+description: |-
+  Rolling Cohorts consists of one row per client & row_source per date (each date
   representing a new cohort) i.e. all the clients that had their first
-
   ping sent that day. This can be left joined with various activity
-
   tables to calculate activity metrics for particular cohorts.
 
-
   Note that client-attributes such as os versions, is default browser,
-
   etc. are based on the values at the time the cohort is created.
-
   This might not be the same as when activity happens. For example
-
-  if a client changes whether Firefox is the default browser.'
+  if a client changes whether Firefox is the default browser.
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2

@@ -1,5 +1,14 @@
 friendly_name: Metadata Standardization
-description: Summary of metrics related to the metadata of tables at dataset-level
-  and for project shared-prod.
+description: |-
+  Summary of metrics related to the metadata of tables at dataset-level and for project shared-prod.
 owners:
 - lvargas@mozilla.com
+labels:
+  owner1: lvargas
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.metadata_standardization_v1

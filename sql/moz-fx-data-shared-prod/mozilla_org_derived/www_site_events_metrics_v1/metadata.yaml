@@ -9,9 +9,6 @@ labels:
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
   table_type: aggregate
-  shredder_mitigation: false
-# scheduling:
-#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -24,4 +21,8 @@ bigquery:
     - event_category
     - event_action
     - event_label
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1
 deprecated: true

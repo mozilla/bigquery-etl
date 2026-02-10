@@ -5,11 +5,18 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.65912487.ga_sessions_*

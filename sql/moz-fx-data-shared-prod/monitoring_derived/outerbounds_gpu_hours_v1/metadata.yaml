@@ -1,13 +1,21 @@
 friendly_name: Outerbounds GPU Hours Spreadsheet
-description: >
+description: |
   The hours we use on Outerbounds GPU
 owners:
-  - ctroy@mozilla.com
-  - aplacitelli@mozilla.com
-  - aaggarwal@mozilla.com
+- ctroy@mozilla.com
+- aplacitelli@mozilla.com
+- aaggarwal@mozilla.com
+labels:
+  owner1: ctroy
+  owner2: aplacitelli
+  owner3: aaggarwal
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
 external_data:
   format: google_sheets
   source_uris:
-    - https://docs.google.com/spreadsheets/d/1j-tBTKOMlDxjbdEtn9EvH8KN99I5_jE5F0TSXvFuND4 # URL to the spreadsheet
+  - https://docs.google.com/spreadsheets/d/1j-tBTKOMlDxjbdEtn9EvH8KN99I5_jE5F0TSXvFuND4
   options:
-    skip_leading_rows: 1 # number of rows that should be skipped, e.g if there are header rows
+    skip_leading_rows: 1

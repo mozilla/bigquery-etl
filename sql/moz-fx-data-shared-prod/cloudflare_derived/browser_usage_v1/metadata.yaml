@@ -1,16 +1,20 @@
 friendly_name: Cloudflare Browser Usage
-description: Contains data from Cloudflare on browser market share by day, device type, & location
+description: |-
+  Contains data from Cloudflare on browser market share by day, device type, & location
 owners:
 - kwindau@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   table_type: aggregate
+  dag: bqetl_cloudflare_browser_market_share
 scheduling:
   dag_name: bqetl_cloudflare_browser_market_share
   date_partition_parameter: dte
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   secrets:
   - deploy_target: CLOUDFLARE_AUTH_TOKEN
     key: bqetl_cloudflare_browser_market_share__cloudflare_auth_token
@@ -24,3 +28,7 @@ bigquery:
     fields:
     - location
     - device_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

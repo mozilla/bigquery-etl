@@ -1,0 +1,27 @@
+friendly_name: Ios Onboarding Multiple Choice
+description: |-
+  Please provide a description for the query
+owners:
+- rzhao@mozilla.org
+labels:
+  incremental: true
+  table_type: aggregate
+  dag: bqetl_generated_funnels
+  owner1: rzhao
+scheduling:
+  dag_name: bqetl_generated_funnels
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.events_unnested
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
+  - moz-fx-data-shared-prod.firefox_ios.retention_clients

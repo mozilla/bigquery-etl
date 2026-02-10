@@ -1,4 +1,14 @@
 friendly_name: Event Aggregates
-description: Aggregate table based off of telemetry.events
+description: |-
+  Aggregate table based off of telemetry.events
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.event_aggregates_v1

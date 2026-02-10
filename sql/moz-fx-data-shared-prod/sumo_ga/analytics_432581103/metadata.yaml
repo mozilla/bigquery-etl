@@ -2,6 +2,15 @@ friendly_name: SUMO Non-Prod Google Analytics Data (432581103)
 description: |-
   SUMO Non-Prod Google Analytics Data (Analytics 432581103)
 owners:
-  - kwindau@mozilla.com
+- kwindau@mozilla.com
 labels:
   authorized: true
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-marketing-prod.analytics_432581103.events_*

@@ -1,4 +1,14 @@
 friendly_name: Daily Connector Costs
-description: Daily Costs per Fivetran Connector
+description: |-
+  Daily Costs per Fivetran Connector
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fivetran_costs_derived.daily_connector_costs_v1

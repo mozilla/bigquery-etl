@@ -5,17 +5,26 @@ owners:
 - kwindau@mozilla.com
 labels:
   level: bronze
-  incremental: false
   owner1: kwindau
+  dag: bqetl_cohort_retention
 scheduling:
   dag_name: bqetl_cohort_retention
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
-  range_partitioning: null
   clustering:
     fields:
     - normalized_app_name
     - normalized_channel
     - app_version
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_v1
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1
+  - mozdata.external.calendar
 require_column_descriptions: true

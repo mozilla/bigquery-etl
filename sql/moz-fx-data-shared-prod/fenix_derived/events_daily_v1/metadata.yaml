@@ -1,0 +1,35 @@
+friendly_name: Firefox for Android Events Daily
+description: |
+  Packed event representation with one-row per-client
+owners:
+- akomar@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true
+  table_type: client_level
+  dag: bqetl_fenix_event_rollup
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_fenix_event_rollup
+  arguments:
+  - --billing-project=moz-fx-data-backfill-4
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.event_types
+  - moz-fx-data-shared-prod.org_mozilla_fenix.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events

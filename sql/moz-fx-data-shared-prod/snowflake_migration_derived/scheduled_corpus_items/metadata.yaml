@@ -1,5 +1,21 @@
 friendly_name: Scheduled Corpus Items
-description: View of scheduled corpus items in the corpus_item_schedules_updated_v1 table
+description: |-
+  View of scheduled corpus items in the corpus_item_schedules_updated_v1 table
 owners:
-  - jpetto@mozilla.com
-  - rrando@mozilla.com
+- jpetto@mozilla.com
+- rrando@mozilla.com
+labels:
+  owner1: jpetto
+  owner2: rrando
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:pocket/apps
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1

@@ -1,6 +1,15 @@
 friendly_name: ECH Adoption Rate
-description: 'A distinct client count of a combination of metrics to measure
-
-  the adoption of ECH (Encrypted Client Hello) in Firefox.'
+description: |-
+  A distinct client count of a combination of metrics to measure
+  the adoption of ECH (Encrypted Client Hello) in Firefox.
 owners:
 - efilho@mozilla.com
+labels:
+  owner1: efilho
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.ech_adoption_rate_v1

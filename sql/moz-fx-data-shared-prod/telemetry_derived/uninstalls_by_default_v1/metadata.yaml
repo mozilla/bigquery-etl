@@ -16,8 +16,14 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - is_default_browser
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.uninstall
 require_column_descriptions: true

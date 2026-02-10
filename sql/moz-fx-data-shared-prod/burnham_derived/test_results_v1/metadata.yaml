@@ -1,14 +1,20 @@
-friendly_name: |-
-  Burnham Test Results
+friendly_name: Burnham Test Results
 description: |-
   Result reports from running burnham; see https://github.com/mozilla/burnham/issues/39
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - test_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

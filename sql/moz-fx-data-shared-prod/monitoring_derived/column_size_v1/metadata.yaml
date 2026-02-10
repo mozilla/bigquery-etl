@@ -1,36 +1,47 @@
-description: Determines column sizes of specific tables and partitions
-  via dry runs.
 friendly_name: Column Size
+description: |-
+  Determines column sizes of specific tables and partitions via dry runs.
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_monitoring
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: [
-    "--date", "{{ ds }}",
-    "--billing_projects",
-    "moz-fx-data-backfill-10",
-    "moz-fx-data-backfill-11",
-    "moz-fx-data-backfill-12",
-    "moz-fx-data-backfill-13",
-    "moz-fx-data-backfill-14",
-    "moz-fx-data-backfill-15",
-    "moz-fx-data-backfill-16",
-    "moz-fx-data-backfill-17",
-    "moz-fx-data-backfill-18",
-    "moz-fx-data-backfill-19",
-    "--parallelism",
-    "25",
-    "--excluded_datasets",
-    "org_mozilla_fennec_aurora_stable",
-    "org_mozilla_fenix_nightly_stable"
-  ]
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --billing_projects
+  - moz-fx-data-backfill-10
+  - moz-fx-data-backfill-11
+  - moz-fx-data-backfill-12
+  - moz-fx-data-backfill-13
+  - moz-fx-data-backfill-14
+  - moz-fx-data-backfill-15
+  - moz-fx-data-backfill-16
+  - moz-fx-data-backfill-17
+  - moz-fx-data-backfill-18
+  - moz-fx-data-backfill-19
+  - --parallelism
+  - '25'
+  - --excluded_datasets
+  - org_mozilla_fennec_aurora_stable
+  - org_mozilla_fenix_nightly_stable
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v5']
-    - ['moz-fx-data-shared-prod', 'firefox_desktop_stable', 'metrics_v1']
+  - - moz-fx-data-shared-prod
+    - telemetry_stable
+    - main_v5
+  - - moz-fx-data-shared-prod
+    - firefox_desktop_stable
+    - metrics_v1
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

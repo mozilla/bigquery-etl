@@ -1,0 +1,11 @@
+friendly_name: Search Clients Last Seen V1
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v1

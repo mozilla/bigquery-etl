@@ -1,0 +1,638 @@
+fields:
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+  description: A JSON string containing any payload properties not present in the
+    schema
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+      description: An ISO 3166-1 alpha-2 country code
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: The specific geo database version used for this lookup
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+      description: First major country subdivision, typically a state, province, or
+        county
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+      description: Second major country subdivision; not applicable for most countries
+    description: Results of a geographic lookup based on the client's IP address
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+      description: Date HTTP header
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+      description: DNT (Do Not Track) HTTP header
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+      description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+      description: X-PingSender-Version HTTP header
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-Source-Tags HTTP header
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+      description: X-Telemetry-Agent HTTP header
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+    description: Headers included in the client's HTTP request
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: The specific geo ISP database version used for this lookup
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The name of the ISP associated with the client's IP address
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+      description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+    description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_context_parse_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How often we failed to parse event_context as JSON.
+
+        '
+    - name: microsurvey_glean_ping_for_ping_failures
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How often something went awry within
+
+        `AboutWelcome.submitGleanPingForPing`, preventing ping submission.
+
+        '
+    - name: microsurvey_unknown_key_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The sum of all unknown keys counted.
+
+        Useful for testing.
+
+        Can be removed after bug 1600008 is resolved.
+
+        '
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set with an invalid label.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set a value that overflowed.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a timing metric was used incorrectly.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set to an invalid value.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: microsurvey_attribution_unknown_keys
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Attribution keys supplied to the messaging system for which
+
+        we did not have a corresponding metric, and the count of how
+
+        often that happened.
+
+        Either add this key to a list of known attribution keys in
+
+        `AboutWelcomeTelemetry` to suppress or define an appropriate metric in
+
+        `browser/components/newtab/metrics.yaml` to collect.
+
+        '
+    - name: microsurvey_invalid_nested_data
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'We received a ping with non-scalar data on a field of this name.
+
+        If this is existing pre-PingCentre-replacement data, you may need to
+
+        augment the logic in
+
+        `AboutWelcome.submitGleanPingForPing` like the other `handledKeys`.
+
+        If this is for new, post-PingCentre-replacement data, you should
+
+        probably prefer a flat structure.
+
+        If you''re unsure, please ask in
+
+        [the #glean channel](https://chat.mozilla.org/#/room/#glean:mozilla.org).
+
+        '
+    - name: microsurvey_unknown_keys
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Ping keys supplied to the messaging system for which
+
+        we did not have a corresponding metric mapped to how often they attempted
+
+        to be recorded.
+
+        You may have forgotten to define an appropriate metric in
+
+        `browser/components/newtab/metrics.yaml`.
+
+        '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_screen_index
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A number identifier of the screen index in a sequence of screens
+
+        (e.g. 0 for first message).
+
+        '
+    - name: microsurvey_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The optional Windows build number, reported by Windows
+
+        (e.g. 22000) and not set for other platforms.
+
+        '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
+    - name: microsurvey_addon_version
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to hold the system addon''s version, now is almost certainly
+        an echo of the app''s build id.
+
+        '
+    - name: microsurvey_app_channel
+      type: STRING
+      mode: NULLABLE
+      description: 'The channel the application is being distributed on.
+
+        '
+    - name: microsurvey_app_display_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The user visible version string (e.g. "1.0.3").
+
+        If the value was not provided through configuration,
+
+        this metric gets set to `Unknown`.
+
+        '
+    - name: microsurvey_attribution_campaign
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s campaign, possibly derived from the utm parameter
+        of the
+
+        same name.
+
+        '
+    - name: microsurvey_attribution_content
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s content, possibly derived from the utm parameter
+        of the
+
+        same name.
+
+        '
+    - name: microsurvey_attribution_dlsource
+      type: STRING
+      mode: NULLABLE
+      description: 'Mozilla-specific download "source" name. Could be something like
+
+        "mozillaci" to identify that the installer came from
+
+        `{archive|ftp}.mozilla.org`.
+
+        '
+    - name: microsurvey_attribution_dltoken
+      type: STRING
+      mode: NULLABLE
+      description: 'String representation of the dltoken identifying the particular
+
+        installer used to install this Firefox.
+
+        Likely a UUID, if present.
+
+        '
+    - name: microsurvey_attribution_experiment
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s experiment key.
+
+        '
+    - name: microsurvey_attribution_medium
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s medium, possibly derived from the utm parameter
+        of the same
+
+        name.
+
+        '
+    - name: microsurvey_attribution_msclkid
+      type: STRING
+      mode: NULLABLE
+      description: 'A string containing the attribution for a Microsoft Store Ads
+        Campaign ID.
+
+        This differs from a Campaign ID originating from a Microsoft Store URL
+
+        containing attribution_
+
+        '
+    - name: microsurvey_attribution_msstoresignedin
+      type: STRING
+      mode: NULLABLE
+      description: 'Either the string "true" or the string "false" to indicate whether
+        the
+
+        attributed install came from the Microsoft store and, if so, whether the
+
+        user was signed in at the time.
+
+        '
+    - name: microsurvey_attribution_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s source, possibly derived from the utm parameter
+        of the same
+
+        name.
+
+        '
+    - name: microsurvey_attribution_ua
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s ua key.
+
+        '
+    - name: microsurvey_attribution_variation
+      type: STRING
+      mode: NULLABLE
+      description: 'Attribution''s variation key.
+
+        '
+    - name: microsurvey_bucket_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A name shared between multiple messages that may individually
+        be too targeted. e.g. a message that gets shown on specific websites or a
+        message asking about personal information.
+
+        '
+    - name: microsurvey_event
+      type: STRING
+      mode: NULLABLE
+      description: "The type of event. Any user defined string (e.g. \u201CIMPRESSION\u201D\
+        , \u201CCLICK_BUTTON\u201D, \"INDEXEDDB_OPEN_FAILED\", \u201CSESSION_END\u201D\
+        )\n"
+    - name: microsurvey_event_page
+      type: STRING
+      mode: NULLABLE
+      description: 'The event_context''s `page`. Almost always "about:welcome".
+
+        '
+    - name: microsurvey_event_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'The event_context''s `reason`. Likely something like
+
+        "welcome-window-closed" or "app-shut-down",.
+
+        '
+    - name: microsurvey_event_source
+      type: STRING
+      mode: NULLABLE
+      description: 'The event_context''s `source`. Likely something like "primary_button".
+
+        '
+    - name: microsurvey_locale
+      type: STRING
+      mode: NULLABLE
+      description: 'The locale as supplied to the messaging system by `Services.locale.appLocaleAsBCP47`.
+
+        '
+    - name: microsurvey_os
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the operating system.
+
+        Possible values:
+
+        Android, iOS, Linux, Darwin, Windows,
+
+        FreeBSD, NetBSD, OpenBSD, Solaris, Unknown
+
+        '
+    - name: microsurvey_os_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The user-visible version of the operating system (e.g. "1.2.3").
+
+        If the version detection fails, this metric gets set to `Unknown`.
+
+        '
+    - name: microsurvey_ping_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Type of event the ping is capturing. e.g. "cfr", "onboarding"
+
+        '
+    - name: microsurvey_source
+      type: STRING
+      mode: NULLABLE
+      description: 'The source of the interaction described by the other metrics.
+        e.g. "frecent_links", "newtab", "CFR"
+
+        '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_context
+      type: STRING
+      mode: NULLABLE
+      description: 'The stringified JSON of `event_context`.
+
+        '
+    - name: microsurvey_event_input_value
+      type: STRING
+      mode: NULLABLE
+      description: 'Text input by the user in a write-in textarea produced by the
+        textarea
+
+        tile type. Truncated to 8KB (though the textarea tile normally has a
+
+        separate character limit enforced at display time).
+
+        '
+    - name: microsurvey_event_screen_family
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message family derived from the message
+        id
+
+        (e.g. MR_WELCOME_DEFAULT).
+
+        '
+    - name: microsurvey_event_screen_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message screen id
+
+        (e.g. AW_MOBILE_DOWNLOAD).
+
+        '
+    - name: microsurvey_event_screen_initials
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message screen initials
+
+        (e.g. ''EMAG'' for EASY_SETUP, MOBILE_DOWNLOADS, AMO, GRATITUDE).
+
+        '
+    - name: microsurvey_message_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message in Activity Stream Router.
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_impression_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The unique impression identifier for a specific client.
+
+        '
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized app name
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized channel name
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time when the ingestion edge server accepted this message
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

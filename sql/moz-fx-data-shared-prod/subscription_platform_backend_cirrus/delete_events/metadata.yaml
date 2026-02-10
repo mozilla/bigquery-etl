@@ -1,5 +1,14 @@
 friendly_name: Subscription Platform Backend Cirrus Delete Events
-description: Deletion events for subscription platform backend cirrus, derived
-  from FxA's delete events and subplat's namespace secrets
+description: |-
+  Deletion events for subscription platform backend cirrus, derived from FxA's delete events and subplat's namespace secrets
 owners:
-  - mwilliams@mozilla.com
+- mwilliams@mozilla.com
+labels:
+  owner1: mwilliams
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_backend_cirrus_derived.delete_events_v1

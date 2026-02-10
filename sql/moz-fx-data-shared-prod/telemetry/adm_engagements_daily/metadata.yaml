@@ -10,8 +10,16 @@ description: |-
     - partner
     - version
     - normalized_channel
+owners:
+- akomar@mozilla.com
 labels:
   shredder_mitigation: true
   table_type: aggregate
-owners:
-  - akomar@mozilla.com
+  owner1: akomar
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.adm_engagements_daily_v1

@@ -5,3 +5,13 @@ description: |-
 owners:
 - kik@mozilla.com
 - ahe@mozilla.com
+labels:
+  owner1: kik
+  owner2: ahe
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.fenix_conversion_event_categorization_v1

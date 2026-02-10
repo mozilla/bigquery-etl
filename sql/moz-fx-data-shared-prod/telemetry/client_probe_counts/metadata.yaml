@@ -1,1 +1,12 @@
 friendly_name: Client Probe Counts
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_probe_counts_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_scalar_probe_counts_v1

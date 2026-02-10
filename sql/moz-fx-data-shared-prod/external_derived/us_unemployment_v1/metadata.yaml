@@ -6,10 +6,17 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
+  dag: bqetl_us_bls_unemployment_data
 scheduling:
   dag_name: bqetl_us_bls_unemployment_data
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   secrets:
   - deploy_target: BLS_US_UNEMPLOYMENT_API_KEY
     key: bqetl_us_bls_unemployment_data__bls_us_api_key
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: true

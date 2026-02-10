@@ -1,11 +1,17 @@
 friendly_name: Accounts Aggregates
-description: 'Aggregate counts of accounts from the FxA backend services databases
-  grouped by a number of dimensions.
+description: |-
+  Aggregate counts of accounts from the FxA backend services databases grouped by a number of dimensions.
 
-
-  This table can be used to get a total number of accounts, including those inactive
-  that aren''t captured
-
-  in the telemetry data.'
+  This table can be used to get a total number of accounts, including those inactive that aren't captured
+  in the telemetry data.
 owners:
 - akomar@mozilla.com
+labels:
+  owner1: akomar
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.accounts_db_derived.accounts_aggregates_v1

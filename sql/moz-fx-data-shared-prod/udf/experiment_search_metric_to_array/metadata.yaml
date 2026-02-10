@@ -1,5 +1,9 @@
----
 friendly_name: Experiment search metric to array
-description: >-
-  Used for testing only. Reproduces the string transformations done in
-  experiment_search_events_live_v1 materialized views.
+description: |-
+  Used for testing only. Reproduces the string transformations done in experiment_search_events_live_v1 materialized views.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

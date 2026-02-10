@@ -6,9 +6,14 @@ owners:
 - mcastelluccio@mozilla.com
 labels:
   schedule: daily
-bigquery: {}
+  dag: bqetl_claude_api
+  owner1: mcastelluccio
 scheduling:
   dag_name: bqetl_claude_api
   secrets:
   - deploy_target: ANTHROPIC_ADMIN_API_KEY
     key: bqetl_claude_api__admin_api_key
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,5 +1,9 @@
----
-description: Take a keyed histogram of type STRUCT<key STRING,
-  value STRING>, extract the histogram of the given key, and
-  return the sum value
 friendly_name: Keyed Histogram Get Sum
+description: |-
+  Take a keyed histogram of type STRUCT<key STRING, value STRING>, extract the histogram of the given key, and return the sum value
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

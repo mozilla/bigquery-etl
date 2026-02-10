@@ -3,3 +3,16 @@ description: |-
   Each row represents an event on mozilla.org where the page_location is a what's new page.
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.firefox_whatsnew_summary_v3
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3

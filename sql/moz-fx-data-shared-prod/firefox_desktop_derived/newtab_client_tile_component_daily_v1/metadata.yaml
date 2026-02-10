@@ -3,7 +3,7 @@ description: |-
   Daily tile rollup of NewTab topsite engagement
   With client/environment dimensions  and experiment context.
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   application: newtab
   incremental: true
@@ -18,9 +18,15 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
-      - channel
-      - country
-  range_partitioning: null
+    - channel
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2

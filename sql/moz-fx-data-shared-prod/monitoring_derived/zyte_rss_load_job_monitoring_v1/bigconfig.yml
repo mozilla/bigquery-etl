@@ -1,27 +1,27 @@
 type: BIGCONFIG_FILE
 row_creation_times:
   column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.monitoring_derived.zyte_rss_load_job_monitoring_v1.submission_date
+  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.monitoring_derived.zyte_rss_load_job_monitoring_v1.submission_date
 tag_deployments:
-  - collection:
-      name: Home Newtab
-      notification_channels:
-        - slack: '#hnt-dev-be-alerts'
-    deployments:
-      - column_selectors:
-          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.monitoring_derived.zyte_rss_load_job_monitoring_v1.*
-        metrics:
-          - metric_type:
-              type: PREDEFINED
-              predefined_metric: FRESHNESS
-            metric_name: FRESHNESS
-            metric_schedule:
-              named_schedule:
-                name: Default Schedule - 13:00 UTC
-          - metric_type:
-              type: PREDEFINED
-              predefined_metric: VOLUME
-            metric_name: VOLUME [fail]
-            metric_schedule:
-              named_schedule:
-                name: Default Schedule - 13:00 UTC
+- collection:
+    name: Home Newtab
+    notification_channels:
+    - slack: '#hnt-dev-be-alerts'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.monitoring_derived.zyte_rss_load_job_monitoring_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_name: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_name: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC

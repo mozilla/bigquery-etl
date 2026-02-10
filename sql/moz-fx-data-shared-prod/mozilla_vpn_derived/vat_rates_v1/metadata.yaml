@@ -1,16 +1,12 @@
----
 friendly_name: VAT Rates
-description: >
+description: |
   Import VAT rates from Google Sheets.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   schedule: daily
-# Descheduled because the source Google Sheet has apparently been deleted (bug 1878898).
-#scheduling:
-#  dag_name: bqetl_subplat
-#  retry_delay: 5m
-#  gke_cluster_name: workloads-prod-v1
-#  gke_location: us-west1
-#  gcp_conn_id: google_cloud_airflow_gke
-#  gke_project_id: moz-fx-data-airflow-gke-prod
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

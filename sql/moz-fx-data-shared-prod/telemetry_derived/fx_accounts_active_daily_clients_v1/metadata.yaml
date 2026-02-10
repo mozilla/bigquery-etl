@@ -19,8 +19,16 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.fx_accounts
 require_column_descriptions: true

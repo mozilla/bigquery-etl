@@ -1,0 +1,9 @@
+friendly_name: net-thunderbird-android
+description: |-
+  User-facing views related to document namespace net-thunderbird-android; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/net-thunderbird-android
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

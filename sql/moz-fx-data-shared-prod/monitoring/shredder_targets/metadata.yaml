@@ -3,4 +3,13 @@ description: |-
   Daily list of shredder deletion targets comparing the configured targets with
   the lineage of found id tables in bigquery.
 owners:
-  - bewu@mozilla.com
+- bewu@mozilla.com
+labels:
+  owner1: bewu
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.shredder_targets_joined_v1

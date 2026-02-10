@@ -1,5 +1,14 @@
 friendly_name: Uninstalls On Day Of Install by Os Version
-description: Uninstalls by OS version split by if the uninstall was on date of installation
-  or not
+description: |-
+  Uninstalls by OS version split by if the uninstall was on date of installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_on_day_of_install_by_os_ver_v1

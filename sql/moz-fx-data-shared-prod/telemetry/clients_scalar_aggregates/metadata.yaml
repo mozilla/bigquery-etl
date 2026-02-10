@@ -1,4 +1,14 @@
 friendly_name: Telemetry Derived - Clients Scalar Aggregates
-description: '[DESCRIPTION_MISSING]'
+description: |-
+  [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1

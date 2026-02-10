@@ -1,7 +1,14 @@
 friendly_name: Firefox Accounts Linked Clients Ordered
-description: Table overwrites daily with latest information,
-  orders clients by first seen date
-  Client ID with the smaller first seen date is client ID
-  Client ID with the larger first seen date is linked client ID
+description: |-
+  Table overwrites daily with latest information, orders clients by first seen date Client ID with the smaller first seen date is client ID Client ID with the larger first seen date is linked client ID
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_accounts_linked_clients_ordered_v1

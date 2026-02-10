@@ -1,9 +1,16 @@
 friendly_name: BigQuery Tables Storage
-description: BigQuery table storage size and costs.
+description: |-
+  BigQuery table storage size and costs.
 owners:
 - wichan@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_monitoring
+  owner1: wichan
 scheduling:
   dag_name: bqetl_monitoring
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

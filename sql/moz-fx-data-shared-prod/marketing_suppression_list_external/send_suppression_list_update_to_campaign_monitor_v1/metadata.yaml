@@ -6,5 +6,12 @@ owners:
 - cbeck@mozilla.com
 labels:
   incremental: true
-  owner1: leli
-bigquery: null
+  owner1: cbeck
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers

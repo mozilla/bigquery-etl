@@ -1,3 +1,9 @@
----
-description: A bitmask for 365 bits
 friendly_name: Bitmask 365
+description: |-
+  A bitmask for 365 bits
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

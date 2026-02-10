@@ -1,11 +1,4 @@
 friendly_name: Sanitized Firefox Search Impression Data
-
-owners:
-  - ctroy@mozilla.com
-
-labels:
-  incremental: true
-
 description: |-
   Firefox Suggest impression pings
   joined with sanitized search query data
@@ -17,20 +10,33 @@ description: |-
   Note: This table processes data from 2 days ago,allowing time for the
   upstream Merino sanitization job (~16 hours) to complete.
   This is a temporary measure until the sanitization job is further optimized.
-
+owners:
+- ctroy@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_search_terms_daily
+  owner1: ctroy
+scheduling:
+  dag_name: bqetl_search_terms_daily
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 14
-
-scheduling:
-  dag_name: bqetl_search_terms_daily
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
-  date_partition_offset: -1
-
+    expiration_days: 14.0
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:search-terms/sanitized
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:search-terms/sanitized
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
+  - workgroup:search-terms/sanitized-writer
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1
+  - moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1
+  - moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3

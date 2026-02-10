@@ -6,3 +6,17 @@ description: |-
   updated.
 owners:
 - lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:pocket/apps
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1

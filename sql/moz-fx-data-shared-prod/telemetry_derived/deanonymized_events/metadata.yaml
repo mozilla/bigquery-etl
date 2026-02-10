@@ -1,8 +1,15 @@
 friendly_name: Deanonymized Events
-description: >
-  Parent and content process events, broken out from event_v4 pings.
-  Used strictly for events_daily and event_types.
+description: |
+  Parent and content process events, broken out from event_v4 pings. Used strictly for events_daily and event_types.
 owners:
-  - frank@mozilla.com
+- frank@mozilla.com
 labels:
   application: firefox
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_stable.event_v4

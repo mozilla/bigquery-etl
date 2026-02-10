@@ -7,10 +7,13 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_fred_daily_exchange_rate
 scheduling:
   dag_name: bqetl_fred_daily_exchange_rate
   date_partition_parameter: submission_date
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   secrets:
   - deploy_target: FRED_API_KEY
     key: bqetl_fred_daily_exchange_rate__api_key
@@ -20,5 +23,8 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: true

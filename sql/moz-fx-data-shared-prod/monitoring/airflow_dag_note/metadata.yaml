@@ -1,4 +1,14 @@
 friendly_name: Airflow DAG run notes
-description: List of DAG run notes
+description: |-
+  List of DAG run notes
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.airflow_dag_note_v1

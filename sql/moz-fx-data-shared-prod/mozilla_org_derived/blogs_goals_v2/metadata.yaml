@@ -5,7 +5,8 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:
@@ -20,3 +21,15 @@ bigquery:
   clustering:
     fields:
     - visit_identifier
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_314399816.events_*

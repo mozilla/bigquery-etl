@@ -1,21 +1,24 @@
----
 friendly_name: Non-Prod FxA Content Events
-description:
+description: |-
   Selected Amplitude events extracted from Non-Prod FxA content server logs
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
   table_type: client_level
-# Query descheduled as a direct result of AWS migration to GCP
-# on 27th September 2023 the last AWS instances were spun down.
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  owner1: kik
 bigquery:
   time_partitioning:
     type: day
     field: timestamp
     require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_content

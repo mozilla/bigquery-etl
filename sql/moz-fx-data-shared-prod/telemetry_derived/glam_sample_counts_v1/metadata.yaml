@@ -1,6 +1,15 @@
-friendly_name: |-
-  Telemetry Derived - Glam Sample Counts
+friendly_name: Telemetry Derived - Glam Sample Counts
 description: |-
   Holds sample counts for all Legacy Telemetry probes supported by Glam
 owners:
 - efilho@mozilla.com
+labels:
+  owner1: efilho
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2
+  - moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1

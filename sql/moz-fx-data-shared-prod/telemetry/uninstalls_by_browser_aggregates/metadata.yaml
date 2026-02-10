@@ -1,4 +1,14 @@
 friendly_name: Uninstalls By Browser Aggregates
-description: Aggregate table calculating uninstalls by browser and date
+description: |-
+  Aggregate table calculating uninstalls by browser and date
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_by_browser_aggregates_v1

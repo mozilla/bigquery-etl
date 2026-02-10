@@ -1,0 +1,9 @@
+friendly_name: accounts-cirrus
+description: |-
+  User-facing views related to document namespace accounts-cirrus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/accounts-cirrus
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

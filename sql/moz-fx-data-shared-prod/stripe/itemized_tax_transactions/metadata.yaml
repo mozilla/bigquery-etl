@@ -1,5 +1,14 @@
 friendly_name: Stripe itemized tax transactions report
-description: >
+description: |
   Itemized tax transactions report from the Stripe API.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1

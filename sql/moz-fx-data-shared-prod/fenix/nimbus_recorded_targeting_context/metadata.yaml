@@ -3,3 +3,12 @@ description: |-
   A query to obtain the previous day's recorded Nimbus targeting context values for each client.
 owners:
 - chumphreys@mozilla.com
+labels:
+  owner1: chumphreys
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.nimbus_recorded_targeting_context_v1

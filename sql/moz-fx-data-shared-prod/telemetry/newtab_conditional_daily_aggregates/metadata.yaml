@@ -3,3 +3,12 @@ description: |-
   Conditional computations for daily aggregation for newtab.
 owners:
 - gkatre@mozilla.com
+labels:
+  owner1: gkatre
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_conditional_daily_aggregates_v1

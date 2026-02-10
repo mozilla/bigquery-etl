@@ -25,3 +25,12 @@ bigquery:
     - meta_attribution_app
     - normalized_channel
     - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.first_session

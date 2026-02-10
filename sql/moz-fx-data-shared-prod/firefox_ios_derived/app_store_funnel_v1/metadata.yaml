@@ -9,7 +9,8 @@ labels:
   schedule: daily
   incremental: true
   table_type: aggregate
-  shredder_mitigation: false
+  dag: bqetl_firefox_ios
+  owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
@@ -18,5 +19,17 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report
+  - moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report
+  - moz-fx-data-shared-prod.app_store_v2_syndicate.apple_store_territory_report
+  - moz-fx-data-shared-prod.firefox_ios.new_profiles
+  - moz-fx-data-shared-prod.static.country_names_v1
 monitoring:
   enabled: true

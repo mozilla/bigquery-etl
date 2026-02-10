@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
@@ -14,8 +15,17 @@ bigquery:
     field: event_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - page_location_locale
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_313696158.events_*
 require_column_descriptions: true

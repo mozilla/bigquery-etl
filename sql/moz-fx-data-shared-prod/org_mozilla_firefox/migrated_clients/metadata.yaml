@@ -7,3 +7,12 @@ description: |
   channel, and submission_date are taken from the _last_ value seen for that client.
 owners:
 - frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_firefox_derived.migrated_clients_v1

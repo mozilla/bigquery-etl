@@ -1,15 +1,16 @@
----
 friendly_name: FxA Users Services First Seen
 description: |
   Usage aggregations describing when an FxA user
   was seen for the first time using an FxA service.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
   table_type: client_level
+  dag: bqetl_fxa_events
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
   date_partition_parameter: submission_date
@@ -18,8 +19,17 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-      - service
-      - first_service_country
-      - first_service_os_name
+    - service
+    - first_service_country
+    - first_service_os_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v2
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_first_seen_v2

@@ -7,14 +7,19 @@ labels:
   dag: bqetl_experiments_daily
   owner1: ascholtz
   table_type: aggregate
-  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_experiments_daily
   task_name: experiment_enrollment_daily_active_population_v2
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
   clustering:
     fields:
     - experiment
     - normalized_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.experiments_daily_active_clients_v2

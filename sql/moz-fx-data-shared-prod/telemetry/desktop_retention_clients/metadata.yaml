@@ -1,6 +1,15 @@
 friendly_name: Desktop Retention V2 - Client Level
-description: 'Desktop Retention data at the client level.
-
-  Includes attribution information, profile_group_id.'
+description: |-
+  Desktop Retention data at the client level.
+  Includes attribution information, profile_group_id.
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_retention_clients_v2

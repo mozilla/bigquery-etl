@@ -5,7 +5,8 @@ owners:
 - wclouser@mozilla.com
 labels:
   incremental: true
-  owner1: wclouser@mozilla.com
+  owner1: wclouser
+  dag: bqetl_accounts_derived
 scheduling:
   dag_name: bqetl_accounts_derived
   date_partition_parameter: as_of_date
@@ -15,3 +16,10 @@ bigquery:
     field: as_of_date
     require_partition_filter: false
     expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_phones_v1 FOR SYSTEM_TIME

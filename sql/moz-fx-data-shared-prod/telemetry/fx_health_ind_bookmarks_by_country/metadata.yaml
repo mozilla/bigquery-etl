@@ -1,4 +1,14 @@
 friendly_name: Firefox Health Indicator - Bookmarks By Country
-description: Please provide a description for the query
+description: |-
+  Please provide a description for the query
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_bookmarks_by_country_v1

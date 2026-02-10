@@ -1,4 +1,14 @@
 friendly_name: Airflow failed tasks
-description: List of airflow failed tasks
+description: |-
+  List of airflow failed tasks
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.airflow_task_fail_v1

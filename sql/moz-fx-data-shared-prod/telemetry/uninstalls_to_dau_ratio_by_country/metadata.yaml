@@ -1,5 +1,14 @@
 friendly_name: Uninstalls To Dau Ratio By Country
-description: Aggregate table used in dashboard to show ratio of uninstalls to active
-  users by country
+description: |-
+  Aggregate table used in dashboard to show ratio of uninstalls to active users by country
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_to_dau_ratio_by_country_v1

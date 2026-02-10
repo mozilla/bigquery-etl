@@ -1,11 +1,10 @@
 friendly_name: Desktop Retention Clients
-description: |-
-  Measures 28-day (week-4) retention for Firefox Desktop clients anchored on a cohort “metric date.”
-  Metric date represents the cohort of clients who were either:
-  A) New on the metric date (first_seen_date = metric_date), or
-  B) Seen on the metric date (sent a baseline ping that day).
-  Submission date represents the date 27 days after the metric date (end of the 28-day window), when week-4 retention is evaluated.
-  Primary Key: Client ID + Metric Date
+description: "Measures 28-day (week-4) retention for Firefox Desktop clients anchored\
+  \ on a cohort \u201Cmetric date.\u201D\nMetric date represents the cohort of clients\
+  \ who were either:\nA) New on the metric date (first_seen_date = metric_date), or\n\
+  B) Seen on the metric date (sent a baseline ping that day).\nSubmission date represents\
+  \ the date 27 days after the metric date (end of the 28-day window), when week-4\
+  \ retention is evaluated.\nPrimary Key: Client ID + Metric Date"
 owners:
 - kwindau@mozilla.com
 labels:
@@ -22,10 +21,20 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 775.0
-  range_partitioning: null
   clustering:
     fields:
     - sample_id
     - country
     - normalized_os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily
+  - moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen
 require_column_descriptions: true

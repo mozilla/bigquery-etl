@@ -1,4 +1,3 @@
----
 friendly_name: Emails table from FxA database in stage environment
 description: |-
   A mirror of the `emails` table from the staging FxA CloudSQL database,
@@ -10,12 +9,19 @@ description: |-
 
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:
-  - akomar@mozilla.com
+- akomar@mozilla.com
 labels:
   application: accounts_backend
   schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
 scheduling:
   dag_name: bqetl_accounts_backend_external
-  # destination is the whole table, not a single partition,
-  # so don't use date_partition_parameter
   date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential/data-viewers
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         id,\n         normalizedEmail,\n         email,\n         uid,\n         isVerified,\n         isPrimary,\n         verifiedAt,\n         createdAt\n       FROM\n         emails\n    ')

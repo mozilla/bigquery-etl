@@ -4,3 +4,13 @@ description: |-
 owners:
 - pissac@mozilla.com
 - kik@mozilla.com
+labels:
+  owner1: pissac
+  owner2: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.enterprise_metrics_v1

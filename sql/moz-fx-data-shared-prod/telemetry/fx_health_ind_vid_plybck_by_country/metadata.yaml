@@ -1,4 +1,14 @@
 friendly_name: Fx Health Ind Vid Plybck By Os
-description: Aggregate table of video playback minutes per user per OS
+description: |-
+  Aggregate table of video playback minutes per user per OS
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_vid_plybck_by_country_v1

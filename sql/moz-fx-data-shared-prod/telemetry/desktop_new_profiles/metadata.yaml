@@ -4,3 +4,12 @@ description: |-
   for desktop client_ids.
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_new_profiles_aggregates_v1

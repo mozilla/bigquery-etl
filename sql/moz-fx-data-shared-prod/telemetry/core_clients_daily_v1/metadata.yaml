@@ -3,3 +3,12 @@ description: |
   A daily aggregate of baseline and metrics pings from each client sending core pings, partitioned by day
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.core_clients_daily_v1

@@ -3,3 +3,12 @@ description: |-
   Each row in this table represents a daily summary statistic of clicks per ordinal position per a host of meaningful dimensions.
 owners:
 - tbrooks@mozilla.com
+labels:
+  owner1: tbrooks
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_daily_engagement_by_position_v1

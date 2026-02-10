@@ -16,9 +16,15 @@ bigquery:
     field: usage_start_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - project
     - zone
     - instance_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0

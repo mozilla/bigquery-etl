@@ -11,15 +11,27 @@ owners:
 labels:
   incremental: true
   owner: cbeck
-bigquery:
-  time_partitioning:
-  type: day
-  field: updated_at
-  require_partition_filter: false
-  expiration_days: 7
+  dag: bqetl_braze
+  owner1: cbeck
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
   arguments:
   - --append_table
   - --noreplace
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.subscriptions_v1
+  - moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1

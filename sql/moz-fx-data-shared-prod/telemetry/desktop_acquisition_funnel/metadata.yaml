@@ -1,0 +1,11 @@
+friendly_name: Desktop Acquisition Funnel
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_28_days_later_v1

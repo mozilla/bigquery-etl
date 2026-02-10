@@ -5,9 +5,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
-#scheduling:
-#  dag_name: bqetl_ga4_firefoxdotcom
+  owner1: mhirose
 bigquery:
   time_partitioning:
     type: day
@@ -18,4 +16,8 @@ bigquery:
     fields:
     - country
     - version
+workgroup_access: []
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1
 deprecated: true

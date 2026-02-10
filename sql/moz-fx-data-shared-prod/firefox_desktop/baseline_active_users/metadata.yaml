@@ -5,3 +5,11 @@ description: |-
   Also contains information from the client's first seen date,
   like attribution information.
   Primary Key: Client ID & Submission Date
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_active_users_v1

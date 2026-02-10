@@ -3,3 +3,12 @@ description: |-
   A daily aggregation of `newtab_clients_daily`, partitioned by day.
 owners:
 - mbowerman@mozilla.com
+labels:
+  owner1: mbowerman
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_clients_daily_aggregates_v1

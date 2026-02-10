@@ -1,0 +1,13 @@
+friendly_name: Sponsored Tiles Ad Request Fill
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.contile_filter_adm_empty_response
+  - moz-fx-data-shared-prod.telemetry_derived.contile_tiles_adm_request
+  - moz-fx-data-shared-prod.telemetry_derived.contile_tiles_adm_response_tiles_count

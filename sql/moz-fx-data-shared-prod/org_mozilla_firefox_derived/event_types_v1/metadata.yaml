@@ -1,2 +1,8 @@
 friendly_name: Event Types V1
-description: Event types
+description: |-
+  Event types
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

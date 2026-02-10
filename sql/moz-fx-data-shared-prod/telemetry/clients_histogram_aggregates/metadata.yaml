@@ -1,5 +1,14 @@
 friendly_name: Telemetry Derived - Clients Histogram Aggregates
-description: Intermediate table that holds the last 3 versions of histogram aggregates
-  from Legacy Telemetry
+description: |-
+  Intermediate table that holds the last 3 versions of histogram aggregates from Legacy Telemetry
 owners:
 - efilho@mozilla.com
+labels:
+  owner1: efilho
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v1

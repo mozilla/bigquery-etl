@@ -1,0 +1,35 @@
+friendly_name: Terms of Use - Events
+description: |-
+  This dataset contains events related to Terms of Use.
+
+  Clustered by: sample_id
+  Partitioned by: submission_timestamp by day
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_terms_of_use
+  owner1: kik
+scheduling:
+  dag_name: bqetl_terms_of_use
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.events_stream
+monitoring:
+  enabled: true

@@ -1,0 +1,14 @@
+friendly_name: Shredder Progress
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-bq-batch-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - moz-fx-data-shredder.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - moz-fx-data-shredder.shredder_state.shredder_state
+  - moz-fx-data-shredder.shredder_state.tasks

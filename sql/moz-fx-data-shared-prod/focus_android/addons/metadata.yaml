@@ -1,0 +1,17 @@
+friendly_name: App-specific view for Glean ping "addons"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox Focus for Android"
+  (org_mozilla_focus.addons, org_mozilla_focus_beta.addons, org_mozilla_focus_nightly.addons).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus.addons
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.addons
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.addons

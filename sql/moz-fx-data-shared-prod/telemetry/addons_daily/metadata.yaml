@@ -1,4 +1,14 @@
 friendly_name: Addons Daily
-description: A daily aggregate of addon usages, partitioned by day
+description: |-
+  A daily aggregate of addon usages, partitioned by day
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.addons_daily_v1

@@ -1,4 +1,14 @@
 friendly_name: Desktop Retention - Aggregate
-description: Desktop Retention Aggregated
+description: |-
+  Desktop Retention Aggregated
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_retention_aggregates_v2

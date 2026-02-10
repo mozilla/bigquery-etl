@@ -7,11 +7,8 @@ owners:
 labels:
   schedule: daily
   incremental: true
-bigquery:
-  time_partitioning:
-    type: day
-    field: date
-    require_partition_filter: false
+  dag: bqetl_claude_api
+  owner1: mcastelluccio
 scheduling:
   dag_name: bqetl_claude_api
   arguments:
@@ -19,3 +16,13 @@ scheduling:
   secrets:
   - deploy_target: ANTHROPIC_ADMIN_API_KEY
     key: bqetl_claude_api__admin_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

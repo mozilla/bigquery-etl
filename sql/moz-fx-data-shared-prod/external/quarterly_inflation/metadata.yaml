@@ -1,3 +1,11 @@
 friendly_name: IMF Quarterly Inflation
 description: |-
   Contains quarterly inflation rate data by country from IMF
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.external_derived.quarterly_inflation_v1

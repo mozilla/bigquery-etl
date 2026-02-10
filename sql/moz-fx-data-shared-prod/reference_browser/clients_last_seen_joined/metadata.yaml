@@ -1,0 +1,11 @@
+friendly_name: Clients Last Seen Joined
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.reference_browser_derived.clients_last_seen_joined_v1

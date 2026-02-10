@@ -1,6 +1,14 @@
 friendly_name: Funnel FxA Login to Protected
-description: 'Funnel from FxA Login to Protected with 2-day time limit
-
-  '
+description: |
+  Funnel from FxA Login to Protected with 2-day time limit
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.funnel_fxa_login_to_protected_v1

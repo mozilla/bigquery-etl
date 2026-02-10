@@ -1,7 +1,14 @@
 friendly_name: Mozilla VPN Users
-description: 'A subset of Mozilla VPN users columns that are accessible to a broader
-  audience.
-
-  '
+description: |
+  A subset of Mozilla VPN users columns that are accessible to a broader audience.
 owners:
 - srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1

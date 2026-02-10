@@ -1,0 +1,16 @@
+friendly_name: Mobile Engagement
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.engagement
+  - moz-fx-data-shared-prod.firefox_ios.engagement
+  - moz-fx-data-shared-prod.focus_android.engagement
+  - moz-fx-data-shared-prod.focus_ios.engagement
+  - moz-fx-data-shared-prod.klar_android.engagement
+  - moz-fx-data-shared-prod.klar_ios.engagement

@@ -4,14 +4,14 @@ description: |-
 
   This table should be accessed through the user-facing view
   `fenix.meta_attribution_country_counts`.
-
 owners:
 - rvasquez@mozilla.com
 labels:
   application: firefox_android
   incremental: true
   schedule: daily
-  owner1: rvasquez@mozilla.com
+  owner1: rvasquez
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
@@ -20,8 +20,10 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  clustering:
-  fields:
-  - meta_attribution_app
-  - normalized_channel
-  - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.meta_attribution_country_counts_v1

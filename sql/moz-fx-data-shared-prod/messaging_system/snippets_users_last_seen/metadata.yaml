@@ -1,7 +1,14 @@
 friendly_name: Messaging System Snippets Users Last Seen
-description: 'Captures history of activity of each client using Snippets in 28 day
-  windows for each submission date.
-
-  '
+description: |
+  Captures history of activity of each client using Snippets in 28 day windows for each submission date.
 owners:
 - najiang@mozilla.com
+labels:
+  owner1: najiang
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.messaging_system_derived.snippets_users_last_seen_v1

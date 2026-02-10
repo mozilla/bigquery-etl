@@ -20,11 +20,10 @@ owners:
 labels:
   incremental: true
   owner1: srose
+  dag: bqetl_google_search_console
 scheduling:
   dag_name: bqetl_google_search_console
   date_partition_parameter: date
-  # Google Search Console exports typically happen two days after the data date in UTC, but we wait
-  # an extra day beyond that because Google Search Console exports have often been further delayed.
   date_partition_offset: -2
   depends_on_table_partitions_existing:
   - task_id: wait_for_google_search_console_addons_site_impressions
@@ -54,3 +53,15 @@ bigquery:
   clustering:
     fields:
     - site_domain_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_blog.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_mdn.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_support.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_www.searchdata_site_impression

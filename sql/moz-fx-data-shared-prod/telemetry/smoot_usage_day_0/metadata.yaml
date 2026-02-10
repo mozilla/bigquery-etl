@@ -1,0 +1,14 @@
+friendly_name: Smoot Usage Day 0
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_new_profiles_v2
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2

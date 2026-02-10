@@ -8,19 +8,25 @@ labels:
   incremental: true
   owner1: kwindau
   owner2: dberry
+  dag: bqetl_shredder_impact_measurement
 scheduling:
   dag_name: bqetl_shredder_impact_measurement
-  arguments: [
-    "--billing-project=moz-fx-data-backfill-4"
-  ]
+  arguments:
+  - --billing-project=moz-fx-data-backfill-4
 bigquery:
   time_partitioning:
     type: day
     field: logical_dag_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - app_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.active_users
 require_column_descriptions: true

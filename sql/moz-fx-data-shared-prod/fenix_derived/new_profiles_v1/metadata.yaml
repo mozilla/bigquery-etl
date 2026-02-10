@@ -1,0 +1,41 @@
+friendly_name: New profiles - Fenix (Aggregated)
+description: |-
+  New profiles (Fenix) aggregated metrics
+
+  Grouped by all dimensions to generate new profiles metric.
+
+  Notes:
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+owners:
+- mozilla/kpi_table_reviewers
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  table_type: aggregate
+  dag: bqetl_mobile_kpi_metrics
+  owner1: kik
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: fenix
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.new_profile_clients
+monitoring:
+  enabled: true
+  collection: Operational Checks

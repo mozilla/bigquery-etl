@@ -1,0 +1,33 @@
+friendly_name: Terms of Use - Status
+description: |-
+  This dataset contains the most recent status
+
+  Cluster by: sample_id
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_terms_of_use
+  owner1: kik
+scheduling:
+  dag_name: bqetl_terms_of_use
+  task_group: firefox_ios
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.metrics
+  - moz-fx-data-shared-prod.firefox_ios_derived.terms_of_use_status_v1
+monitoring:
+  enabled: true

@@ -4,12 +4,15 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
   table_type: client_level
-  shredder_mitigation: false
+  owner1: ascholtz
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

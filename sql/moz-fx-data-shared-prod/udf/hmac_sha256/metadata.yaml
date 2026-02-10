@@ -1,7 +1,9 @@
----
-description: 'Given a key and message, return the HMAC-SHA256 hash.
-  This algorithm can be found in Wikipedia:
-  https://en.wikipedia.org/wiki/HMAC#Implementation  This implentation
-  is validated against the NIST test vectors.
-  See test/validation/hmac_sha256.py for more information.'
 friendly_name: Hmac Sha256
+description: |-
+  Given a key and message, return the HMAC-SHA256 hash. This algorithm can be found in Wikipedia: https://en.wikipedia.org/wiki/HMAC#Implementation  This implentation is validated against the NIST test vectors. See test/validation/hmac_sha256.py for more information.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

@@ -4,11 +4,20 @@ description: |-
   on moz-fx-data-shared-prod.monitoring_derived.shredder_targets_new_mismatched_v1.
   Does not write to a destination table.
 owners:
-  - bewu@mozilla.com
+- bewu@mozilla.com
 labels:
-  owner1: benwu
+  owner1: bewu
+  dag: bqetl_shredder_monitoring
 scheduling:
   dag_name: bqetl_shredder_monitoring
-  arguments: ["--run-date", "{{ ds }}"]
+  arguments:
+  - --run-date
+  - '{{ ds }}'
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 'monitoring_derived', 'shredder_targets_new_mismatched_v1']
+  - - moz-fx-data-shared-prod
+    - monitoring_derived
+    - shredder_targets_new_mismatched_v1
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

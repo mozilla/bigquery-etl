@@ -1,11 +1,11 @@
 friendly_name: Newtab Component-level Content Table
 description: |-
-    Contains information about content interactions, both organic and sponsored,
-    from the newtab ping.  Each record represents a specific content position during a specific visit.
+  Contains information about content interactions, both organic and sponsored,
+  from the newtab ping.  Each record represents a specific content position during a specific visit.
 
-    Note that this is pulling data from the newtab ping and not the newtab_content ping
+  Note that this is pulling data from the newtab ping and not the newtab_content ping
 owners:
-  - jsnyder@mozilla.com
+- jsnyder@mozilla.com
 labels:
   application: newtab
   incremental: true
@@ -20,10 +20,16 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
-      - country
-      - client_id
-      - newtab_visit_id
-    expiration_days: 775
-  range_partitioning: null
+    - country
+    - client_id
+    - newtab_visit_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1

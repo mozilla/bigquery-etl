@@ -5,3 +5,12 @@ description: |-
   https://github.com/fivetran/dbt_google_ads
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.daily_campaign_stats_v1

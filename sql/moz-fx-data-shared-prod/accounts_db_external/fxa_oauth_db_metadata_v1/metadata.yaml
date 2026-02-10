@@ -1,17 +1,21 @@
----
 friendly_name: dbMetadata table from production fxa_oauth database
-description: >
-  A mirror of the `dbMetadata` table from the production `fxa_oauth` CloudSQL database,
-  updated daily to match the current state of the table.
-
+description: |
+  A mirror of the `dbMetadata` table from the production `fxa_oauth` CloudSQL database, updated daily to match the current state of the table.
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:
-  - akomar@mozilla.com
+- akomar@mozilla.com
 labels:
   application: accounts_backend
   schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
 scheduling:
   dag_name: bqetl_accounts_backend_external
-  # destination is the whole table, not a single partition,
-  # so don't use date_partition_parameter
   date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential/data-viewers
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-oauth-prod-prod-fxa-oauth', 'SELECT\n         name,\n         value\n       FROM\n         fxa_oauth.dbMetadata\n    ')

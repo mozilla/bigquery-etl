@@ -1,4 +1,14 @@
 friendly_name: LTV Desktop Aggregates
-description: Aggregated historical data for LTV estimates beyond a 2-year horizon.
+description: |-
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
 owners:
 - mbowerman@mozilla.com
+labels:
+  owner1: mbowerman
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.ltv_desktop_aggregates_v1

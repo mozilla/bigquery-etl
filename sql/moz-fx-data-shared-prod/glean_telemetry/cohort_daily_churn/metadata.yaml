@@ -8,3 +8,12 @@ description: |-
   - Data Model README: ./README.md
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.glean_telemetry_derived.cohort_daily_churn_v1

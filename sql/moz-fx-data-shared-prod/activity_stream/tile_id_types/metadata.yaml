@@ -1,0 +1,12 @@
+friendly_name: Tile Id Types
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:pocket/prefect
+references:
+  view.sql:
+  - pocket-tiles.pocket_tiles_data.tile_id_types

@@ -1,5 +1,14 @@
 friendly_name: Deliverables data from external source Adjust
-description: >
+description: |
   This table represents data downloaded from Adjust link using https://api.adjust.com/kpis/v1/{app token}.
 owners:
-  - mhirose@mozilla.com
+- mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.adjust_derived.adjust_deliverables_v1

@@ -1,5 +1,14 @@
 friendly_name: Firefox Health Indicator - New Profiles by Installer Type
-description: Calculates new profiles per installer type for Windows clients; used
-  in Firefox Health Indicator dashboard
+description: |-
+  Calculates new profiles per installer type for Windows clients; used in Firefox Health Indicator dashboard
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_np_by_install_type_v1

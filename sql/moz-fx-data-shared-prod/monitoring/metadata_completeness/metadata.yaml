@@ -1,5 +1,14 @@
 friendly_name: Metadata Completeness
-description: Checks, for each object, whether it has a description, and how many columns
-  have a description
+description: |-
+  Checks, for each object, whether it has a description, and how many columns have a description
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.metadata_completeness_v1

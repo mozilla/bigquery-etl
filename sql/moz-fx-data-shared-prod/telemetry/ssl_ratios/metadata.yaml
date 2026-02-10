@@ -1,6 +1,15 @@
 friendly_name: SSL Ratios
-description: 'Percentages of page loads Firefox users have performed that were
-
-  conducted over SSL broken down by country.'
+description: |-
+  Percentages of page loads Firefox users have performed that were
+  conducted over SSL broken down by country.
 owners:
 - chutten@mozilla.com
+labels:
+  owner1: chutten
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.ssl_ratios_v1

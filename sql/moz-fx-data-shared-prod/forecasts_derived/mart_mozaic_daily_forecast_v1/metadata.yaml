@@ -11,12 +11,19 @@ owners:
 labels:
   incremental: true
   owner1: brwells
+  owner2: bochocki
 bigquery:
   time_partitioning:
     type: day
     field: forecast_start_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
-  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-outerbounds-task-default
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataops-managed/external-outerbounds-task-default
 require_column_descriptions: true

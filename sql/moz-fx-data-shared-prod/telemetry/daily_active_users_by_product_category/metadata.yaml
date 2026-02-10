@@ -5,3 +5,12 @@ description: |-
   https://mozilla.cloud.looker.com/dashboards/1245
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.daily_active_users_by_product_category_v1

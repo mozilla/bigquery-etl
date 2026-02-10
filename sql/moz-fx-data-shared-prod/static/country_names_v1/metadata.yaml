@@ -5,7 +5,9 @@ description: |-
 
   data.csv is generated automatically by `sql_generators/country_code_lookup`; modify `aliases.yaml` to add a mapping to the
   appropriate country code. You can view the most recent generator version on the `generated-sql` branch.
+owners: []
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ads/external-tapclicks
+  - workgroup:mozilla-confidential/data-viewers

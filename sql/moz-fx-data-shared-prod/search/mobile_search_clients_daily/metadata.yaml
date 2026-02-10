@@ -1,8 +1,17 @@
----
 friendly_name: Mobile Search Clients Daily
 description: |
   A daily aggregate of baseline and metrics pings that have
   searches from each (client_id, engine, source) combination,
   partitioned by day.
 owners:
-  - akommasani@mozilla.com
+- akommasani@mozilla.com
+labels:
+  owner1: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical_pre202408
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2

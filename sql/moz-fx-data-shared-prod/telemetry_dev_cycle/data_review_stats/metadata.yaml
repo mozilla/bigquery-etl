@@ -4,3 +4,12 @@ description: |-
   The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_dev_cycle_external.data_review_stats_v1

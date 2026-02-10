@@ -5,3 +5,13 @@ description: |-
 owners:
 - akommasani@mozilla.com
 - betling@mozilla.com
+labels:
+  owner1: akommasani
+  owner2: betling
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.review_checker_events_v1

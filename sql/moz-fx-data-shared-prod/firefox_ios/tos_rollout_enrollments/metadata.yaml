@@ -2,4 +2,13 @@ friendly_name: Terms of Service Rollout Enrollments
 description: |-
   A client-level dataset from clients enrolled in the iOS Terms of Service scaled rollout experiments.
 owners:
-  - dberry@mozilla.com
+- dberry@mozilla.com
+labels:
+  owner1: dberry
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.tos_rollout_enrollments_v1

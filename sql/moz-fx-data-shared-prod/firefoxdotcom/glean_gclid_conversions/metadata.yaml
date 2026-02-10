@@ -1,12 +1,21 @@
 friendly_name: Glean Google Click ID Conversions
-description: 'All conversions for GCLIDs.
-
+description: |-
+  All conversions for GCLIDs.
   Partitioned by activity_date; a single GCLID
-
   can have multiple entries in this table,
-
   if they perform different conversion actions
-
-  on different days.'
+  on different days.
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.glean_gclid_conversions_v1

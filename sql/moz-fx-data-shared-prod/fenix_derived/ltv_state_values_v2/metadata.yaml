@@ -5,13 +5,23 @@ description: |-
 owners:
 - frank@mozilla.com
 labels:
-  incremental: false
-  owner1: frank@mozilla.com
+  owner1: frank
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
   clustering:
-    fields: [country]
+    fields:
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2
+  query.sql:
+  - moz-fx-data-shared-prod.ltv_state_values_derived.android_state_ltvs_v2

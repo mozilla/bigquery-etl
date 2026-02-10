@@ -2,4 +2,13 @@ friendly_name: AdM Forecasting
 description: |-
   Data for AdM forecasts: Sponsored Tiles and Suggest.
 owners:
-  - skahmann@mozilla.com
+- skahmann@mozilla.com
+labels:
+  owner1: skahmann
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.contextual_services_derived.adm_forecasting_v1

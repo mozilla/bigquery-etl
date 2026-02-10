@@ -1,16 +1,21 @@
-friendly_name: |-
-  Telemetry Derived - Clients Daily Histogram Aggregates
+friendly_name: Telemetry Derived - Clients Daily Histogram Aggregates
 description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 7
+    expiration_days: 7.0
   clustering:
     fields:
     - app_version
     - channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

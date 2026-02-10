@@ -1,5 +1,9 @@
----
-description: Sum an array from a parquet-derived field.
-  These are lists of an `element`
-  that contain the field value.
 friendly_name: Parquet Array Sum
+description: |-
+  Sum an array from a parquet-derived field. These are lists of an `element` that contain the field value.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

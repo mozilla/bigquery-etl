@@ -2,19 +2,43 @@ friendly_name: Contextual Services Event Aggregates
 description: |-
   Aggregated event and user counts for topsites and quicksuggest
 owners:
-  - rburwei@mozilla.com
+- rburwei@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_ctxsvc_derived
+  owner1: rburwei
 scheduling:
   dag_name: bqetl_ctxsvc_derived
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
-      - source
-      - event_type
+    - source
+    - event_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  query.sql:
+  - moz-fx-ads-prod.adm.blocks
+  - moz-fx-data-shared-prod.contextual_services.quicksuggest_click
+  - moz-fx-data-shared-prod.contextual_services.quicksuggest_impression
+  - moz-fx-data-shared-prod.contextual_services.topsites_click
+  - moz-fx-data-shared-prod.contextual_services.topsites_impression
+  - moz-fx-data-shared-prod.fenix.fx_suggest
+  - moz-fx-data-shared-prod.firefox_desktop.quick_suggest
+  - moz-fx-data-shared-prod.firefox_desktop.top_sites
+  - moz-fx-data-shared-prod.firefox_ios.fx_suggest
+  - moz-fx-data-shared-prod.org_mozilla_fenix.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression

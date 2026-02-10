@@ -7,9 +7,13 @@ owners:
 labels:
   incremental: true
   table_type: client_id
+  owner1: jrediger
+  owner2: efixler
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: false
+    expiration_days: null
+workgroup_access: []
 deprecated: true

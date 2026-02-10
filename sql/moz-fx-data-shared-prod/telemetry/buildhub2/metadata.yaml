@@ -1,0 +1,11 @@
+friendly_name: Buildhub2
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-buildhub2-prod-4784.build_metadata.buildhub2

@@ -1,0 +1,12 @@
+friendly_name: Cohort Weekly Statistics By App Channel Version
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.active_users
+  - moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2

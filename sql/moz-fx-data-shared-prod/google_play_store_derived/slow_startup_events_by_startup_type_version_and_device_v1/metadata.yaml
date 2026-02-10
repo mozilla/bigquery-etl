@@ -7,9 +7,12 @@ labels:
   level: bronze
   incremental: true
   owner1: kwindau
+  dag: bqetl_google_play_store
 scheduling:
   dag_name: bqetl_google_play_store
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   secrets:
   - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO
     key: bqetl_google_play_store_developer_reporting_api_data_boxwood
@@ -19,5 +22,8 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
 require_column_descriptions: true

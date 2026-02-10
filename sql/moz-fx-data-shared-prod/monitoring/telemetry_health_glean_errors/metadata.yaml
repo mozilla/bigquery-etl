@@ -1,0 +1,11 @@
+friendly_name: Telemetry Health Glean Errors
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.telemetry_health_glean_errors_v1

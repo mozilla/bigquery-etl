@@ -6,6 +6,17 @@ description: |-
   PPA DAP Collector job (dap_collector_ppa_dev DAG, defined in
   telemetry-airflow and docker-etl)
 owners:
-  - cmorales@mozilla.com
-  - cbeck@mozilla.com
-  - lvargas@mozilla.com
+- cmorales@mozilla.com
+- cbeck@mozilla.com
+- lvargas@mozilla.com
+labels:
+  owner1: cmorales
+  owner2: cbeck
+  owner3: lvargas
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads/data-viewers
+references:
+  view.sql:
+  - moz-fx-ads-prod.ppa.measurements

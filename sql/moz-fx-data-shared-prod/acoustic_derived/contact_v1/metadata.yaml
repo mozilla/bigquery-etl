@@ -1,23 +1,25 @@
 friendly_name: Contact Database (Acoustic data)
-
-description: >
+description: |
   Import Contacts file exported from Acoustic (CSV data).
-
+owners:
+- cbeck@mozilla.com
 labels:
   incremental: true
   table_type: client_level
-owners:
-  - cbeck@mozilla.com
-
+  owner1: cbeck
 bigquery:
   time_partitioning:
     type: day
     field: last_modified_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
-      - has_opted_out_of_email
-      - double_opt_in
-      - email_lang
-      - mailing_country
+    - has_opted_out_of_email
+    - double_opt_in
+    - email_lang
+    - mailing_country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

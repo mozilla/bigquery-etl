@@ -2,16 +2,23 @@ friendly_name: Monitor Plus Users
 description: |-
   Imported monitor plus list.
 owners:
-  - sherrera@mozilla.com
+- sherrera@mozilla.com
 labels:
-  incremental: false
   owner1: sherrera
+  dag: bqetl_braze_monitor_plus_users_sync
 scheduling:
   dag_name: bqetl_braze_monitor_plus_users_sync
   arguments:
-    - --destination-project=moz-fx-data-shared-prod
-    - --destination-dataset=braze_derived
-    - --destination-table=monitor_plus_users_v1
-    - --source-bucket=moz-fx-data-marketing-prod-braze-firefox
-    - --source-prefix=monitor-sunset
-    - --source-files=all_monitor_plus,ppp_auto_renewing,ppp_non_renewing
+  - --destination-project=moz-fx-data-shared-prod
+  - --destination-dataset=braze_derived
+  - --destination-table=monitor_plus_users_v1
+  - --source-bucket=moz-fx-data-marketing-prod-braze-firefox
+  - --source-prefix=monitor-sunset
+  - --source-files=all_monitor_plus,ppp_auto_renewing,ppp_non_renewing
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers

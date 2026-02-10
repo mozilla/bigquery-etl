@@ -1,4 +1,14 @@
 friendly_name: Messaging System Snippets Users Daily
-description: Daily users of Snippets, partitioned by day
+description: |-
+  Daily users of Snippets, partitioned by day
 owners:
 - najiang@mozilla.com
+labels:
+  owner1: najiang
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.messaging_system_derived.snippets_users_daily_v1

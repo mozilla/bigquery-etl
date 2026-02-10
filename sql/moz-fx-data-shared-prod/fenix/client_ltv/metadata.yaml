@@ -3,3 +3,13 @@ description: |-
   Per-client historical and predicted future ad clicks, using the latest android_states_v2 state.
 owners:
 - frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.ltv_state_values
+  - moz-fx-data-shared-prod.fenix_derived.client_ltv_v1

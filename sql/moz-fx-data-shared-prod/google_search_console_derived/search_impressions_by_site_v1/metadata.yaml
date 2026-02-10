@@ -23,12 +23,7 @@ labels:
   incremental: true
   owner1: srose
 scheduling:
-  # Not scheduled because we stopped syncing Google Search Console data with Fivetran.
-  # See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c44 and https://bugzilla.mozilla.org/show_bug.cgi?id=1890816.
-  #dag_name: bqetl_google_search_console
   date_partition_parameter: date
-  # Fivetran's rollback sync time frame for Google Search Console connectors is 7 days.
-  # https://fivetran.com/docs/connectors/applications/google-search-console#rollbacksync
   date_partition_offset: -7
 bigquery:
   time_partitioning:
@@ -39,3 +34,15 @@ bigquery:
   clustering:
     fields:
     - site_domain_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.google_search_console_addons.keyword_site_report_by_site
+  - moz-fx-data-bq-fivetran.google_search_console_blog.keyword_site_report_by_site
+  - moz-fx-data-bq-fivetran.google_search_console_mdn.keyword_site_report_by_site
+  - moz-fx-data-bq-fivetran.google_search_console_pocket.keyword_site_report_by_site
+  - moz-fx-data-bq-fivetran.google_search_console_support.keyword_site_report_by_site
+  - moz-fx-data-bq-fivetran.google_search_console_www.keyword_site_report_by_site

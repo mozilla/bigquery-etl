@@ -5,9 +5,12 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
 bigquery:
-  range_partitioning: null
   clustering:
     fields:
     - cpu_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

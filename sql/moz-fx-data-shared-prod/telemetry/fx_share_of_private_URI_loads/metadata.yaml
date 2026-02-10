@@ -1,5 +1,15 @@
 friendly_name: Private browsing mode users dashboard - Share of private URI loads
   for users of private windows
-description: Share of private URI loads for users of private windows
+description: |-
+  Share of private URI loads for users of private windows
 owners:
 - akommasani@mozilla.com
+labels:
+  owner1: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_share_of_private_URI_loads_v1

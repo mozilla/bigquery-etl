@@ -3,11 +3,12 @@ description: |-
   Daily list of new shredder deletion targets that don't have configured deletion sources
   or have deletion sources that do not match the sources based on lineage.
 owners:
-  - bewu@mozilla.com
+- bewu@mozilla.com
 labels:
   incremental: true
-  owner1: benwu
+  owner1: bewu
   schedule: daily
+  dag: bqetl_shredder_monitoring
 scheduling:
   dag_name: bqetl_shredder_monitoring
 bigquery:
@@ -15,3 +16,11 @@ bigquery:
     type: day
     field: run_date
     require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.shredder_targets_joined_v1

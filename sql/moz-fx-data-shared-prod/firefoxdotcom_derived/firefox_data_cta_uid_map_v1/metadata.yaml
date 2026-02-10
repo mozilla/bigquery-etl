@@ -10,7 +10,14 @@ owners:
 labels:
   incremental: true
   owner1: sherrera
+  dag: bqetl_firefox_data_cta_uid_map
 scheduling:
   dag_name: bqetl_firefox_data_cta_uid_map
-bigquery:
-  require_column_descriptions: true
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc

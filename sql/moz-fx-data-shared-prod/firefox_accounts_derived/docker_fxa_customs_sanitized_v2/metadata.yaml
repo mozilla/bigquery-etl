@@ -17,12 +17,18 @@ scheduling:
   dag_name: bqetl_fxa_events
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
-schema:
-  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+schema:
+  allow_field_addition: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-fxa-prod.gke_fxa_prod_log.stderr

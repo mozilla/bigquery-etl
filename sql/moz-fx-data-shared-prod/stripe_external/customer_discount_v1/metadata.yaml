@@ -1,13 +1,24 @@
 friendly_name: Prod Stripe customer_discount
-description: Production Stripe customer_discount table from Fivetran
+description: |-
+  Production Stripe customer_discount table from Fivetran
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
-  # destination is the whole table, not a single partition,
-  # so don't use date_partition_parameter
   date_partition_parameter: null
   depends_on_fivetran:
-    - task_id: fivetran_stripe
+  - task_id: fivetran_stripe
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe/viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.stripe.customer_discount

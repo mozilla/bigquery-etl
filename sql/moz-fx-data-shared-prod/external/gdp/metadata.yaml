@@ -1,3 +1,11 @@
 friendly_name: GDP - Gross Domestic Product
 description: |-
   Contains GDP data by country and year from the World Bank API
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.external_derived.gdp_v1

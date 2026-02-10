@@ -1,0 +1,12 @@
+friendly_name: Telemetry Missing Columns V2
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_stable.*
+  - moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS

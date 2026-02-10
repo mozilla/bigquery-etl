@@ -1,10 +1,11 @@
 friendly_name: Cloudflare Operating System Usage Errors
-description: Log table for any errors from cloudflare_os_usage DAG
+description: |-
+  Log table for any errors from cloudflare_os_usage DAG
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
 bigquery:
   time_partitioning:
     type: day
@@ -15,3 +16,7 @@ bigquery:
     fields:
     - location
     - device_type
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

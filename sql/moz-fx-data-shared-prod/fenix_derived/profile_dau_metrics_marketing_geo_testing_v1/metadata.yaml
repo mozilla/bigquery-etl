@@ -7,6 +7,11 @@ owners:
 labels:
   incremental: true
   table_type: aggregate
+  dag: bqetl_marketing_analysis
+  owner1: kik
+  owner2: shong
+scheduling:
+  dag_name: bqetl_marketing_analysis
 bigquery:
   time_partitioning:
     type: day
@@ -17,5 +22,11 @@ bigquery:
     fields:
     - normalized_channel
     - country
-scheduling:
-  dag_name: bqetl_marketing_analysis
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.active_users
+  - moz-fx-data-shared-prod.fenix.attribution_clients

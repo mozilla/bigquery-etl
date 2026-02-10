@@ -1,5 +1,4 @@
 friendly_name: Internet Outages (version 2)
-# yamllint disable rule:line-length
 description: |-
   Note: Version 2 contains two additional fields: geo_subdivision1 && geo_subdivision2 for more accurate data grouping
         and the data available starting 2024/07/26.
@@ -69,6 +68,8 @@ labels:
   incremental: true
   review_bugs:
   - '1640204'
+  dag: bqetl_internet_outages
+  owner1: aplacitelli
 scheduling:
   dag_name: bqetl_internet_outages
 bigquery:
@@ -76,7 +77,21 @@ bigquery:
     type: day
     field: datetime
     require_partition_filter: null
+    expiration_days: null
   clustering:
     fields:
     - country
     - city
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:internet-outages/external-data-viewers
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - C
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry.health
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

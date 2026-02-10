@@ -1,0 +1,16 @@
+friendly_name: Experiment Search Events Live
+description: |-
+  Materialized view of experimentation related search events
+  coming from org_mozilla_ios_klar clients.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  materialized_view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar_live.metrics_v1

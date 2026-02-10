@@ -1,10 +1,16 @@
 friendly_name: Attributable Clients
-description: 'For clients who have attribution data,
-
+description: |
+  For clients who have attribution data,
   this table records daily information about
-
   them and their activity.
-
-  '
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.attributable_clients_v1

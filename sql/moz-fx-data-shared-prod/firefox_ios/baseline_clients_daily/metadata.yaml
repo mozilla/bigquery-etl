@@ -1,0 +1,13 @@
+friendly_name: Baseline Clients Daily
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline_clients_daily

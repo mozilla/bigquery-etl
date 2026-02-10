@@ -8,6 +8,8 @@ labels:
   incremental: true
   schedule: daily
   table_type: aggregate
+  dag: bqetl_gud
+  owner1: jklukas
 scheduling:
   dag_name: bqetl_gud
 bigquery:
@@ -15,7 +17,15 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: null
+    expiration_days: null
   clustering:
     fields:
     - usage
     - id_bucket
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2

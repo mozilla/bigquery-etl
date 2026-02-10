@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "bounce-tracking-protection"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.bounce_tracking_protection, org_mozilla_firefox_beta.bounce_tracking_protection, org_mozilla_fenix.bounce_tracking_protection, org_mozilla_fenix_nightly.bounce_tracking_protection, org_mozilla_fennec_aurora.bounce_tracking_protection).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.bounce_tracking_protection
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.bounce_tracking_protection
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.bounce_tracking_protection
+  - moz-fx-data-shared-prod.org_mozilla_firefox.bounce_tracking_protection
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.bounce_tracking_protection

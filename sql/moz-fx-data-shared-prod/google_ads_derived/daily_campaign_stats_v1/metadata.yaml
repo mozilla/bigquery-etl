@@ -6,15 +6,26 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: false
+  dag: bqetl_fivetran_google_ads
+  owner1: kwindau
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
-schema:
-  allow_field_addition: true
 bigquery:
   clustering:
-    fields: ["date"]
+    fields:
+    - date
+schema:
+  allow_field_addition: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-bq-fivetran.ads_google_mmc_google_ads.google_ads__campaign_report

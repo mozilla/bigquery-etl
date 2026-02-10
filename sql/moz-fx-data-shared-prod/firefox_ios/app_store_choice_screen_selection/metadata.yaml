@@ -7,3 +7,12 @@ description: "Apple App Store Choice Screen Engagement (post-iOS 18.2 only)\nThi
   \ App Store storefront region.\n"
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.app_store_choice_screen_selection_v1

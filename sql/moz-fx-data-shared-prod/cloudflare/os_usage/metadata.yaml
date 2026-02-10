@@ -1,3 +1,12 @@
 friendly_name: Cloudflare Operating System Usage
 description: |-
   Contains OS market share data from Cloudflare over time
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1
+  - moz-fx-data-shared-prod.static.country_codes_v1

@@ -1,11 +1,13 @@
----
 friendly_name: Impression Stats Flat
-description: Unnested representation of tile impression statistics
+description: |-
+  Unnested representation of tile impression statistics
 owners:
-  - mbowerman@mozilla.com
+- mbowerman@mozilla.com
 labels:
   application: activity_stream
   schedule: daily
+  dag: bqetl_activity_stream
+  owner1: mbowerman
 scheduling:
   dag_name: bqetl_activity_stream
 bigquery:
@@ -13,8 +15,17 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 180
+    expiration_days: 180.0
   clustering:
     fields:
-      - release_channel
-      - sample_id
+    - release_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:pocket/external
+  - workgroup:pocket/prefect
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.activity_stream_stable.impression_stats_v1

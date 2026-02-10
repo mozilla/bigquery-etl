@@ -1,6 +1,14 @@
 friendly_name: Experiment Cumulative Search Count
-description: Cumulative number of searches by clients enrolled in experiments
-labels:
-  incremental: false
+description: |-
+  Cumulative number of searches by clients enrolled in experiments
 owners:
 - ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_live_v1

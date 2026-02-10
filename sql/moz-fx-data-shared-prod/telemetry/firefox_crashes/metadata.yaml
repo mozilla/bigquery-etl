@@ -4,10 +4,14 @@ description: |-
   Deduped by minidump hash.
 owners:
 - benwu@mozilla.com
+labels:
+  owner1: benwu
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  # https://mozilla-hub.atlassian.net/browse/DENG-8189
   - workgroup:dataops-managed/crash-ping-ingest
-  # https://mozilla-hub.atlassian.net/browse/DENG-8424
+  - workgroup:mozilla-confidential/data-viewers
   - workgroup:remote-settings/gke
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.firefox_crashes_v1

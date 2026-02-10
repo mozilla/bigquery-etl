@@ -1,4 +1,14 @@
 friendly_name: Shredder Per Job Stats
-description: Runtime and compute stats for shredder jobs.
+description: |-
+  Runtime and compute stats for shredder jobs.
 owners:
-  - bewu@mozilla.com
+- bewu@mozilla.com
+labels:
+  owner1: bewu
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1

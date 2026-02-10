@@ -2,6 +2,14 @@ friendly_name: Google Play Store Reviews (444337733603)
 description: |-
   Google Play Store Reviews (444337733603)
 owners:
-  - mhirose@mozilla.com
+- mhirose@mozilla.com
 labels:
   authorized: true
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-marketing-prod.google_play_store.p_Reviews_v1

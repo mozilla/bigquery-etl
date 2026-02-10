@@ -3,5 +3,12 @@ description: |-
   A view on Fenix Google Play Install Data by Country
 owners:
 - frank@mozilla.com
-labels: {}
-bigquery: null
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_external.gplay_installs_by_country_v1

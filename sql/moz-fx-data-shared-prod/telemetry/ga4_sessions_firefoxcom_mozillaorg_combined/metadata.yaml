@@ -1,6 +1,15 @@
 friendly_name: GA4 Sessions Combined - Firefox.com & Mozilla.org
-description: Contains 1 row per session.
-  Primary key is a 3 part key, ga_session_id + ga_client_id + flag.
-  The flag value indicates the website the session is from, i.e. mozilla.org or firefox.com
+description: |-
+  Contains 1 row per session. Primary key is a 3 part key, ga_session_id + ga_client_id + flag. The flag value indicates the website the session is from, i.e. mozilla.org or firefox.com
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom.ga_sessions
+  - moz-fx-data-shared-prod.mozilla_org.ga_sessions

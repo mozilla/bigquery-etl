@@ -4,6 +4,11 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
+  dag: bqetl_releases
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_releases
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

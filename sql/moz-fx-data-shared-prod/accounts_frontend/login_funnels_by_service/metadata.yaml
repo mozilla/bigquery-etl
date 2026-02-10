@@ -4,3 +4,13 @@ description: |-
   relevant OAuth client IDs as well as interpretable service names.
 owners:
 - ksiegler@mozilla.com
+labels:
+  owner1: ksiegler
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.accounts_db.fxa_oauth_clients
+  - moz-fx-data-shared-prod.accounts_frontend_derived.login_funnels_by_service_v1

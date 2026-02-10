@@ -8,10 +8,12 @@ labels:
   owner1: kwindau
   depends_on_past: true
   table_type: client_level
+  dag: bqetl_client_attributes
 scheduling:
   dag_name: bqetl_client_attributes
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
   depends_on_past: true
 bigquery:
   time_partitioning:
@@ -19,5 +21,12 @@ bigquery:
     field: linkage_first_seen_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  script.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_accounts_linked_clients_staging_v1
+  - moz-fx-data-shared-prod.telemetry_derived.fx_accounts_linked_clients_v1
 require_column_descriptions: true

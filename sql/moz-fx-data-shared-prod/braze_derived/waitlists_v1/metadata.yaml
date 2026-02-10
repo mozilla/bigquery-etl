@@ -6,11 +6,24 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: false
   schedule: daily
   owner: cbeck
-bigquery:
-  time_partitioning: null
+  dag: bqetl_braze
+  owner1: cbeck
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+bigquery: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.users_v1
+  - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists

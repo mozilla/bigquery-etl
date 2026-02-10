@@ -1,4 +1,11 @@
-friendly_name: |-
-  Contile Tiles ADM Request
+friendly_name: Contile Tiles ADM Request
+description: |-
+  Please provide a description for the query
 owners:
 - rburwei@mozilla.com
+labels:
+  owner1: rburwei
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

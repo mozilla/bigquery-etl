@@ -9,3 +9,13 @@ description: |-
 owners:
 - vsabino@mozilla.com
 - kik@mozilla.com
+labels:
+  owner1: vsabino
+  owner2: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.clients_activation_v1

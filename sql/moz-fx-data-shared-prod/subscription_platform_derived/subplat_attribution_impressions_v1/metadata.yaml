@@ -10,16 +10,12 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
   date_partition_offset: -1
-  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG:
-  #   * -23h for upstream ETLs which overwrite the entire table, to wait for the hourly ETL that
-  #     started at the same time as this daily ETL, so the upstream table is in a consistent state.
-  #   * 2h for upstream ETLs which write to a specific date partition, to wait for the last hourly
-  #     ETL that will have written to the date partition this daily ETL will be reading from,
-  #     taking into consideration the date_partition_offset.
   depends_on:
   - dag_name: bqetl_subplat_hourly
     task_id: subscription_platform_derived__services__v1
@@ -33,4 +29,10 @@ bigquery:
     field: impression_at
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1_live

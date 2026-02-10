@@ -7,6 +7,14 @@ owners:
 labels:
   owner1: kwindau
   table_type: aggregate
+  dag: bqetl_imf_exchange_rates
 scheduling:
   dag_name: bqetl_imf_exchange_rates
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
 require_column_descriptions: true

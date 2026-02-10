@@ -1,11 +1,13 @@
 friendly_name: Mozilla VPN add device events
-description: >
+description: |
   Event timestamps where accounts added a device
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
 bigquery:
@@ -13,3 +15,11 @@ bigquery:
     type: day
     field: timestamp
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-guardian-prod-bfc7.log_storage.stdout

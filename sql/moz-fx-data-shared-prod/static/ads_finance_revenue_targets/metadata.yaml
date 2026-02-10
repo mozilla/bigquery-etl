@@ -2,3 +2,8 @@ friendly_name: Ads Direct Sale Revenue Targets
 description: |-
   Ads direct sold revenue targets for 2025-2026 by country and month, set by Finance team.
   The targets and rest of the Finance numbers are at: https://docs.google.com/spreadsheets/d/1la6Hc96x4ppFpwvJZ7jIzgZqGDYOjqpGt7s2GGtOcnU/edit?gid=1925637304#gid=1925637304
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

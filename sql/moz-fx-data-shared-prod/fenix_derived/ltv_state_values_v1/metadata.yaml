@@ -5,14 +5,19 @@ description: |-
 owners:
 - frank@mozilla.com
 labels:
-  incremental: false
-  owner1: frank@mozilla.com
+  owner1: frank
 scheduling:
-  #dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
-  time_partitioning: null
   clustering:
-    fields: [country]
+    fields:
+    - country
+workgroup_access: []
+references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1
+  query.sql:
+  - mozdata.analysis.android_state_ltvs_v1
 deprecated: true

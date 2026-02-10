@@ -1,4 +1,14 @@
 friendly_name: Firefox Health Indicators MAU Per Tier1 Country
-description: Aggregate of MAU per tier 1 country used in dashboard
+description: |-
+  Aggregate of MAU per tier 1 country used in dashboard
 owners:
 - kwindau@mozilla.com
+labels:
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_mau_per_tier1_country_v1

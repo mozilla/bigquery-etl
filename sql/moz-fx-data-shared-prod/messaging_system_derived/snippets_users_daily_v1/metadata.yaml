@@ -1,11 +1,13 @@
----
 friendly_name: Messaging System Snippets Users Daily
-description: Daily users of Snippets, partitioned by day
+description: |-
+  Daily users of Snippets, partitioned by day
 owners:
-  - najiang@mozilla.com
+- najiang@mozilla.com
 labels:
   incremental: true
   table_type: client_level
+  dag: bqetl_messaging_system
+  owner1: najiang
 scheduling:
   dag_name: bqetl_messaging_system
 bigquery:
@@ -13,7 +15,14 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   clustering:
     fields:
-      - release_channel
+    - release_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.messaging_system.snippets

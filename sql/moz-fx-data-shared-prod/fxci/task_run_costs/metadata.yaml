@@ -1,4 +1,14 @@
 friendly_name: Firefox-CI Task Run Costs
-description: Derived Firefox-CI task run cost data.
+description: |-
+  Derived Firefox-CI task run cost data.
 owners:
 - ahalberstadt@mozilla.com
+labels:
+  owner1: ahalberstadt
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fxci_derived.task_run_costs_v1

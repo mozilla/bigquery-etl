@@ -1,5 +1,14 @@
 friendly_name: FxA Users Services Last Seen
-description: Usage aggregations per FxA user per FxA service per day over a 28-day
-  window
+description: |-
+  Usage aggregations per FxA user per FxA service per day over a 28-day window
 owners:
 - kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_last_seen_v1

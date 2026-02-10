@@ -8,6 +8,7 @@ labels:
   owner1: mhirose
   shredder_mitigation: true
   table_type: aggregate
+  dag: bqetl_desktop_retention_model
 scheduling:
   dag_name: bqetl_desktop_retention_model
   date_partition_parameter: metric_date
@@ -17,11 +18,17 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: 'metric_date'
+    field: metric_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - country
     - normalized_os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_retention_clients_v2

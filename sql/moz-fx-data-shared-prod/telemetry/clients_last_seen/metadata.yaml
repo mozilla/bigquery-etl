@@ -1,6 +1,4 @@
----
 friendly_name: Clients Last Seen
-# yamllint disable rule:line-length
 description: |-
   Captures history of activity of each client in 28 day
   windows for each submission date.
@@ -23,6 +21,14 @@ description: |-
 
   See also: `clients_daily`, `clients_first_seen`
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen_v2

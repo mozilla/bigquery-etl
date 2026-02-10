@@ -10,6 +10,16 @@ description: |-
 
   For queries that do not require data before 2025-08-19 or MDN Plus data,
   prefer using `mdn_fred.events_stream` directly.
-
 owners:
-  - caugner@mozilla.com
+- caugner@mozilla.com
+labels:
+  owner1: caugner
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mdn_fred.events_stream
+  - moz-fx-data-shared-prod.mdn_yari.page
+  - moz-fx-data-shared-prod.static.country_codes_v1

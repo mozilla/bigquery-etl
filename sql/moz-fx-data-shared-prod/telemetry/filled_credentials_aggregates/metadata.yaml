@@ -4,3 +4,13 @@ description: |-
   view contains a sample number of clients by day and by country.
 
   Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-10212
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.filled_address_clients_aggregates_v1
+  - moz-fx-data-shared-prod.telemetry_derived.filled_creditcard_clients_aggregates_v1
+  - moz-fx-data-shared-prod.telemetry_derived.filled_login_clients_aggregates_v1

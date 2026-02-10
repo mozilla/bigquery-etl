@@ -8,3 +8,13 @@ description: |-
 owners:
 - brwells@mozilla.com
 - bochocki@mozilla.com
+labels:
+  owner1: brwells
+  owner2: bochocki
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.forecasts_derived.mart_mozaic_daily_forecast_v2

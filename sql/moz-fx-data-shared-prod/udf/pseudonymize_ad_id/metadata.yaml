@@ -1,2 +1,9 @@
-description: Pseudonymize Ad IDs, handling opt-outs.
 friendly_name: Pseudonymize Ad Ids
+description: |-
+  Pseudonymize Ad IDs, handling opt-outs.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

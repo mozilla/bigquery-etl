@@ -18,15 +18,24 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: aggregate
+  dag: bqetl_un_population
 scheduling:
   dag_name: bqetl_un_population
-  arguments: ["--date", "{{ds}}"]
+  arguments:
+  - --date
+  - '{{ds}}'
   secrets:
   - deploy_target: UN_POPULATION_BEARER_TOKEN
     key: bqetl_un_population__un_population_bearer_token
 bigquery:
-  range_partitioning: null
   clustering:
     fields:
     - location_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
 require_column_descriptions: true

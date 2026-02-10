@@ -1,5 +1,14 @@
 friendly_name: Exchange Rates
-description: >
+description: |
   Import exchange rates from Oanda.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
+labels:
+  owner1: srose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.exchange_rates_v1

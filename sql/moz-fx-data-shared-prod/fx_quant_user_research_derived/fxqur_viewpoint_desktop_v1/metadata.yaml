@@ -1,31 +1,40 @@
----
 friendly_name: Alchemer Survey data for Viewpoint 2023 Expansion - Desktop
-description: >
+description: |
   An import of survey data from Alchemer (SurveyGizmo) for Viewpoint 2023 Expansion - Desktop
 owners:
-  - ago@mozilla.com
-  - eshallal@mozilla.com
+- ago@mozilla.com
+- eshallal@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_alchemer
+  owner1: ago
+  owner2: eshallal
 scheduling:
   dag_name: bqetl_alchemer
   arguments:
-    [
-      "--date",
-      "{{ ds }}",
-      "--survey_id",
-      "7317764",
-      "--api_token",
-      "{{ var.value.surveygizmo_api_token }}",
-      "--api_secret",
-      "{{ var.value.surveygizmo_api_secret }}",
-      "--destination_table",
-      "moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1",
-      "--include_url_variables"
-    ]
+  - --date
+  - '{{ ds }}'
+  - --survey_id
+  - '7317764'
+  - --api_token
+  - '{{ var.value.surveygizmo_api_token }}'
+  - --api_secret
+  - '{{ var.value.surveygizmo_api_secret }}'
+  - --destination_table
+  - moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1
+  - --include_url_variables
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fx-quant-user-research/data-viewers
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:fx-quant-user-research/data-developers

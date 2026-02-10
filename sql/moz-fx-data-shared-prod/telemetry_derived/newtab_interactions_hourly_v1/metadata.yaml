@@ -10,34 +10,37 @@ description: |-
   Anyone doing backfills on this model should be mindful that the legacy data currently has an
   expiration of 180 days.
 owners:
-  - cbeck@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: true
-  owner1: cbeck@mozilla.com
+  owner1: cbeck
+  dag: bqetl_newtab_interactions_hourly
 scheduling:
   dag_name: bqetl_newtab_interactions_hourly
   date_partition_parameter: null
-  # We reprocess the same day every hour up until 1:00 the following day, to give
-  # the live data time to come in
-  destination_table: >-
-    newtab_interactions_hourly_v1${{
-    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+  destination_table: newtab_interactions_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:
-    - >-
-      submission_date:DATE:{{
-      (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
-      }}
-  query_file_path:
-    # explicit query file path is necessary because the destination table
-    # includes a partition identifier that is not in the path
-    sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql
+  - submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+    }}
+  query_file_path: sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql
   referenced_tables: []
   depends_on:
-    - task_id: ads_derived__interaction_aggregates_hourly__v1
-      dag_name: private_bqetl_ads_hourly
+  - task_id: ads_derived__interaction_aggregates_hourly__v1
+    dag_name: private_bqetl_ads_hourly
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.activity_stream_live.impression_stats_v1
+  - moz-fx-data-shared-prod.ads_derived.interaction_aggregates_uapi_hourly_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_interactions_historical_legacy_v1

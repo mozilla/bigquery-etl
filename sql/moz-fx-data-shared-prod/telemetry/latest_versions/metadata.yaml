@@ -2,3 +2,11 @@ friendly_name: Latest Versions
 description: |-
   Most recent major release versions per channel.
   Parsed from https://product-details.mozilla.org/1.0/firefox_versions.json.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.latest_versions_v2

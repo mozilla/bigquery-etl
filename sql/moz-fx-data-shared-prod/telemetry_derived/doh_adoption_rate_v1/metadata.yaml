@@ -3,20 +3,28 @@ description: |-
   A distinct client count of a combination of metrics to measure
   the adoption of DOH (DNS over HTTPS) in Firefox.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   incremental: true
   owner1: ascholtz
   public_bigquery: true
   public_json: true
   review_bugs:
-    - '1982897'
+  - '1982897'
+  dag: bqetl_ech_adoption_rate
 scheduling:
   dag_name: bqetl_ech_adoption_rate
 bigquery:
   time_partitioning:
     type: day
-    field: 'submission_date'
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.events_stream
+  - moz-fx-data-shared-prod.firefox_desktop.metrics

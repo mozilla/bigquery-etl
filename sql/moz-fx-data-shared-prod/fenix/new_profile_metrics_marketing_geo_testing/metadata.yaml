@@ -1,8 +1,17 @@
 friendly_name: New profile metrics with geo information for marketing testing.
-description: 'New profile metrics with geo information for marketing testing. This
-  table is updated with a 28 day lag
-
-  as we need to wait until week 4 after first_seen_date for retention calculation.'
+description: |-
+  New profile metrics with geo information for marketing testing. This table is updated with a 28 day lag
+  as we need to wait until week 4 after first_seen_date for retention calculation.
 owners:
 - kik@mozilla.com
 - shong@mozilla.com
+labels:
+  owner1: kik
+  owner2: shong
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.new_profile_metrics_marketing_geo_testing_v1

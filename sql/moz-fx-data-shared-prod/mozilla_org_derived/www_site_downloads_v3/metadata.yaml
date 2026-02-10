@@ -12,7 +12,8 @@ owners:
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:
@@ -29,4 +30,14 @@ bigquery:
     - country
     - device_category
     - operating_system
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_313696158.events_*
 require_column_descriptions: true

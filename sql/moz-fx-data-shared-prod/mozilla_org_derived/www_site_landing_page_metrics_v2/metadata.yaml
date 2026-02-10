@@ -5,8 +5,9 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
+  owner1: mhirose
   table_type: aggregate
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
@@ -20,3 +21,13 @@ bigquery:
     - device_category
     - country
     - operating_system
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v2

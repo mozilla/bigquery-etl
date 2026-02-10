@@ -1,3 +1,11 @@
 friendly_name: Chrome Extensions
 description: |-
   Data about extensions offered by Google Chrome
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.external_derived.chrome_extensions_v1

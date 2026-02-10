@@ -1,13 +1,20 @@
 friendly_name: Mobile Search Aggregates For Searchreport
-description: 'This query creates a table based on
-
+description: |-
+  This query creates a table based on
   mobile_search_clients_engines_sources_daily
-
   containing search metrics aggregated by country, product,
-
   engine, and submission_date.
-
-  Originally created for the search report dashboard.'
+  Originally created for the search report dashboard.
 owners:
 - cmorales@mozilla.com
 - akommasani@mozilla.com
+labels:
+  owner1: cmorales
+  owner2: akommasani
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.mobile_search_aggregates_for_searchreport_v1

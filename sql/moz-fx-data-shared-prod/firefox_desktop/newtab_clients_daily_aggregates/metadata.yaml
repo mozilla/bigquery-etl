@@ -4,3 +4,12 @@ description: |-
   The granularity is one row per submission_date
 owners:
 - gkatre@mozilla.com
+labels:
+  owner1: gkatre
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_clients_daily_aggregates_v2

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_monitoring
 scheduling:
   dag_name: bqetl_monitoring
 bigquery:
@@ -14,8 +15,14 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - table_catalog
     - table_schema
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.TABLE_STORAGE

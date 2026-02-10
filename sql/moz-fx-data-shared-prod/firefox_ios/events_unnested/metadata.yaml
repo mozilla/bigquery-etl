@@ -1,0 +1,13 @@
+friendly_name: Events Unnested
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.events
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.events
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events

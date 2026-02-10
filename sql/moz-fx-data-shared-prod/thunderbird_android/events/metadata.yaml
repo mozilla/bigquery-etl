@@ -1,0 +1,17 @@
+friendly_name: App-specific view for Glean ping "events"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Thunderbird for Android"
+  (net_thunderbird_android.events, net_thunderbird_android_beta.events, net_thunderbird_android_daily.events).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.net_thunderbird_android.events
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta.events
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily.events

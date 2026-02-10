@@ -4,11 +4,17 @@ description: |-
   As part of the migration to Braze, all the data from Acoustic will be exported and uploaded to BigQuery once.
 dataset_base_acl: restricted
 user_facing: false
-labels: {}
-workgroup_access:
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:braze/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:braze/data-viewers

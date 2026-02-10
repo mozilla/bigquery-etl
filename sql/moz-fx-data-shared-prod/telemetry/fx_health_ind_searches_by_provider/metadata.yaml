@@ -1,3 +1,11 @@
 friendly_name: Firefox Health Indicator Searches by Provider
 description: |-
   Count of searches & users by provider/day used in Firefox Health Indicator dashboard
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_searches_by_provider_v1

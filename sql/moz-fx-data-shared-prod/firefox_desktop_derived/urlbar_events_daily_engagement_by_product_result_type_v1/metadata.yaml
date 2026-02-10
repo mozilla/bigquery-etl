@@ -8,7 +8,6 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  shredder_mitigation: false
   table_type: aggregate
   dag: bqetl_urlbar
   owner1: ascholtz
@@ -20,6 +19,11 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
-  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - mozdata.firefox_desktop.urlbar_events
 require_column_descriptions: false

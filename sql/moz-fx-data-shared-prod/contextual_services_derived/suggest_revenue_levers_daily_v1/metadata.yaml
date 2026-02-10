@@ -5,12 +5,14 @@ description: |-
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
 owners:
-  - skahmann@mozilla.com
-  - mozilla/revenue_forecasting_data_reviewers
+- skahmann@mozilla.com
+- mozilla/revenue_forecasting_data_reviewers
 labels:
   incremental: true
   schedule: daily
   change_controlled: true
+  dag: bqetl_ctxsvc_derived
+  owner1: skahmann
 scheduling:
   dag_name: bqetl_ctxsvc_derived
 bigquery:
@@ -19,3 +21,12 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.telemetry.suggest_clients_daily
+  - moz-fx-data-shared-prod.telemetry.unified_metrics

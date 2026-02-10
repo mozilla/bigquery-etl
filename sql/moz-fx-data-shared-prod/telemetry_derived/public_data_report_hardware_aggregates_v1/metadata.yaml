@@ -14,6 +14,13 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: 'date_from'
+    field: date_from
     require_partition_filter: false
     expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

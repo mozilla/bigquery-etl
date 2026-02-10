@@ -1,0 +1,9 @@
+friendly_name: firefox-desktop-background-tasks
+description: |-
+  User-facing views related to document namespace firefox-desktop-background-tasks; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop-background-tasks
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

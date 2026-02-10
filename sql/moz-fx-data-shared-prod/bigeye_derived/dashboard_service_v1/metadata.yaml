@@ -5,9 +5,10 @@ owners:
 - phlee@mozilla.com
 labels:
   application: bigeye
-  incremental: false
   schedule: daily
   table_type: aggregate
+  dag: bqetl_bigeye_derived
+  owner1: phlee
 scheduling:
   dag_name: bqetl_bigeye_derived
   secrets:
@@ -18,3 +19,8 @@ bigquery:
     type: day
     field: timestamp
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

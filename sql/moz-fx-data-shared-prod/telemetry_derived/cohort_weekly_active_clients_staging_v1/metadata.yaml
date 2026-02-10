@@ -8,6 +8,7 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: client_level
+  dag: bqetl_cohort_retention
 scheduling:
   dag_name: bqetl_cohort_retention
 bigquery:
@@ -15,5 +16,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
-  range_partitioning: null
+    expiration_days: 775.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.active_users

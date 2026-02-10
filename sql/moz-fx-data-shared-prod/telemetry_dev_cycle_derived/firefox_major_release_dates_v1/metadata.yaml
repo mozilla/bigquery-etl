@@ -4,8 +4,15 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
-  owner1: ascholtz@mozilla.com
+  owner1: ascholtz
+  dag: bqetl_telemetry_dev_cycle
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle
   date_partition_parameter: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.buildhub2

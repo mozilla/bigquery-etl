@@ -5,7 +5,8 @@ owners:
 - bewu@mozilla.com
 labels:
   incremental: true
-  owner1: benwu
+  owner1: bewu
+  dag: bqetl_monitoring
 scheduling:
   dag_name: bqetl_monitoring
 bigquery:
@@ -17,3 +18,10 @@ bigquery:
   clustering:
     fields:
     - normalized_app_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.event_monitoring_aggregates_v1

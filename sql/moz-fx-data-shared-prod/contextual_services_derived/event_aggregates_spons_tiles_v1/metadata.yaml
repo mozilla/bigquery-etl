@@ -16,4 +16,17 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.contextual_services.topsites_click
+  - moz-fx-data-shared-prod.contextual_services.topsites_impression
+  - moz-fx-data-shared-prod.firefox_desktop.top_sites
+  - moz-fx-data-shared-prod.org_mozilla_fenix.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression

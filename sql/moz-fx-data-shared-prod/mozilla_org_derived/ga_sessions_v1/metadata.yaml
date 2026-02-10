@@ -5,15 +5,28 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: frank
 scheduling:
-  # dag_name: bqetl_mozilla_org_derived - GA3 feed turned off 2024-06-30 so no need to run anymore
   date_partition_parameter: session_date
 bigquery:
   time_partitioning:
     type: day
-    field: 'session_date'
+    field: session_date
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: ["country"]
+    fields:
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-marketing-prod.65789850.ga_sessions_*
+  - moz-fx-data-marketing-prod.65789850.ga_sessions_intraday_*

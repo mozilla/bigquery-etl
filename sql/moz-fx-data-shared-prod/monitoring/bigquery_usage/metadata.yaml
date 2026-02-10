@@ -1,5 +1,16 @@
 friendly_name: BigQuery Query Usage
-description: BigQuery usage, partitioned by day.
+description: |-
+  BigQuery usage, partitioned by day.
 owners:
 - wichan@mozilla.com
 - mhirose@mozilla.com
+labels:
+  owner1: wichan
+  owner2: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2

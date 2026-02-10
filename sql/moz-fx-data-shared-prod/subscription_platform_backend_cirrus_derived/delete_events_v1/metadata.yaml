@@ -1,13 +1,14 @@
----
 friendly_name: Subscription Platform Backend Cirrus Delete Events
-description: Deletion events for subscription platform backend cirrus, derived
-  from FxA's delete events and subplat's namespace secrets
+description: |-
+  Deletion events for subscription platform backend cirrus, derived from FxA's delete events and subplat's namespace secrets
 owners:
-  - mwilliams@mozilla.com
+- mwilliams@mozilla.com
 labels:
   incremental: true
   schedule: daily
   table_type: client_level
+  dag: bqetl_fxa_events
+  owner1: mwilliams
 scheduling:
   dag_name: bqetl_fxa_events
 bigquery:
@@ -15,3 +16,13 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_accounts.fxa_delete_events
+  - moz-fx-data-shared-prod.subscription_platform_derived.encrypted_keys_v1
+  - moz-fx-dataops-secrets.airflow_query_keys.subplat_namespaces_prod

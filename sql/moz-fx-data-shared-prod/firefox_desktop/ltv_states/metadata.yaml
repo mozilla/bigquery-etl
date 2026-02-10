@@ -5,3 +5,10 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.ltv_states_v1

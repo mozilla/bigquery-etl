@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -16,7 +17,13 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
     - normalized_country_code
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.uninstall

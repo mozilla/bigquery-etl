@@ -23,3 +23,13 @@ description: |-
 owners:
 - sbedwell@mozilla.com
 - kik@mozilla.com
+labels:
+  owner1: sbedwell
+  owner2: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_marketing_funnel_v1

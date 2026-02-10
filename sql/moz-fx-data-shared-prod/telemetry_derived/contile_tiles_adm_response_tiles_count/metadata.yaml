@@ -1,4 +1,11 @@
-friendly_name: |-
-  Contile Tiles ADM Response Tiles Count
+friendly_name: Contile Tiles ADM Response Tiles Count
+description: |-
+  Please provide a description for the query
 owners:
 - rburwei@mozilla.com
+labels:
+  owner1: rburwei
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

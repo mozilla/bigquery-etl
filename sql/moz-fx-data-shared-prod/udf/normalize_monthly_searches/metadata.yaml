@@ -1,3 +1,9 @@
----
-description: Sum up the monthy search count arrays by normalized engine
 friendly_name: Normalize Monthly Searches
+description: |-
+  Sum up the monthy search count arrays by normalized engine
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

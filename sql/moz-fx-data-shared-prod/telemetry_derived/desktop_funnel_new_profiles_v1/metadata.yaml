@@ -1,15 +1,14 @@
-description: >
-  Measures the number of new profiles in the Firefox desktop
-  funnel. This only includes new profiles that are created on
-  first run (excluding new profiles that were created as part
-  of an existing Firefox installation)
 friendly_name: Firefox Desktop New Profiles
+description: |
+  Measures the number of new profiles in the Firefox desktop funnel. This only includes new profiles that are created on first run (excluding new profiles that were created as part of an existing Firefox installation)
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
   table_type: aggregate
   shredder_mitigation: true
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_desktop_funnel
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_desktop_funnel
 bigquery:
@@ -17,3 +16,12 @@ bigquery:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.static.country_codes_v1
+  - moz-fx-data-shared-prod.telemetry.new_profile

@@ -1,4 +1,14 @@
 friendly_name: Ltv States
-description: Fields required for retrieving LTV for clients.
+description: |-
+  Fields required for retrieving LTV for clients.
 owners:
 - frank@mozilla.com
+labels:
+  owner1: frank
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.ltv_states_v1

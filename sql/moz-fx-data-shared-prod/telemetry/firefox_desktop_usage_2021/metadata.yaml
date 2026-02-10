@@ -31,7 +31,15 @@ description: |-
   aggregates in this view (which are no longer client-level) will remain stable.
   Expect to see slightly higher results from this table compared to queries on
   client-level tables. The underlying table was initially created on 2021-02-19.
-labels:
-  application: desktop
 owners:
 - jklukas@mozilla.com
+labels:
+  application: desktop
+  owner1: jklukas
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_usage_v1

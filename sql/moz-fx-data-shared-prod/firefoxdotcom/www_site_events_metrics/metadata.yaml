@@ -4,3 +4,15 @@ description: |-
   Sourced from Google Analytics 4 (GA4) data
 owners:
 - mhirose@mozilla.com
+labels:
+  owner1: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_events_metrics_v1

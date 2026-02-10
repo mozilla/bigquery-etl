@@ -4,12 +4,12 @@ description: |-
 owners:
 - efilho@mozilla.com
 labels:
-  incremental: false
   owner1: efilho
   public_json: true
   public_bigquery: true
   review_bugs:
   - '1947481'
+  dag: bqetl_glean_dictionary
 scheduling:
   dag_name: bqetl_glean_dictionary
   depends_on_past: false
@@ -19,3 +19,10 @@ bigquery:
     fields:
     - app
     - event_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.glean_auto_events_derived.daily_auto_events_metadata_v1

@@ -1,0 +1,440 @@
+fields:
+- name: _64bit_build
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installed build is 64-bit
+- name: _64bit_os
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the OS this installer ran on is 64-bit
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+  description: A JSON string containing any payload properties not present in the
+    schema
+- name: admin_user
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user account which ran the installer had administrative
+    privileges
+- name: attribution
+  type: STRING
+  mode: NULLABLE
+  description: Any attribution data that was included with the installer
+- name: build_channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel the installer was built with the branding for
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+  description: Build ID of the installed product. Absent for a failed stub installation.
+- name: bytes_downloaded
+  type: INTEGER
+  mode: NULLABLE
+  description: Size of the full installer data that was actually transferred
+- name: default_path
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user did not customize the installation path
+- name: disk_space_error
+  type: BOOLEAN
+  mode: NULLABLE
+  description: '[DEPRECATED] Use `disk_space_req_not_met` instead.'
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message
+- name: download_ip
+  type: STRING
+  mode: NULLABLE
+  description: IP address of the server the full installer was downloaded from. May
+    be either IPv4 or IPv6.
+- name: download_latency
+  type: INTEGER
+  mode: NULLABLE
+  description: Seconds between sending the full installer download request and receiving
+    the first response data
+- name: download_retries
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times the full installer download was retried or resumed
+- name: download_size
+  type: INTEGER
+  mode: NULLABLE
+  description: Expected size of the full installer download according to the HTTP
+    response
+- name: download_time
+  type: INTEGER
+  mode: NULLABLE
+  description: Seconds spent downloading the full installer
+- name: file_error
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "True if the installation failed because the downloaded file couldn\u2019\
+    t be read from"
+- name: finish_time
+  type: INTEGER
+  mode: NULLABLE
+  description: For a stub ping, seconds spent waiting for the installed application
+    to launch. For a full ping, seconds spent on the finish page.
+- name: from_msi
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the install was launched from an MSI wrapper
+- name: funnelcake
+  type: STRING
+  mode: NULLABLE
+  description: Funnelcake ID
+- name: had_old_install
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if at least one existing installation of Firefox was found on
+    the system prior to this installation
+- name: install_time
+  type: INTEGER
+  mode: NULLABLE
+  description: For a stub ping, seconds the full installer ran for. For a full ping,
+    seconds spent on the install progress page.
+- name: install_timeout
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because running the full installer
+    timed out. Currently that means it ran for more than 150 seconds for a new installation,
+    or 165 seconds for a paveover installation.
+- name: installer_type
+  type: STRING
+  mode: NULLABLE
+  description: Which type of installer generated this ping (full or stub)
+- name: installer_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the installer itself. May be different from the product
+    version for a stub install.
+- name: intro_time
+  type: INTEGER
+  mode: NULLABLE
+  description: Seconds spent on the intro screen
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale of the installer and the installed product, in AB_CD format
+- name: manual_download
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user clicked through the error message to the manual full
+    installer download page.
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+      description: An ISO 3166-1 alpha-2 country code
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: The specific geo database version used for this lookup
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+      description: First major country subdivision, typically a state, province, or
+        county
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+      description: Second major country subdivision; not applicable for most countries
+    description: Results of a geographic lookup based on the client's IP address
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+      description: Date HTTP header
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+      description: DNT (Do Not Track) HTTP header
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+      description: X-Debug-Id HTTP header
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+      description: X-PingSender-Version HTTP header
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-Source-Tags HTTP header
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+      description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+    description: Headers included in the client's HTTP request
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: The specific geo ISP database version used for this lookup
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The name of the ISP associated with the client's IP address
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+      description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+    description: Results of ISP lookup based on the client's IP address
+- name: new_default
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the new installation was successfully set as the default browser
+- name: new_launched
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation succeeded and we were able to launch the newly
+    installed application.
+- name: no_write_access
+  type: BOOLEAN
+  mode: NULLABLE
+  description: '[DEPRECATED] Use `writeable_req_not_met` instead.'
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized app name
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized channel name
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: old_build_id
+  type: STRING
+  mode: NULLABLE
+  description: Build ID of the previously installed Firefox, if any
+- name: old_default
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if an existing Firefox installation was already set as the default
+    browser
+- name: old_running
+  type: BOOLEAN
+  mode: NULLABLE
+  description: '[DEPRECATED] Should always be false since Firefox 74, since this check
+    was removed in that version.'
+- name: old_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the previously installed Firefox, if any
+- name: options_time
+  type: INTEGER
+  mode: NULLABLE
+  description: Seconds spent in the options screens. For the stub installer this includes
+    only the profile cleanup prompt.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows version number in major.minor.build format
+- name: out_of_retries
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the download had to be retried
+    too many times (currently 10)
+- name: ping_version
+  type: STRING
+  mode: NULLABLE
+  description: Only set for stub installer pings
+- name: preinstall_time
+  type: INTEGER
+  mode: NULLABLE
+  description: Seconds spent verifying the downloaded full installer and preparing
+    to run it
+- name: profile_cleanup_prompt
+  type: STRING
+  mode: NULLABLE
+  description: Which type of profile cleanup prompt was shown, (reinstall or paveover)
+- name: profile_cleanup_requested
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if either profile cleanup prompt was shown and the user accepted
+    the prompt
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+- name: server_os
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the OS this installer ran on is Windows Server
+- name: service_pack
+  type: STRING
+  mode: NULLABLE
+  description: Latest installed service pack number
+- name: set_default
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the option to set the new installation as the default browser
+    was selected
+- name: sig_not_trusted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "True if the installation failed because the signature on the downloaded\
+    \ file wasn\u2019t valid and/or wasn\u2019t signed by a trusted authority"
+- name: sig_unexpected
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "True if the installation failed because the signature on the downloaded\
+    \ file didn\u2019t have the expected subject and issuer names"
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time when the ingestion edge server accepted this message
+- name: succeeded
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if a new installation was successfully created. If false, check
+    the error status fields for the failure reason.
+- name: update_channel
+  type: STRING
+  mode: NULLABLE
+  description: Value of MOZ_UPDATE_CHANNEL the installer was built with. Generally
+    the same as build_channel
+- name: user_cancelled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the user cancelled it or closed
+    the window
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the installed product. May be different from installer_version
+    for a stub install. Absent for a failed stub installation.
+- name: silent
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installer was run in silent mode (either from an MSI or
+    with command-line parameters)
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of partner distribution, defaulting to 0 for Mozilla distributions
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of partner distribution, defaulting to 0 for Mozilla distributions
+- name: windows_ubr
+  type: INTEGER
+  mode: NULLABLE
+  description: The Windows Update Build Revision of the installation device, 0 if
+    it does not exist
+- name: stub_build_id
+  type: STRING
+  mode: NULLABLE
+  description: Build ID of the stub installer
+- name: disk_space_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the drive we're trying to install
+    to does not have enough space.
+- name: hardware_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the system hardware does not meet the minimum hardware requirements.
+- name: os_version_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: ' True if the system does not meet the minimum OS version requirements.'
+- name: sig_check_timeout
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if there was a timeout on the the certificate checks
+- name: unknown_error
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Default failure exit code. Seeing this in telemetry indicates that
+    the stub installer has exited unsuccessfully, but no reason has been specified
+- name: writeable_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the user doesn't have permission
+    to write to the path we're trying to install to.
+- name: launched_by
+  type: STRING
+  mode: NULLABLE
+  description: Program that launched the installer, according to the /LaunchedBy command-line
+    argument
+- name: funnel_derived
+  type: STRING
+  mode: NULLABLE
+- name: distribution_model
+  type: STRING
+  mode: NULLABLE
+- name: partner_org
+  type: STRING
+  mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -1,2 +1,9 @@
 friendly_name: Organic vs Paid - Desktop
-description: This is a UDF to help distinguish desktop client attribution as being organic or paid
+description: |-
+  This is a UDF to help distinguish desktop client attribution as being organic or paid
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/telescope
+  - workgroup:mozilla-confidential/data-viewers

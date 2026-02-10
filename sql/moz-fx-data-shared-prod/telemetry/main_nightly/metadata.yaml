@@ -21,6 +21,14 @@ description: |-
 
   See also: `main_nightly`
 owners:
-  - jklukas@mozilla.com
+- jklukas@mozilla.com
 labels:
   application: firefox
+  owner1: jklukas
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.main_nightly_v1

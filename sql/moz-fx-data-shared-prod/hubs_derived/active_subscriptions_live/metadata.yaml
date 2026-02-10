@@ -1,0 +1,12 @@
+friendly_name: Active Subscriptions Live
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.hubs.active_subscription_ids
+  - moz-fx-data-shared-prod.hubs.subscriptions

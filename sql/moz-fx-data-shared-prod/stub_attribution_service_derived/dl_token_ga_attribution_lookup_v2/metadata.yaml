@@ -13,13 +13,26 @@ owners:
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   table_type: client_level
+  dag: bqetl_mozilla_org_derived
 scheduling:
   dag_name: bqetl_mozilla_org_derived
   date_partition_parameter: null
-  parameters: ["download_date:DATE:{{ds}}"]
+  parameters:
+  - download_date:DATE:{{ds}}
   depends_on_past: true
 bigquery:
   clustering:
-    fields: [first_seen_date]
+    fields:
+    - first_seen_date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2
+  - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout

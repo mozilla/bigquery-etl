@@ -1,0 +1,18 @@
+friendly_name: Active Users Aggregates Mobile
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.active_users_aggregates
+  - moz-fx-data-shared-prod.firefox_ios.active_users_aggregates
+  - moz-fx-data-shared-prod.focus_android.active_users_aggregates
+  - moz-fx-data-shared-prod.focus_android.composite_active_users_aggregates
+  - moz-fx-data-shared-prod.focus_ios.active_users_aggregates
+  - moz-fx-data-shared-prod.focus_ios.composite_active_users_aggregates
+  - moz-fx-data-shared-prod.klar_android.active_users_aggregates
+  - moz-fx-data-shared-prod.klar_ios.active_users_aggregates

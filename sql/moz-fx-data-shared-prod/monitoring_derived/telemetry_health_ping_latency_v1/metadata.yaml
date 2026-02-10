@@ -1,0 +1,33 @@
+friendly_name: Telemetry Health Ping Latency
+description: |
+  Reports latency percentiles (p95, median) for collection-to-submission, submission-to-ingestion,
+  and collection-to-ingestion for telemetry pings per day.
+  Combines data from Firefox Desktop, Firefox Android, and Firefox iOS.
+owners:
+- tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_monitoring
+  owner1: tlong
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline
+  - moz-fx-data-shared-prod.org_mozilla_fenix.baseline
+  - moz-fx-data-shared-prod.org_mozilla_firefox.baseline
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline

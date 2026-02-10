@@ -1,19 +1,28 @@
----
 friendly_name: Deletion Request Volume
-description: >
+description: |
   A daily count of deletion request pings by document namespace
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_deletion_request_volume
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_deletion_request_volume
   referenced_tables:
-    - ['moz-fx-data-shared-prod', '*_live', '*']
+  - - moz-fx-data-shared-prod
+    - '*_live'
+    - '*'
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

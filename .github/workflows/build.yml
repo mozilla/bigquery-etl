@@ -40,7 +40,7 @@ jobs:
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
     steps:
       - &checkout-with-history
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
           filter: blob:none
@@ -89,14 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - &checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
           filter: blob:none
       - &setup-python
         name: Set up Python
         id: setup_python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -109,7 +109,7 @@ jobs:
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
         if: steps.cache-venv.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -123,7 +123,7 @@ jobs:
       - *setup-python
       - &restore-venv
         name: Restore cached virtualenv
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -236,7 +236,7 @@ jobs:
     environment: dev
     steps:
       - &checkout-with-creds
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: true
           fetch-depth: 0
@@ -334,11 +334,11 @@ jobs:
           if [ -d /tmp/bigquery_etl_schemas ]; then
             cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -355,7 +355,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-generated-sql
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
@@ -391,7 +391,7 @@ jobs:
       - *download-generated-sql
       - &download-schema-cache
         name: Download schema cache if available
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         continue-on-error: true
         with:
           name: schema-cache
@@ -434,7 +434,7 @@ jobs:
           mkdir -p /tmp/workspace/staged-generated-sql
           cp -r sql/ /tmp/workspace/staged-generated-sql/sql
           cp -r tests/ /tmp/workspace/staged-generated-sql/tests
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -452,7 +452,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-staged-sql
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -579,7 +579,7 @@ jobs:
           cp -r sql /tmp/debug_artifacts/sql
       - name: Upload debug artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
@@ -643,11 +643,11 @@ jobs:
           cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
 
           git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -747,7 +747,7 @@ jobs:
           $bqetl_script dag generate \
             --output-dir /tmp/workspace/main-generated-sql/dags
           rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -765,11 +765,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *download-schema-cache
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -799,11 +799,11 @@ jobs:
 
           mkdir -p /tmp/workspace/private-generated-sql/dags
           mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
@@ -818,7 +818,7 @@ jobs:
       - name: Pull telemetry-airflow
         run: |
           git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -827,7 +827,7 @@ jobs:
           rm ~/telemetry-airflow/dags/* -f || true
           cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - name: Cache telemetry-airflow dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/telemetry-airflow/.venv
           # yamllint disable-line rule:line-length
@@ -848,7 +848,7 @@ jobs:
           source .venv/bin/activate
           python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dag-test-results
           path: ~/telemetry-airflow/test-results/junit.xml
@@ -865,11 +865,11 @@ jobs:
       - *checkout
       - name: Create workspace directory
         run: mkdir -p /tmp/workspace
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -890,7 +890,7 @@ jobs:
             /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
             >> /tmp/workspace/sql.diff || true
       - name: Upload diff artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sql-diff
           path: /tmp/workspace/sql.diff
@@ -934,7 +934,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -965,11 +965,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment: dev
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -1027,7 +1027,7 @@ jobs:
     steps:
       - *checkout
       - *download-generated-sql
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -1134,7 +1134,7 @@ jobs:
           fi
           echo "Verified: Tag is on main branch"
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install deployment tools

@@ -165,7 +165,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -233,7 +233,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - &checkout-with-creds
         uses: actions/checkout@v4
@@ -446,7 +446,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -538,7 +538,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -558,7 +558,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -604,7 +604,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -660,7 +660,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout-with-history
       - *setup-python
@@ -759,7 +759,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - *setup-python
@@ -812,7 +812,7 @@ jobs:
     name: Validate DAGs
     runs-on: ubuntu-latest
     needs: [generate-dags]
-    environment: GH Actions
+    environment: dev
     steps:
       - *checkout
       - name: Pull telemetry-airflow
@@ -963,7 +963,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
     if: github.ref == 'refs/heads/main'
-    environment: GH Actions
+    environment: dev
     steps:
       - uses: actions/download-artifact@v4
         with:

@@ -20,7 +20,7 @@ fields:
   mode: NULLABLE
   description: The normalized channel the application is being distributed on.
 - name: app_version_major
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE
   description: The major version of the user visible app version string for the browser,
     e.g. "142.1.3", has major version 142
@@ -31,8 +31,8 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: Version of the operating system version running at the
-    client. E.g. "100.9.11".
+  description: Version of the operating system version running at the client. E.g.
+    "100.9.11".
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
@@ -40,4 +40,5 @@ fields:
 - name: restore_id
   type: STRING
   mode: NULLABLE
-  description: The unique identifier for the restored profile, extracted from the event extra data.
+  description: The unique identifier for the restored profile, extracted from the
+    event extra data.

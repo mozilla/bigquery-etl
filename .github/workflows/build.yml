@@ -49,23 +49,34 @@ jobs:
         uses: tj-actions/changed-files@v47
         with:
           files: |
-            routines/**
+            requirements.txt
+            bigquery_etl/routine/.*
             .github/workflows/**
+            sql/mozfun/.*
+            sql/moz-fx-data-shared-prod/udf/.*
+            sql/moz-fx-data-shared-prod/udf_js/.*
+            bqetl_project.yaml
           since_last_remote_commit: true
       - id: changed-files-sql
         uses: tj-actions/changed-files@v47
         with:
           files: |
+            requirements.txt
             sql/**
             sql_generators/**
             dags.yaml
             .github/workflows/**
+            bigquery_etl/query_scheduling/.*
+            tests/sql/.*
+            bqetl_project.yaml
           since_last_remote_commit: true
       - id: changed-files-bqetl
         uses: tj-actions/changed-files@v47
         with:
           files: |
+            bqetl_project.yaml 
             bigquery_etl/**
+            tests/**
             script/bqetl
             script/entrypoint
             requirements.txt

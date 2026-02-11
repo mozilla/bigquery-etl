@@ -40,7 +40,6 @@ WITH events_stream_cte AS (
       {% endif %}
       -- remove unnecessary high-volume categories to reduce cost
       AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-      AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
         -- below is the templated criteria
       AND (TRUE)
     GROUP BY
@@ -91,7 +90,6 @@ WITH events_stream_cte AS (
         {% endif %}
       -- remove unnecessary high-volume categories to reduce cost
         AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-        AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
         -- below is the templated criteria
         AND (
           event_category = 'genai.chatbot'
@@ -146,7 +144,6 @@ WITH events_stream_cte AS (
         {% endif %}
       -- remove unnecessary high-volume categories to reduce cost
         AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-        AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
         -- below is the templated criteria
         AND (
           event_category = 'tabgroup'
@@ -203,7 +200,6 @@ WITH events_stream_cte AS (
         {% endif %}
       -- remove unnecessary high-volume categories to reduce cost
         AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-        AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
         -- below is the templated criteria
         AND (
           event_category = 'genai.linkpreview'

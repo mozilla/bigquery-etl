@@ -74,7 +74,7 @@ jobs:
         uses: tj-actions/changed-files@v47
         with:
           files: |
-            bqetl_project.yaml 
+            bqetl_project.yaml
             bigquery_etl/**
             tests/**
             script/bqetl
@@ -158,7 +158,7 @@ jobs:
     name: Verify SQL Format
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
-    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
       - *checkout
       - *setup-python
@@ -225,12 +225,10 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-          access_token_lifetime: 3600s
       - &set-stage-project-id
         name: Set project ID for integration tests
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV
       - name: PyTest Integration Test
-        timeout-minutes: 30
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m 'integration' -n 8 \
           -p no:bigquery_etl.pytest_plugin.routine \
@@ -391,6 +389,7 @@ jobs:
     name: Deploy Changes to Stage
     runs-on: ubuntu-latest
     needs: [generate-sql]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -454,6 +453,7 @@ jobs:
     name: Dry Run SQL
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -502,6 +502,7 @@ jobs:
     name: Test SQL
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -546,6 +547,7 @@ jobs:
     name: Validate Views
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -566,6 +568,7 @@ jobs:
     name: Validate Metadata
     needs: [build, decide-runs]
     runs-on: ubuntu-latest
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -594,10 +597,12 @@ jobs:
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
+
   validate-backfills:
     name: Validate Backfills
     runs-on: ubuntu-latest
     needs: [generate-sql]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
       - *checkout
       - *setup-python
@@ -612,6 +617,7 @@ jobs:
     name: Generate Private SQL
     runs-on: ubuntu-latest
     needs: [generate-sql]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -667,7 +673,9 @@ jobs:
     name: Generate SQL and DAGs from Main Branch
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.ref != 'refs/heads/main'
+    if: |
+      (github.ref != 'refs/heads/main') &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
@@ -767,6 +775,7 @@ jobs:
     name: Generate DAGs
     runs-on: ubuntu-latest
     needs: [generate-sql, private-generate-sql]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read
@@ -823,6 +832,7 @@ jobs:
     name: Validate DAGs
     runs-on: ubuntu-latest
     needs: [generate-dags]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     environment: dev
     steps:
       - *checkout
@@ -868,7 +878,9 @@ jobs:
     name: Generate and Post SQL Diff
     runs-on: ubuntu-latest
     needs: [generate-dags, main-generate-sql-and-dags]
-    if: github.ref != 'refs/heads/main'
+    if: |
+      (github.ref != 'refs/heads/main') &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       contents: read
       pull-requests: write
@@ -1110,6 +1122,7 @@ jobs:
     name: Reset Stage Environment
     runs-on: ubuntu-latest
     needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     permissions:
       id-token: write
       contents: read

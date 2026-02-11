@@ -172,7 +172,7 @@ jobs:
       - *restore-venv
       - &auth-gcp-dryrun
         name: Authenticate to GCP (OIDC)
-        id: auth
+        id: auth-dryrun
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
@@ -180,10 +180,10 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
-      - &export-id-token
+      - &export-dryrun-id-token
         name: Export ID Token for Python
         env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
       - name: PyTest with linters
         run: |
@@ -209,15 +209,15 @@ jobs:
       - *restore-venv
       - &auth-gcp-stage
         name: Authenticate to GCP and Generate ID Token
-        id: auth
+        id: auth-stage
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
           access_token_lifetime: 3600s
-      - &set-project-id
+      - &set-stage-project-id
         name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV
       - name: PyTest Integration Test
         timeout-minutes: 30
         run: |
@@ -242,21 +242,10 @@ jobs:
           fetch-depth: 0
       - *setup-python
       - *restore-venv
-      - name: Authenticate to GCP (OIDC)
-        id: auth
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-      - name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth.outputs.project_id }}" >> $GITHUB_ENV
-      - name: Export ID Token for Python
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - *auth-gcp-dryrun
+      - &set-dryrun-project-id
+        name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-dryrun.outputs.project_id }}" >> $GITHUB_ENV
       - name: Generate SQL content
         run: |
           # Fetch main branch for merge-base
@@ -399,7 +388,8 @@ jobs:
       - *setup-python
       - *restore-venv
       - *download-generated-sql
-      - name: Download schema cache if available
+      - &download-schema-cache
+        name: Download schema cache if available
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
@@ -423,27 +413,9 @@ jobs:
           # Normalize file permissions to avoid false positives in diffs
           find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
-      - name: Authenticate to GCP for ID Token (Dryrun SA)
-        id: auth-dryrun
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
-          token_format: 'id_token'
-          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
-          id_token_include_email: true
-          create_credentials_file: false
-      - name: Export ID Token for deployment
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
-      - name: Authenticate to GCP for credentials file (Stage SA)
-        id: auth-stage
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-          access_token_lifetime: 3600s
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - *auth-gcp-stage
       - name: Deploy changes to stage
         timeout-minutes: 30
         run: |
@@ -491,7 +463,7 @@ jobs:
           rm -rf tests/
           cp -r /tmp/workspace/staged-generated-sql/tests tests
       - *auth-gcp-dryrun
-      - *export-id-token
+      - *export-dryrun-id-token
       - name: Dry run queries
         run: |
           if [ "${{ github.ref_name }}" = main ]; then
@@ -529,7 +501,7 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-project-id
+      - *set-stage-project-id
       - name: Run SQL tests
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
@@ -550,7 +522,7 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-project-id
+      - *set-stage-project-id
       - name: Run routine tests
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
@@ -573,7 +545,7 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-dryrun
-      - *export-id-token
+      - *export-dryrun-id-token
       - name: Validate views
         run: |
           PATH=".venv/bin:$PATH" script/bqetl view validate
@@ -594,7 +566,7 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
       - *auth-gcp-dryrun
-      - *export-id-token
+      - *export-dryrun-id-token
       - name: Verify that metadata files are valid
         run: |
           PATH=".venv/bin:$PATH" script/bqetl query validate \
@@ -638,9 +610,10 @@ jobs:
       - *restore-venv
       - *download-generated-sql
       - *auth-gcp-dryrun
-      - *set-project-id
-      - *export-id-token
-      - name: Setup SSH key for private repo
+      - *set-dryrun-project-id
+      - *export-dryrun-id-token
+      - &setup-ssh-key-private-bqetl
+        name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
@@ -692,14 +665,9 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
-      - *export-id-token
-      - *set-project-id
-      - name: Setup SSH key for private repo
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      - *export-dryrun-id-token
+      - *set-dryrun-project-id
+      - *setup-ssh-key-private-bqetl
       - name: Generate SQL and DAGs
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
@@ -795,12 +763,7 @@ jobs:
       - *checkout
       - *setup-python
       - *restore-venv
-      - name: Download schema cache if available
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: schema-cache
-          path: /tmp/workspace/schema-cache
+      - *download-schema-cache
       - uses: actions/download-artifact@v4
         with:
           name: generated-sql
@@ -816,14 +779,9 @@ jobs:
             echo "Restored schema cache from generate-sql job"
           fi
       - *auth-gcp-dryrun
-      - *export-id-token
-      - *set-project-id
-      - name: Setup SSH key for private repo
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - *export-dryrun-id-token
+      - *set-dryrun-project-id
+      - *setup-ssh-key-private-bqetl
       - name: Pull down private-bigquery-etl content
         run: |
           git clone --branch main --depth 1 \
@@ -970,7 +928,7 @@ jobs:
     name: Push Generated SQL
     runs-on: ubuntu-latest
     needs: [validate-dags]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
     steps:
@@ -978,51 +936,31 @@ jobs:
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      # - name: Push to generated-sql branch
-      #   run: |
-      #     git config --global user.name "GitHub Actions generate-sql job"
-      #     git config --global user.email "dataops+generated-sql@mozilla.com"
-      #     git clone --single-branch --branch generated-sql \
-      #       https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
-      #       generated-sql
-      #     cd generated-sql/
-      #     rm -rf sql/
-      #     cp -r /tmp/workspace/generated-sql/sql sql
-      #     rm -rf dags/
-      #     cp -r /tmp/workspace/generated-sql/dags dags
-      #     git add .
-      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
-      #       -m "Created from ${{ github.sha }}" \
-      #       && git tag c-${{ github.sha }} \
-      #       && git push \
-      #       && git push origin c-${{ github.sha }} \
-      #       || echo "Skipping push since it looks like there were no changes"
-      - name: Push to gha-test-generated-sql branch (TESTING)
+      - name: Push to generated-sql branch
         run: |
           git config --global user.name "GitHub Actions generate-sql job"
           git config --global user.email "dataops+generated-sql@mozilla.com"
-          git clone \
+          git clone --single-branch --branch generated-sql \
             https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
-            gha-test-generated-sql
-          cd gha-test-generated-sql/
-          git checkout -B gha-test-generated-sql
+            generated-sql
+          cd generated-sql/
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
           rm -rf dags/
           cp -r /tmp/workspace/generated-sql/dags dags
           git add .
-          git commit -m "Auto-push for GHA testing [ci skip]" \
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
             -m "Created from ${{ github.sha }}" \
-            && git tag -f c-${{ github.sha }} \
-            && git push -f origin gha-test-generated-sql \
-            && git push -f origin c-${{ github.sha }} \
+            && git tag c-${{ github.sha }} \
+            && git push \
+            && git push origin c-${{ github.sha }} \
             || echo "Skipping push since it looks like there were no changes"
 
   push-private-generated-sql:
     name: Push Private Generated SQL
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     environment: dev
     steps:
       - uses: actions/download-artifact@v4
@@ -1033,32 +971,27 @@ jobs:
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - name: Setup SSH key
+      - *setup-ssh-key-private-bqetl
+      - name: Push to private-generated-sql branch
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-      # - name: Push to private-generated-sql branch
-      #   run: |
-      #     git config --global user.name "GitHub Actions private-generate-sql job"
-      #     git config --global user.email "dataops+private-generated-sql@mozilla.com"
-      #     git clone --single-branch --branch private-generated-sql \
-      #       git@github.com:mozilla/private-bigquery-etl \
-      #       private-generated-sql
-      #     cd private-generated-sql/
-      #     rm -rf sql/
-      #     cp -r /tmp/workspace/private-generated-sql/sql sql
-      #     rm -rf dags/
-      #     cp -r /tmp/workspace/private-generated-sql/dags dags
-      #     git add .
-      #
-      #     private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
-      #
-      #     git commit -m "Auto-push due to change on main branch [ci skip]" \
-      #       -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-      #       && git push \
-      #       || echo "Skipping push since it looks like there were no changes"
+          git config --global user.name "GitHub Actions private-generate-sql job"
+          git config --global user.email "dataops+private-generated-sql@mozilla.com"
+          git clone --single-branch --branch private-generated-sql \
+            git@github.com:mozilla/private-bigquery-etl \
+            private-generated-sql
+          cd private-generated-sql/
+          rm -rf sql/
+          cp -r /tmp/workspace/private-generated-sql/sql sql
+          rm -rf dags/
+          cp -r /tmp/workspace/private-generated-sql/dags dags
+          git add .
+      
+          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
+      
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
+            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
+            && git push \
+            || echo "Skipping push since it looks like there were no changes"
       - name: Push to gha-test-generated-sql branch (TESTING)
         run: |
           git config --global user.name "GitHub Actions private-generate-sql job"
@@ -1085,7 +1018,7 @@ jobs:
     name: Deploy to Private GAR
     runs-on: ubuntu-latest
     needs: [private-generate-sql, build, generate-sql]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
@@ -1128,7 +1061,7 @@ jobs:
     name: Trigger Airflow Artifact Deployment
     runs-on: ubuntu-latest
     needs: [deploy-to-private-gar]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
@@ -1173,7 +1106,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-stage
-      - *set-project-id
+      - *set-stage-project-id
       - name: Delete stage datasets
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
@@ -1215,7 +1148,8 @@ jobs:
     needs: [push-generated-sql]
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Setup SSH keys for telemetry-airflow-dags
+      - &setup-ssh-keys-telemetry-airflow-dags
+        name: Setup SSH keys for telemetry-airflow-dags
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
@@ -1243,12 +1177,7 @@ jobs:
     needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Setup SSH keys for telemetry-airflow-dags
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - *setup-ssh-keys-telemetry-airflow-dags
       - name: Configure git
         run: |
           git config --global user.email "dataops@mozilla.com"

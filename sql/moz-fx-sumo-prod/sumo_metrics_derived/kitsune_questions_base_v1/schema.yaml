@@ -1,0 +1,54 @@
+fields:
+- name: date
+  type: DATE
+  mode: REQUIRED
+  description: Date question was created (Pacific Standard Time)
+- name: product
+  type: STRING
+  mode: REQUIRED
+  description: |
+    Mozilla product the question is about. Normalized from Kitsune product field:
+    - 'mobile' → 'firefox-android'
+    - 'ios' → 'firefox-ios'
+    - 'firefox-enterprise' → 'firefox'
+    - Others kept as-is
+- name: forum_questions_posted
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of forum questions posted on this date for this product
+- name: unique_questions
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of distinct question IDs (should equal forum_questions_posted after deduplication)
+- name: year
+  type: INTEGER
+  mode: NULLABLE
+  description: Year extracted from date
+- name: month
+  type: INTEGER
+  mode: NULLABLE
+  description: Month number (1-12) extracted from date
+- name: week_number
+  type: INTEGER
+  mode: NULLABLE
+  description: ISO week number (1-53) extracted from date
+- name: day_of_week
+  type: INTEGER
+  mode: NULLABLE
+  description: Day of week (1=Sunday, 7=Saturday) extracted from date
+- name: year_month
+  type: STRING
+  mode: NULLABLE
+  description: Year-month string in YYYY-MM format for easy grouping
+- name: year_week
+  type: STRING
+  mode: NULLABLE
+  description: Year-week string in YYYY-WWW format for easy grouping
+- name: day_name
+  type: STRING
+  mode: NULLABLE
+  description: Day of week name (Monday, Tuesday, etc.)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

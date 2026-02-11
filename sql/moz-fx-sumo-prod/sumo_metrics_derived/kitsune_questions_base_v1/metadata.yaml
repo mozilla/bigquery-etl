@@ -1,0 +1,36 @@
+friendly_name: Kitsune Forum Questions Base (Daily)
+description: |
+  Daily metrics for SUMO forum questions from the Kitsune database.
+
+  Single source of truth tracking:
+  - Forum questions posted each day
+  - Product breakdown
+  - Quality metrics (spam, locked, archived)
+  - Engagement metrics (answers, votes, helpful answers)
+  - Locale distribution
+
+  Replaces duplicated q2 CTEs in:
+  - daily-sssr-by-product.sql
+  - daily-sssr-excl-app-reviews.sql
+
+  Grain: Daily x Product (PST timezone)
+
+  Used by:
+  - SSSR calculation queries
+  - Forum health dashboards
+  - Community engagement reports
+owners:
+  - plee@mozilla.com
+labels:
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false

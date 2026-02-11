@@ -187,7 +187,7 @@ def main():
     parser.add_argument(
         "--destination",
         dest="destination",
-        default="moz-fx-data-shared-prod.claude_api_derived.usage_v1",
+        default="moz-fx-data-shared-prod.llm_monitoring_derived.claude_usage_v1",
         required=False,
     )
     parser.add_argument(

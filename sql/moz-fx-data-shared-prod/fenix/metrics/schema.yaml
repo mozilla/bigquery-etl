@@ -12757,8 +12757,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -19510,6 +19509,12 @@ fields:
       description: 'The toolbar shortcut used in simple toolbar.
 
         Possible values are: new_tab, share, bookmark, translate, homepage or back.
+
+        '
+    - name: preferences_prefs_file_first_parse_error
+      type: STRING
+      mode: NULLABLE
+      description: 'The first error message encountered when parsing a prefs file.
 
         '
   - name: string_list

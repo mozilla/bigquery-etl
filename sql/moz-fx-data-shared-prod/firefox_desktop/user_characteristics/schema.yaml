@@ -1045,6 +1045,15 @@ fields:
       description: 'The timezone offset in minutes exposed to web content via getTimezoneOffset()
 
         '
+    - name: characteristics_audio_unique_samples
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of unique sample values in the OfflineAudioContext audio
+        buffer. This is used by fingerprinting scripts to detect anamolies - they
+        expect 1-3k unique samples, not 5000. We are collecting it to ensure we are
+        behaving as they generally expect non-anomalous browsers to behave.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -2344,6 +2353,38 @@ fields:
         or 0 (false).
 
         '
+    - name: characteristics_audio_compressor_gain_reduction
+      type: STRING
+      mode: NULLABLE
+      description: 'WebAudio DynamicsCompressorNode gain reduction value from OfflineAudioContext
+        rendering. This is most likely consistent for all/most users but we wish to
+        verify that experimentally.
+
+        '
+    - name: characteristics_audio_fingerprint2
+      type: STRING
+      mode: NULLABLE
+      description: 'A second method to calculate an audio fingerprint, used by a different
+        fingerprinter. Hash of audio buffer sample snapshot (100 samples from 4500-4600
+        range) from OfflineAudioContext rendering.
+
+        '
+    - name: characteristics_audio_float_frequency_sum
+      type: STRING
+      mode: NULLABLE
+      description: 'Sum of float frequency data from AnalyserNode.getFloatFrequencyData()
+        during OfflineAudioContext rendering. Collected as string to preserve floating-point
+        precision.
+
+        '
+    - name: characteristics_audio_float_time_domain_sum
+      type: STRING
+      mode: NULLABLE
+      description: 'Sum of float time domain data from AnalyserNode.getFloatTimeDomainData()
+        during OfflineAudioContext rendering. Collected as string to preserve floating-point
+        precision.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -2741,7 +2782,12 @@ fields:
     - name: characteristics_gl_params
       type: STRING
       mode: NULLABLE
-      description: 'The list of GL parameters of GL1.
+      description: 'The list of GL parameters of GL1. Parameters: ALIASED_LINE_WIDTH_RANGE,
+        ALIASED_POINT_SIZE_RANGE, MAX_COMBINED_TEXTURE_IMAGE_UNITS, MAX_CUBE_MAP_TEXTURE_SIZE,
+        MAX_FRAGMENT_UNIFORM_VECTORS, MAX_RENDERBUFFER_SIZE, MAX_TEXTURE_IMAGE_UNITS,
+        MAX_TEXTURE_SIZE, MAX_VARYING_VECTORS, MAX_VERTEX_ATTRIBS, MAX_VERTEX_TEXTURE_IMAGE_UNITS,
+        MAX_VERTEX_UNIFORM_VECTORS, MAX_VIEWPORT_DIMS, SHADING_LANGUAGE_VERSION, STENCIL_BACK_VALUE_MASK,
+        STENCIL_BACK_WRITEMASK, STENCIL_VALUE_MASK, STENCIL_WRITEMASK, SUBPIXEL_BITS.
 
         '
     - name: characteristics_gl_params_software

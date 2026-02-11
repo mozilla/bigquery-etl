@@ -9617,6 +9617,12 @@ fields:
         Previously reported in "main" ping `simpleMeasurements`.
 
         '
+    - name: preferences_prefs_file_first_parse_error
+      type: STRING
+      mode: NULLABLE
+      description: 'The first error message encountered when parsing a prefs file.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

@@ -1241,7 +1241,8 @@ SELECT
       metrics.string.preferences_doh_protection_level,
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
-      metrics.string.preferences_toolbar_simple_shortcut
+      metrics.string.preferences_toolbar_simple_shortcut,
+      metrics.string.preferences_prefs_file_first_parse_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3310,7 +3311,8 @@ SELECT
       metrics.string.preferences_doh_protection_level,
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
-      metrics.string.preferences_toolbar_simple_shortcut
+      metrics.string.preferences_toolbar_simple_shortcut,
+      metrics.string.preferences_prefs_file_first_parse_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -5399,7 +5401,8 @@ SELECT
       metrics.string.preferences_doh_protection_level,
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
-      metrics.string.preferences_toolbar_simple_shortcut
+      metrics.string.preferences_toolbar_simple_shortcut,
+      metrics.string.preferences_prefs_file_first_parse_error
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

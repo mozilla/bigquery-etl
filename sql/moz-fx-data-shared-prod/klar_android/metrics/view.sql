@@ -764,7 +764,8 @@ SELECT
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
-      metrics.string.xpi_database_startup_error
+      metrics.string.xpi_database_startup_error,
+      metrics.string.preferences_prefs_file_first_parse_error
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,

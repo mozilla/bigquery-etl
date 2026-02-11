@@ -155,7 +155,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
-      metrics.quantity.characteristics_timezone_offset_web
+      metrics.quantity.characteristics_timezone_offset_web,
+      metrics.quantity.characteristics_audio_unique_samples
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -368,7 +369,11 @@ SELECT
       metrics.string.characteristics_fonts_variant_e_allowlisted,
       metrics.string.characteristics_fonts_variant_e_nonallowlisted,
       metrics.string.characteristics_mathml_diag_font_family,
-      metrics.string.characteristics_mathml_diag_prefs_modified
+      metrics.string.characteristics_mathml_diag_prefs_modified,
+      metrics.string.characteristics_audio_compressor_gain_reduction,
+      metrics.string.characteristics_audio_fingerprint2,
+      metrics.string.characteristics_audio_float_frequency_sum,
+      metrics.string.characteristics_audio_float_time_domain_sum
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -635,7 +640,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
-      metrics.quantity.characteristics_timezone_offset_web
+      metrics.quantity.characteristics_timezone_offset_web,
+      metrics.quantity.characteristics_audio_unique_samples
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -848,7 +854,11 @@ SELECT
       metrics.string.characteristics_fonts_variant_e_allowlisted,
       metrics.string.characteristics_fonts_variant_e_nonallowlisted,
       metrics.string.characteristics_mathml_diag_font_family,
-      metrics.string.characteristics_mathml_diag_prefs_modified
+      metrics.string.characteristics_mathml_diag_prefs_modified,
+      metrics.string.characteristics_audio_compressor_gain_reduction,
+      metrics.string.characteristics_audio_fingerprint2,
+      metrics.string.characteristics_audio_float_frequency_sum,
+      metrics.string.characteristics_audio_float_time_domain_sum
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -1115,7 +1125,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
-      metrics.quantity.characteristics_timezone_offset_web
+      metrics.quantity.characteristics_timezone_offset_web,
+      metrics.quantity.characteristics_audio_unique_samples
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1328,7 +1339,11 @@ SELECT
       metrics.string.characteristics_fonts_variant_e_allowlisted,
       metrics.string.characteristics_fonts_variant_e_nonallowlisted,
       metrics.string.characteristics_mathml_diag_font_family,
-      metrics.string.characteristics_mathml_diag_prefs_modified
+      metrics.string.characteristics_mathml_diag_prefs_modified,
+      metrics.string.characteristics_audio_compressor_gain_reduction,
+      metrics.string.characteristics_audio_fingerprint2,
+      metrics.string.characteristics_audio_float_frequency_sum,
+      metrics.string.characteristics_audio_float_time_domain_sum
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -1595,7 +1610,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
-      metrics.quantity.characteristics_timezone_offset_web
+      metrics.quantity.characteristics_timezone_offset_web,
+      metrics.quantity.characteristics_audio_unique_samples
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1808,7 +1824,11 @@ SELECT
       metrics.string.characteristics_fonts_variant_e_allowlisted,
       metrics.string.characteristics_fonts_variant_e_nonallowlisted,
       metrics.string.characteristics_mathml_diag_font_family,
-      metrics.string.characteristics_mathml_diag_prefs_modified
+      metrics.string.characteristics_mathml_diag_prefs_modified,
+      metrics.string.characteristics_audio_compressor_gain_reduction,
+      metrics.string.characteristics_audio_fingerprint2,
+      metrics.string.characteristics_audio_float_frequency_sum,
+      metrics.string.characteristics_audio_float_time_domain_sum
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -2075,7 +2095,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minstoragebufferoffsetalignment,
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
-      metrics.quantity.characteristics_timezone_offset_web
+      metrics.quantity.characteristics_timezone_offset_web,
+      metrics.quantity.characteristics_audio_unique_samples
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -2288,7 +2309,11 @@ SELECT
       metrics.string.characteristics_fonts_variant_e_allowlisted,
       metrics.string.characteristics_fonts_variant_e_nonallowlisted,
       metrics.string.characteristics_mathml_diag_font_family,
-      metrics.string.characteristics_mathml_diag_prefs_modified
+      metrics.string.characteristics_mathml_diag_prefs_modified,
+      metrics.string.characteristics_audio_compressor_gain_reduction,
+      metrics.string.characteristics_audio_fingerprint2,
+      metrics.string.characteristics_audio_float_frequency_sum,
+      metrics.string.characteristics_audio_float_time_domain_sum
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,

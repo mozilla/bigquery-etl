@@ -18,7 +18,8 @@ WITH unnested_events AS (
 )
 SELECT
   submission_date,
-  client_id event_category,
+  client_id,
+  event_category,
   event_name,
   normalized_channel,
   app_version_major,

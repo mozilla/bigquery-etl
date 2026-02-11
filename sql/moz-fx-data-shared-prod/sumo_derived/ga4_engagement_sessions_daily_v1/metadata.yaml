@@ -1,0 +1,29 @@
+friendly_name: GA4 Engagement Sessions (Daily)
+description: |
+  Daily GA4 engagement session metrics for SUMO content.
+
+  Single source of truth consolidating:
+  - KB article sessions (content_group = 'kb-article')
+  - Forum question sessions (content_group = 'support-forum-question-details')
+
+  Replaces duplicated q3/q4 CTEs in:
+  - daily-sssr-by-product.sql
+  - daily-sssr-excl-app-reviews.sql
+
+  Grain: Daily x Product x Content Type
+
+  Engagement Threshold: >30 seconds engagement time
+owners:
+  - plee@mozilla.com
+labels:
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_sumo_metrics

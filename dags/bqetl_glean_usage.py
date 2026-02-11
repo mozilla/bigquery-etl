@@ -3918,6 +3918,21 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
+    firefox_desktop_derived__profile_restore_clients__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__profile_restore_clients__v1",
+        destination_table="profile_restore_clients_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_echo_show_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_echo_show_derived__clients_last_seen_joined__v1",
         destination_table="clients_last_seen_joined_v1",
@@ -7792,6 +7807,10 @@ with DAG(
 
     firefox_desktop_derived__metrics_clients_last_seen__v1.set_upstream(
         bigeye__firefox_desktop_derived__metrics_clients_daily__v1
+    )
+
+    firefox_desktop_derived__profile_restore_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     firefox_echo_show_derived__clients_last_seen_joined__v1.set_upstream(

@@ -46,9 +46,6 @@ WITH events_stream_cte AS (
         'nimbus_events',
         'uptake.remotecontent.result'
       )
-      {% if app_id_dataset == 'firefox_desktop' -%}
-      AND profile_group_id IS NOT NULL -- only include non-null IDs so as not to create repeats
-      {% endif %}
         -- below is the templated criteria
       AND ({{ criteria_sql }})
     GROUP BY

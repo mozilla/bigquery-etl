@@ -151,26 +151,6 @@
   event_timestamp: 2025-10-29T00:00:00
   event_extra: {date: 2025-10-29}
 
-# profile_group_id is not null
-- client_id: client1-pg
-  profile_group_id: "client1-pg-profile"
-  sample_id: 0
-  event_category: "client1-pg-event-category"
-  event_name: "client1-pg-event-name"
-  event: "client1-pg-event"
-  submission_timestamp: 2025-10-29T00:00:00
-  event_timestamp: 2025-10-29T00:00:00
-  event_extra: {date: 2025-10-29}
-- client_id: client1-pg
-  profile_group_id: NULL
-  sample_id: 0
-  event_category: "client1-pg-event-category"
-  event_name: "client1-pg-event-name"
-  event: "client1-pg-event"
-  submission_timestamp: 2025-10-29T00:00:00
-  event_timestamp: 2025-10-29T00:00:00
-  event_extra: {date: 2025-10-29}
-
 # event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
 - client_id: client1-ec
   profile_group_id: "client1-ec-profile"

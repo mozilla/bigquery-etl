@@ -2577,24 +2577,3 @@ bqetl_rust_component_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_3
-
-bqetl_sumo_metrics:
-  schedule_interval: 0 3 * * *
-  description: |
-    Daily derived metrics for Mozilla Support (SUMO) covering:
-    - Content freshness and quality tracking for knowledge base articles
-    - Translation/localization metrics for priority locales (30-day SLA)
-    - Forum questions and engagement metrics from Kitsune
-    - Support ticket volume from Zendesk
-  default_args:
-    depends_on_past: false
-    email_on_failure: true
-    email_on_retry: false
-    owner: phlee@mozilla.com
-    email:
-      - phlee@mozilla.com
-    start_date: '2025-07-14'
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2

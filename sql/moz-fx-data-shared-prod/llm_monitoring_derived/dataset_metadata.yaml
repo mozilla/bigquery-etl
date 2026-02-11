@@ -1,0 +1,11 @@
+friendly_name: LLM Monitoring Derived
+description: |-
+  Unified dataset for LLM API usage, costs, and monitoring data from multiple providers.
+  Includes data from OpenAI, Claude (Anthropic), and other LLM vendors.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

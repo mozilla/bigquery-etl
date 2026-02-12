@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
+  - moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v2

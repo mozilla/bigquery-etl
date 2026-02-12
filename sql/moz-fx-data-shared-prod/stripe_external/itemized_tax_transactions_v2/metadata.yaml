@@ -1,31 +1,36 @@
 friendly_name: Stripe itemized tax transactions report
-description: |
+description: |-
   Import itemized tax transactions report from the Stripe API.
+  https://docs.stripe.com/reports/report-types/tax#schema-tax-transactions-itemized-2
 owners:
 - srose@mozilla.com
+- phlee@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
   owner1: srose
+  owner2: phlee
 scheduling:
+  dag_name: bqetl_subplat
   arguments:
   - --date={{ ds }}
   - --api-key={{ var.value.stripe_api_key }}
-  - --report-type=tax.transactions.itemized.1
-  - --table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
-  - --time-partitioning-field=transaction_date_utc
+  - --report-type=tax.transactions.itemized.2
+  - --table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v2
+  - --time-partitioning-field=transaction_date
   retry_delay: 30m
   retries: 47
   email_on_retry: false
 bigquery:
   time_partitioning:
     type: day
-    field: transaction_date_utc
+    field: transaction_date
     require_partition_filter: false
     expiration_days: null
   clustering:
     fields:
-    - transaction_date_utc
+    - transaction_date
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -33,3 +38,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/developers
+require_column_descriptions: true

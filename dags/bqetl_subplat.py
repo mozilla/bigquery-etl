@@ -760,22 +760,26 @@ with DAG(
         email_on_retry=False,
     )
 
-    stripe_external__itemized_tax_transactions__v1 = GKEPodOperator(
-        task_id="stripe_external__itemized_tax_transactions__v1",
+    stripe_external__itemized_tax_transactions__v2 = GKEPodOperator(
+        task_id="stripe_external__itemized_tax_transactions__v2",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/stripe_external/itemized_tax_transactions_v1/query.py",
+            "sql/moz-fx-data-shared-prod/stripe_external/itemized_tax_transactions_v2/query.py",
         ]
         + [
             "--date={{ ds }}",
             "--api-key={{ var.value.stripe_api_key }}",
-            "--report-type=tax.transactions.itemized.1",
-            "--table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1",
-            "--time-partitioning-field=transaction_date_utc",
+            "--report-type=tax.transactions.itemized.2",
+            "--table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v2",
+            "--time-partitioning-field=transaction_date",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "phlee@mozilla.com",
+            "srose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         retry_delay=datetime.timedelta(seconds=1800),
         retries=47,
         email_on_retry=False,

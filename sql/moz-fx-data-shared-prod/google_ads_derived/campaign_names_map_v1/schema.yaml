@@ -1,0 +1,21 @@
+fields:
+- name: account_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Google Ads account, e.g. Mozilla Firefox.
+- name: account_id
+  type: INTEGER
+  mode: NULLABLE
+  description: The ID associated with the account name.
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: The ID of the Google Ads campaign.
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Google Ads campaign. We take the most recently reported name.
+- name: is_most_recent_record
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether this is the most recent record for the campaign_id.

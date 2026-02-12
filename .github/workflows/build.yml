@@ -2,9 +2,11 @@ name: Build, Test, and Deploy
 on:
   push:
     branches:
+      - main
   pull_request:
     types:
       - opened
+      - synchronize
   merge_group:
   workflow_dispatch:
     inputs:
@@ -56,7 +58,7 @@ jobs:
             sql/moz-fx-data-shared-prod/udf/.*
             sql/moz-fx-data-shared-prod/udf_js/.*
             bqetl_project.yaml
-          since_last_remote_commit: true
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
         uses: tj-actions/changed-files@v47
         with:
@@ -69,7 +71,7 @@ jobs:
             bigquery_etl/query_scheduling/.*
             tests/sql/.*
             bqetl_project.yaml
-          since_last_remote_commit: true
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-bqetl
         uses: tj-actions/changed-files@v47
         with:
@@ -82,7 +84,7 @@ jobs:
             requirements.txt
             requirements.in
             .github/workflows/**
-          since_last_remote_commit: true
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - name: Decide which jobs to run
         id: set-flags
         run: |

@@ -10,6 +10,7 @@ owners:
 labels:
   level: bronze
   owner1: mhirose
+  owner2: ysmith
   schedule: daily
   table_type: client_level
   shredder_mitigation: true

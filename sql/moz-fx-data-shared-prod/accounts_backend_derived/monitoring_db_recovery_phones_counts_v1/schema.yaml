@@ -2,9 +2,12 @@ fields:
 - name: as_of_date
   type: DATE
   mode: NULLABLE
+  description: 'Date of as of. Computed as: @as_of_date.'
 - name: country_code
   type: STRING
   mode: NULLABLE
+  description: 'Code for country. Computed as: SAFE.JSON_VALUE(lookupData, ''$.countryCode'').'
 - name: total_rows
   type: INTEGER
   mode: NULLABLE
+  description: 'Total value of rows. Computed as: COUNT(uid).'

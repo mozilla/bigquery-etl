@@ -1069,6 +1069,13 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True when app Zygote preloading with isolated processes is enabled.
+    - name: extensions_allow_execute_script_in_moz_extension
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Corresponds to the value of `extensions.webextensions.allow_executeScript_in_moz_extension`
+        pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3517,7 +3524,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

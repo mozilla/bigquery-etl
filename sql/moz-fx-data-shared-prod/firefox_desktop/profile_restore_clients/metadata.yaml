@@ -1,0 +1,15 @@
+friendly_name: Profile Restore Clients
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  owner: example
+  owner1: example
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.profile_restore_clients_v1

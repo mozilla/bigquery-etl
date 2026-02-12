@@ -73,7 +73,8 @@ SELECT
       metrics.boolean.update_settings_background,
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
-      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

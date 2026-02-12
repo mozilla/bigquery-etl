@@ -123,7 +123,8 @@ SELECT
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
-      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled
+      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2193,7 +2194,8 @@ SELECT
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
-      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled
+      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -4283,7 +4285,8 @@ SELECT
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
-      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled
+      metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

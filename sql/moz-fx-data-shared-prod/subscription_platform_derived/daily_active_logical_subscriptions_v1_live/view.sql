@@ -24,8 +24,8 @@ daily_active_subscriptions_history AS (
     ON TIMESTAMP(dates.next_date) > subscriptions_history.valid_from
     AND TIMESTAMP(dates.date) < subscriptions_history.valid_to
     AND (
-      TIMESTAMP(dates.date) < subscriptions_history.subscription.ended_at
-      OR subscriptions_history.subscription.ended_at IS NULL
+      subscriptions_history.subscription.is_active
+      OR dates.date = DATE(subscriptions_history.valid_from)
     )
   GROUP BY
     dates.date,

@@ -1,0 +1,29 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date on which ad spend is attributed, and user were considered new profiles.
+- name: account_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Google Ads account, e.g. Mozilla Firefox.
+- name: account_id
+  type: INTEGER
+  mode: NULLABLE
+  description: The ID associated with the account name.
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Google Ads campaign. We take the most recently reported name.
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: The ID of the Google Ads campaign.
+- name: installs
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of biddable app install conversions.
+- name: conversions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of biddable app post-install conversions.

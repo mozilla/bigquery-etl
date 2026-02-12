@@ -5,3 +5,7 @@ owners:
   - telemetry-alerts@mozilla.com
 labels:
   authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:sre-managed/access-events

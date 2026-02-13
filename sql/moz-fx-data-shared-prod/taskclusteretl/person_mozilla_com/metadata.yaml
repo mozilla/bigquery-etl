@@ -5,6 +5,9 @@ owners:
   - telemetry-alerts@mozilla.com
 labels:
   authorized: true
+# this view is authorized but our authorization logic only works with one layer
+# of references, so workgroup_access updates to bugzilla_metrics.users need to
+# match the access here
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

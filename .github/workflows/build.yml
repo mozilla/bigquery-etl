@@ -127,7 +127,7 @@ jobs:
           pip install --no-deps -r requirements.txt
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+        if: steps.restore-venv.outputs.cache-hit != 'true'
         uses: actions/cache/save@v5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}

@@ -18,6 +18,8 @@ scheduling:
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:
+  # Use clustering rather than partitioning because the whole table is being overwritten every time
+  # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.
   time_partitioning: null
   clustering:
     fields:

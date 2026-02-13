@@ -1,0 +1,5 @@
+# see taskclusteretl.person_mozilla_com which relies on this view
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:sre-managed/access-events

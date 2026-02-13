@@ -2,7 +2,7 @@
   block_id: bid1
   context_id: cid1
   country: US
-  is_clicked: False
+  is_clicked: false
   locale: en-US
   merino_browser: firefox(96)
   merino_country: US

@@ -91,7 +91,7 @@ ${diff_content}
 
 ${warnings}
 
-[Link to full diff](https://github.com/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/actions/runs/${process.env.RUN_ID})
+[Link to full diff](https://github.com/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/actions/runs/${process.env.RUN_ID}#summary-)
 `
     }
     var content = `#### \`${diff_file}\`

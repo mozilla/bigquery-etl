@@ -33,8 +33,8 @@ class TestEntrypoint:
             )
             assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
-            # running bq in CircleCI will fail since it's not installed
-            # in GitHub Actions, bq is installed but may fail for other reasons
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
             # but the error output can be checked for whether bq was called
             assert (
                 b"No such file or directory: 'bq'" in e.output
@@ -82,8 +82,8 @@ class TestEntrypoint:
             )
             assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
-            # running bq in CircleCI will fail since it's not installed
-            # in GitHub Actions, bq is installed but may fail for other reasons
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
             # but the error output can be checked for whether bq was called
             assert (
                 b"No such file or directory: 'bq'" in e.output
@@ -138,8 +138,8 @@ class TestEntrypoint:
             for row in result:
                 assert row.a == "foo"
         except subprocess.CalledProcessError as e:
-            # running bq in CircleCI will fail since it's not installed
-            # in GitHub Actions, bq is installed but may fail for other reasons
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
             # but the error output can be checked for whether bq was called
             assert (
                 b"No such file or directory: 'bq'" in e.output

@@ -106,6 +106,12 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
+      - &restore-venv
+        name: Restore cached virtualenv
+        uses: actions/cache/restore@v5
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          path: .venv
       - &setup-python
         name: Set up Python
         id: setup_python
@@ -134,12 +140,7 @@ jobs:
     steps:
       - *checkout
       - *setup-python
-      - &restore-venv
-        name: Restore cached virtualenv
-        uses: actions/cache/restore@v5
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
+      - *restore-venv
       - name: Verify that requirements.txt contains the right dependencies for this python version
         run: |
           PATH=".venv/bin:$PATH" pip-compile --allow-unsafe --generate-hashes --quiet
@@ -895,7 +896,7 @@ jobs:
     needs: [generate-dags, main-generate-sql-and-dags, decide-runs]
     if: |
       (github.ref != 'refs/heads/main') &&
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true')
     permissions:
       contents: read
       pull-requests: write
@@ -927,6 +928,12 @@ jobs:
           diff -bur --no-dereference --new-file \
             /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
             >> /tmp/workspace/sql.diff || true
+
+          # Write full diff to job summary for easy viewing
+          echo "## SQL Diff" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload diff artifact
         uses: actions/upload-artifact@v6
         with:

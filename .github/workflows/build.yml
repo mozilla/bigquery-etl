@@ -1,0 +1,1260 @@
+name: Build, Test, and Deploy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  merge_group:
+  workflow_dispatch:
+    inputs:
+      skip-stage-deploys:
+        description: 'Skip stage deployments'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      trigger-sql-generation:
+        description: 'Force SQL generation to run'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  decide-runs:
+    name: Decide what checks to run based on changed files
+    runs-on: ubuntu-latest
+    outputs:
+      validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
+      deploy: ${{ steps.set-flags.outputs.deploy }}
+      validate-sql: ${{ steps.set-flags.outputs.validate-sql }}
+      validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
+    steps:
+      - &checkout-with-history
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          filter: blob:none
+          fetch-depth: 0
+      - id: changed-files-routines
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            requirements.txt
+            bigquery_etl/routine/.*
+            .github/workflows/**
+            sql/mozfun/.*
+            sql/moz-fx-data-shared-prod/udf/.*
+            sql/moz-fx-data-shared-prod/udf_js/.*
+            bqetl_project.yaml
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - id: changed-files-sql
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            requirements.txt
+            sql/**
+            sql_generators/**
+            dags.yaml
+            .github/workflows/**
+            bigquery_etl/query_scheduling/.*
+            tests/sql/.*
+            bqetl_project.yaml
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - id: changed-files-bqetl
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            bqetl_project.yaml
+            bigquery_etl/**
+            tests/**
+            script/bqetl
+            script/entrypoint
+            requirements.txt
+            requirements.in
+            .github/workflows/**
+          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - name: Decide which jobs to run
+        id: set-flags
+        run: |
+          echo "validate-routines=${{ steps.changed-files-routines.outputs.any_changed }}" >> $GITHUB_OUTPUT
+          echo "validate-sql=${{ steps.changed-files-sql.outputs.any_changed }}" >> $GITHUB_OUTPUT
+          echo "validate-bqetl=${{ steps.changed-files-bqetl.outputs.any_changed }}" >> $GITHUB_OUTPUT
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    name: Build Environment
+    runs-on: ubuntu-latest
+    steps:
+      - &checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - &setup-python
+        name: Set up Python
+        id: setup_python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+      - &restore-venv
+        name: Restore cached virtualenv
+        id: restore-venv
+        uses: actions/cache/restore@v5
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          path: .venv
+      - name: Build
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --no-deps -r requirements.txt
+          pip-sync --pip-args=--no-deps
+      - name: Save cached virtualenv
+        if: steps.restore-venv.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          path: .venv
+
+  verify-requirements:
+    name: Verify Requirements
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - name: Verify that requirements.txt contains the right dependencies for this python version
+        run: |
+          PATH=".venv/bin:$PATH" pip-compile --allow-unsafe --generate-hashes --quiet
+          git diff --exit-code -G '^ *[^# ]' -- requirements.txt
+
+  verify-format-yaml:
+    name: Verify YAML Format
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - name: Yamllint Test
+        run: PATH=".venv/bin:$PATH" yamllint -c .yamllint.yaml .
+
+  verify-format-sql:
+    name: Verify SQL Format
+    runs-on: ubuntu-latest
+    needs: [build, decide-runs]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - name: Verify that SQL is correctly formatted
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl format --check \
+          $(git ls-tree -d HEAD --name-only)
+
+  test-bqetl:
+    name: Test bqetl
+    runs-on: ubuntu-latest
+    needs: [build, decide-runs]
+    if: (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true') && github.event.pull_request.head.repo.fork != true
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &auth-gcp-dryrun
+        name: Authenticate to GCP (OIDC)
+        id: auth-dryrun
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
+          token_format: 'id_token'
+          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
+          id_token_include_email: true
+      - &export-dryrun-id-token
+        name: Export ID Token for Python
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
+      - name: PyTest with linters
+        run: |
+          PATH=".venv/bin:$PATH" pytest --black --flake8 \
+            --isort --mypy-ignore-missing-imports --pydocstyle \
+            -m "not (routine or sql or integration)" \
+            -p no:bigquery_etl.pytest_plugin.routine \
+            -p no:bigquery_etl.pytest_plugin.sql \
+            -n 8
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [build, decide-runs]
+    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &auth-gcp-stage
+        name: Authenticate to GCP and Generate ID Token
+        id: auth-stage
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+      - &set-stage-project-id
+        name: Set project ID for integration tests
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV
+      - name: PyTest Integration Test
+        run: |
+          PATH=".venv/bin:$PATH" script/entrypoint -m 'integration' -n 8 \
+          -p no:bigquery_etl.pytest_plugin.routine \
+          -p no:bigquery_etl.pytest_plugin.sql
+
+  generate-sql:
+    name: Generate SQL
+    runs-on: ubuntu-latest
+    needs: [build, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - &checkout-with-creds
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - *setup-python
+      - *restore-venv
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - &set-dryrun-project-id
+        name: Set project ID
+        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-dryrun.outputs.project_id }}" >> $GITHUB_ENV
+      - name: Generate SQL content
+        run: |
+          # Fetch main branch for merge-base
+          git fetch origin main:main --no-tags
+          MAIN_MERGE_BASE=$(git merge-base main HEAD || true)
+          echo "merge base with main: $MAIN_MERGE_BASE"
+
+          git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql
+          cd ~/remote-generated-sql
+
+          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
+            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
+            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
+          else
+            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+          fi
+
+          # Get the state in which main was in when the generated-sql branch was created and pushed
+          cd ~
+          git clone -b main https://github.com/mozilla/bigquery-etl ~/remote-bigquery-etl-main
+          cd ~/remote-bigquery-etl-main
+          export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
+          git checkout $LATEST_TAG_GENERATED_SQL
+          echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
+
+          if [[ -n $MAIN_MERGE_BASE ]]; then
+            echo "Checking out $MAIN_MERGE_BASE for diff"
+            git checkout $MAIN_MERGE_BASE
+          fi
+
+          cd $GITHUB_WORKSPACE
+          export GENERATED_SQL_CHANGED=false
+
+          if [ "${{ github.event.inputs.trigger-sql-generation }}" = "true" ]; then
+            echo "trigger-sql-generation was set to true; run SQL generation"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          if [ "${{ github.ref_name }}" = main ]; then
+            echo "On main branch; generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          if [[ $(git diff --no-index --name-only --diff-filter=DR ~/remote-bigquery-etl-main/sql sql) ]]; then
+            echo "SQL file was removed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          if [[ $(diff -qr --no-dereference sql_generators ~/remote-bigquery-etl-main/sql_generators) ]]; then
+            echo "SQL generators changed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          mkdir -p /tmp/workspace/generated-sql
+          cp bqetl_project.yaml /tmp/workspace/generated-sql/
+
+          if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+            echo "Changes made will affect generated SQL. Run SQL generators."
+
+            cp -r sql/ /tmp/workspace/generated-sql/sql
+            PATH=".venv/bin:$PATH" script/bqetl generate all \
+              --ignore derived_view_schemas \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
+              --target-project moz-fx-data-shared-prod
+            PATH=".venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
+          else
+            echo "Changes made don't affect generated SQL. Use content from generated-sql"
+
+            cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
+            cp -a sql/. /tmp/workspace/generated-sql/sql
+          fi
+
+          PATH=".venv/bin:$PATH" script/bqetl dependency record \
+            --skip-existing \
+            "/tmp/workspace/generated-sql/sql/"
+          PATH=".venv/bin:$PATH" script/bqetl metadata update \
+            --sql-dir /tmp/workspace/generated-sql/sql/ \
+            /tmp/workspace/generated-sql/sql/
+          PATH=".venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
+      - name: Copy schema cache for reuse in other jobs
+        run: |
+          mkdir -p /tmp/workspace/schema-cache
+          if [ -d /tmp/bigquery_etl_schemas ]; then
+            cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
+          fi
+      - uses: actions/upload-artifact@v6
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - uses: actions/upload-artifact@v6
+        with:
+          name: schema-cache
+          path: /tmp/workspace/schema-cache
+
+  docs:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [generate-sql]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &download-generated-sql
+        uses: actions/download-artifact@v6
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - &copy-generated-sql
+        name: Move generated SQL into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql/
+      - name: Generate documentation
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl docs generate --output_dir=generated_docs/
+      - name: Deploy documentation to GitHub Pages
+        run: |
+          cd generated_docs/
+          git config --global user.name "GitHub Actions docs job"
+          git config --global user.email "dataops@mozilla.com"
+          PATH="../.venv/bin:$PATH" mkdocs gh-deploy \
+            --remote-name https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+            -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
+
+  deploy-changes-to-stage:
+    name: Deploy Changes to Stage
+    runs-on: ubuntu-latest
+    needs: [generate-sql, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - &download-schema-cache
+        name: Download schema cache if available
+        uses: actions/download-artifact@v6
+        continue-on-error: true
+        with:
+          name: schema-cache
+          path: /tmp/workspace/schema-cache
+      - name: Restore schema cache from generate-sql job
+        run: |
+          if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
+            cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
+            echo "Restored schema cache from generate-sql job"
+          fi
+      - name: Move generated-sql into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql
+      - name: Pull in generated-sql branch from remote
+        run: |
+          git clone --single-branch --branch generated-sql \
+            https://github.com/mozilla/bigquery-etl \
+            generated-sql
+          # Normalize file permissions to avoid false positives in diffs
+          find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
+          find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - *auth-gcp-stage
+      - name: Deploy changes to stage
+        timeout-minutes: 30
+        run: |
+          if [ "${{ github.event.inputs.skip-stage-deploys }}" != "true" ]; then
+            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+            echo $PATHS
+            git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
+            PATH=".venv/bin:$PATH" script/bqetl stage deploy \
+              --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" \
+              --remove-updated-artifacts \
+              $PATHS
+          fi
+      - name: Copy generated SQL to temporary stage directory
+        run: |
+          mkdir -p /tmp/workspace/staged-generated-sql
+          cp -r sql/ /tmp/workspace/staged-generated-sql/sql
+          cp -r tests/ /tmp/workspace/staged-generated-sql/tests
+      - uses: actions/upload-artifact@v6
+        with:
+          name: staged-generated-sql
+          path: /tmp/workspace/staged-generated-sql
+
+  dry-run-sql:
+    name: Dry Run SQL
+    runs-on: ubuntu-latest
+    needs: [deploy-changes-to-stage, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - &download-staged-sql
+        uses: actions/download-artifact@v6
+        with:
+          name: staged-generated-sql
+          path: /tmp/workspace/staged-generated-sql
+      - &copy-staged-sql
+        name: Move sql deployed on stage into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/staged-generated-sql/sql sql
+          rm -rf tests/
+          cp -r /tmp/workspace/staged-generated-sql/tests tests
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - name: Dry run queries
+        run: |
+          if [ "${{ github.ref_name }}" = main ]; then
+            echo "Skip dryruns on main. Dryruns will run in Airflow"
+            exit 0
+          elif git log --format=%B --no-merges -n 1 |
+              grep -qF '[run-tests]'; then
+            echo "Check dry run for all queries because [run-tests] in" \
+              "commit message"
+            PATHS=sql
+          elif [ "${{ github.event.inputs.skip-stage-deploys }}" = "true" ]; then
+            PATHS=sql
+          elif [ -d "sql/moz-fx-data-integration-tests" ]; then
+            PATHS="sql/moz-fx-data-integration-tests"
+          else
+            # If integration tests dir doesn't exist, skip dryrun
+            echo "Integration tests directory not found, skipping dryrun"
+            exit 0
+          fi
+          echo $PATHS
+          PATH=".venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
+
+  test-sql:
+    name: Test SQL
+    runs-on: ubuntu-latest
+    needs: [deploy-changes-to-stage, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-stage
+      - *set-stage-project-id
+      - name: Run SQL tests
+        run: |
+          PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+
+  test-routines:
+    name: Test Routines
+    runs-on: ubuntu-latest
+    needs: [deploy-changes-to-stage, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-stage
+      - *set-stage-project-id
+      - name: Run routine tests
+        run: |
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+      - name: Validate doc examples
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
+
+  validate-views:
+    name: Validate Views
+    runs-on: ubuntu-latest
+    needs: [deploy-changes-to-stage, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-staged-sql
+      - *copy-staged-sql
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - name: Validate views
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl view validate
+
+  validate-metadata:
+    name: Validate Metadata
+    needs: [build, decide-runs]
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - name: Validate workgroup access configuration on main
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - name: Verify that metadata files are valid
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl query validate \
+            --no-dryrun --skip-format-sql
+      - name: Copy generated SQL for debugging
+        if: failure()
+        run: |
+          mkdir -p /tmp/debug_artifacts
+          cp -r sql /tmp/debug_artifacts/sql
+      - name: Upload debug artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: validate-metadata-debug-artifacts
+          path: /tmp/debug_artifacts
+
+  validate-backfills:
+    name: Validate Backfills
+    runs-on: ubuntu-latest
+    needs: [generate-sql, decide-runs]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *copy-generated-sql
+      - name: Verify that backfill.yaml files are valid
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl backfill validate
+
+  private-generate-sql:
+    name: Generate Private SQL
+    runs-on: ubuntu-latest
+    needs: [generate-sql, decide-runs]
+    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-generated-sql
+      - *auth-gcp-dryrun
+      - *set-dryrun-project-id
+      - *export-dryrun-id-token
+      - &setup-ssh-key-private-bqetl
+        name: Setup SSH key for private repo
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Pull down private SQL content
+        run: |
+          git clone --branch main --depth 1 \
+            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+      - name: Generate SQL content
+        run: |
+          export PATH="$PWD/.venv/bin:$PATH"
+          export PYTHONPATH="$PWD:$PYTHONPATH"
+          bqetl_script="$PWD/script/bqetl"
+          cd ~/private-bigquery-etl
+
+          $bqetl_script generate all --target-project moz-fx-data-shared-prod
+          $bqetl_script format sql/
+          $bqetl_script dependency record --skip-existing sql/
+          $bqetl_script metadata update sql/
+          $bqetl_script monitoring update sql/
+
+          mkdir -p /tmp/workspace/private-generated-sql
+          cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
+          cp -rf sql/. /tmp/workspace/private-generated-sql/sql
+          cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
+
+          git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
+      - uses: actions/upload-artifact@v6
+        with:
+          name: private-generated-sql
+          path: /tmp/workspace/private-generated-sql
+      - uses: actions/upload-artifact@v6
+        with:
+          name: private-bigquery-etl-sha
+          path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
+
+  main-generate-sql-and-dags:
+    name: Generate SQL and DAGs from Main Branch
+    runs-on: ubuntu-latest
+    needs: [build, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (github.ref != 'refs/heads/main') &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout-with-history
+      - *setup-python
+      - *restore-venv
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - *set-dryrun-project-id
+      - *setup-ssh-key-private-bqetl
+      - name: Generate SQL and DAGs
+        run: |
+          export PATH="$PWD/.venv/bin:$PATH"
+          export PYTHONPATH="$PWD:$PYTHONPATH"
+          bigquery_etl="$PWD"
+          bqetl_script="$PWD/script/bqetl"
+
+          # Get parent commit on main from which this branch diverged
+          MAIN_MERGE_BASE=$(git merge-base HEAD origin/main || true)
+          echo "merge base with main: $MAIN_MERGE_BASE"
+
+          # Check if the generated-sql branch can be re-used
+          git clone -b generated-sql git@github.com:mozilla/bigquery-etl.git ~/remote-generated-sql
+          cd ~/remote-generated-sql
+
+          # Check if main merge base has been pushed to generated-sql yet, otherwise use latest
+          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
+            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
+            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
+          else
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main
+            export LATEST_TAG_GENERATED_SQL=$(git describe --tags --abbrev=0)
+            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+          fi
+
+          cd "$bigquery_etl"
+          export GENERATED_SQL_CHANGED=false
+
+          # If SQL generators changed, re-run SQL generation
+          if [[ $(git diff --name-only --diff-filter=d ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql_generators) ]]; then
+            echo "SQL generator changed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          # If a SQL file was removed or renamed, re-run SQL generation
+          if [[ $(git diff --name-only --diff-filter=DR ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql) ]]; then
+            echo "SQL file was removed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
+          if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+            # Re-run SQL generation
+            $bqetl_script generate all \
+              --ignore derived_view_schemas \
+              --target-project moz-fx-data-shared-prod
+          else
+            echo "Changes don't affect generated SQL. Use content from generated-sql branch"
+            # Merge files from the generated-sql branch, preserving those that changed in this PR
+            cp -rn ~/remote-generated-sql/sql/. sql
+          fi
+
+          $bqetl_script format sql/
+          $bqetl_script dependency record --skip-existing sql/
+          $bqetl_script metadata update sql/
+          $bqetl_script monitoring update sql/
+
+          mkdir -p /tmp/workspace/main-generated-sql
+          cp -r sql /tmp/workspace/main-generated-sql/sql
+
+          # Generate private SQL
+          git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+          cd ~/private-bigquery-etl
+          $bqetl_script generate all --target-project moz-fx-data-shared-prod
+          $bqetl_script format sql/
+          $bqetl_script dependency record --skip-existing sql/
+          $bqetl_script metadata update sql/
+          $bqetl_script monitoring update sql/
+
+          cd "$bigquery_etl"
+          cp -rf ~/private-bigquery-etl/sql/. sql
+          cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
+          # Generate DAGs
+          mkdir -p /tmp/workspace/main-generated-sql/dags
+          $bqetl_script dag generate \
+            --output-dir /tmp/workspace/main-generated-sql/dags
+          rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
+      - uses: actions/upload-artifact@v6
+        with:
+          name: main-generated-sql
+          path: /tmp/workspace/main-generated-sql
+
+  generate-dags:
+    name: Generate DAGs
+    runs-on: ubuntu-latest
+    needs: [generate-sql, private-generate-sql, decide-runs]
+    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *download-schema-cache
+      - uses: actions/download-artifact@v6
+        with:
+          name: generated-sql
+          path: /tmp/workspace/generated-sql
+      - uses: actions/download-artifact@v6
+        with:
+          name: private-generated-sql
+          path: /tmp/workspace/private-generated-sql
+      - name: Restore schema cache from generate-sql job
+        run: |
+          if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
+            cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
+            echo "Restored schema cache from generate-sql job"
+          fi
+      - *auth-gcp-dryrun
+      - *export-dryrun-id-token
+      - *set-dryrun-project-id
+      - *setup-ssh-key-private-bqetl
+      - name: Pull down private-bigquery-etl content
+        run: |
+          git clone --branch main --depth 1 \
+            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+      - name: Generate DAGs
+        run: |
+          rm -rf sql/
+          cp -rf /tmp/workspace/private-generated-sql/sql sql/
+
+          cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
+          mkdir -p /tmp/workspace/generated-sql/dags
+          PATH=".venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
+
+          mkdir -p /tmp/workspace/private-generated-sql/dags
+          mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
+      - uses: actions/upload-artifact@v6
+        with:
+          name: generated-sql-with-dags
+          path: /tmp/workspace/generated-sql
+      - uses: actions/upload-artifact@v6
+        with:
+          name: private-generated-sql-with-dags
+          path: /tmp/workspace/private-generated-sql
+
+  validate-dags:
+    name: Validate DAGs
+    runs-on: ubuntu-latest
+    needs: [generate-dags, decide-runs]
+    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
+    environment: dev
+    steps:
+      - *checkout
+      - name: Pull telemetry-airflow
+        run: |
+          git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
+      - uses: actions/download-artifact@v6
+        with:
+          name: generated-sql-with-dags
+          path: /tmp/workspace/generated-sql
+      - name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
+        run: |
+          rm ~/telemetry-airflow/dags/* -f || true
+          cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
+      - name: Cache telemetry-airflow dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/telemetry-airflow/.venv
+          # yamllint disable-line rule:line-length
+          key: telemetry-airflow-deps-v1-${{ hashFiles('~/telemetry-airflow/requirements.txt', '~/telemetry-airflow/requirements-dev.txt', '~/telemetry-airflow/requirements-override.txt') }}
+          restore-keys: |
+            telemetry-airflow-deps-v1-
+      - name: Install telemetry-airflow dependencies
+        run: |
+          cd ~/telemetry-airflow
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --no-deps -r requirements.txt
+          pip install --no-deps -r requirements-dev.txt
+          pip install --no-deps -r requirements-override.txt
+      - name: 🧪 Test valid DAGs
+        run: |
+          cd ~/telemetry-airflow
+          source .venv/bin/activate
+          python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v6
+        with:
+          name: dag-test-results
+          path: ~/telemetry-airflow/test-results/junit.xml
+
+  generate-diff:
+    name: Generate and Post SQL Diff
+    runs-on: ubuntu-latest
+    needs: [generate-dags, main-generate-sql-and-dags, decide-runs]
+    if: |
+      (github.ref != 'refs/heads/main') &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true')
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - *checkout
+      - name: Create workspace directory
+        run: mkdir -p /tmp/workspace
+      - uses: actions/download-artifact@v6
+        with:
+          name: generated-sql-with-dags
+          path: /tmp/workspace/generated-sql
+      - uses: actions/download-artifact@v6
+        with:
+          name: main-generated-sql
+          path: /tmp/workspace/main-generated-sql
+      - name: Generate diff
+        run: |
+          diff -qr --no-dereference \
+            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+            | grep '^Only in' \
+            > /tmp/workspace/sql.diff || true
+          diff -bur --no-dereference --new-file \
+            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+            >> /tmp/workspace/sql.diff || true
+          diff -qr --no-dereference \
+            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+            | grep '^Only in' \
+            >> /tmp/workspace/sql.diff || true
+          diff -bur --no-dereference --new-file \
+            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+            >> /tmp/workspace/sql.diff || true
+
+          # Write full diff to job summary for easy viewing
+          echo "## SQL Diff" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - name: Upload diff artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: sql-diff
+          path: /tmp/workspace/sql.diff
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+      - name: Install diff dependencies
+        run: npm i @octokit/graphql@7.0.2
+      - name: Find PR number
+        id: find-pr
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          else
+            # Use gh CLI to find PR for this branch
+            PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
+            PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
+            PR_TITLE=$(echo "$PR_JSON" | jq -r '.title // empty')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Post diff to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ steps.find-pr.outputs.pr_number }}
+          RUN_ID: ${{ github.run_id }}
+          COMMIT_MESSAGE: ${{ steps.find-pr.outputs.pr_title }}
+        run: node .github/workflows/post-diff.js
+
+  push-generated-sql:
+    name: Push Generated SQL
+    runs-on: ubuntu-latest
+    needs: [validate-dags]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: generated-sql-with-dags
+          path: /tmp/workspace/generated-sql
+      - name: Push to generated-sql branch
+        run: |
+          git config --global user.name "GitHub Actions generate-sql job"
+          git config --global user.email "dataops+generated-sql@mozilla.com"
+          git clone --single-branch --branch generated-sql \
+            https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+            generated-sql
+          cd generated-sql/
+          rm -rf sql/
+          cp -r /tmp/workspace/generated-sql/sql sql
+          rm -rf dags/
+          cp -r /tmp/workspace/generated-sql/dags dags
+          git add .
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
+            -m "Created from ${{ github.sha }}" \
+            && git tag c-${{ github.sha }} \
+            && git push \
+            && git push origin c-${{ github.sha }} \
+            || echo "Skipping push since it looks like there were no changes"
+
+  push-private-generated-sql:
+    name: Push Private Generated SQL
+    runs-on: ubuntu-latest
+    needs: [private-generate-sql, generate-dags]
+    if: github.ref == 'refs/heads/main'
+    environment: dev
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: private-generated-sql-with-dags
+          path: /tmp/workspace/private-generated-sql
+      - uses: actions/download-artifact@v6
+        with:
+          name: private-bigquery-etl-sha
+          path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
+      - *setup-ssh-key-private-bqetl
+      - name: Push to private-generated-sql branch
+        run: |
+          git config --global user.name "GitHub Actions private-generate-sql job"
+          git config --global user.email "dataops+private-generated-sql@mozilla.com"
+          git clone --single-branch --branch private-generated-sql \
+            git@github.com:mozilla/private-bigquery-etl \
+            private-generated-sql
+          cd private-generated-sql/
+          rm -rf sql/
+          cp -r /tmp/workspace/private-generated-sql/sql sql
+          rm -rf dags/
+          cp -r /tmp/workspace/private-generated-sql/dags dags
+          git add .
+
+          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
+
+          git commit -m "Auto-push due to change on main branch [ci skip]" \
+            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
+            && git push \
+            || echo "Skipping push since it looks like there were no changes"
+      - name: Push to gha-test-generated-sql branch (TESTING)
+        run: |
+          git config --global user.name "GitHub Actions private-generate-sql job"
+          git config --global user.email "dataops+private-generated-sql@mozilla.com"
+          git clone --single-branch --branch private-generated-sql \
+            git@github.com:mozilla/private-bigquery-etl.git \
+            gha-test-generated-sql
+          cd gha-test-generated-sql/
+          git checkout -B gha-test-generated-sql
+          rm -rf sql/
+          cp -r /tmp/workspace/private-generated-sql/sql sql
+          rm -rf dags/
+          cp -r /tmp/workspace/private-generated-sql/dags dags
+          git add .
+
+          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA/PRIVATE_BIGQUERY_ETL_SHA)
+
+          git commit -m "Auto-push for GHA testing [ci skip]" \
+            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
+            && git push -f origin gha-test-generated-sql \
+            || echo "Skipping push since it looks like there were no changes"
+
+  deploy-to-private-gar:
+    name: Deploy to Private GAR
+    runs-on: ubuntu-latest
+    needs: [private-generate-sql, build, generate-sql]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - *checkout
+      - *download-generated-sql
+      - uses: actions/download-artifact@v6
+        with:
+          name: private-generated-sql
+          path: /tmp/workspace/private-generated-sql
+      - name: Move generated-sql into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/private-generated-sql/sql sql
+          # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
+          yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' \
+            > bqetl_project.yaml
+      - name: Build the Docker image
+        run: |
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
+      - name: Push Docker image to GAR
+        uses: mozilla-it/deploy-actions/docker-push@v4.3.2
+        with:
+          project_id: moz-fx-data-artifacts-prod
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
+          workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
+          service_account_name: bigquery-etl
+      - name: Build the tagged Docker image
+        run: |
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+      - name: Push tagged Docker image to GAR
+        uses: mozilla-it/deploy-actions/docker-push@v4.3.2
+        with:
+          project_id: moz-fx-data-artifacts-prod
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+          workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
+          service_account_name: bigquery-etl
+
+  artifact-deployment:
+    name: Trigger Airflow Artifact Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-to-private-gar]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - name: Authenticate to GCP and Generate ID Token
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOYMENT_SERVICE_ACCOUNT_EMAIL }}
+          token_format: id_token
+          # yamllint disable-line rule:line-length
+          id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
+          id_token_include_email: true
+          create_credentials_file: false
+      - name: Generate API Token and DAG run note
+        run: |
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+          RUN_URL="${REPO_URL}/actions/runs/${{ github.run_id }}"
+          NOTE="DAG triggered by **[${{ github.actor }}](https://github.com/${{ github.actor }})** "
+          NOTE="${NOTE}from ${{ github.repository }} CI build [${{ github.run_number }}](${RUN_URL})"
+          echo "DAGRUN_NOTE=${NOTE}" >> $GITHUB_ENV
+          echo "ID_TOKEN=${{ steps.auth.outputs.id_token }}" >> $GITHUB_ENV
+      - name: Trigger bqetl-artifact-deployment in Airflow
+        run: |
+          curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
+            -H "Authorization: bearer ${ID_TOKEN}" \
+            -H "Content-Type:application/json" \
+            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
+
+  reset-stage-env:
+    name: Reset Stage Environment
+    runs-on: ubuntu-latest
+    needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines, decide-runs]
+    if: |
+      github.event.pull_request.head.repo.fork != true &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      id-token: write
+      contents: read
+    environment: dev
+    steps:
+      - *checkout
+      - *setup-python
+      - *restore-venv
+      - *auth-gcp-stage
+      - *set-stage-project-id
+      - name: Delete stage datasets
+        run: |
+          PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
+
+  manual-trigger-required-for-fork:
+    name: Manual Trigger Required for Fork
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.fork == true
+    steps:
+      - name: Manually trigger integration tests for fork
+        run: |
+          echo "Integration tests for this fork need to be triggered manually"
+          echo "Users with write access to the repository can trigger integration tests by following these steps:"
+          echo "  Open the following page:"
+          echo "    https://github.com/mozilla/bigquery-etl/actions/workflows/build.yml"
+          echo "  Choose the 'Run workflow' dropdown and provide '${{ github.event.pull_request.head.label }}' as parameter."
+          exit 1
+
+  deploy-to-pypi:
+    name: Deploy to PyPI
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mozilla-bigquery-etl
+    steps:
+      - *checkout-with-history
+      - name: Verify tag is on main branch
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor $GITHUB_SHA origin/main; then
+            echo "Error: Tag is not on main branch. Only tags on main can be deployed to PyPI."
+            exit 1
+          fi
+          echo "Verified: Tag is on main branch"
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install deployment tools
+        run: pip install --upgrade build setuptools wheel twine
+      - name: Build distribution files
+        run: python -m build --sdist --wheel
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  sync-bigquery-etl-submodule:
+    name: 🔃 Synchronize bigquery-etl submodule
+    runs-on: ubuntu-latest
+    needs: [push-generated-sql]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - &setup-ssh-keys-telemetry-airflow-dags
+        name: Setup SSH keys for telemetry-airflow-dags
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Configure git
+        run: |
+          git config --global user.email "dataops@mozilla.com"
+          git config --global user.name "GitHub Actions sync-dags-repo job"
+      - name: Clone telemetry-airflow-dags and update bigquery-etl submodule
+        run: |
+          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+          cd telemetry-airflow-dags
+          git submodule update --init --recursive --depth 1
+          cd bigquery-etl
+          git pull origin generated-sql
+          cd ..
+          git add bigquery-etl
+          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
+          git push origin main
+
+  sync-private-bigquery-etl-submodule:
+    name: 🔃 Synchronize private-bigquery-etl submodule
+    runs-on: ubuntu-latest
+    needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - *setup-ssh-keys-telemetry-airflow-dags
+      - name: Configure git
+        run: |
+          git config --global user.email "dataops@mozilla.com"
+          git config --global user.name "GitHub Actions sync-dags-repo job"
+      - name: Clone telemetry-airflow-dags and update private-bigquery-etl submodule
+        run: |
+          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+          cd telemetry-airflow-dags
+          git submodule update --init --recursive --depth 1
+          cd private-bigquery-etl
+          git pull origin private-generated-sql
+          cd ..
+          git add private-bigquery-etl
+          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
+          git push origin main

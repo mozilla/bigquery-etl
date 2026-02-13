@@ -843,7 +843,7 @@ bqetl_newtab:
     - impact/tier_1
 
 bqetl_newtab_late_morning:
-# Facilitates new tab metrics populated from the current calendar day in US time zones
+  # Facilitates new tab metrics populated from the current calendar day in US time zones
   default_args:
     depends_on_past: false
     email:
@@ -1750,7 +1750,7 @@ bqetl_shredder_monitoring:
     email:
       - bewu@mozilla.com
     email_on_failure: true
-    email_on_retry: False
+    email_on_retry: false
     end_date: null
     owner: bewu@mozilla.com
     retries: 2

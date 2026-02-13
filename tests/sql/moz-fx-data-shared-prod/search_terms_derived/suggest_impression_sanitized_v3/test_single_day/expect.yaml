@@ -5,7 +5,7 @@
   block_id: 101
   context_id: cid1
   country: US
-  is_clicked: False
+  is_clicked: false
   locale: en-US
   browser: firefox(96)
   form_factor: desktop

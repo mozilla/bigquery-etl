@@ -304,5 +304,5 @@ For our example:
 ## Completing the Pull Request
 
 At this point, the table exists in Bigquery so you are able to:
-- [Find and re-run the CI](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) of your PR and make sure that all tests pass
+- [Find and re-run the CI](https://github.com/mozilla/bigquery-etl/actions/workflows/build.yml) of your PR and make sure that all tests pass
 - Merge your PR.

@@ -1,3 +1,16 @@
+2026-02-12:
+  start_date: 2019-10-10
+  end_date: 2026-02-04
+  reason: Update historical records after some ETL join conditions were corrected (#8824).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
 2026-02-05:
   start_date: 2019-10-10
   end_date: 2026-01-26

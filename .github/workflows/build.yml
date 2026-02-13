@@ -106,12 +106,6 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
-      - &restore-venv
-        name: Restore cached virtualenv
-        uses: actions/cache/restore@v5
-        with:
-          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
-          path: .venv
       - &setup-python
         name: Set up Python
         id: setup_python
@@ -120,6 +114,13 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
           cache-dependency-path: 'requirements.txt'
+      - &restore-venv
+        name: Restore cached virtualenv
+        id: restore-venv
+        uses: actions/cache/restore@v5
+        with:
+          key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          path: .venv
       - name: Build
         run: |
           python3 -m venv .venv

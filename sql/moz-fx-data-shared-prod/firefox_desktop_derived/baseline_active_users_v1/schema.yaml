@@ -138,6 +138,9 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: A flag indicating whether the browser is set as the default browser on the client side.
+- name: attribution_msclkid
+  type: STRING
+  mode: NULLABLE
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE

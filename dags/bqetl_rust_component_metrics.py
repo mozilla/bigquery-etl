@@ -98,6 +98,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    rust_components_derived__metrics_logins_store_local_undecryptable_deleted__v1 = bigquery_etl_query(
+        task_id="rust_components_derived__metrics_logins_store_local_undecryptable_deleted__v1",
+        destination_table="metrics_logins_store_local_undecryptable_deleted_v1",
+        dataset_id="rust_components_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="sync-team@mozilla.com",
+        email=["sync-team@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     rust_components_derived__metrics_logins_store_mirror_undecryptable_deleted__v1 = bigquery_etl_query(
         task_id="rust_components_derived__metrics_logins_store_mirror_undecryptable_deleted__v1",
         destination_table="metrics_logins_store_mirror_undecryptable_deleted_v1",
@@ -219,6 +230,10 @@ with DAG(
     )
 
     rust_components_derived__metrics_logins_store_key_regenerated_other__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    rust_components_derived__metrics_logins_store_local_undecryptable_deleted__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

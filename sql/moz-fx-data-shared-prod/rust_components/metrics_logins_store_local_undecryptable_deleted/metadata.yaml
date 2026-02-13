@@ -1,0 +1,11 @@
+friendly_name: Metrics Logins Store Local Undecryptable Deleted
+description: |-
+  Please provide a description for the query
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.rust_components_derived.metrics_logins_store_local_undecryptable_deleted_v1

@@ -11,11 +11,9 @@ scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: active_date
-    require_partition_filter: false
-    expiration_days: null
+  clustering:
+    fields:
+    - active_date
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

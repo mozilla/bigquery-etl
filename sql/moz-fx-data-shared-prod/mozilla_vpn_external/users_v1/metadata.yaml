@@ -17,11 +17,9 @@ scheduling:
     \  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at)\
     \ = DATE '{{ds}}'"
 bigquery:
-  time_partitioning:
-    type: day
-    field: updated_at
-    require_partition_filter: false
-    expiration_days: null
+  clustering:
+    fields:
+    - updated_at
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:

@@ -2393,6 +2393,87 @@ fields:
         precision.
 
         '
+    - name: characteristics_fonts_variant_f_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts used to render "A" with variant F
+        font list
+
+        '
+    - name: characteristics_fonts_variant_f_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts used to render "A" with variant
+        F font list
+
+        '
+    - name: characteristics_fonts_variant_g_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts used to render emoji (U+1F47E) with
+        variant F font list
+
+        '
+    - name: characteristics_fonts_variant_g_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts used to render emoji (U+1F47E)
+        with variant F font list
+
+        '
+    - name: characteristics_fonts_variant_h_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts used to render 89 emojis with variant
+        F font list
+
+        '
+    - name: characteristics_fonts_variant_h_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts used to render 89 emojis with
+        variant F font list
+
+        '
+    - name: characteristics_fonts_variant_i_allowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts used to render SVG emojis with emoji-specific
+        font list
+
+        '
+    - name: characteristics_fonts_variant_i_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts used to render SVG emojis with
+        emoji-specific font list
+
+        '
+    - name: characteristics_svg_bbox
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON object from SVGGraphicsElement.getBBox(). Format: {"x":N,"y":N,"w":N,"h":N}.
+        Varies by browser rendering engine.'
+    - name: characteristics_svg_computed_text_length
+      type: STRING
+      mode: NULLABLE
+      description: SVGTextContentElement.getComputedTextLength() for emoji text element.
+        Returns the total length of rendered text, varies by font rendering.
+    - name: characteristics_svg_emoji_set
+      type: STRING
+      mode: NULLABLE
+      description: JSON array of emojis with unique rendering dimensions. Tests which
+        emojis render at distinct sizes, varies by OS/font support.
+    - name: characteristics_svg_extent_of_char
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON object from SVGTextContentElement.getExtentOfChar(0). Format:
+        {"x":N,"y":N,"w":N,"h":N}. Varies by emoji rendering.'
+    - name: characteristics_svg_substring_length
+      type: STRING
+      mode: NULLABLE
+      description: SVGTextContentElement.getSubStringLength(0, 10) for first 10 characters.
+        Varies by font metrics and text shaping.
   - name: string_list
     type: RECORD
     mode: NULLABLE

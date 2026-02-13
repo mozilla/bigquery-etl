@@ -27,6 +27,7 @@ SELECT
       LAX_BOOL(event_extra.form_action_origin_fixable) AS `form_action_origin_fixable`,
       LAX_BOOL(event_extra.form_data) AS `form_data`,
       LAX_BOOL(event_extra.had_errors) AS `had_errors`,
+      LAX_BOOL(event_extra.has_ai_summary) AS `has_ai_summary`,
       LAX_BOOL(event_extra.has_been_saved) AS `has_been_saved`,
       LAX_BOOL(event_extra.has_click_rule) AS `has_click_rule`,
       LAX_BOOL(event_extra.has_cookie_rule) AS `has_cookie_rule`,

@@ -20,10 +20,10 @@ fields:
   mode: NULLABLE
   description: The ID of the Google Ads campaign.
 - name: installs
-  type: INTEGER
+  type: FLOAT
   mode: NULLABLE
   description: The number of biddable app install conversions.
 - name: conversions
-  type: INTEGER
+  type: FLOAT
   mode: NULLABLE
   description: The number of biddable app post-install conversions.

@@ -371,7 +371,20 @@ SELECT
       metrics.string.characteristics_audio_compressor_gain_reduction,
       metrics.string.characteristics_audio_fingerprint2,
       metrics.string.characteristics_audio_float_frequency_sum,
-      metrics.string.characteristics_audio_float_time_domain_sum
+      metrics.string.characteristics_audio_float_time_domain_sum,
+      metrics.string.characteristics_fonts_variant_f_allowlisted,
+      metrics.string.characteristics_fonts_variant_f_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_g_allowlisted,
+      metrics.string.characteristics_fonts_variant_g_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_h_allowlisted,
+      metrics.string.characteristics_fonts_variant_h_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_i_allowlisted,
+      metrics.string.characteristics_fonts_variant_i_nonallowlisted,
+      metrics.string.characteristics_svg_bbox,
+      metrics.string.characteristics_svg_computed_text_length,
+      metrics.string.characteristics_svg_emoji_set,
+      metrics.string.characteristics_svg_extent_of_char,
+      metrics.string.characteristics_svg_substring_length
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,

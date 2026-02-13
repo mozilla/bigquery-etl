@@ -1,0 +1,23 @@
+friendly_name: OpenAI API Costs
+description: |-
+  Daily costs data from the OpenAI Costs API, grouped by project and line item.
+  Includes cost amounts, currency, and organization details.
+
+  API Doc: https://platform.openai.com/docs/api-reference/usage/costs
+owners:
+- phlee@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_llm_monitoring
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: OPENAI_ADMIN_API_KEY
+    key: bqetl_llm_monitoring__openai_admin_api_key

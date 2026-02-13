@@ -1,0 +1,23 @@
+friendly_name: OpenAI API Completions Usage
+description: |-
+  Daily completions usage data from the OpenAI Usage API, grouped by project, user, API key, model, batch, and service tier.
+  Includes token counts (input, output, cached, audio) and request counts.
+
+  API Doc: https://platform.openai.com/docs/api-reference/usage/completions
+owners:
+- phlee@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_llm_monitoring
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: OPENAI_ADMIN_API_KEY
+    key: bqetl_llm_monitoring__openai_admin_api_key

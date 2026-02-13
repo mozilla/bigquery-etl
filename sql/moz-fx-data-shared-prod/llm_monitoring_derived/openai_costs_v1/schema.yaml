@@ -1,0 +1,25 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the usage bucket
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the OpenAI project. Null if not grouped by project.
+- name: line_item
+  type: STRING
+  mode: NULLABLE
+  description: Billing line item category. Null if not grouped by line item.
+- name: organization_id
+  type: STRING
+  mode: NULLABLE
+  description: OpenAI organization ID
+- name: amount_value
+  type: FLOAT
+  mode: NULLABLE
+  description: Cost amount in the specified currency
+- name: currency
+  type: STRING
+  mode: NULLABLE
+  description: Currency code (e.g., usd)

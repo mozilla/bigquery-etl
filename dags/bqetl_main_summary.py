@@ -382,6 +382,13 @@ with DAG(
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="catalyst__wait_for_clients_daily",
+            external_dag_id="catalyst",
+            external_task_id="wait_for_clients_daily",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
         telemetry_derived__clients_daily__v6_external.set_upstream(
             telemetry_derived__clients_daily__v6
         )

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.addons.stats_dau`
+  `moz-fx-data-shared-prod.addons.amo_stats_dau`
 AS
 -- View to combine stats dau from both legacy and glean based data sources.
 -- Glean source containing clients using app version 148 and above.
@@ -50,7 +50,7 @@ SELECT
       UNNEST(dau_by_locale)
   ) AS dau_by_locale,
 FROM
-  `moz-fx-data-shared-prod.addons_derived.stats_dau_v1`
+  `moz-fx-data-shared-prod.addons_derived.amo_stats_dau_v1`
 UNION ALL
 -- Legacy source containing clients using app version major below 148.
 SELECT

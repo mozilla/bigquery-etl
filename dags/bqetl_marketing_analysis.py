@@ -536,6 +536,18 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    google_ads_derived__fenix_gclid_conversions__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__fenix_gclid_conversions__v1",
+        destination_table="fenix_gclid_conversions_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["ahe@mozilla.com", "kik@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter="report_date",
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__firefox_desktop_marketing_funnel__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_desktop_marketing_funnel__v1",
         destination_table='firefox_desktop_marketing_funnel_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -719,6 +731,10 @@ with DAG(
 
     google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
         wait_for_org_mozilla_firefox_derived__events_stream__v1
+    )
+
+    google_ads_derived__fenix_gclid_conversions__v1.set_upstream(
+        google_ads_derived__fenix_conversion_event_categorization__v1
     )
 
     telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(

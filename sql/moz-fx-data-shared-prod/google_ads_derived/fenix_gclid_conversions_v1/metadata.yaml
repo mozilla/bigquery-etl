@@ -1,0 +1,35 @@
+friendly_name: Gclid Conversions (Fenix)
+description: |-
+  Contains information conversion events for gclid's.
+
+  Conversion events are determined based on client's activity and include the following events:
+  - activation_1, activation_2, first_day_DAU.
+owners:
+- kik@mozilla.com
+- ahe@mozilla.com
+labels:
+  incremental: true
+  owner1: kik
+  dag: bqetl_marketing_analysis
+  owner2: ahe
+scheduling:
+  dag_name: bqetl_marketing_analysis
+  depends_on_past: true
+  date_partition_parameter: report_date
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: report_date
+    require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.google_ads.fenix_conversion_event_categorization
+  - moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1
+require_column_descriptions: true

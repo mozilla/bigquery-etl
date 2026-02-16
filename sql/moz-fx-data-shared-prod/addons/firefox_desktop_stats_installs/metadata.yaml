@@ -9,4 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
+  - moz-fx-data-shared-prod.addons_derived.amo_stats_installs_legacy_source_v1
   - moz-fx-data-shared-prod.addons_derived.firefox_desktop_stats_installs_v1

@@ -121,6 +121,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    addons_derived__amo_stats_dau__v1 = bigquery_etl_query(
+        task_id="addons_derived__amo_stats_dau__v1",
+        destination_table="amo_stats_dau_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     addons_derived__amo_stats_dau_historical__v1 = bigquery_etl_query(
         task_id="addons_derived__amo_stats_dau_historical__v1",
         destination_table="amo_stats_dau_historical_v1",
@@ -135,6 +146,17 @@ with DAG(
     addons_derived__amo_stats_dau_legacy_source__v1 = bigquery_etl_query(
         task_id="addons_derived__amo_stats_dau_legacy_source__v1",
         destination_table="amo_stats_dau_legacy_source_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    addons_derived__amo_stats_installs_historical__v1 = bigquery_etl_query(
+        task_id="addons_derived__amo_stats_installs_historical__v1",
+        destination_table="amo_stats_installs_historical_v1",
         dataset_id="addons_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -220,17 +242,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    addons_derived__stats_dau__v1 = bigquery_etl_query(
-        task_id="addons_derived__stats_dau__v1",
-        destination_table="stats_dau_v1",
-        dataset_id="addons_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     amo_dev__amo_stats_dau__v2 = bigquery_etl_query(
         task_id="amo_dev__amo_stats_dau__v2",
         destination_table="amo_stats_dau_v2",
@@ -308,6 +319,14 @@ with DAG(
         depends_on_past=False,
     )
 
+    addons_derived__amo_stats_dau__v1.set_upstream(
+        addons_derived__fenix_addons_by_client__v1
+    )
+
+    addons_derived__amo_stats_dau__v1.set_upstream(
+        addons_derived__firefox_desktop_addons_by_client__v1
+    )
+
     addons_derived__amo_stats_dau_historical__v1.set_upstream(
         addons_derived__fenix_addons_by_client_legacy_source__v1
     )
@@ -322,6 +341,14 @@ with DAG(
 
     addons_derived__amo_stats_dau_legacy_source__v1.set_upstream(
         addons_derived__firefox_desktop_addons_by_client_legacy_source__v1
+    )
+
+    addons_derived__amo_stats_installs_historical__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    addons_derived__amo_stats_installs_historical__v1.set_upstream(
+        wait_for_event_events
     )
 
     addons_derived__amo_stats_installs_legacy_source__v1.set_upstream(
@@ -355,14 +382,6 @@ with DAG(
     addons_derived__search_detection__v1.set_upstream(wait_for_bq_main_events)
 
     addons_derived__search_detection__v1.set_upstream(wait_for_event_events)
-
-    addons_derived__stats_dau__v1.set_upstream(
-        addons_derived__fenix_addons_by_client__v1
-    )
-
-    addons_derived__stats_dau__v1.set_upstream(
-        addons_derived__firefox_desktop_addons_by_client__v1
-    )
 
     amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)
 

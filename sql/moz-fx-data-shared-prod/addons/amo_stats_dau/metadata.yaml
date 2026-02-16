@@ -1,4 +1,4 @@
-friendly_name: Stats Dau
+friendly_name: Amo Stats Dau
 description: |-
   Please provide a description for the query
 owners: []
@@ -9,4 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
-  - moz-fx-data-shared-prod.addons_derived.stats_dau_v1
+  - moz-fx-data-shared-prod.addons_derived.amo_stats_dau_legacy_source_v1
+  - moz-fx-data-shared-prod.addons_derived.amo_stats_dau_v1

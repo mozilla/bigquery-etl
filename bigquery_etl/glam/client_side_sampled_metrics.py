@@ -44,8 +44,7 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         where_clause = _format_metric_types_filter(metric_types)
     else:
         where_clause = ""
-    query = dedent(
-        f"""
+    query = dedent(f"""
         WITH latest_metrics AS (
           SELECT metric_type, metric_name, sample_rate, timestamp
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
@@ -57,8 +56,7 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         )
         SELECT metric_type, metric_name, sample_rate
         FROM latest_metrics
-        """
-    )
+        """)
 
     try:
         rows = _run_bq_query(query)

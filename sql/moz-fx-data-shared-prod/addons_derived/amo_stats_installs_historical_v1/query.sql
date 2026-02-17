@@ -11,7 +11,6 @@ WITH install_stats AS (
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     event_category = 'addonsManager'
-    AND mozfun.norm.truncate_version(app_version, "major") < 148
     AND event_method = 'install_stats'
     AND submission_date = @submission_date
   GROUP BY

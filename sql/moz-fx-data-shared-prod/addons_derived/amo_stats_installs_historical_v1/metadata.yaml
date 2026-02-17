@@ -11,10 +11,14 @@ description: >
   The hashed_addon_id is only valid for install_stats:
   https://searchfox.org/mozilla-central/rev/5b061cdc4d40d44988dc61aa941cfbd98e31791f/toolkit/components/telemetry/Events.yaml#233-234
 
-  NOTE: This tables has been build using the same logic (except only including clients using major app_version below 148)
-        and source (legacy telemetry) as `amo_prod.amo_stats_installs_v3`.
-        This table is based on legacy telemetry, new table built using Glean data
-        from clients with major version 148 and above: `addons_derived.firefox_desktop_stats_installs_v1`.
+  NOTE: This table is a copy of `amo_prod.amo_stats_installs_v3` and is a historical record and should only be used if we need data prior to March 2024.
+
+      For a more recent dates please use
+      `addons_derived.amo_stats_installs_legacy_source_v1` for legacy based data containing clients with major app version below 148
+      and `addons_derived.firefox_desktop_stats_installs_v1` for Glean based data containing clients with major app version 148 and above.
+
+      `addons.firefox_desktop_stats_installs` is a view which combines `addons_derived.amo_stats_installs_legacy_source_v1`
+      and `addons_derived.firefox_desktop_stats_installs_v1` and is the preferred method for accessing information related to amo desktop install stats.
 owners:
   - kik@mozilla.com
 labels:

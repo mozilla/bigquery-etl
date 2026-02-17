@@ -1,0 +1,8 @@
+2026-02-17:
+  start_date: 2025-12-09
+  end_date: 2026-02-17
+  reason:
+    New table, initial backfill.
+  watchers:
+    - kik@mozilla.com
+  status: Initiate

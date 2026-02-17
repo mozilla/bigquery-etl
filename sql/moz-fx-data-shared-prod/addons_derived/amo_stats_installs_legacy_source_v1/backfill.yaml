@@ -1,0 +1,8 @@
+2026-02-17:
+  start_date: 2024-01-04
+  end_date: 2026-02-17
+  reason:
+    New filter added and we need to backfill the table retrospectively (DENG-9505).
+  watchers:
+    - kik@mozilla.com
+  status: Initiate

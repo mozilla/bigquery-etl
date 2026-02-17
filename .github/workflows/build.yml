@@ -1230,10 +1230,9 @@ jobs:
         run: |
           git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
           cd telemetry-airflow-dags
-          git submodule update --init --recursive --depth 1
-          cd bigquery-etl
-          git pull origin generated-sql
-          cd ..
+          # Manually clone bigquery-etl submodule to avoid initializing private repos
+          rm -rf bigquery-etl
+          git clone --branch generated-sql --depth 1 https://github.com/mozilla/bigquery-etl.git bigquery-etl
           git add bigquery-etl
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
           git push origin main
@@ -1245,16 +1244,35 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment: dev
     steps:
-      - *setup-ssh-keys-telemetry-airflow-dags
+      - name: Setup SSH keys for multiple repos
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa_telemetry
+          chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa_telemetry
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+          # Configure SSH: default for private-bigquery-etl submodule, alias for telemetry-airflow-dags
+          cat > ~/.ssh/config <<'EOF'
+          Host github.com
+            IdentitiesOnly yes
+            IdentityFile ~/.ssh/id_rsa
+          Host git-telemetry-airflow-dags
+            HostName github.com
+            User git
+            IdentitiesOnly yes
+            IdentityFile ~/.ssh/id_rsa_telemetry
+          EOF
+          chmod 600 ~/.ssh/config
       - name: Configure git
         run: |
           git config --global user.email "dataops@mozilla.com"
           git config --global user.name "GitHub Actions sync-dags-repo job"
       - name: Clone telemetry-airflow-dags and update private-bigquery-etl submodule
         run: |
-          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+          git clone --branch main git@git-telemetry-airflow-dags:mozilla/telemetry-airflow-dags.git
           cd telemetry-airflow-dags
-          git submodule update --init --recursive --depth 1
+          git submodule update --init --depth 1 private-bigquery-etl
           cd private-bigquery-etl
           git pull origin private-generated-sql
           cd ..

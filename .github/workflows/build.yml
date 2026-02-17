@@ -389,6 +389,7 @@ jobs:
           git config --global user.email "dataops@mozilla.com"
           PATH="../.venv/bin:$PATH" mkdocs gh-deploy \
             --remote-name https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+            --force \
             -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
 
   deploy-changes-to-stage:
@@ -1034,7 +1035,7 @@ jobs:
           cp -r /tmp/workspace/private-generated-sql/dags dags
           git add .
 
-          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
+          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA/PRIVATE_BIGQUERY_ETL_SHA)
 
           git commit -m "Auto-push due to change on main branch [ci skip]" \
             -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
@@ -1212,6 +1213,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [push-generated-sql]
     if: github.ref == 'refs/heads/main'
+    environment: dev
     steps:
       - &setup-ssh-keys-telemetry-airflow-dags
         name: Setup SSH keys for telemetry-airflow-dags
@@ -1241,6 +1243,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
     if: github.ref == 'refs/heads/main'
+    environment: dev
     steps:
       - *setup-ssh-keys-telemetry-airflow-dags
       - name: Configure git

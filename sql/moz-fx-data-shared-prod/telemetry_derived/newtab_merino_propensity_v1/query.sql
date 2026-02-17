@@ -1,3 +1,7 @@
+DECLARE MAX_ITEMS_TO_CONSIDER INT64 DEFAULT 200;
+
+DECLARE PER_ITEM_CUTOFF INT64 DEFAULT 20;
+
 WITH params AS (
   SELECT
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
@@ -117,9 +121,24 @@ stories_aggregates AS (
     aggregates
   WHERE
     position >= 0
-    AND position <= 100
+    AND position <= MAX_ITEMS_TO_CONSIDER
   GROUP BY
     position,
+    tile_format
+),
+long_tail_aggregates AS (
+  -- pooled/averaged over larger positions, by tile_format only
+  SELECT
+    tile_format,
+    SUM(impressions) AS impressions,
+    SUM(clicks) AS clicks,
+    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
+  FROM
+    aggregates
+  WHERE
+    position > PER_ITEM_CUTOFF
+    AND position <= MAX_ITEMS_TO_CONSIDER
+  GROUP BY
     tile_format
 ),
 stories_totals AS (
@@ -134,17 +153,67 @@ stories_weights AS (
   SELECT
     SAFE_DIVIDE(stories_totals.ctr, NULLIF(ag.ctr, 0)) AS unormalized_weight,
     ag.impressions,
-    position,
-    tile_format
+    ag.position,
+    ag.tile_format
   FROM
     stories_totals,
     stories_aggregates AS ag
 ),
--- Now that we have weights, we want to normalize (scale) all of them in such a way that the overall
--- average CTR is unchanged regardless of whether we apply propensity. This allows non-adjusted and
--- adjusted data to mix freely.
--- We compute denom_sum, which is the re-weighted total impressions and click_sum, which is the total clicks
--- Normalization Factor = target_ctr * denom_sum/click_sum
+long_tail_weights AS (
+  SELECT
+    SAFE_DIVIDE(stories_totals.ctr, NULLIF(ag.ctr, 0)) AS unormalized_weight,
+    ag.impressions,
+    ag.tile_format
+  FROM
+    stories_totals,
+    long_tail_aggregates AS ag
+),
+-- collect all formats we might want to output weights for
+all_formats AS (
+  SELECT DISTINCT
+    tile_format
+  FROM
+    stories_aggregates
+  WHERE
+    tile_format IS NOT NULL
+),
+-- generate the long-tail positions we want to “fill” with the averaged-by-format weight
+long_tail_positions AS (
+  SELECT
+    pos AS position
+  FROM
+    UNNEST(GENERATE_ARRAY(PER_ITEM_CUTOFF + 1, MAX_ITEMS_TO_CONSIDER)) AS pos
+),
+merged_weights AS (
+  -- first PER_ITEM_CUTOFF items: keep per-position weights
+  SELECT
+    unormalized_weight,
+    impressions,
+    position,
+    tile_format
+  FROM
+    stories_weights
+  WHERE
+    position
+    BETWEEN 0
+    AND PER_ITEM_CUTOFF
+  UNION ALL
+  -- long_tail_weights (averaged by tile_format), replicated across positions > cutoff,
+  -- and include all possible format values (even if long_tail_weights is missing for a format)
+  SELECT
+    lt.unormalized_weight,
+    lt.impressions,
+    p.position,
+    f.tile_format
+  FROM
+    all_formats f
+  CROSS JOIN
+    long_tail_positions p
+  LEFT JOIN
+    long_tail_weights lt
+    ON lt.tile_format = f.tile_format
+),
+-- Now that we have weights, normalize (scale) all of them so overall average CTR is unchanged.
 base_events_all_items AS (
   SELECT
     tile_format,
@@ -155,7 +224,9 @@ base_events_all_items AS (
     params
   WHERE
     ev.section_position IS NOT NULL
-    AND ev.section_position < 100
+    AND ev.position IS NOT NULL
+    AND ev.position >= 0
+    AND ev.position <= MAX_ITEMS_TO_CONSIDER
 ),
 aggregates_all_items AS (
   SELECT
@@ -172,15 +243,15 @@ aggregates_all_items AS (
 adjust_sums AS (
   SELECT
     SUM(
-      SAFE_DIVIDE(aggregates_all_items.impressions, NULLIF(stories_weights.unormalized_weight, 0))
+      SAFE_DIVIDE(aggregates_all_items.impressions, NULLIF(merged_weights.unormalized_weight, 0))
     ) AS denom_sum,
     SUM(aggregates_all_items.clicks) AS clicks_sum
   FROM
     aggregates_all_items
   JOIN
-    stories_weights
-    ON stories_weights.position = aggregates_all_items.position
-    AND stories_weights.tile_format = aggregates_all_items.tile_format
+    merged_weights
+    ON merged_weights.position = aggregates_all_items.position
+    AND merged_weights.tile_format = aggregates_all_items.tile_format
 ),
 all_items_stats AS (
   SELECT
@@ -201,16 +272,16 @@ normalization_factor AS (
     adjust_sums
 )
 SELECT
-  unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
-  position,
-  tile_format,
+  merged_weights.unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
+  merged_weights.position,
+  merged_weights.tile_format,
   NULL AS section_position,
-  impressions
+  merged_weights.impressions
 FROM
-  stories_weights
+  merged_weights
 CROSS JOIN
   normalization_factor
 WHERE
-  impressions > 2000
-  AND unormalized_weight IS NOT NULL
-  AND unormalized_weight != 0;
+  merged_weights.impressions > 2000
+  AND merged_weights.unormalized_weight IS NOT NULL
+  AND merged_weights.unormalized_weight != 0;

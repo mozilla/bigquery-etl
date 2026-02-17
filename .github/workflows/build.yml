@@ -265,8 +265,8 @@ jobs:
       - name: Generate SQL content
         run: |
           # Fetch main branch for merge-base
-          git fetch origin main:main --no-tags
-          MAIN_MERGE_BASE=$(git merge-base main HEAD || true)
+          git fetch origin main --no-tags
+          MAIN_MERGE_BASE=$(git merge-base origin/main HEAD || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
 
           git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql

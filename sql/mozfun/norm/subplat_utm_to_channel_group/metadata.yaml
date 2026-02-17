@@ -1,5 +1,5 @@
 ---
-friendly_name: Map UTM Source to Channel Group
+friendly_name: Subplat UTM Source to Channel Group
 description: |
   Maps UTM source parameters to predefined channel groups for attribution analysis.
 

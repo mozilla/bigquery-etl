@@ -101,7 +101,7 @@ subscription_attributions_with_channel AS (
       ELSE (
           SELECT AS STRUCT
             lta.*,
-            norm.map_utm_to_channel_group(lta.utm_source) AS channel_group
+            norm.subplat_utm_to_channel_group(lta.utm_source) AS channel_group
           FROM
             (SELECT last_touch_attribution AS lta)
         )

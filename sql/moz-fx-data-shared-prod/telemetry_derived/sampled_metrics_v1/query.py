@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-"""Import sampled metrics from Experimenter via the Experimenter API."""
+"""Import sampled metrics from Experimenter via the Experimenter API.
+
+Appends new rows when sampling state changes. The latest row per
+(metric_type, metric_name, channel, app_name) represents the current state.
+Metrics that are no longer sampled get a sample_rate=1.0 record inserted.
+"""
 
 import datetime
 import json
@@ -15,6 +20,19 @@ from google.cloud import bigquery
 EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v6/experiments/"
 
 GLEAN_FEATURE_ID = "gleanInternalSdk"
+
+BQ_SCHEMA = (
+    bigquery.SchemaField("timestamp", "TIMESTAMP"),
+    bigquery.SchemaField("experiment_slug", "STRING"),
+    bigquery.SchemaField("is_rollout", "BOOLEAN"),
+    bigquery.SchemaField("app_name", "STRING"),
+    bigquery.SchemaField("channel", "STRING"),
+    bigquery.SchemaField("start_version", "INTEGER"),
+    bigquery.SchemaField("end_date", "TIMESTAMP"),
+    bigquery.SchemaField("metric_type", "STRING"),
+    bigquery.SchemaField("metric_name", "STRING"),
+    bigquery.SchemaField("sample_rate", "FLOAT"),
+)
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
@@ -75,7 +93,7 @@ def is_active(experiment):
         return False
 
 
-def get_sampled_metrics():
+def get_sampled_metrics_from_api():
     """Fetch sampled metrics from active experiments/rollouts."""
     experiments = fetch(EXPERIMENTER_API_URL)
     rows = []
@@ -142,41 +160,120 @@ def get_sampled_metrics():
     return rows
 
 
+def get_current_state(client, destination_table):
+    """Query the latest row per metric from BigQuery.
+
+    Returns a dict keyed by (metric_type, metric_name, channel, app_name)
+    with the sample_rate as value.
+    """
+    query = f"""
+        SELECT metric_type, metric_name, channel, app_name, sample_rate
+        FROM `{destination_table}`
+        QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY metric_type, metric_name, channel, app_name
+            ORDER BY timestamp DESC
+        ) = 1
+    """
+    state = {}
+    for row in client.query(query).result():
+        key = (
+            row["metric_type"],
+            row["metric_name"],
+            row["channel"],
+            row["app_name"],
+        )
+        state[key] = float(row["sample_rate"])
+    return state
+
+
+def compute_diff(api_rows, current_state):
+    """Compute rows to insert based on changes from current state.
+
+    Returns only rows where the sample_rate changed, plus sample_rate=1.0
+    rows for metrics that are no longer sampled.
+    """
+    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    # Build a lookup of what the API says the current state should be
+    api_state = {}
+    api_row_lookup = {}
+    for row in api_rows:
+        key = (
+            row["metric_type"],
+            row["metric_name"],
+            row["channel"],
+            row["app_name"],
+        )
+        # If multiple experiments affect the same metric, keep the most
+        # recent one (by start date)
+        if key not in api_state or (row["timestamp"] or "") > (
+            api_row_lookup[key]["timestamp"] or ""
+        ):
+            api_state[key] = row["sample_rate"]
+            api_row_lookup[key] = row
+
+    rows_to_insert = []
+
+    # New or changed metrics
+    for key, sample_rate in api_state.items():
+        current_rate = current_state.get(key)
+        if current_rate is None or abs(current_rate - sample_rate) > 1e-9:
+            rows_to_insert.append(api_row_lookup[key])
+
+    # Metrics that are no longer sampled (were < 1.0, now absent from API)
+    for key, current_rate in current_state.items():
+        if key not in api_state and abs(current_rate - 1.0) > 1e-9:
+            metric_type, metric_name, channel, app_name = key
+            rows_to_insert.append(
+                {
+                    "timestamp": now,
+                    "experiment_slug": None,
+                    "is_rollout": None,
+                    "app_name": app_name,
+                    "channel": channel,
+                    "start_version": None,
+                    "end_date": None,
+                    "metric_type": metric_type,
+                    "metric_name": metric_name,
+                    "sample_rate": 1.0,
+                }
+            )
+
+    return rows_to_insert
+
+
 def main():
     """Run."""
     args = parser.parse_args()
-    rows = get_sampled_metrics()
+    api_rows = get_sampled_metrics_from_api()
 
     destination_table = (
         f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     )
 
     if args.dry_run:
-        print(json.dumps(rows, indent=2))
-        print(f"\nTotal rows: {len(rows)}")
+        print(json.dumps(api_rows, indent=2))
+        print(f"\nTotal API rows: {len(api_rows)}")
+        print("(Diff against BigQuery not available in dry_run mode)")
         sys.exit(0)
 
-    bq_schema = (
-        bigquery.SchemaField("timestamp", "TIMESTAMP"),
-        bigquery.SchemaField("experiment_slug", "STRING"),
-        bigquery.SchemaField("is_rollout", "BOOLEAN"),
-        bigquery.SchemaField("app_name", "STRING"),
-        bigquery.SchemaField("channel", "STRING"),
-        bigquery.SchemaField("start_version", "INTEGER"),
-        bigquery.SchemaField("end_date", "TIMESTAMP"),
-        bigquery.SchemaField("metric_type", "STRING"),
-        bigquery.SchemaField("metric_name", "STRING"),
-        bigquery.SchemaField("sample_rate", "FLOAT"),
-    )
+    client = bigquery.Client(args.project)
+    current_state = get_current_state(client, destination_table)
+    rows_to_insert = compute_diff(api_rows, current_state)
+
+    if not rows_to_insert:
+        print("No changes detected, nothing to insert")
+        return
 
     job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+        write_disposition=bigquery.job.WriteDisposition.WRITE_APPEND,
     )
-    job_config.schema = bq_schema
+    job_config.schema = BQ_SCHEMA
 
-    client = bigquery.Client(args.project)
-    client.load_table_from_json(rows, destination_table, job_config=job_config).result()
-    print(f"Loaded {len(rows)} sampled metric rows")
+    client.load_table_from_json(
+        rows_to_insert, destination_table, job_config=job_config
+    ).result()
+    print(f"Inserted {len(rows_to_insert)} rows")
 
 
 if __name__ == "__main__":

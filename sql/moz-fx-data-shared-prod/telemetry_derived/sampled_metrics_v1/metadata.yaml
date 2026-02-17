@@ -6,7 +6,7 @@ description: |-
 owners:
 - efilho@mozilla.com
 labels:
-  incremental: false
+  incremental: true
   owner1: efilho
 scheduling:
   dag_name: bqetl_sampled_metrics

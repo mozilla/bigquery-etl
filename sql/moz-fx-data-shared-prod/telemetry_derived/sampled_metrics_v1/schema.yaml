@@ -1,0 +1,41 @@
+fields:
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Start date of the experiment or rollout
+- name: experiment_slug
+  type: STRING
+  mode: NULLABLE
+  description: Experimenter slug identifying the experiment or rollout
+- name: is_rollout
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this is a rollout (true) or an experiment (false)
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: Application name (e.g., firefox_desktop)
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel (e.g., release, beta, nightly)
+- name: start_version
+  type: INT64
+  mode: NULLABLE
+  description: Minimum Firefox version from experiment targeting
+- name: end_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: End date of the experiment or rollout
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+  description: Glean metric type prefix (e.g., memory_distribution, timing_distribution)
+- name: metric_name
+  type: STRING
+  mode: NULLABLE
+  description: Metric name after the type prefix
+- name: sample_rate
+  type: FLOAT64
+  mode: NULLABLE
+  description: Fraction of clients sampled (bucketConfig count / total)

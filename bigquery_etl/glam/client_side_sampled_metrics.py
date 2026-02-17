@@ -9,10 +9,10 @@ from typing import Iterable, List, Optional
 
 from google.cloud import bigquery
 
-PROJECT_ID = "moz-fx-glam-prod"
-DATASET = "glam_etl"
+PROJECT_ID = "moz-fx-data-shared-prod"
+DATASET = "telemetry_derived"
 TABLE_NAME = "sampled_metrics_v1"
-EXPECTED_SAMPLE_RATE = 10.0  # For now, we only support 10% sampling.
+EXPECTED_SAMPLE_RATE = 0.1  # For now, we only support 10% sampling.
 
 
 def _run_bq_query(query: str):
@@ -44,7 +44,8 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         where_clause = _format_metric_types_filter(metric_types)
     else:
         where_clause = ""
-    query = dedent(f"""
+    query = dedent(
+        f"""
         WITH latest_metrics AS (
           SELECT metric_type, metric_name, sample_rate, timestamp
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
@@ -56,7 +57,8 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         )
         SELECT metric_type, metric_name, sample_rate
         FROM latest_metrics
-        """)
+        """
+    )
 
     try:
         rows = _run_bq_query(query)

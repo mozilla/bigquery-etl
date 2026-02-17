@@ -5,4 +5,4 @@
     New filter added and we need to backfill the table retrospectively (DENG-9505).
   watchers:
     - kik@mozilla.com
-  status: Initiate
+  status: Complete

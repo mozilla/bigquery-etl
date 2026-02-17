@@ -12,4 +12,4 @@ fields:
   type: BOOLEAN
   mode: REQUIRED
   description: |-
-    Flag indicating if the country is part of the EU market.
+    Flag indicating if the country is part of the EU/EEA/UK/CH marketing region (not strictly limited to EU member states).

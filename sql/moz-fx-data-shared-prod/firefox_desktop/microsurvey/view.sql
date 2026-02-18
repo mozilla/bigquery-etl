@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.microsurvey`
+  `moz-fx-data-shared-prod.firefox_desktop.microsurvey_redacted`
 AS
 WITH exclude_event_input_value AS (
   SELECT

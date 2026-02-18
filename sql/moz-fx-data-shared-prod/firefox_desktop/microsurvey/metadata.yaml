@@ -1,4 +1,4 @@
-friendly_name: Historical Pings for `firefox-desktop/microsurvey`
+friendly_name: Historical Pings for `firefox-desktop/microsurvey_redacted`
 description: |-
   This is a copy of the view created from `sql_generators/stable_views` but does not include `microsurvey_event_input_value`.
 

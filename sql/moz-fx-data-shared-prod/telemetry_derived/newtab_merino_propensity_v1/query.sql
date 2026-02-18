@@ -1,13 +1,11 @@
-DECLARE MAX_ITEMS_TO_CONSIDER INT64 DEFAULT 200;
-
-DECLARE PER_ITEM_CUTOFF INT64 DEFAULT 20;
-
 WITH params AS (
   SELECT
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
     11 AS minutes_to_assume_random_ranking,
-    "US" AS country
+    "US" AS country,
+    200 AS max_items_to_consider,
+    20 AS per_item_cutoff
 ),
 corpus_items AS (
   SELECT
@@ -118,10 +116,11 @@ stories_aggregates AS (
     SUM(clicks) AS clicks,
     SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
   FROM
-    aggregates
+    aggregates,
+    params
   WHERE
     position >= 0
-    AND position <= MAX_ITEMS_TO_CONSIDER
+    AND position <= params.max_items_to_consider
   GROUP BY
     position,
     tile_format
@@ -134,10 +133,11 @@ long_tail_aggregates AS (
     SUM(clicks) AS clicks,
     SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
   FROM
-    aggregates
+    aggregates,
+    params
   WHERE
-    position > PER_ITEM_CUTOFF
-    AND position <= MAX_ITEMS_TO_CONSIDER
+    position > params.per_item_cutoff
+    AND position <= params.max_items_to_consider
   GROUP BY
     tile_format
 ),
@@ -177,26 +177,28 @@ all_formats AS (
   WHERE
     tile_format IS NOT NULL
 ),
--- generate the long-tail positions we want to “fill” with the averaged-by-format weight
+-- generate the long-tail positions we want to "fill" with the averaged-by-format weight
 long_tail_positions AS (
   SELECT
     pos AS position
   FROM
-    UNNEST(GENERATE_ARRAY(PER_ITEM_CUTOFF + 1, MAX_ITEMS_TO_CONSIDER)) AS pos
+    params,
+    UNNEST(GENERATE_ARRAY(params.per_item_cutoff + 1, params.max_items_to_consider)) AS pos
 ),
 merged_weights AS (
-  -- first PER_ITEM_CUTOFF items: keep per-position weights
+  -- first per_item_cutoff items: keep per-position weights
   SELECT
     unormalized_weight,
     impressions,
     position,
     tile_format
   FROM
-    stories_weights
+    stories_weights,
+    params
   WHERE
     position
     BETWEEN 0
-    AND PER_ITEM_CUTOFF
+    AND params.per_item_cutoff
   UNION ALL
   -- long_tail_weights (averaged by tile_format), replicated across positions > cutoff,
   -- and include all possible format values (even if long_tail_weights is missing for a format)
@@ -226,7 +228,7 @@ base_events_all_items AS (
     ev.section_position IS NOT NULL
     AND ev.position IS NOT NULL
     AND ev.position >= 0
-    AND ev.position <= MAX_ITEMS_TO_CONSIDER
+    AND ev.position <= params.max_items_to_consider
 ),
 aggregates_all_items AS (
   SELECT

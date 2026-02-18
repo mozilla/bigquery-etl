@@ -6,7 +6,7 @@ WITH exclude_event_input_value AS (
     * REPLACE (
       STRUCT(
         metrics.counter,
-        metrics.labled_counter,
+        metrics.labeled_counter,
         metrics.quantity,
         metrics.string,
         metrics.string_list,

@@ -260,15 +260,15 @@ def main():
         f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     )
 
-    if args.dry_run:
-        print(json.dumps(api_rows, indent=2))
-        print(f"\nTotal API rows: {len(api_rows)}")
-        print("(Diff against BigQuery not available in dry_run mode)")
-        return
-
     client = bigquery.Client(args.project)
     current_state = get_current_state(client, destination_table)
     rows_to_insert = compute_diff(api_rows, current_state)
+
+    if args.dry_run:
+        print(json.dumps(rows_to_insert, indent=2))
+        print(f"\nAPI rows: {len(api_rows)}")
+        print(f"Rows to insert: {len(rows_to_insert)}")
+        return
 
     if not rows_to_insert:
         print("No changes detected, nothing to insert")

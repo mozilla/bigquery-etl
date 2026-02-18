@@ -1,4 +1,4 @@
-country_code,tier,is_eu
+country_code,tier,has_web_cookie_consent
 US,Tier 1,FALSE
 DE,Tier 1,TRUE
 FR,Tier 1,TRUE

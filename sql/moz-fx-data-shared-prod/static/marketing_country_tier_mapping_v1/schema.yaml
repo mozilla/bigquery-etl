@@ -8,8 +8,8 @@ fields:
   mode: NULLABLE
   description: |-
     Tier value corresponding to the country (possible values include: Tier 1, Tier 2, Tier 3, or null).
-- name: is_eu
+- name: has_web_cookie_consent
   type: BOOLEAN
   mode: REQUIRED
   description: |-
-    Flag indicating if the country is part of the EU/EEA/UK/CH marketing region (not strictly limited to EU member states).
+    Flag indicating if the country has a cookie banner.

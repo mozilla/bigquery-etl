@@ -19,10 +19,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Release channel (e.g., release, beta, nightly)
-- name: start_version
-  type: INT64
+- name: min_version
+  type: STRING
   mode: NULLABLE
   description: Minimum Firefox version from experiment targeting
+- name: max_version
+  type: STRING
+  mode: NULLABLE
+  description: Maximum Firefox version from experiment targeting
 - name: end_date
   type: DATE
   mode: NULLABLE

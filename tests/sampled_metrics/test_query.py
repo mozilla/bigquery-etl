@@ -2,24 +2,25 @@
 
 import importlib.util
 from datetime import date, timedelta
+from pathlib import Path
 from unittest import mock
 
 # Import the query module from its file path
-QUERY_MODULE_PATH = (
-    "sql.moz-fx-data-shared-prod.telemetry_derived.sampled_metrics_v1.query"
-)
+_repo_root = Path(__file__).resolve().parent.parent.parent
 
 # Load the module dynamically since the path contains hyphens
 spec = importlib.util.spec_from_file_location(
     "sampled_metrics_query",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/sampled_metrics_v1/query.py",
+    _repo_root
+    / "sql/moz-fx-data-shared-prod/telemetry_derived/sampled_metrics_v1/query.py",
 )
 assert spec is not None and spec.loader is not None
 query_mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(query_mod)
 
 parse_channel = query_mod.parse_channel
-parse_start_version = query_mod.parse_start_version
+parse_min_version = query_mod.parse_min_version
+parse_max_version = query_mod.parse_max_version
 is_active = query_mod.is_active
 get_sampled_metrics_from_api = query_mod.get_sampled_metrics_from_api
 get_current_state = query_mod.get_current_state
@@ -113,24 +114,52 @@ class TestParseChannel:
         assert parse_channel("") is None
 
 
-# -- Tests: parse_start_version -----------------------------------------------
+# -- Tests: parse_min_version -------------------------------------------------
 
 
-class TestParseStartVersion:
+class TestParseMinVersion:
     def test_standard_version(self):
         targeting = "(version|versionCompare('138.!') >= 0)"
-        assert parse_start_version(targeting) == 138
+        assert parse_min_version(targeting) == "138.!"
+
+    def test_patch_version(self):
+        targeting = "(version|versionCompare('105.0.2') >= 0)"
+        assert parse_min_version(targeting) == "105.0.2"
 
     def test_version_with_upper_bound(self):
-        targeting = "(version|versionCompare('120.*') <= 0) && (version|versionCompare('120.!') >= 0)"
-        assert parse_start_version(targeting) == 120
+        targeting = "(version|versionCompare('120.*') < 0) && (version|versionCompare('120.!') >= 0)"
+        assert parse_min_version(targeting) == "120.!"
 
     def test_no_version(self):
         targeting = '(browserSettings.update.channel == "release")'
-        assert parse_start_version(targeting) is None
+        assert parse_min_version(targeting) is None
 
     def test_empty_string(self):
-        assert parse_start_version("") is None
+        assert parse_min_version("") is None
+
+
+# -- Tests: parse_max_version -------------------------------------------------
+
+
+class TestParseMaxVersion:
+    def test_standard_version(self):
+        targeting = "(version|versionCompare('140.*') < 0)"
+        assert parse_max_version(targeting) == "140.*"
+
+    def test_patch_version(self):
+        targeting = "(version|versionCompare('131.0.3') < 0)"
+        assert parse_max_version(targeting) == "131.0.3"
+
+    def test_with_min_version(self):
+        targeting = "(version|versionCompare('130.!') >= 0) && (version|versionCompare('140.*') < 0)"
+        assert parse_max_version(targeting) == "140.*"
+
+    def test_no_version(self):
+        targeting = '(browserSettings.update.channel == "release")'
+        assert parse_max_version(targeting) is None
+
+    def test_empty_string(self):
+        assert parse_max_version("") is None
 
 
 # -- Tests: is_active ---------------------------------------------------------
@@ -165,10 +194,11 @@ class TestGetSampledMetricsFromApi:
         rows = get_sampled_metrics_from_api()
 
         assert len(rows) == 2
-        assert all(r["experiment_slug"] == "test-sampling-rollout" for r in rows)
+        assert all(r["experimenter_slug"] == "test-sampling-rollout" for r in rows)
         assert all(r["sample_rate"] == 0.1 for r in rows)
         assert all(r["channel"] == "release" for r in rows)
-        assert all(r["start_version"] == 138 for r in rows)
+        assert all(r["min_version"] == "138.!" for r in rows)
+        assert all(r["max_version"] is None for r in rows)
         assert all(r["app_name"] == "firefox_desktop" for r in rows)
         assert all(r["is_rollout"] is True for r in rows)
 
@@ -284,12 +314,13 @@ class TestComputeDiff:
     def test_new_metric_inserted(self):
         api_rows = [
             {
-                "timestamp": "2025-04-30",
-                "experiment_slug": "rollout-1",
+                "start_date": "2025-04-30",
+                "experimenter_slug": "rollout-1",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 138,
+                "min_version": "138.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "new_metric",
@@ -306,12 +337,13 @@ class TestComputeDiff:
     def test_unchanged_metric_not_inserted(self):
         api_rows = [
             {
-                "timestamp": "2025-04-30",
-                "experiment_slug": "rollout-1",
+                "start_date": "2025-04-30",
+                "experimenter_slug": "rollout-1",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 138,
+                "min_version": "138.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "stable_metric",
@@ -328,12 +360,13 @@ class TestComputeDiff:
     def test_changed_rate_inserted(self):
         api_rows = [
             {
-                "timestamp": "2025-04-30",
-                "experiment_slug": "rollout-1",
+                "start_date": "2025-04-30",
+                "experimenter_slug": "rollout-1",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 138,
+                "min_version": "138.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "changed_metric",
@@ -358,9 +391,10 @@ class TestComputeDiff:
         assert len(result) == 1
         assert result[0]["metric_name"] == "removed_metric"
         assert result[0]["sample_rate"] == 1.0
-        assert result[0]["experiment_slug"] is None
+        assert result[0]["experimenter_slug"] is None
         assert result[0]["is_rollout"] is None
-        assert result[0]["start_version"] is None
+        assert result[0]["min_version"] is None
+        assert result[0]["max_version"] is None
         assert result[0]["end_date"] is None
         assert result[0]["channel"] == "release"
         assert result[0]["app_name"] == "firefox_desktop"
@@ -377,24 +411,26 @@ class TestComputeDiff:
     def test_multiple_experiments_picks_most_recent(self):
         api_rows = [
             {
-                "timestamp": "2025-03-01",
-                "experiment_slug": "older-experiment",
+                "start_date": "2025-03-01",
+                "experimenter_slug": "older-experiment",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 136,
+                "min_version": "136.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "shared_metric",
                 "sample_rate": 0.5,
             },
             {
-                "timestamp": "2025-06-01",
-                "experiment_slug": "newer-experiment",
+                "start_date": "2025-06-01",
+                "experimenter_slug": "newer-experiment",
                 "is_rollout": False,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 140,
+                "min_version": "140.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "shared_metric",
@@ -405,30 +441,32 @@ class TestComputeDiff:
 
         result = compute_diff(api_rows, current_state)
         assert len(result) == 1
-        assert result[0]["experiment_slug"] == "newer-experiment"
+        assert result[0]["experimenter_slug"] == "newer-experiment"
         assert result[0]["sample_rate"] == 0.2
 
     def test_mixed_new_changed_removed(self):
         api_rows = [
             {
-                "timestamp": "2025-04-30",
-                "experiment_slug": "rollout-1",
+                "start_date": "2025-04-30",
+                "experimenter_slug": "rollout-1",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 138,
+                "min_version": "138.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "new_metric",
                 "sample_rate": 0.1,
             },
             {
-                "timestamp": "2025-04-30",
-                "experiment_slug": "rollout-1",
+                "start_date": "2025-04-30",
+                "experimenter_slug": "rollout-1",
                 "is_rollout": True,
                 "app_name": "firefox_desktop",
                 "channel": "release",
-                "start_version": 138,
+                "min_version": "138.!",
+                "max_version": None,
                 "end_date": None,
                 "metric_type": "counter",
                 "metric_name": "stable_metric",

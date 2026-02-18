@@ -28,7 +28,8 @@ BQ_SCHEMA = (
     bigquery.SchemaField("is_rollout", "BOOLEAN"),
     bigquery.SchemaField("app_name", "STRING"),
     bigquery.SchemaField("channel", "STRING"),
-    bigquery.SchemaField("start_version", "INTEGER"),
+    bigquery.SchemaField("min_version", "STRING"),
+    bigquery.SchemaField("max_version", "STRING"),
     bigquery.SchemaField("end_date", "DATE"),
     bigquery.SchemaField("metric_type", "STRING"),
     bigquery.SchemaField("metric_name", "STRING"),
@@ -71,11 +72,19 @@ def parse_channel(targeting):
     return None
 
 
-def parse_start_version(targeting):
+def parse_min_version(targeting):
     """Parse the minimum Firefox version from a targeting string."""
-    match = re.search(r"versionCompare\('(\d+)\.", targeting)
+    match = re.search(r"version\|versionCompare\('([^']+)'\)\s*>=\s*0", targeting)
     if match:
-        return int(match.group(1))
+        return match.group(1)
+    return None
+
+
+def parse_max_version(targeting):
+    """Parse the maximum Firefox version from a targeting string."""
+    match = re.search(r"version\|versionCompare\('([^']+)'\)\s*<\s*0", targeting)
+    if match:
+        return match.group(1)
     return None
 
 
@@ -117,7 +126,8 @@ def get_sampled_metrics_from_api():
         sample_rate = count / total if total > 0 else 0.0
 
         channel = parse_channel(targeting)
-        start_version = parse_start_version(targeting)
+        min_version = parse_min_version(targeting)
+        max_version = parse_max_version(targeting)
 
         # Collect all metrics set to true across all branches
         enabled_metrics = set()
@@ -147,7 +157,8 @@ def get_sampled_metrics_from_api():
                     "is_rollout": is_rollout,
                     "app_name": app_name,
                     "channel": channel,
-                    "start_version": start_version,
+                    "min_version": min_version,
+                    "max_version": max_version,
                     "end_date": end_date,
                     "metric_type": metric_type,
                     "metric_name": metric_name,
@@ -229,7 +240,8 @@ def compute_diff(api_rows, current_state):
                     "is_rollout": None,
                     "app_name": app_name,
                     "channel": channel,
-                    "start_version": None,
+                    "min_version": None,
+                    "max_version": None,
                     "end_date": None,
                     "metric_type": metric_type,
                     "metric_name": metric_name,

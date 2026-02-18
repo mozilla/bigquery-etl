@@ -1,9 +1,9 @@
 fields:
-- name: timestamp
-  type: TIMESTAMP
+- name: start_date
+  type: DATE
   mode: NULLABLE
   description: Start date of the experiment or rollout
-- name: experiment_slug
+- name: experimenter_slug
   type: STRING
   mode: NULLABLE
   description: Experimenter slug identifying the experiment or rollout
@@ -24,7 +24,7 @@ fields:
   mode: NULLABLE
   description: Minimum Firefox version from experiment targeting
 - name: end_date
-  type: TIMESTAMP
+  type: DATE
   mode: NULLABLE
   description: End date of the experiment or rollout
 - name: metric_type

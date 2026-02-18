@@ -46,12 +46,12 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         where_clause = ""
     query = dedent(f"""
         WITH latest_metrics AS (
-          SELECT metric_type, metric_name, sample_rate, timestamp
+          SELECT metric_type, metric_name, sample_rate, start_date
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
           {where_clause}
           QUALIFY ROW_NUMBER() OVER (
             PARTITION BY metric_type, metric_name
-            ORDER BY timestamp DESC
+            ORDER BY start_date DESC
           ) = 1
         )
         SELECT metric_type, metric_name, sample_rate

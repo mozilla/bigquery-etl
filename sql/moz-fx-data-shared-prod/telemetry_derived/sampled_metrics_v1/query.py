@@ -11,24 +11,25 @@ import datetime
 import json
 import re
 import sys
-import time
 from argparse import ArgumentParser
 
 import requests
 from google.cloud import bigquery
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
-EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v6/experiments/"
+EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v8/experiments/"
 
 GLEAN_FEATURE_ID = "gleanInternalSdk"
 
 BQ_SCHEMA = (
-    bigquery.SchemaField("timestamp", "TIMESTAMP"),
-    bigquery.SchemaField("experiment_slug", "STRING"),
+    bigquery.SchemaField("start_date", "DATE"),
+    bigquery.SchemaField("experimenter_slug", "STRING"),
     bigquery.SchemaField("is_rollout", "BOOLEAN"),
     bigquery.SchemaField("app_name", "STRING"),
     bigquery.SchemaField("channel", "STRING"),
     bigquery.SchemaField("start_version", "INTEGER"),
-    bigquery.SchemaField("end_date", "TIMESTAMP"),
+    bigquery.SchemaField("end_date", "DATE"),
     bigquery.SchemaField("metric_type", "STRING"),
     bigquery.SchemaField("metric_name", "STRING"),
     bigquery.SchemaField("sample_rate", "FLOAT"),
@@ -41,25 +42,22 @@ parser.add_argument("--destination_table", default="sampled_metrics_v1")
 parser.add_argument("--dry_run", action="store_true")
 
 
-def fetch(url, retries=5, initial_delay=2):
+def fetch(url, retries=5, backoff_factor=2):
     """Fetch a URL with exponential backoff retry."""
-    delay = initial_delay
-    for attempt in range(retries):
-        try:
-            response = requests.get(
-                url,
-                timeout=30,
-                headers={"user-agent": "https://github.com/mozilla/bigquery-etl"},
-            )
-            response.raise_for_status()
-            return response.json()
-        except Exception as e:
-            last_exception = e
-            if attempt < retries - 1:
-                print(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s...")
-                time.sleep(delay)
-                delay *= 2
-    raise last_exception
+    session = requests.Session()
+    retry = Retry(
+        total=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=[429, 500, 502, 503, 504],
+        raise_on_status=False,  # Favour error from response.raise_for_status().
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    response = session.get(
+        url,
+        timeout=30,
+    )
+    response.raise_for_status()
+    return response.json()
 
 
 def parse_channel(targeting):
@@ -144,8 +142,8 @@ def get_sampled_metrics_from_api():
 
             rows.append(
                 {
-                    "timestamp": start_date,
-                    "experiment_slug": slug,
+                    "start_date": start_date,
+                    "experimenter_slug": slug,
                     "is_rollout": is_rollout,
                     "app_name": app_name,
                     "channel": channel,
@@ -171,7 +169,7 @@ def get_current_state(client, destination_table):
         FROM `{destination_table}`
         QUALIFY ROW_NUMBER() OVER (
             PARTITION BY metric_type, metric_name, channel, app_name
-            ORDER BY timestamp DESC
+            ORDER BY start_date DESC
         ) = 1
     """
     state = {}
@@ -192,7 +190,7 @@ def compute_diff(api_rows, current_state):
     Returns only rows where the sample_rate changed, plus sample_rate=1.0
     rows for metrics that are no longer sampled.
     """
-    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    today = datetime.date.today().isoformat()
 
     # Build a lookup of what the API says the current state should be
     api_state = {}
@@ -206,8 +204,8 @@ def compute_diff(api_rows, current_state):
         )
         # If multiple experiments affect the same metric, keep the most
         # recent one (by start date)
-        if key not in api_state or (row["timestamp"] or "") > (
-            api_row_lookup[key]["timestamp"] or ""
+        if key not in api_state or (row["start_date"] or "") > (
+            api_row_lookup[key]["start_date"] or ""
         ):
             api_state[key] = row["sample_rate"]
             api_row_lookup[key] = row
@@ -217,17 +215,17 @@ def compute_diff(api_rows, current_state):
     # New or changed metrics
     for key, sample_rate in api_state.items():
         current_rate = current_state.get(key)
-        if current_rate is None or abs(current_rate - sample_rate) > 1e-9:
+        if current_rate is None or round(current_rate, 4) != round(sample_rate, 4):
             rows_to_insert.append(api_row_lookup[key])
 
     # Metrics that are no longer sampled (were < 1.0, now absent from API)
     for key, current_rate in current_state.items():
-        if key not in api_state and abs(current_rate - 1.0) > 1e-9:
+        if key not in api_state and round(current_rate, 4) != 1.0:
             metric_type, metric_name, channel, app_name = key
             rows_to_insert.append(
                 {
-                    "timestamp": now,
-                    "experiment_slug": None,
+                    "start_date": today,
+                    "experimenter_slug": None,
                     "is_rollout": None,
                     "app_name": app_name,
                     "channel": channel,

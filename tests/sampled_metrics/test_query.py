@@ -5,15 +5,22 @@ from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
 
-# Import the query module from its file path
+import pytest
+
+# Import the query module from its file path.
 _repo_root = Path(__file__).resolve().parent.parent.parent
+_query_path = (
+    _repo_root
+    / "sql/moz-fx-data-shared-prod/telemetry_derived/sampled_metrics_v1/query.py"
+)
+
+# In CI the sql/ directory may be replaced with generated SQL,
+# which removes Python query files. Skip in that case.
+if not _query_path.exists():
+    pytest.skip("query.py not available (sql/ replaced in CI)", allow_module_level=True)
 
 # Load the module dynamically since the path contains hyphens
-spec = importlib.util.spec_from_file_location(
-    "sampled_metrics_query",
-    _repo_root
-    / "sql/moz-fx-data-shared-prod/telemetry_derived/sampled_metrics_v1/query.py",
-)
+spec = importlib.util.spec_from_file_location("sampled_metrics_query", _query_path)
 assert spec is not None and spec.loader is not None
 query_mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(query_mod)

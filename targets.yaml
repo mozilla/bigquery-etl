@@ -1,0 +1,7 @@
+# target_name:
+#   project_id: moz-fx-data-shared-dev # or personal sandbox
+#   dataset_prefix: dev_user_{{ git.branch }}_{{ git.commit}}_ # optional prefix; git.branch and git.commit get inserted automatically
+
+dev:
+  project_id: moz-fx-data-shared-dev
+  dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_

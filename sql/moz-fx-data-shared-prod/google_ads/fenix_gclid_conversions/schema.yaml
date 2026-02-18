@@ -1,0 +1,27 @@
+fields:
+
+- mode: NULLABLE
+  name: gclid
+  type: STRING
+  description: Google click identifier.
+
+- mode: NULLABLE
+  name: conversion_event
+  type: STRING
+  description: |-
+    Conversion event name based on activity.
+    When activation_1 value is 1 then set to activation_1,
+    when activation_2 value is 1 then set to activation_2,
+    when active_d0 value is 1 then set to first_day_DAU.
+
+- mode: NULLABLE
+  name: activity_date_timestamp
+  type: STRING
+  description: |-
+    activity_date: Indicated when a conversion_event took place.
+    When conversion_event is activation_1 or activation_2
+    then use first_week_end_date. If conversion_event is
+    first_day_DAU use client's first_seen_date as the activity_date.
+
+    activity_date_timestamp modifies activity_date to be the following datetime format:
+    "%F %T" (example: "2026-01-17 23:59:59 PST").

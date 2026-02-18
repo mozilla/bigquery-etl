@@ -63,7 +63,7 @@ def stage():
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @sql_dir_option
 @click.option(
@@ -612,7 +612,7 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @click.option(
     "--dataset-suffix",

@@ -1,25 +1,20 @@
 #!/usr/bin/env node
-// A script for posting the generated-sql diff to Github from CircleCI.
-// This requires GH_AUTH_TOKEN to be set up, along-side CircleCI specific
-// variables. See the source at [1] for more details.
-// https://github.com/themadcreator/circle-github-bot/blob/master/src/index.ts
+// A script for posting the generated SQL diff to Github from GitHub Actions.
 
 const fs = require("fs");
-const bot = require("circle-github-bot").create();
 const { graphql } = require("@octokit/graphql");
-const path = require("path");
 
 const diff_file = "sql.diff";
 const graphql_authorized = graphql.defaults({
     headers: {
-        authorization: `token ${process.env.GH_AUTH_TOKEN}`,
+        authorization: `token ${process.env.GITHUB_TOKEN}`,
     },
 });
 // Github comments can have a maximum length of 65536 characters
 const max_content_length = 65000;
 
 async function minimize_pr_diff_comments() {
-    if (!process.env.CIRCLE_PULL_REQUEST) {
+    if (!process.env.PR_NUMBER) {
         return;
     }
     const { viewer } = await graphql_authorized(
@@ -47,9 +42,9 @@ async function minimize_pr_diff_comments() {
             }
         }`,
         {
-            repo_owner: process.env.CIRCLE_PROJECT_USERNAME,
-            repo_name: process.env.CIRCLE_PROJECT_REPONAME,
-            pr_number: parseInt(path.basename(process.env.CIRCLE_PULL_REQUEST)),
+            repo_owner: process.env.REPO_OWNER,
+            repo_name: process.env.REPO_NAME,
+            pr_number: parseInt(process.env.PR_NUMBER),
         }
     );
     for (const comment of repository.pullRequest.comments.nodes) {
@@ -96,7 +91,7 @@ ${diff_content}
 
 ${warnings}
 
-[Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/${diff_file})
+[Link to full diff](https://github.com/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/actions/runs/${process.env.RUN_ID}#summary-)
 `
     }
     var content = `#### \`${diff_file}\`
@@ -105,12 +100,42 @@ ${body}
     return content;
 }
 
-function post_diff() {
-    bot.comment(
-        process.env.GH_AUTH_TOKEN,
-        `### Integration report for "${bot.env.commitMessage}"
+async function post_diff() {
+    if (!process.env.PR_NUMBER) {
+        console.log("No PR number found, skipping comment posting.");
+        return;
+    }
+
+    const commit_message = process.env.COMMIT_MESSAGE || "this commit";
+    const content = `### Integration report for "${commit_message}"
 ${diff()}
-`
+`;
+
+    const { repository } = await graphql_authorized(
+        `query($repo_owner:String!, $repo_name:String!, $pr_number:Int!) {
+            repository(owner: $repo_owner, name: $repo_name) {
+                pullRequest(number: $pr_number) {
+                    id
+                }
+            }
+        }`,
+        {
+            repo_owner: process.env.REPO_OWNER,
+            repo_name: process.env.REPO_NAME,
+            pr_number: parseInt(process.env.PR_NUMBER),
+        }
+    );
+
+    await graphql_authorized(
+        `mutation($subject_id:ID!, $body:String!) {
+            addComment(input: {subjectId: $subject_id, body: $body}) {
+                clientMutationId
+            }
+        }`,
+        {
+            subject_id: repository.pullRequest.id,
+            body: content,
+        }
     );
 }
 

@@ -843,7 +843,7 @@ bqetl_newtab:
     - impact/tier_1
 
 bqetl_newtab_late_morning:
-# Facilitates new tab metrics populated from the current calendar day in US time zones
+  # Facilitates new tab metrics populated from the current calendar day in US time zones
   default_args:
     depends_on_past: false
     email:
@@ -1750,7 +1750,7 @@ bqetl_shredder_monitoring:
     email:
       - bewu@mozilla.com
     email_on_failure: true
-    email_on_retry: False
+    email_on_retry: false
     end_date: null
     owner: bewu@mozilla.com
     retries: 2
@@ -2563,5 +2563,17 @@ bqetl_claude_api:
     Tracks token consumption by model and API key.
   repo: bigquery-etl
   schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_rust_component_metrics:
+  schedule_interval: 0 3 * * *
+  description: The DAG schedules rust component metric queries.
+  default_args:
+    owner: sync-team@mozilla.com
+    start_date: "2026-02-05"
+    email: ["telemetry-alerts@mozilla.com", "sync-team@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
   tags:
     - impact/tier_3

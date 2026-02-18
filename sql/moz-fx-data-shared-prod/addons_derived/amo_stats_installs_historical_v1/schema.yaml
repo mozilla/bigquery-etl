@@ -1,0 +1,64 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: hashed_addon_id
+  type: STRING
+  mode: NULLABLE
+  description: Hashed Addon id (`TO_HEX(SHA256(addon_id))`).
+- name: total_downloads
+  type: INTEGER
+  mode: NULLABLE
+- name: downloads_per_source
+  type: RECORD
+  mode: REPEATED
+  description: Source info.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Source name.
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of downloads attributed to the source.
+- name: downloads_per_content
+  type: RECORD
+  mode: REPEATED
+  description: Content info.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Content name.
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of downloads attributed to the content.
+- name: downloads_per_medium
+  type: RECORD
+  mode: REPEATED
+  description: Medium info.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Medium name.
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of downloads attributed to the medium.
+- name: downloads_per_campaign
+  type: RECORD
+  mode: REPEATED
+  description: Campaign info.
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Campaign name.
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of downloads attributed to the campaign.

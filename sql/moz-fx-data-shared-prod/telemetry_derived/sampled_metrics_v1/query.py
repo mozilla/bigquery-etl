@@ -10,7 +10,6 @@ Metrics that are no longer sampled get a sample_rate=1.0 record inserted.
 import datetime
 import json
 import re
-import sys
 from argparse import ArgumentParser
 
 import requests
@@ -265,7 +264,7 @@ def main():
         print(json.dumps(api_rows, indent=2))
         print(f"\nTotal API rows: {len(api_rows)}")
         print("(Diff against BigQuery not available in dry_run mode)")
-        sys.exit(0)
+        return
 
     client = bigquery.Client(args.project)
     current_state = get_current_state(client, destination_table)

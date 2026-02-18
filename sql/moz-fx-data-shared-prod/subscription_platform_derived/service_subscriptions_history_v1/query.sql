@@ -100,10 +100,10 @@ subscription_attributions_with_channel AS (
         THEN NULL
       ELSE (
           SELECT AS STRUCT
-            lta.*,
-            norm.subplat_utm_to_channel_group(lta.utm_source) AS channel_group
-          FROM
-            (SELECT last_touch_attribution AS lta)
+            last_touch_attribution.*,
+            mozfun.norm.subplat_attribution_channel_group(
+              last_touch_attribution.utm_source
+            ) AS channel_group
         )
     END AS last_touch_attribution
   FROM

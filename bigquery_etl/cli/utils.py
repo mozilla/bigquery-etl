@@ -373,3 +373,28 @@ def get_glean_app_id_to_app_name_mapping() -> Dict[str, str]:
         for app in app_listings
         if "bq_dataset_family" in app and "app_name" in app
     }
+
+
+def resolve_effective_project(
+    destination_project_id: Optional[str], project_id: str
+) -> str:
+    """Resolve the effective project for BigQuery operations."""
+    return destination_project_id if destination_project_id else project_id
+
+
+def apply_dataset_prefix(dataset: str, dataset_prefix: Optional[str]) -> str:
+    """Apply dataset prefix if provided."""
+    return f"{dataset_prefix}{dataset}" if dataset_prefix else dataset
+
+
+def resolve_destination_table(
+    project: str,
+    dataset: str,
+    table: str,
+    destination_project_id: Optional[str] = None,
+    dataset_prefix: Optional[str] = None,
+) -> str:
+    """Resolve the fully qualified destination table ID."""
+    effective_project = resolve_effective_project(destination_project_id, project)
+    effective_dataset = apply_dataset_prefix(dataset, dataset_prefix)
+    return f"{effective_project}.{effective_dataset}.{table}"

@@ -14,7 +14,12 @@ from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import (
+    dataset_prefix_option,
+    destination_project_id_option,
+    paths_matching_name_pattern,
+    sql_dir_option,
+)
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
@@ -62,15 +67,17 @@ def stage():
 @click.option(
     "--project-id",
     "--project_id",
-    help="GCP project to deploy artifacts to",
+    help="GCP project to deploy artifacts to (deprecated: use --destination-project-id instead)",
     default="moz-fx-data-integration-tests",
 )
+@destination_project_id_option(default="moz-fx-data-integration-tests")
 @sql_dir_option
 @click.option(
     "--dataset-suffix",
     "--dataset_suffix",
     help="Suffix appended to the deployed dataset",
 )
+@dataset_prefix_option()
 @click.option(
     "--update-references",
     "--update_references",
@@ -105,14 +112,18 @@ def deploy(
     ctx,
     paths,
     project_id,
+    destination_project_id,
     sql_dir,
     dataset_suffix,
+    dataset_prefix,
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
+    effective_project = destination_project_id or project_id
+
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -149,10 +160,12 @@ def deploy(
     # update references of all deployed artifacts
     # references needs to be set to the stage project and the new dataset identifier
     if update_references:
-        _update_references(artifact_files, project_id, dataset_suffix, sql_dir)
+        _update_references(
+            artifact_files, effective_project, dataset_prefix, dataset_suffix, sql_dir
+        )
 
     updated_artifact_files = set()
-    (Path(sql_dir) / project_id).mkdir(parents=True, exist_ok=True)
+    (Path(sql_dir) / effective_project).mkdir(parents=True, exist_ok=True)
     # copy updated files locally to a folder representing the stage env project
     for artifact_file in artifact_files:
         artifact_project = artifact_file.parent.parent.parent.name
@@ -168,8 +181,11 @@ def deploy(
         ):
             continue
 
+        new_artifact_dataset = artifact_dataset
+        if dataset_prefix:
+            new_artifact_dataset = f"{dataset_prefix}{new_artifact_dataset}"
         new_artifact_dataset = (
-            f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+            f"{new_artifact_dataset}_{artifact_project.replace('-', '_')}"
         )
         if dataset_suffix:
             new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
@@ -194,7 +210,7 @@ def deploy(
             artifact_file = query_path
 
         new_artifact_path = (
-            Path(sql_dir) / project_id / new_artifact_dataset / artifact_name
+            Path(sql_dir) / effective_project / new_artifact_dataset / artifact_name
         )
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
@@ -203,7 +219,7 @@ def deploy(
         # copy tests to the right structure
         if artifact_test_path.exists():
             new_artifact_test_path = (
-                test_dir / project_id / new_artifact_dataset / artifact_name
+                test_dir / effective_project / new_artifact_dataset / artifact_name
             )
             shutil.copytree(
                 artifact_test_path, new_artifact_test_path, dirs_exist_ok=True
@@ -229,14 +245,17 @@ def deploy(
                 )
                 and artifact_project in test_file_path.parent.parts
             ):
+                new_artifact_dataset = artifact_dataset
+                if dataset_prefix:
+                    new_artifact_dataset = f"{dataset_prefix}{new_artifact_dataset}"
                 new_artifact_dataset = (
-                    f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+                    f"{new_artifact_dataset}_{artifact_project.replace('-', '_')}"
                 )
                 if dataset_suffix:
                     new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
 
                 new_test_file_name = (
-                    f"{project_id}.{new_artifact_dataset}.{artifact_name}"
+                    f"{effective_project}.{new_artifact_dataset}.{artifact_name}"
                 )
                 if test_file_path.name.endswith(f".schema{test_file_suffix}"):
                     new_test_file_name += ".schema"
@@ -254,7 +273,14 @@ def deploy(
                 shutil.rmtree(artifact_file.parent)
 
     # deploy to stage
-    _deploy_artifacts(ctx, updated_artifact_files, project_id, dataset_suffix, sql_dir)
+    _deploy_artifacts(
+        ctx,
+        updated_artifact_files,
+        effective_project,
+        dataset_prefix,
+        dataset_suffix,
+        sql_dir,
+    )
 
 
 def _udf_dependencies(artifact_files):
@@ -400,7 +426,9 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
     return artifact_dependencies
 
 
-def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
+def _update_references(
+    artifact_files, project_id, dataset_prefix, dataset_suffix, sql_dir
+):
     replace_references = []
     replace_partial_references = []
     for artifact_file in artifact_files:
@@ -416,6 +444,8 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             "region-eu",
             "region-us",
         ):
+            if dataset_prefix:
+                deployed_dataset = f"{dataset_prefix}{deployed_dataset}"
             deployed_dataset += f"_{original_project.replace('-', '_')}"
             if dataset_suffix:
                 deployed_dataset += f"_{dataset_suffix}"
@@ -493,7 +523,9 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             path.write_text(sql)
 
 
-def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
+def _deploy_artifacts(
+    ctx, artifact_files, project_id, dataset_prefix, dataset_suffix, sql_dir
+):
     """Deploy routines, tables and views."""
     # give read permissions to dry run accounts
     dataset_access_entries = [
@@ -517,7 +549,14 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             suffix=dataset_suffix,
             access_entries=dataset_access_entries,
         )
-    ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
+    ctx.invoke(
+        publish_routine,
+        name=None,
+        project_id=project_id,
+        destination_project_id=project_id,
+        dataset_prefix=dataset_prefix,
+        dry_run=False,
+    )
 
     query_files = list(
         {
@@ -557,6 +596,8 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             views=len(view_files) > 0,
             sql_dir=sql_dir,
             project_ids=[project_id],
+            destination_project_id=project_id,
+            dataset_prefix=dataset_prefix,
             parallelism=8,
             dry_run=False,
             respect_dryrun_skip=False,
@@ -611,9 +652,10 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 @click.option(
     "--project-id",
     "--project_id",
-    help="GCP project to deploy artifacts to",
+    help="GCP project to deploy artifacts to (deprecated: use --destination-project-id instead)",
     default="moz-fx-data-integration-tests",
 )
+@destination_project_id_option(default="moz-fx-data-integration-tests")
 @click.option(
     "--dataset-suffix",
     "--dataset_suffix",
@@ -626,9 +668,10 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     default=False,
     is_flag=True,
 )
-def clean(project_id, dataset_suffix, delete_expired):
+def clean(project_id, destination_project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
-    client = bigquery.Client(project_id)
+    effective_project = destination_project_id or project_id
+    client = bigquery.Client(effective_project)
 
     dataset_filter = (
         None if delete_expired is True else f"labels.suffix:{dataset_suffix}"

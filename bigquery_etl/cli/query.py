@@ -43,6 +43,7 @@ from ..cli.utils import (
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
+    resolve_destination_table,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
@@ -1747,13 +1748,13 @@ def initialize(
 
         original_table_id = f"{project}.{dataset}.{destination_table}"
 
-        if dataset_prefix:
-            dataset = f"{dataset_prefix}{dataset}"
+        destination_table_id = resolve_destination_table(
+            project, dataset, destination_table, destination_project_id, dataset_prefix
+        )
 
         effective_project = (
             destination_project_id if destination_project_id else project
         )
-        destination_table_id = f"{effective_project}.{dataset}.{destination_table}"
 
         client = bigquery.Client(project=effective_project)
         table = None

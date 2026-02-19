@@ -4,11 +4,11 @@ description: |-
   Key is ga_client_id.
 owners:
 - mhirose@mozilla.com
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   owner1: mhirose
   dag: bqetl_ga4_firefoxdotcom
-  owner2: kwindau
+  owner2: kik
 scheduling:
   depends_on_past: true
   dag_name: bqetl_ga4_firefoxdotcom

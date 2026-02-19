@@ -100,12 +100,8 @@ with DAG(
         destination_table="site_metrics_summary_v2",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "srose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

@@ -4,12 +4,12 @@ description: |-
   Key is ga_client_id.
 owners:
 - mhirose@mozilla.com
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
   owner1: mhirose
   dag: bqetl_google_analytics_derived_ga4
-  owner2: kwindau
+  owner2: kik
 scheduling:
   depends_on_past: true
   dag_name: bqetl_google_analytics_derived_ga4

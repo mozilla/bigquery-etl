@@ -281,7 +281,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -666,7 +667,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2103,7 +2110,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2488,7 +2496,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3925,7 +3939,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4310,7 +4325,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

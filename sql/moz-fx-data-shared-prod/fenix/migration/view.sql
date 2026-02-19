@@ -169,6 +169,11 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    STRUCT(
+      ping_info.server_knobs_config.event_threshold,
+      ping_info.server_knobs_config.metrics_enabled,
+      ping_info.server_knobs_config.pings_enabled
+    ) AS `server_knobs_config`,
     CAST(NULL AS TIMESTAMP) AS `parsed_start_time`,
     CAST(NULL AS TIMESTAMP) AS `parsed_end_time`
   ) AS `ping_info`,
@@ -479,6 +484,21 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    STRUCT(
+      ping_info.server_knobs_config.event_threshold,
+      ARRAY(
+        SELECT
+          STRUCT(metrics_enabled.key, metrics_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.metrics_enabled) AS `metrics_enabled`
+      ) AS `metrics_enabled`,
+      ARRAY(
+        SELECT
+          STRUCT(pings_enabled.key, pings_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
+      ) AS `pings_enabled`
+    ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,
@@ -789,6 +809,21 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    STRUCT(
+      ping_info.server_knobs_config.event_threshold,
+      ARRAY(
+        SELECT
+          STRUCT(metrics_enabled.key, metrics_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.metrics_enabled) AS `metrics_enabled`
+      ) AS `metrics_enabled`,
+      ARRAY(
+        SELECT
+          STRUCT(pings_enabled.key, pings_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
+      ) AS `pings_enabled`
+    ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,
@@ -1099,6 +1134,21 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    STRUCT(
+      ping_info.server_knobs_config.event_threshold,
+      ARRAY(
+        SELECT
+          STRUCT(metrics_enabled.key, metrics_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.metrics_enabled) AS `metrics_enabled`
+      ) AS `metrics_enabled`,
+      ARRAY(
+        SELECT
+          STRUCT(pings_enabled.key, pings_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
+      ) AS `pings_enabled`
+    ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,
@@ -1409,6 +1459,21 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    STRUCT(
+      ping_info.server_knobs_config.event_threshold,
+      ARRAY(
+        SELECT
+          STRUCT(metrics_enabled.key, metrics_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.metrics_enabled) AS `metrics_enabled`
+      ) AS `metrics_enabled`,
+      ARRAY(
+        SELECT
+          STRUCT(pings_enabled.key, pings_enabled.value)
+        FROM
+          UNNEST(ping_info.server_knobs_config.pings_enabled) AS `pings_enabled`
+      ) AS `pings_enabled`
+    ) AS `server_knobs_config`,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,

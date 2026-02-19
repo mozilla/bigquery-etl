@@ -9,11 +9,11 @@ description: |-
   stub_session_id - Available in Stub Attribution Service and GA
   download_source - Available in Stub Attribution Service
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
   dag: bqetl_mozilla_org_derived
 scheduling:

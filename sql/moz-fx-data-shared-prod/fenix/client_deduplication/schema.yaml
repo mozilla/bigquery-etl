@@ -313,6 +313,27 @@ fields:
     type: INTEGER
   - name: start_time
     type: STRING
+  - name: server_knobs_config
+    type: RECORD
+    fields:
+    - name: event_threshold
+      type: INTEGER
+    - name: metrics_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: BOOLEAN
+    - name: pings_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: BOOLEAN
   - name: parsed_start_time
     type: TIMESTAMP
   - name: parsed_end_time

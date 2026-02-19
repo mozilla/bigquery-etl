@@ -2,10 +2,10 @@ friendly_name: Cohort Weekly Statistics
 description: |-
   Contains weekly retention by multiple different attributes as of first seen date
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_cohort_retention
 scheduling:
   dag_name: bqetl_cohort_retention

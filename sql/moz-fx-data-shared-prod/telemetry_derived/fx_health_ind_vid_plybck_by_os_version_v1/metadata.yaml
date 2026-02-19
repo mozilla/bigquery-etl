@@ -2,10 +2,10 @@ friendly_name: Fx Health Ind Vid Plybck By Os
 description: |-
   Aggregate table of video playback minutes per user per OS
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   dag: bqetl_fx_health_ind_dashboard
 scheduling:

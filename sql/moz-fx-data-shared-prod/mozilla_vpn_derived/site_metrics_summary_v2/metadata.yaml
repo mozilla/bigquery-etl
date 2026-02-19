@@ -2,10 +2,10 @@ friendly_name: GA4 Site Metrics Summary for Mozilla VPN
 description: |-
   GA4 Site Metrics Summary for Mozilla VPN within mozilla.org
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   dag: bqetl_mozilla_vpn_site_metrics
 scheduling:

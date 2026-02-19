@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_conv_evnt_categorization.py`]
 Loads the desktop conversion event tables
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2024, 6, 4, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -149,8 +149,8 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
         + ["submission_date:DATE:{{ds}}"],
@@ -163,8 +163,8 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
         + ["submission_date:DATE:{{ds}}"],
@@ -176,8 +176,8 @@ with DAG(
         destination_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
@@ -203,8 +203,8 @@ with DAG(
         destination_table='glean_conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]

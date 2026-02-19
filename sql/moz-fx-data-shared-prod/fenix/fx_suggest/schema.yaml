@@ -512,6 +512,42 @@ fields:
   - name: start_time
     type: STRING
     mode: NULLABLE
+  - name: server_knobs_config
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: event_threshold
+      type: INTEGER
+      mode: NULLABLE
+      description: Optional threshold for event buffering before an events ping is
+        collected and submitted
+    - name: metrics_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Map of metric identifiers (category.name) to boolean values indicating
+        whether the metric is enabled
+    - name: pings_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Map of ping names to boolean values indicating whether the ping
+        is enabled
+    description: The Server Knobs configuration applied via applyServerKnobsConfig.
+      Contains the complete configuration including metrics_enabled, pings_enabled,
+      and event_threshold settings.
   - name: parsed_start_time
     type: TIMESTAMP
     mode: NULLABLE

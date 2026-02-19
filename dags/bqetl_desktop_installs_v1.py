@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_installs_v1.py`](https://gith
 DAG to build mozdata-fx-data-shared-prod.firefox_desktop_derived.desktop_installs_v1 table
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2023, 12, 28, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -70,8 +70,8 @@ with DAG(
         destination_table="desktop_installs_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

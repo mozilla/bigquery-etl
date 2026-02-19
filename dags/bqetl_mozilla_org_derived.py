@@ -16,7 +16,7 @@ Built from bigquery-etl repo, [`dags/bqetl_mozilla_org_derived.py`](https://gith
 
 #### Owner
 
-frank@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -26,7 +26,7 @@ frank@mozilla.com
 
 
 default_args = {
-    "owner": "frank@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2023, 11, 13, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -55,8 +55,8 @@ with DAG(
         dataset_id="stub_attribution_service_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         parameters=["download_date:DATE:{{ds}}"],
@@ -83,8 +83,8 @@ with DAG(
         dataset_id="stub_attribution_service_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         parameters=["download_date:DATE:{{ds}}"],
@@ -110,8 +110,8 @@ with DAG(
         destination_table="dl_token_ga_attribution_lookup_v1",
         dataset_id="stub_attribution_service_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["download_date:DATE:{{ds}}"],
@@ -122,8 +122,8 @@ with DAG(
         destination_table="dl_token_ga_attribution_lookup_v2",
         dataset_id="stub_attribution_service_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["download_date:DATE:{{ds}}"],

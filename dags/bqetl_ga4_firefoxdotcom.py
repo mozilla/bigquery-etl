@@ -23,7 +23,7 @@ Built from bigquery-etl repo, [`dags/bqetl_ga4_firefoxdotcom.py`](https://github
 Daily aggregations of data exported from Google Analytics 4
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -33,7 +33,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2025, 5, 27, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -194,7 +194,7 @@ with DAG(
         warehouse_id="1939",
         owner="mhirose@mozilla.com",
         email=[
-            "kwindau@mozilla.com",
+            "kik@mozilla.com",
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -207,8 +207,8 @@ with DAG(
         task_id="bigeye__firefoxdotcom_derived__ga_sessions__v1",
         table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1",
         warehouse_id="1939",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
@@ -256,8 +256,8 @@ with DAG(
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -269,9 +269,9 @@ with DAG(
         destination_table="firefox_whatsnew_summary_v2",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
+        owner="kik@mozilla.com",
         email=[
-            "kwindau@mozilla.com",
+            "kik@mozilla.com",
             "sherrera@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -286,7 +286,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
         email=[
-            "kwindau@mozilla.com",
+            "kik@mozilla.com",
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -300,8 +300,8 @@ with DAG(
         destination_table=None,
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -313,8 +313,8 @@ with DAG(
         destination_table=None,
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -358,8 +358,8 @@ with DAG(
         destination_table="glean_gclid_conversions_v1",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -394,8 +394,8 @@ with DAG(
         destination_table="www_site_downloads_v1",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -449,8 +449,8 @@ with DAG(
         destination_table="wwww_site_metrics_summary_v1",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

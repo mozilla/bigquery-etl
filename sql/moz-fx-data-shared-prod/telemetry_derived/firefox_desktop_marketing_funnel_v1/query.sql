@@ -85,7 +85,7 @@ top_of_funnel AS (
     `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
     USING (country_code)
   WHERE
-    NOT COALESCE(tier_mapping.is_eu, FALSE)
+    NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
   GROUP BY
     ALL
 ),
@@ -201,7 +201,7 @@ windows_installer_installs AS (
     ga4_attr_by_dltoken_dedup
     USING (dltoken)
   WHERE
-    NOT COALESCE(tier_mapping.is_eu, FALSE)
+    NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
   GROUP BY
     ALL
 ),
@@ -263,7 +263,7 @@ desktop_funnels_telemetry AS (
     -- Reclassify "other" and EU countries as "Unknown" funnel
     IF(
       cfs28.funnel_derived = 'other'
-      OR tier_mapping.is_eu,
+      OR tier_mapping.has_web_cookie_consent,
       'Unknown',
       cfs28.funnel_derived
     ) AS funnel_derived,
@@ -304,7 +304,10 @@ desktop_funnels_telemetry AS (
     AND cfs28.is_desktop
     AND cfs28.normalized_channel = 'release'
     -- Exclude EU for core funnels, but keep partner funnel metrics
-    AND (NOT COALESCE(tier_mapping.is_eu, FALSE) OR cfs28.funnel_derived = 'partner')
+    AND (
+      NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
+      OR cfs28.funnel_derived = 'partner'
+    )
   GROUP BY
     ALL
 ),

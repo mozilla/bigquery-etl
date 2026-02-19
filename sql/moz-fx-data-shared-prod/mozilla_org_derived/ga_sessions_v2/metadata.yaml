@@ -2,9 +2,9 @@ friendly_name: GA Sessions V2
 description: |-
   Contains 1 row for each Google Analytics 4 session
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
   dag: bqetl_google_analytics_derived_ga4
 scheduling:

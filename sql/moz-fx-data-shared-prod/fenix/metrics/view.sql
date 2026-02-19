@@ -374,7 +374,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1092,7 +1093,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2445,7 +2452,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3163,7 +3171,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4536,7 +4550,8 @@ SELECT
       metrics.counter.web_push_declarative_mutable,
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
-      metrics.counter.update_blocked
+      metrics.counter.update_blocked,
+      metrics.counter.network_ssl_token_cache_expired
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5254,7 +5269,13 @@ SELECT
       metrics.labeled_counter.geolocation_geolocation_cache_hit,
       metrics.labeled_counter.geolocation_geolocation_service,
       metrics.labeled_counter.geolocation_linux_portal_error,
-      metrics.labeled_counter.geolocation_macos_error_code
+      metrics.labeled_counter.geolocation_macos_error_code,
+      metrics.labeled_counter.urlclassifier_global_cache_hit,
+      metrics.labeled_counter.urlclassifier_global_cache_miss,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
+      metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
+      metrics.labeled_counter.network_ssl_token_cache_hits
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6232,6 +6253,7 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    ping_info.server_knobs_config,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,

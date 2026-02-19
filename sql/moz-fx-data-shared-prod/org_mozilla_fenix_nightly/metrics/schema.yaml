@@ -3152,6 +3152,14 @@ fields:
       description: 'Number of downloads blocked by the WAF.
 
         '
+    - name: network_ssl_token_cache_expired
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of expired session resumption tokens encountered
+        during cache lookups. High values may indicate token lifetime issues or long
+        delays between connections to the same host.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3524,7 +3532,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -9042,6 +9051,91 @@ fields:
       description: 'Records the error code when MacOS CoreLocation geolocation fails.
         The CoreLocation error domain is kCLErrorDomain and can usually be used to
         get a human readable error for these values.  Records up to 16 codes.
+
+        '
+    - name: urlclassifier_global_cache_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of top-level navigations that hit the Global Cache table.
+        Keyed by ETP mode and window type.
+
+        '
+    - name: urlclassifier_global_cache_miss
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of top-level navigations that miss the Global Cache table.
+        Keyed by ETP mode and window type.
+
+        '
+    - name: urlclassifier_realtime_simulation_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of simulated real-time Safe Browsing lookup requests. Keyed
+        by ETP mode and window type.
+
+        '
+    - name: urlclassifier_realtime_simulation_request_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Total estimated data usage of simulated real-time Safe Browsing
+        lookup requests in bytes. Keyed by ETP mode and window type.
+
+        '
+    - name: urlclassifier_realtime_simulation_response_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Total estimated data usage of simulated real-time Safe Browsing
+        lookup responses in bytes. Keyed by ETP mode and window type.
+
+        '
+    - name: network_ssl_token_cache_hits
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts session resumption token cache hits and misses. A ''hit''
+        means a valid cached token was found and can be used for session resumption.
+        A ''miss'' means no valid token was available.
 
         '
   - name: string
@@ -48504,6 +48598,42 @@ fields:
   - name: reason
     type: STRING
     mode: NULLABLE
+  - name: server_knobs_config
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: event_threshold
+      type: INTEGER
+      mode: NULLABLE
+      description: Optional threshold for event buffering before an events ping is
+        collected and submitted
+    - name: metrics_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Map of metric identifiers (category.name) to boolean values indicating
+        whether the metric is enabled
+    - name: pings_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Map of ping names to boolean values indicating whether the ping
+        is enabled
+    description: The Server Knobs configuration applied via applyServerKnobsConfig.
+      Contains the complete configuration including metrics_enabled, pings_enabled,
+      and event_threshold settings.
   - name: parsed_start_time
     type: TIMESTAMP
     mode: NULLABLE

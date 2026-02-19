@@ -1062,6 +1062,13 @@ fields:
         behaving as they generally expect non-anomalous browsers to behave.
 
         '
+    - name: characteristics_storage_quota
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Storage quota in MB from StorageManager.estimate(), rounded to
+        integer. Acts as a disk-size proxy for fingerprinting entropy analysis.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -3115,6 +3122,21 @@ fields:
         math_ops. Each element represents the getBoundingClientRect().width of a rendered
         MathML element. The array index corresponds to the element''s id number. Format
         is a JSON stringified array like: ["123.456", "789.012", ...]
+
+        '
+    - name: characteristics_sdp_codec_list
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON-stringified SDP codec section from RTCPeerConnection.createOffer().
+        Contains m-lines, a=rtpmap, a=fmtp, and a=rtcp-fb lines with session-specific
+        values (ICE credentials, DTLS fingerprint) stripped.
+
+        '
+    - name: characteristics_webauthn_capabilities
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON-stringified dictionary from PublicKeyCredential.getClientCapabilities().
+        Contains boolean values indicating passkey and authenticator support.
 
         '
   - name: uuid

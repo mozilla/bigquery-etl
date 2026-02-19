@@ -2,10 +2,10 @@ friendly_name: GA4 Events Data for SUMO
 description: |-
   GA4 Events Data for SUMO (support.mozilla.org)
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4

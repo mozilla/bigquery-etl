@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_cohort_retention.py`](https://github.
 Schedules daily level retention queries
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2025, 2, 12, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -383,8 +383,8 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -508,8 +508,8 @@ with DAG(
         destination_table="cohort_weekly_active_clients_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -521,8 +521,8 @@ with DAG(
         destination_table="cohort_weekly_active_clients_staging_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -532,8 +532,8 @@ with DAG(
         destination_table="cohort_weekly_cfs_staging_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -545,8 +545,8 @@ with DAG(
         destination_table="cohort_weekly_statistics_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -558,8 +558,8 @@ with DAG(
         destination_table="rolling_cohorts_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

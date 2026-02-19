@@ -593,6 +593,31 @@ fields:
     type: INTEGER
   - name: start_time
     type: STRING
+  - name: server_knobs_config
+    type: RECORD
+    fields:
+    - name: event_threshold
+      type: INTEGER
+    - name: metrics_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: BOOLEAN
+      description: Map of metric identifiers (category.name) to boolean values indicating
+        whether the metric is enabled
+    - name: pings_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: BOOLEAN
+      description: Map of ping names to boolean values indicating whether the ping
+        is enabled
   - name: parsed_start_time
     type: TIMESTAMP
     mode: NULLABLE

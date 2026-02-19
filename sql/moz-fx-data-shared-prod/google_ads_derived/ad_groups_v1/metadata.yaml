@@ -9,10 +9,10 @@ description: |-
   be parsed into segments, available
   in the "ad_group_segments" field.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   dag: bqetl_fivetran_google_ads
-  owner1: frank
+  owner1: kik
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

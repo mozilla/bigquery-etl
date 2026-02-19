@@ -2,10 +2,10 @@ friendly_name: Event Aggregates
 description: |-
   Aggregate table based off of telemetry.events
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   dag: bqetl_fx_health_ind_dashboard
 scheduling:

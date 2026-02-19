@@ -20,7 +20,7 @@ Built from bigquery-etl repo, [`dags/bqetl_google_play_store.py`](https://github
 Schedules daily level google play store export data
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -49,7 +49,7 @@ google_play_store_derived__slow_startup_events_by_startup_type_version_and_devic
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2025, 3, 18, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -80,8 +80,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
@@ -95,8 +95,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
@@ -110,8 +110,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],

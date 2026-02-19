@@ -244,6 +244,7 @@ unioned_pings AS (
       ping_info.reason,
       ping_info.seq,
       ping_info.start_time,
+      ping_info.server_knobs_config,
       ping_info.parsed_start_time,
       ping_info.parsed_end_time
     ) AS `ping_info`,

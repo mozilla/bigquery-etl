@@ -154,7 +154,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
-      metrics.quantity.characteristics_audio_unique_samples
+      metrics.quantity.characteristics_audio_unique_samples,
+      metrics.quantity.characteristics_storage_quota
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -484,7 +485,9 @@ SELECT
       metrics.text2.characteristics_canvasdata9_software_raw,
       metrics.text2.characteristics_css_system_colors,
       metrics.text2.characteristics_css_system_fonts,
-      metrics.text2.characteristics_mathml_diag_values
+      metrics.text2.characteristics_mathml_diag_values,
+      metrics.text2.characteristics_sdp_codec_list,
+      metrics.text2.characteristics_webauthn_capabilities
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -650,7 +653,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
-      metrics.quantity.characteristics_audio_unique_samples
+      metrics.quantity.characteristics_audio_unique_samples,
+      metrics.quantity.characteristics_storage_quota
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -980,7 +984,9 @@ SELECT
       metrics.text2.characteristics_canvasdata9_software_raw,
       metrics.text2.characteristics_css_system_colors,
       metrics.text2.characteristics_css_system_fonts,
-      metrics.text2.characteristics_mathml_diag_values
+      metrics.text2.characteristics_mathml_diag_values,
+      metrics.text2.characteristics_sdp_codec_list,
+      metrics.text2.characteristics_webauthn_capabilities
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -1146,7 +1152,8 @@ SELECT
       metrics.quantity.characteristics_wgpu_minuniformbufferoffsetalignment,
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
-      metrics.quantity.characteristics_audio_unique_samples
+      metrics.quantity.characteristics_audio_unique_samples,
+      metrics.quantity.characteristics_storage_quota
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1476,7 +1483,9 @@ SELECT
       metrics.text2.characteristics_canvasdata9_software_raw,
       metrics.text2.characteristics_css_system_colors,
       metrics.text2.characteristics_css_system_fonts,
-      metrics.text2.characteristics_mathml_diag_values
+      metrics.text2.characteristics_mathml_diag_values,
+      metrics.text2.characteristics_sdp_codec_list,
+      metrics.text2.characteristics_webauthn_capabilities
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,

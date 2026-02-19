@@ -20,7 +20,7 @@ Calculates # of historical ad clicks for Firefox Desktop clients
 
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -30,7 +30,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2024, 7, 16, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -98,8 +98,8 @@ with DAG(
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -111,8 +111,8 @@ with DAG(
         destination_table="adclick_history_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -123,8 +123,8 @@ with DAG(
         destination_table="client_ltv_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -135,8 +135,8 @@ with DAG(
         destination_table="ltv_states_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

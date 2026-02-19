@@ -8,10 +8,10 @@ description: |-
   model can be summed to get information for
   just that campaign on that date.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
   dag: bqetl_fivetran_google_ads

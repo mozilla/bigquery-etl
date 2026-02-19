@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_firefox_installer_aggregates.py`](htt
 This DAG schedules the build of a new aggregate table about Firefox Installs
 #### Owner
 
-kwindau@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2024, 12, 5, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -70,8 +70,8 @@ with DAG(
         destination_table="firefox_installer_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

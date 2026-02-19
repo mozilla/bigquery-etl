@@ -6,10 +6,10 @@ description: |-
   take the name associated with the highest
   spend.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   dag: bqetl_fivetran_google_ads
-  owner1: frank
+  owner1: kik
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

@@ -426,6 +426,10 @@ fields:
   mode: NULLABLE
   description: Program that launched the installer, according to the /LaunchedBy command-line
     argument
+- name: download_requests_blocked_by_server
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of download requests blocked by the server
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

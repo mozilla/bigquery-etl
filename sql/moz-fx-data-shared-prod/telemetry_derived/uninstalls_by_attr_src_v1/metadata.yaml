@@ -2,11 +2,11 @@ friendly_name: Uninstalls By Attribution Source
 description: |-
   Aggregate table calculating # unique clients with uninstalls by attribution source and date
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

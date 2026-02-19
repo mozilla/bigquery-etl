@@ -2,11 +2,11 @@ friendly_name: Uninstalls On Day Of Install By Account Signed In Status
 description: |-
   Uninstalls by account enabled status by if the uninstall was on date of installation or not
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

@@ -2,12 +2,11 @@ friendly_name: Cohort Daily Churn
 description: |-
   Calculates churn for new users over time, for users first seen in last 180 days
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
-  owner2: rzhao
+  owner1: kik
 scheduling:
   dag_name: bqetl_cohort_daily_churn
   date_partition_parameter: null

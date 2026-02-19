@@ -998,12 +998,15 @@ jobs:
           rm -rf dags/
           cp -r /tmp/workspace/generated-sql/dags dags
           git add .
-          git commit -m "Auto-push due to change on main branch [ci skip]" \
-            -m "Created from ${{ github.sha }}" \
-            && git tag c-${{ github.sha }} \
-            && git push \
-            && git push origin c-${{ github.sha }} \
-            || echo "Skipping push since it looks like there were no changes"
+          if git diff --cached --quiet; then
+            echo "No changes to push"
+          else
+            git commit -m "Auto-push due to change on main branch [ci skip]" \
+              -m "Created from ${{ github.sha }}"
+            git tag c-${{ github.sha }}
+            git push
+            git push origin c-${{ github.sha }}
+          fi
 
   push-private-generated-sql:
     name: Push Private Generated SQL
@@ -1037,10 +1040,13 @@ jobs:
 
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA/PRIVATE_BIGQUERY_ETL_SHA)
 
-          git commit -m "Auto-push due to change on main branch [ci skip]" \
-            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-            && git push \
-            || echo "Skipping push since it looks like there were no changes"
+          if git diff --cached --quiet; then
+            echo "No changes to push"
+          else
+            git commit -m "Auto-push due to change on main branch [ci skip]" \
+              -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha"
+            git push
+          fi
       - name: Push to gha-test-generated-sql branch (TESTING)
         run: |
           git config --global user.name "GitHub Actions private-generate-sql job"
@@ -1058,10 +1064,13 @@ jobs:
 
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA/PRIVATE_BIGQUERY_ETL_SHA)
 
-          git commit -m "Auto-push for GHA testing [ci skip]" \
-            -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha" \
-            && git push -f origin gha-test-generated-sql \
-            || echo "Skipping push since it looks like there were no changes"
+          if git diff --cached --quiet; then
+            echo "No changes to push"
+          else
+            git commit -m "Auto-push for GHA testing [ci skip]" \
+              -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha"
+            git push -f origin gha-test-generated-sql
+          fi
 
   deploy-to-private-gar:
     name: Deploy to Private GAR

@@ -194,6 +194,7 @@ def project_id_option(default=None, required=False):
 
     Used for file discovery in sql/ directory structure.
     """
+
     def callback(ctx, param, value):
         if value is not None:
             return is_valid_project(ctx, param, value)
@@ -245,6 +246,7 @@ def destination_project_id_option(default=None, required=False):
     If --target is specified, uses the target's project_id as default.
     Precedence: explicit CLI value > target > default parameter.
     """
+
     def callback(ctx, param, value):
         if value is not None:
             return is_valid_project(ctx, param, value)
@@ -275,6 +277,7 @@ def dataset_prefix_option(required=False):
     If --target is specified, uses the target's dataset_prefix as default.
     Precedence: explicit CLI value > target > default parameter.
     """
+
     def callback(ctx, _param, value):
         if value is not None:
             return value

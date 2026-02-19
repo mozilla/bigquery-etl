@@ -120,6 +120,7 @@ def _publish_udf_worker(
     gcs_path,
     public,
     dry_run,
+    dataset_prefix=None,
 ):
     """Worker function for publishing a single UDF."""
     client = bigquery.Client(project_id)
@@ -132,6 +133,7 @@ def _publish_udf_worker(
         list(raw_routines.keys()),
         public,
         dry_run=dry_run,
+        dataset_prefix=dataset_prefix,
     )
 
 
@@ -145,6 +147,7 @@ def publish(
     pattern=None,
     dry_run=False,
     parallelism=8,
+    dataset_prefix=None,
 ):
     """Publish routines in the provided directory."""
     if dependency_dir and os.path.exists(dependency_dir):
@@ -190,6 +193,7 @@ def publish(
         gcs_path=gcs_path,
         public=public,
         dry_run=dry_run,
+        dataset_prefix=dataset_prefix,
     )
 
     # use topological sorter to publish UDFs in order;
@@ -213,11 +217,17 @@ def publish_routine(
     known_udfs,
     is_public,
     dry_run=False,
+    dataset_prefix=None,
 ):
     """Publish a specific routine to BigQuery."""
+    # Apply dataset prefix if provided
+    dataset_name = raw_routine.dataset
+    if dataset_prefix:
+        dataset_name = f"{dataset_prefix}{dataset_name}"
+
     if is_public:
         # create new dataset for routine if necessary
-        dataset = client.create_dataset(raw_routine.dataset, exists_ok=True)
+        dataset = client.create_dataset(dataset_name, exists_ok=True)
 
         # set permissions for dataset, public for everyone
         read_entry = bigquery.AccessEntry(
@@ -235,16 +245,39 @@ def publish_routine(
 
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_routine.definitions:
+        # Apply dataset prefix to the routine definition if needed
+        if dataset_prefix:
+            # Replace dataset in CREATE FUNCTION/PROCEDURE statement
+            original_dataset = raw_routine.dataset
+            definition = definition.replace(
+                f"CREATE OR REPLACE FUNCTION `{project_id}`.{original_dataset}.",
+                f"CREATE OR REPLACE FUNCTION `{project_id}`.{dataset_name}.",
+            )
+            definition = definition.replace(
+                f"CREATE OR REPLACE PROCEDURE `{project_id}`.{original_dataset}.",
+                f"CREATE OR REPLACE PROCEDURE `{project_id}`.{dataset_name}.",
+            )
+
         # Within a standard SQL function, references to other entities require
         # explicit project IDs
         for udf in set(known_udfs):
-            # ensure UDF definitions are not replaced twice as would be the case for
-            # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
-            # since one name is a substring of the other
-            definition = definition.replace(f"`{project_id}.{udf}`", udf)
-            definition = definition.replace(f"`{project_id}`.{udf}", udf)
-            definition = definition.replace(f"{project_id}.{udf}", udf)
-            definition = definition.replace(udf, f"`{project_id}`.{udf}")
+            # Apply prefix to UDF references if dataset prefix is set
+            if dataset_prefix and "." in udf:
+                udf_dataset, udf_name = udf.split(".", 1)
+                prefixed_udf = f"{dataset_prefix}{udf_dataset}.{udf_name}"
+                # Replace with prefixed version
+                definition = definition.replace(f"`{project_id}.{udf}`", prefixed_udf)
+                definition = definition.replace(f"`{project_id}`.{udf}", prefixed_udf)
+                definition = definition.replace(f"{project_id}.{udf}", prefixed_udf)
+                definition = definition.replace(udf, f"`{project_id}`.{prefixed_udf}")
+            else:
+                # ensure UDF definitions are not replaced twice as would be the case for
+                # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
+                # since one name is a substring of the other
+                definition = definition.replace(f"`{project_id}.{udf}`", udf)
+                definition = definition.replace(f"`{project_id}`.{udf}", udf)
+                definition = definition.replace(f"{project_id}.{udf}", udf)
+                definition = definition.replace(udf, f"`{project_id}`.{udf}")
 
         # adjust paths for dependencies stored in GCS
         query = OPTIONS_LIB_RE.sub(

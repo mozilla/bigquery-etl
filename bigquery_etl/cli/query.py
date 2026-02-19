@@ -637,6 +637,8 @@ def _backfill_script(
 @sql_dir_option
 @project_id_option(required=True)
 @billing_project_option()
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -745,6 +747,8 @@ def backfill(
     sql_dir,
     project_id,
     billing_project,
+    destination_project_id,
+    dataset_prefix,
     start_date,
     end_date,
     exclude,
@@ -883,22 +887,32 @@ def backfill(
             scheduling_parameters = scheduling_metadata.get("parameters", [])
             date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
-            client = bigquery.Client(project=project_id)
+            # Calculate destination with prefix/project overrides
             project, dataset, table = extract_from_query_path(query_file_path)
+            effective_project = destination_project_id or project
+            if dataset_prefix:
+                dataset = f"{dataset_prefix}{dataset}"
+
+            calculated_destination = f"{effective_project}.{dataset}.{table}"
+            final_destination = destination_table or calculated_destination
+
+            client = bigquery.Client(project=effective_project)
             try:
-                client.get_table(f"{project}.{dataset}.{table}")
+                client.get_table(final_destination)
             except NotFound:
                 ctx.invoke(
                     initialize,
                     name=query_file,
                     dry_run=dry_run,
                     billing_project=billing_project,
+                    destination_project_id=destination_project_id,
+                    dataset_prefix=dataset_prefix,
                 )
 
             backfill_query = partial(
                 _backfill_query,
                 query_file_path,
-                project_id,
+                effective_project,
                 date_partition_parameter,
                 date_partition_offset,
                 max_rows,
@@ -906,7 +920,7 @@ def backfill(
                 scheduling_parameters,
                 ctx.args,
                 partitioning_type,
-                destination_table=destination_table,
+                destination_table=final_destination,
                 run_checks=checks,
                 checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
                 billing_project=billing_project,
@@ -978,6 +992,8 @@ def backfill(
 @sql_dir_option
 @project_id_option()
 @billing_project_option()
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -1011,6 +1027,8 @@ def run(
     sql_dir,
     project_id,
     billing_project,
+    destination_project_id,
+    dataset_prefix,
     public_project_id,
     destination_table,
     dataset_id,
@@ -1035,12 +1053,18 @@ def run(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
+    # Apply destination project and dataset prefix
+    effective_project = destination_project_id or project_id
+    effective_dataset = dataset_id
+    if dataset_prefix and dataset_id:
+        effective_dataset = f"{dataset_prefix}{dataset_id}"
+
     _run_query(
         query_files,
-        project_id,
+        effective_project,
         public_project_id,
         destination_table,
-        dataset_id,
+        effective_dataset,
         ctx.args,
         billing_project=billing_project,
     )
@@ -1336,6 +1360,8 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
     help="Default dataset, if not specified all tables must be qualified with dataset",
 )
 @project_id_option()
+@destination_project_id_option()
+@dataset_prefix_option()
 @temp_dataset_option()
 @click.option(
     "--destination_table",
@@ -1402,6 +1428,8 @@ def run_multipart(
     parallelism,
     dataset_id,
     project_id,
+    destination_project_id,
+    dataset_prefix,
     temp_dataset,
     destination_table,
     time_partitioning_field,
@@ -1412,11 +1440,20 @@ def run_multipart(
     schema_update_options,
 ):
     """Run a multipart query."""
-    if dataset_id is not None and "." not in dataset_id and project_id is not None:
-        dataset_id = f"{project_id}.{dataset_id}"
-    if "." not in destination_table and dataset_id is not None:
-        destination_table = f"{dataset_id}.{destination_table}"
-    client = bigquery.Client(project_id)
+    # Apply destination project and dataset prefix
+    effective_project = destination_project_id or project_id
+    effective_dataset = dataset_id
+
+    if dataset_id is not None and "." not in dataset_id:
+        if dataset_prefix:
+            effective_dataset = f"{dataset_prefix}{dataset_id}"
+        if effective_project is not None:
+            effective_dataset = f"{effective_project}.{effective_dataset}"
+
+    if "." not in destination_table and effective_dataset is not None:
+        destination_table = f"{effective_dataset}.{destination_table}"
+
+    client = bigquery.Client(effective_project)
     with ThreadPool(parallelism) as pool:
         parts = pool.starmap(
             _run_part,
@@ -1426,7 +1463,7 @@ def run_multipart(
                     part,
                     query_dir,
                     temp_dataset,
-                    dataset_id,
+                    effective_dataset,
                     dry_run,
                     parameters,
                     priority,
@@ -1708,16 +1745,17 @@ def initialize(
     def _initialize(query_file):
         project, dataset, destination_table = extract_from_query_path(query_file)
 
-        # Override with destination project for BigQuery operations if specified
-        if destination_project_id:
-            project = destination_project_id
+        original_table_id = f"{project}.{dataset}.{destination_table}"
 
-        # Apply dataset prefix if provided
         if dataset_prefix:
             dataset = f"{dataset_prefix}{dataset}"
 
-        client = bigquery.Client(project=project)
-        full_table_id = f"{project}.{dataset}.{destination_table}"
+        effective_project = (
+            destination_project_id if destination_project_id else project
+        )
+        destination_table_id = f"{effective_project}.{dataset}.{destination_table}"
+
+        client = bigquery.Client(project=effective_project)
         table = None
 
         sql_content = query_file.read_text()
@@ -1731,13 +1769,13 @@ def initialize(
         # check if the provided file can be initialized and whether existing ones should be skipped
         if "is_init()" in sql_content:
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(destination_table_id)
                 if skip_existing:
                     # table exists; skip initialization
                     return
                 if not force and table.num_rows > 0:
                     raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                        f"Table {destination_table_id} already exists and contains data. The initialization process is terminated."
                         " Use --force to overwrite the existing destination table."
                     )
             except NotFound:
@@ -1755,7 +1793,7 @@ def initialize(
                 if not table:
                     ctx.invoke(
                         update,
-                        name=full_table_id,
+                        name=original_table_id,
                         sql_dir=sql_dir,
                         project_ids=[project],
                         update_downstream=False,
@@ -1764,9 +1802,9 @@ def initialize(
 
                     ctx.invoke(
                         deploy,
-                        name=full_table_id,
+                        name=destination_table_id,
                         sql_dir=sql_dir,
-                        project_ids=[project],
+                        project_ids=[effective_project],
                         force=True,
                         respect_dryrun_skip=False,
                     )
@@ -1797,8 +1835,8 @@ def initialize(
                         ]
 
                     _initialize_in_parallel(
-                        project=project,
-                        table=full_table_id,
+                        project=effective_project,
+                        table=destination_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1812,9 +1850,9 @@ def initialize(
                 else:
                     _run_query(
                         query_files=[query_file],
-                        project_id=project,
+                        project_id=effective_project,
                         public_project_id=None,
-                        destination_table=full_table_id,
+                        destination_table=destination_table_id,
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={
@@ -1828,13 +1866,15 @@ def initialize(
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(
                             dry_run=dry_run,
-                            default_dataset=f"{project}.{dataset}",
+                            default_dataset=f"{effective_project}.{dataset}",
                         )
 
                         # only deploy materialized view if it doesn't exist
                         # TODO: https://github.com/mozilla/bigquery-etl/issues/5804
                         try:
-                            materialized_view_table = client.get_table(full_table_id)
+                            materialized_view_table = client.get_table(
+                                destination_table_id
+                            )
 
                             # Best-effort check, don't fail if there's an error
                             try:
@@ -1848,7 +1888,7 @@ def initialize(
                                     "sql changed" if has_changes else "sql not changed"
                                 )
                             click.echo(
-                                f"Skipping materialized view {full_table_id}, already exists, {change_str}"
+                                f"Skipping materialized view {destination_table_id}, already exists, {change_str}"
                             )
                         except NotFound:
                             job = client.query(init_sql, job_config=job_config)
@@ -2591,6 +2631,8 @@ def _update_query_schema(
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--force/--noforce",
     help="Deploy the schema file without validating that it matches the query",
@@ -2630,6 +2672,8 @@ def deploy(
     name,
     sql_dir,
     project_ids,
+    destination_project_id,
+    dataset_prefix,
     force,
     use_cloud_function,
     respect_dryrun_skip,
@@ -2692,23 +2736,39 @@ def deploy(
         )
     ]
 
-    _deploy = partial(
-        deploy_table,
-        destination_table=destination_table,
-        force=force,
-        use_cloud_function=use_cloud_function,
-        skip_existing=skip_existing,
-        skip_external_data=skip_external_data,
-        respect_dryrun_skip=respect_dryrun_skip,
-        sql_dir=sql_dir,
-        credentials=credentials,
-        id_token=id_token,
-    )
+    # Helper function to calculate destination table with prefix/project
+    def get_destination_table(artifact_file):
+        if destination_table:
+            # User provided explicit destination, use it
+            return destination_table
+
+        # Calculate destination from file path
+        if destination_project_id or dataset_prefix:
+            project, dataset, table = extract_from_query_path(artifact_file)
+            effective_project = destination_project_id or project
+            if dataset_prefix:
+                dataset = f"{dataset_prefix}{dataset}"
+            return f"{effective_project}.{dataset}.{table}"
+
+        # No overrides, let deploy_table calculate from path
+        return None
 
     failed_deploys, skipped_deploys, external_deploys = [], [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
-            executor.submit(_deploy, artifact_file): artifact_file
+            executor.submit(
+                deploy_table,
+                artifact_file,
+                destination_table=get_destination_table(artifact_file),
+                force=force,
+                use_cloud_function=use_cloud_function,
+                skip_existing=skip_existing,
+                skip_external_data=skip_external_data,
+                respect_dryrun_skip=respect_dryrun_skip,
+                sql_dir=sql_dir,
+                credentials=credentials,
+                id_token=id_token,
+            ): artifact_file
             for artifact_file in query_files + metadata_files_without_query_file
             if str(artifact_file)
             not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])

@@ -16,6 +16,8 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import (
+    dataset_prefix_option,
+    destination_project_id_option,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -385,6 +387,8 @@ Examples:
 @block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
@@ -407,9 +411,20 @@ Examples:
     "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
 )
 @click.pass_context
-def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
+def publish(
+    ctx,
+    name,
+    project_id,
+    destination_project_id,
+    dataset_prefix,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    dry_run,
+):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
+    effective_project = destination_project_id or project_id
 
     public = False
 
@@ -417,20 +432,21 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    click.echo(f"Publish routines to {project_id}")
+    click.echo(f"Publish routines to {effective_project}")
     # NOTE: this will only publish to a single project
     for target in project_dirs(project_id):
         publish_routines.publish(
             target,
-            project_id,
+            effective_project,
             dependency_dir,
             gcs_bucket,
             gcs_path,
             public,
             pattern=name,
             dry_run=dry_run,
+            dataset_prefix=dataset_prefix,
         )
-        click.echo(f"Published routines to {project_id}")
+        click.echo(f"Published routines to {effective_project}")
 
 
 mozfun.add_command(copy.copy(publish))

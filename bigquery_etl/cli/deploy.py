@@ -14,6 +14,8 @@ from google.cloud import bigquery
 from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
+    dataset_prefix_option,
+    destination_project_id_option,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
@@ -97,6 +99,8 @@ log = logging.getLogger(__name__)
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
+@destination_project_id_option()
+@dataset_prefix_option()
 @parallelism_option(default=8)
 @click.option(
     "--dry-run",
@@ -176,6 +180,8 @@ def deploy(
     views,
     sql_dir,
     project_ids,
+    destination_project_id,
+    dataset_prefix,
     parallelism,
     dry_run,
     respect_dryrun_skip,
@@ -244,6 +250,8 @@ def deploy(
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
+        "destination_project_id": destination_project_id,
+        "dataset_prefix": dataset_prefix,
         # Table options
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
@@ -548,6 +556,16 @@ def _update_table_schema(file_path: Path, options: dict):
 
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
+    # Extract project, dataset, table from file path
+    project, dataset, table = extract_from_query_path(file_path)
+
+    # Apply destination project and dataset prefix if provided
+    effective_project = options.get("destination_project_id") or project
+    if options.get("dataset_prefix"):
+        dataset = f"{options['dataset_prefix']}{dataset}"
+
+    destination_table = f"{effective_project}.{dataset}.{table}"
+
     # Check if schema update is needed before deployment
     if not options["dry_run"] and _needs_schema_update(
         file_path,
@@ -591,6 +609,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
 
     deploy_table(
         artifact_file=file_path,
+        destination_table=destination_table,
         force=options["table_force"],
         skip_existing=options["table_skip_existing"],
         skip_external_data=options["table_skip_external_data"],
@@ -607,6 +626,18 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     id_token = options.get("id_token")
     view = View.from_file(file_path, id_token=id_token)
 
+    # Apply destination project and dataset prefix if provided
+    target_project = options.get("destination_project_id") or options.get(
+        "view_target_project"
+    )
+
+    # Apply dataset prefix to view's dataset if provided
+    if options.get("dataset_prefix"):
+        _, dataset, _ = extract_from_query_path(file_path)
+        prefixed_dataset = f"{options['dataset_prefix']}{dataset}"
+        # Update view's dataset reference
+        view.dataset = prefixed_dataset
+
     # Add managed label if requested
     if options.get("view_add_managed_label", False):
         view.labels["managed"] = ""
@@ -619,7 +650,7 @@ def _deploy_view_artifact(file_path: Path, options: dict):
     client = bigquery.Client(credentials=options["credentials"])
 
     success = view.publish(
-        target_project=options.get("view_target_project"),
+        target_project=target_project,
         force=options["view_force"],
         client=client,
         dry_run=False,

@@ -14,6 +14,8 @@ import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.utils import (
+    dataset_prefix_option,
+    destination_project_id_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -135,12 +137,15 @@ def _view_is_valid(v: View) -> bool:
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--target-project",
     help=(
         "If specified, create views in the target project rather than"
         " the project specified in the file. Only views for "
         " moz-fx-data-shared-prod will be published if this is set."
+        " (deprecated: use --destination-project-id instead)"
     ),
 )
 @click.option("--log-level", default="INFO", help="Defaults to INFO")
@@ -192,6 +197,8 @@ def publish(
     name,
     sql_dir,
     project_id,
+    destination_project_id,
+    dataset_prefix,
     target_project,
     log_level,
     parallelism,
@@ -215,6 +222,9 @@ def publish(
             "Cannot use both --skip-authorized and --authorized-only"
         )
 
+    # Use destination_project_id with fallback to target_project for backwards compatibility
+    effective_target_project = destination_project_id or target_project
+
     credentials = get_credentials()
 
     views = _collect_views(
@@ -222,11 +232,17 @@ def publish(
     )
     if respect_dryrun_skip:
         views = [view for view in views if view.path not in DryRun.skipped_files()]
+
+    # Apply dataset prefix to views if provided
+    if dataset_prefix:
+        for view in views:
+            view.dataset = f"{dataset_prefix}{view.dataset}"
+
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
     if not force:
-        has_changes = partial(_view_has_changes, target_project, credentials)
+        has_changes = partial(_view_has_changes, effective_target_project, credentials)
 
         # only views with changes
         with Pool(parallelism) as p:
@@ -247,7 +263,7 @@ def publish(
     callback = partial(
         _publish_view_callback,
         views_by_id=views_by_id,
-        target_project=target_project,
+        target_project=effective_target_project,
         dry_run=dry_run,
         credentials=credentials,
         results=results,
@@ -337,12 +353,15 @@ def _collect_views(
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
+@destination_project_id_option()
+@dataset_prefix_option()
 @click.option(
     "--target-project",
     help=(
         "If specified, clean views in the target project rather than"
         " the project specified in the file. Only views for "
         " moz-fx-data-shared-prod will be included if this is set."
+        " (deprecated: use --destination-project-id instead)"
     ),
 )
 @click.option("--log-level", default="INFO", help="Defaults to INFO")
@@ -379,6 +398,8 @@ def clean(
     name,
     sql_dir,
     project_id,
+    destination_project_id,
+    dataset_prefix,
     target_project,
     log_level,
     parallelism,
@@ -399,26 +420,36 @@ def clean(
             "Cannot use both --skip-authorized and --authorized-only"
         )
 
-    if project_id is None and target_project is None:
-        raise click.ClickException("command requires --project-id or --target-project")
+    # Use destination_project_id with fallback to target_project for backwards compatibility
+    effective_target_project = destination_project_id or target_project
+
+    if project_id is None and effective_target_project is None:
+        raise click.ClickException(
+            "command requires --project-id or --target-project or --destination-project-id"
+        )
+
+    # Collect views and apply dataset prefix if needed
+    views = _collect_views(
+        name,
+        sql_dir,
+        project_id,
+        user_facing_only,
+        skip_authorized,
+        authorized_only,
+    )
+    if dataset_prefix:
+        for view in views:
+            view.dataset = f"{dataset_prefix}{view.dataset}"
 
     expected_view_ids = {
-        view.target_view_identifier(target_project)
-        for view in _collect_views(
-            name,
-            sql_dir,
-            project_id,
-            user_facing_only,
-            skip_authorized,
-            authorized_only,
-        )
+        view.target_view_identifier(effective_target_project) for view in views
     }
 
     client_q = ClientQueue([project_id], parallelism)
     with client_q.client() as client:
         datasets = [
             dataset
-            for dataset in client.list_datasets(target_project)
+            for dataset in client.list_datasets(effective_target_project)
             if not user_facing_only
             or not dataset.dataset_id.endswith(
                 tuple(

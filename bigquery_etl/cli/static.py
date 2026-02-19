@@ -10,7 +10,11 @@ import rich_click as click
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
-from bigquery_etl.cli.utils import project_id_option
+from bigquery_etl.cli.utils import (
+    dataset_prefix_option,
+    destination_project_id_option,
+    project_id_option,
+)
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -40,10 +44,12 @@ def static_():
 )
 @block_coding_agents
 @project_id_option()
-def publish(project_id):
+@destination_project_id_option()
+@dataset_prefix_option()
+def publish(project_id, destination_project_id, dataset_prefix):
     """Publish CSV files as BigQuery tables."""
     source_project = project_id
-    target_project = project_id
+    target_project = destination_project_id or project_id
     if target_project == ConfigLoader.get(
         "default", "user_facing_project", fallback="mozdata"
     ):
@@ -80,11 +86,16 @@ def publish(project_id):
                 schema_file_path,
                 metadata_file_path,
                 target_project,
+                dataset_prefix,
             )
 
 
 def _load_table(
-    data_file_path, schema_file_path=None, metadata_file_path=None, project=None
+    data_file_path,
+    schema_file_path=None,
+    metadata_file_path=None,
+    project=None,
+    dataset_prefix=None,
 ):
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split(os.path.sep)
@@ -92,6 +103,11 @@ def _load_table(
     table_id = path_split[-2]
     if not project:
         project = path_split[-4]
+
+    # Apply dataset prefix if provided
+    if dataset_prefix:
+        dataset_id = f"{dataset_prefix}{dataset_id}"
+
     logging.info(
         f"Loading `{project}.{dataset_id}.{table_id}` table from `{data_file_path}`."
     )

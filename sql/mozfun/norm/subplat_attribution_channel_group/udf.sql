@@ -3,26 +3,26 @@ RETURNS STRING AS (
   CASE
     -- Marketing Owned
     WHEN utm_source LIKE ANY(
+        '%blog.mozilla.org%',
+        '%firefox-desktop%',
+        '%fxaonboardingemail%',
+        '%fxakip%',
+        '%fxatips%',
+        '%fxavpn%',
+        '%fxnews%',
+        '%instagram%',
+        '%invite%',
         '%mozilla.org-whatsnew%',
         '%mozilla.org-welcome%',
-        '%blog.mozilla.org%',
-        '%fxnews%',
-        '%fxavpn%',
-        '%fxatips%',
-        '%fxakip%',
-        '%vpnwaitlist%',
-        '%twitter.com%',
-        '%fxaonboardingemail%',
-        '%invite%',
-        '%pockethits%',
-        '%pkt-hits%',
-        '%sync-onboarding%',
-        '%stage.fxprivaterelay.nonprod.cloudops.mozgcp.net%',
-        '%instagram%',
-        '%wrapped_email%',
-        '%relay-onboarding%',
         '%oim%',
-        '%firefox-desktop%'
+        '%pkt-hits%',
+        '%pockethits%',
+        '%relay-onboarding%',
+        '%stage.fxprivaterelay.nonprod.cloudops.mozgcp.net%',
+        '%sync-onboarding%',
+        '%twitter.com%',
+        '%vpnwaitlist%',
+        '%wrapped_email%'
       )
       THEN 'Marketing Owned'
     -- Direct
@@ -35,39 +35,39 @@ RETURNS STRING AS (
       THEN 'Direct'
     -- Product Owned
     WHEN utm_source LIKE ANY(
-        '%about-prefs%',
         '%about-preferences%',
-        '%leanplum-push-notification%',
-        '%firefox-browser%',
-        '%newtab%',
-        '%monitor.firefox.com%',
-        '%fx-monitor%',
-        '%relay-firefox-com.translate.goog%',
+        '%about-prefs%',
         '%accounts.firefox.com%',
-        '%privatebrowser%',
-        '%pocket%',
+        '%activity-stream%',
+        '%addons.mozilla.org%',
+        '%firefox-browser%',
+        '%fpn.firefox.com%',
+        '%fx-ios-vpn%',
+        '%fx-monitor%',
+        '%fx-relay%',
+        '%fx-relay-addon%',
+        '%fx-vpn-iOSs%',
         '%fx-vpn-windows%',
-        '%toolbar%',
+        '%leanplum-push-notification%',
+        '%leanplum-push-qa%',
+        '%modal%',
+        '%monitor.firefox.com%',
+        '%mozilla.org-firefox-accounts%',
+        '%mozilla.org-firefox-browsers%',
+        '%mozilla.org-firefox_home%',
+        '%new-tab-ad%',
+        '%newtab%',
+        '%pocket%',
+        '%pocket_saves%',
+        '%premium.firefox.com%',
+        '%privatebrowser%',
+        '%relay-firefox-com.translate.goog%',
+        '%send.firefox.com%',
+        '%sponsoredtile%',
         '%spotlight-modal%',
         '%thunderbird%',
-        '%sponsoredtile%',
-        '%activity-stream%',
-        '%mozilla.org-firefox-accounts%',
-        '%mozilla.org-firefox_home%',
-        '%send.firefox.com%',
-        '%addons.mozilla.org%',
-        '%premium.firefox.com%',
-        '%fpn.firefox.com%',
-        '%leanplum-push-qa%',
-        '%fx-ios-vpn%',
-        '%modal%',
-        '%fx-relay-addon%',
-        '%fx-relay%',
-        '%mozilla.org-firefox-browsers%',
-        '%new-tab-ad%',
-        '%pocket_saves%',
-        '%www.mozilla.org-vpn-or-proxy%',
-        '%fx-vpn-iOSs%'
+        '%toolbar%',
+        '%www.mozilla.org-vpn-or-proxy%'
       )
       THEN 'Product Owned'
     -- Marketing Paid
@@ -80,37 +80,6 @@ RETURNS STRING AS (
       )
       OR utm_source IN ('reddit', 'dv360')
       THEN 'Marketing Paid'
-    -- Miscellaneous (catch-all for remaining patterns)
-    WHEN utm_source LIKE ANY('%relay%', '%desktop-signup-flow%', '%multi.account.containers%')
-      OR utm_source IN (
-        'invalid',
-        'yahoo',
-        'bdmtools',
-        'private-relay',
-        'Blog',
-        'duckduckgo',
-        'bing',
-        'FuckOff',
-        '(not set)',
-        'baidu',
-        'chrome',
-        'vpnsite',
-        'gk_test',
-        'yandex',
-        'manual_testing',
-        'demo_1_server',
-        'Drippler',
-        'vpn.',
-        'saashub',
-        'addon',
-        'teaching-the-peeps',
-        'test0706',
-        'pocket_mylist',
-        'devtools',
-        'fpn-default',
-        'fxa'
-      )
-      THEN 'Miscellaneous'
     -- Default for any unmapped values (based on the data, this should be Marketing Owned for most mozilla domains)
     WHEN utm_source LIKE '%mozilla.org%'
       THEN 'Marketing Owned'

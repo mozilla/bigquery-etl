@@ -978,19 +978,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate-dags]
     if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: write
+    environment: dev
     steps:
       - uses: actions/download-artifact@v6
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
+      - name: Setup SSH key for generated-sql
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY_GENERATED_SQL }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Push to generated-sql branch
         run: |
           git config --global user.name "GitHub Actions generate-sql job"
           git config --global user.email "dataops+generated-sql@mozilla.com"
           git clone --single-branch --branch generated-sql \
-            https://x-access-token:${{ github.token }}@github.com/mozilla/bigquery-etl \
+            git@github.com:mozilla/bigquery-etl.git \
             generated-sql
           cd generated-sql/
           rm -rf sql/
@@ -1046,30 +1051,6 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha"
             git push
-          fi
-      - name: Push to gha-test-generated-sql branch (TESTING)
-        run: |
-          git config --global user.name "GitHub Actions private-generate-sql job"
-          git config --global user.email "dataops+private-generated-sql@mozilla.com"
-          git clone --single-branch --branch private-generated-sql \
-            git@github.com:mozilla/private-bigquery-etl.git \
-            gha-test-generated-sql
-          cd gha-test-generated-sql/
-          git checkout -B gha-test-generated-sql
-          rm -rf sql/
-          cp -r /tmp/workspace/private-generated-sql/sql sql
-          rm -rf dags/
-          cp -r /tmp/workspace/private-generated-sql/dags dags
-          git add .
-
-          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA/PRIVATE_BIGQUERY_ETL_SHA)
-
-          if git diff --cached --quiet; then
-            echo "No changes to push"
-          else
-            git commit -m "Auto-push for GHA testing [ci skip]" \
-              -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha"
-            git push -f origin gha-test-generated-sql
           fi
 
   deploy-to-private-gar:

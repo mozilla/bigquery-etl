@@ -1,0 +1,55 @@
+fields:
+- name: date
+  type: DATE
+  mode: REQUIRED
+  description: Date ticket was created (Pacific Standard Time)
+- name: product
+  type: STRING
+  mode: REQUIRED
+  description: |
+    Mozilla product the ticket is for. Mapped from Zendesk custom_product field:
+    - 'firefox-android' → 'firefox-android-reviews'
+    - 'firefox-ios' → 'firefox-ios-reviews'
+    - 'firefox-private-network-vpn' → 'mozilla-vpn'
+    - 'vpn_relay_bundle' → 'mozilla-vpn'
+    - Others kept as-is
+- name: zendesk_tickets_created
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct Zendesk tickets created on this date for this product
+- name: total_ticket_records
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of ticket records (should equal zendesk_tickets_created)
+- name: year
+  type: INTEGER
+  mode: NULLABLE
+  description: Year extracted from date
+- name: month
+  type: INTEGER
+  mode: NULLABLE
+  description: Month number (1-12) extracted from date
+- name: week_number
+  type: INTEGER
+  mode: NULLABLE
+  description: ISO week number (1-53) extracted from date
+- name: day_of_week
+  type: INTEGER
+  mode: NULLABLE
+  description: Day of week (1=Sunday, 7=Saturday) extracted from date
+- name: year_month
+  type: STRING
+  mode: NULLABLE
+  description: Year-month string in YYYY-MM format for easy grouping
+- name: year_week
+  type: STRING
+  mode: NULLABLE
+  description: Year-week string in YYYY-WWW format for easy grouping
+- name: day_name
+  type: STRING
+  mode: NULLABLE
+  description: Day of week name (Monday, Tuesday, etc.)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

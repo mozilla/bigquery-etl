@@ -1,0 +1,40 @@
+friendly_name: Zendesk Tickets Base (Daily)
+description: |
+  Daily metrics for SUMO support tickets from Zendesk.
+
+  Single source of truth tracking:
+  - Support tickets created each day
+  - Product breakdown
+  - Includes app review tickets (firefox-android-reviews, firefox-ios-reviews)
+
+  Replaces duplicated q1 CTEs in:
+  - daily-sssr-by-product.sql
+  - daily-sssr-excl-app-reviews.sql
+
+  Grain: Daily x Product (PST timezone)
+
+  Product Mapping:
+  - 'firefox-android' → 'firefox-android-reviews'
+  - 'firefox-ios' → 'firefox-ios-reviews'
+  - 'firefox-private-network-vpn' → 'mozilla-vpn'
+  - 'vpn_relay_bundle' → 'mozilla-vpn'
+
+  Used by:
+  - SSSR calculation queries
+  - Support volume dashboards
+  - Ticket escalation reports
+owners:
+  - plee@mozilla.com
+labels:
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false

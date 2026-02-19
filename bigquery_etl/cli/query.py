@@ -34,6 +34,8 @@ from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
+    dataset_prefix_option,
+    destination_project_id_option,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -1634,6 +1636,8 @@ def _initialize_in_parallel(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @billing_project_option(default="moz-fx-data-backfill-slots")
+@dataset_prefix_option()
+@destination_project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1667,6 +1671,8 @@ def initialize(
     sql_dir,
     project_ids,
     billing_project,
+    dataset_prefix,
+    destination_project_id,
     dry_run,
     parallelism,
     skip_existing,
@@ -1701,6 +1707,15 @@ def initialize(
 
     def _initialize(query_file):
         project, dataset, destination_table = extract_from_query_path(query_file)
+
+        # Override with destination project for BigQuery operations if specified
+        if destination_project_id:
+            project = destination_project_id
+
+        # Apply dataset prefix if provided
+        if dataset_prefix:
+            dataset = f"{dataset_prefix}{dataset}"
+
         client = bigquery.Client(project=project)
         full_table_id = f"{project}.{dataset}.{destination_table}"
         table = None

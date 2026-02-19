@@ -75,14 +75,22 @@ def cli(prog_name=None):
         help="Target environment to use for commands that interact with BigQuery. See"
         " `targets.yaml` for available targets.",
     )
-    def group(log_level, target):
+    @click.pass_context
+    def group(ctx, log_level, target):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
+
+        # Store target in context for subcommands
+        ctx.ensure_object(dict)
+        ctx.obj["target"] = None
 
         if target:
             try:
                 parsed_target = get_target(target)
-                click.echo(f"Using target: {parsed_target.name}")
+                ctx.obj["target"] = parsed_target
+                click.echo(
+                    f"Using target: {parsed_target.name} (project: {parsed_target.project_id})"
+                )
             except Exception as e:
                 warnings.warn(f"Target '{target}' not found: {e}")
 

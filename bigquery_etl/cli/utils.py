@@ -190,32 +190,107 @@ def parallelism_option(default=8):
 
 
 def project_id_option(default=None, required=False):
-    """Generate a project-id option, with optional default."""
+    """Generate a project-id option, with optional default.
+
+    Used for file discovery in sql/ directory structure.
+    """
+    def callback(ctx, param, value):
+        if value is not None:
+            return is_valid_project(ctx, param, value)
+
+        if default is not None:
+            return is_valid_project(ctx, param, default)
+
+        return None
+
     return click.option(
         "--project-id",
         "--project_id",
-        help="GCP project ID",
-        default=default,
-        callback=is_valid_project,
+        help="GCP project ID for locating query files",
+        default=None,
+        callback=callback,
         required=required,
     )
 
 
 def multi_project_id_option(default=None, required=False):
-    """Generate a multi project-id option."""
-    if default is None:
-        default = []
+    """Generate a multi project-id option.
+
+    Used for file discovery in sql/ directory structure.
+    """
+    fallback_default = default if default is not None else []
+
+    def callback(ctx, param, value):
+        if value:
+            return [is_valid_project(ctx, param, v) for v in value]
+
+        return fallback_default
+
     return click.option(
         "--project-ids",
         "--project_ids",
         "--project-id",
         "--project_id",
-        help="GCP project IDs",
-        default=default,
+        help="GCP project IDs for locating query files",
+        default=None,
         multiple=True,
-        callback=lambda ctx, param, value: [
-            is_valid_project(ctx, param, v) for v in value
-        ],
+        callback=callback,
+        required=required,
+    )
+
+
+def destination_project_id_option(default=None, required=False):
+    """Generate a destination-project-id option for BigQuery operations.
+
+    If --target is specified, uses the target's project_id as default.
+    Precedence: explicit CLI value > target > default parameter.
+    """
+    def callback(ctx, param, value):
+        if value is not None:
+            return is_valid_project(ctx, param, value)
+
+        if ctx.obj and "target" in ctx.obj and ctx.obj["target"]:
+            target = ctx.obj["target"]
+            if target.project_id:
+                return target.project_id
+
+        if default is not None:
+            return is_valid_project(ctx, param, default)
+
+        return None
+
+    return click.option(
+        "--destination-project-id",
+        "--destination-project_id",
+        help="GCP project ID for BigQuery operations (defaults to target project if --target is specified)",
+        default=None,
+        callback=callback,
+        required=required,
+    )
+
+
+def dataset_prefix_option(required=False):
+    """Generate a dataset-prefix option, with optional default.
+
+    If --target is specified, uses the target's dataset_prefix as default.
+    Precedence: explicit CLI value > target > default parameter.
+    """
+    def callback(ctx, _param, value):
+        if value is not None:
+            return value
+
+        if ctx.obj and "target" in ctx.obj and ctx.obj["target"]:
+            target = ctx.obj["target"]
+            if target.dataset_prefix:
+                return target.dataset_prefix
+
+        return None
+
+    return click.option(
+        "--dataset-prefix",
+        "--dataset_prefix",
+        help="Dataset prefix to prepend to dataset names (defaults to target prefix if --target is specified)",
+        callback=callback,
         required=required,
     )
 

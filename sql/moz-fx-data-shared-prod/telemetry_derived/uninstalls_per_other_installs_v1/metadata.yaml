@@ -2,10 +2,10 @@ friendly_name: Uninstalls Per Other Installs
 description: |-
   Calculates uninstallations per number of other installs
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

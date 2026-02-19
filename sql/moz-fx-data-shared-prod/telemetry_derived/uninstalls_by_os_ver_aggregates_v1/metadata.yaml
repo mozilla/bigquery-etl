@@ -2,11 +2,11 @@ friendly_name: Uninstalls By OS Version
 description: |-
   Aggregate table with uninstalls by normalized OS version and date
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

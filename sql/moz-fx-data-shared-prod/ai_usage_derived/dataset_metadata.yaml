@@ -1,4 +1,4 @@
-friendly_name: LLM Monitoring Derived
+friendly_name: AI Usage Derived
 description: |-
   Unified dataset for LLM API usage, costs, and monitoring data from multiple providers.
   Includes data from OpenAI, Claude (Anthropic), and other LLM vendors.

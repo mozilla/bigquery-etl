@@ -54,7 +54,6 @@ class BigQueryAPI:
                 }
                 records.append(record)
 
-        # Use the partition decorator to write to specific partition
         partitioned_table = destination_table
 
         job_config = bigquery.LoadJobConfig(
@@ -105,17 +104,16 @@ class OpenAICompletionsAPI:
     def get_usage_for_date(self, date) -> list[dict]:
         """Fetch usage data for a specific date, grouped by project, user, api_key, model, batch, and service_tier."""
         start_time = int(date.timestamp())
-
-        OPENAI_ADMIN_API_KEY = os.environ.get("OPENAI_ADMIN_API_KEY")
+        end_time = start_time + 86400
 
         headers = {
-            "Authorization": f"Bearer {OPENAI_ADMIN_API_KEY}",
+            "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
 
         params = {
             "start_time": start_time,  # Required: Start time (Unix seconds)
-            "end_time": start_time,
+            "end_time": end_time,
             "bucket_width": "1d",  # Optional: '1m', '1h', or '1d' (default '1d')
             "group_by": [
                 "project_id",
@@ -125,34 +123,38 @@ class OpenAICompletionsAPI:
                 "batch",
                 "service_tier",
             ],
-            "limit": 100,  # Optional: Number of buckets to return, this will chunk the data into 100 buckets
+            "limit": 31,  # Optional: Number of buckets to return, this will chunk the data into 100 buckets
         }
 
         all_data = []
-
         page_cursor = None
 
         while True:
             if page_cursor:
                 params["page"] = page_cursor
 
-            response = requests.get(self.BASE_URL, headers=headers, params=params)
+            try:
+                response = requests.get(self.BASE_URL, headers=headers, params=params)
+            except Exception as e:
+                self.logger.error(str(e))
+                self.logger.critical(f"Failed while fetching data from {self.BASE_URL}")
+                sys.exit(1)
 
-            if response.status_code == 200:
-                data_json = response.json()
-                all_data.extend(data_json.get("data", []))
+            if not (200 <= response.status_code <= 299):
+                self.logger.error(
+                    f"ERROR: response.status_code = {response.status_code}"
+                )
+                self.logger.error(f"ERROR: response.text = {response.text}")
+                self.logger.critical(f"Failed while fetching data from {self.BASE_URL}")
+                sys.exit(1)
 
-                page_cursor = data_json.get("next_page")
-                if not page_cursor:
-                    break
-            else:
-                print(f"Error: {response.status_code}")
+            data_json = response.json()
+            all_data.extend(data_json.get("data", []))
+
+            page_cursor = data_json.get("next_page")
+            if not page_cursor:
                 break
 
-        if all_data:
-            print("Data retrieved successfully!")
-        else:
-            print("Issue: No data available to retrieve.")
         return all_data
 
 
@@ -168,7 +170,6 @@ class OpenAIBigQueryIntegration:
         self.logger.info("Starting OpenAI Completions BigQuery Integration ...")
 
         date = datetime.strptime(args.date, "%Y-%m-%d")
-        date_partition = date.strftime("%Y%m%d")
 
         openai_api = OpenAICompletionsAPI()
         bq_api = BigQueryAPI()
@@ -178,7 +179,7 @@ class OpenAIBigQueryIntegration:
         self.logger.info(f"Fetched {len(records)} usage records for {args.date}")
 
         if records:
-            bq_api.load_usage_data(args.destination, records, date_partition)
+            bq_api.load_usage_data(args.destination, records)
         else:
             self.logger.info("No usage records found for this date")
 
@@ -191,7 +192,7 @@ def main():
     parser.add_argument(
         "--destination",
         dest="destination",
-        default="moz-fx-data-shared-prod.llm_monitoring_derived.openai_completions_v1",
+        default="moz-fx-data-shared-prod.ai_usage_derived.openai_completions_v1",
         required=False,
     )
     parser.add_argument(

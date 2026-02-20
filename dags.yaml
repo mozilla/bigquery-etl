@@ -2578,12 +2578,11 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
-bqetl_llm_monitoring:
+bqetl_ai_usage:
   default_args:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - phlee@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

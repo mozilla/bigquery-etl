@@ -13,9 +13,9 @@ bigquery:
     field: date
     require_partition_filter: false
 scheduling:
-  dag_name: bqetl_llm_monitoring
+  dag_name: bqetl_ai_usage
   arguments:
   - --date={{ds}}
   secrets:
   - deploy_target: ANTHROPIC_ADMIN_API_KEY
-    key: bqetl_llm_monitoring__anthropic_admin_api_key
+    key: bqetl_claude_api__admin_api_key

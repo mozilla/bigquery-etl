@@ -6,11 +6,8 @@ WITH first_install_type AS (
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND DATE_SUB(
-      @submission_date,
-      INTERVAL 7 DAY
-    ) -- assumed that install event took place on or before the first_seen_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
+    AND @submission_date
     AND event_category = 'installation'
     AND sample_id = 0
   QUALIFY
@@ -26,7 +23,7 @@ new_profile_activity AS (
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 7 DAY)
-    AND @submission_date
+    AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND sample_id = 0
 ),

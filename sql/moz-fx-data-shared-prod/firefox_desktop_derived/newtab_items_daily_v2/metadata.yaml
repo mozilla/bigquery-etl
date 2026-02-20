@@ -1,0 +1,39 @@
+friendly_name: Newtab Items Daily v2
+description: |-
+  A daily aggregation of newtab actions on content/items (example: impressions, clicks, dismissals)
+  for Firefox desktop, partitioned by day.
+
+  Extends newtab_items_daily_v1 with:
+  - `format`: the tile display format extracted from event extras.
+  - `impression_count_adjusted`: a propensity-corrected impression count. For items shown
+    inside sections (section_position IS NOT NULL), raw impressions are divided by the
+    positional propensity weight from newtab_merino_propensity_v1, normalising for the
+    fact that lower-ranked positions receive fewer exposures. Non-section (grid) impressions
+    are passed through unchanged.
+owners:
+  - gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+      - channel
+      - country
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozsoc-ml/service
+      - workgroup:mozsoc-ml/developers

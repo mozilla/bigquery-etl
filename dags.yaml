@@ -1550,7 +1550,7 @@ bqetl_census_feed:
   description: Loads the desktop conversion event tables
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kik@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true

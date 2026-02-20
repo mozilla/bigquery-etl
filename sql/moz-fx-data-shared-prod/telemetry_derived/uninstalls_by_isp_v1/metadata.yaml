@@ -2,11 +2,11 @@ friendly_name: Uninstalls By ISP Name
 description: |-
   Number of clients uninstalling by submission date and ISP
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

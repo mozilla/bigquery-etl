@@ -2,7 +2,7 @@ friendly_name: Desktop Installs
 description: |-
   This is a derived table that makes it easier to track desktop installs and tie them to the installs metric for the desktop acquisition funnel
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true

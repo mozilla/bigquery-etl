@@ -2,10 +2,10 @@ friendly_name: User Cancelled Install Share
 description: |-
   Share of attempted installs cancelled by user and or failed w/ timeout by installer type and channel
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

@@ -2,7 +2,7 @@ default:
   project: moz-fx-data-shared-prod
   sql_dir: sql/
   sql_generators_dir: sql_generators/
-  test_project: bigquery-etl-integration-test
+  test_project: moz-fx-data-integration-tests
   non_user_facing_dataset_suffixes:  # suffixes of datasets with non-user-facing views
   - _derived
   - _external
@@ -323,7 +323,7 @@ routine:
   test_projects:
   - sql/mozfun
   - sql/moz-fx-data-shared-prod
-  - sql/bigquery-etl-integration-test
+  - sql/moz-fx-data-integration-tests
 
 view:
   validation:
@@ -382,7 +382,7 @@ render:
 metadata:
   validation:
     skip:
-    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml  # backfill compatibility issue
 
 generate:
   glean_usage:

@@ -18,7 +18,7 @@ crashes AS (
     DATE(submission_timestamp) AS submission_date,
     normalized_os AS os,
     crash_app_channel AS channel,
-    mozfun.norm.extract_version(crash_app_display_version, "major") AS major_version,
+    CAST(mozfun.norm.extract_version(crash_app_display_version, "major") AS INT) AS major_version,
     (
       CASE
         metrics.string.crash_process_type

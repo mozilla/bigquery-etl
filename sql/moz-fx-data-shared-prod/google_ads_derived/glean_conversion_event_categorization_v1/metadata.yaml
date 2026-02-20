@@ -2,10 +2,10 @@ friendly_name: Glean Conversion Event Categorization
 description: |-
   Classifies behavior of new clients based on their behavior in first 7 days of activity
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_desktop_conv_evnt_categorization
   depends_on_past: false

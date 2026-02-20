@@ -1,0 +1,18 @@
+---
+friendly_name: Subplat Attribution Channel Group
+description: |
+  Maps UTM source parameters to predefined channel groups for attribution analysis.
+
+  This function categorizes UTM sources into channel groups:
+  - Marketing Owned: Mozilla-owned marketing channels (newsletters, blogs, social)
+  - Product Owned: In-product referrals (newtab, Firefox features, Pocket)
+  - Marketing Paid: Paid advertising channels (Google, Facebook, Display)
+  - Direct: Direct traffic from Mozilla properties
+  - Miscellaneous: Other or unmapped sources
+
+  The function uses pattern matching on utm_source values to assign appropriate
+  channel classifications for marketing attribution and analytics.
+
+  Data source:
+  - Marketing UTM Parameters: https://docs.google.com/spreadsheets/d/1YSQriUKwq9sz4WLBKRAfupb9OWSOJabm7Qo3RrIf7kI/edit?gid=1059980294#gid=1059980294
+  - UTM Source mapping: Building an MRR Dataset Script Code Block 30: https://drive.google.com/drive/folders/1xBG2zgmIMgrX6Rvrw3y1ZAJbn8ffA3Af

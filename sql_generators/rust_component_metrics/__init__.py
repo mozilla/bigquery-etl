@@ -25,6 +25,7 @@ def all_metric_groups() -> list["MetricGroup"]:
                 Application.firefox_ios,
             ],
             metrics=[
+                Counter("local_undecryptable_deleted"),
                 Counter("mirror_undecryptable_deleted"),
                 Event("key_regenerated_corrupt"),
                 Event("key_regenerated_lost"),

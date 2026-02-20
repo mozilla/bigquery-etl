@@ -4,7 +4,7 @@
 
 Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's [CI (continuous integration)](https://github.com/mozilla/bigquery-etl/blob/main/.circleci/config.yml) [deploys these changes to a stage environment](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L353) and uses these stage artifacts to run its various checks. 
 
-Currently, the `bigquery-etl-integration-test` project serves as the stage environment. CI does have read and write access, but does at no point publish actual data to this project. Only UDFs, table schemas and views are published. The project itself does not have access to any production project, like `mozdata`, so stage artifacts cannot reference any other artifacts that live in production.
+Currently, the `moz-fx-data-integration-tests` project serves as the stage environment. CI does have read and write access, but does at no point publish actual data to this project. Only UDFs, table schemas and views are published. The project itself does not have access to any production project, like `mozdata`, so stage artifacts cannot reference any other artifacts that live in production.
 
 Deploying artifacts to stage follows the following steps:
 1. Once a new pull-request gets created in bigquery-etl, CI will [pull in the `generated-sql` branch](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L367-L372) to [determine all files that show any changes compared to what is deployed in production](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L373-L384) (it is assumed that the `generated-sql` branch reflects the artifacts currently deployed in production). All of these changed artifacts (UDFs, tables and views) will be deployed to the stage environment.
@@ -19,8 +19,8 @@ Deploying artifacts to stage follows the following steps:
     * Also dependencies of dependencies need to be deployed, and so on
 4. Once all artifacts that need to be deployed have been determined, all references to these artifacts in existing SQL files need to be updated. These references will need to point to the stage project and the temporary datasets that artifacts will be published to.
     * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.
-5. To run the deploy, all artifacts will be copied to `sql/bigquery-etl-integration-test` into their corresponding temporary datasets.
-    * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `bigquery-etl-integration-test` folder
+5. To run the deploy, all artifacts will be copied to `sql/moz-fx-data-integration-tests` into their corresponding temporary datasets.
+    * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `moz-fx-data-integration-tests` folder
     * The deploy is executed in the order of: UDFs, tables, views
     * UDFs and views get deployed in a way that ensures that the right order of deployments (e.g. dependencies need to be deployed before the views referencing them)
 6. Once the deploy has been completed, the CI will use these staged artifacts to run its tests
@@ -47,7 +47,7 @@ Files (for example ones with changes) that should be deployed to stage need to b
 * `--copy-sql-to-tmp-dir` copies SQL stored in `sql/` to a temporary folder. Reference updates and any other modifications required to run the stage deploy will be performed in this temporary directory. This is an optional parameter. If not specified, changes get applied to the files directly and can be reverted, for example, by running `git checkout -- sql/`
 * (optional) `--remove-updated-artifacts` removes artifact files that have been deployed from the "prod" folders. This ensures that tests don't run on outdated or undeployed artifacts.
 
-Deployed stage artifacts can be deleted from `bigquery-etl-integration-test` by running:
+Deployed stage artifacts can be deleted from `moz-fx-data-integration-tests` by running:
 
 ```
 ./bqetl stage clean --delete-expired --dataset-suffix=test

@@ -2,11 +2,11 @@ friendly_name: Blog Performance
 description: |-
   Blog page engagement metrics by page title and date for blog.mozilla.org pages.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4

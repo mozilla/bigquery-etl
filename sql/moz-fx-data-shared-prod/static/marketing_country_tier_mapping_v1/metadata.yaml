@@ -1,0 +1,7 @@
+friendly_name: Marketing Country Tier Mapping
+description: |-
+  For mapping a country to a marketing tier.
+owners:
+- kik@mozilla.com
+- sbedwell@mozilla.com
+- bsaunders@mozilla.com

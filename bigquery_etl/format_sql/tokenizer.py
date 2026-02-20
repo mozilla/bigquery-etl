@@ -7,78 +7,66 @@ from typing import Iterator
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
-    # DDL
-    "ALTER TABLE IF EXISTS",
-    "ALTER TABLE",
-    "CLUSTER BY",
+    # DDL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language
+    "ALTER TABLE(?: IF EXISTS)?",
     "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? TABLE(?! FUNCTION)(?: IF NOT EXISTS)?",
     "CREATE(?: OR REPLACE)? VIEW(?: IF NOT EXISTS)?",
     "CREATE(?: OR REPLACE)? MATERIALIZED VIEW(?: IF NOT EXISTS)?",
-    "DROP TABLE",
-    "DROP VIEW",
+    "DROP TABLE(?: IF EXISTS)?",
+    "DROP VIEW(?: IF EXISTS)?",
+    "AS",  # only when not identified as an AliasSeparator
+    "CLUSTER BY",
     "OPTIONS",
-    # DML
-    "DELETE FROM",
-    "DELETE",
-    "INSERT INTO",
-    "INSERT",
-    "MERGE INTO",
-    "MERGE",
+    # DML: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax
+    "DELETE(?: FROM)?",
+    "INSERT(?: INTO)?",
+    "VALUES",
+    "MERGE(?: INTO)?",
+    "WHEN MATCHED",
+    "WHEN NOT MATCHED(?: BY SOURCE| BY TARGET)?",
     "UPDATE",
-    # scripting
+    # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
     "BEGIN TRANSACTION",
     "BREAK",
-    "COMMIT TRANSACTION",
-    "COMMIT",
+    "COMMIT(?: TRANSACTION)?",
     "CONTINUE",
     "ITERATE",
     "LEAVE",
-    "ROLLBACK TRANSACTION",
-    "ROLLBACK",
-    # SQL
-    "AS",  # only when not identified as an AliasSeparator
+    "ROLLBACK(?: TRANSACTION)?",
+    # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
+    "WITH(?! OFFSET)",
+    # SELECT statement: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list
+    "SELECT(?: DISTINCT)?(?: AS STRUCT| AS VALUE)?",
+    # FROM clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause
+    "FROM",
+    # Join operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types
     "CROSS JOIN",
+    "(?:INNER )?JOIN",
+    "FULL(?: OUTER)? JOIN",
+    "LEFT(?: OUTER)? JOIN",
+    "RIGHT(?: OUTER)? JOIN",
+    # WHERE clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause
+    "WHERE",
+    # GROUP BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
+    "GROUP BY",
+    "ROLLUP",
+    # HAVING clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause
+    "HAVING",
+    # QUALIFY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause
+    "QUALIFY",
+    # WINDOW clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause
+    "WINDOW",
+    "PARTITION BY",
+    "RANGE(?: BETWEEN)?",
+    "ROWS(?: BETWEEN)?",
+    # ORDER BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause
+    "ORDER BY",
+    # LIMIT clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause
+    "LIMIT",
+    # Set operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators
     "EXCEPT DISTINCT",
     "INTERSECT DISTINCT",
-    "FROM",
-    "FULL JOIN",
-    "FULL OUTER JOIN",
-    "GROUP BY",
-    "HAVING",
-    "INNER JOIN",
-    "INTERSECT",
-    "JOIN",
-    "LEFT JOIN",
-    "LEFT OUTER JOIN",
-    "LIMIT",
-    "ORDER BY",
-    "OUTER JOIN",
-    "PARTITION BY",
-    "QUALIFY",
-    "RANGE BETWEEN",
-    "RANGE",
-    "RIGHT JOIN",
-    "RIGHT OUTER JOIN",
-    "ROLLUP",
-    "ROWS BETWEEN",
-    "ROWS",
-    "SELECT AS STRUCT",
-    "SELECT AS VALUE",
-    "SELECT DISTINCT AS STRUCT",
-    "SELECT DISTINCT AS VALUE",
-    "SELECT DISTINCT",
-    "SELECT",
-    "UNION ALL",
-    "UNION DISTINCT",
-    "UNION",
-    "VALUES",
-    "WHEN MATCHED",
-    "WHEN NOT MATCHED BY SOURCE",
-    "WHEN NOT MATCHED BY TARGET",
-    "WHEN NOT MATCHED",
-    "WHERE",
-    "WITH(?! OFFSET)",
-    "WINDOW",
+    "UNION(?: ALL| DISTINCT)?",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
@@ -102,6 +90,7 @@ NEWLINE_KEYWORDS = [
     "XOR",
 ]
 # These words get capitalized
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved_keywords
 RESERVED_KEYWORDS = [
     "ALL",
     "AND",
@@ -206,6 +195,7 @@ RESERVED_KEYWORDS = [
     "WITHIN",
 ]
 # These built-in function names get capitalized
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all
 BUILTIN_FUNCTIONS = [
     "ABS",
     "ACOS",

@@ -7,6 +7,7 @@ owners:
 - kik@mozilla.com
 - ahe@mozilla.com
 labels:
+  authorized: true
   owner1: kik
   owner2: ahe
 workgroup_access:

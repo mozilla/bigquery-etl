@@ -2,10 +2,10 @@ friendly_name: Google Analytics Desktop Conversions Feed
 description: |-
   Query that pulls conversion event data so Census feed can pull and send to Google for marketing campaigns
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_census_feed
 scheduling:
   dag_name: bqetl_census_feed

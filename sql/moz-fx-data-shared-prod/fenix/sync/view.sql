@@ -34,7 +34,8 @@ SELECT
       metrics.string.system_os_distro_version,
       metrics.string.system_os_locale,
       metrics.string.system_os_name,
-      metrics.string.system_os_version
+      metrics.string.system_os_version,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.custom_distribution.pwmgr_login_page_safety,
@@ -101,7 +102,8 @@ SELECT
       metrics.string.system_os_distro_version,
       metrics.string.system_os_locale,
       metrics.string.system_os_name,
-      metrics.string.system_os_version
+      metrics.string.system_os_version,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.custom_distribution.pwmgr_login_page_safety,
@@ -168,7 +170,8 @@ SELECT
       metrics.string.system_os_distro_version,
       metrics.string.system_os_locale,
       metrics.string.system_os_name,
-      metrics.string.system_os_version
+      metrics.string.system_os_version,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.custom_distribution.pwmgr_login_page_safety,
@@ -235,7 +238,8 @@ SELECT
       metrics.string.system_os_distro_version,
       metrics.string.system_os_locale,
       metrics.string.system_os_name,
-      metrics.string.system_os_version
+      metrics.string.system_os_version,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.custom_distribution.pwmgr_login_page_safety,
@@ -302,7 +306,8 @@ SELECT
       metrics.string.system_os_distro_version,
       metrics.string.system_os_locale,
       metrics.string.system_os_name,
-      metrics.string.system_os_version
+      metrics.string.system_os_version,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.custom_distribution.pwmgr_login_page_safety,

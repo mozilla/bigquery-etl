@@ -821,6 +821,16 @@ fields:
         \ or compiler combinations.\n\nThe result takes the form <processor>-<compilerABI>,\
         \ for example:\n  - x86-msvc\n  - ppc-gcc3\n\nThis value should almost always\
         \ be used in combination with the\noperating system.\n"
+    - name: system_os_libstdcxx_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s libstdc++ highest GLIBCXX version.
+
+        Linux only.
+
+        e.g. "3.4.33"
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

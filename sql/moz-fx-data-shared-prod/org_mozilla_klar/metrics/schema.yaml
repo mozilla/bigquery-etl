@@ -9956,6 +9956,16 @@ fields:
       description: 'The first error message encountered when parsing a prefs file.
 
         '
+    - name: system_os_libstdcxx_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s libstdc++ highest GLIBCXX version.
+
+        Linux only.
+
+        e.g. "3.4.33"
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -44255,6 +44265,27 @@ fields:
           mode: NULLABLE
       description: 'Records the reason the WindowsLocationChild reported failure to
         get location.
+
+        '
+    - name: urlfixup_suffix
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how often a .com or other localized suffix is appended
+        to a URL as a result of pressing ctrl/cmd + enter in the URL bar.
 
         '
   - name: text2

@@ -447,8 +447,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["fsd:DATE:{{macros.ds_add(ds, -7)}}"]
-        + ["submission_date:DATE:{{ds}}"],
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     telemetry_derived__fx_health_ind_page_reloads__v1 = bigquery_etl_query(

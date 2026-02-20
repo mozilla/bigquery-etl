@@ -1061,8 +1061,8 @@ fields:
       - name: libstdcxx_version
         type: STRING
         mode: NULLABLE
-        description: The highest GLIBCXX version available in libstdc++.so.6. This
-          is Linux only. `null` on failure.
+        description: This field was added to the schema in error and is not populated
+          in these pings. See https://bugzilla.mozilla.org/show_bug.cgi?id=2016621
     - name: sec
       type: RECORD
       mode: NULLABLE

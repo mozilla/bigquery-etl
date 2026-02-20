@@ -1250,7 +1250,8 @@ SELECT
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2052,7 +2053,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3328,7 +3330,8 @@ SELECT
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4130,7 +4133,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5426,7 +5430,8 @@ SELECT
       metrics.string.preferences_https_only_mode,
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6228,7 +6233,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

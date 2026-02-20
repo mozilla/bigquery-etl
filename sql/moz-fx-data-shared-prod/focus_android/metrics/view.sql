@@ -773,7 +773,8 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -1804,7 +1805,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -2602,7 +2604,8 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -3633,7 +3636,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -4431,7 +4435,8 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_prefs_file_first_parse_error
+      metrics.string.preferences_prefs_file_first_parse_error,
+      metrics.string.system_os_libstdcxx_version
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -5462,7 +5467,8 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_alias_by_source_per_tab2,
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
-      metrics.dual_labeled_counter.geolocation_windows_failure
+      metrics.dual_labeled_counter.geolocation_windows_failure,
+      metrics.dual_labeled_counter.urlfixup_suffix
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

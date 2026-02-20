@@ -36,7 +36,7 @@ TOP_LEVEL_KEYWORDS = [
     # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
     r"WITH(?! OFFSET\b)",
     # SELECT statement: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list
-    "SELECT(?: DISTINCT)?(?: AS STRUCT| AS VALUE)?",
+    "SELECT(?: ALL| DISTINCT)?(?: AS STRUCT| AS VALUE)?",
     # FROM clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause
     "FROM",
     # Join operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types

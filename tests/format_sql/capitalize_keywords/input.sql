@@ -197,6 +197,7 @@ rollup;
 rows between;
 rows;
 select;
+select all;
 select distinct;
 select as struct;
 select as value;

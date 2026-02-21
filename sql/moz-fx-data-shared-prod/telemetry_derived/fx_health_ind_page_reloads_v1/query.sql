@@ -9,7 +9,7 @@ CROSS JOIN
   UNNEST(payload.processes.parent.keyed_scalars.browser_ui_interaction_nav_bar) AS a
 WHERE
   DATE(submission_timestamp) = @submission_date
-  AND a.key LIKE('%reload%')
+  AND a.key LIKE ('%reload%')
 GROUP BY
   DATE(submission_timestamp),
   normalized_country_code,

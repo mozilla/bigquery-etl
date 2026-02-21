@@ -3,7 +3,7 @@
 -- data includes long-form country names. The logic here is specific
 -- to the FxA data.
 CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
-  EXISTS(
+  EXISTS (
     SELECT
       country
     FROM
@@ -21,7 +21,7 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
 
 -- This UDF is also only applicable in the context of this query.
 CREATE TEMP FUNCTION udf_contains_registration(x ANY TYPE) AS (
-  EXISTS(
+  EXISTS (
     SELECT
       event_type
     FROM

@@ -9,7 +9,7 @@ from typing import Iterator
 TOP_LEVEL_KEYWORDS = [
     # DDL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language
     "ALTER TABLE(?: IF EXISTS)?",
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? TABLE(?! FUNCTION)(?: IF NOT EXISTS)?",
+    r"CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? TABLE(?! FUNCTION\b)(?: IF NOT EXISTS)?",
     "CREATE(?: OR REPLACE)? VIEW(?: IF NOT EXISTS)?",
     "CREATE(?: OR REPLACE)? MATERIALIZED VIEW(?: IF NOT EXISTS)?",
     "DROP TABLE(?: IF EXISTS)?",
@@ -34,7 +34,7 @@ TOP_LEVEL_KEYWORDS = [
     "LEAVE",
     "ROLLBACK(?: TRANSACTION)?",
     # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
-    "WITH(?! OFFSET)",
+    r"WITH(?! OFFSET\b)",
     # SELECT statement: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list
     "SELECT(?: DISTINCT)?(?: AS STRUCT| AS VALUE)?",
     # FROM clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause
@@ -88,6 +88,9 @@ NEWLINE_KEYWORDS = [
     "OR",
     "WHEN",
     "XOR",
+    # Scripting
+    "DECLARE",
+    "RAISE(?: USING MESSAGE)?",
 ]
 # These words get capitalized
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved_keywords
@@ -110,7 +113,6 @@ RESERVED_KEYWORDS = [
     "CROSS",
     "CUBE",
     "CURRENT",
-    "DECLARE",
     "DEFAULT",
     "DEFINE",
     "DESC",
@@ -141,8 +143,6 @@ RESERVED_KEYWORDS = [
     "INTERSECT",
     "INTERVAL",
     "INTO",
-    "IS DISTINCT FROM",
-    "IS NOT DISTINCT FROM",
     "IS",
     "JOIN",
     "LATERAL",
@@ -166,11 +166,9 @@ RESERVED_KEYWORDS = [
     "PARTITION",
     "PRECEDING",
     "PROTO",
-    "RAISE USING MESSAGE",
-    "RAISE",
+    "QUALIFY",
     "RANGE",
     "RECURSIVE",
-    "REPLACE",
     "RESPECT",
     "RIGHT",
     "ROLLUP",
@@ -193,6 +191,22 @@ RESERVED_KEYWORDS = [
     "WINDOW",
     "WITH",
     "WITHIN",
+]
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators
+OPERATOR_KEYWORDS = [
+    "AND",
+    "(?:NOT )?BETWEEN",
+    "EXISTS",
+    "(?:NOT )?IN",
+    "IS(?: NOT)? DISTINCT FROM",
+    "IS(?: NOT)? NULL",
+    "IS(?: NOT)? (?:TRUE|FALSE)",
+    "(?:NOT )?LIKE",
+    "NOT",  # NOT needs to be listed after the other operators that can start with NOT.
+    "OR",
+]
+OTHER_KEYWORDS = [
+    "REPLACE",
 ]
 # These built-in function names get capitalized
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all
@@ -556,6 +570,12 @@ class Token:
         pass
 
 
+class UnknownToken(Token):
+    """Unknown token."""
+
+    pattern = re.compile(r"\S+")
+
+
 class Comment(Token):
     """Comment abstract class.
 
@@ -590,29 +610,29 @@ class Whitespace(Token):
     pattern = re.compile(r"\s[^\S\n]*")
 
 
-class ReservedKeyword(Token):
+class Keyword(Token):
     """Token that gets capitalized and separates words with a single space."""
+
+
+class ReservedKeyword(Keyword):
+    """Reserved keywords."""
 
     pattern = _keyword_pattern(RESERVED_KEYWORDS)
 
 
-class SpaceBeforeBracketKeyword(ReservedKeyword):
+class SpaceBeforeBracketKeyword(Keyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
     pattern = _keyword_pattern(
         [
-            "IN",
             r"\* EXCEPT",
             r"\* REPLACE",
-            "NOT",
             "OVER",
-            "IS DISTINCT FROM",
-            "IS NOT DISTINCT FROM",
         ]
     )
 
 
-class BlockKeyword(ReservedKeyword):
+class BlockKeyword(Keyword):
     """Keyword that separates indented blocks, such as conditionals."""
 
 
@@ -678,13 +698,13 @@ class CaseSubclause(NewlineKeyword):
     pattern = _keyword_pattern(["WHEN"])
 
 
-class MaybeCaseSubclause(ReservedKeyword):
+class MaybeCaseSubclause(Keyword):
     """Keyword that needs context to determine whether it is for a CASE or an IF."""
 
     pattern = _keyword_pattern(["THEN", "ELSE"])
 
 
-class AngleBracketKeyword(ReservedKeyword):
+class AngleBracketKeyword(Keyword):
     """Keyword indicating that if the next token is '<' it is a bracket."""
 
     pattern = _keyword_pattern(["ARRAY", "STRUCT"])
@@ -838,13 +858,9 @@ class StatementSeparator(Token):
 class Operator(Token):
     """Operator."""
 
-    pattern = re.compile(r"<<|>>|>=|<=|=>|<>|!=|.")
-
-
-class ConcatenationOperator(Token):
-    """Concatenation operator."""
-
-    pattern = re.compile(r"\|\|")
+    # The multi-symbol operators need to be specified before the single-symbol operators
+    # because the first pattern that matches will be used.
+    pattern = re.compile(r"<<|>>|>=|<=|=>|<>|!=|\|\||[-.*/&^+<=>|~]")
 
 
 class FieldAccessOperator(Operator):
@@ -857,6 +873,18 @@ class FieldAccessOperator(Operator):
     """
 
     pattern = re.compile(r"\.")
+
+
+class OperatorKeyword(SpaceBeforeBracketKeyword):
+    """Operator keyword."""
+
+    pattern = _keyword_pattern(OPERATOR_KEYWORDS)
+
+
+class OtherKeyword(Keyword):
+    """Other keywords."""
+
+    pattern = _keyword_pattern(OTHER_KEYWORDS)
 
 
 BIGQUERY_TOKEN_PRIORITY = [
@@ -879,21 +907,23 @@ BIGQUERY_TOKEN_PRIORITY = [
     NewlineKeyword,
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
+    OpeningBracket,
+    ClosingBracket,
+    MaybeOpeningAngleBracket,
+    MaybeClosingAngleBracket,
+    ExpressionSeparator,
+    StatementSeparator,
+    FieldAccessOperator,
+    Operator,
+    OperatorKeyword,
+    OtherKeyword,
     ReservedKeyword,
-    ConcatenationOperator,
     Literal,
     BuiltInFunctionIdentifier,
     QualifiedIdentifier,
     Identifier,
     QueryParameter,
-    OpeningBracket,
-    ClosingBracket,
-    MaybeOpeningAngleBracket,
-    MaybeClosingAngleBracket,
-    FieldAccessOperator,
-    ExpressionSeparator,
-    StatementSeparator,
-    Operator,
+    UnknownToken,
 ]
 
 
@@ -902,7 +932,7 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
     open_blocks: list[BlockStartKeyword] = []
     open_angle_brackets = 0
     angle_bracket_is_operator = True
-    reserved_keyword_is_identifier = False
+    keyword_is_identifier = False
     while query:
         for token_type in token_priority:
             match = token_type.pattern.match(query)
@@ -926,8 +956,8 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
                 token = ClosingBracket(token.value)
                 open_angle_brackets -= 1
             elif (
-                reserved_keyword_is_identifier
-                and isinstance(token, ReservedKeyword)
+                keyword_is_identifier
+                and isinstance(token, Keyword)
                 and Identifier.pattern.match(token.value) is not None
             ):
                 continue  # prevent matching identifier as keyword
@@ -946,8 +976,8 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
                     open_angle_brackets > 0 or isinstance(token, AngleBracketKeyword)
                 )
                 # field access operator may be followed by an identifier that
-                # would otherwise be a reserved keyword.
-                reserved_keyword_is_identifier = isinstance(
+                # would otherwise be considered a keyword.
+                keyword_is_identifier = isinstance(
                     token, (FieldAccessOperator, AliasSeparator)
                 )
             break

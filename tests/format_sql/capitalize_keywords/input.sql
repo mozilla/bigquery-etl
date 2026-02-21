@@ -18,6 +18,7 @@ create;
 cross;
 cube;
 current;
+current row;
 default;
 define;
 desc;

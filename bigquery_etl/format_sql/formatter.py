@@ -21,12 +21,12 @@ from .tokenizer import (
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
+    Keyword,
     LineComment,
     Literal,
     NewlineKeyword,
     OpeningBracket,
     Operator,
-    ReservedKeyword,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
     TopLevelKeyword,
@@ -129,7 +129,7 @@ def simple_format(tokens, indent="  "):
 
         if can_format:
             # uppercase keywords and replace contained whitespace with single spaces
-            if isinstance(token, ReservedKeyword):
+            if isinstance(token, Keyword):
                 token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
             # uppercase built-in function names
             elif isinstance(token, BuiltInFunctionIdentifier):

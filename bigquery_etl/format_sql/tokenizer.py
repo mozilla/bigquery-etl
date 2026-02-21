@@ -206,6 +206,8 @@ OPERATOR_KEYWORDS = [
     "OR",
 ]
 OTHER_KEYWORDS = [
+    "NULLS FIRST",
+    "NULLS LAST",
     "REPLACE",
 ]
 # These built-in function names get capitalized

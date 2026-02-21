@@ -60,6 +60,8 @@ no;
 not;
 null;
 nulls;
+nulls first;
+nulls last;
 of;
 on;
 or;

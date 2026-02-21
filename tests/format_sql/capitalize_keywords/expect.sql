@@ -121,6 +121,10 @@ NULL;
 
 NULLS;
 
+NULLS FIRST;
+
+NULLS LAST;
+
 OF;
 
 ON;

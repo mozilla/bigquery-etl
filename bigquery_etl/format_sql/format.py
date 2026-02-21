@@ -85,6 +85,7 @@ def format(paths, check=False, parallelism=8):
             sys.exit(1)
     else:
         sql_files = []
+        skip_files = skip_format()
 
         for path in paths:
             if os.path.isdir(path):
@@ -96,13 +97,16 @@ def format(paths, check=False, parallelism=8):
                     # skip tests/**/input.sql
                     and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
-                    if not any([filepath.endswith(s) for s in skip_format()])
+                    if not any([filepath.endswith(s) for s in skip_files])
                 )
             elif path:
-                sql_files.append(path)
+                if any(path.endswith(s) for s in skip_files):
+                    print(f"Skipping: {path}")
+                else:
+                    sql_files.append(path)
         if not sql_files:
-            print("Error: no files were found to format")
-            sys.exit(255)
+            print("No files were found to format")
+            sys.exit(0)
 
         with Pool(parallelism) as pool:
             results = pool.map(partial(_format_path, check), sql_files)

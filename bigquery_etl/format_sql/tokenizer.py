@@ -49,7 +49,6 @@ TOP_LEVEL_KEYWORDS = [
     "WHERE",
     # GROUP BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
     "GROUP BY",
-    "ROLLUP",
     # HAVING clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause
     "HAVING",
     # QUALIFY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause
@@ -208,6 +207,7 @@ OPERATOR_KEYWORDS = [
     "OR",
 ]
 OTHER_KEYWORDS = [
+    "GROUPING SETS",
     "NULLS FIRST",
     "NULLS LAST",
     "REPLACE",
@@ -698,7 +698,10 @@ class SpaceBeforeBracketKeyword(Keyword):
         [
             r"\* EXCEPT",
             r"\* REPLACE",
+            "CUBE",
+            "GROUPING SETS",
             "OVER",
+            "ROLLUP",
         ]
     )
 

@@ -41,7 +41,7 @@ dist_pop_with_days_seen AS (
 client_conditions AS (
   SELECT
     client_id,
-    date,
+    `date`,
     country_code,
     channel,
     build_id,

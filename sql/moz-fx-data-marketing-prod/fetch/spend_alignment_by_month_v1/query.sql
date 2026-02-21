@@ -13,8 +13,8 @@ WITH fetch_summary AS (
 ),
 detailed_summary AS (
   SELECT
-    EXTRACT(MONTH FROM date) AS month,
-    EXTRACT(YEAR FROM date) AS year,
+    EXTRACT(MONTH FROM `date`) AS month,
+    EXTRACT(YEAR FROM `date`) AS year,
     ROUND(SUM(vendorNetSpend)) AS detail_vendor_net_spend,
   FROM
     `moz-fx-data-marketing-prod.fetch.fetch_deduped`

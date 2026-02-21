@@ -1,16 +1,16 @@
 WITH terminal_queries AS (
   SELECT
-    ARRAY_REVERSE(ARRAY_AGG(sanitized ORDER BY sequence_no, timestamp ASC))[SAFE_OFFSET(0)].*
+    ARRAY_REVERSE(ARRAY_AGG(sanitized ORDER BY sequence_no, `timestamp` ASC))[SAFE_OFFSET(0)].*
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` sanitized
   WHERE
-    DATE(timestamp) > DATE_SUB(@submission_date, INTERVAL 7 day)
+    DATE(`timestamp`) > DATE_SUB(@submission_date, INTERVAL 7 day)
   GROUP BY
     sanitized.session_id
 ),
 daily_queries AS (
   SELECT
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     query,
     COUNT(*) AS search_sessions
   FROM

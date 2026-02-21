@@ -56,7 +56,7 @@ TOP_LEVEL_KEYWORDS = [
     # WINDOW clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause
     "WINDOW",
     "PARTITION BY",
-    r"RANGE(?!\()(?: BETWEEN)?",
+    "RANGE(?![(<])(?: BETWEEN)?",
     "ROWS(?: BETWEEN)?",
     # ORDER BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause
     "ORDER BY",
@@ -205,6 +205,23 @@ OPERATOR_KEYWORDS = [
     "(?:NOT )?LIKE(?: ANY| SOME| ALL)?",
     "NOT",  # NOT needs to be listed after the other operators that can start with NOT.
     "OR",
+]
+# https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types
+DATA_TYPE_KEYWORDS = [
+    "BIGNUMERIC|BIGDECIMAL",
+    r"BOOL(?!\()|BOOLEAN",
+    r"BYTES(?!\.)",
+    r"DATE(?!\()",
+    r"DATETIME(?!\()",
+    r"FLOAT64(?!\()",
+    "GEOGRAPHY",
+    r"INT64(?!\()|INT|SMALLINT|INTEGER|BIGINT|TINYINT|BYTEINT",
+    r"JSON(?!\.)",
+    "NUMERIC|DECIMAL",
+    r"RANGE(?!\()",
+    r"STRING(?!\()",
+    r"TIME(?!\()",
+    r"TIMESTAMP(?!\()",
 ]
 OTHER_KEYWORDS = [
     "CURRENT ROW",
@@ -692,6 +709,12 @@ class ReservedKeyword(Keyword):
     pattern = _keyword_pattern(RESERVED_KEYWORDS)
 
 
+class DataTypeKeyword(Keyword):
+    """Data type keywords."""
+
+    pattern = _keyword_pattern(DATA_TYPE_KEYWORDS)
+
+
 class SpaceBeforeBracketKeyword(Keyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
@@ -782,7 +805,7 @@ class MaybeCaseSubclause(Keyword):
 class AngleBracketKeyword(Keyword):
     """Keyword indicating that if the next token is '<' it is a bracket."""
 
-    pattern = _keyword_pattern(["ARRAY", "STRUCT"])
+    pattern = _keyword_pattern(["ARRAY", "RANGE", "STRUCT"])
 
 
 class Identifier(Token):
@@ -991,6 +1014,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     FieldAccessOperator,
     Operator,
     OperatorKeyword,
+    DataTypeKeyword,
     OtherKeyword,
     ReservedKeyword,
     Literal,

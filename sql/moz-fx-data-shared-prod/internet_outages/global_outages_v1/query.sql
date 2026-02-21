@@ -173,7 +173,7 @@ health_data_aggregates AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    datetime,
+    `datetime`,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
     COUNTIF(e_abort > 0) AS num_clients_e_abort,
@@ -189,7 +189,7 @@ health_data_aggregates AS (
   GROUP BY
     country,
     city,
-    datetime
+    `datetime`
   HAVING
     COUNT(*) > 50
 ),
@@ -208,7 +208,7 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-    USING (datetime, country, city)
+    USING (`datetime`, country, city)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
@@ -471,7 +471,7 @@ SELECT
   DAUs.country AS country,
   DAUs.city AS city,
   DAUs.datetime AS datetime,
-  hd.* EXCEPT (datetime, country, city),
+  hd.* EXCEPT (`datetime`, country, city),
   ds.value AS avg_dns_success_time,
   ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,
@@ -490,25 +490,25 @@ FROM
 -- are not accounted for in `moz-fx-data-shared-prod.telemetry.clients_daily`
 LEFT JOIN
   DAUs
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_success_time AS ds
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_no_dns_lookup_time AS ds_missing
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_failure_time AS df
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_no_dns_failure_time AS df_missing
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   ssl_error_prop AS ssl
-  USING (datetime, country, city)
+  USING (`datetime`, country, city)

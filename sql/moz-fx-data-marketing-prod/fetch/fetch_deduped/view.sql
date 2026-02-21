@@ -4,7 +4,7 @@ AS
 WITH metrics_ingestion_date_per_ad AS (
   SELECT
     _table_suffix AS ingestionDate,
-    MAX(_table_suffix) OVER (PARTITION BY date, Adname) AS IngestionDateMax,
+    MAX(_table_suffix) OVER (PARTITION BY `date`, Adname) AS IngestionDateMax,
     *,
   FROM
     `moz-fx-data-marketing-prod.fetch.metric_*`

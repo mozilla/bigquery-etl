@@ -71,6 +71,8 @@ TOP_LEVEL_KEYWORDS = [
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
     "ON",
+    "PIVOT",
+    "UNPIVOT(?: INCLUDE NULLS| EXCLUDE NULLS)?",
     "USING",
     "WITH OFFSET",
     # UDF

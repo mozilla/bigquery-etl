@@ -201,7 +201,7 @@ OPERATOR_KEYWORDS = [
     "IS(?: NOT)? DISTINCT FROM",
     "IS(?: NOT)? NULL",
     "IS(?: NOT)? (?:TRUE|FALSE)",
-    "(?:NOT )?LIKE",
+    "(?:NOT )?LIKE(?: ANY| SOME| ALL)?",
     "NOT",  # NOT needs to be listed after the other operators that can start with NOT.
     "OR",
 ]

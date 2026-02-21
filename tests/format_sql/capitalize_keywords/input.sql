@@ -93,6 +93,10 @@ window;
 with;
 within;
 -- newline keywords
+pivot;
+unpivot;
+unpivot include nulls;
+unpivot exclude nulls;
 with offset;
 create or replace function;
 create or replace aggregate function;

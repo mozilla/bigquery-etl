@@ -171,11 +171,13 @@ else
 end;
 begin transaction;
 break;
+call;
 commit transaction;
 commit;
 continue;
 iterate;
 leave;
+return;
 rollback transaction;
 rollback;
 -- top level keywords

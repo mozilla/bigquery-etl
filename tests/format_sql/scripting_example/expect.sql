@@ -53,6 +53,8 @@ BEGIN
   END WHILE;
 
   LOOP
+    CALL foo();
+
     LEAVE;
   END LOOP;
 

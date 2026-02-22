@@ -88,11 +88,13 @@ NEWLINE_KEYWORDS = [
     "XOR",
     # Scripting
     "BREAK",
+    "CALL",
     "CONTINUE",
     "DECLARE",
     "ITERATE",
     "LEAVE",
     "RAISE(?: USING MESSAGE)?",
+    "RETURN",
     "UNTIL",
     "WHILE",
 ]

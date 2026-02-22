@@ -25,6 +25,7 @@ TOP_LEVEL_KEYWORDS = [
     "WHEN MATCHED",
     "WHEN NOT MATCHED(?: BY SOURCE| BY TARGET)?",
     "UPDATE",
+    "SET",
     # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
     "BEGIN TRANSACTION",
     "BREAK",

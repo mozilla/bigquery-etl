@@ -17,12 +17,13 @@ BEGIN
 
   EXECUTE IMMEDIATE regex_query INTO count_regex;
 
-  SET count_sql = CONCAT(
-    'ARRAY_LENGTH(regexp_extract_all(events, r"',
-    count_regex,
-    '")) AS ',
-    count_name
-  );
+  SET
+    count_sql = CONCAT(
+      'ARRAY_LENGTH(regexp_extract_all(events, r"',
+      count_regex,
+      '")) AS ',
+      count_name
+    );
 END;
 
 -- See create_funnel_steps_query/stored_procedure.sql for tests

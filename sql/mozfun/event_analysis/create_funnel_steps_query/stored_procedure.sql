@@ -29,73 +29,86 @@ BEGIN
   WHILE
     i <= ARRAY_LENGTH(funnel)
   DO
-    SET event_filters = [];
+    SET
+      event_filters = [];
 
-    SET funnel_step_i = 1;
+    SET
+      funnel_step_i = 1;
 
-    SET funnel_step_events = funnel[ORDINAL(i)].list;
+    SET
+      funnel_step_events = funnel[ORDINAL(i)].list;
 
     WHILE
       funnel_step_i <= ARRAY_LENGTH(funnel_step_events)
     DO
-      SET event = funnel_step_events[ORDINAL(funnel_step_i)];
+      SET
+        event = funnel_step_events[ORDINAL(funnel_step_i)];
 
-      SET event_filter = CONCAT(
-        '(category = "',
-        event.category,
-        '"',
-        ' AND event = "',
-        event.event_name,
-        '")'
-      );
+      SET
+        event_filter = CONCAT(
+          '(category = "',
+          event.category,
+          '"',
+          ' AND event = "',
+          event.event_name,
+          '")'
+        );
 
-      SET event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
+      SET
+        event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
 
-      SET funnel_step_i = funnel_step_i + 1;
+      SET
+        funnel_step_i = funnel_step_i + 1;
     END WHILE;
 
-    SET funnel_step_filters = CONCAT(
-      '\n  SELECT',
-      '\n    ',
-      i,
-      ' AS step,',
-      '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS step_regex',
-      '\n  FROM',
-      '\n    `',
-      project,
-      '`.',
-      dataset,
-      '.event_types',
-      '\n  WHERE',
-      '\n    ',
-      ARRAY_TO_STRING(event_filters, ' OR ')
-    );
+    SET
+      funnel_step_filters = CONCAT(
+        '\n  SELECT',
+        '\n    ',
+        i,
+        ' AS step,',
+        '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS step_regex',
+        '\n  FROM',
+        '\n    `',
+        project,
+        '`.',
+        dataset,
+        '.event_types',
+        '\n  WHERE',
+        '\n    ',
+        ARRAY_TO_STRING(event_filters, ' OR ')
+      );
 
-    SET funnel_event_filters = ARRAY_CONCAT(funnel_event_filters, [funnel_step_filters]);
+    SET
+      funnel_event_filters = ARRAY_CONCAT(funnel_event_filters, [funnel_step_filters]);
 
-    SET funnel_regex_assembly = CONCAT(
-      'event_analysis.create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT ',
-      i,
-      '), TRUE)'
-    );
+    SET
+      funnel_regex_assembly = CONCAT(
+        'event_analysis.create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT ',
+        i,
+        '), TRUE)'
+      );
 
-    SET funnel_regex_assemblies = ARRAY_CONCAT(funnel_regex_assemblies, [funnel_regex_assembly]);
+    SET
+      funnel_regex_assemblies = ARRAY_CONCAT(funnel_regex_assemblies, [funnel_regex_assembly]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET sql = CONCAT(
-    'WITH step_regexes AS (',
-    ARRAY_TO_STRING(funnel_event_filters, '\n  UNION ALL\n'),
-    '\n)',
-    '\nSELECT',
-    '\n  [',
-    '\n    ',
-    ARRAY_TO_STRING(funnel_regex_assemblies, ',\n'),
-    '\n  ]',
-    '\n  FROM',
-    '\n    step_regexes'
-  );
+  SET
+    sql = CONCAT(
+      'WITH step_regexes AS (',
+      ARRAY_TO_STRING(funnel_event_filters, '\n  UNION ALL\n'),
+      '\n)',
+      '\nSELECT',
+      '\n  [',
+      '\n    ',
+      ARRAY_TO_STRING(funnel_regex_assemblies, ',\n'),
+      '\n  ]',
+      '\n  FROM',
+      '\n    step_regexes'
+    );
 END;
 
 -- Tests

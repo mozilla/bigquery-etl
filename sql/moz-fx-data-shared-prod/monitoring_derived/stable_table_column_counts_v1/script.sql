@@ -2,20 +2,22 @@ DECLARE datasets ARRAY<STRING>;
 
 DECLARE i INT64 DEFAULT 0;
 
-SET datasets = (
-  SELECT
-    ARRAY_AGG(schema_name)
-  FROM
-    `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
-  WHERE
-    schema_name LIKE r'%\_stable%'
-);
+SET
+  datasets = (
+    SELECT
+      ARRAY_AGG(schema_name)
+    FROM
+      `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
+    WHERE
+      schema_name LIKE r'%\_stable%'
+  );
 
 CREATE TEMP TABLE
   columns(dataset STRING, table_name STRING, total_columns INT64);
 
 LOOP
-  SET i = i + 1;
+  SET
+    i = i + 1;
 
   IF
     i > ARRAY_LENGTH(datasets)

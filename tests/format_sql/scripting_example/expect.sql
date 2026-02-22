@@ -23,7 +23,8 @@ BEGIN
     t1.date = target_date
     AND t2.date = target_date;
 
-  SET rows_added = (SELECT COUNT(*) FROM data_for_target_date);
+  SET
+    rows_added = (SELECT COUNT(*) FROM data_for_target_date);
 
   SELECT
     id,

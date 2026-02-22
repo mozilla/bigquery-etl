@@ -46,26 +46,27 @@ BEGIN
   EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION, DATA_TYPE)) FROM mozdata.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table_name" INTO query_b_schema
   USING table_b AS table_name;
 
-  SET res = (
-    SELECT
-      ARRAY_AGG(
-        STRUCT(
-          ORDINAL_POSITION AS i,
-          COALESCE(a.COLUMN_NAME != b.COLUMN_NAME OR a.DATA_TYPE != b.DATA_TYPE, TRUE) AS differs,
-          a.COLUMN_NAME AS a_col,
-          a.DATA_TYPE AS a_data_type,
-          b.COLUMN_NAME AS b_col,
-          b.DATA_TYPE AS b_data_type
+  SET
+    res = (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(
+            ORDINAL_POSITION AS i,
+            COALESCE(a.COLUMN_NAME != b.COLUMN_NAME OR a.DATA_TYPE != b.DATA_TYPE, TRUE) AS differs,
+            a.COLUMN_NAME AS a_col,
+            a.DATA_TYPE AS a_data_type,
+            b.COLUMN_NAME AS b_col,
+            b.DATA_TYPE AS b_data_type
+          )
+          ORDER BY
+            ORDINAL_POSITION
         )
-        ORDER BY
-          ORDINAL_POSITION
-      )
-    FROM
-      UNNEST(query_a_schema) AS a
-    FULL OUTER JOIN
-      (SELECT * FROM UNNEST(query_b_schema)) AS b
-      USING (ORDINAL_POSITION)
-  );
+      FROM
+        UNNEST(query_a_schema) AS a
+      FULL OUTER JOIN
+        (SELECT * FROM UNNEST(query_b_schema)) AS b
+        USING (ORDINAL_POSITION)
+    );
 
   -- Cleanup
   EXECUTE IMMEDIATE "DROP TABLE " || table_a_id;

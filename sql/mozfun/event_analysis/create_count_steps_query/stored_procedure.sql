@@ -17,35 +17,40 @@ BEGIN
   WHILE
     i <= ARRAY_LENGTH(events)
   DO
-    SET event = events[ORDINAL(i)];
+    SET
+      event = events[ORDINAL(i)];
 
-    SET event_filter = CONCAT(
-      '(category = "',
-      event.category,
-      '"',
-      ' AND event = "',
-      event.event_name,
-      '")'
-    );
+    SET
+      event_filter = CONCAT(
+        '(category = "',
+        event.category,
+        '"',
+        ' AND event = "',
+        event.event_name,
+        '")'
+      );
 
-    SET event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
+    SET
+      event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET sql = CONCAT(
-    '\n  SELECT',
-    '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
-    '\n  FROM',
-    '\n    `',
-    project,
-    '`.',
-    dataset,
-    '.event_types',
-    '\n  WHERE',
-    '\n    ',
-    ARRAY_TO_STRING(event_filters, ' OR ')
-  );
+  SET
+    sql = CONCAT(
+      '\n  SELECT',
+      '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
+      '\n  FROM',
+      '\n    `',
+      project,
+      '`.',
+      dataset,
+      '.event_types',
+      '\n  WHERE',
+      '\n    ',
+      ARRAY_TO_STRING(event_filters, ' OR ')
+    );
 END;
 
 -- Tests

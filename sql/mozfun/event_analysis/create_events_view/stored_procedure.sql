@@ -26,8 +26,7 @@ BEGIN
 
   DECLARE count_sqls ARRAY<STRING> DEFAULT[];
 
-  WHILE
-    i <= ARRAY_LENGTH(funnels)
+  WHILE i <= ARRAY_LENGTH(funnels)
   DO
     CALL event_analysis.get_funnel_steps_sql(
       project,
@@ -44,8 +43,7 @@ BEGIN
 
   SET i = 1;
 
-  WHILE
-    i <= ARRAY_LENGTH(counts)
+  WHILE i <= ARRAY_LENGTH(counts)
   DO
     CALL event_analysis.get_count_sql(
       project,

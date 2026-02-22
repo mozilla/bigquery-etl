@@ -26,8 +26,7 @@ BEGIN
 
   EXECUTE IMMEDIATE regex_query INTO funnel_step_regex;
 
-  WHILE
-    i <= ARRAY_LENGTH(funnel)
+  WHILE i <= ARRAY_LENGTH(funnel)
   DO
     SET step_sql = CONCAT(
       'REGEXP_CONTAINS(events, r"',

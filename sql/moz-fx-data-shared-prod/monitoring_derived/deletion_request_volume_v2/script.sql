@@ -25,8 +25,7 @@ DO
     @submission_date,
     "' = PARSE_DATE('%Y%m%d', PARTITION_ID))"
   );
-END
-FOR;
+END FOR;
 
 MERGE
   `moz-fx-data-shared-prod.monitoring_derived.deletion_request_volume_v2` r

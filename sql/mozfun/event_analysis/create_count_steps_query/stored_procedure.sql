@@ -14,8 +14,7 @@ BEGIN
 
   DECLARE event_filters ARRAY<STRING> DEFAULT[];
 
-  WHILE
-    i <= ARRAY_LENGTH(events)
+  WHILE i <= ARRAY_LENGTH(events)
   DO
     SET event = events[ORDINAL(i)];
 

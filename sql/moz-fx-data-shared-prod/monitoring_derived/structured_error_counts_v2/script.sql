@@ -34,8 +34,7 @@ DO
     @submission_date,
     "' = PARSE_DATE('%Y%m%d', PARTITION_ID))"
   );
-END
-FOR;
+END FOR;
 
 CREATE TEMP TABLE
   error_counts(

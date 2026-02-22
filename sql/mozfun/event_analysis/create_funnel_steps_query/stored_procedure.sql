@@ -26,8 +26,7 @@ BEGIN
 
   DECLARE funnel_regex_assemblies ARRAY<STRING> DEFAULT[];
 
-  WHILE
-    i <= ARRAY_LENGTH(funnel)
+  WHILE i <= ARRAY_LENGTH(funnel)
   DO
     SET event_filters = [];
 
@@ -35,8 +34,7 @@ BEGIN
 
     SET funnel_step_events = funnel[ORDINAL(i)].list;
 
-    WHILE
-      funnel_step_i <= ARRAY_LENGTH(funnel_step_events)
+    WHILE funnel_step_i <= ARRAY_LENGTH(funnel_step_events)
     DO
       SET event = funnel_step_events[ORDINAL(funnel_step_i)];
 

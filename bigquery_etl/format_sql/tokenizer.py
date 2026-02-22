@@ -27,11 +27,7 @@ TOP_LEVEL_KEYWORDS = [
     "UPDATE",
     # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
     "BEGIN TRANSACTION",
-    "BREAK",
     "COMMIT(?: TRANSACTION)?",
-    "CONTINUE",
-    "ITERATE",
-    "LEAVE",
     "ROLLBACK(?: TRANSACTION)?",
     # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
     r"WITH(?! OFFSET\b)",
@@ -69,6 +65,7 @@ TOP_LEVEL_KEYWORDS = [
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "FOR(?! SYSTEM_TIME AS OF)",
     "ON",
     "PIVOT",
     "UNPIVOT(?: INCLUDE NULLS| EXCLUDE NULLS)?",
@@ -90,8 +87,14 @@ NEWLINE_KEYWORDS = [
     "WHEN",
     "XOR",
     # Scripting
+    "BREAK",
+    "CONTINUE",
     "DECLARE",
+    "ITERATE",
+    "LEAVE",
     "RAISE(?: USING MESSAGE)?",
+    "UNTIL",
+    "WHILE",
 ]
 # These words get capitalized
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved_keywords
@@ -759,9 +762,10 @@ class BlockStartKeyword(BlockKeyword):
             "CREATE PROCEDURE",
             # negative lookahead prevents matching IF function
             r"IF(?!(\s|\n)*[(])",
-            "WHILE",
             "LOOP",
             "CASE",
+            "DO",
+            r"REPEAT(?!\()",
         ]
     )
 
@@ -769,14 +773,14 @@ class BlockStartKeyword(BlockKeyword):
 class BlockEndKeyword(BlockKeyword):
     """Keyword that gets its own line preceded by decreased indent."""
 
-    pattern = _keyword_pattern(["END( (WHILE|LOOP|IF))?"])
+    pattern = _keyword_pattern(["END( (WHILE|LOOP|IF|FOR|REPEAT))?"])
 
 
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
     pattern = _keyword_pattern(
-        [r"BEGIN(?!\s+TRANSACTION\b)", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"]
+        ["BEGIN(?! TRANSACTION)", "EXCEPTION WHEN ERROR THEN", "ELSEIF"]
     )
 
 

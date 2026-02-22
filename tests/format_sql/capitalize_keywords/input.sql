@@ -158,6 +158,12 @@ do
 end while;
 loop
 end loop;
+repeat
+until
+end repeat;
+for _ in ()
+do
+end for;
 case
 when
 then

@@ -47,7 +47,7 @@ WITH clients_first_seen_28_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.clients_first_seen`
   WHERE
-    baseline_first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    baseline_first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 clients_first_seen_28_days_ago_with_days_seen AS (
   SELECT

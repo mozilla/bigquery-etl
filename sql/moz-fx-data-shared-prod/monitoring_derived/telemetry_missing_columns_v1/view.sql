@@ -18,10 +18,10 @@ FROM
     )
   ) AS path
 WHERE
-  DATE(submission_timestamp) = DATE_SUB(DATE(current_timestamp), INTERVAL 1 day)
+  DATE(submission_timestamp) = DATE_SUB(DATE(current_timestamp), INTERVAL 1 DAY)
   AND sample_id = 1
 GROUP BY
-  day,
+  `day`,
   document_namespace,
   document_type,
   document_version,

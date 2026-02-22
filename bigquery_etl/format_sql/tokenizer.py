@@ -225,10 +225,24 @@ DATA_TYPE_KEYWORDS = [
 ]
 OTHER_KEYWORDS = [
     "CURRENT ROW",
+    "DAY",
+    "DAYOFWEEK",
+    "DAYOFYEAR",
     "GROUPING SETS",
+    "HOUR",
+    "ISOWEEK",
+    "ISOYEAR",
+    "MICROSECOND",
+    "MILLISECOND",
+    "MINUTE",
+    "MONTH",
     "NULLS FIRST",
     "NULLS LAST",
+    "QUARTER",
     "REPLACE",
+    "SECOND",
+    "WEEK",
+    "YEAR",
 ]
 # These built-in function names get capitalized
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all

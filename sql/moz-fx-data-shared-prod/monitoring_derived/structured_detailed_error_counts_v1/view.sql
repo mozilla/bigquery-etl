@@ -19,7 +19,7 @@ WITH error_examples AS (
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL(28 * 24) HOUR)
   GROUP BY
-    hour,
+    `hour`,
     document_namespace,
     document_type,
     document_version,
@@ -28,7 +28,7 @@ WITH error_examples AS (
 ),
 structured_detailed_hourly_errors AS (
   SELECT
-    hour,
+    `hour`,
     document_namespace,
     document_type,
     document_version,
@@ -41,7 +41,7 @@ structured_detailed_hourly_errors AS (
     `moz-fx-data-shared-prod.monitoring.structured_error_counts` structured_hourly_errors
   FULL OUTER JOIN
     error_examples
-    USING (hour, document_namespace, document_type, document_version, error_type)
+    USING (`hour`, document_namespace, document_type, document_version, error_type)
 ),
 with_ratio AS (
   SELECT

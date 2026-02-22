@@ -21,8 +21,8 @@ extracted AS (
   WHERE
     -- only observe full days of data
     (
-      DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 day)
-      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL(1 + 7) day)
+      DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 DAY)
+      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL(1 + 7) DAY)
     )
     -- https://cloud.google.com/bigquery/docs/querying-wildcard-tables#filtering_selected_tables_using_table_suffix
     -- exclude pings derived from main schema to save on space, 300GB vs 3TB
@@ -68,7 +68,7 @@ transformed AS (
       )
     ) AS path
   GROUP BY
-    day,
+    `day`,
     document_namespace,
     document_type,
     document_version,
@@ -76,19 +76,19 @@ transformed AS (
 ),
 min_max AS (
   SELECT
-    MIN(day) AS min_day,
-    MAX(day) AS max_day
+    MIN(`day`) AS min_day,
+    MAX(`day`) AS max_day
   FROM
     transformed
 ),
 reference AS (
   SELECT
-    * EXCEPT (day, path_count),
+    * EXCEPT (`day`, path_count),
     path_count AS path_count_ref
   FROM
     transformed
   WHERE
-    day IN (SELECT min_day FROM min_max)
+    `day` IN (SELECT min_day FROM min_max)
 ),
 observed AS (
   SELECT
@@ -97,11 +97,11 @@ observed AS (
   FROM
     transformed
   WHERE
-    day IN (SELECT max_day FROM min_max)
+    `day` IN (SELECT max_day FROM min_max)
 )
 SELECT
-  day,
-  * EXCEPT (day),
+  `day`,
+  * EXCEPT (`day`),
   path_count_obs - path_count_ref AS diff
 FROM
   reference

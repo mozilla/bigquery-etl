@@ -12,10 +12,10 @@ WITH extracted AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
-    submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, day)
+    submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, DAY)
     AND submission_timestamp > TIMESTAMP_SUB(
-      TIMESTAMP_TRUNC(current_timestamp, day),
-      INTERVAL(28 * 24) hour
+      TIMESTAMP_TRUNC(current_timestamp, DAY),
+      INTERVAL(28 * 24) HOUR
     )
     AND exception_class = 'org.everit.json.schema.ValidationException'
 ),
@@ -24,13 +24,13 @@ count_errors AS (
     document_namespace,
     document_type,
     document_version,
-    hour,
+    `hour`,
     job_name,
     `moz-fx-data-shared-prod.udf.extract_schema_validation_path`(error_message) AS path,
     COUNT(*) AS error_count,
     ROW_NUMBER() OVER (
       PARTITION BY
-        hour,
+        `hour`,
         document_namespace,
         document_type,
         document_version
@@ -43,7 +43,7 @@ count_errors AS (
     document_namespace,
     document_type,
     document_version,
-    hour,
+    `hour`,
     job_name,
     path
 )
@@ -55,4 +55,4 @@ ORDER BY
   document_namespace,
   document_type,
   error_rank,
-  hour
+  `hour`

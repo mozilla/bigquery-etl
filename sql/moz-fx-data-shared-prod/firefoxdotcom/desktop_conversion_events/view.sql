@@ -33,7 +33,7 @@ JOIN
   all_clicks_from_united_states b
   ON a.gclid = b.gclid
 WHERE
-  b.first_session_date >= DATE_SUB(current_date, INTERVAL 28 day)
+  b.first_session_date >= DATE_SUB(current_date, INTERVAL 28 DAY)
 GROUP BY
   a.gclid,
   a.conversion_name

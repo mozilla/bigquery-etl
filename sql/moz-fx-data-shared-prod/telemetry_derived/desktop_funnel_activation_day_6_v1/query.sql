@@ -14,7 +14,7 @@ WITH pop AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 6 day)
+    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 6 DAY)
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 ),
 dist_pop AS (

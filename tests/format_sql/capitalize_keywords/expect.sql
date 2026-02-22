@@ -89,6 +89,10 @@ HASH;
 
 HAVING;
 
+HAVING MAX;
+
+HAVING MIN;
+
 HOUR;
 
 IF();

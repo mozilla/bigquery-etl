@@ -47,7 +47,7 @@ TOP_LEVEL_KEYWORDS = [
     # GROUP BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
     "GROUP BY",
     # HAVING clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause
-    "HAVING",
+    r"HAVING(?! (?:MAX|MIN)\b(?!\())",
     # QUALIFY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause
     "QUALIFY",
     # WINDOW clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause
@@ -238,6 +238,8 @@ OTHER_KEYWORDS = [
     "DAYOFYEAR",
     "FOR SYSTEM_TIME AS OF",
     "GROUPING SETS",
+    "HAVING MAX",
+    "HAVING MIN",
     "HOUR",
     "INOUT",
     "ISOWEEK",

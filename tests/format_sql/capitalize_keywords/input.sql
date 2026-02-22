@@ -44,6 +44,8 @@ grouping;
 groups;
 hash;
 having;
+having max;
+having min;
 hour;
 if();
 ignore;

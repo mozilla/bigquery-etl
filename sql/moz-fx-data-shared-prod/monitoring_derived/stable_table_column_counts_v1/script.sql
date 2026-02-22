@@ -23,21 +23,22 @@ LOOP
     LEAVE;
   END IF;
 
-  EXECUTE IMMEDIATE '''
+  EXECUTE IMMEDIATE
+    '''
     INSERT columns
     SELECT "''' || datasets[
-    ORDINAL(i)
-  ] || '''" AS dataset, 
-      table_name, 
-      COUNT(DISTINCT(field_path)) AS total_columns 
+      ORDINAL(i)
+    ] || '''" AS dataset,
+      table_name,
+      COUNT(DISTINCT(field_path)) AS total_columns
     FROM `moz-fx-data-shared-prod`.''' || datasets[
-    ORDINAL(i)
-  ] || '''.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+      ORDINAL(i)
+    ] || '''.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
     WHERE
       data_type NOT LIKE "%STRUCT%"
       AND data_type NOT LIKE "%ARRAY%"
     GROUP BY
-      table_name  
+      table_name
     ''';
 END LOOP;
 

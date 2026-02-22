@@ -175,6 +175,7 @@ call;
 commit transaction;
 commit;
 continue;
+execute immediate '...' into result using parameter;
 iterate;
 leave;
 return;

@@ -24,7 +24,9 @@ BEGIN
     regex_query
   );
 
-  EXECUTE IMMEDIATE regex_query INTO funnel_step_regex;
+  EXECUTE IMMEDIATE
+    regex_query
+    INTO funnel_step_regex;
 
   WHILE i <= ARRAY_LENGTH(funnel)
   DO

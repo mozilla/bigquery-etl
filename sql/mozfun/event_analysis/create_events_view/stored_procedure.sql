@@ -58,25 +58,26 @@ BEGIN
     SET i = i + 1;
   END WHILE;
 
-  EXECUTE IMMEDIATE CONCAT(
-    '\nCREATE OR REPLACE VIEW ',
-    '\n  `',
-    project,
-    '`.analysis.',
-    view_name,
-    '\nAS',
-    '\nSELECT ',
-    '\n  ',
-    ARRAY_TO_STRING(ARRAY_CONCAT(funnel_sqls, count_sqls), ',\n'),
-    ',',
-    '\n  *',
-    '\nFROM',
-    '\n  `',
-    project,
-    '`.',
-    dataset,
-    '.events_daily'
-  );
+  EXECUTE IMMEDIATE
+    CONCAT(
+      '\nCREATE OR REPLACE VIEW ',
+      '\n  `',
+      project,
+      '`.analysis.',
+      view_name,
+      '\nAS',
+      '\nSELECT ',
+      '\n  ',
+      ARRAY_TO_STRING(ARRAY_CONCAT(funnel_sqls, count_sqls), ',\n'),
+      ',',
+      '\n  *',
+      '\nFROM',
+      '\n  `',
+      project,
+      '`.',
+      dataset,
+      '.events_daily'
+    );
 END;
 
 -- See create_funnel_steps_query/stored_procedure.sql for tests

@@ -326,6 +326,11 @@ COMMIT;
 
 CONTINUE;
 
+EXECUTE IMMEDIATE
+  '...'
+  INTO result
+  USING parameter;
+
 ITERATE;
 
 LEAVE;

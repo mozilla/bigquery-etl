@@ -15,7 +15,9 @@ BEGIN
 
   CALL event_analysis.create_count_steps_query(project, dataset, events, regex_query);
 
-  EXECUTE IMMEDIATE regex_query INTO count_regex;
+  EXECUTE IMMEDIATE
+    regex_query
+    INTO count_regex;
 
   SET count_sql = CONCAT(
     'ARRAY_LENGTH(regexp_extract_all(events, r"',

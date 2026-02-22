@@ -28,6 +28,7 @@ TOP_LEVEL_KEYWORDS = [
     # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
     "BEGIN TRANSACTION",
     "COMMIT(?: TRANSACTION)?",
+    "EXECUTE IMMEDIATE",
     "ROLLBACK(?: TRANSACTION)?",
     # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
     r"WITH(?! OFFSET\b)",
@@ -66,6 +67,7 @@ TOP_LEVEL_KEYWORDS = [
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
     "FOR(?! SYSTEM_TIME AS OF)",
+    "INTO",
     "ON",
     "PIVOT",
     "UNPIVOT(?: INCLUDE NULLS| EXCLUDE NULLS)?",

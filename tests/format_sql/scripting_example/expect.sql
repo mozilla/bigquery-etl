@@ -59,7 +59,9 @@ BEGIN
   END LOOP;
 
   REPEAT
-    EXECUTE IMMEDIATE 'SELECT flag' INTO flag;
+    EXECUTE IMMEDIATE
+      'SELECT flag'
+      INTO flag;
 
     UNTIL flag
   END REPEAT;

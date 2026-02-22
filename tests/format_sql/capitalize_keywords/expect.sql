@@ -99,6 +99,8 @@ IN;
 
 INNER;
 
+INOUT;
+
 INTERSECT;
 
 INTERVAL;
@@ -156,6 +158,8 @@ ON;
 OR;
 
 ORDER;
+
+OUT;
 
 OUTER;
 

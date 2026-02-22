@@ -62,13 +62,16 @@ TOP_LEVEL_KEYWORDS = [
     # LIMIT clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause
     "LIMIT",
     # Set operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators
-    "EXCEPT DISTINCT",
-    "INTERSECT DISTINCT",
-    "UNION( ALL| DISTINCT)?",
+    (
+        "(INNER |OUTER |(FULL|LEFT)( OUTER)? )?"
+        "(UNION( ALL| DISTINCT)|INTERSECT DISTINCT|EXCEPT DISTINCT)"
+        "( BY NAME|( STRICT)? CORRESPONDING)?"
+    ),
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
     r"ASSERT(?!\.)",
+    "BY",
     "FOR(?! SYSTEM_TIME AS OF)",
     "INTO",
     "ON",

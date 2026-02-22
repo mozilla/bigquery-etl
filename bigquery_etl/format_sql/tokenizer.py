@@ -66,6 +66,7 @@ TOP_LEVEL_KEYWORDS = [
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    r"ASSERT(?!\.)",
     "FOR(?! SYSTEM_TIME AS OF)",
     "INTO",
     "ON",

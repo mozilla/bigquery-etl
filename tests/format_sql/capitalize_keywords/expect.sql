@@ -272,8 +272,6 @@ BETWEEN;
 
 OR;
 
-XOR;
-
 DECLARE;
 
 RAISE;

@@ -136,7 +136,6 @@ language;
 and;
 between;
 or;
-xor;
 declare;
 raise;
 raise using message;

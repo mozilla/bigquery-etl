@@ -89,7 +89,6 @@ NEWLINE_KEYWORDS = [
     "END",
     "OR",
     "WHEN",
-    "XOR",
     # Scripting
     "BREAK",
     "CALL",

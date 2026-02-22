@@ -14,6 +14,7 @@ TOP_LEVEL_KEYWORDS = [
     "CREATE( OR REPLACE)? MATERIALIZED VIEW( IF NOT EXISTS)?",
     "DROP TABLE( IF EXISTS)?",
     "DROP VIEW( IF EXISTS)?",
+    "DROP MATERIALIZED VIEW( IF EXISTS)?",
     "AS",  # only when not identified as an AliasSeparator
     "CLUSTER BY",
     "OPTIONS",

@@ -8,54 +8,54 @@ from typing import Iterator
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
     # DDL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language
-    "ALTER TABLE(?: IF EXISTS)?",
-    r"CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? TABLE(?! FUNCTION\b)(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? VIEW(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? MATERIALIZED VIEW(?: IF NOT EXISTS)?",
-    "DROP TABLE(?: IF EXISTS)?",
-    "DROP VIEW(?: IF EXISTS)?",
+    "ALTER TABLE( IF EXISTS)?",
+    r"CREATE( OR REPLACE)?( TEMPORARY| TEMP)? TABLE(?! FUNCTION\b)( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? VIEW( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? MATERIALIZED VIEW( IF NOT EXISTS)?",
+    "DROP TABLE( IF EXISTS)?",
+    "DROP VIEW( IF EXISTS)?",
     "AS",  # only when not identified as an AliasSeparator
     "CLUSTER BY",
     "OPTIONS",
     # DML: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax
-    "DELETE(?: FROM)?",
-    "INSERT(?: INTO)?",
+    "DELETE( FROM)?",
+    "INSERT( INTO)?",
     "VALUES",
-    "MERGE(?: INTO)?",
+    "MERGE( INTO)?",
     "WHEN MATCHED",
-    "WHEN NOT MATCHED(?: BY SOURCE| BY TARGET)?",
+    "WHEN NOT MATCHED( BY SOURCE| BY TARGET)?",
     "UPDATE",
     "SET",
     # Scripting: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language
     "BEGIN TRANSACTION",
-    "COMMIT(?: TRANSACTION)?",
+    "COMMIT( TRANSACTION)?",
     "EXECUTE IMMEDIATE",
-    "ROLLBACK(?: TRANSACTION)?",
+    "ROLLBACK( TRANSACTION)?",
     # WITH clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause
     r"WITH(?! OFFSET\b)",
     # SELECT statement: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list
-    "SELECT(?: ALL| DISTINCT)?(?: AS STRUCT| AS VALUE)?",
+    "SELECT( ALL| DISTINCT)?( AS STRUCT| AS VALUE)?",
     # FROM clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#from_clause
     "FROM",
     # Join operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#join_types
     "CROSS JOIN",
-    "(?:INNER )?JOIN",
-    "FULL(?: OUTER)? JOIN",
-    "LEFT(?: OUTER)? JOIN",
-    "RIGHT(?: OUTER)? JOIN",
+    "(INNER )?JOIN",
+    "FULL( OUTER)? JOIN",
+    "LEFT( OUTER)? JOIN",
+    "RIGHT( OUTER)? JOIN",
     # WHERE clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause
     "WHERE",
     # GROUP BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#group_by_clause
     "GROUP BY",
     # HAVING clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#having_clause
-    r"HAVING(?! (?:MAX|MIN)\b(?!\())",
+    r"HAVING(?! (MAX|MIN)\b(?!\())",
     # QUALIFY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#qualify_clause
     "QUALIFY",
     # WINDOW clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#window_clause
     "WINDOW",
     "PARTITION BY",
-    "RANGE(?![(<])(?: BETWEEN)?",
-    "ROWS(?: BETWEEN)?",
+    "RANGE(?![(<])( BETWEEN)?",
+    "ROWS( BETWEEN)?",
     # ORDER BY clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#order_by_clause
     "ORDER BY",
     # LIMIT clause: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#limit_and_offset_clause
@@ -63,7 +63,7 @@ TOP_LEVEL_KEYWORDS = [
     # Set operators: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#set_operators
     "EXCEPT DISTINCT",
     "INTERSECT DISTINCT",
-    "UNION(?: ALL| DISTINCT)?",
+    "UNION( ALL| DISTINCT)?",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
@@ -72,13 +72,13 @@ NEWLINE_KEYWORDS = [
     "INTO",
     "ON",
     "PIVOT",
-    "UNPIVOT(?: INCLUDE NULLS| EXCLUDE NULLS)?",
+    "UNPIVOT( INCLUDE NULLS| EXCLUDE NULLS)?",
     "USING",
     "WITH OFFSET",
     # UDF
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? FUNCTION(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)?(?: TEMPORARY| TEMP)? AGGREGATE FUNCTION(?: IF NOT EXISTS)?",
-    "CREATE(?: OR REPLACE)? TABLE FUNCTION(?: IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)?( TEMPORARY| TEMP)? FUNCTION( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)?( TEMPORARY| TEMP)? AGGREGATE FUNCTION( IF NOT EXISTS)?",
+    "CREATE( OR REPLACE)? TABLE FUNCTION( IF NOT EXISTS)?",
     "RETURNS",
     "LANGUAGE",
     # Conditional
@@ -97,7 +97,7 @@ NEWLINE_KEYWORDS = [
     "DECLARE",
     "ITERATE",
     "LEAVE",
-    "RAISE(?: USING MESSAGE)?",
+    "RAISE( USING MESSAGE)?",
     "RETURN",
     "UNTIL",
     "WHILE",
@@ -205,13 +205,13 @@ RESERVED_KEYWORDS = [
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/operators
 OPERATOR_KEYWORDS = [
     "AND",
-    "(?:NOT )?BETWEEN",
+    "(NOT )?BETWEEN",
     "EXISTS",
-    "(?:NOT )?IN",
-    "IS(?: NOT)? DISTINCT FROM",
-    "IS(?: NOT)? NULL",
-    "IS(?: NOT)? (?:TRUE|FALSE)",
-    "(?:NOT )?LIKE(?: ANY| SOME| ALL)?",
+    "(NOT )?IN",
+    "IS( NOT)? DISTINCT FROM",
+    "IS( NOT)? NULL",
+    "IS( NOT)? (TRUE|FALSE)",
+    "(NOT )?LIKE( ANY| SOME| ALL)?",
     "NOT",  # NOT needs to be listed after the other operators that can start with NOT.
     "OR",
 ]
@@ -670,7 +670,7 @@ def _keyword_pattern(words):
     match whole words.
     """
     return re.compile(
-        "(?:" + "|".join(pattern.replace(" ", r"\s+") for pattern in words) + r")\b",
+        "(" + "|".join(pattern.replace(" ", r"\s+") for pattern in words) + r")\b",
         re.IGNORECASE,
     )
 
@@ -840,20 +840,20 @@ class AngleBracketKeyword(Keyword):
 class Identifier(Token):
     """Identifier for a column, table, or other database object."""
 
-    pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(?:\\.|[^\\`])+`")
+    pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(\\.|[^\\`])+`")
 
 
 class ProjectIdentifier(Identifier):
     """Identifier for a GCP project, can contain hyphens unlike Identifier."""
 
-    pattern = re.compile(r"[A-Za-z](?:[A-Za-z_0-9-]*[A-Za-z_0-9])?|`(?:\\.|[^\\`])+`")
+    pattern = re.compile(r"[A-Za-z]([A-Za-z_0-9-]*[A-Za-z_0-9])?|`(\\.|[^\\`])+`")
 
 
 class QualifiedIdentifier(Identifier):
     """Fully or partially qualified identifier for a column, table, or other database object."""
 
     pattern = re.compile(
-        rf"(?:(?:{ProjectIdentifier.pattern.pattern}\.)?(?:{Identifier.pattern.pattern})\.)+(?:{Identifier.pattern.pattern})"
+        rf"(({ProjectIdentifier.pattern.pattern}\.)?({Identifier.pattern.pattern})\.)+({Identifier.pattern.pattern})"
     )
 
 
@@ -861,9 +861,7 @@ class BuiltInFunctionIdentifier(Identifier):
     """Identifier for a built-in function."""
 
     pattern = re.compile(
-        r"(?:SAFE\.)?(?:"
-        + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS)
-        + r")(?=\()",
+        r"(SAFE\.)?(" + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS) + r")(?=\()",
         re.IGNORECASE,
     )
 
@@ -879,11 +877,11 @@ class Literal(Token):
 
     pattern = re.compile(
         # String literal
-        rf"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
+        f"(r?b|b?r)?(?P<quote>{QUOTE})({STRING_CONTENT})*?(?P=quote)"
         # Hexadecimal integer literal
         "|0[xX][0-9a-fA-F]+"
         # Decimal integer or float literal
-        r"|\d+\.?\d*(?:[Ee][+-]?)?\d*"
+        r"|\d+\.?\d*([Ee][+-]?)?\d*"
     )
 
 

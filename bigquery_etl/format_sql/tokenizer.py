@@ -228,6 +228,7 @@ OTHER_KEYWORDS = [
     "DAY",
     "DAYOFWEEK",
     "DAYOFYEAR",
+    "FOR SYSTEM_TIME AS OF",
     "GROUPING SETS",
     "HOUR",
     "ISOWEEK",

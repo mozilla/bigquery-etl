@@ -36,6 +36,7 @@ false;
 fetch;
 following;
 for;
+for system_time as of;
 from;
 full;
 group;

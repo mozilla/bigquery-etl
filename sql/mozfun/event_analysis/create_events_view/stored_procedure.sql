@@ -36,12 +36,15 @@ BEGIN
       funnel_sql
     );
 
-    SET funnel_sqls = ARRAY_CONCAT(funnel_sqls, [funnel_sql]);
+    SET
+      funnel_sqls = ARRAY_CONCAT(funnel_sqls, [funnel_sql]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET i = 1;
+  SET
+    i = 1;
 
   WHILE i <= ARRAY_LENGTH(counts)
   DO
@@ -53,9 +56,11 @@ BEGIN
       count_sql
     );
 
-    SET count_sqls = ARRAY_CONCAT(count_sqls, [count_sql]);
+    SET
+      count_sqls = ARRAY_CONCAT(count_sqls, [count_sql]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
   EXECUTE IMMEDIATE

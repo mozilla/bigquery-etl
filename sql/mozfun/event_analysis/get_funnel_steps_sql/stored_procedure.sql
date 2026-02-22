@@ -30,19 +30,23 @@ BEGIN
 
   WHILE i <= ARRAY_LENGTH(funnel)
   DO
-    SET step_sql = CONCAT(
-      'REGEXP_CONTAINS(events, r"',
-      funnel_step_regex[ORDINAL(i)],
-      '") AS ',
-      funnel[ORDINAL(i)].step_name
-    );
+    SET
+      step_sql = CONCAT(
+        'REGEXP_CONTAINS(events, r"',
+        funnel_step_regex[ORDINAL(i)],
+        '") AS ',
+        funnel[ORDINAL(i)].step_name
+      );
 
-    SET funnel_sqls = ARRAY_CONCAT(funnel_sqls, [step_sql]);
+    SET
+      funnel_sqls = ARRAY_CONCAT(funnel_sqls, [step_sql]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET funnel_sql = CONCAT('STRUCT(', ARRAY_TO_STRING(funnel_sqls, ', '), ') AS ', funnel_name);
+  SET
+    funnel_sql = CONCAT('STRUCT(', ARRAY_TO_STRING(funnel_sqls, ', '), ') AS ', funnel_name);
 END;
 
 -- See create_funnel_steps_query/stored_procedure.sql for tests

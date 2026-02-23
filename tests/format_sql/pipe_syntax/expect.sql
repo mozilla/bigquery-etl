@@ -493,7 +493,7 @@ FROM
 FROM
   LargeTable
 |>
-  TABLESAMPLE SYSTEM(1 PERCENT);
+  TABLESAMPLE SYSTEM (1 PERCENT);
 
 -- WITH: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#with_pipe_operator
 /* TODO: uncomment after sqlglot adds support for the WITH pipe operator

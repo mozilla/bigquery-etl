@@ -385,7 +385,8 @@ SELECT
       metrics.string.characteristics_svg_computed_text_length,
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
-      metrics.string.characteristics_svg_substring_length
+      metrics.string.characteristics_svg_substring_length,
+      metrics.string.characteristics_timezone_offset_web
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,

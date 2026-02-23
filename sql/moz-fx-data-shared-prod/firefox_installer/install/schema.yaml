@@ -430,6 +430,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of download requests blocked by the server
+- name: desktop_launcher_status
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Desktop Launcher status: 0 (Unknown), 1 (Not enabled), 2 (Not checked),
+    3 (Not installed), 4 (Installed), 5 (Reinstalled), 6 (Removed)'
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

@@ -2473,6 +2473,12 @@ fields:
       mode: NULLABLE
       description: SVGTextContentElement.getSubStringLength(0, 10) for first 10 characters.
         Varies by font metrics and text shaping.
+    - name: characteristics_timezone_offset_web
+      type: STRING
+      mode: NULLABLE
+      description: 'The timezone offset in minutes exposed to web content via getTimezoneOffset()
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

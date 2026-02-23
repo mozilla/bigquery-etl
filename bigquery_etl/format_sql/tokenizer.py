@@ -10,12 +10,15 @@ TOP_LEVEL_KEYWORDS = [
     # DDL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language
     "ALTER TABLE( IF EXISTS)?",
     r"CREATE( OR REPLACE)?( TEMPORARY| TEMP)? TABLE(?! FUNCTION\b)( IF NOT EXISTS)?",
+    "CREATE SNAPSHOT TABLE( IF NOT EXISTS)?",
     "CREATE( OR REPLACE)? VIEW( IF NOT EXISTS)?",
     "CREATE( OR REPLACE)? MATERIALIZED VIEW( IF NOT EXISTS)?",
     "DROP TABLE( IF EXISTS)?",
+    "DROP SNAPSHOT TABLE( IF EXISTS)?",
     "DROP VIEW( IF EXISTS)?",
     "DROP MATERIALIZED VIEW( IF EXISTS)?",
     "AS",  # only when not identified as an AliasSeparator
+    "CLONE",
     "CLUSTER BY",
     "OPTIONS",
     # DML: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax

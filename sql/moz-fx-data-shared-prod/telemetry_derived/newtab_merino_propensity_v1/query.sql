@@ -272,18 +272,36 @@ normalization_factor AS (
   FROM
     all_items_stats,
     adjust_sums
+),
+normalized_weights AS (
+  SELECT
+    merged_weights.unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
+    merged_weights.position,
+    merged_weights.tile_format,
+    NULL AS section_position,
+    merged_weights.impressions
+  FROM
+    merged_weights
+  CROSS JOIN
+    normalization_factor
+  WHERE
+    merged_weights.impressions > 2000
+    AND merged_weights.unormalized_weight IS NOT NULL
+    AND merged_weights.unormalized_weight != 0
 )
 SELECT
-  merged_weights.unormalized_weight * COALESCE(normalization_factor.factor, 1.0) AS weight,
-  merged_weights.position,
-  merged_weights.tile_format,
-  NULL AS section_position,
-  merged_weights.impressions
+  *
 FROM
-  merged_weights
-CROSS JOIN
-  normalization_factor
-WHERE
-  merged_weights.impressions > 2000
-  AND merged_weights.unormalized_weight IS NOT NULL
-  AND merged_weights.unormalized_weight != 0;
+  normalized_weights
+UNION ALL
+-- 'any' format: impression-weighted average propensity across all formats per position
+SELECT
+  SAFE_DIVIDE(SUM(weight * impressions), SUM(impressions)) AS weight,
+  position,
+  'any' AS tile_format,
+  NULL AS section_position,
+  SUM(impressions) AS impressions
+FROM
+  normalized_weights
+GROUP BY
+  position;

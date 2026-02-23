@@ -18,4 +18,4 @@ scheduling:
   - --date={{ds}}
   secrets:
   - deploy_target: ANTHROPIC_ADMIN_API_KEY
-    key: bqetl_claude_api__admin_api_key
+    key: bqetl_ai_usage__anthropic_admin_api_key

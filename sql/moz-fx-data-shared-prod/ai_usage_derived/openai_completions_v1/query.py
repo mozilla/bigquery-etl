@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timezone
 
 import google.auth
 import requests
@@ -18,7 +18,9 @@ class BigQueryAPI:
         """Initialize BigQueryAPI with a logger."""
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def load_usage_data(self, destination_table: str, buckets: list[dict]):
+    def load_usage_data(
+        self, destination_table: str, buckets: list[dict], date_partition: str
+    ):
         """Load usage data to partitioned BQ table."""
         credentials, project = google.auth.default(
             scopes=[
@@ -29,12 +31,8 @@ class BigQueryAPI:
         client = bigquery.Client(credentials=credentials, project=project)
 
         records = []
+        bucket_date = datetime.strptime(date_partition, "%Y%m%d").strftime("%Y-%m-%d")
         for bucket in buckets:
-
-            bucket_date = datetime.fromtimestamp(bucket["start_time"]).strftime(
-                "%Y-%m-%d"
-            )
-
             # Flatten each result in the bucket
             for result in bucket.get("results", []):
                 record = {
@@ -54,7 +52,7 @@ class BigQueryAPI:
                 }
                 records.append(record)
 
-        partitioned_table = destination_table
+        partitioned_table = f"{destination_table}${date_partition}"
 
         job_config = bigquery.LoadJobConfig(
             schema=[
@@ -103,7 +101,7 @@ class OpenAICompletionsAPI:
 
     def get_usage_for_date(self, date) -> list[dict]:
         """Fetch usage data for a specific date, grouped by project, user, api_key, model, batch, and service_tier."""
-        start_time = int(date.timestamp())
+        start_time = int(date.replace(tzinfo=timezone.utc).timestamp())
         end_time = start_time + 86400
 
         headers = {
@@ -114,7 +112,7 @@ class OpenAICompletionsAPI:
         params = {
             "start_time": start_time,  # Required: Start time (Unix seconds)
             "end_time": end_time,
-            "bucket_width": "1d",  # Optional: '1m', '1h', or '1d' (default '1d')
+            "bucket_width": "1d",
             "group_by": [
                 "project_id",
                 "user_id",
@@ -123,7 +121,7 @@ class OpenAICompletionsAPI:
                 "batch",
                 "service_tier",
             ],
-            "limit": 31,  # Optional: Number of buckets to return, this will chunk the data into 100 buckets
+            "limit": 31,
         }
 
         all_data = []
@@ -170,6 +168,7 @@ class OpenAIBigQueryIntegration:
         self.logger.info("Starting OpenAI Completions BigQuery Integration ...")
 
         date = datetime.strptime(args.date, "%Y-%m-%d")
+        date_partition = date.strftime("%Y%m%d")
 
         openai_api = OpenAICompletionsAPI()
         bq_api = BigQueryAPI()
@@ -179,7 +178,7 @@ class OpenAIBigQueryIntegration:
         self.logger.info(f"Fetched {len(records)} usage records for {args.date}")
 
         if records:
-            bq_api.load_usage_data(args.destination, records)
+            bq_api.load_usage_data(args.destination, records, date_partition)
         else:
             self.logger.info("No usage records found for this date")
 

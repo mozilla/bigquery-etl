@@ -81,7 +81,7 @@ TOP_LEVEL_KEYWORDS = [
 NEWLINE_KEYWORDS = [
     r"ASSERT(?!\.)",
     "BY",
-    "FOR(?! SYSTEM_TIME AS OF)",
+    "FOR( SYSTEM_TIME AS OF)?",
     "INTO",
     "ON",
     "PIVOT",
@@ -249,7 +249,6 @@ OTHER_KEYWORDS = [
     "DAY",
     "DAYOFWEEK",
     "DAYOFYEAR",
-    "FOR SYSTEM_TIME AS OF",
     "GROUPING SETS",
     "HAVING MAX",
     "HAVING MIN",

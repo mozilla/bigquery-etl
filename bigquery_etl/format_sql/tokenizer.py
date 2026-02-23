@@ -67,6 +67,12 @@ TOP_LEVEL_KEYWORDS = [
         "(UNION( ALL| DISTINCT)|INTERSECT DISTINCT|EXCEPT DISTINCT)"
         "( BY NAME|( STRICT)? CORRESPONDING)?"
     ),
+    # Pipe syntax: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax
+    "AGGREGATE",
+    "DROP",
+    "EXTEND",
+    "GROUP AND ORDER BY",
+    "RENAME",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
@@ -1003,6 +1009,12 @@ class FieldAccessOperator(Operator):
     pattern = re.compile(r"\.")
 
 
+class PipeOperator(Operator):
+    """Pipe operator."""
+
+    pattern = re.compile(r"\|>")
+
+
 class OperatorKeyword(SpaceBeforeBracketKeyword):
     """Operator keyword."""
 
@@ -1042,6 +1054,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     ExpressionSeparator,
     StatementSeparator,
     FieldAccessOperator,
+    PipeOperator,
     Operator,
     OperatorKeyword,
     DataTypeKeyword,

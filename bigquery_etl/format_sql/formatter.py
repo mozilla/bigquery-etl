@@ -27,6 +27,7 @@ from .tokenizer import (
     NewlineKeyword,
     OpeningBracket,
     Operator,
+    PipeOperator,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
     TopLevelKeyword,
@@ -70,6 +71,11 @@ def simple_format(tokens, indent="  "):
             # decrease indent from previous TopLevelKeyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
                 indent_types.pop()
+        elif isinstance(token, PipeOperator):
+            if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
+                indent_types.pop()
         elif isinstance(token, BlockEndKeyword):
             # decrease indent to match last BlockKeyword
             while indent_types and indent_types.pop() is not BlockKeyword:
@@ -108,7 +114,13 @@ def simple_format(tokens, indent="  "):
             require_newline_before_next_token
             or isinstance(
                 token,
-                (NewlineKeyword, ClosingBracket, BlockKeyword, JinjaBlockStatement),
+                (
+                    NewlineKeyword,
+                    PipeOperator,
+                    ClosingBracket,
+                    BlockKeyword,
+                    JinjaBlockStatement,
+                ),
             )
             or prev_was_statement_separator
         ):
@@ -144,6 +156,7 @@ def simple_format(tokens, indent="  "):
                 Comment,
                 BlockKeyword,
                 TopLevelKeyword,
+                PipeOperator,
                 OpeningBracket,
                 ExpressionSeparator,
                 StatementSeparator,
@@ -174,12 +187,16 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, JinjaBlockStart):
             # increase indent
             indent_types.append(JinjaBlockStart)
-        elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
+        elif isinstance(
+            token, (TopLevelKeyword, PipeOperator, OpeningBracket, CaseSubclause)
+        ):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
             # decrease for previous top level keyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
                 indent_types.pop()
         first_token = False
 

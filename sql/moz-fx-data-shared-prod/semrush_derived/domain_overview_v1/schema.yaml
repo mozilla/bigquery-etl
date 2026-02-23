@@ -1,0 +1,257 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the data snapshot
+- name: refreshed_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: UTC timestamp when the row was inserted into BigQuery
+- name: domain
+  type: STRING
+  mode: NULLABLE
+  description: Domain name
+- name: database
+  type: STRING
+  mode: NULLABLE
+  description: Regional database, e.g. us, uk
+- name: rank
+  type: INTEGER
+  mode: NULLABLE
+  description: Semrush rating of the website popularity based on organic traffic from Google top 100 organic search results
+- name: organic_keywords
+  type: INTEGER
+  mode: NULLABLE
+  description: Keywords that bring users to a website via Google top 100 organic search results
+- name: organic_traffic
+  type: INTEGER
+  mode: NULLABLE
+  description: Traffic brought to a website via Google top 100 organic search results
+- name: organic_cost
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated price of organic keywords in Google Ads
+- name: adwords_keywords
+  type: INTEGER
+  mode: NULLABLE
+  description: Keywords a website is buying in Google Ads for paid search results
+- name: adwords_traffic
+  type: INTEGER
+  mode: NULLABLE
+  description: Traffic brought to the website via paid search results
+- name: adwords_cost
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated budget spent buying keywords in Google Ads, monthly estimation
+- name: serp_features_positions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of keywords where the domain ranks in SERP Features
+- name: serp_features_positions_branded
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of branded keywords where the domain ranks in SERP Features
+- name: serp_features_positions_lost
+  type: INTEGER
+  mode: NULLABLE
+  description: Keywords the domain was previously ranking for in SERP Features but no longer is
+- name: serp_features_positions_new
+  type: INTEGER
+  mode: NULLABLE
+  description: New keywords the domain is ranking for in SERP Features
+- name: serp_features_traffic
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated organic traffic driven to the domain from SERP Feature positions
+- name: serp_features_traffic_branded
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated organic traffic from SERP Feature positions on branded keywords
+- name: serp_features_traffic_cost
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated PPC cost to rank for keywords where the domain ranks in SERP Features
+- name: fk_knowledge_panel
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Knowledge panel (code 1)"
+- name: fk_carousel
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Carousel (code 2)"
+- name: fk_local_pack
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Local pack (code 3)"
+- name: fk_top_stories
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Top stories (code 4)"
+- name: fk_image_pack
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Image pack (code 5)"
+- name: fk_sitelinks
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Sitelinks (code 6)"
+- name: fk_reviews
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Reviews (code 7)"
+- name: fk_video
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Video (code 9)"
+- name: fk_featured_video
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Featured video (code 10)"
+- name: fk_featured_snippet
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Featured snippet (code 11)"
+- name: fk_amp
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - AMP (code 12)"
+- name: fk_image
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Image (code 13)"
+- name: fk_ads_top
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Ads top (code 14)"
+- name: fk_ads_bottom
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Ads bottom (code 15)"
+- name: fk_shopping_ads
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Shopping ads (code 16)"
+- name: fk_hotels_pack
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Hotels Pack (code 17)"
+- name: fk_jobs_search
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Jobs search (code 18)"
+- name: fk_featured_images
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Featured images (code 19)"
+- name: fk_video_carousel
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Video Carousel (code 20)"
+- name: fk_people_also_ask
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - People also ask (code 21)"
+- name: fk_faq
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - FAQ (code 22)"
+- name: fk_flights
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Flights (code 23)"
+- name: fk_recipes
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Recipes (code 25)"
+- name: fk_twitter_carousel
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Twitter carousel (code 27)"
+- name: fk_application
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Application (code 31)"
+- name: fk_events
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Events (code 32)"
+- name: fk_popular_products
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Popular products (code 34)"
+- name: fk_related_products
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Related products (code 35)"
+- name: fk_related_searches
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Related searches (code 36)"
+- name: fk_see_results_about
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - See results about (code 37)"
+- name: fk_short_videos
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Short videos (code 38)"
+- name: fk_application_list
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Application list (code 40)"
+- name: fk_buying_guide
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Buying guide (code 41)"
+- name: fk_things_to_know
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Things to know (code 43)"
+- name: fk_discussions_and_forums
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Discussions and forums (code 45)"
+- name: fk_questions_and_answers
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Questions and answers (code 47)"
+- name: fk_people_also_search
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - People also search (code 50)"
+- name: fk_ads_middle
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - Ads middle (code 51)"
+- name: fk_ai_overview
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features triggered by ranked keywords - AI overview (code 52)"
+- name: fp_image_pack
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - Image pack (code 5)"
+- name: fp_sitelinks
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - Sitelinks (code 6)"
+- name: fp_featured_snippet
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - Featured snippet (code 11)"
+- name: fp_image
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - Image (code 13)"
+- name: fp_people_also_ask
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - People also ask (code 21)"
+- name: fp_things_to_know
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - Things to know (code 43)"
+- name: fp_ai_overview
+  type: INTEGER
+  mode: NULLABLE
+  description: "SERP features where domain appears - AI overview (code 52)"

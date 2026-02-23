@@ -1,0 +1,27 @@
+friendly_name: Domain Overview
+description: |-
+  Daily snapshot of Semrush domain_ranks data for tracked domains.
+  Source: https://developer.semrush.com/api/v3/analytics/basic-docs/
+owners:
+- sherrera@mozilla.com
+labels:
+  application: semrush
+  incremental: true
+  owner1: sherrera
+scheduling:
+  dag_name: bqetl_semrush
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: SEMRUSH_API_KEY
+    key: bqetl_semrush_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - domain
+    - database
+require_column_descriptions: true

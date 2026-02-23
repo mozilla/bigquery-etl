@@ -2,6 +2,10 @@
 #   project_id: moz-fx-data-shared-dev # or personal sandbox
 #   dataset_prefix: dev_user_{{ git.branch }}_{{ git.commit}}_ # optional prefix; git.branch and git.commit get inserted automatically
 
-dev:
+dev_shared:
   project_id: moz-fx-data-shared-dev
+  dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_
+
+dev:
+  project_id: ascholtz-dev
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_

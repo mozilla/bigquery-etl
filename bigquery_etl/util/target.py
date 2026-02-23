@@ -1,16 +1,42 @@
 import logging
+import re
+import shutil
+import subprocess
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional, Set, Tuple
 
 import attr
 import cattrs
+import click
 import git
 import yaml
+from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 from jinja2 import Template
 
 from ..config import ConfigLoader
+from ..deploy import (
+    FailedDeployException,
+    SkippedDeployException,
+    SkippedExternalDataException,
+    deploy_table,
+)
+from . import extract_from_query_path
+from .common import render as render_template
 
 ROOT = Path(__file__).parent.parent.parent
+
+
+def sanitize_dataset_id(dataset_id: str) -> str:
+    """Sanitize dataset ID to conform to BigQuery requirements.
+
+    Dataset IDs must be alphanumeric (plus underscores) and at most 1024 characters.
+    Replaces hyphens and other invalid characters with underscores.
+    """
+    # Replace hyphens and other non-alphanumeric characters (except underscores) with underscores
+    sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", dataset_id)
+    # Limit to 1024 characters
+    return sanitized[:1024]
 
 
 @attr.s()
@@ -50,3 +76,235 @@ def get_target(target: str) -> Target:
         return cattrs.structure({**targets[target], "name": target}, Target)
 
     raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+
+
+def get_deployed_tables_in_target(
+    sql_dir: str, target_project: str
+) -> Set[Tuple[str, str, str]]:
+    """Find all tables deployed in the target directory."""
+    deployed = set()
+    target_project_dir = Path(sql_dir) / target_project
+
+    if not target_project_dir.exists():
+        return deployed
+
+    for query_file in target_project_dir.rglob("query.sql"):
+        # Extract dataset and table from path
+        parts = query_file.parts
+        if len(parts) >= 3:
+            table = parts[-2]
+            dataset = parts[-3]
+            deployed.add((target_project, dataset, table))
+
+    return deployed
+
+
+def rewrite_query_references(
+    query_file: Path,
+    sql_dir: str,
+    target_project: str,
+    dataset_prefix: Optional[str],
+    rewrite_all: bool = False,
+):
+    """Rewrite references in a query file to point to target environment."""
+    sql = render_template(
+        query_file.name, template_folder=str(query_file.parent), format=False
+    )
+
+    if rewrite_all:
+        # Rewrite ALL references to target
+        # This rewrites references from ANY GCP project to target project with prefix
+        gcp_project_pattern = (
+            r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
+        )
+
+        if dataset_prefix:
+            sql = re.sub(
+                gcp_project_pattern,
+                lambda m: f"`{target_project}`.`{sanitize_dataset_id(dataset_prefix + m.group(2))}`.`{m.group(3)}`",
+                sql,
+            )
+        else:
+            sql = re.sub(
+                gcp_project_pattern,
+                lambda m: f"`{target_project}`.`{m.group(2)}`.`{m.group(3)}`",
+                sql,
+            )
+    else:
+        # Smart rewriting: only rewrite references to tables that exist in target
+        deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
+
+        for _, deployed_dataset, deployed_table in deployed_tables:
+            original_dataset = deployed_dataset
+            if dataset_prefix:
+                sanitized_prefix = sanitize_dataset_id(dataset_prefix)
+                if deployed_dataset.startswith(sanitized_prefix):
+                    original_dataset = deployed_dataset[len(sanitized_prefix) :]
+
+            # Rewrite fully qualified references from any project
+            # any-project.dataset.table -> target_project.prefix_dataset.table
+            pattern = rf"`?[a-z][a-z0-9\-]*[a-z0-9]`?\.`?{re.escape(original_dataset)}`?\.`?{re.escape(deployed_table)}`?"
+            replacement = f"`{target_project}`.`{deployed_dataset}`.`{deployed_table}`"
+            sql = re.sub(pattern, replacement, sql)
+
+    query_file.write_text(sql)
+
+
+def prepare_target_directory(
+    query_file: Path,
+    sql_dir: str,
+    destination_project_id: Optional[str],
+    dataset_prefix: Optional[str],
+    rewrite_target_references: bool,
+    rewrite_all_references: bool,
+) -> Optional[Path]:
+    """Prepare target directory for query execution with --target."""
+
+    if not destination_project_id and not dataset_prefix:
+        return None
+
+    source_project, source_dataset, source_table = extract_from_query_path(query_file)
+    effective_project = destination_project_id or source_project
+    effective_dataset = (
+        sanitize_dataset_id(f"{dataset_prefix}{source_dataset}")
+        if dataset_prefix
+        else source_dataset
+    )
+
+    target_dir = Path(sql_dir) / effective_project / effective_dataset / source_table
+    target_query_file = target_dir / query_file.name
+
+    target_dir.mkdir(parents=True, exist_ok=True)
+    source_dir = query_file.parent
+    for item in source_dir.iterdir():
+        if item.is_file():
+            shutil.copy2(item, target_dir / item.name)
+
+    if rewrite_target_references or rewrite_all_references:
+        click.echo("ℹ️  Rewriting references in target directory")
+        rewrite_query_references(
+            target_query_file,
+            sql_dir,
+            effective_project,
+            dataset_prefix,
+            rewrite_all=rewrite_all_references,
+        )
+
+    return target_query_file
+
+
+def auto_deploy_if_needed(
+    query_file: Path,
+    target_project: str,
+):
+    """Automatically deploy table schema if it doesn't exist in BigQuery.
+
+    Note: query_file should already be in the target directory with the correct
+    dataset name (including any prefix), so we extract it directly from the path.
+    """
+
+    _, target_dataset, table_name = extract_from_query_path(query_file)
+
+    client = bigquery.Client(project=target_project)
+    dataset_ref = f"{target_project}.{target_dataset}"
+    table_ref = f"{dataset_ref}.{table_name}"
+
+    try:
+        client.get_dataset(dataset_ref)
+    except NotFound:
+        click.echo(f"⏳ Creating dataset: {dataset_ref}")
+        dataset = bigquery.Dataset(dataset_ref)
+        dataset.location = "US"
+
+        # Set permissions so only the current user has access
+        try:
+            # Get current user's email from gcloud
+            result = subprocess.run(
+                ["gcloud", "config", "get-value", "account"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            user_email = result.stdout.strip()
+
+            if user_email and "@" in user_email:
+                # Set access control to only the current user as OWNER
+                access_entries = [
+                    bigquery.AccessEntry(
+                        role="OWNER",
+                        entity_type="userByEmail",
+                        entity_id=user_email,
+                    )
+                ]
+                dataset.access_entries = access_entries
+                click.echo(f"ℹ️  Dataset access restricted to: {user_email}")
+            else:
+                click.echo(
+                    "⚠️  Could not determine user email, using default permissions"
+                )
+        except Exception as e:
+            click.echo(f"⚠️  Could not set dataset permissions: {e}")
+
+        try:
+            client.create_dataset(dataset, exists_ok=True)
+            click.echo(f"✅ Created dataset: {dataset_ref}")
+        except Exception as e:
+            click.echo(f"⚠️  Failed to create dataset: {e}")
+            return
+
+    # Now deploy table
+    try:
+        client.get_table(table_ref)
+        click.echo(f"✓ Table exists: {table_ref}")
+    except NotFound:
+        click.echo(f"⏳ Deploying schema for: {table_ref}")
+        try:
+            # deploy_table expects artifact_file (Path) and destination_table (fully qualified)
+            deploy_table(
+                artifact_file=query_file,
+                destination_table=table_ref,
+            )
+            click.echo(f"✅ Deployed: {table_ref}")
+        except Exception as e:
+            click.echo(f"⚠️  Deployment skipped or failed: {e}")
+
+
+def prepare_target_files(
+    query_files: List[Path],
+    sql_dir: str,
+    project_id: str,
+    destination_project_id: Optional[str],
+    dataset_prefix: Optional[str],
+    rewrite_target_references: bool,
+    rewrite_all_references: bool,
+    auto_deploy: bool = True,
+) -> List[Path]:
+    """Prepare target directories for multiple query files."""
+
+    if not destination_project_id and not dataset_prefix:
+        return query_files
+
+    target_query_files = []
+    for query_file in query_files:
+        query_file_project = query_file.parent.parent.parent.name
+        if query_file_project == (destination_project_id or project_id):
+            target_query_files.append(query_file)
+        else:
+            target_file = prepare_target_directory(
+                query_file,
+                sql_dir,
+                destination_project_id,
+                dataset_prefix,
+                rewrite_target_references,
+                rewrite_all_references,
+            )
+            target_query_files.append(target_file if target_file else query_file)
+
+    if auto_deploy and (destination_project_id or dataset_prefix):
+        for query_file in target_query_files:
+            auto_deploy_if_needed(
+                query_file,
+                destination_project_id or project_id,
+            )
+
+    return target_query_files

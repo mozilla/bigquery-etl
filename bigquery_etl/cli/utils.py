@@ -104,7 +104,12 @@ def paths_matching_checks_pattern(
 
 
 def paths_matching_name_pattern(
-    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+    pattern,
+    sql_path,
+    project_id,
+    files=["*.sql"],
+    file_regex=QUERY_FILE_RE,
+    silent=False,
 ) -> List[Path]:
     """Return paths to queries matching the name pattern."""
     matching_files: List[Path] = []
@@ -116,7 +121,7 @@ def paths_matching_name_pattern(
     if isinstance(pattern, tuple) or isinstance(pattern, list):
         for p in pattern:
             matching_files += paths_matching_name_pattern(
-                str(p), sql_path, project_id, files, file_regex
+                str(p), sql_path, project_id, files, file_regex, silent
             )
     elif os.path.isdir(pattern):
         for root, _, _ in os.walk(pattern, followlinks=True):
@@ -149,7 +154,7 @@ def paths_matching_name_pattern(
                 elif project_id and fnmatchcase(query_name, f"{project_id}.{pattern}"):
                     matching_files.append(query_file)
 
-    if len(matching_files) == 0:
+    if len(matching_files) == 0 and not silent:
         print(f"No files matching: {pattern}, {files}")
 
     return list(set(matching_files))
@@ -295,6 +300,45 @@ def dataset_prefix_option(required=False):
         help="Dataset prefix to prepend to dataset names (defaults to target prefix if --target is specified)",
         callback=callback,
         required=required,
+    )
+
+
+def rewrite_target_references_option():
+    """Generate a rewrite-target-references option.
+
+    This flag enables smart reference rewriting where only references to tables
+    deployed in the target directory are rewritten. Other references remain pointing to prod.
+    """
+    return click.option(
+        "--rewrite-target-references",
+        "--rewrite_target_references",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite references to tables deployed in target environment. "
+            "Only rewrites references to tables that exist in the target directory. "
+            "Other references remain pointing to prod. "
+            "Used for development workflows."
+        ),
+    )
+
+
+def rewrite_all_references_option():
+    """Generate a rewrite-all-references option.
+
+    This flag enables complete reference rewriting where ALL references are rewritten
+    to point to the target environment. Used for stage deployments and complete isolation.
+    """
+    return click.option(
+        "--rewrite-all-references",
+        "--rewrite_all_references",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite ALL references to point to target environment. "
+            "Rewrites all prod references to use target project and dataset prefix. "
+            "Used for stage deployments and complete environment isolation."
+        ),
     )
 
 

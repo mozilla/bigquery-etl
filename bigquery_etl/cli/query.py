@@ -9,6 +9,7 @@ import logging
 import multiprocessing
 import os
 import re
+import shutil
 import string
 import subprocess
 import sys
@@ -34,8 +35,6 @@ from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
-    dataset_prefix_option,
-    destination_project_id_option,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -45,6 +44,8 @@ from ..cli.utils import (
     project_id_option,
     resolve_destination_table,
     respect_dryrun_skip_option,
+    rewrite_all_references_option,
+    rewrite_target_references_option,
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
@@ -78,6 +79,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
+from ..util.target import prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -212,10 +214,15 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
+        view_file.write_text(
+            reformat(
+                f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
+                  `{project_id}.{dataset}.{name}{version}`"""
+            )
+            + "\n"
+        )
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -231,10 +238,15 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(
+        reformat(
+            f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
+            SELECT * FROM table WHERE submission_date = @submission_date"""
+        )
+        + "\n"
+    )
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"
@@ -638,8 +650,8 @@ def _backfill_script(
 @sql_dir_option
 @project_id_option(required=True)
 @billing_project_option()
-@destination_project_id_option()
-@dataset_prefix_option()
+@rewrite_target_references_option()
+@rewrite_all_references_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -748,8 +760,8 @@ def backfill(
     sql_dir,
     project_id,
     billing_project,
-    destination_project_id,
-    dataset_prefix,
+    rewrite_target_references,
+    rewrite_all_references,
     start_date,
     end_date,
     exclude,
@@ -774,6 +786,11 @@ def backfill(
         )
         sys.exit(1)
 
+    # Extract destination_project_id and dataset_prefix from target
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
+
     # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
     if (
         not override_retention_range_limit
@@ -789,14 +806,39 @@ def backfill(
     if override_retention_range_limit:
         click.echo("Over-riding retention limit - ensure data exists in source tables")
 
-    if custom_query_path:
-        query_files = paths_matching_name_pattern(
-            custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
-        )
-    else:
-        query_files = paths_matching_name_pattern(
-            name, sql_dir, project_id, files=["query.sql", "query.py"]
-        )
+    # When using --target, check target directory first, then fall back to source
+    query_files = []
+    if destination_project_id or dataset_prefix:
+        # Only check target directory if it exists
+        target_project_for_lookup = destination_project_id or project_id
+        target_project_dir = Path(sql_dir) / target_project_for_lookup
+        if target_project_dir.exists():
+            if custom_query_path:
+                query_files = paths_matching_name_pattern(
+                    custom_query_path,
+                    sql_dir,
+                    target_project_for_lookup,
+                    files=["*.sql", "*.py"],
+                    silent=True,
+                )
+            else:
+                query_files = paths_matching_name_pattern(
+                    name,
+                    sql_dir,
+                    target_project_for_lookup,
+                    files=["query.sql", "query.py"],
+                    silent=True,
+                )
+
+    if not query_files:
+        if custom_query_path:
+            query_files = paths_matching_name_pattern(
+                custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
+            )
+        else:
+            query_files = paths_matching_name_pattern(
+                name, sql_dir, project_id, files=["query.sql", "query.py"]
+            )
 
     if query_files == []:
         if custom_query_path:
@@ -812,6 +854,18 @@ def backfill(
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
+
+    # Prepare target directories if using --target
+    query_files = prepare_target_files(
+        [Path(qf) for qf in query_files],
+        sql_dir,
+        project_id,
+        destination_project_id,
+        dataset_prefix,
+        rewrite_target_references,
+        rewrite_all_references,
+        auto_deploy=True,
+    )
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -993,8 +1047,6 @@ def backfill(
 @sql_dir_option
 @project_id_option()
 @billing_project_option()
-@destination_project_id_option()
-@dataset_prefix_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -1021,6 +1073,17 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@rewrite_target_references_option()
+@rewrite_all_references_option()
+@click.option(
+    "--write",
+    is_flag=True,
+    default=False,
+    help=(
+        "Write query results to destination table. "
+        "When used with --target, automatically infers destination table from target configuration."
+    ),
+)
 @click.pass_context
 def run(
     ctx,
@@ -1028,11 +1091,12 @@ def run(
     sql_dir,
     project_id,
     billing_project,
-    destination_project_id,
-    dataset_prefix,
     public_project_id,
     destination_table,
     dataset_id,
+    rewrite_target_references,
+    rewrite_all_references,
+    write,
 ):
     """Run a query."""
     if not is_authenticated():
@@ -1042,7 +1106,27 @@ def run(
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
+
+    # When using --target, check target directory first, then fall back to source
+    query_files = []
+    if destination_project_id or dataset_prefix:
+        target_project_for_lookup = destination_project_id or project_id
+        # Only check target directory if it exists (it might not exist yet on first run)
+        target_project_dir = Path(sql_dir) / target_project_for_lookup
+        if target_project_dir.exists():
+            target_query_files = paths_matching_name_pattern(
+                name, sql_dir, target_project_for_lookup, silent=True
+            )
+            if target_query_files:
+                query_files = target_query_files
+
+    # Fall back to source directory if not found in target
+    if not query_files:
+        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1054,17 +1138,47 @@ def run(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
+    # Prepare target directories if using --target
+    query_files = prepare_target_files(
+        query_files,
+        sql_dir,
+        project_id,
+        destination_project_id,
+        dataset_prefix,
+        rewrite_target_references,
+        rewrite_all_references,
+        auto_deploy=write,
+    )
+
     # Apply destination project and dataset prefix
     effective_project = destination_project_id or project_id
     effective_dataset = dataset_id
     if dataset_prefix and dataset_id:
         effective_dataset = f"{dataset_prefix}{dataset_id}"
 
+    # Auto-infer destination_table when --write-results is used with --target
+    effective_destination_table = destination_table
+    if write and not destination_table and (destination_project_id or dataset_prefix):
+        # Extract dataset and table from first query file (already in target directory)
+        # The dataset name already includes the prefix, so construct directly
+        from ..util import extract_from_query_path
+        from ..util.target import sanitize_dataset_id
+
+        query_project, query_dataset, query_table = extract_from_query_path(
+            query_files[0]
+        )
+        # Sanitize dataset ID to remove hyphens and invalid characters
+        sanitized_dataset = sanitize_dataset_id(query_dataset)
+        effective_destination_table = (
+            f"{query_project}.{sanitized_dataset}.{query_table}"
+        )
+        click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
+
     _run_query(
         query_files,
         effective_project,
         public_project_id,
-        destination_table,
+        effective_destination_table,
         effective_dataset,
         ctx.args,
         billing_project=billing_project,
@@ -1162,9 +1276,7 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
-            # need to do this as parameters are not supported with legacy sql
-            query_arguments.append("--use_legacy_sql=False")
+        query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
         if "query" not in query_arguments:
@@ -1361,8 +1473,6 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
     help="Default dataset, if not specified all tables must be qualified with dataset",
 )
 @project_id_option()
-@destination_project_id_option()
-@dataset_prefix_option()
 @temp_dataset_option()
 @click.option(
     "--destination_table",
@@ -1423,14 +1533,14 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
     default=[],
     help="Optional options for updating the schema.",
 )
+@click.pass_context
 def run_multipart(
+    ctx,
     query_dir,
     using,
     parallelism,
     dataset_id,
     project_id,
-    destination_project_id,
-    dataset_prefix,
     temp_dataset,
     destination_table,
     time_partitioning_field,
@@ -1441,6 +1551,11 @@ def run_multipart(
     schema_update_options,
 ):
     """Run a multipart query."""
+    # Extract destination_project_id and dataset_prefix from target
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
+
     # Apply destination project and dataset prefix
     effective_project = destination_project_id or project_id
     effective_dataset = dataset_id
@@ -1674,8 +1789,6 @@ def _initialize_in_parallel(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @billing_project_option(default="moz-fx-data-backfill-slots")
-@dataset_prefix_option()
-@destination_project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1709,8 +1822,6 @@ def initialize(
     sql_dir,
     project_ids,
     billing_project,
-    dataset_prefix,
-    destination_project_id,
     dry_run,
     parallelism,
     skip_existing,
@@ -1721,6 +1832,11 @@ def initialize(
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
+
+    # Extract destination_project_id and dataset_prefix from target
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
 
     if Path(name).exists():
         # allow name to be a path
@@ -2632,8 +2748,8 @@ def _update_query_schema(
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
-@destination_project_id_option()
-@dataset_prefix_option()
+@rewrite_target_references_option()
+@rewrite_all_references_option()
 @click.option(
     "--force/--noforce",
     help="Deploy the schema file without validating that it matches the query",
@@ -2673,8 +2789,8 @@ def deploy(
     name,
     sql_dir,
     project_ids,
-    destination_project_id,
-    dataset_prefix,
+    rewrite_target_references,
+    rewrite_all_references,
     force,
     use_cloud_function,
     respect_dryrun_skip,
@@ -2691,16 +2807,42 @@ def deploy(
         )
         sys.exit(1)
 
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
+
+    # When using --target, check target directory first, then fall back to source
     query_files = []
     metadata_files = []
-    for project_id in project_ids:
-        query_files += paths_matching_name_pattern(
-            name, sql_dir, project_id, ["query.*", "script.sql"]
+    if destination_project_id or dataset_prefix:
+        target_project_for_lookup = (
+            destination_project_id or project_ids[0] if project_ids else None
         )
+        # Only check target directory if it exists
+        target_project_dir = Path(sql_dir) / target_project_for_lookup
+        if target_project_for_lookup and target_project_dir.exists():
+            query_files += paths_matching_name_pattern(
+                name,
+                sql_dir,
+                target_project_for_lookup,
+                ["query.*", "script.sql"],
+                silent=True,
+            )
+            metadata_files += paths_matching_name_pattern(
+                name, sql_dir, target_project_for_lookup, ["metadata.yaml"], silent=True
+            )
 
-        metadata_files += paths_matching_name_pattern(
-            name, sql_dir, project_id, ["metadata.yaml"]
-        )
+    if not query_files and not metadata_files:
+        query_files = []
+        metadata_files = []
+        for project_id in project_ids:
+            query_files += paths_matching_name_pattern(
+                name, sql_dir, project_id, ["query.*", "script.sql"]
+            )
+
+            metadata_files += paths_matching_name_pattern(
+                name, sql_dir, project_id, ["metadata.yaml"]
+            )
 
     if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
@@ -2721,6 +2863,52 @@ def deploy(
             )
         if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
+
+    # Prepare target directories if using --target
+    query_files = prepare_target_files(
+        query_files,
+        sql_dir,
+        project_ids[0] if project_ids else "",
+        destination_project_id,
+        dataset_prefix,
+        rewrite_target_references,
+        rewrite_all_references,
+        auto_deploy=False,  # deploy command handles deployment itself
+    )
+
+    # Also prepare metadata files
+    if destination_project_id or dataset_prefix:
+        target_metadata_files = []
+        for metadata_file in metadata_files:
+            metadata_file_project = metadata_file.parent.parent.parent.name
+            target_project = (
+                destination_project_id or project_ids[0] if project_ids else None
+            )
+            if metadata_file_project == target_project:
+                target_metadata_files.append(metadata_file)
+            else:
+                source_project, source_dataset, source_table = extract_from_query_path(
+                    metadata_file.parent / "query.sql"
+                )
+                effective_project = destination_project_id or source_project
+                effective_dataset = (
+                    f"{dataset_prefix}{source_dataset}"
+                    if dataset_prefix
+                    else source_dataset
+                )
+                target_dir = (
+                    Path(sql_dir) / effective_project / effective_dataset / source_table
+                )
+                target_dir.mkdir(parents=True, exist_ok=True)
+                target_metadata_file = target_dir / metadata_file.name
+                if (
+                    not target_metadata_file.exists()
+                    or metadata_file.stat().st_mtime
+                    > target_metadata_file.stat().st_mtime
+                ):
+                    shutil.copy2(metadata_file, target_metadata_file)
+                target_metadata_files.append(target_metadata_file)
+        metadata_files = target_metadata_files
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)

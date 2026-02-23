@@ -74,7 +74,7 @@ def _format_path(check: bool, path: str) -> Tuple[int, int]:
         return 0, 0
 
 
-def format(paths, check=False, parallelism=8):
+def format(paths, check=False, ignore_skip=False, parallelism=8):
     """Format SQL files."""
     if not paths:
         query = sys.stdin.read()
@@ -85,7 +85,7 @@ def format(paths, check=False, parallelism=8):
             sys.exit(1)
     else:
         sql_files = []
-        skip_files = skip_format()
+        skip_files = [] if ignore_skip else skip_format()
 
         for path in paths:
             if os.path.isdir(path):
@@ -97,7 +97,7 @@ def format(paths, check=False, parallelism=8):
                     # skip tests/**/input.sql
                     and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
-                    if not any([filepath.endswith(s) for s in skip_files])
+                    if not any(filepath.endswith(s) for s in skip_files)
                 )
             elif path:
                 if any(path.endswith(s) for s in skip_files):

@@ -98,7 +98,9 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: 'Time when the ingestion edge server in GCP accepted this message; format is ISO 8601 with microseconds and timezone "Z", example: "2018-03-12T21:02:18.123456Z"'
+  description: |
+   Time when the ingestion edge server in GCP accepted this message; format is ISO 8601 with microseconds and timezone "Z",
+   example: "2018-03-12T21:02:18.123456Z"
 - name: uri
   type: STRING
   mode: NULLABLE

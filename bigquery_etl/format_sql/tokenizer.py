@@ -765,6 +765,7 @@ class SpaceBeforeBracketKeyword(Keyword):
             r"\* REPLACE",
             "CUBE",
             "GROUPING SETS",
+            "INTERVAL",
             "OVER",
             "ROLLUP",
         ]

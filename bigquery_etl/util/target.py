@@ -155,8 +155,8 @@ def prepare_target_directory(
     sql_dir: str,
     destination_project_id: Optional[str],
     dataset_prefix: Optional[str],
-    rewrite_target_references: bool,
-    rewrite_all_references: bool,
+    defer: bool,
+    isolated: bool,
 ) -> Optional[Path]:
     """Prepare target directory for query execution with --target."""
 
@@ -180,17 +180,78 @@ def prepare_target_directory(
         if item.is_file():
             shutil.copy2(item, target_dir / item.name)
 
-    if rewrite_target_references or rewrite_all_references:
+    # For view files, always rewrite the CREATE OR REPLACE VIEW self-reference to
+    # match the target directory structure, regardless of --defer or --isolated.
+    if target_query_file.name == "view.sql":
+        sql = target_query_file.read_text()
+        sql = re.sub(
+            r"(CREATE\s+OR\s+REPLACE\s+VIEW\s+)`?[^`\s]+"
+            r"`?\.`?[^`\s]+`?\.`?[^`\s]+`?",
+            rf"\1`{effective_project}.{effective_dataset}.{source_table}`",
+            sql,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+        target_query_file.write_text(sql)
+
+    if defer or isolated:
         click.echo("ℹ️  Rewriting references in target directory")
         rewrite_query_references(
             target_query_file,
             sql_dir,
             effective_project,
             dataset_prefix,
-            rewrite_all=rewrite_all_references,
+            rewrite_all=isolated,
         )
 
     return target_query_file
+
+
+def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
+    """Create a dataset if it doesn't exist, with user-only access permissions.
+
+    Returns True if the dataset exists or was created, False if creation failed.
+    """
+    try:
+        client.get_dataset(dataset_ref)
+        return True
+    except NotFound:
+        pass
+
+    click.echo(f"⏳ Creating dataset: {dataset_ref}")
+    dataset = bigquery.Dataset(dataset_ref)
+    dataset.location = "US"
+
+    try:
+        result = subprocess.run(
+            ["gcloud", "config", "get-value", "account"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        user_email = result.stdout.strip()
+
+        if user_email and "@" in user_email:
+            dataset.access_entries = [
+                bigquery.AccessEntry(
+                    role="OWNER",
+                    entity_type="userByEmail",
+                    entity_id=user_email,
+                )
+            ]
+            click.echo(f"ℹ️  Dataset access restricted to: {user_email}")
+        else:
+            click.echo("⚠️  Could not determine user email, using default permissions")
+    except Exception as e:
+        click.echo(f"⚠️  Could not set dataset permissions: {e}")
+
+    try:
+        client.create_dataset(dataset, exists_ok=True)
+        click.echo(f"✅ Created dataset: {dataset_ref}")
+        return True
+    except Exception as e:
+        click.echo(f"⚠️  Failed to create dataset: {e}")
+        return False
 
 
 def auto_deploy_if_needed(
@@ -209,48 +270,8 @@ def auto_deploy_if_needed(
     dataset_ref = f"{target_project}.{target_dataset}"
     table_ref = f"{dataset_ref}.{table_name}"
 
-    try:
-        client.get_dataset(dataset_ref)
-    except NotFound:
-        click.echo(f"⏳ Creating dataset: {dataset_ref}")
-        dataset = bigquery.Dataset(dataset_ref)
-        dataset.location = "US"
-
-        # Set permissions so only the current user has access
-        try:
-            # Get current user's email from gcloud
-            result = subprocess.run(
-                ["gcloud", "config", "get-value", "account"],
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-            user_email = result.stdout.strip()
-
-            if user_email and "@" in user_email:
-                # Set access control to only the current user as OWNER
-                access_entries = [
-                    bigquery.AccessEntry(
-                        role="OWNER",
-                        entity_type="userByEmail",
-                        entity_id=user_email,
-                    )
-                ]
-                dataset.access_entries = access_entries
-                click.echo(f"ℹ️  Dataset access restricted to: {user_email}")
-            else:
-                click.echo(
-                    "⚠️  Could not determine user email, using default permissions"
-                )
-        except Exception as e:
-            click.echo(f"⚠️  Could not set dataset permissions: {e}")
-
-        try:
-            client.create_dataset(dataset, exists_ok=True)
-            click.echo(f"✅ Created dataset: {dataset_ref}")
-        except Exception as e:
-            click.echo(f"⚠️  Failed to create dataset: {e}")
-            return
+    if not ensure_dataset_exists(client, dataset_ref):
+        return
 
     # Now deploy table
     try:
@@ -275,8 +296,8 @@ def prepare_target_files(
     project_id: str,
     destination_project_id: Optional[str],
     dataset_prefix: Optional[str],
-    rewrite_target_references: bool,
-    rewrite_all_references: bool,
+    defer: bool,
+    isolated: bool,
     auto_deploy: bool = True,
 ) -> List[Path]:
     """Prepare target directories for multiple query files."""
@@ -295,8 +316,8 @@ def prepare_target_files(
                 sql_dir,
                 destination_project_id,
                 dataset_prefix,
-                rewrite_target_references,
-                rewrite_all_references,
+                defer,
+                isolated,
             )
             target_query_files.append(target_file if target_file else query_file)
 

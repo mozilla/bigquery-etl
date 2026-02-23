@@ -303,40 +303,38 @@ def dataset_prefix_option(required=False):
     )
 
 
-def rewrite_target_references_option():
-    """Generate a rewrite-target-references option.
+def defer_option():
+    """Generate a --defer option.
 
-    This flag enables smart reference rewriting where only references to tables
-    deployed in the target directory are rewritten. Other references remain pointing to prod.
+    Smart reference rewriting: only rewrites references to artifacts that exist in the
+    target directory. Other references remain pointing to prod (similar to dbt's --defer).
     """
     return click.option(
-        "--rewrite-target-references",
-        "--rewrite_target_references",
+        "--defer",
         is_flag=True,
         default=False,
         help=(
-            "Rewrite references to tables deployed in target environment. "
-            "Only rewrites references to tables that exist in the target directory. "
+            "Rewrite references to artifacts that exist in the target directory. "
             "Other references remain pointing to prod. "
             "Used for development workflows."
         ),
     )
 
 
-def rewrite_all_references_option():
-    """Generate a rewrite-all-references option.
+def isolated_option():
+    """Generate a --isolated option.
 
-    This flag enables complete reference rewriting where ALL references are rewritten
-    to point to the target environment. Used for stage deployments and complete isolation.
+    Complete reference rewriting: rewrites ALL references to point to the target
+    environment and creates stubs for any missing artifacts. Used for stage deployments
+    and complete environment isolation.
     """
     return click.option(
-        "--rewrite-all-references",
-        "--rewrite_all_references",
+        "--isolated",
         is_flag=True,
         default=False,
         help=(
             "Rewrite ALL references to point to target environment. "
-            "Rewrites all prod references to use target project and dataset prefix. "
+            "Creates stubs for all referenced artifacts. "
             "Used for stage deployments and complete environment isolation."
         ),
     )

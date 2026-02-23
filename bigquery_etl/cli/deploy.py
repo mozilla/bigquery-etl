@@ -15,15 +15,17 @@ from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     dataset_prefix_option,
+    defer_option,
     destination_project_id_option,
+    isolated_option,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
     paths_matching_name_pattern,
     respect_dryrun_skip_option,
     sql_dir_option,
-    use_cloud_function_option,
 )
+from bigquery_etl.util.target import ensure_dataset_exists, prepare_target_files
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.deploy import (
@@ -101,6 +103,8 @@ log = logging.getLogger(__name__)
 )
 @destination_project_id_option()
 @dataset_prefix_option()
+@defer_option()
+@isolated_option()
 @parallelism_option(default=8)
 @click.option(
     "--dry-run",
@@ -110,7 +114,6 @@ log = logging.getLogger(__name__)
     help="Validate only, don't deploy",
 )
 @respect_dryrun_skip_option(default=True)
-@use_cloud_function_option
 @click.option(
     "--table-force",
     "--table_force",
@@ -182,10 +185,11 @@ def deploy(
     project_ids,
     destination_project_id,
     dataset_prefix,
+    defer,
+    isolated,
     parallelism,
     dry_run,
     respect_dryrun_skip,
-    use_cloud_function,
     table_force,
     table_skip_existing,
     table_skip_external_data,
@@ -225,6 +229,34 @@ def deploy(
 
     artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
 
+    using_target = bool(destination_project_id or dataset_prefix)
+
+    # When using --target, always copy artifacts to the target directory so the
+    # view self-reference and destination path are correct. --defer/--isolated
+    # additionally control whether SQL references within the files are rewritten.
+    if using_target:
+        artifact_ids = list(artifacts.keys())
+        file_paths = [fp for fp, _ in artifacts.values()]
+        artifact_types_list = [at for _, at in artifacts.values()]
+        rewritten_paths = prepare_target_files(
+            file_paths,
+            sql_dir,
+            project_ids[0] if project_ids else "",
+            destination_project_id,
+            dataset_prefix,
+            defer,
+            isolated,
+            auto_deploy=False,
+        )
+        artifacts = {
+            artifact_ids[i]: (rewritten_paths[i], artifact_types_list[i])
+            for i in range(len(artifact_ids))
+        }
+        # Files are now at the target location with project/prefix already embedded
+        # in the path; clear these so deployment functions don't apply them again.
+        destination_project_id = None
+        dataset_prefix = None
+
     # filter views based on authorized flags
     if view_skip_authorized or view_authorized_only:
         artifacts = _filter_views_by_authorization(
@@ -246,12 +278,13 @@ def deploy(
     options = {
         "dry_run": dry_run,
         "respect_dryrun_skip": respect_dryrun_skip,
-        "use_cloud_function": use_cloud_function,
+        "use_cloud_function": False,
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
         "destination_project_id": destination_project_id,
         "dataset_prefix": dataset_prefix,
+        "auto_create_dataset": using_target,
         # Table options
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
@@ -648,6 +681,12 @@ def _deploy_view_artifact(file_path: Path, options: dict):
         return
 
     client = bigquery.Client(credentials=options["credentials"])
+
+    if options.get("auto_create_dataset"):
+        project, dataset, _ = extract_from_query_path(file_path)
+        dataset_ref = f"{project}.{dataset}"
+        if not ensure_dataset_exists(client, dataset_ref):
+            raise FailedDeployException(f"Could not create dataset {dataset_ref}")
 
     success = view.publish(
         target_project=target_project,

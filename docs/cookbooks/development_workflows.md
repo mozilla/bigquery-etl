@@ -91,7 +91,7 @@ After editing source:
 
 **Key behaviors:**
 - Creates `sql/{target.project_id}/{prefix}{dataset}/{table}/` directory locally
-- References rewriting: opt-in via `--rewrite-target-references` flag (default: use prod tables)
+- References rewriting: opt-in via `--defer` flag (default: use prod tables)
 - Dataset access: user-only (private) by default
 
 ### 2. Testing Multiple Related Queries
@@ -103,17 +103,17 @@ After editing source:
 # Run upstream first
 ./bqetl --target dev query run telemetry_derived.clients_last_seen_v1
 
-# Run downstream - use dev version of upstream with --rewrite-target-references
-./bqetl --target dev query run --rewrite-target-references \
+# Run downstream - use dev version of upstream with --defer
+./bqetl --target dev query run --defer \
   telemetry_derived.clients_daily_v6
 ```
 
-With `--rewrite-target-references`:
+With `--defer`:
 - References to deployed dev tables → `dev-sandbox-user.dev_dataset.table`
 - References to non-deployed tables → `moz-fx-data-shared-prod.dataset.table` (prod)
 - Uses dev version of `clients_last_seen_v1` if it exists in dev project
 
-**Without `--rewrite-target-references` (default):**
+**Without `--defer` (default):**
 ```bash
 ./bqetl --target dev query run telemetry_derived.clients_daily_v6
 ```
@@ -125,26 +125,26 @@ Each `query run` automatically deploys and populates data.
 **Option B: Pre-deploy multiple, then run**
 ```bash
 # Deploy schemas for both (no data yet)
-./bqetl --target dev deploy --rewrite-target-references \
+./bqetl --target dev deploy --defer \
   telemetry_derived.clients_last_seen_v1 \
   telemetry_derived.clients_daily_v6
 
 # Then run them
 ./bqetl --target dev query run telemetry_derived.clients_last_seen_v1
-./bqetl --target dev query run --rewrite-target-references \
+./bqetl --target dev query run --defer \
   telemetry_derived.clients_daily_v6
 ```
 
 Useful when you want to set up multiple tables before running any queries.
 
-**Note:** The `--rewrite-target-references` flag on `deploy` creates dev copies with rewritten SQL. When running queries, use the same flag to ensure they use the dev versions of dependencies.
+**Note:** The `--defer` flag on `deploy` creates dev copies with rewritten SQL. When running queries, use the same flag to ensure they use the dev versions of dependencies.
 
 **Option C: Deploy multiple artifacts with dependencies (future)**
 
 Deploy several related tables, views, and routines with automatic dependency resolution:
 
 ```bash
-./bqetl --target dev deploy --rewrite-target-references \
+./bqetl --target dev deploy --defer \
   telemetry_derived.clients_last_seen_v1 \
   telemetry_derived.clients_daily_v6 \
   telemetry.clients_daily \
@@ -155,11 +155,11 @@ Deploy several related tables, views, and routines with automatic dependency res
 1. Resolves paths from names (tables, views, routines)
 2. Detects dependencies between all artifacts
 3. Copies to `sql/dev-sandbox-user/dev_*/`
-4. Rewrites references with `--rewrite-target-references` (deployed artifacts → dev, others → prod)
+4. Rewrites references with `--defer` (deployed artifacts → dev, others → prod)
 5. Deploys in dependency order (UDFs → tables → views)
 6. Includes all dependent artifacts
 
-**Without `--rewrite-target-references`:**
+**Without `--defer`:**
 - Deploys schemas to dev project but keeps all references pointing to prod
 - Useful for testing schema changes without changing query logic
 
@@ -206,7 +206,7 @@ Test historical data processing - automatically deploys if needed:
 
 ```bash
 # Backfill using dev dependencies (if deployed)
-./bqetl --target dev query backfill --rewrite-target-references \
+./bqetl --target dev query backfill --defer \
   --start-date 2024-01-01 \
   --end-date 2024-01-07 \
   telemetry_derived.clients_daily_v6
@@ -414,7 +414,7 @@ sql/moz-fx-data-dev/
 
 Two flags control how query references are rewritten:
 
-### `--rewrite-target-references` (for dev testing)
+### `--defer` (for dev testing)
 
 **Smart rewriting**: Only rewrites references to tables you deployed to dev.
 
@@ -429,7 +429,7 @@ Two flags control how query references are rewritten:
 SELECT * FROM `moz-fx-data-shared-prod`.telemetry_derived.clients_last_seen_v1
 JOIN `moz-fx-data-shared-prod`.telemetry.main
 
--- With --rewrite-target-references, if clients_last_seen_v1 is deployed to dev but main is not:
+-- With --defer, if clients_last_seen_v1 is deployed to dev but main is not:
 SELECT * FROM `dev-sandbox-user`.dev_telemetry_derived.clients_last_seen_v1
 JOIN `moz-fx-data-shared-prod`.telemetry.main  -- still prod
 ```
@@ -438,7 +438,7 @@ This "smart rewriting" allows you to test your changes while using prod data for
 
 **Use case:** Development and testing where you want to use real prod data for dependencies.
 
-### `--rewrite-all-references` (for stage deploys)
+### `--isolated` (for stage deploys)
 
 **Complete rewriting**: Rewrites ALL references to point to the target environment.
 
@@ -453,7 +453,7 @@ This "smart rewriting" allows you to test your changes while using prod data for
 SELECT * FROM `moz-fx-data-shared-prod`.telemetry_derived.clients_last_seen_v1
 JOIN `moz-fx-data-shared-prod`.telemetry.main
 
--- With --rewrite-all-references and --target stage (project: stage-project, prefix: stage_):
+-- With --isolated and --target stage (project: stage-project, prefix: stage_):
 SELECT * FROM `stage-project`.stage_telemetry_derived.clients_last_seen_v1
 JOIN `stage-project`.stage_telemetry.main  -- also rewritten, even if not deployed
 ```
@@ -462,7 +462,7 @@ This ensures complete isolation - all queries run against the stage environment 
 
 **Use case:** CI/CD stage deployments where you want complete environment isolation.
 
-### Without `--rewrite-target-references` (default)
+### Without `--defer` (default)
 
 All references remain pointing to production tables, regardless of what's deployed in dev:
 
@@ -487,13 +487,13 @@ All references remain pointing to production tables, regardless of what's deploy
 - Testing schema-only changes
 - Quick validation of query logic
 
-**Use `--rewrite-target-references` when:**
+**Use `--defer` when:**
 - Testing changes across multiple related queries in dev
 - You've deployed upstream dependencies to dev
 - You want to validate data pipeline logic with some dev tables
 - Development workflow where most dependencies use prod data
 
-**Use `--rewrite-all-references` when:**
+**Use `--isolated` when:**
 - CI/CD stage deployments
 - Complete environment isolation required
 - Integration testing in a separate environment
@@ -553,24 +553,24 @@ Additional planned improvements:
    ./bqetl stage deploy --dataset-suffix=pr123 paths...
 
    # Use:
-   ./bqetl --target stage deploy --rewrite-all-references paths...
+   ./bqetl --target stage deploy --isolated paths...
    # Or
-   ./bqetl --target stage query run --rewrite-all-references --changed
+   ./bqetl --target stage query run --isolated --changed
 
    # Benefits:
    # - Consistent workflow across dev, stage, and prod
    # - Reduces special-case code
    # - stage becomes just another target configuration
    # - CI can use same commands as local dev
-   # - --rewrite-all-references provides complete environment isolation
+   # - --isolated provides complete environment isolation
    ```
 
    **What needs to change:**
    - `deploy` command accepts multiple query names (not just paths)
    - Automatic dependency detection and topological sorting
    - Remove stage-specific flags (now in target config)
-   - `--rewrite-all-references` flag for complete reference rewriting (stage use case)
-   - `--rewrite-target-references` flag for smart reference rewriting (dev use case)
+   - `--isolated` flag for complete reference rewriting (stage use case)
+   - `--defer` flag for smart reference rewriting (dev use case)
    - See comparison in [Testing Multiple Related Queries](#2-testing-multiple-related-queries) Option C
 
 9. **Better handling of generated SQL:**

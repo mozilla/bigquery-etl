@@ -44,8 +44,8 @@ from ..cli.utils import (
     project_id_option,
     resolve_destination_table,
     respect_dryrun_skip_option,
-    rewrite_all_references_option,
-    rewrite_target_references_option,
+    defer_option,
+    isolated_option,
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
@@ -214,15 +214,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
-            reformat(
-                f"""CREATE OR REPLACE VIEW
+        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
-            )
-            + "\n"
-        )
+                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
 
         safe_owner = owner.lower().split("@")[0]
 
@@ -238,15 +233,10 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"
@@ -650,8 +640,8 @@ def _backfill_script(
 @sql_dir_option
 @project_id_option(required=True)
 @billing_project_option()
-@rewrite_target_references_option()
-@rewrite_all_references_option()
+@defer_option()
+@isolated_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -760,8 +750,8 @@ def backfill(
     sql_dir,
     project_id,
     billing_project,
-    rewrite_target_references,
-    rewrite_all_references,
+    defer,
+    isolated,
     start_date,
     end_date,
     exclude,
@@ -862,8 +852,8 @@ def backfill(
         project_id,
         destination_project_id,
         dataset_prefix,
-        rewrite_target_references,
-        rewrite_all_references,
+        defer,
+        isolated,
         auto_deploy=True,
     )
 
@@ -1073,8 +1063,8 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
-@rewrite_target_references_option()
-@rewrite_all_references_option()
+@defer_option()
+@isolated_option()
 @click.option(
     "--write",
     is_flag=True,
@@ -1094,8 +1084,8 @@ def run(
     public_project_id,
     destination_table,
     dataset_id,
-    rewrite_target_references,
-    rewrite_all_references,
+    defer,
+    isolated,
     write,
 ):
     """Run a query."""
@@ -1145,8 +1135,8 @@ def run(
         project_id,
         destination_project_id,
         dataset_prefix,
-        rewrite_target_references,
-        rewrite_all_references,
+        defer,
+        isolated,
         auto_deploy=write,
     )
 
@@ -1275,6 +1265,14 @@ def _run_query(
                 )
 
             query_arguments.append("--destination_table={}".format(destination_table))
+
+            # Default to WRITE_TRUNCATE so re-runs overwrite existing data.
+            # Callers that need different semantics pass --append_table or --noreplace explicitly.
+            if not any(
+                flag in query_arguments
+                for flag in ("--replace", "--append_table", "--noreplace")
+            ):
+                query_arguments.append("--replace")
 
         query_arguments.append("--use_legacy_sql=False")
 
@@ -2748,8 +2746,8 @@ def _update_query_schema(
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
-@rewrite_target_references_option()
-@rewrite_all_references_option()
+@defer_option()
+@isolated_option()
 @click.option(
     "--force/--noforce",
     help="Deploy the schema file without validating that it matches the query",
@@ -2789,8 +2787,8 @@ def deploy(
     name,
     sql_dir,
     project_ids,
-    rewrite_target_references,
-    rewrite_all_references,
+    defer,
+    isolated,
     force,
     use_cloud_function,
     respect_dryrun_skip,
@@ -2871,8 +2869,8 @@ def deploy(
         project_ids[0] if project_ids else "",
         destination_project_id,
         dataset_prefix,
-        rewrite_target_references,
-        rewrite_all_references,
+        defer,
+        isolated,
         auto_deploy=False,  # deploy command handles deployment itself
     )
 

@@ -426,8 +426,7 @@ class Schema:
                         if (
                             node.get("mode", None) == "REPEATED"
                         ):  # unnest repeated record
-                            select_expr.append(
-                                f"""
+                            select_expr.append(f"""
                                     ARRAY(
                                         SELECT
                                             STRUCT(
@@ -439,8 +438,7 @@ class Schema:
                                             )
                                         FROM UNNEST({node_path_str}) AS `{node_name}`
                                     ) AS `{node_name}`
-                                """
-                            )
+                                """)
                         else:  # select struct fields
                             struct_expr = f"""
                             STRUCT(
@@ -452,15 +450,13 @@ class Schema:
                             )
                             """
                             if retain_null_structs:
-                                select_expr.append(
-                                    f"""
+                                select_expr.append(f"""
                                     IF(
                                         {node_path_str} IS NULL,
                                         NULL,
                                         {struct_expr}
                                     ) AS `{node_name}`
-                                """
-                                )
+                                """)
                             else:
                                 select_expr.append(f"{struct_expr} AS `{node_name}`")
                     else:  # scalar value doesn't match, e.g. different types

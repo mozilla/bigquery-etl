@@ -222,8 +222,7 @@ def create(
     click.echo(f"Created backfill entry in {backfill_file}.")
 
 
-@backfill.command(
-    help="""Validate backfill.yaml file format and content.
+@backfill.command(help="""Validate backfill.yaml file format and content.
 
     Examples:
 
@@ -237,8 +236,7 @@ def create(
     Examples:
 
     ./bqetl backfill validate
-    """
-)
+    """)
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
 @project_id_option()
@@ -306,8 +304,7 @@ def validate(
         )
 
 
-@backfill.command(
-    help="""Validates multiple backfill.yaml files format and content.
+@backfill.command(help="""Validates multiple backfill.yaml files format and content.
 
     This command was created to enable pre-commit hook for backfill file changes related validation.
 
@@ -322,8 +319,7 @@ def validate(
         sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml \
         sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
 
-    """
-)
+    """)
 @ignore_missing_metadata_option
 @click.argument("backfill_files", required=True, nargs=-1)
 @click.pass_context

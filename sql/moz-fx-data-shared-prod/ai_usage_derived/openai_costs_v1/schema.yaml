@@ -16,7 +16,7 @@ fields:
   mode: NULLABLE
   description: OpenAI organization ID
 - name: amount_value
-  type: FLOAT
+  type: NUMERIC
   mode: NULLABLE
   description: Cost amount in the specified currency
 - name: currency

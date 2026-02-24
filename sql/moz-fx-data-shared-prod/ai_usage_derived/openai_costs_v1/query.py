@@ -99,7 +99,7 @@ class OpenAICostsAPI:
             "end_time": end_time,
             "bucket_width": "1d",
             "group_by": ["project_id", "line_item"],
-            "limit": 100,
+            "limit": 31,
         }
 
         all_data = []

@@ -31,4 +31,6 @@ references:
   - moz-fx-data-shared-prod.fenix.active_users
   - moz-fx-data-shared-prod.fenix.events_stream
   - moz-fx-data-shared-prod.fenix.new_profile_clients
+monitoring:
+  enabled: true
 require_column_descriptions: true

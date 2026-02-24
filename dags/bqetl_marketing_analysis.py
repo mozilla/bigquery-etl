@@ -476,6 +476,28 @@ with DAG(
         )
     )
 
+    bigeye__google_ads_derived__fenix_conversion_event_categorization__v1 = bigquery_bigeye_check(
+        task_id="bigeye__google_ads_derived__fenix_conversion_event_categorization__v1",
+        table_id="moz-fx-data-shared-prod.google_ads_derived.fenix_conversion_event_categorization_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["ahe@mozilla.com", "kik@mozilla.com", "shong@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
+    bigeye__google_ads_derived__fenix_gclid_conversions__v1 = bigquery_bigeye_check(
+        task_id="bigeye__google_ads_derived__fenix_gclid_conversions__v1",
+        table_id="moz-fx-data-shared-prod.google_ads_derived.fenix_gclid_conversions_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["ahe@mozilla.com", "kik@mozilla.com", "shong@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1 = bigquery_etl_query(
         task_id="fenix_derived__new_profile_metrics_marketing_geo_testing__v1",
         destination_table='new_profile_metrics_marketing_geo_testing_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -559,6 +581,14 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    bigeye__google_ads_derived__fenix_conversion_event_categorization__v1.set_upstream(
+        google_ads_derived__fenix_conversion_event_categorization__v1
+    )
+
+    bigeye__google_ads_derived__fenix_gclid_conversions__v1.set_upstream(
+        google_ads_derived__fenix_gclid_conversions__v1
     )
 
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
@@ -734,7 +764,7 @@ with DAG(
     )
 
     google_ads_derived__fenix_gclid_conversions__v1.set_upstream(
-        google_ads_derived__fenix_conversion_event_categorization__v1
+        bigeye__google_ads_derived__fenix_conversion_event_categorization__v1
     )
 
     telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(

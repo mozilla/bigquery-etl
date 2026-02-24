@@ -31,6 +31,7 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
+from ..util.target import get_target
 
 
 def cli(prog_name=None):
@@ -69,9 +70,28 @@ def cli(prog_name=None):
         default=logging.getLevelName(logging.INFO),
         type=str.upper,
     )
-    def group(log_level):
+    @click.option(
+        "--target",
+        help="Target environment to use for commands that interact with BigQuery. See"
+        " `targets.yaml` for available targets.",
+    )
+    @click.pass_context
+    def group(ctx, log_level, target):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
+
+        ctx.ensure_object(dict)
+        ctx.obj["target"] = None
+
+        if target:
+            try:
+                parsed_target = get_target(target)
+                ctx.obj["target"] = parsed_target
+                click.echo(
+                    f"Using target: {parsed_target.name} (project: {parsed_target.project_id})"
+                )
+            except Exception as e:
+                warnings.warn(f"Target '{target}' not found: {e}")
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

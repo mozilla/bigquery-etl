@@ -39,6 +39,7 @@ from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
+    defer_option,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -81,6 +82,10 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
+from ..util.target import (
+    prepare_target_files,
+    sanitize_dataset_id,
+)
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -977,6 +982,16 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@defer_option()
+@click.option(
+    "--write",
+    is_flag=True,
+    default=False,
+    help=(
+        "Write query results to destination table. "
+        "When used with --target, automatically infers destination table from target configuration."
+    ),
+)
 @click.pass_context
 def run(
     ctx,
@@ -987,6 +1002,8 @@ def run(
     public_project_id,
     destination_table,
     dataset_id,
+    defer,
+    write,
 ):
     """Run a query."""
     if not is_authenticated():
@@ -996,7 +1013,22 @@ def run(
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    target = ctx.obj.get("target") if ctx.obj else None
+    destination_project_id = target.project_id if target else None
+    dataset_prefix = target.dataset_prefix if target else None
+
+    # when using --target, check target directory first, then fall back to source
+    query_files = []
+    if target:
+        target_project_dir = Path(sql_dir) / destination_project_id
+        if target_project_dir.exists():
+            query_files = paths_matching_name_pattern(
+                name, sql_dir, destination_project_id, silent=True
+            )
+
+    # fall back to source directory if not found in target
+    if not query_files:
+        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1008,12 +1040,43 @@ def run(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
+    # prepare target directories if using --target
+    query_files = prepare_target_files(
+        query_files,
+        sql_dir,
+        project_id,
+        destination_project_id,
+        dataset_prefix,
+        defer,
+        isolated=False,
+        auto_deploy=write,
+    )
+
+    # apply destination project and dataset prefix
+    effective_project = destination_project_id or project_id
+    effective_dataset = dataset_id
+    if dataset_prefix and dataset_id:
+        effective_dataset = f"{dataset_prefix}{dataset_id}"
+
+    # auto-infer destination_table when --write is used with --target, otherwise
+    # query run expect the --destination_table parameter to be set
+    effective_destination_table = destination_table
+    if write and not destination_table and (destination_project_id or dataset_prefix):
+        query_project, query_dataset, query_table = extract_from_query_path(
+            query_files[0]
+        )
+        sanitized_dataset = sanitize_dataset_id(query_dataset)
+        effective_destination_table = (
+            f"{query_project}.{sanitized_dataset}.{query_table}"
+        )
+        click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
+
     _run_query(
         query_files,
-        project_id,
+        effective_project,
         public_project_id,
-        destination_table,
-        dataset_id,
+        effective_destination_table,
+        effective_dataset,
         ctx.args,
         billing_project=billing_project,
     )
@@ -1109,9 +1172,15 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
-            # need to do this as parameters are not supported with legacy sql
-            query_arguments.append("--use_legacy_sql=False")
+            # default to WRITE_TRUNCATE so re-runs overwrite existing data.
+            # callers that need different semantics pass --append_table or --noreplace explicitly.
+            if not any(
+                flag in query_arguments
+                for flag in ("--replace", "--append_table", "--noreplace")
+            ):
+                query_arguments.append("--replace")
+
+        query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
         if "query" not in query_arguments:

@@ -125,12 +125,16 @@ csch();
 
 cume_dist();
 
+current_date;
 current_date();
 
+current_datetime;
 current_datetime();
 
+current_time;
 current_time();
 
+current_timestamp;
 current_timestamp();
 
 date();

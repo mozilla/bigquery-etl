@@ -875,7 +875,9 @@ class BuiltInFunctionIdentifier(Identifier):
     """Identifier for a built-in function."""
 
     pattern = re.compile(
-        r"(SAFE\.)?(" + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS) + r")(?=\()",
+        (r"(SAFE\.)?(" + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS) + r")(?=\()")
+        # Some functions like `CURRENT_DATE` can be called without trailing parentheses.
+        + r"|CURRENT_(DATE|DATETIME|TIME|TIMESTAMP)\b",
         re.IGNORECASE,
     )
 

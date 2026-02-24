@@ -18,7 +18,7 @@ FROM
     )
   ) AS path
 WHERE
-  DATE(submission_timestamp) = DATE_SUB(DATE(current_timestamp), INTERVAL 1 DAY)
+  DATE(submission_timestamp) = DATE_SUB(DATE(CURRENT_TIMESTAMP), INTERVAL 1 DAY)
   AND sample_id = 1
 GROUP BY
   `day`,

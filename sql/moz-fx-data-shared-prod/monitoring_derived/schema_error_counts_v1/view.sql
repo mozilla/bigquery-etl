@@ -12,9 +12,9 @@ WITH extracted AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
-    submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, DAY)
+    submission_timestamp < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP, DAY)
     AND submission_timestamp > TIMESTAMP_SUB(
-      TIMESTAMP_TRUNC(current_timestamp, DAY),
+      TIMESTAMP_TRUNC(CURRENT_TIMESTAMP, DAY),
       INTERVAL (28 * 24) HOUR
     )
     AND exception_class = 'org.everit.json.schema.ValidationException'

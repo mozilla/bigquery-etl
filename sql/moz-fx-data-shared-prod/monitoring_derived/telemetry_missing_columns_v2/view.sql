@@ -21,8 +21,8 @@ extracted AS (
   WHERE
     -- only observe full days of data
     (
-      DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 DAY)
-      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL (1 + 7) DAY)
+      DATE(submission_timestamp) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+      OR DATE(submission_timestamp) = DATE_SUB(CURRENT_DATE, INTERVAL (1 + 7) DAY)
     )
     -- https://cloud.google.com/bigquery/docs/querying-wildcard-tables#filtering_selected_tables_using_table_suffix
     -- exclude pings derived from main schema to save on space, 300GB vs 3TB

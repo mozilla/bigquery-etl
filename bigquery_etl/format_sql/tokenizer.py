@@ -271,6 +271,14 @@ OTHER_KEYWORDS = [
     "WEEK",
     "YEAR",
 ]
+PSEUDOCOLUMNS = [
+    "_CHANGE_SEQUENCE_NUMBER",
+    "_CHANGE_TYPE",
+    "_FILE_NAME",
+    "_PARTITIONDATE",
+    "_PARTITIONTIME",
+    "_TABLE_SUFFIX",
+]
 # These built-in function names get capitalized
 # https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/functions-all
 BUILTIN_FUNCTIONS = [
@@ -871,6 +879,12 @@ class QualifiedIdentifier(Identifier):
     )
 
 
+class PseudocolumnIdentifier(Identifier):
+    """Identifier for one of BigQuery's special pseudocolumns."""
+
+    pattern = _keyword_pattern(PSEUDOCOLUMNS)
+
+
 class BuiltInFunctionIdentifier(Identifier):
     """Identifier for a built-in function."""
 
@@ -1070,6 +1084,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     Literal,
     BuiltInFunctionIdentifier,
     QualifiedIdentifier,
+    PseudocolumnIdentifier,
     Identifier,
     QueryParameter,
     UnknownToken,

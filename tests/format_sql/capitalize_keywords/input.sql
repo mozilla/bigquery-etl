@@ -378,3 +378,10 @@ string;
 string(100);
 time;
 timestamp;
+-- pseudocolumns
+_change_sequence_number;
+_change_type;
+_file_name;
+_partitiondate;
+_partitiontime;
+_table_suffix;

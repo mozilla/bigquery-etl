@@ -3,8 +3,8 @@ CREATE OR REPLACE VIEW
 AS
 WITH metrics_ingestion_date_per_ad AS (
   SELECT
-    _table_suffix AS ingestionDate,
-    MAX(_table_suffix) OVER (PARTITION BY `date`, Adname) AS IngestionDateMax,
+    _TABLE_SUFFIX AS ingestionDate,
+    MAX(_TABLE_SUFFIX) OVER (PARTITION BY `date`, Adname) AS IngestionDateMax,
     *,
   FROM
     `moz-fx-data-marketing-prod.fetch.metric_*`

@@ -28,6 +28,7 @@ from .tokenizer import (
     OpeningBracket,
     Operator,
     PipeOperator,
+    PseudocolumnIdentifier,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
     TopLevelKeyword,
@@ -143,8 +144,8 @@ def simple_format(tokens, indent="  "):
             # uppercase keywords and replace contained whitespace with single spaces
             if isinstance(token, Keyword):
                 token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
-            # uppercase built-in function names
-            elif isinstance(token, BuiltInFunctionIdentifier):
+            # uppercase pseudocolumns and built-in function names
+            elif isinstance(token, (PseudocolumnIdentifier, BuiltInFunctionIdentifier)):
                 token = replace(token, value=token.value.upper())
 
         yield token

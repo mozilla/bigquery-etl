@@ -1,0 +1,10 @@
+friendly_name: Jira Tickets Derived
+description: |-
+  Derived Jira tickets data pulled from Jira API v3.
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

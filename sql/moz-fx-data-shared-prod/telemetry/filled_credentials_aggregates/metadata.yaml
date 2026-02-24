@@ -1,0 +1,6 @@
+friendly_name: Filled Credential Aggregates
+description: |-
+  A unioned view of clients that have autofilled their address, credit card and login information. This is
+  view contains a sample number of clients by day and by country.
+
+  Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-10212

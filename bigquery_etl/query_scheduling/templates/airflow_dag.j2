@@ -175,12 +175,11 @@ with DAG(
         table_id={{ table_name | format_repr }},
         partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
         gcp_conn_id='google_cloud_shared_prod',
-        deferrable=False,
-        mode='reschedule',
+        deferrable=True,
         {% if table_partition_sensor_task.poke_interval != None -%}
         poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
         {% else -%}
-        poke_interval=datetime.timedelta(minutes=15),
+        poke_interval=datetime.timedelta(minutes=5),
         {% endif -%}
         {% if table_partition_sensor_task.timeout != None -%}
         timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},

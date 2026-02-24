@@ -1,0 +1,10 @@
+friendly_name: Claude API Derived
+description: |-
+  Claude API usage and cost data pulled from the Anthropic Admin API.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

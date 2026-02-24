@@ -378,7 +378,16 @@ SELECT
     ) AS ongoing_discount_amount,
     ongoing_discounts.ends_at AS ongoing_discount_ends_at,
     COALESCE(invoice_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges,
+    CASE
+      WHEN history.subscription.collection_method = 'send_invoice'
+        THEN 'PayPal'
+      WHEN payment_method.type = 'cashapp'
+        THEN 'Cash App'
+      ELSE INITCAP(
+          REPLACE(COALESCE(payment_method_card.wallet_type, payment_method.type), '_', ' ')
+        )
+    END AS payment_method
   ) AS subscription
 FROM
   active_subscriptions_history AS history
@@ -408,3 +417,12 @@ LEFT JOIN
   `moz-fx-data-shared-prod.stripe_external.charge_v1` AS latest_invoice_charges
   ON latest_invoices.charge_id = latest_invoice_charges.id
   AND latest_invoice_charges.created < history.valid_to
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.payment_method_v1` AS payment_method
+  ON COALESCE(
+    history.subscription.default_payment_method_id,
+    history.subscription.customer.invoice_settings.default_payment_method_id
+  ) = payment_method.id
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.payment_method_card_v1` AS payment_method_card
+  ON payment_method.id = payment_method_card.payment_method_id

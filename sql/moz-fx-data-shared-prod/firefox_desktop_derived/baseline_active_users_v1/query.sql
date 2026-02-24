@@ -6,7 +6,11 @@ SELECT
     normalized_os_version,
     distribution_id,
     attribution,
-    `distribution`
+    `distribution`,
+    distribution_version,
+    distributor,
+    distributor_channel,
+    distribution_partner_id
   ) REPLACE(
     IFNULL(last_seen.country, '??') AS country,
     IFNULL(city, '??') AS city,

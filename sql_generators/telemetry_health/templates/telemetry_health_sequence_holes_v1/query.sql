@@ -4,7 +4,11 @@
   WITH sample AS (
     SELECT
       "{{ application_names[app_id] }}" AS application,
+      {% if application_names[app_id] == "Firefox for Android" %}
+      mozfun.norm.fenix_app_info("{{ app_id }}", client_info.app_build).channel AS channel,
+      {% else %}
       normalized_channel AS channel,
+      {% endif %}
       DATE(submission_timestamp) AS submission_date,
       client_info.client_id,
       ping_info.seq AS sequence_number
@@ -13,6 +17,11 @@
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date
+			{% if app_id == "org_mozilla_fenix" %}
+			-- There's still some older builds under the `org_mozilla_fenix` app_id reporting
+			-- channels other than "nightly", so let's ignore the really old builds.
+			AND SAFE_CAST(client_info.app_build AS INT64) >= 21850000
+			{% endif %}
   ),
   lagged AS (
     SELECT

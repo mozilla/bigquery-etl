@@ -1,0 +1,8 @@
+friendly_name: Sampled Metrics
+description: |-
+  Keeps track of sampled metrics and their sample rates for GLAM ETL.
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: false
+  owner1: efilho@mozilla.com

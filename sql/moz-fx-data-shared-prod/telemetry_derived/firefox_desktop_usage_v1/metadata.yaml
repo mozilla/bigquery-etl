@@ -36,3 +36,5 @@ bigquery:
     - attributed
     - country
     - country_name
+deprecated: true
+deletion_date: 2025-12-12

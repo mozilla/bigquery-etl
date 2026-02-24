@@ -131,6 +131,7 @@ if __name__ == "__main__":
             ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
+            null_markers=["-", ""],
         ),
     )
 

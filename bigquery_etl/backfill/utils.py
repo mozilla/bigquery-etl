@@ -28,7 +28,7 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 # currently only supporting backfilling tables with workgroup access: mozilla-confidential.
-VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential"
+VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential/data-viewers"
 
 # Backfills older than this will not run due to staging table expiration
 MAX_BACKFILL_ENTRY_AGE_DAYS = 28
@@ -185,7 +185,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     """
     Check if either table or dataset metadata workgroup is valid.
 
-    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential.
+    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential/data-viewers.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     query_file = Path(sql_dir) / project / dataset / table / "query.sql"
@@ -237,7 +237,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
 
 def _validate_workgroup_members(workgroup_access, metadata_filename):
-    """Return True if workgroup members is valid (workgroup:mozilla-confidential)."""
+    """Return True if workgroup members is valid (workgroup:mozilla-confidential/data-viewers)."""
     if workgroup_access:
         for workgroup in workgroup_access:
             if metadata_filename == METADATA_FILE:

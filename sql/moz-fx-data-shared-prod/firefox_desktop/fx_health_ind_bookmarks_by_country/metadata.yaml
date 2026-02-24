@@ -1,9 +1,0 @@
-friendly_name: Firefox Health Indicator - Bookmarks By Country
-description: |-
-  Aggregate table of bookmarks added per client per day per country.
-  Primary Key:
-  - Submission Date + Normalized Country Code
-owners:
-- kwindau@mozilla.com
-labels:
-  owner1: kwindau

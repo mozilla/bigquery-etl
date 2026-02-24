@@ -41,6 +41,7 @@ attribution AS (
     adjust_attribution_timestamp,
     distribution_id,
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 )
@@ -76,6 +77,7 @@ SELECT
   attribution.adjust_attribution_timestamp,
   attribution.distribution_id,
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (

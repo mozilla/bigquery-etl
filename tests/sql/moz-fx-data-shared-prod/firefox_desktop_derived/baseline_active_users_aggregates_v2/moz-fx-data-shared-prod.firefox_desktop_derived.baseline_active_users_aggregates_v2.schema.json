@@ -1,0 +1,182 @@
+[
+  {
+    "description": "The date when the telemetry ping is received on the server side.",
+    "mode": "NULLABLE",
+    "name": "submission_date",
+    "type": "DATE"
+  },
+  {
+    "description": "Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.",
+    "mode": "NULLABLE",
+    "name": "first_seen_year",
+    "type": "INTEGER"
+  },
+  {
+    "description": "The normalized channel the application is being distributed on.",
+    "mode": "NULLABLE",
+    "name": "channel",
+    "type": "STRING"
+  },
+  {
+    "description": "App name (Firefox Desktop), if client comes from MozillaOnline distribution\nthen the distribution_id is appended to the app_name. If client comes from BrowserStack (isp)\nthis is appended to the app_name.\n",
+    "mode": "NULLABLE",
+    "name": "app_name",
+    "type": "STRING"
+  },
+  {
+    "description": "Code of the country in which the activity took place, as determined by the IP geolocation. Unknown or NULL values are normally stored as '??'.",
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "description": "City reported by the client.",
+    "mode": "NULLABLE",
+    "name": "city",
+    "type": "STRING"
+  },
+  {
+    "description": "Set of language- and/or country-based preferences for a user interface.",
+    "mode": "NULLABLE",
+    "name": "locale",
+    "type": "STRING"
+  },
+  {
+    "description": "The normalized name of the operating system running at the client.",
+    "mode": "NULLABLE",
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "description": "Operating system group reported by the client.",
+    "mode": "NULLABLE",
+    "name": "os_grouped",
+    "type": "STRING"
+  },
+  {
+    "description": "OS version reported by the client.",
+    "mode": "NULLABLE",
+    "name": "os_version",
+    "type": "STRING"
+  },
+  {
+    "description": "Major or first part of the operating system version running at the client. E.g. for version \"100.9.11\", the major is 100.",
+    "mode": "NULLABLE",
+    "name": "os_version_major",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Minor part of the operating system version running at the client. E.g. for version \"100.9.11\", the minor is 9.",
+    "mode": "NULLABLE",
+    "name": "os_version_minor",
+    "type": "INTEGER"
+  },
+  {
+    "description": "OS version build reported by the client.",
+    "mode": "NULLABLE",
+    "name": "os_version_build",
+    "type": "STRING"
+  },
+  {
+    "description": "The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms (Windows only).",
+    "mode": "NULLABLE",
+    "name": "windows_build_number",
+    "type": "INTEGER"
+  },
+  {
+    "description": "User visible version string (e.g. \"1.0.3\") for the browser.",
+    "mode": "NULLABLE",
+    "name": "app_version",
+    "type": "STRING"
+  },
+  {
+    "description": "The major version of the application version (e.g. if 123.0, then 123)",
+    "mode": "NULLABLE",
+    "name": "app_version_major",
+    "type": "NUMERIC"
+  },
+  {
+    "description": "The minor version of the application version (e.g. if 123.0, then 0)",
+    "mode": "NULLABLE",
+    "name": "app_version_minor",
+    "type": "NUMERIC"
+  },
+  {
+    "description": "The patch revision number of the app version",
+    "mode": "NULLABLE",
+    "name": "app_version_patch_revision",
+    "type": "NUMERIC"
+  },
+  {
+    "description": "Boolean flag indicating if the app version was a major release",
+    "mode": "NULLABLE",
+    "name": "app_version_is_major_release",
+    "type": "BOOLEAN"
+  },
+  {
+    "description": "A flag indicating whether the browser is set as the default browser on the client side.",
+    "mode": "NULLABLE",
+    "name": "is_default_browser",
+    "type": "BOOLEAN"
+  },
+  {
+    "description": "The distribution id associated with the install of Firefox.",
+    "mode": "NULLABLE",
+    "name": "distribution_id",
+    "type": "STRING"
+  },
+  {
+    "description": "Classification of users based on their browsing activity. E.g., infrequent, casual, regular.",
+    "mode": "NULLABLE",
+    "name": "activity_segment",
+    "type": "STRING"
+  },
+  {
+    "description": "Medium to which the ping should be attributed e.g. referral, firefox desktop.\n",
+    "mode": "NULLABLE",
+    "name": "attribution_medium",
+    "type": "STRING"
+  },
+  {
+    "description": "Source to which the ping should be attributed e.g. firefox browser, search fox.\n",
+    "mode": "NULLABLE",
+    "name": "attribution_source",
+    "type": "STRING"
+  },
+  {
+    "description": "Number of daily users on the submission_date (based on sending the ping).\n",
+    "mode": "NULLABLE",
+    "name": "daily_users",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Number of weekly users on the submission_date (based on sending the ping).\n",
+    "mode": "NULLABLE",
+    "name": "weekly_users",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Number of monthly users on the submission_date (based on sending the ping).\n",
+    "mode": "NULLABLE",
+    "name": "monthly_users",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Number of DAU (Daily Active Users) users on the submission_date (based on activity).\n",
+    "mode": "NULLABLE",
+    "name": "dau",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Number of WAU (Weekly Active Users) users on the submission_date (based on activity).\n",
+    "mode": "NULLABLE",
+    "name": "wau",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Number of MAU (Monthly Active Users) users on the submission_date (based on activity).\n",
+    "mode": "NULLABLE",
+    "name": "mau",
+    "type": "INTEGER"
+  }
+]

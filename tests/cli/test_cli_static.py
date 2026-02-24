@@ -10,7 +10,7 @@ from bigquery_etl.cli.static import publish
 VALID_WORKGROUP_ACCESS = [
     dict(
         role="roles/bigquery.dataViewer",
-        members=["workgroup:mozilla-confidential"],
+        members=["workgroup:mozilla-confidential/data-viewers"],
     )
 ]
 

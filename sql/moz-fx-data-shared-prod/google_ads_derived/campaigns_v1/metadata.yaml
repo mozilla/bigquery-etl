@@ -6,7 +6,7 @@ description: |-
   take the name associated with the highest
   spend.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: false
 scheduling:

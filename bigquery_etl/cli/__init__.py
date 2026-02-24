@@ -13,6 +13,7 @@ from ..cli.alchemer import alchemer as alchemer_
 from ..cli.backfill import backfill
 from ..cli.check import check
 from ..cli.dag import dag
+from ..cli.deploy import deploy
 from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.generate import generate
@@ -38,6 +39,7 @@ def cli(prog_name=None):
         "query": query,
         "dag": dag,
         "dependency": dependency,
+        "deploy": deploy,
         "dryrun": dryrun,
         "generate": generate,
         "format": format,

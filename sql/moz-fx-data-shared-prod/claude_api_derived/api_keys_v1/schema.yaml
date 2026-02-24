@@ -1,0 +1,29 @@
+fields:
+- name: api_key_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique identifier for the API key
+- name: api_key_name
+  type: STRING
+  mode: NULLABLE
+  description: Human-readable name of the API key
+- name: api_key_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the API key (active, inactive, archived)
+- name: created_by_user_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the user who created the API key
+- name: user_email
+  type: STRING
+  mode: NULLABLE
+  description: Email address of the user who created the API key
+- name: user_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the user who created the API key
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the workspace the API key belongs to

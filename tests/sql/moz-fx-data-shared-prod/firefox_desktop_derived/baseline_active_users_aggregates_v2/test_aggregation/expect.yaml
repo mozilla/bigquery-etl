@@ -1,0 +1,79 @@
+---
+# Expected output: 3 aggregated rows (2 US users aggregated, 1 DE user, 1 US user with different segment)
+- submission_date: 2025-06-02
+  first_seen_year: 2023
+  channel: beta
+  app_name: Firefox Desktop
+  country: DE
+  city: Berlin
+  locale: de-DE
+  os: macOS
+  os_grouped: macOS
+  os_version: 14.0
+  os_version_major: 14
+  os_version_minor: 0
+  app_version: "131.0.0"
+  app_version_major: 131
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: false
+  activity_segment: casual_user
+  daily_users: 0
+  weekly_users: 1
+  monthly_users: 1
+  dau: 0
+  wau: 1
+  mau: 1
+
+- submission_date: 2025-06-02
+  first_seen_year: 2025
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: San Francisco
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: 10.0
+  os_version_major: 10
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  activity_segment: infrequent_user
+  daily_users: 0
+  weekly_users: 0
+  monthly_users: 1
+  dau: 0
+  wau: 0
+  mau: 1
+
+- submission_date: 2025-06-02
+  first_seen_year: 2024
+  channel: release
+  app_name: Firefox Desktop
+  country: US
+  city: San Francisco
+  locale: en-US
+  os: Windows
+  os_grouped: Windows
+  os_version: 10.0
+  os_version_major: 10
+  windows_build_number: 19045
+  app_version: "130.0.0"
+  app_version_major: 130
+  app_version_minor: 0
+  app_version_patch_revision: 0
+  app_version_is_major_release: true
+  is_default_browser: true
+  activity_segment: regular_user
+  daily_users: 2
+  weekly_users: 2
+  monthly_users: 2
+  dau: 2
+  wau: 2
+  mau: 2

@@ -21,6 +21,35 @@ countries AS (
   FROM
     `moz-fx-data-shared-prod.static.country_codes_v1`
 ),
+subscription_starts AS (
+  SELECT
+    history.subscription.id AS subscription_id,
+    history.subscription.started_at,
+    history.subscription.is_trial AS started_as_trial,
+    DENSE_RANK() OVER (
+      PARTITION BY
+        -- We don't have unhashed Mozilla Account IDs for some historical customers, so we use the hashed IDs instead,
+        -- and if we don't have any Mozilla Account ID data we fall back to the provider's customer/subscription IDs.
+        COALESCE(
+          history.subscription.mozilla_account_id_sha256,
+          history.subscription.provider_customer_id,
+          history.subscription.provider_subscription_id
+        )
+      ORDER BY
+        history.subscription.started_at,
+        history.subscription.id
+    ) AS customer_subscription_number
+  FROM
+    history
+  QUALIFY
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from,
+        history.valid_to
+    )
+),
 subscription_attributions AS (
   SELECT
     subscription_id,
@@ -38,6 +67,24 @@ subscription_attributions AS (
   FULL JOIN
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2` AS attribution_v2
     USING (subscription_id)
+),
+subscription_attributions_with_channel AS (
+  SELECT
+    subscription_id,
+    first_touch_attribution,
+    CASE
+      WHEN last_touch_attribution IS NULL
+        THEN NULL
+      ELSE (
+          SELECT AS STRUCT
+            last_touch_attribution.*,
+            mozfun.norm.subplat_attribution_channel_group(
+              last_touch_attribution.utm_source
+            ) AS channel_group
+        )
+    END AS last_touch_attribution
+  FROM
+    subscription_attributions
 )
 SELECT
   history.id,
@@ -55,19 +102,7 @@ SELECT
     history.subscription.provider_customer_id,
     history.subscription.mozilla_account_id,
     history.subscription.mozilla_account_id_sha256,
-    DENSE_RANK() OVER (
-      PARTITION BY
-        -- We don't have unhashed Mozilla Account IDs for some historical customers, so we use the hashed IDs instead,
-        -- and if we don't have any Mozilla Account ID data we fall back to the provider's customer/subscription IDs.
-        COALESCE(
-          history.subscription.mozilla_account_id_sha256,
-          history.subscription.provider_customer_id,
-          history.subscription.provider_subscription_id
-        )
-      ORDER BY
-        history.subscription.started_at,
-        history.subscription.id
-    ) AS customer_subscription_number,
+    subscription_starts.customer_subscription_number,
     history.subscription.country_code,
     COALESCE(countries.name, history.subscription.country_code, 'Unknown') AS country_name,
     history.subscription.services,
@@ -120,8 +155,8 @@ SELECT
     history.subscription.auto_renew_disabled_at,
     history.subscription.has_refunds,
     history.subscription.has_fraudulent_charges,
-    subscription_attributions.first_touch_attribution,
-    subscription_attributions.last_touch_attribution,
+    subscription_attributions_with_channel.first_touch_attribution,
+    subscription_attributions_with_channel.last_touch_attribution,
     history.subscription.initial_discount_name,
     history.subscription.initial_discount_promotion_code,
     history.subscription.current_period_discount_name,
@@ -131,13 +166,25 @@ SELECT
     history.subscription.ongoing_discount_promotion_code,
     history.subscription.ongoing_discount_amount,
     history.subscription.ongoing_discount_ends_at,
-    history.subscription.ended_reason
+    history.subscription.ended_reason,
+    CONCAT(
+      IF(
+        subscription_starts.customer_subscription_number = 1,
+        'New Customer',
+        'Returning Customer'
+      ),
+      IF(subscription_starts.started_as_trial, ' Trial', '')
+    ) AS started_reason,
+    history.subscription.payment_method
   ) AS subscription
 FROM
   history
+INNER JOIN
+  subscription_starts
+  ON history.subscription.id = subscription_starts.subscription_id
 LEFT JOIN
   countries
   ON history.subscription.country_code = countries.code
 LEFT JOIN
-  subscription_attributions
-  ON history.subscription.id = subscription_attributions.subscription_id
+  subscription_attributions_with_channel
+  ON history.subscription.id = subscription_attributions_with_channel.subscription_id

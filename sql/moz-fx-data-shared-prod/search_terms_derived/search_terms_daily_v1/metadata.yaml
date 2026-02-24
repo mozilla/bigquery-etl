@@ -1,6 +1,10 @@
 friendly_name: Search Terms Daily
 description: |-
   Daily count of terminal search terms collected by Merino.
+
+  Note: This table processes data from 2 days ago, allowing time for the
+  upstream Merino sanitization job (~16 hours) to complete.
+  This is a temporary measure until the sanitization job is further optimized.
 owners:
   - ctroy@mozilla.com
   - rburwei@mozilla.com
@@ -19,3 +23,4 @@ bigquery:
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  date_partition_offset: -1

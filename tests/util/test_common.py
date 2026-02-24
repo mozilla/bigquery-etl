@@ -7,6 +7,7 @@ from click.testing import CliRunner
 from bigquery_etl.cli.utils import is_valid_dir
 from bigquery_etl.util.common import (
     extract_last_group_by_from_query,
+    get_table_dir,
     project_dirs,
     qualify_table_references_in_file,
     render,
@@ -27,40 +28,35 @@ class TestUtilCommon:
 
     def test_metrics_render(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['days_of_use'],
                     platform='firefox_desktop'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert r"{{ metrics.calculate" not in rendered_sql
         assert "days_of_use" in rendered_sql
 
     def test_non_existing_metrics_render(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['not-existing'],
                     platform='firefox_desktop'
                 ) }}
             )
-        """
-        )
+        """)
 
         with pytest.raises(ValueError):
             render(file_path.name, template_folder=file_path.parent)
 
     def test_render_multiple_metrics(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['days_of_use', 'uri_count', 'ad_clicks'],
@@ -69,8 +65,7 @@ class TestUtilCommon:
                     where='submission_date = "2023-01-01"'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert "metrics.calculate" not in rendered_sql
         assert r"{{" not in rendered_sql
@@ -84,8 +79,7 @@ class TestUtilCommon:
 
     def test_render_data_source(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.data_source(
                     data_source="main",
@@ -93,8 +87,7 @@ class TestUtilCommon:
                     where='submission_date = "2023-01-01"'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert "metrics.data_source" not in rendered_sql
         assert r"{{" not in rendered_sql
@@ -103,11 +96,9 @@ class TestUtilCommon:
 
     def test_checks_render(self, tmp_path):
         file_path = tmp_path / "checks.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             {{ min_row_count(1, "submission_date = @submission_date") }}
-        """
-        )
+        """)
         kwargs = {
             "project_id": "project",
             "dataset_id": "dataset",
@@ -513,4 +504,33 @@ class TestUtilCommon:
         assert ["COLUMN"] == extract_last_group_by_from_query(
             sql_text="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
             cte2 AS (SELECT COLUMN FROM test_table group by COLUMN) SELECT * FROM cte2;"""
+        )
+
+    def test_get_table_dir(self):
+        """Test cases using a path and table."""
+        assert Path("sql/project1/dataset1/table1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="dataset1.table1",
+        )
+        assert Path("sql/project1/dataset1/table1/subfolder1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1",
+            parts=3,
+        )
+        assert Path(
+            "sql/project1/dataset1/table1/subfolder1/subfolder2/subfolder3"
+        ) == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1.subfolder2.subfolder3",
+            parts=5,
+        )
+        # 'parts' is incorrect or missing.
+        assert Path("sql/project1/table1/subfolder1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1.subfolder1",
+        )
+        assert Path("sql/project1/project1/dataset1/table1") == get_table_dir(
+            output_dir=Path("sql/project1"),
+            full_table_id="project1.dataset1.table1",
+            parts=3,
         )

@@ -85,8 +85,7 @@ class TestMonitoring:
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
 
-            (SQL_DIR / "bigeye_custom_rules.sql").write_text(
-                """
+            (SQL_DIR / "bigeye_custom_rules.sql").write_text("""
                 -- {
                 --   "name": "Custom check",
                 --   "alert_conditions": "value",
@@ -102,8 +101,7 @@ class TestMonitoring:
                 COUNT(*)
                 FROM
                 `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`;
-            """
-            )
+            """)
 
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
@@ -171,8 +169,7 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text(
-                """
+            (SQL_DIR / "bigconfig.yml").write_text("""
                 type: BIGCONFIG_FILE
                 table_deployments:
                 - deployments:
@@ -184,8 +181,7 @@ class TestMonitoring:
                     metric_schedule:
                         named_schedule:
                         name: Default Schedule - 13:00 UTC
-            """
-            )
+            """)
 
             assert (SQL_DIR / "bigconfig.yml").exists()
             runner.invoke(update, [f"{str(SQL_DIR)}"])
@@ -521,11 +517,9 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigeye_custom_rules.sql").write_text(
-                """
+            (SQL_DIR / "bigeye_custom_rules.sql").write_text("""
                 SELECT 1
-            """
-            )
+            """)
 
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()

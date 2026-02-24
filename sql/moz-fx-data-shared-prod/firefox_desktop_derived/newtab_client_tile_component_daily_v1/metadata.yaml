@@ -1,0 +1,26 @@
+friendly_name: Newtab Topsite Tile Daily
+description: |-
+  Daily tile rollup of NewTab topsite engagement
+  With client/environment dimensions  and experiment context.
+owners:
+  - gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+      - channel
+      - country
+  range_partitioning: null

@@ -19,9 +19,16 @@ RETURNS STRING AS (
       THEN 'trending_suggestion'
     WHEN res IN ('history')
       THEN 'history'
-    WHEN res IN ('bookmark', 'keyword', 'restrict_keyword_bookmarks')
+    WHEN res IN (
+        'bookmark',
+        'keyword',
+        'restrict_keyword_bookmarks',
+        'bookmark_adaptive',
+        'bookmark_adaptive_serp',
+        'bookmark_serp'
+      )
       THEN 'bookmark'
-    WHEN res IN ('tab')
+    WHEN res IN ('tab', 'tab_adaptive', 'tab_adaptive_serp')
       THEN 'open_tab'
     WHEN res IN (
         'merino_adm_sponsored',
@@ -89,6 +96,8 @@ RETURNS STRING AS (
         'history_serp',
         'history_semantic',
         'history_semantic_serp',
+        'history_adaptive',
+        'history_adaptive_serp',
         'url',
         'tab_to_search',
         'tab_semantic',

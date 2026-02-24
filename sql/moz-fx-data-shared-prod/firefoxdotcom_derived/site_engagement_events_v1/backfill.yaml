@@ -1,0 +1,11 @@
+2026-02-03:
+  start_date: 2025-05-01
+  end_date: 2026-02-02
+  reason: Backdate GA4 data. See JIRA WT-633
+  watchers:
+  - sherrera@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

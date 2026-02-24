@@ -28,6 +28,7 @@ SELECT
   b.distribution AS baseline_distribution,
   b.attribution_ext AS baseline_attribution_ext,
   b.attribution_dlsource AS baseline_attribution_dlsource,
+  b.attribution_msclkid AS baseline_attribution_msclkid,
   b.attribution_dltoken AS baseline_attribution_dltoken,
   b.attribution_ua AS baseline_attribution_ua,
   b.attribution_experiment AS baseline_attribution_experiment,

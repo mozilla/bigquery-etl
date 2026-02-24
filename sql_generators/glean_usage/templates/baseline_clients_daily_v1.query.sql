@@ -58,24 +58,34 @@ WITH base AS (
     client_info.attribution,
     client_info.distribution,
     {% if app_name == "firefox_desktop" %}
+    JSON_VALUE(metrics.object.glean_attribution_ext.msclkid) AS attribution_msclkid,
     JSON_VALUE(metrics.object.glean_attribution_ext.dltoken) AS attribution_dltoken,
     JSON_VALUE(metrics.object.glean_attribution_ext.dlsource) AS attribution_dlsource,
     JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
     JSON_VALUE(metrics.object.glean_attribution_ext.variation) AS attribution_variation,
     JSON_VALUE(metrics.object.glean_attribution_ext.ua) AS attribution_ua,
     metrics.string.startup_profile_selection_reason AS startup_profile_selection_reason,
+    JSON_VALUE(metrics.object.glean_distribution_ext.distributionVersion) AS distribution_version,
+    JSON_VALUE(metrics.object.glean_distribution_ext.distributor) AS distributor,
+    JSON_VALUE(metrics.object.glean_distribution_ext.distributorChannel) AS distributor_channel,
+    JSON_VALUE(metrics.object.glean_distribution_ext.partnerId) AS distribution_partner_id,
     {% else %}
+    CAST(NULL AS STRING) AS attribution_msclkid,
     CAST(NULL AS STRING) AS attribution_dltoken,
     CAST(NULL AS STRING) AS attribution_dlsource,
     CAST(NULL AS STRING) AS attribution_experiment,
     CAST(NULL AS STRING) AS attribution_variation,
     CAST(NULL AS STRING) AS attribution_ua,
     CAST(NULL AS STRING) AS startup_profile_selection_reason,
+    CAST(NULL AS STRING) AS distribution_version,
+    CAST(NULL AS STRING) AS distributor,
+    CAST(NULL AS STRING) AS distributor_channel,
+    CAST(NULL AS STRING) AS distribution_partner_id,
     {% endif %}
     ping_info.experiments AS experiments
   FROM
     `{{ baseline_table }}`
-  WHERE 
+  WHERE
     client_info.client_id IS NOT NULL
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
@@ -179,13 +189,18 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
     udf.mode_last(ARRAY_AGG(attribution) OVER w1) AS attribution,
     udf.mode_last(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    udf.mode_last(ARRAY_AGG(attribution_msclkid) OVER w1) AS attribution_msclkid,
     udf.mode_last(ARRAY_AGG(attribution_dltoken) OVER w1) AS attribution_dltoken,
     udf.mode_last(ARRAY_AGG(attribution_dlsource) OVER w1) AS attribution_dlsource,
     udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
     udf.mode_last(ARRAY_AGG(attribution_variation) OVER w1) AS attribution_variation,
     udf.mode_last(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
     LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments,
-    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first
+    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first,
+    udf.mode_last(ARRAY_AGG(distribution_version) OVER w1) AS distribution_version,
+    udf.mode_last(ARRAY_AGG(distributor) OVER w1) AS distributor,
+    udf.mode_last(ARRAY_AGG(distributor_channel) OVER w1) AS distributor_channel,
+    udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id
   FROM
     with_date_offsets
   LEFT JOIN

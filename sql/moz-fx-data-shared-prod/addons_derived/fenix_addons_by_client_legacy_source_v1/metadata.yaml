@@ -1,0 +1,27 @@
+---
+friendly_name: Fenix addons by client
+description: >-
+  Clients_daily-like table on top of the various Firefox for Android channels
+  that records only the dimensions and addon info necessary to power the daily
+  `amo_stats_dau_historical_v1` query.
+
+  NOTE: This tables has been moved from `amo_prod.fenix_addons_by_client_v1`.
+        A new versio of this table exists that is based on Glean Addons ping: `addons_derived.fenix_addons_by_client_v1`
+owners:
+  - kik@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+  table_table: client_level
+scheduling:
+  dag_name: bqetl_amo_stats
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - sample_id

@@ -1,0 +1,26 @@
+fields:
+- name: month
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The submission_date's month (from the v1 table).
+- name: state
+  type: STRING
+  mode: NULLABLE
+  description: |
+    The US state.
+- name: Bing
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The sum of ad clicks by month for Bing.
+- name: Google
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The sum of ad clicks by month for Google.
+- name: DuckDuckGo
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The sum of ad clicks by month for DuckDuckGo.

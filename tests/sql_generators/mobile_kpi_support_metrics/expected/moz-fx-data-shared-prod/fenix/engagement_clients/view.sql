@@ -50,6 +50,7 @@ attribution AS (
     adjust_attribution_timestamp,
     distribution_id,
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 )
@@ -87,6 +88,7 @@ SELECT
   attribution.adjust_attribution_timestamp,
   attribution.distribution_id,
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

@@ -1,0 +1,10 @@
+fields:
+- mode: REQUIRED
+  name: country
+  type: STRING
+- mode: REQUIRED
+  name: month
+  type: DATE
+- mode: REQUIRED
+  name: revenue
+  type: INTEGER

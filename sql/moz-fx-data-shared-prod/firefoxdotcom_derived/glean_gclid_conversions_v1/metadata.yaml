@@ -6,10 +6,10 @@ description: |-
   if they perform different conversion actions
   on different days.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom

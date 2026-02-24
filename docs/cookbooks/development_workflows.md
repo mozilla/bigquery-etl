@@ -599,3 +599,38 @@ Additional planned improvements:
    - Add `.generated` metadata to track generated files
    - `deploy` command auto-regenerates if template changed
    - `clean` command removes generated files in target directories
+
+10. **Easier UDF and SQL test execution:**
+
+    Running tests today requires knowing the right `pytest` invocation and setting
+    up fixtures manually. Tests should be runnable the same way queries are run.
+
+    ```bash
+    # Run tests for a specific UDF
+    ./bqetl routine test mozfun.json.extract_int_map
+
+    # Run all tests for a dataset
+    ./bqetl routine test mozfun.json.*
+
+    # Run SQL query tests against dev target
+    ./bqetl --target dev query test telemetry_derived.clients_daily_v6
+
+    # Run all tests for changed files
+    ./bqetl test --changed
+    ```
+
+    **Challenges to address:**
+    - UDF tests currently run via `pytest` with specific plugin setup; should be
+      invocable directly from `bqetl` without knowing pytest internals
+    - SQL tests need a target environment with real or sampled data; today test
+      fixtures are static and quickly go stale
+    - Test output is hard to read; failures should clearly show which assertion
+      failed and why
+    - No way to run only tests affected by a change (analogous to `--changed` for queries)
+
+    **Potential solutions:**
+    - Add `./bqetl routine test` and `./bqetl query test` commands that wrap pytest
+      with the right arguments and environment
+    - Integrate with `--target` so tests run against dev data rather than static fixtures
+    - Auto-generate test fixtures from sampled prod data (ties into item 4 above)
+    - Report test results in a structured format compatible with CI

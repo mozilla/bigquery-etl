@@ -2,6 +2,8 @@
 
 import logging
 import multiprocessing
+import re
+import shutil
 import sys
 from collections.abc import MutableMapping
 from functools import partial
@@ -38,7 +40,8 @@ from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.util.common import block_coding_agents, render
+from bigquery_etl.routine import publish_routines
+from bigquery_etl.util.common import block_coding_agents, project_dirs, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.view import View
 
@@ -97,6 +100,12 @@ log = logging.getLogger(__name__)
     default=False,
     help="Deploy views (view.sql files)",
 )
+@click.option(
+    "--routines",
+    is_flag=True,
+    default=False,
+    help="Deploy routines (udf.sql and stored_procedure.sql files)",
+)
 @sql_dir_option
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
@@ -144,6 +153,24 @@ log = logging.getLogger(__name__)
     "Tables with allow_field_addition=true will still be updated.",
 )
 @click.option(
+    "--routine-dependency-dir",
+    "--routine_dependency_dir",
+    default=ConfigLoader.get("routine", "dependency_dir"),
+    help="Directory containing JavaScript dependency files for UDFs.",
+)
+@click.option(
+    "--routine-gcs-bucket",
+    "--routine_gcs_bucket",
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
+    help="GCS bucket where UDF dependency files are uploaded.",
+)
+@click.option(
+    "--routine-gcs-path",
+    "--routine_gcs_path",
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
+    help="GCS path in the bucket where UDF dependency files are uploaded.",
+)
+@click.option(
     "--view-force",
     "--view_force",
     is_flag=True,
@@ -181,6 +208,7 @@ def deploy(
     paths,
     tables,
     views,
+    routines,
     sql_dir,
     project_ids,
     destination_project_id,
@@ -194,6 +222,9 @@ def deploy(
     table_skip_existing,
     table_skip_external_data,
     table_skip_existing_schemas,
+    routine_dependency_dir,
+    routine_gcs_bucket,
+    routine_gcs_path,
     view_force,
     view_target_project,
     view_add_managed_label,
@@ -201,9 +232,9 @@ def deploy(
     view_authorized_only,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views]):
+    if not any([tables, views, routines]):
         raise click.UsageError(
-            "Must specify at least one artifact type: --tables or --views"
+            "Must specify at least one artifact type: --tables, --views, or --routines"
         )
 
     if view_skip_authorized and view_authorized_only:
@@ -218,6 +249,10 @@ def deploy(
         )
         sys.exit(1)
 
+    # Save original values before they may be cleared by the target handling below.
+    original_destination_project_id = destination_project_id
+    original_dataset_prefix = dataset_prefix
+
     artifact_types = []
     if tables:
         artifact_types.append("table")
@@ -227,77 +262,242 @@ def deploy(
     credentials = None
     id_token = get_id_token()
 
-    artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
-
     using_target = bool(destination_project_id or dataset_prefix)
 
-    # When using --target, always copy artifacts to the target directory so the
-    # view self-reference and destination path are correct. --defer/--isolated
-    # additionally control whether SQL references within the files are rewritten.
-    if using_target:
-        artifact_ids = list(artifacts.keys())
-        file_paths = [fp for fp, _ in artifacts.values()]
-        artifact_types_list = [at for _, at in artifacts.values()]
-        rewritten_paths = prepare_target_files(
-            file_paths,
-            sql_dir,
-            project_ids[0] if project_ids else "",
-            destination_project_id,
-            dataset_prefix,
-            defer,
-            isolated,
-            auto_deploy=False,
+    if tables or views:
+        artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
+
+        # When using --target, always copy artifacts to the target directory so the
+        # view self-reference and destination path are correct. --defer/--isolated
+        # additionally control whether SQL references within the files are rewritten.
+        if using_target:
+            artifact_ids = list(artifacts.keys())
+            file_paths = [fp for fp, _ in artifacts.values()]
+            artifact_types_list = [at for _, at in artifacts.values()]
+            rewritten_paths = prepare_target_files(
+                file_paths,
+                sql_dir,
+                project_ids[0] if project_ids else "",
+                destination_project_id,
+                dataset_prefix,
+                defer,
+                isolated,
+                auto_deploy=False,
+            )
+            artifacts = {
+                artifact_ids[i]: (rewritten_paths[i], artifact_types_list[i])
+                for i in range(len(artifact_ids))
+            }
+            # Files are now at the target location with project/prefix already embedded
+            # in the path; clear these so deployment functions don't apply them again.
+            destination_project_id = None
+            dataset_prefix = None
+
+        # filter views based on authorized flags
+        if view_skip_authorized or view_authorized_only:
+            artifacts = _filter_views_by_authorization(
+                artifacts, view_skip_authorized, view_authorized_only, id_token
+            )
+
+        if not artifacts:
+            click.echo("No artifacts found matching the specified criteria.")
+        else:
+            click.echo(f"Found {len(artifacts)} artifact(s) to deploy.")
+
+            try:
+                dependency_graph = _build_dependency_graph(artifacts)
+            except Exception as e:
+                click.echo(f"Error building dependency graph: {e}", err=True)
+                sys.exit(1)
+
+            options = {
+                "dry_run": dry_run,
+                "respect_dryrun_skip": respect_dryrun_skip,
+                "use_cloud_function": False,
+                "sql_dir": sql_dir,
+                "credentials": credentials,
+                "id_token": id_token,
+                "destination_project_id": destination_project_id,
+                "dataset_prefix": dataset_prefix,
+                "auto_create_dataset": using_target,
+                # Table options
+                "table_force": table_force,
+                "table_skip_existing": table_skip_existing,
+                "table_skip_external_data": table_skip_external_data,
+                "table_skip_existing_schemas": table_skip_existing_schemas,
+                # View options
+                "view_force": view_force,
+                "view_target_project": view_target_project,
+                "view_add_managed_label": view_add_managed_label,
+            }
+
+            results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
+            _report_results(results)
+
+    if routines:
+        effective_project = original_destination_project_id or (
+            project_ids[0] if project_ids else None
         )
-        artifacts = {
-            artifact_ids[i]: (rewritten_paths[i], artifact_types_list[i])
-            for i in range(len(artifact_ids))
-        }
-        # Files are now at the target location with project/prefix already embedded
-        # in the path; clear these so deployment functions don't apply them again.
-        destination_project_id = None
-        dataset_prefix = None
 
-    # filter views based on authorized flags
-    if view_skip_authorized or view_authorized_only:
-        artifacts = _filter_views_by_authorization(
-            artifacts, view_skip_authorized, view_authorized_only, id_token
-        )
+        # Build (target_dir, pattern) pairs from paths.
+        # A path can be a routine file path (udf.sql / stored_procedure.sql) or a
+        # name pattern (e.g. "mozfun.json.*").  File paths are resolved to the
+        # project directory + a fully-qualified pattern; name patterns are run
+        # against all project directories.
+        routine_calls: List[Tuple[str, Optional[str]]] = []
+        if paths:
+            for path_str in paths:
+                p = Path(path_str)
+                if p.name in ("udf.sql", "stored_procedure.sql"):
+                    project_dir = p.parent.parent.parent
+                    pattern = f"{p.parent.parent.name}.{p.parent.name}"
 
-    if not artifacts:
-        click.echo("No artifacts found matching the specified criteria.")
-        sys.exit(0)
+                    if using_target and effective_project:
+                        # Copy routine files to the target project directory so the
+                        # deployed routine is tracked locally, like queries/views.
+                        from bigquery_etl.routine.parse_routine import read_routine_dir
 
-    click.echo(f"Found {len(artifacts)} artifact(s) to deploy.")
+                        sanitized_prefix = (
+                            re.sub(r"[^a-zA-Z0-9_]", "_", original_dataset_prefix)
+                            if original_dataset_prefix
+                            else ""
+                        )
+                        source_project = project_dir.name
+                        target_dataset = f"{sanitized_prefix}{p.parent.parent.name}"
+                        target_routine_dir = (
+                            Path(sql_dir)
+                            / effective_project
+                            / target_dataset
+                            / p.parent.name  # routine name
+                        )
+                        target_routine_dir.mkdir(parents=True, exist_ok=True)
+                        for item in p.parent.iterdir():
+                            if item.is_file():
+                                shutil.copy2(item, target_routine_dir / item.name)
+                        known_udfs = list(read_routine_dir(str(project_dir)).keys())
+                        _rewrite_routine_for_target(
+                            target_routine_dir / p.name,
+                            effective_project,
+                            target_dataset,
+                            source_project,
+                            original_dataset_prefix,
+                            known_udfs,
+                        )
+                        click.echo(f"ℹ️  Copied routine to target: {target_routine_dir}")
 
-    try:
-        dependency_graph = _build_dependency_graph(artifacts)
-    except Exception as e:
-        click.echo(f"Error building dependency graph: {e}", err=True)
-        sys.exit(1)
+                    # Publish from source directory so raw_routine.project reflects
+                    # the original project, enabling correct cross-project reference rewriting.
+                    routine_calls.append((str(project_dir), pattern))
+                else:
+                    for target in project_dirs(
+                        project_ids[0] if project_ids else None, sql_dir
+                    ):
+                        routine_calls.append((target, path_str))
+        else:
+            for source_dir in project_dirs(
+                project_ids[0] if project_ids else None, sql_dir
+            ):
+                if using_target and effective_project:
+                    _copy_routine_dir_to_target(
+                        source_dir, sql_dir, effective_project, original_dataset_prefix
+                    )
+                routine_calls.append((source_dir, None))
 
-    options = {
-        "dry_run": dry_run,
-        "respect_dryrun_skip": respect_dryrun_skip,
-        "use_cloud_function": False,
-        "sql_dir": sql_dir,
-        "credentials": credentials,
-        "id_token": id_token,
-        "destination_project_id": destination_project_id,
-        "dataset_prefix": dataset_prefix,
-        "auto_create_dataset": using_target,
-        # Table options
-        "table_force": table_force,
-        "table_skip_existing": table_skip_existing,
-        "table_skip_external_data": table_skip_external_data,
-        "table_skip_existing_schemas": table_skip_existing_schemas,
-        # View options
-        "view_force": view_force,
-        "view_target_project": view_target_project,
-        "view_add_managed_label": view_add_managed_label,
-    }
+        for target, pattern in routine_calls:
+            publish_routines.publish(
+                target=target,
+                project_id=effective_project,
+                dependency_dir=routine_dependency_dir,
+                gcs_bucket=routine_gcs_bucket,
+                gcs_path=routine_gcs_path,
+                public=False,
+                pattern=pattern,
+                dry_run=dry_run,
+                dataset_prefix=original_dataset_prefix,
+                auto_create_dataset=using_target,
+                # Use sequential execution so exceptions surface in the main process
+                # rather than being swallowed in daemon subprocesses.
+                parallelism=1,
+            )
 
-    results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
-    _report_results(results)
+
+def _rewrite_routine_for_target(
+    sql_file: Path,
+    effective_project: str,
+    target_dataset: str,
+    source_project: str,
+    dataset_prefix: Optional[str],
+    known_udfs: List[str],
+) -> None:
+    """Rewrite a UDF file (definition + tests) to reference the target environment.
+
+    Applies the same project/dataset prefix transformations as publish_routine does
+    for BigQuery deployment, so the local copy reflects the actual deployed SQL.
+    """
+    sql = sql_file.read_text()
+    sanitized_prefix = (
+        re.sub(r"[^a-zA-Z0-9_]", "_", dataset_prefix) if dataset_prefix else ""
+    )
+
+    for udf in known_udfs:
+        # Strip source project references when deploying to a different project
+        if source_project != effective_project:
+            sql = sql.replace(f"`{source_project}.{udf}`", udf)
+            sql = sql.replace(f"`{source_project}`.{udf}", udf)
+            sql = sql.replace(f"{source_project}.{udf}", udf)
+
+        # Add target project with sanitized prefix (mirrors publish_routine logic)
+        if sanitized_prefix and "." in udf:
+            udf_dataset, udf_name = udf.split(".", 1)
+            prefixed_udf = f"{sanitized_prefix}{udf_dataset}.{udf_name}"
+            sql = sql.replace(f"`{effective_project}.{udf}`", prefixed_udf)
+            sql = sql.replace(f"`{effective_project}`.{udf}", prefixed_udf)
+            sql = sql.replace(f"{effective_project}.{udf}", prefixed_udf)
+            sql = sql.replace(udf, f"`{effective_project}`.{prefixed_udf}")
+        else:
+            sql = sql.replace(f"`{effective_project}.{udf}`", udf)
+            sql = sql.replace(f"`{effective_project}`.{udf}", udf)
+            sql = sql.replace(f"{effective_project}.{udf}", udf)
+            sql = sql.replace(udf, f"`{effective_project}`.{udf}")
+
+    sql_file.write_text(sql)
+
+
+def _copy_routine_dir_to_target(
+    source_dir: str,
+    sql_dir: str,
+    effective_project: str,
+    dataset_prefix: Optional[str] = None,
+) -> None:
+    """Copy all routine files from source_dir to the target project directory."""
+    from bigquery_etl.routine.parse_routine import read_routine_dir
+
+    sanitized_prefix = (
+        re.sub(r"[^a-zA-Z0-9_]", "_", dataset_prefix) if dataset_prefix else ""
+    )
+    source_project = Path(source_dir).name
+    raw_routines = read_routine_dir(source_dir)
+    known_udfs = list(raw_routines.keys())
+    for raw_routine in raw_routines.values():
+        routine_path = Path(raw_routine.filepath).parent
+        target_dataset = f"{sanitized_prefix}{routine_path.parent.name}"
+        udf_name = routine_path.name
+        target_dir = Path(sql_dir) / effective_project / target_dataset / udf_name
+        target_dir.mkdir(parents=True, exist_ok=True)
+        for item in routine_path.iterdir():
+            if item.is_file():
+                shutil.copy2(item, target_dir / item.name)
+        for sql_file_name in ("udf.sql", "stored_procedure.sql"):
+            sql_file = target_dir / sql_file_name
+            if sql_file.exists():
+                _rewrite_routine_for_target(
+                    sql_file,
+                    effective_project,
+                    target_dataset,
+                    source_project,
+                    dataset_prefix,
+                    known_udfs,
+                )
 
 
 def _discover_artifacts(

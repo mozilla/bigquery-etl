@@ -79,7 +79,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files
+from ..util.target import ensure_dataset_exists, prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -845,7 +845,8 @@ def backfill(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    # Prepare target directories if using --target
+    # Prepare target directories if using --target: copy files to local target dir.
+    # Use auto_deploy=False here; dataset/table creation is handled per-query below.
     query_files = prepare_target_files(
         [Path(qf) for qf in query_files],
         sql_dir,
@@ -854,8 +855,12 @@ def backfill(
         dataset_prefix,
         defer,
         isolated,
-        auto_deploy=True,
+        auto_deploy=False,
     )
+    # Files are now at the target location with project/prefix already embedded
+    # in the path; clear these so the destination computation below doesn't re-apply them.
+    destination_project_id = None
+    dataset_prefix = None
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -942,6 +947,12 @@ def backfill(
             final_destination = destination_table or calculated_destination
 
             client = bigquery.Client(project=effective_project)
+            if not dry_run and (
+                ctx.obj.get("target") if ctx.obj else None
+            ):
+                ensure_dataset_exists(
+                    client, f"{effective_project}.{dataset}"
+                )
             try:
                 client.get_table(final_destination)
             except NotFound:
@@ -950,8 +961,6 @@ def backfill(
                     name=query_file,
                     dry_run=dry_run,
                     billing_project=billing_project,
-                    destination_project_id=destination_project_id,
-                    dataset_prefix=dataset_prefix,
                 )
 
             backfill_query = partial(

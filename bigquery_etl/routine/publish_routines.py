@@ -121,6 +121,7 @@ def _publish_udf_worker(
     public,
     dry_run,
     dataset_prefix=None,
+    auto_create_dataset=False,
 ):
     """Worker function for publishing a single UDF."""
     client = bigquery.Client(project_id)
@@ -134,6 +135,7 @@ def _publish_udf_worker(
         public,
         dry_run=dry_run,
         dataset_prefix=dataset_prefix,
+        auto_create_dataset=auto_create_dataset,
     )
 
 
@@ -148,6 +150,7 @@ def publish(
     dry_run=False,
     parallelism=8,
     dataset_prefix=None,
+    auto_create_dataset=False,
 ):
     """Publish routines in the provided directory."""
     if dependency_dir and os.path.exists(dependency_dir):
@@ -194,6 +197,7 @@ def publish(
         public=public,
         dry_run=dry_run,
         dataset_prefix=dataset_prefix,
+        auto_create_dataset=auto_create_dataset,
     )
 
     # use topological sorter to publish UDFs in order;
@@ -218,12 +222,20 @@ def publish_routine(
     is_public,
     dry_run=False,
     dataset_prefix=None,
+    auto_create_dataset=False,
 ):
     """Publish a specific routine to BigQuery."""
-    # Apply dataset prefix if provided
+    from bigquery_etl.util.target import ensure_dataset_exists
+
+    # Apply dataset prefix if provided, sanitizing to remove invalid characters
     dataset_name = raw_routine.dataset
     if dataset_prefix:
-        dataset_name = f"{dataset_prefix}{dataset_name}"
+        sanitized_prefix = re.sub(r"[^a-zA-Z0-9_]", "_", dataset_prefix)
+        dataset_name = f"{sanitized_prefix}{dataset_name}"
+
+    if auto_create_dataset and not dry_run:
+        dataset_ref = f"{project_id}.{dataset_name}"
+        ensure_dataset_exists(client, dataset_ref)
 
     if is_public:
         # create new dataset for routine if necessary
@@ -244,6 +256,12 @@ def publish_routine(
         dataset = client.update_dataset(dataset, ["access_entries"])
 
     # transforms temporary UDF to persistent UDFs and publishes them
+    source_project = raw_routine.project
+    # Sanitize dataset prefix to remove hyphens/invalid chars that would produce
+    # invalid BigQuery identifiers when used as unquoted dataset name components
+    sanitized_dataset_prefix = (
+        re.sub(r"[^a-zA-Z0-9_]", "_", dataset_prefix) if dataset_prefix else None
+    )
     for definition in raw_routine.definitions:
         # Apply dataset prefix to the routine definition if needed
         if dataset_prefix:
@@ -261,11 +279,18 @@ def publish_routine(
         # Within a standard SQL function, references to other entities require
         # explicit project IDs
         for udf in set(known_udfs):
+            # Strip source project references when deploying to a different project,
+            # to avoid creating invalid 4-part identifiers like source.`target`.dataset.name
+            if source_project != project_id:
+                definition = definition.replace(f"`{source_project}.{udf}`", udf)
+                definition = definition.replace(f"`{source_project}`.{udf}", udf)
+                definition = definition.replace(f"{source_project}.{udf}", udf)
+
             # Apply prefix to UDF references if dataset prefix is set
-            if dataset_prefix and "." in udf:
+            if sanitized_dataset_prefix and "." in udf:
                 udf_dataset, udf_name = udf.split(".", 1)
-                prefixed_udf = f"{dataset_prefix}{udf_dataset}.{udf_name}"
-                # Replace with prefixed version
+                prefixed_udf = f"{sanitized_dataset_prefix}{udf_dataset}.{udf_name}"
+                # Strip existing target-project-qualified references before re-adding
                 definition = definition.replace(f"`{project_id}.{udf}`", prefixed_udf)
                 definition = definition.replace(f"`{project_id}`.{udf}", prefixed_udf)
                 definition = definition.replace(f"{project_id}.{udf}", prefixed_udf)

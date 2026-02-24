@@ -4,6 +4,7 @@ import logging
 import os
 import sys
 from argparse import ArgumentParser
+from datetime import datetime
 
 import pandas as pd
 import requests
@@ -165,6 +166,9 @@ MOBILE_DATABASES = [
 
 DATABASES = DESKTOP_DATABASES + MOBILE_DATABASES
 
+# Semrush SERP feature codes: FK = feature keyword counts, FP = feature positions.
+# Each code maps to a SERP feature type (e.g., featured snippets, knowledge panels).
+# See https://developer.semrush.com/api/v3/analytics/domain-reports/#domain-organic-search-keywords
 FK_CODES = [
     1,
     2,
@@ -238,19 +242,12 @@ BASE_HEADERS = {
 }
 
 
-REQUEST_TIMEOUT = 30
-
-SESSION = requests.Session()
-RETRIES = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
-
-SESSION.mount("https://", HTTPAdapter(max_retries=RETRIES))
-
 NON_NUMERIC_COLUMNS = {"submission_date", "domain", "database", "refreshed_at"}
 
 
-def fetch_domain_data(domain, database="us"):
+def fetch_domain_data(session, domain, database="us"):
     """Fetch domain_ranks data from Semrush API."""
-    resp = SESSION.get(
+    resp = session.get(
         API_URL,
         params={
             "key": SEMRUSH_API_KEY,
@@ -259,7 +256,7 @@ def fetch_domain_data(domain, database="us"):
             "database": database,
             "export_columns": EXPORT_COLUMNS,
         },
-        timeout=REQUEST_TIMEOUT,
+        timeout=30,
     )
     resp.raise_for_status()
     return resp.text
@@ -283,13 +280,13 @@ def parse_response(response_text):
     # Use responses own date as submission_date (data is typically one day behind).
     header_map = dict(zip(headers, values))
     response_date = header_map.get("Date", "")
-    if not response_date or len(response_date) != 8:
+    try:
+        parsed_date = datetime.strptime(response_date, "%Y%m%d").date()
+    except ValueError:
         logging.warning(f"Missing or invalid date in response: {response_date}")
         return None
 
-    row = {
-        "submission_date": f"{response_date[:4]}-{response_date[4:6]}-{response_date[6:8]}"
-    }
+    row = {"submission_date": parsed_date.strftime("%Y-%m-%d")}
     seen_features = set()
 
     for header, value in zip(headers, values):
@@ -331,6 +328,11 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     databases = args.database if args.database else DATABASES
+    session = requests.Session()
+    retries = Retry(
+        total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504]
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
 
     rows = []
     failures = 0
@@ -338,7 +340,7 @@ def main():
         for domain in DOMAINS:
             try:
                 logging.info(f"Fetching {domain} / {database}")
-                text = fetch_domain_data(domain, database)
+                text = fetch_domain_data(session, domain, database)
                 row = parse_response(text)
                 if row:
                     rows.append(row)
@@ -365,7 +367,7 @@ def main():
     df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
 
     if args.dry_run:
-        print(df.to_csv())
+        print(df.to_csv(index=False))
         logging.info(f"Dry run: {len(df)} rows parsed, {len(df.columns)} columns")
         return
 

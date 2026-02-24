@@ -6,7 +6,7 @@ fields:
 - name: refreshed_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: UTC timestamp when the row was inserted into BigQuery
+  description: UTC timestamp when the row was processed prior to insertion into BigQuery.
 - name: domain
   type: STRING
   mode: NULLABLE

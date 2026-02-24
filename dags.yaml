@@ -2489,7 +2489,7 @@ bqetl_braze_monitor_plus_users_sync:
 
 bqetl_terms_of_use:
   default_args:
-    depends_on_past: false
+    depends_on_past: true
     email:
       - kik@mozilla.com
       - telemetry-alerts@mozilla.com

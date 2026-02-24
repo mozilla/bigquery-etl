@@ -21,6 +21,7 @@ generated-sql/
 sql/*-sandbox/
 sql/*/dev_*/
 sql/moz-fx-data-dev/
+targets.yaml
 
 # ignore Bigeye artifacts
 moz-fx-data-shared-prod_APPLY.yml

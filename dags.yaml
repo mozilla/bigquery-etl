@@ -406,17 +406,6 @@ bqetl_deletion_request_volume:
   tags:
     - impact/tier_3
 
-bqetl_fenix_event_rollup:
-  schedule_interval: 0 2 * * *
-  default_args:
-    owner: wlachance@mozilla.com
-    start_date: "2020-09-09"
-    email: ["wlachance@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_1
-
 bqetl_org_mozilla_fenix_derived:
   schedule_interval: 0 2 * * *
   default_args:

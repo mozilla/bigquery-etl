@@ -2,6 +2,8 @@ friendly_name: Zendesk Tickets Base (Daily)
 description: |
   Daily metrics for SUMO support tickets from Zendesk.
 
+  Grain: Daily x Product (PST timezone)
+
   Single source of truth tracking:
   - Support tickets created each day
   - Product breakdown
@@ -10,8 +12,6 @@ description: |
   Replaces duplicated q1 CTEs in:
   - daily-sssr-by-product.sql
   - daily-sssr-excl-app-reviews.sql
-
-  Grain: Daily x Product (PST timezone)
 
   Product Mapping:
   - 'firefox-android' → 'firefox-android-reviews'
@@ -26,6 +26,7 @@ description: |
 owners:
   - plee@mozilla.com
 labels:
+  incremental: false
   application: sumo
   team: support
   type: base_metrics

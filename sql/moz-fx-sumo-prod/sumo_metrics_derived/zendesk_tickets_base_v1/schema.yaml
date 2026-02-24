@@ -17,10 +17,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of distinct Zendesk tickets created on this date for this product
-- name: total_ticket_records
-  type: INTEGER
-  mode: NULLABLE
-  description: Total number of ticket records (should equal zendesk_tickets_created)
 - name: year
   type: INTEGER
   mode: NULLABLE

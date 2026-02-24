@@ -1,13 +1,3 @@
--- Zendesk Tickets Base Table (Daily Grain)
--- Single source of truth for SUMO Zendesk support tickets
---
--- This table tracks at DAILY granularity:
--- - Support tickets created each day
--- - Breakdown by product
---
--- Replaces duplicated q1 CTEs in SSSR scripts
---
--- Grain: Daily x Product
 WITH tickets AS (
   SELECT
     DATE(TIMESTAMP(created_at), "America/Los_Angeles") AS date_pst,
@@ -33,10 +23,9 @@ WITH tickets AS (
     AND '2026-01-05'
 )
 SELECT
-  date_pst AS date,
+  date_pst AS `date`,
   product,
   COUNT(DISTINCT ticket_id) AS zendesk_tickets_created,
-  COUNT(*) AS total_ticket_records,
   EXTRACT(YEAR FROM date_pst) AS year,
   EXTRACT(MONTH FROM date_pst) AS month,
   EXTRACT(WEEK FROM date_pst) AS week_number,

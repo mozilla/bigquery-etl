@@ -12,7 +12,6 @@ from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.cli.utils import (
     dataset_prefix_option,
-    destination_project_id_option,
     project_id_option,
 )
 from bigquery_etl.config import ConfigLoader
@@ -44,11 +43,14 @@ def static_():
 )
 @block_coding_agents
 @project_id_option()
-@destination_project_id_option()
 @dataset_prefix_option()
-def publish(project_id, destination_project_id, dataset_prefix):
+@click.pass_context
+def publish(ctx, project_id, dataset_prefix):
     """Publish CSV files as BigQuery tables."""
     source_project = project_id
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     target_project = destination_project_id or project_id
     if target_project == ConfigLoader.get(
         "default", "user_facing_project", fallback="mozdata"

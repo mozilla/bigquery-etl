@@ -245,37 +245,6 @@ def multi_project_id_option(default=None, required=False):
     )
 
 
-def destination_project_id_option(default=None, required=False):
-    """Generate a destination-project-id option for BigQuery operations.
-
-    If --target is specified, uses the target's project_id as default.
-    Precedence: explicit CLI value > target > default parameter.
-    """
-
-    def callback(ctx, param, value):
-        if value is not None:
-            return is_valid_project(ctx, param, value)
-
-        if ctx.obj and "target" in ctx.obj and ctx.obj["target"]:
-            target = ctx.obj["target"]
-            if target.project_id:
-                return target.project_id
-
-        if default is not None:
-            return is_valid_project(ctx, param, default)
-
-        return None
-
-    return click.option(
-        "--destination-project-id",
-        "--destination-project_id",
-        help="GCP project ID for BigQuery operations (defaults to target project if --target is specified)",
-        default=None,
-        callback=callback,
-        required=required,
-    )
-
-
 def dataset_prefix_option(required=False):
     """Generate a dataset-prefix option, with optional default.
 

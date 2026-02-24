@@ -17,7 +17,6 @@ import yaml
 from ..cli.format import format
 from ..cli.utils import (
     dataset_prefix_option,
-    destination_project_id_option,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -387,7 +386,6 @@ Examples:
 @block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
-@destination_project_id_option()
 @dataset_prefix_option()
 @click.option(
     "--dependency-dir",
@@ -415,7 +413,6 @@ def publish(
     ctx,
     name,
     project_id,
-    destination_project_id,
     dataset_prefix,
     dependency_dir,
     gcs_bucket,
@@ -424,6 +421,9 @@ def publish(
 ):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     effective_project = destination_project_id or project_id
 
     public = False

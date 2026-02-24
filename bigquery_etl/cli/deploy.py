@@ -18,7 +18,6 @@ from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     dataset_prefix_option,
     defer_option,
-    destination_project_id_option,
     isolated_option,
     is_authenticated,
     multi_project_id_option,
@@ -110,7 +109,6 @@ log = logging.getLogger(__name__)
 @multi_project_id_option(
     default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
-@destination_project_id_option()
 @dataset_prefix_option()
 @defer_option()
 @isolated_option()
@@ -204,14 +202,15 @@ log = logging.getLogger(__name__)
     default=False,
     help="Only deploy views with labels: {authorized: true} in metadata.yaml",
 )
+@click.pass_context
 def deploy(
+    ctx,
     paths,
     tables,
     views,
     routines,
     sql_dir,
     project_ids,
-    destination_project_id,
     dataset_prefix,
     defer,
     isolated,
@@ -248,6 +247,10 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
 
     # Save original values before they may be cleared by the target handling below.
     original_destination_project_id = destination_project_id

@@ -15,7 +15,6 @@ from google.cloud import bigquery
 
 from ..cli.utils import (
     dataset_prefix_option,
-    destination_project_id_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -137,7 +136,6 @@ def _view_is_valid(v: View) -> bool:
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
-@destination_project_id_option()
 @dataset_prefix_option()
 @click.option(
     "--target-project",
@@ -193,11 +191,12 @@ def _view_is_valid(v: View) -> bool:
     ),
 )
 @respect_dryrun_skip_option(default=False)
+@click.pass_context
 def publish(
+    ctx,
     name,
     sql_dir,
     project_id,
-    destination_project_id,
     dataset_prefix,
     target_project,
     log_level,
@@ -222,7 +221,10 @@ def publish(
             "Cannot use both --skip-authorized and --authorized-only"
         )
 
-    # Use destination_project_id with fallback to target_project for backwards compatibility
+    # Use target project_id with fallback to target_project for backwards compatibility
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     effective_target_project = destination_project_id or target_project
 
     credentials = get_credentials()
@@ -353,7 +355,6 @@ def _collect_views(
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
-@destination_project_id_option()
 @dataset_prefix_option()
 @click.option(
     "--target-project",
@@ -394,11 +395,12 @@ def _collect_views(
     is_flag=True,
     help="Only clean views with labels: {authorized: true} in metadata.yaml",
 )
+@click.pass_context
 def clean(
+    ctx,
     name,
     sql_dir,
     project_id,
-    destination_project_id,
     dataset_prefix,
     target_project,
     log_level,
@@ -420,13 +422,14 @@ def clean(
             "Cannot use both --skip-authorized and --authorized-only"
         )
 
-    # Use destination_project_id with fallback to target_project for backwards compatibility
+    # Use target project_id with fallback to target_project for backwards compatibility
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     effective_target_project = destination_project_id or target_project
 
     if project_id is None and effective_target_project is None:
-        raise click.ClickException(
-            "command requires --project-id or --target-project or --destination-project-id"
-        )
+        raise click.ClickException("command requires --project-id or --target-project")
 
     # Collect views and apply dataset prefix if needed
     views = _collect_views(

@@ -16,7 +16,6 @@ from .. import ConfigLoader
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import (
     dataset_prefix_option,
-    destination_project_id_option,
     paths_matching_name_pattern,
     sql_dir_option,
 )
@@ -70,7 +69,6 @@ def stage():
     help="GCP project to deploy artifacts to (deprecated: use --destination-project-id instead)",
     default="moz-fx-data-integration-tests",
 )
-@destination_project_id_option(default="moz-fx-data-integration-tests")
 @sql_dir_option
 @click.option(
     "--dataset-suffix",
@@ -112,7 +110,6 @@ def deploy(
     ctx,
     paths,
     project_id,
-    destination_project_id,
     sql_dir,
     dataset_suffix,
     dataset_prefix,
@@ -122,6 +119,9 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     effective_project = destination_project_id or project_id
 
     if copy_sql_to_tmp_dir:
@@ -655,7 +655,6 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     help="GCP project to deploy artifacts to (deprecated: use --destination-project-id instead)",
     default="moz-fx-data-integration-tests",
 )
-@destination_project_id_option(default="moz-fx-data-integration-tests")
 @click.option(
     "--dataset-suffix",
     "--dataset_suffix",
@@ -668,8 +667,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     default=False,
     is_flag=True,
 )
-def clean(project_id, destination_project_id, dataset_suffix, delete_expired):
+@click.pass_context
+def clean(ctx, project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
+    destination_project_id = (
+        ctx.obj.get("target").project_id if ctx.obj and ctx.obj.get("target") else None
+    )
     effective_project = destination_project_id or project_id
     client = bigquery.Client(effective_project)
 

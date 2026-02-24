@@ -36,7 +36,7 @@ class _KeepUndefined(jinja2.Undefined):
             raise AttributeError(name)
         return _KeepUndefined(name=f"{self._undefined_name}.{name}")
 
-    def __getitem__(self, key: object) -> "_KeepUndefined":
+    def __getitem__(self, key: object) -> "_KeepUndefined":  # type: ignore[override]
         return _KeepUndefined(name=f"{self._undefined_name}[{key!r}]")
 
 
@@ -107,7 +107,7 @@ def get_deployed_tables_in_target(
     sql_dir: str, target_project: str
 ) -> Set[Tuple[str, str, str]]:
     """Find all tables deployed in the target directory."""
-    deployed = set()
+    deployed: Set[Tuple[str, str, str]] = set()
     target_project_dir = Path(sql_dir) / target_project
 
     if not target_project_dir.exists():

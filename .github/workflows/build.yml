@@ -437,7 +437,7 @@ jobs:
       - *export-dryrun-id-token
       - *auth-gcp-stage
       - name: Deploy changes to stage
-        timeout-minutes: 30
+        timeout-minutes: 60
         run: |
           if [ "${{ github.event.inputs.skip-stage-deploys }}" != "true" ]; then
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true

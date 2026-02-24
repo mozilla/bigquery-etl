@@ -2,22 +2,32 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: 'Date of submission. Computed as: DATE(@submission_date).'
 - name: user_id_sha256
   type: STRING
   mode: NULLABLE
+  description: 'String/text field for user id sha256. Computed as: metrics.string.account_user_id_sha256.'
 - name: service
   type: STRING
   mode: NULLABLE
+  description: 'String/text field for service. Computed as: ).'
 - name: country
   type: STRING
   mode: NULLABLE
+  description: 'String/text field for country. Computed as: `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)
+    OVER w1).'
 - name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE
+  description: 'Boolean flag for seen in tier1 country. Computed as: udf_contains_tier1_country(ARRAY_AGG(country)
+    OVER w1).'
 - name: registered
   type: BOOLEAN
   mode: NULLABLE
+  description: 'Boolean flag for registered. Computed as: LOGICAL_OR(event_name =
+    ''reg_complete'') OVER w1.'
 - name: user_agent_device_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of devices associated with the user, per service, per day. Estimated from the number of unique user agent strings.
+  description: Number of devices associated with the user, per service, per day. Estimated
+    from the number of unique user agent strings.

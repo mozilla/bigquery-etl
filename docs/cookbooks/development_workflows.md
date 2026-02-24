@@ -181,13 +181,13 @@ Deploy several related tables, views, and routines with automatic dependency res
 
 ```bash
 # deploy creates schema/definition only
-./bqetl --target dev deploy telemetry_derived.clients_daily_v6
+./bqetl --target dev --tables deploy telemetry_derived.clients_daily_v6
 # Table exists but is empty
 
-./bqetl --target dev deploy telemetry.clients_daily
+./bqetl --target dev --views deploy telemetry.clients_daily
 # View exists (definition deployed)
 
-./bqetl --target dev deploy udf.normalize_metadata
+./bqetl --target dev --routines deploy udf.normalize_metadata
 # UDF exists (definition deployed)
 
 # query run automatically deploys + runs + populates data

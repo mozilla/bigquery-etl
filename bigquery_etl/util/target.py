@@ -12,7 +12,8 @@ import git
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
-from jinja2 import Template
+import jinja2
+from jinja2 import Environment, Template
 
 from ..config import ConfigLoader
 from ..deploy import (
@@ -25,6 +26,21 @@ from . import extract_from_query_path
 from .common import render as render_template
 
 ROOT = Path(__file__).parent.parent.parent
+
+
+class _KeepUndefined(jinja2.Undefined):
+    """Jinja2 Undefined that preserves {{ var.attr }} expressions in output instead of raising."""
+
+    def __str__(self) -> str:
+        return "{{ " + (self._undefined_name or "") + " }}"
+
+    def __getattr__(self, name: str) -> "_KeepUndefined":
+        if name.startswith("__"):
+            raise AttributeError(name)
+        return _KeepUndefined(name=f"{self._undefined_name}.{name}")
+
+    def __getitem__(self, key: object) -> "_KeepUndefined":
+        return _KeepUndefined(name=f"{self._undefined_name}[{key!r}]")
 
 
 def sanitize_dataset_id(dataset_id: str) -> str:
@@ -48,6 +64,21 @@ class Target:
     dataset_prefix: Optional[str] = attr.ib(default=None)
 
 
+def render_dataset_prefix(
+    dataset_prefix: Optional[str], project_id: str
+) -> Optional[str]:
+    """Render {{ artifact.project_id }} in a dataset_prefix template.
+
+    The project_id is automatically sanitized (hyphens → underscores) so the
+    result is always a valid BigQuery dataset name component.
+    """
+    if not dataset_prefix or "{{" not in str(dataset_prefix):
+        return dataset_prefix
+    return Template(str(dataset_prefix)).render(
+        artifact={"project_id": sanitize_dataset_id(project_id or "")}
+    )
+
+
 def get_target(target: str) -> Target:
     targets_file_name = ConfigLoader.get("default", "targets", fallback="targets.yaml")
     targets_file = ConfigLoader.project_dir / targets_file_name
@@ -67,7 +98,8 @@ def get_target(target: str) -> Target:
         git_commit = "unknown"
 
     targets_content = targets_file.read_text()
-    template = Template(targets_content)
+    env = Environment(undefined=_KeepUndefined)
+    template = env.from_string(targets_content)
     rendered_content = template.render(git={"branch": git_branch, "commit": git_commit})
 
     targets = yaml.safe_load(rendered_content)
@@ -304,6 +336,17 @@ def prepare_target_files(
 
     if not destination_project_id and not dataset_prefix:
         return query_files
+
+    # Render {{ artifact.project_id }} in dataset_prefix using the source project.
+    # Extract the project from the first query file when project_id is not explicitly set.
+    if dataset_prefix and "{{" in str(dataset_prefix):
+        source_project = project_id
+        if not source_project and query_files:
+            try:
+                source_project, _, _ = extract_from_query_path(query_files[0])
+            except Exception:
+                pass
+        dataset_prefix = render_dataset_prefix(dataset_prefix, source_project or "")
 
     target_query_files = []
     for query_file in query_files:

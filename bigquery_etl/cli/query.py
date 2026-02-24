@@ -947,12 +947,8 @@ def backfill(
             final_destination = destination_table or calculated_destination
 
             client = bigquery.Client(project=effective_project)
-            if not dry_run and (
-                ctx.obj.get("target") if ctx.obj else None
-            ):
-                ensure_dataset_exists(
-                    client, f"{effective_project}.{dataset}"
-                )
+            if not dry_run and (ctx.obj.get("target") if ctx.obj else None):
+                ensure_dataset_exists(client, f"{effective_project}.{dataset}")
             try:
                 client.get_table(final_destination)
             except NotFound:

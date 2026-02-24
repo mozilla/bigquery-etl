@@ -331,7 +331,9 @@ def deploy(
                 "view_add_managed_label": view_add_managed_label,
             }
 
-            results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
+            results = _execute_deployment(
+                artifacts, dependency_graph, options, parallelism
+            )
             _report_results(results)
 
     if routines:
@@ -383,7 +385,9 @@ def deploy(
                             original_dataset_prefix,
                             known_udfs,
                         )
-                        click.echo(f"ℹ️  Copied routine to target: {target_routine_dir}")
+                        click.echo(
+                            f"ℹ️  Copied routine to target: {target_routine_dir}"
+                        )
 
                     # Publish from source directory so raw_routine.project reflects
                     # the original project, enabling correct cross-project reference rewriting.

@@ -22,3 +22,5 @@ bigquery:
     expiration_days: 775
   range_partitioning: null
 require_column_descriptions: true
+monitoring:
+  enabled: true

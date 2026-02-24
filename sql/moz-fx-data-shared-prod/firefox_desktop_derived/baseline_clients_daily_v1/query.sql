@@ -36,6 +36,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS install_source,
     client_info.attribution,
     client_info.distribution,
+    JSON_VALUE(metrics.object.glean_attribution_ext.msclkid) AS attribution_msclkid,
     JSON_VALUE(metrics.object.glean_attribution_ext.dltoken) AS attribution_dltoken,
     JSON_VALUE(metrics.object.glean_attribution_ext.dlsource) AS attribution_dlsource,
     JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
@@ -167,6 +168,9 @@ windowed AS (
     ) AS is_default_browser,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution) OVER w1) AS attribution,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_msclkid) OVER w1
+    ) AS attribution_msclkid,
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(attribution_dltoken) OVER w1
     ) AS attribution_dltoken,

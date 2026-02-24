@@ -36,6 +36,7 @@ WITH base AS (
     metrics.string.first_session_install_source AS install_source,
     client_info.attribution,
     client_info.distribution,
+    CAST(NULL AS STRING) AS attribution_msclkid,
     CAST(NULL AS STRING) AS attribution_dltoken,
     CAST(NULL AS STRING) AS attribution_dlsource,
     CAST(NULL AS STRING) AS attribution_experiment,
@@ -167,6 +168,9 @@ windowed AS (
     ) AS is_default_browser,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution) OVER w1) AS attribution,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_msclkid) OVER w1
+    ) AS attribution_msclkid,
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(attribution_dltoken) OVER w1
     ) AS attribution_dltoken,

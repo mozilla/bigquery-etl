@@ -16,7 +16,7 @@ WITH tickets AS (
     END AS product,
     id AS ticket_id
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket`
+    `moz-fx-sumo-prod.zendesk_syndicate.ticket`
   WHERE
     DATE(TIMESTAMP(created_at), "America/Los_Angeles")
     BETWEEN '2024-07-01'

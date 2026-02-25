@@ -14,7 +14,7 @@ WITH questions AS (
     END AS product,
     q.question_id
   FROM
-    `moz-fx-sumo-prod.sumo.kitsune_questions` q
+    `moz-fx-sumo-prod.sumo_syndicate.kitsune_questions` q
   WHERE
     DATE(TIMESTAMP(q.created_utc), "America/Los_Angeles")
     BETWEEN '2024-07-01'

@@ -65,7 +65,7 @@ def _generate_table_files(
     schema.to_yaml_file(stable_table_bigconfig_dir / SCHEMA_FILE)
 
 
-def generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring):
+def generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring, parallelism=8):
     """Generate the metadata and bigconfig files and write to correct directories."""
     templates_dir = Path(__file__).parent / "templates"
     sql_base_dir = Path(output_dir) / target_project
@@ -90,5 +90,5 @@ def generate_stable_table_bigconfig_files(target_project, output_dir, enable_mon
         for table in table_names
     ]
 
-    with Pool() as pool:
+    with Pool(parallelism) as pool:
         pool.starmap(_generate_table_files, args)

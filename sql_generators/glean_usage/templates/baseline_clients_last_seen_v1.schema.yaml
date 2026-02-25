@@ -157,6 +157,10 @@ fields:
     type: STRING
     description: The distribution name (e.g. 'MozillaOnline').
 - mode: NULLABLE
+  name: attribution_msclkid
+  type: STRING
+  description: Unique token created at Firefox download time using the Microsoft Store.
+- mode: NULLABLE
   name: attribution_dltoken
   type: STRING
   description: Unique token created at Firefox download time.

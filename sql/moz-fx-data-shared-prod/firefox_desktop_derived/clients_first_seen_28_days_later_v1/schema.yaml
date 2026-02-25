@@ -64,6 +64,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The attribution content; similar or the same as UTM content.
+- name: attribution_msclkid
+  type: STRING
+  mode: NULLABLE
+  description: Unique token created at Firefox download time using the Microsoft Store.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE

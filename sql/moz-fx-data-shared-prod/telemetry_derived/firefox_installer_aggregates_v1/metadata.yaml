@@ -2,11 +2,11 @@ friendly_name: Firefox Installer Aggregates
 description: |-
   Aggregated view of Firefox Install pings and their attribution info
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
   shredder_mitigation: true
   table_type: aggregate
 scheduling:

@@ -6,6 +6,8 @@ description: |-
 owners:
 - kik@mozilla.com
 - ahe@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

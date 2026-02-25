@@ -699,7 +699,11 @@ jobs:
       contents: read
     environment: dev
     steps:
-      - *checkout-with-history
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          filter: blob:none
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
@@ -714,7 +718,7 @@ jobs:
           bqetl_script="$PWD/script/bqetl"
 
           # Get parent commit on main from which this branch diverged
-          MAIN_MERGE_BASE=$(git merge-base HEAD origin/main || true)
+          MAIN_MERGE_BASE=$(git merge-base HEAD $GITHUB_REF || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
 
           # Check if the generated-sql branch can be re-used

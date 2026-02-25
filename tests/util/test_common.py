@@ -6,6 +6,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.utils import is_valid_dir
 from bigquery_etl.util.common import (
+    alter_sql_for_sqlglot,
     extract_last_group_by_from_query,
     get_table_dir,
     project_dirs,
@@ -113,6 +114,56 @@ class TestUtilCommon:
         )
         assert "SELECT" in rendered_sql
         assert "`project.dataset.table`" in rendered_sql
+
+    def test_alter_sql_for_sqlglot(self):
+        udf_sql_input = """
+            SELECT
+              mozfun.assert.true(TRUE),
+              mozfun.assert.false(FALSE),
+              mozfun.assert.null(NULL)
+        """
+        expected_udf_sql_output = """
+            SELECT
+              mozfun.assert.`true`(TRUE),
+              mozfun.assert.`false`(FALSE),
+              mozfun.assert.`null`(NULL)
+        """
+        udf_sql_output = alter_sql_for_sqlglot(udf_sql_input)
+        assert udf_sql_output == expected_udf_sql_output
+
+        pipe_syntax_sql_input = """
+            WITH cte AS (
+              FROM table
+              |>  -- same line comment
+                RENAME
+                  column AS column_1
+              |> EXTEND column_2 = function(column_1)
+              |>
+                -- next line comment
+                DROP
+                  unwanted_column
+            )
+            FROM cte
+            |>
+              -- multi-line
+              -- comment
+              SET
+                column_2 = UPPER(column_2)
+            |> WHERE column_1 = 'value'
+            |> DISTINCT
+            |> ORDER BY column_1
+        """
+        expected_pipe_syntax_sql_output = """
+            WITH cte AS (
+              FROM table
+              |> EXTEND column_2 = function(column_1)
+            )
+            FROM cte
+            |> WHERE column_1 = 'value'
+            |> ORDER BY column_1
+        """
+        pipe_syntax_sql_output = alter_sql_for_sqlglot(pipe_syntax_sql_input)
+        assert pipe_syntax_sql_output == expected_pipe_syntax_sql_output
 
     def test_qualify_table_references_in_file(self, tmp_path):
         query = "SELECT * FROM test LEFT JOIN other.joined_query"

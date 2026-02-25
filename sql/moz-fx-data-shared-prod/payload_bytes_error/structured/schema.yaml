@@ -1,0 +1,158 @@
+fields:
+- name: args
+  type: STRING
+  mode: NULLABLE
+  description: query parameter part of the submission URI, e.g. "v=4"
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: content_length
+  type: STRING
+  mode: NULLABLE
+  description: Content-Length header
+- name: date
+  type: STRING
+  mode: NULLABLE
+  description: Date header
+- name: dnt
+  type: STRING
+  mode: NULLABLE
+  description: DNT header
+- name: document_namespace
+  type: STRING
+  mode: NULLABLE
+- name: document_type
+  type: STRING
+  mode: NULLABLE
+- name: document_version
+  type: STRING
+  mode: NULLABLE
+- name: error_message
+  type: STRING
+  mode: NULLABLE
+- name: error_type
+  type: STRING
+  mode: NULLABLE
+- name: exception_class
+  type: STRING
+  mode: NULLABLE
+- name: geo_city
+  type: STRING
+  mode: NULLABLE
+- name: geo_country
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision1
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision2
+  type: STRING
+  mode: NULLABLE
+- name: host
+  type: STRING
+  mode: NULLABLE
+  description: Usually populated with the hostname part of the submission URI, e.g. "incoming.telemetry.mozilla.org"
+- name: input
+  type: STRING
+  mode: NULLABLE
+- name: input_type
+  type: STRING
+  mode: NULLABLE
+- name: job_name
+  type: STRING
+  mode: NULLABLE
+- name: method
+  type: STRING
+  mode: NULLABLE
+  description: HTTP method, e.g. "POST"
+- name: payload
+  type: BYTES
+  mode: NULLABLE
+  description: Gzip-compressed JSON payload
+- name: protocol
+  type: STRING
+  mode: NULLABLE
+  description: e.g. "HTTP/1.1"
+- name: remote_addr
+  type: STRING
+  mode: NULLABLE
+  description: Deprecated; will always be null
+- name: stack_trace
+  type: STRING
+  mode: NULLABLE
+- name: stack_trace_cause_1
+  type: STRING
+  mode: NULLABLE
+- name: stack_trace_cause_2
+  type: STRING
+  mode: NULLABLE
+- name: stack_trace_cause_3
+  type: STRING
+  mode: NULLABLE
+- name: stack_trace_cause_4
+  type: STRING
+  mode: NULLABLE
+- name: stack_trace_cause_5
+  type: STRING
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |
+   Time when the ingestion edge server in GCP accepted this message; format is ISO 8601 with microseconds and timezone "Z",
+   example: "2018-03-12T21:02:18.123456Z"
+- name: uri
+  type: STRING
+  mode: NULLABLE
+  description: e.g. "/submit/telemetry/6c49ec73-4350-45a0-9c8a-6c8f5aded0cf/main/Firefox/58.0.2/release/20180206200532"
+- name: user_agent
+  type: STRING
+  mode: NULLABLE
+  description: User-Agent header
+- name: user_agent_browser
+  type: STRING
+  mode: NULLABLE
+- name: user_agent_os
+  type: STRING
+  mode: NULLABLE
+- name: user_agent_version
+  type: STRING
+  mode: NULLABLE
+- name: x_debug_id
+  type: STRING
+  mode: NULLABLE
+  description: X-Debug-Id header
+- name: x_forwarded_for
+  type: STRING
+  mode: NULLABLE
+  description: Deprecated; will always be null
+- name: x_pingsender_version
+  type: STRING
+  mode: NULLABLE
+  description: X-Pingsender-Version header
+- name: x_pipeline_proxy
+  type: STRING
+  mode: NULLABLE
+  description: Deprecated; will always be null
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+- name: isp_organization
+  type: STRING
+  mode: NULLABLE
+- name: x_source_tags
+  type: STRING
+  mode: NULLABLE
+  description: X-Source-Tags header
+- name: x_telemetry_agent
+  type: STRING
+  mode: NULLABLE
+  description: X-Telemetry-Agent HTTP header
+- name: x_foxsec_ip_reputation
+  type: STRING
+  mode: NULLABLE
+  description: X-Foxsec-IP-Reputation header
+- name: x_lb_tags
+  type: STRING
+  mode: NULLABLE
+  description: X-LB-Tags HTTP header

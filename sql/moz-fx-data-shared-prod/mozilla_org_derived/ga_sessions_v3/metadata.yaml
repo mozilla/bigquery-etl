@@ -3,11 +3,11 @@ description: |-
   Contains 1 row for each Google Analytics 4 session
   The primary key is a composite key (ga_client_id, ga_session_id)
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4

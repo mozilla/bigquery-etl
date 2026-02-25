@@ -1,7 +1,3 @@
-fenix_derived:
-  name: Firefox for Android
-  dataset: fenix
-  dag_name: bqetl_fenix_event_rollup
 mozilla_vpn_derived:
   name: Mozilla VPN
   dataset: mozilla_vpn

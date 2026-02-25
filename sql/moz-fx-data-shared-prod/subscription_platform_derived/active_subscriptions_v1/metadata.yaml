@@ -12,7 +12,9 @@ scheduling:
   # so don't use date_partition_parameter
   date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: active_date
-    require_partition_filter: false
+  # Use clustering rather than partitioning because the whole table is being overwritten every time
+  # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.
+  time_partitioning: null
+  clustering:
+    fields:
+      - active_date

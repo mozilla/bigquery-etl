@@ -1,0 +1,167 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Unique ID for the tax transaction.
+    A transaction is identified by reference to an invoice, checkout session, credit note, subscription, or order.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    This refers to how a transaction is processed by Stripe.
+    Possible values are: `invoice`, `checkout`, `payment_link`, `payment_intent`, `order`, `refund`, `credit_note`.
+- name: currency
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Transaction currency presented to the buyer.
+- name: transaction_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    Date when the transaction is committed in UTC.
+- name: tax_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    Date used to determine the tax rate.
+    It is usually the same date as the transaction date; however, it can be different in the context of refunds.
+    When a credit note is issued, the `transaction_date` is the date on which the credit note is issued,
+    but the `tax_date` is the date when tax was calculated on the original transaction.
+- name: line_item_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Unique ID for the line item associated with the tax transaction.
+    Multiple sales taxes rates may be applied to a single line item, so you may see several rows with the same line item ID.
+- name: subtotal
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Taxable or non-taxable amount.
+- name: total
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Taxable amount plus tax or the non-taxable amount.
+- name: tax_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Unique ID for the product tax code assigned to the line item.
+- name: jurisdiction_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Imposing tax jurisdiction name.
+- name: jurisdiction_level
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Jurisdiction level imposing the tax.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the situs country.
+- name: state_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the situs country subdivision.
+- name: origin_resolved_address_country
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the merchant country.
+- name: origin_resolved_address_state
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the merchant country subdivision.
+- name: taxability
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Indicates whether a line item is `taxable` or `non_taxable`.
+- name: taxability_reason
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Reason for tax collection or non-collection.
+- name: tax_rate
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Tax rate applied to the line item.
+- name: quantity_decimal
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Units sold as per the invoice expressed in decimal.
+- name: customer_tax_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    List of tax ID type-value pairs for the customer.
+- name: destination_resolved_address_country
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the customer country.
+- name: destination_resolved_address_state
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Two-letter ISO code representing the customer country subdivision.
+- name: tax_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Local name of the applicable tax.
+- name: taxable_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Taxable amount in the transaction currency.
+- name: non_taxable_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Non-taxable amount in the transaction currency.
+- name: tax_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Tax amount in the transaction currency.
+- name: filing_currency
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Filing currency for applicable registration jurisdiction.
+- name: filing_exchange_rate
+  type: BIGNUMERIC
+  mode: NULLABLE
+  description: |-
+    Filing exchange rate used.
+- name: filing_total
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Taxable amount plus tax or non-taxable amount in filing currency.
+- name: filing_non_taxable_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Non-taxable amount in filing currency.
+- name: filing_taxable_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Taxable amount in filing currency.
+- name: filing_tax_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: |-
+    Tax amount in filing currency.

@@ -63,7 +63,7 @@ def stage():
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @sql_dir_option
 @click.option(
@@ -354,6 +354,14 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                         break
 
                 path = Path(sql_dir) / project / dataset / name
+                if "*" in name:
+                    # deploy stub for wildcard tables
+                    path = (
+                        Path(sql_dir)
+                        / project
+                        / dataset
+                        / name.replace("*", "wildcard")
+                    )
                 if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
                     # don't create schema for wildcard and metadata tables
@@ -361,7 +369,7 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                     # tables not managed by bigquery-etl by doing a dryrun.
                     # The stage project doesn't have access to prod tables (e.g when referenced)
                     # so we need to create the schema here and deploy it.
-                    if "*" not in name and name != "INFORMATION_SCHEMA":
+                    if name != "INFORMATION_SCHEMA":
                         partitioned_by = None
 
                         if any(
@@ -612,7 +620,7 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @click.option(
     "--dataset-suffix",

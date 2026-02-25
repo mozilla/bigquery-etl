@@ -2,6 +2,8 @@ friendly_name: Kitsune Forum Questions Base (Daily)
 description: |
   Daily metrics for SUMO forum questions from the Kitsune database.
 
+  Grain: Daily x Product (PST timezone)
+
   Single source of truth tracking:
   - Forum questions posted each day
   - Product breakdown
@@ -13,8 +15,6 @@ description: |
   - daily-sssr-by-product.sql
   - daily-sssr-excl-app-reviews.sql
 
-  Grain: Daily x Product (PST timezone)
-
   Used by:
   - SSSR calculation queries
   - Forum health dashboards
@@ -22,6 +22,7 @@ description: |
 owners:
   - plee@mozilla.com
 labels:
+  incremental: false
   application: sumo
   team: support
   type: base_metrics

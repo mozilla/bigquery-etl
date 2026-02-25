@@ -1,0 +1,23 @@
+fields:
+- name: date
+  type: DATE
+  mode: REQUIRED
+  description: Date ticket was created (Pacific Standard Time)
+- name: product
+  type: STRING
+  mode: REQUIRED
+  description: |
+    Mozilla product the ticket is for. Mapped from Zendesk custom_product field:
+    - 'firefox-android' → 'firefox-android-reviews'
+    - 'firefox-ios' → 'firefox-ios-reviews'
+    - 'firefox-private-network-vpn' → 'mozilla-vpn'
+    - 'vpn_relay_bundle' → 'mozilla-vpn'
+    - Others kept as-is
+- name: zendesk_tickets_created
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct Zendesk tickets created on this date for this product
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

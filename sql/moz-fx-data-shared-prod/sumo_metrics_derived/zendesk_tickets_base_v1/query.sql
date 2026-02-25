@@ -26,16 +26,9 @@ SELECT
   date_pst AS `date`,
   product,
   COUNT(DISTINCT ticket_id) AS zendesk_tickets_created,
-  EXTRACT(YEAR FROM date_pst) AS year,
-  EXTRACT(MONTH FROM date_pst) AS month,
-  EXTRACT(WEEK FROM date_pst) AS week_number,
-  EXTRACT(DAYOFWEEK FROM date_pst) AS day_of_week,
-  FORMAT_DATE('%Y-%m', date_pst) AS year_month,
-  FORMAT_DATE('%Y-W%W', date_pst) AS year_week,
-  FORMAT_DATE('%A', date_pst) AS day_name,
   CURRENT_TIMESTAMP() AS etl_timestamp
 FROM
   tickets
 GROUP BY
-  date,
+  `date`,
   product

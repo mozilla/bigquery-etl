@@ -17,6 +17,7 @@ from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -24,7 +25,6 @@ from ..routine.parse_routine import (
     accumulate_dependencies,
     read_routine_dir,
 )
-from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents, render
 from ..view import View

@@ -1,0 +1,9 @@
+friendly_name: Semrush
+description: |-
+  Data on our web properties search performance provided via the Semrush API.
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,0 +1,16 @@
+friendly_name: Domain Overview
+description: |-
+  Daily snapshot of Semrush domain_ranks data for tracked domains.
+  Source: https://developer.semrush.com/api/v3/analytics/basic-docs/
+owners:
+- sherrera@mozilla.com
+labels:
+  owner: sherrera
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.semrush_derived.domain_overview_v1

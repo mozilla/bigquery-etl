@@ -185,6 +185,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
+  - sql/moz-fx-data-marketing-prod/fetch/fetch_deduped/view.sql
+  - sql/moz-fx-data-marketing-prod/fetch/latest_trafficking/view.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-shared-prod/google_play_store/reviews/view.sql

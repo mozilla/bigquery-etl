@@ -24,6 +24,7 @@ from ..routine.parse_routine import (
     accumulate_dependencies,
     read_routine_dir,
 )
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents, render
 from ..view import View
@@ -198,6 +199,20 @@ def deploy(
         )
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
+
+        # If the artifact has an external_data config (e.g. Google Sheets), the
+        # external source can't be recreated in stage. Remove the query file and
+        # clear external_data from metadata so the table is deployed from schema only.
+        stage_metadata_file = new_artifact_path / METADATA_FILE
+        if stage_metadata_file.exists():
+            try:
+                stage_metadata = Metadata.from_file(stage_metadata_file)
+                if stage_metadata.external_data:
+                    stage_metadata.external_data = None
+                    stage_metadata.write(stage_metadata_file)
+            except Exception:
+                pass
+
         updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure

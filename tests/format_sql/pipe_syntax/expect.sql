@@ -70,7 +70,6 @@ FROM
     );
 
 -- SET: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#set_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the SET pipe operator
 FROM
   (SELECT 1 AS x, 11 AS y UNION ALL SELECT 2 AS x, 22 AS y)
 |>
@@ -89,9 +88,8 @@ FROM
     t.x AS original_x,
     x,
     y;
-*/
+
 -- DROP: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#drop_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the DROP pipe operator
 FROM
   (SELECT 'apples' AS item, 2 AS sales, 'fruit' AS category)
 |>
@@ -108,9 +106,8 @@ FROM
   SELECT
     t.x AS original_x,
     y;
-*/
+
 -- RENAME: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#rename_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the RENAME pipe operator
 SELECT
   1 AS x,
   2 AS y,
@@ -124,7 +121,7 @@ SELECT
   SELECT
     *,
     t.y AS t_y;
-*/
+
 -- AS: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#as_pipe_operator
 FROM
   (
@@ -235,7 +232,6 @@ FROM
     category DESC;
 
 -- DISTINCT: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#distinct_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the DISTINCT pipe operator
 FROM
   (
     SELECT
@@ -285,7 +281,7 @@ FROM
 |>
   SELECT
     Produce.item;
-*/
+
 -- JOIN: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#join_pipe_operator
 FROM
   (SELECT 'apples' AS item, 2 AS sales UNION ALL SELECT 'bananas' AS item, 5 AS sales)
@@ -302,14 +298,13 @@ FROM
     id;
 
 -- CALL: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#call_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the CALL pipe operator
 FROM
   input_table
 |>
   CALL tvf1(arg1)
 |>
   CALL tvf2(arg2, arg3);
-*/
+
 -- ORDER BY: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#order_by_pipe_operator
 FROM
   (SELECT 1 AS x UNION ALL SELECT 3 AS x UNION ALL SELECT 2 AS x)
@@ -496,7 +491,6 @@ FROM
   TABLESAMPLE SYSTEM(1 PERCENT);
 
 -- WITH: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#with_pipe_operator
-/* TODO: uncomment after sqlglot adds support for the WITH pipe operator
 SELECT
   1 AS key
 |>
@@ -541,7 +535,7 @@ SELECT
   UNION ALL
     (FROM t1),
     (FROM t2);
-*/
+
 -- PIVOT: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/pipe-syntax#pivot_pipe_operator
 FROM
   (

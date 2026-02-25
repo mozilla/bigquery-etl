@@ -15,7 +15,7 @@ import yaml
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.util.common import render
+from bigquery_etl.util.common import alter_sql_for_sqlglot, render
 
 stable_views = None
 
@@ -39,15 +39,7 @@ def extract_table_references(sql: str) -> List[str]:
     # sqlglot cannot handle scripts with variables and control statements
     if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
         return []
-    # sqlglot parses UDFs with keyword names incorrectly:
-    # https://github.com/tobymao/sqlglot/issues/3332
-    sql = re.sub(
-        r"\.(true|false|null)\(",
-        r".`\1`(",
-        sql,
-        flags=re.IGNORECASE,
-    )
-    query = sqlglot.parse(sql, read="bigquery")
+    query = sqlglot.parse(alter_sql_for_sqlglot(sql), read="bigquery")
     creates = set()
     tables = set()
     for statement in query:

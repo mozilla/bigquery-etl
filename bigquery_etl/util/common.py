@@ -199,20 +199,6 @@ def alter_sql_for_sqlglot(sql: str) -> str:
         flags=re.IGNORECASE,
     )
 
-    # Remove certain pipe operators that SQLGlot doesn't support: https://github.com/tobymao/sqlglot/issues/7130
-    # But we don't remove `CALL` and `WITH` pipe operators because those could reference dependencies.
-    sql = re.sub(
-        (
-            r"^(?P<indent> *)\|>"
-            r"(\s*(#|--).*(\r\n|\r|\n))*"
-            r"\s*(DISTINCT|DROP|RENAME|SET)\b.*(\r\n|\r|\n)"
-            r"((?P=indent) *(?! |\|>).*(\r\n|\r|\n))*"
-        ),
-        "",
-        sql,
-        flags=(re.IGNORECASE | re.MULTILINE),
-    )
-
     return sql
 
 

@@ -34,6 +34,7 @@ SELECT
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.encrypted) AS `encrypted`,
       LAX_BOOL(event_extra.enter) AS `enter`,
+      LAX_BOOL(event_extra.excluded) AS `excluded`,
       LAX_BOOL(event_extra.expand) AS `expand`,
       LAX_BOOL(event_extra.experiments_empty) AS `experiments_empty`,
       LAX_BOOL(event_extra.experiments_success) AS `experiments_success`,

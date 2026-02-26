@@ -34,8 +34,8 @@ LOOP
     ORDINAL(i)
   ] || '''.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
     WHERE
-      data_type NOT LIKE "STRUCT<%"
-      AND data_type NOT LIKE "ARRAY<STRUCT<%"
+      data_type NOT LIKE "%STRUCT%"
+      AND data_type NOT LIKE "%ARRAY%"
     GROUP BY
       table_name  
     ''';

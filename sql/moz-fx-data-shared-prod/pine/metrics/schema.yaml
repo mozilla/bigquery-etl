@@ -41488,6 +41488,51 @@ fields:
         cold applink.
 
         '
+    - name: private_browsing_cleanup_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Wall-clock time from clearPrivateBrowsingData() call start to
+        callback invocation. This currently does not keep track of regular PBM teardown
+        (last PBM window exited).
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -42047,6 +42092,22 @@ fields:
         mode: NULLABLE
       description: 'The proportion of self-hosted cache accesses that found an existing
         entry.
+
+        '
+    - name: private_browsing_cleanup_error_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Rate of clearPrivateBrowsingData() calls that reported at least
+        one observer failure. Denominator is incremented on every call; numerator
+        is incremented when hadFailures is true or the promise rejects. This currently
+        does not keep track of regular PBM teardown (last PBM window exited).
 
         '
   - name: string_list

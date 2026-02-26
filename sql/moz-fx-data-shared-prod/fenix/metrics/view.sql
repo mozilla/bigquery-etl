@@ -1721,7 +1721,8 @@ SELECT
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
-      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
+      metrics.timing_distribution.private_browsing_cleanup_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1862,7 +1863,8 @@ SELECT
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
-      metrics.rate.javascript_self_hosted_cache_hits
+      metrics.rate.javascript_self_hosted_cache_hits,
+      metrics.rate.private_browsing_cleanup_error_rate
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -3801,7 +3803,8 @@ SELECT
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
-      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
+      metrics.timing_distribution.private_browsing_cleanup_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3942,7 +3945,8 @@ SELECT
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
-      metrics.rate.javascript_self_hosted_cache_hits
+      metrics.rate.javascript_self_hosted_cache_hits,
+      metrics.rate.private_browsing_cleanup_error_rate
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -5901,7 +5905,8 @@ SELECT
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
-      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
+      metrics.timing_distribution.private_browsing_cleanup_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6042,7 +6047,8 @@ SELECT
       metrics.rate.sct_signature_cache_hits,
       metrics.rate.cert_trust_cache_hits,
       metrics.rate.web_notification_show_safe_browsing_block,
-      metrics.rate.javascript_self_hosted_cache_hits
+      metrics.rate.javascript_self_hosted_cache_hits,
+      metrics.rate.private_browsing_cleanup_error_rate
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(

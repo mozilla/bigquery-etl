@@ -435,6 +435,11 @@ fields:
   mode: NULLABLE
   description: 'Desktop Launcher status: 0 (Unknown), 1 (Not enabled), 2 (Not checked),
     3 (Not installed), 4 (Installed), 5 (Reinstalled), 6 (Removed)'
+- name: had_existing_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if at least one existing Firefox profile was found on the system
+    prior to this installation
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

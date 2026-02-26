@@ -148,6 +148,6 @@ SELECT
   IF(dou >= 6, TRUE, FALSE) AS is_dau_at_least_6_of_first_7_days,
   IF(dou >= 7, TRUE, FALSE) AS is_dau_at_least_7_of_first_7_days,
   default_browser_number_of_days > 0 AS set_default,
-  mozfun.bits28.active_in_range(dau_bits, -2, 2) AS is_dau_on_days_6_or_7,
+  mozfun.bits28.active_in_range(dau_bits, -1, 2) AS is_dau_on_days_6_or_7,
 FROM
   combined

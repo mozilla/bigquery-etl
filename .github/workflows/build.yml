@@ -704,7 +704,11 @@ jobs:
       contents: read
     environment: *job-env
     steps:
-      - *checkout-with-history
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          filter: blob:none
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
@@ -719,7 +723,7 @@ jobs:
           bqetl_script="$PWD/script/bqetl"
 
           # Get parent commit on main from which this branch diverged
-          MAIN_MERGE_BASE=$(git merge-base HEAD origin/main || true)
+          MAIN_MERGE_BASE=$(git merge-base HEAD $GITHUB_REF || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
 
           # Check if the generated-sql branch can be re-used
@@ -740,6 +744,11 @@ jobs:
           cd "$bigquery_etl"
           export GENERATED_SQL_CHANGED=false
 
+          if [[ -n $MAIN_MERGE_BASE ]]; then
+            echo "Checking out $MAIN_MERGE_BASE for diff"
+            git checkout $MAIN_MERGE_BASE
+          fi
+
           # If SQL generators changed, re-run SQL generation
           if [[ $(git diff --name-only --diff-filter=d ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql_generators) ]]; then
             echo "SQL generator changed; re-generate SQL"
@@ -751,6 +760,8 @@ jobs:
             echo "SQL file was removed; re-generate SQL"
             GENERATED_SQL_CHANGED=true
           fi
+
+          git checkout main
 
           if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
             # Re-run SQL generation

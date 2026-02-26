@@ -15,6 +15,7 @@ const max_content_length = 65000;
 
 async function minimize_pr_diff_comments() {
     if (!process.env.PR_NUMBER) {
+        console.log("No PR number found, skipping minimizing comments.");
         return;
     }
     const { viewer } = await graphql_authorized(
@@ -24,6 +25,7 @@ async function minimize_pr_diff_comments() {
             }
         }`
     );
+    console.log(`GitHub user: ${viewer.login}`);
     const { repository } = await graphql_authorized(
         `query($repo_owner:String!, $repo_name:String!, $pr_number:Int!) {
             repository(owner: $repo_owner, name: $repo_name) {
@@ -47,6 +49,7 @@ async function minimize_pr_diff_comments() {
             pr_number: parseInt(process.env.PR_NUMBER),
         }
     );
+    console.log(`Retrieved ${repository.pullRequest.comments.nodes.length} comments for PR #${process.env.PR_NUMBER}.`);
     for (const comment of repository.pullRequest.comments.nodes) {
         if (
             comment.author.login === viewer.login
@@ -64,6 +67,9 @@ async function minimize_pr_diff_comments() {
                     comment_id: comment.id,
                 }
             );
+        }
+        else {
+            console.log(`Ignoring ${comment.isMinimized ? "" : "un"}minimized comment ${comment.id} by author ${comment.author.login}.`);
         }
     }
 }

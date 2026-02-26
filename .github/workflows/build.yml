@@ -188,7 +188,7 @@ jobs:
       id-token: write
       contents: read
     environment: &job-env
-      name: ${{ github.event_name == 'pull_request_target' && 'external-fork' || 'dev' }}
+      name: ${{ github.event.pull_request.head.repo.fork == true && 'external-fork' || 'dev' }}
     steps:
       - *checkout
       - *setup-python

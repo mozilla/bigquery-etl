@@ -269,8 +269,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  # Deploy to stage CI issues
-  - sql/moz-fx-data-shared-prod/telemetry/main/view.sql
   default_projects:  # projects to use for query dry run jobs
   - moz-fx-data-backfill-10
   - moz-fx-data-backfill-11

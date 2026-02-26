@@ -79,7 +79,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/google_play_store_derived/slow_startup_events_by_startup_type_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
@@ -94,7 +94,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/google_play_store_derived/slow_startup_events_by_startup_type_and_version_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
@@ -109,7 +109,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/google_play_store_derived/slow_startup_events_by_startup_type_version_and_device_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[

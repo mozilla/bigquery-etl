@@ -72,7 +72,7 @@ with DAG(
             "moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1",
             "--include_url_variables",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ago@mozilla.com",
         email=["ago@mozilla.com", "eshallal@mozilla.com"],
     )
@@ -96,7 +96,7 @@ with DAG(
             "moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_mobile_v1",
             "--include_url_variables",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ago@mozilla.com",
         email=["ago@mozilla.com", "eshallal@mozilla.com"],
     )

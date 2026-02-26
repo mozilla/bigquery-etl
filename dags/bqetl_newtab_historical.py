@@ -67,7 +67,7 @@ with DAG(
             "--source-prefix=newtab_interactions_historical",
             "--source-file=firefox_newtab_legacy_interactions",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )

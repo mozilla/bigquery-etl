@@ -67,7 +67,7 @@ with DAG(
             "--source-prefix=braze_pocket_historical",
             "--source-file=pocket_users_historical",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
         email=["lmcfall@mozilla.com"],
     )

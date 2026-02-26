@@ -104,7 +104,7 @@ with DAG(
             "--run-date",
             "{{ ds }}",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="bewu@mozilla.com",
         email=["bewu@mozilla.com"],
     )
@@ -116,7 +116,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_targets_alert_v1/query.py",
         ]
         + ["--run-date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="bewu@mozilla.com",
         email=["bewu@mozilla.com"],
     )

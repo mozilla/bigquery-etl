@@ -3615,7 +3615,7 @@ with DAG(
             "--destination-table",
             "moz-fx-data-shared-prod.firefox_desktop_background_update_derived.events_stream_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="jrediger@mozilla.com",
         email=[
             "ascholtz@mozilla.com",
@@ -3818,7 +3818,7 @@ with DAG(
             "--destination-table",
             "moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="jrediger@mozilla.com",
         email=[
             "ascholtz@mozilla.com",

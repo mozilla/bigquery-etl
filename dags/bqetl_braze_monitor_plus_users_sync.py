@@ -83,7 +83,7 @@ with DAG(
             "--source-prefix=monitor-sunset",
             "--source-files=all_monitor_plus,ppp_auto_renewing,ppp_non_renewing",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="sherrera@mozilla.com",
         email=["sherrera@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

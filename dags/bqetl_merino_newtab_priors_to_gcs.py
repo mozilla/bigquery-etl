@@ -162,7 +162,7 @@ with DAG(
             "--destination-prefix=newtab-merino-exports/priors",
             "--deletion-days-old=90",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="mmiermans@mozilla.com",
         email=[
             "cbeck@mozilla.com",

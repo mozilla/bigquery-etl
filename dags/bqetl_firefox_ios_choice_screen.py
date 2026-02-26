@@ -102,7 +102,7 @@ with DAG(
             "--connect_app_id=989804926",
             "--partition_field=logical_date",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["ebrandi@mozilla.com", "kik@mozilla.com"],
         secrets=[
@@ -123,7 +123,7 @@ with DAG(
             "--connect_app_id=989804926",
             "--partition_field=logical_date",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["ebrandi@mozilla.com", "kik@mozilla.com"],
         secrets=[

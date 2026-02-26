@@ -110,7 +110,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/collection_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -125,7 +125,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/dashboard_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -140,7 +140,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/group_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -155,7 +155,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/issue_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -170,7 +170,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/metric_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -185,7 +185,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/user_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -200,7 +200,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/virtual_table_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[
@@ -215,7 +215,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/bigeye_derived/workspace_service_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com"],
         secrets=[

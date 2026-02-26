@@ -540,7 +540,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_intercept_q3_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -563,7 +563,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_desktop_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -586,7 +586,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -609,7 +609,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_market_fit_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -632,7 +632,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_recommend_v1",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -752,7 +752,7 @@ with DAG(
             "--table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5",
             "--time-partitioning-field=automatic_payout_effective_at",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),
@@ -773,7 +773,7 @@ with DAG(
             "--table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v2",
             "--time-partitioning-field=transaction_date",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=[
             "phlee@mozilla.com",
@@ -1057,7 +1057,7 @@ with DAG(
             "VND",
             "ZAR",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         gcp_conn_id="google_cloud_airflow_gke",

@@ -59,7 +59,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="bewu@mozilla.com",
         email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

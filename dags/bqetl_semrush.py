@@ -67,7 +67,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/semrush_derived/domain_overview_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="sherrera@mozilla.com",
         email=["sherrera@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[

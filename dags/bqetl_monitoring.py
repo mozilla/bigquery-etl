@@ -162,7 +162,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_table_storage_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
@@ -188,7 +188,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_table_storage_timeline_daily_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
@@ -200,7 +200,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_inventory_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
@@ -256,7 +256,7 @@ with DAG(
             "org_mozilla_fennec_aurora_stable",
             "org_mozilla_fenix_nightly_stable",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -315,7 +315,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/looker_dashboard_load_times_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
         secrets=[
@@ -331,7 +331,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_flow_description_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ctroy@mozilla.com",
         email=[
             "aaggarwal@mozilla.com",
@@ -375,7 +375,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
     )
@@ -387,7 +387,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -425,7 +425,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/structured_missing_columns_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )

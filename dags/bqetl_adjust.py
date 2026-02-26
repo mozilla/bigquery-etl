@@ -68,7 +68,7 @@ with DAG(
             "--adjust_app_list",
             "{{ var.value.ADJUST_APP_TOKEN_LIST}}",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -87,7 +87,7 @@ with DAG(
             "--adjust_app_list",
             "{{ var.value.ADJUST_APP_TOKEN_LIST}}",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

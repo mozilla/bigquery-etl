@@ -67,7 +67,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_python_run_check_v1/query.py",
         ]
         + ["--task_instance={{ task_instance_key_str }}", "--run_id={{ run_id }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

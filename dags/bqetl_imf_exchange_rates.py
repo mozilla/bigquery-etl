@@ -73,7 +73,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/external_derived/imf_exchange_rates_v1/query.py",
         ]
         + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

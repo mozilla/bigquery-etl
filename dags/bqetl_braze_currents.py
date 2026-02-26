@@ -90,7 +90,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Click",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -109,7 +109,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.campaigns.Conversion",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -128,7 +128,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Delivery",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -147,7 +147,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.behaviors.subscription.GlobalStateChange",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -166,7 +166,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Bounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -199,7 +199,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.MarkAsSpam",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -218,7 +218,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Open",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -237,7 +237,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Send",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -256,7 +256,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.SoftBounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -275,7 +275,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.behaviors.subscriptiongroup.StateChange",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -294,7 +294,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071",
             "--event-type=users.messages.email.Unsubscribe",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -327,7 +327,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Click",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -346,7 +346,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.campaigns.Conversion",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -365,7 +365,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Delivery",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -384,7 +384,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.behaviors.subscription.GlobalStateChange",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -403,7 +403,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Bounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -436,7 +436,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.MarkAsSpam",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -455,7 +455,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Open",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -474,7 +474,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Send",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -493,7 +493,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.SoftBounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -512,7 +512,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.behaviors.subscriptiongroup.StateChange",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
@@ -531,7 +531,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
             "--event-type=users.messages.email.Bounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )
@@ -564,7 +564,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
             "--event-type=users.messages.email.MarkAsSpam",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )
@@ -583,7 +583,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
             "--event-type=users.messages.email.SoftBounce",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )
@@ -602,7 +602,7 @@ with DAG(
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
             "--event-type=users.messages.email.Unsubscribe",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )

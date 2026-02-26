@@ -14,7 +14,7 @@ FROM (
       normalized_channel AS channel,
       DATE(submission_timestamp) AS submission_date,
       APPROX_QUANTILES(CAST(values.key AS INT64), 1000) as q
-  FROM `mozdata.{{ dataset_name }}.metrics`
+  FROM `moz-fx-data-shared-prod.{{ dataset_name }}.metrics`
   CROSS JOIN UNNEST(metrics.{{ metric.table }}.{{ category }}_{{ metric.name }}.values) as values 
   -- This generates multiple rows based on the `value` field.  This is needed to make the `APPROX_QUANTILES`
   -- weigh `value.key` correctly.

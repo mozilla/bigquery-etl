@@ -16,7 +16,7 @@ FROM (
       normalized_channel AS channel,
       distribution.key as label,
       APPROX_QUANTILES(CAST(values.key AS INT64), 1000) as q
-  FROM `mozdata.{{ dataset_name }}.metrics`
+  FROM `moz-fx-data-shared-prod.{{ dataset_name }}.metrics`
   CROSS JOIN UNNEST(metrics.{{ metric.table }}.{{ category }}_{{ metric.name }}) as distribution
   CROSS JOIN UNNEST(distribution.value.values) as values 
   -- This generates multiple rows based on the `value` field.  This is needed to make the `APPROX_QUANTILES`

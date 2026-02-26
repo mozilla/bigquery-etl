@@ -349,3 +349,4 @@ GROUP BY
   normalized_country_code,
   adjust_network,
   is_default_browser
+-- test change

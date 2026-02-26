@@ -1,9 +1,9 @@
 use_counter_denominators: 
   - name: use_counter_content_documents_destroyed
-  - name: use_counter_top_level_content_documents_destroyed
+  - name: use_counter_dedicated_workers_destroyed
   - name: use_counter_service_workers_destroyed
   - name: use_counter_shared_workers_destroyed
-  - name: use_counter_dedicated_workers_destroyed
+  - name: use_counter_top_level_content_documents_destroyed
 use_counters:
   - name: use_counter_css_doc_alignment_baseline
   - name: use_counter_css_doc_background_repeat_x
@@ -17,6 +17,8 @@ use_counters:
   - name: use_counter_css_doc_css_align_self
   - name: use_counter_css_doc_css_align_tracks
   - name: use_counter_css_doc_css_all
+  - name: use_counter_css_doc_css_anchor_name
+  - name: use_counter_css_doc_css_anchor_scope
   - name: use_counter_css_doc_css_animation
   - name: use_counter_css_doc_css_animation_composition
   - name: use_counter_css_doc_css_animation_delay
@@ -157,6 +159,7 @@ use_counters:
   - name: use_counter_css_doc_css_display
   - name: use_counter_css_doc_css_dominant_baseline
   - name: use_counter_css_doc_css_empty_cells
+  - name: use_counter_css_doc_css_field_sizing
   - name: use_counter_css_doc_css_fill
   - name: use_counter_css_doc_css_fill_opacity
   - name: use_counter_css_doc_css_fill_rule
@@ -219,6 +222,7 @@ use_counters:
   - name: use_counter_css_doc_css_grid_template_rows
   - name: use_counter_css_doc_css_height
   - name: use_counter_css_doc_css_hyphenate_character
+  - name: use_counter_css_doc_css_hyphenate_limit_chars
   - name: use_counter_css_doc_css_hyphens
   - name: use_counter_css_doc_css_image_orientation
   - name: use_counter_css_doc_css_image_rendering
@@ -226,6 +230,7 @@ use_counters:
   - name: use_counter_css_doc_css_initial_letter
   - name: use_counter_css_doc_css_inline_size
   - name: use_counter_css_doc_css_inset
+  - name: use_counter_css_doc_css_inset_area
   - name: use_counter_css_doc_css_inset_block
   - name: use_counter_css_doc_css_inset_block_end
   - name: use_counter_css_doc_css_inset_block_start
@@ -275,6 +280,7 @@ use_counters:
   - name: use_counter_css_doc_css_mask_type
   - name: use_counter_css_doc_css_masonry_auto_flow
   - name: use_counter_css_doc_css_math_depth
+  - name: use_counter_css_doc_css_math_shift
   - name: use_counter_css_doc_css_math_style
   - name: use_counter_css_doc_css_max_block_size
   - name: use_counter_css_doc_css_max_height
@@ -410,6 +416,13 @@ use_counters:
   - name: use_counter_css_doc_css_place_self
   - name: use_counter_css_doc_css_pointer_events
   - name: use_counter_css_doc_css_position
+  - name: use_counter_css_doc_css_position_anchor
+  - name: use_counter_css_doc_css_position_area
+  - name: use_counter_css_doc_css_position_try
+  - name: use_counter_css_doc_css_position_try_fallbacks
+  - name: use_counter_css_doc_css_position_try_options
+  - name: use_counter_css_doc_css_position_try_order
+  - name: use_counter_css_doc_css_position_visibility
   - name: use_counter_css_doc_css_print_color_adjust
   - name: use_counter_css_doc_css_quotes
   - name: use_counter_css_doc_css_r
@@ -474,6 +487,7 @@ use_counters:
   - name: use_counter_css_doc_css_text_align
   - name: use_counter_css_doc_css_text_align_last
   - name: use_counter_css_doc_css_text_anchor
+  - name: use_counter_css_doc_css_text_autospace
   - name: use_counter_css_doc_css_text_combine_upright
   - name: use_counter_css_doc_css_text_decoration
   - name: use_counter_css_doc_css_text_decoration_color
@@ -481,6 +495,7 @@ use_counters:
   - name: use_counter_css_doc_css_text_decoration_skip_ink
   - name: use_counter_css_doc_css_text_decoration_style
   - name: use_counter_css_doc_css_text_decoration_thickness
+  - name: use_counter_css_doc_css_text_decoration_trim
   - name: use_counter_css_doc_css_text_emphasis
   - name: use_counter_css_doc_css_text_emphasis_color
   - name: use_counter_css_doc_css_text_emphasis_position
@@ -495,6 +510,8 @@ use_counters:
   - name: use_counter_css_doc_css_text_underline_offset
   - name: use_counter_css_doc_css_text_underline_position
   - name: use_counter_css_doc_css_text_wrap
+  - name: use_counter_css_doc_css_text_wrap_mode
+  - name: use_counter_css_doc_css_text_wrap_style
   - name: use_counter_css_doc_css_top
   - name: use_counter_css_doc_css_touch_action
   - name: use_counter_css_doc_css_transform
@@ -502,12 +519,14 @@ use_counters:
   - name: use_counter_css_doc_css_transform_origin
   - name: use_counter_css_doc_css_transform_style
   - name: use_counter_css_doc_css_transition
+  - name: use_counter_css_doc_css_transition_behavior
   - name: use_counter_css_doc_css_transition_delay
   - name: use_counter_css_doc_css_transition_duration
   - name: use_counter_css_doc_css_transition_property
   - name: use_counter_css_doc_css_transition_timing_function
   - name: use_counter_css_doc_css_translate
   - name: use_counter_css_doc_css_unicode_bidi
+  - name: use_counter_css_doc_css_user_find
   - name: use_counter_css_doc_css_user_select
   - name: use_counter_css_doc_css_vector_effect
   - name: use_counter_css_doc_css_vertical_align
@@ -515,6 +534,8 @@ use_counters:
   - name: use_counter_css_doc_css_view_timeline_axis
   - name: use_counter_css_doc_css_view_timeline_inset
   - name: use_counter_css_doc_css_view_timeline_name
+  - name: use_counter_css_doc_css_view_transition_class
+  - name: use_counter_css_doc_css_view_transition_name
   - name: use_counter_css_doc_css_visibility
   - name: use_counter_css_doc_css_webkit_align_content
   - name: use_counter_css_doc_css_webkit_align_items
@@ -556,6 +577,8 @@ use_counters:
   - name: use_counter_css_doc_css_webkit_flex_grow
   - name: use_counter_css_doc_css_webkit_flex_shrink
   - name: use_counter_css_doc_css_webkit_flex_wrap
+  - name: use_counter_css_doc_css_webkit_font_feature_settings
+  - name: use_counter_css_doc_css_webkit_font_smoothing
   - name: use_counter_css_doc_css_webkit_justify_content
   - name: use_counter_css_doc_css_webkit_line_clamp
   - name: use_counter_css_doc_css_webkit_mask
@@ -587,6 +610,7 @@ use_counters:
   - name: use_counter_css_doc_css_webkit_transition_timing_function
   - name: use_counter_css_doc_css_webkit_user_select
   - name: use_counter_css_doc_css_white_space
+  - name: use_counter_css_doc_css_white_space_collapse
   - name: use_counter_css_doc_css_width
   - name: use_counter_css_doc_css_will_change
   - name: use_counter_css_doc_css_word_break
@@ -710,6 +734,8 @@ use_counters:
   - name: use_counter_css_page_css_align_self
   - name: use_counter_css_page_css_align_tracks
   - name: use_counter_css_page_css_all
+  - name: use_counter_css_page_css_anchor_name
+  - name: use_counter_css_page_css_anchor_scope
   - name: use_counter_css_page_css_animation
   - name: use_counter_css_page_css_animation_composition
   - name: use_counter_css_page_css_animation_delay
@@ -850,6 +876,7 @@ use_counters:
   - name: use_counter_css_page_css_display
   - name: use_counter_css_page_css_dominant_baseline
   - name: use_counter_css_page_css_empty_cells
+  - name: use_counter_css_page_css_field_sizing
   - name: use_counter_css_page_css_fill
   - name: use_counter_css_page_css_fill_opacity
   - name: use_counter_css_page_css_fill_rule
@@ -912,6 +939,7 @@ use_counters:
   - name: use_counter_css_page_css_grid_template_rows
   - name: use_counter_css_page_css_height
   - name: use_counter_css_page_css_hyphenate_character
+  - name: use_counter_css_page_css_hyphenate_limit_chars
   - name: use_counter_css_page_css_hyphens
   - name: use_counter_css_page_css_image_orientation
   - name: use_counter_css_page_css_image_rendering
@@ -919,6 +947,7 @@ use_counters:
   - name: use_counter_css_page_css_initial_letter
   - name: use_counter_css_page_css_inline_size
   - name: use_counter_css_page_css_inset
+  - name: use_counter_css_page_css_inset_area
   - name: use_counter_css_page_css_inset_block
   - name: use_counter_css_page_css_inset_block_end
   - name: use_counter_css_page_css_inset_block_start
@@ -968,6 +997,7 @@ use_counters:
   - name: use_counter_css_page_css_mask_type
   - name: use_counter_css_page_css_masonry_auto_flow
   - name: use_counter_css_page_css_math_depth
+  - name: use_counter_css_page_css_math_shift
   - name: use_counter_css_page_css_math_style
   - name: use_counter_css_page_css_max_block_size
   - name: use_counter_css_page_css_max_height
@@ -1103,6 +1133,13 @@ use_counters:
   - name: use_counter_css_page_css_place_self
   - name: use_counter_css_page_css_pointer_events
   - name: use_counter_css_page_css_position
+  - name: use_counter_css_page_css_position_anchor
+  - name: use_counter_css_page_css_position_area
+  - name: use_counter_css_page_css_position_try
+  - name: use_counter_css_page_css_position_try_fallbacks
+  - name: use_counter_css_page_css_position_try_options
+  - name: use_counter_css_page_css_position_try_order
+  - name: use_counter_css_page_css_position_visibility
   - name: use_counter_css_page_css_print_color_adjust
   - name: use_counter_css_page_css_quotes
   - name: use_counter_css_page_css_r
@@ -1167,6 +1204,7 @@ use_counters:
   - name: use_counter_css_page_css_text_align
   - name: use_counter_css_page_css_text_align_last
   - name: use_counter_css_page_css_text_anchor
+  - name: use_counter_css_page_css_text_autospace
   - name: use_counter_css_page_css_text_combine_upright
   - name: use_counter_css_page_css_text_decoration
   - name: use_counter_css_page_css_text_decoration_color
@@ -1174,6 +1212,7 @@ use_counters:
   - name: use_counter_css_page_css_text_decoration_skip_ink
   - name: use_counter_css_page_css_text_decoration_style
   - name: use_counter_css_page_css_text_decoration_thickness
+  - name: use_counter_css_page_css_text_decoration_trim
   - name: use_counter_css_page_css_text_emphasis
   - name: use_counter_css_page_css_text_emphasis_color
   - name: use_counter_css_page_css_text_emphasis_position
@@ -1188,6 +1227,8 @@ use_counters:
   - name: use_counter_css_page_css_text_underline_offset
   - name: use_counter_css_page_css_text_underline_position
   - name: use_counter_css_page_css_text_wrap
+  - name: use_counter_css_page_css_text_wrap_mode
+  - name: use_counter_css_page_css_text_wrap_style
   - name: use_counter_css_page_css_top
   - name: use_counter_css_page_css_touch_action
   - name: use_counter_css_page_css_transform
@@ -1195,12 +1236,14 @@ use_counters:
   - name: use_counter_css_page_css_transform_origin
   - name: use_counter_css_page_css_transform_style
   - name: use_counter_css_page_css_transition
+  - name: use_counter_css_page_css_transition_behavior
   - name: use_counter_css_page_css_transition_delay
   - name: use_counter_css_page_css_transition_duration
   - name: use_counter_css_page_css_transition_property
   - name: use_counter_css_page_css_transition_timing_function
   - name: use_counter_css_page_css_translate
   - name: use_counter_css_page_css_unicode_bidi
+  - name: use_counter_css_page_css_user_find
   - name: use_counter_css_page_css_user_select
   - name: use_counter_css_page_css_vector_effect
   - name: use_counter_css_page_css_vertical_align
@@ -1208,6 +1251,8 @@ use_counters:
   - name: use_counter_css_page_css_view_timeline_axis
   - name: use_counter_css_page_css_view_timeline_inset
   - name: use_counter_css_page_css_view_timeline_name
+  - name: use_counter_css_page_css_view_transition_class
+  - name: use_counter_css_page_css_view_transition_name
   - name: use_counter_css_page_css_visibility
   - name: use_counter_css_page_css_webkit_align_content
   - name: use_counter_css_page_css_webkit_align_items
@@ -1249,6 +1294,8 @@ use_counters:
   - name: use_counter_css_page_css_webkit_flex_grow
   - name: use_counter_css_page_css_webkit_flex_shrink
   - name: use_counter_css_page_css_webkit_flex_wrap
+  - name: use_counter_css_page_css_webkit_font_feature_settings
+  - name: use_counter_css_page_css_webkit_font_smoothing
   - name: use_counter_css_page_css_webkit_justify_content
   - name: use_counter_css_page_css_webkit_line_clamp
   - name: use_counter_css_page_css_webkit_mask
@@ -1280,6 +1327,7 @@ use_counters:
   - name: use_counter_css_page_css_webkit_transition_timing_function
   - name: use_counter_css_page_css_webkit_user_select
   - name: use_counter_css_page_css_white_space
+  - name: use_counter_css_page_css_white_space_collapse
   - name: use_counter_css_page_css_width
   - name: use_counter_css_page_css_will_change
   - name: use_counter_css_page_css_word_break
@@ -1391,20 +1439,30 @@ use_counters:
   - name: use_counter_css_page_webkit_user_modify
   - name: use_counter_css_page_webkit_writing_mode
   - name: use_counter_css_page_widows
+  - name: use_counter_deprecated_ops_doc_after_script_execute_event
   - name: use_counter_deprecated_ops_doc_ambient_light_event
   - name: use_counter_deprecated_ops_doc_app_cache
+  - name: use_counter_deprecated_ops_doc_before_script_execute_event
   - name: use_counter_deprecated_ops_doc_components
   - name: use_counter_deprecated_ops_doc_create_image_bitmap_canvas_rendering_context2_d
   - name: use_counter_deprecated_ops_doc_deprecated_testing_attribute
   - name: use_counter_deprecated_ops_doc_deprecated_testing_interface
   - name: use_counter_deprecated_ops_doc_deprecated_testing_method
   - name: use_counter_deprecated_ops_doc_document_release_capture
+  - name: use_counter_deprecated_ops_doc_domattr_modified
+  - name: use_counter_deprecated_ops_doc_domcharacter_data_modified
+  - name: use_counter_deprecated_ops_doc_domnode_inserted
+  - name: use_counter_deprecated_ops_doc_domnode_inserted_into_document
+  - name: use_counter_deprecated_ops_doc_domnode_removed
+  - name: use_counter_deprecated_ops_doc_domnode_removed_from_document
   - name: use_counter_deprecated_ops_doc_domquad_bounds_attr
+  - name: use_counter_deprecated_ops_doc_domsubtree_modified
   - name: use_counter_deprecated_ops_doc_draw_window_canvas_rendering_context2_d
   - name: use_counter_deprecated_ops_doc_element_release_capture
   - name: use_counter_deprecated_ops_doc_element_set_capture
   - name: use_counter_deprecated_ops_doc_external_add_search_provider
   - name: use_counter_deprecated_ops_doc_form_submission_untrusted_event
+  - name: use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
   - name: use_counter_deprecated_ops_doc_idbopen_dboptions_storage_type
   - name: use_counter_deprecated_ops_doc_image_bitmap_rendering_context_transfer_image_bitmap
   - name: use_counter_deprecated_ops_doc_import_xulinto_content
@@ -1441,20 +1499,30 @@ use_counters:
   - name: use_counter_deprecated_ops_doc_webrtc_deprecated_prefix
   - name: use_counter_deprecated_ops_doc_window_cc_ontrollers
   - name: use_counter_deprecated_ops_doc_window_content_untrusted
+  - name: use_counter_deprecated_ops_page_after_script_execute_event
   - name: use_counter_deprecated_ops_page_ambient_light_event
   - name: use_counter_deprecated_ops_page_app_cache
+  - name: use_counter_deprecated_ops_page_before_script_execute_event
   - name: use_counter_deprecated_ops_page_components
   - name: use_counter_deprecated_ops_page_create_image_bitmap_canvas_rendering_context2_d
   - name: use_counter_deprecated_ops_page_deprecated_testing_attribute
   - name: use_counter_deprecated_ops_page_deprecated_testing_interface
   - name: use_counter_deprecated_ops_page_deprecated_testing_method
   - name: use_counter_deprecated_ops_page_document_release_capture
+  - name: use_counter_deprecated_ops_page_domattr_modified
+  - name: use_counter_deprecated_ops_page_domcharacter_data_modified
+  - name: use_counter_deprecated_ops_page_domnode_inserted
+  - name: use_counter_deprecated_ops_page_domnode_inserted_into_document
+  - name: use_counter_deprecated_ops_page_domnode_removed
+  - name: use_counter_deprecated_ops_page_domnode_removed_from_document
   - name: use_counter_deprecated_ops_page_domquad_bounds_attr
+  - name: use_counter_deprecated_ops_page_domsubtree_modified
   - name: use_counter_deprecated_ops_page_draw_window_canvas_rendering_context2_d
   - name: use_counter_deprecated_ops_page_element_release_capture
   - name: use_counter_deprecated_ops_page_element_set_capture
   - name: use_counter_deprecated_ops_page_external_add_search_provider
   - name: use_counter_deprecated_ops_page_form_submission_untrusted_event
+  - name: use_counter_deprecated_ops_page_idbobject_store_create_index_locale
   - name: use_counter_deprecated_ops_page_idbopen_dboptions_storage_type
   - name: use_counter_deprecated_ops_page_image_bitmap_rendering_context_transfer_image_bitmap
   - name: use_counter_deprecated_ops_page_import_xulinto_content
@@ -1491,9 +1559,12 @@ use_counters:
   - name: use_counter_deprecated_ops_page_webrtc_deprecated_prefix
   - name: use_counter_deprecated_ops_page_window_cc_ontrollers
   - name: use_counter_deprecated_ops_page_window_content_untrusted
+  - name: use_counter_doc_animation_commitstyles
   - name: use_counter_doc_clipboard_read
   - name: use_counter_doc_clipboard_readtext
   - name: use_counter_doc_clipboard_write
+  - name: use_counter_doc_commit_styles_non_filling_final_value
+  - name: use_counter_doc_components_shim_resolved
   - name: use_counter_doc_console_assert
   - name: use_counter_doc_console_clear
   - name: use_counter_doc_console_count
@@ -1517,6 +1588,10 @@ use_counters:
   - name: use_counter_doc_console_timestamp
   - name: use_counter_doc_console_trace
   - name: use_counter_doc_console_warn
+  - name: use_counter_doc_cookiestore_delete
+  - name: use_counter_doc_cookiestore_get
+  - name: use_counter_doc_cookiestore_getall
+  - name: use_counter_doc_cookiestore_set
   - name: use_counter_doc_customelementregistry_define
   - name: use_counter_doc_customized_builtin
   - name: use_counter_doc_datatransfer_addelement
@@ -1601,7 +1676,36 @@ use_counters:
   - name: use_counter_doc_get_user_media_unfocused
   - name: use_counter_doc_htmlbuttonelement_popovertargetaction
   - name: use_counter_doc_htmlbuttonelement_popovertargetelement
+  - name: use_counter_doc_htmldialogelement_show
+  - name: use_counter_doc_htmldocument_caretrangefrompoint
+  - name: use_counter_doc_htmldocument_exitpictureinpicture
+  - name: use_counter_doc_htmldocument_featurepolicy
   - name: use_counter_doc_htmldocument_named_getter_hit
+  - name: use_counter_doc_htmldocument_onbeforecopy
+  - name: use_counter_doc_htmldocument_onbeforecut
+  - name: use_counter_doc_htmldocument_onbeforepaste
+  - name: use_counter_doc_htmldocument_oncancel
+  - name: use_counter_doc_htmldocument_onfreeze
+  - name: use_counter_doc_htmldocument_onmousewheel
+  - name: use_counter_doc_htmldocument_onresume
+  - name: use_counter_doc_htmldocument_onsearch
+  - name: use_counter_doc_htmldocument_onwebkitfullscreenchange
+  - name: use_counter_doc_htmldocument_onwebkitfullscreenerror
+  - name: use_counter_doc_htmldocument_pictureinpictureelement
+  - name: use_counter_doc_htmldocument_pictureinpictureenabled
+  - name: use_counter_doc_htmldocument_registerelement
+  - name: use_counter_doc_htmldocument_wasdiscarded
+  - name: use_counter_doc_htmldocument_webkitcancelfullscreen
+  - name: use_counter_doc_htmldocument_webkitcurrentfullscreenelement
+  - name: use_counter_doc_htmldocument_webkitexitfullscreen
+  - name: use_counter_doc_htmldocument_webkitfullscreenelement
+  - name: use_counter_doc_htmldocument_webkitfullscreenenabled
+  - name: use_counter_doc_htmldocument_webkithidden
+  - name: use_counter_doc_htmldocument_webkitisfullscreen
+  - name: use_counter_doc_htmldocument_webkitvisibilitystate
+  - name: use_counter_doc_htmldocument_xmlencoding
+  - name: use_counter_doc_htmldocument_xmlstandalone
+  - name: use_counter_doc_htmldocument_xmlversion
   - name: use_counter_doc_htmlelement_attributestylemap
   - name: use_counter_doc_htmlelement_hidepopover
   - name: use_counter_doc_htmlelement_popover
@@ -1625,10 +1729,50 @@ use_counters:
   - name: use_counter_doc_htmlvideoelement_requestpictureinpicture
   - name: use_counter_doc_htmlvideoelement_requestvideoframecallback
   - name: use_counter_doc_imagedata_colorspace
+  - name: use_counter_doc_invalid_text_directives
   - name: use_counter_doc_js_asmjs
+  - name: use_counter_doc_js_dateparse
+  - name: use_counter_doc_js_dateparse_impl_def
+  - name: use_counter_doc_js_error_capturestacktrace
+  - name: use_counter_doc_js_error_capturestacktrace_ctor
+  - name: use_counter_doc_js_error_capturestacktrace_uncallable_ctor
+  - name: use_counter_doc_js_errorstack_getter
+  - name: use_counter_doc_js_errorstack_getter_no_errordata
+  - name: use_counter_doc_js_errorstack_setter
+  - name: use_counter_doc_js_errorstack_setter_no_errordata
+  - name: use_counter_doc_js_errorstack_setter_nonstring
+  - name: use_counter_doc_js_ic_stub_oom
+  - name: use_counter_doc_js_ic_stub_too_large
+  - name: use_counter_doc_js_is_htmldda_fuse
+  - name: use_counter_doc_js_large_oom_recovered
+  - name: use_counter_doc_js_large_oom_reported
   - name: use_counter_doc_js_late_weekday
+  - name: use_counter_doc_js_legacy_lang_subtag
+  - name: use_counter_doc_js_optimize_array_species_fuse
+  - name: use_counter_doc_js_optimize_get_iterator_fuse
+  - name: use_counter_doc_js_optimize_promise_lookup_fuse
+  - name: use_counter_doc_js_regexp_symbol_protocol_on_primitive
+  - name: use_counter_doc_js_small_oom_recovered
+  - name: use_counter_doc_js_small_oom_reported
+  - name: use_counter_doc_js_subclassing_array_type_2
+  - name: use_counter_doc_js_subclassing_array_type_3
+  - name: use_counter_doc_js_subclassing_arraybuffer_type_3
+  - name: use_counter_doc_js_subclassing_promise_type_2
+  - name: use_counter_doc_js_subclassing_promise_type_3
+  - name: use_counter_doc_js_subclassing_regexp_type_3
+  - name: use_counter_doc_js_subclassing_regexp_type_4
+  - name: use_counter_doc_js_subclassing_sharedarraybuffer_type_3
+  - name: use_counter_doc_js_subclassing_typedarray_type_2
+  - name: use_counter_doc_js_subclassing_typedarray_type_3
+  - name: use_counter_doc_js_thenable
+  - name: use_counter_doc_js_thenable_object_proto
+  - name: use_counter_doc_js_thenable_proto
+  - name: use_counter_doc_js_thenable_standard_proto
+  - name: use_counter_doc_js_use_asm
   - name: use_counter_doc_js_wasm
+  - name: use_counter_doc_js_wasm_legacy_exceptions
   - name: use_counter_doc_location_ancestororigins
+  - name: use_counter_doc_math_mlused
   - name: use_counter_doc_mediadevices_enumeratedevices
   - name: use_counter_doc_mediadevices_getdisplaymedia
   - name: use_counter_doc_mediadevices_getusermedia
@@ -1644,6 +1788,22 @@ use_counters:
   - name: use_counter_doc_mixed_content_upgraded_image_success
   - name: use_counter_doc_mixed_content_upgraded_video_failure
   - name: use_counter_doc_mixed_content_upgraded_video_success
+  - name: use_counter_doc_mls_deriveexporter
+  - name: use_counter_doc_mls_generatecredentialbasic
+  - name: use_counter_doc_mls_generatekeypackage
+  - name: use_counter_doc_mls_generatesignaturekeypair
+  - name: use_counter_doc_mls_groupadd
+  - name: use_counter_doc_mls_groupclose
+  - name: use_counter_doc_mls_groupcreate
+  - name: use_counter_doc_mls_groupjoin
+  - name: use_counter_doc_mls_groupmembers
+  - name: use_counter_doc_mls_groupproposeadd
+  - name: use_counter_doc_mls_groupproposeremove
+  - name: use_counter_doc_mls_groupremove
+  - name: use_counter_doc_mls_receive
+  - name: use_counter_doc_mls_send
+  - name: use_counter_doc_mls_statedelete
+  - name: use_counter_doc_mls_statedeletegroup
   - name: use_counter_doc_moz_get_user_media_insec
   - name: use_counter_doc_navigator_canshare
   - name: use_counter_doc_navigator_clearappbadge
@@ -1675,10 +1835,13 @@ use_counters:
   - name: use_counter_doc_sanitizer_constructor
   - name: use_counter_doc_sanitizer_sanitize
   - name: use_counter_doc_scheduler_posttask
+  - name: use_counter_doc_sectioning_h1_with_no_font_size_or_margins
   - name: use_counter_doc_shadowroot_pictureinpictureelement
   - name: use_counter_doc_svgsvgelement_currentscale_getter
   - name: use_counter_doc_svgsvgelement_currentscale_setter
   - name: use_counter_doc_svgsvgelement_getelementbyid
+  - name: use_counter_doc_text_directive_not_created
+  - name: use_counter_doc_text_directive_pages
   - name: use_counter_doc_window_absoluteorientationsensor
   - name: use_counter_doc_window_accelerometer
   - name: use_counter_doc_window_backgroundfetchmanager
@@ -1847,9 +2010,12 @@ use_counters:
   - name: use_counter_doc_xslstylesheet
   - name: use_counter_doc_xsltprocessor_constructor
   - name: use_counter_doc_you_tube_flash_embed
+  - name: use_counter_page_animation_commitstyles
   - name: use_counter_page_clipboard_read
   - name: use_counter_page_clipboard_readtext
   - name: use_counter_page_clipboard_write
+  - name: use_counter_page_commit_styles_non_filling_final_value
+  - name: use_counter_page_components_shim_resolved
   - name: use_counter_page_console_assert
   - name: use_counter_page_console_clear
   - name: use_counter_page_console_count
@@ -1873,6 +2039,10 @@ use_counters:
   - name: use_counter_page_console_timestamp
   - name: use_counter_page_console_trace
   - name: use_counter_page_console_warn
+  - name: use_counter_page_cookiestore_delete
+  - name: use_counter_page_cookiestore_get
+  - name: use_counter_page_cookiestore_getall
+  - name: use_counter_page_cookiestore_set
   - name: use_counter_page_customelementregistry_define
   - name: use_counter_page_customized_builtin
   - name: use_counter_page_datatransfer_addelement
@@ -1957,7 +2127,36 @@ use_counters:
   - name: use_counter_page_get_user_media_unfocused
   - name: use_counter_page_htmlbuttonelement_popovertargetaction
   - name: use_counter_page_htmlbuttonelement_popovertargetelement
+  - name: use_counter_page_htmldialogelement_show
+  - name: use_counter_page_htmldocument_caretrangefrompoint
+  - name: use_counter_page_htmldocument_exitpictureinpicture
+  - name: use_counter_page_htmldocument_featurepolicy
   - name: use_counter_page_htmldocument_named_getter_hit
+  - name: use_counter_page_htmldocument_onbeforecopy
+  - name: use_counter_page_htmldocument_onbeforecut
+  - name: use_counter_page_htmldocument_onbeforepaste
+  - name: use_counter_page_htmldocument_oncancel
+  - name: use_counter_page_htmldocument_onfreeze
+  - name: use_counter_page_htmldocument_onmousewheel
+  - name: use_counter_page_htmldocument_onresume
+  - name: use_counter_page_htmldocument_onsearch
+  - name: use_counter_page_htmldocument_onwebkitfullscreenchange
+  - name: use_counter_page_htmldocument_onwebkitfullscreenerror
+  - name: use_counter_page_htmldocument_pictureinpictureelement
+  - name: use_counter_page_htmldocument_pictureinpictureenabled
+  - name: use_counter_page_htmldocument_registerelement
+  - name: use_counter_page_htmldocument_wasdiscarded
+  - name: use_counter_page_htmldocument_webkitcancelfullscreen
+  - name: use_counter_page_htmldocument_webkitcurrentfullscreenelement
+  - name: use_counter_page_htmldocument_webkitexitfullscreen
+  - name: use_counter_page_htmldocument_webkitfullscreenelement
+  - name: use_counter_page_htmldocument_webkitfullscreenenabled
+  - name: use_counter_page_htmldocument_webkithidden
+  - name: use_counter_page_htmldocument_webkitisfullscreen
+  - name: use_counter_page_htmldocument_webkitvisibilitystate
+  - name: use_counter_page_htmldocument_xmlencoding
+  - name: use_counter_page_htmldocument_xmlstandalone
+  - name: use_counter_page_htmldocument_xmlversion
   - name: use_counter_page_htmlelement_attributestylemap
   - name: use_counter_page_htmlelement_hidepopover
   - name: use_counter_page_htmlelement_popover
@@ -1981,10 +2180,50 @@ use_counters:
   - name: use_counter_page_htmlvideoelement_requestpictureinpicture
   - name: use_counter_page_htmlvideoelement_requestvideoframecallback
   - name: use_counter_page_imagedata_colorspace
+  - name: use_counter_page_invalid_text_directives
   - name: use_counter_page_js_asmjs
+  - name: use_counter_page_js_dateparse
+  - name: use_counter_page_js_dateparse_impl_def
+  - name: use_counter_page_js_error_capturestacktrace
+  - name: use_counter_page_js_error_capturestacktrace_ctor
+  - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
+  - name: use_counter_page_js_errorstack_getter
+  - name: use_counter_page_js_errorstack_getter_no_errordata
+  - name: use_counter_page_js_errorstack_setter
+  - name: use_counter_page_js_errorstack_setter_no_errordata
+  - name: use_counter_page_js_errorstack_setter_nonstring
+  - name: use_counter_page_js_ic_stub_oom
+  - name: use_counter_page_js_ic_stub_too_large
+  - name: use_counter_page_js_is_htmldda_fuse
+  - name: use_counter_page_js_large_oom_recovered
+  - name: use_counter_page_js_large_oom_reported
   - name: use_counter_page_js_late_weekday
+  - name: use_counter_page_js_legacy_lang_subtag
+  - name: use_counter_page_js_optimize_array_species_fuse
+  - name: use_counter_page_js_optimize_get_iterator_fuse
+  - name: use_counter_page_js_optimize_promise_lookup_fuse
+  - name: use_counter_page_js_regexp_symbol_protocol_on_primitive
+  - name: use_counter_page_js_small_oom_recovered
+  - name: use_counter_page_js_small_oom_reported
+  - name: use_counter_page_js_subclassing_array_type_2
+  - name: use_counter_page_js_subclassing_array_type_3
+  - name: use_counter_page_js_subclassing_arraybuffer_type_3
+  - name: use_counter_page_js_subclassing_promise_type_2
+  - name: use_counter_page_js_subclassing_promise_type_3
+  - name: use_counter_page_js_subclassing_regexp_type_3
+  - name: use_counter_page_js_subclassing_regexp_type_4
+  - name: use_counter_page_js_subclassing_sharedarraybuffer_type_3
+  - name: use_counter_page_js_subclassing_typedarray_type_2
+  - name: use_counter_page_js_subclassing_typedarray_type_3
+  - name: use_counter_page_js_thenable
+  - name: use_counter_page_js_thenable_object_proto
+  - name: use_counter_page_js_thenable_proto
+  - name: use_counter_page_js_thenable_standard_proto
+  - name: use_counter_page_js_use_asm
   - name: use_counter_page_js_wasm
+  - name: use_counter_page_js_wasm_legacy_exceptions
   - name: use_counter_page_location_ancestororigins
+  - name: use_counter_page_math_mlused
   - name: use_counter_page_mediadevices_enumeratedevices
   - name: use_counter_page_mediadevices_getdisplaymedia
   - name: use_counter_page_mediadevices_getusermedia
@@ -2000,6 +2239,22 @@ use_counters:
   - name: use_counter_page_mixed_content_upgraded_image_success
   - name: use_counter_page_mixed_content_upgraded_video_failure
   - name: use_counter_page_mixed_content_upgraded_video_success
+  - name: use_counter_page_mls_deriveexporter
+  - name: use_counter_page_mls_generatecredentialbasic
+  - name: use_counter_page_mls_generatekeypackage
+  - name: use_counter_page_mls_generatesignaturekeypair
+  - name: use_counter_page_mls_groupadd
+  - name: use_counter_page_mls_groupclose
+  - name: use_counter_page_mls_groupcreate
+  - name: use_counter_page_mls_groupjoin
+  - name: use_counter_page_mls_groupmembers
+  - name: use_counter_page_mls_groupproposeadd
+  - name: use_counter_page_mls_groupproposeremove
+  - name: use_counter_page_mls_groupremove
+  - name: use_counter_page_mls_receive
+  - name: use_counter_page_mls_send
+  - name: use_counter_page_mls_statedelete
+  - name: use_counter_page_mls_statedeletegroup
   - name: use_counter_page_moz_get_user_media_insec
   - name: use_counter_page_navigator_canshare
   - name: use_counter_page_navigator_clearappbadge
@@ -2031,10 +2286,13 @@ use_counters:
   - name: use_counter_page_sanitizer_constructor
   - name: use_counter_page_sanitizer_sanitize
   - name: use_counter_page_scheduler_posttask
+  - name: use_counter_page_sectioning_h1_with_no_font_size_or_margins
   - name: use_counter_page_shadowroot_pictureinpictureelement
   - name: use_counter_page_svgsvgelement_currentscale_getter
   - name: use_counter_page_svgsvgelement_currentscale_setter
   - name: use_counter_page_svgsvgelement_getelementbyid
+  - name: use_counter_page_text_directive_not_created
+  - name: use_counter_page_text_directive_pages
   - name: use_counter_page_window_absoluteorientationsensor
   - name: use_counter_page_window_accelerometer
   - name: use_counter_page_window_backgroundfetchmanager
@@ -2226,6 +2484,26 @@ use_counters:
   - name: use_counter_worker_dedicated_console_timestamp
   - name: use_counter_worker_dedicated_console_trace
   - name: use_counter_worker_dedicated_console_warn
+  - name: use_counter_worker_dedicated_cookiestore_delete
+  - name: use_counter_worker_dedicated_cookiestore_get
+  - name: use_counter_worker_dedicated_cookiestore_getall
+  - name: use_counter_worker_dedicated_cookiestore_set
+  - name: use_counter_worker_dedicated_mls_deriveexporter
+  - name: use_counter_worker_dedicated_mls_generatecredentialbasic
+  - name: use_counter_worker_dedicated_mls_generatekeypackage
+  - name: use_counter_worker_dedicated_mls_generatesignaturekeypair
+  - name: use_counter_worker_dedicated_mls_groupadd
+  - name: use_counter_worker_dedicated_mls_groupclose
+  - name: use_counter_worker_dedicated_mls_groupcreate
+  - name: use_counter_worker_dedicated_mls_groupjoin
+  - name: use_counter_worker_dedicated_mls_groupmembers
+  - name: use_counter_worker_dedicated_mls_groupproposeadd
+  - name: use_counter_worker_dedicated_mls_groupproposeremove
+  - name: use_counter_worker_dedicated_mls_groupremove
+  - name: use_counter_worker_dedicated_mls_receive
+  - name: use_counter_worker_dedicated_mls_send
+  - name: use_counter_worker_dedicated_mls_statedelete
+  - name: use_counter_worker_dedicated_mls_statedeletegroup
   - name: use_counter_worker_dedicated_private_browsing_caches_delete
   - name: use_counter_worker_dedicated_private_browsing_caches_has
   - name: use_counter_worker_dedicated_private_browsing_caches_keys
@@ -2259,6 +2537,26 @@ use_counters:
   - name: use_counter_worker_service_console_timestamp
   - name: use_counter_worker_service_console_trace
   - name: use_counter_worker_service_console_warn
+  - name: use_counter_worker_service_cookiestore_delete
+  - name: use_counter_worker_service_cookiestore_get
+  - name: use_counter_worker_service_cookiestore_getall
+  - name: use_counter_worker_service_cookiestore_set
+  - name: use_counter_worker_service_mls_deriveexporter
+  - name: use_counter_worker_service_mls_generatecredentialbasic
+  - name: use_counter_worker_service_mls_generatekeypackage
+  - name: use_counter_worker_service_mls_generatesignaturekeypair
+  - name: use_counter_worker_service_mls_groupadd
+  - name: use_counter_worker_service_mls_groupclose
+  - name: use_counter_worker_service_mls_groupcreate
+  - name: use_counter_worker_service_mls_groupjoin
+  - name: use_counter_worker_service_mls_groupmembers
+  - name: use_counter_worker_service_mls_groupproposeadd
+  - name: use_counter_worker_service_mls_groupproposeremove
+  - name: use_counter_worker_service_mls_groupremove
+  - name: use_counter_worker_service_mls_receive
+  - name: use_counter_worker_service_mls_send
+  - name: use_counter_worker_service_mls_statedelete
+  - name: use_counter_worker_service_mls_statedeletegroup
   - name: use_counter_worker_service_private_browsing_caches_delete
   - name: use_counter_worker_service_private_browsing_caches_has
   - name: use_counter_worker_service_private_browsing_caches_keys
@@ -2292,162 +2590,10 @@ use_counters:
   - name: use_counter_worker_shared_console_timestamp
   - name: use_counter_worker_shared_console_trace
   - name: use_counter_worker_shared_console_warn
-  - name: use_counter_worker_shared_private_browsing_caches_delete
-  - name: use_counter_worker_shared_private_browsing_caches_has
-  - name: use_counter_worker_shared_private_browsing_caches_keys
-  - name: use_counter_worker_shared_private_browsing_caches_match
-  - name: use_counter_worker_shared_private_browsing_caches_open
-  - name: use_counter_worker_shared_private_browsing_idbfactory_delete_database
-  - name: use_counter_worker_shared_private_browsing_idbfactory_open
-  - name: use_counter_worker_shared_pushmanager_subscribe
-  - name: use_counter_worker_shared_pushsubscription_unsubscribe
-  - name: use_counter_worker_shared_scheduler_posttask
-  - name: use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
-  - name: use_counter_deprecated_ops_page_idbobject_store_create_index_locale
-  - name: use_counter_doc_htmldialogelement_show
-  - name: use_counter_page_htmldialogelement_show
-  - name: use_counter_doc_js_wasm_legacy_exceptions
-  - name: use_counter_page_js_wasm_legacy_exceptions
-  - name: use_counter_css_doc_css_text_wrap_mode
-  - name: use_counter_css_doc_css_text_wrap_style
-  - name: use_counter_css_doc_css_white_space_collapse
-  - name: use_counter_css_page_css_text_wrap_mode
-  - name: use_counter_css_page_css_text_wrap_style
-  - name: use_counter_css_page_css_white_space_collapse
-  - name: use_counter_css_doc_css_user_find
-  - name: use_counter_css_page_css_user_find
-  - name: use_counter_css_doc_css_transition_behavior
-  - name: use_counter_css_page_css_transition_behavior
-  - name: use_counter_css_doc_css_anchor_name
-  - name: use_counter_css_doc_css_anchor_scope
-  - name: use_counter_css_page_css_anchor_name
-  - name: use_counter_css_page_css_anchor_scope
-  - name: use_counter_css_doc_css_position_anchor
-  - name: use_counter_css_page_css_position_anchor
-  - name: use_counter_css_doc_css_position_visibility
-  - name: use_counter_css_page_css_position_visibility
-  - name: use_counter_doc_js_subclassing_array_type_2
-  - name: use_counter_doc_js_subclassing_array_type_3
-  - name: use_counter_doc_js_subclassing_arraybuffer_type_3
-  - name: use_counter_doc_js_subclassing_promise_type_2
-  - name: use_counter_doc_js_subclassing_promise_type_3
-  - name: use_counter_doc_js_subclassing_regexp_type_3
-  - name: use_counter_doc_js_subclassing_regexp_type_4
-  - name: use_counter_doc_js_subclassing_sharedarraybuffer_type_3
-  - name: use_counter_doc_js_subclassing_typedarray_type_2
-  - name: use_counter_doc_js_subclassing_typedarray_type_3
-  - name: use_counter_page_js_subclassing_array_type_2
-  - name: use_counter_page_js_subclassing_array_type_3
-  - name: use_counter_page_js_subclassing_arraybuffer_type_3
-  - name: use_counter_page_js_subclassing_promise_type_2
-  - name: use_counter_page_js_subclassing_promise_type_3
-  - name: use_counter_page_js_subclassing_regexp_type_3
-  - name: use_counter_page_js_subclassing_regexp_type_4
-  - name: use_counter_page_js_subclassing_sharedarraybuffer_type_3
-  - name: use_counter_page_js_subclassing_typedarray_type_2
-  - name: use_counter_page_js_subclassing_typedarray_type_3
-  - name: use_counter_deprecated_ops_doc_domattr_modified
-  - name: use_counter_deprecated_ops_doc_domcharacter_data_modified
-  - name: use_counter_deprecated_ops_doc_domnode_inserted
-  - name: use_counter_deprecated_ops_doc_domnode_inserted_into_document
-  - name: use_counter_deprecated_ops_doc_domnode_removed
-  - name: use_counter_deprecated_ops_doc_domnode_removed_from_document
-  - name: use_counter_deprecated_ops_doc_domsubtree_modified
-  - name: use_counter_deprecated_ops_page_domattr_modified
-  - name: use_counter_deprecated_ops_page_domcharacter_data_modified
-  - name: use_counter_deprecated_ops_page_domnode_inserted
-  - name: use_counter_deprecated_ops_page_domnode_inserted_into_document
-  - name: use_counter_deprecated_ops_page_domnode_removed
-  - name: use_counter_deprecated_ops_page_domnode_removed_from_document
-  - name: use_counter_deprecated_ops_page_domsubtree_modified
-  - name: use_counter_css_doc_css_inset_area
-  - name: use_counter_css_doc_css_position_try_order
-  - name: use_counter_css_doc_css_webkit_font_smoothing
-  - name: use_counter_css_page_css_inset_area
-  - name: use_counter_css_page_css_position_try_order
-  - name: use_counter_css_page_css_webkit_font_smoothing
-  - name: use_counter_css_doc_css_position_try_options
-  - name: use_counter_css_page_css_position_try_options
-  - name: use_counter_css_doc_css_field_sizing
-  - name: use_counter_css_page_css_field_sizing
-  - name: use_counter_css_doc_css_webkit_font_feature_settings
-  - name: use_counter_css_page_css_webkit_font_feature_settings
-  - name: use_counter_css_doc_css_position_try_fallbacks
-  - name: use_counter_css_page_css_position_try_fallbacks
-  - name: use_counter_css_doc_css_position_area
-  - name: use_counter_css_page_css_position_area
-  - name: use_counter_css_doc_css_view_transition_name
-  - name: use_counter_css_page_css_view_transition_name
-  - name: use_counter_css_doc_css_position_try
-  - name: use_counter_css_page_css_position_try
-  - name: use_counter_doc_js_is_htmldda_fuse
-  - name: use_counter_doc_js_optimize_get_iterator_fuse
-  - name: use_counter_page_js_is_htmldda_fuse
-  - name: use_counter_page_js_optimize_get_iterator_fuse
-  - name: use_counter_doc_mls_deriveexporter
-  - name: use_counter_doc_mls_generatecredentialbasic
-  - name: use_counter_doc_mls_generatekeypackage
-  - name: use_counter_doc_mls_generatesignaturekeypair
-  - name: use_counter_doc_mls_groupadd
-  - name: use_counter_doc_mls_groupclose
-  - name: use_counter_doc_mls_groupcreate
-  - name: use_counter_doc_mls_groupjoin
-  - name: use_counter_doc_mls_groupmembers
-  - name: use_counter_doc_mls_groupproposeadd
-  - name: use_counter_doc_mls_groupproposeremove
-  - name: use_counter_doc_mls_groupremove
-  - name: use_counter_doc_mls_receive
-  - name: use_counter_doc_mls_send
-  - name: use_counter_doc_mls_statedelete
-  - name: use_counter_doc_mls_statedeletegroup
-  - name: use_counter_page_mls_deriveexporter
-  - name: use_counter_page_mls_generatecredentialbasic
-  - name: use_counter_page_mls_generatekeypackage
-  - name: use_counter_page_mls_generatesignaturekeypair
-  - name: use_counter_page_mls_groupadd
-  - name: use_counter_page_mls_groupclose
-  - name: use_counter_page_mls_groupcreate
-  - name: use_counter_page_mls_groupjoin
-  - name: use_counter_page_mls_groupmembers
-  - name: use_counter_page_mls_groupproposeadd
-  - name: use_counter_page_mls_groupproposeremove
-  - name: use_counter_page_mls_groupremove
-  - name: use_counter_page_mls_receive
-  - name: use_counter_page_mls_send
-  - name: use_counter_page_mls_statedelete
-  - name: use_counter_page_mls_statedeletegroup
-  - name: use_counter_worker_dedicated_mls_deriveexporter
-  - name: use_counter_worker_dedicated_mls_generatecredentialbasic
-  - name: use_counter_worker_dedicated_mls_generatekeypackage
-  - name: use_counter_worker_dedicated_mls_generatesignaturekeypair
-  - name: use_counter_worker_dedicated_mls_groupadd
-  - name: use_counter_worker_dedicated_mls_groupclose
-  - name: use_counter_worker_dedicated_mls_groupcreate
-  - name: use_counter_worker_dedicated_mls_groupjoin
-  - name: use_counter_worker_dedicated_mls_groupmembers
-  - name: use_counter_worker_dedicated_mls_groupproposeadd
-  - name: use_counter_worker_dedicated_mls_groupproposeremove
-  - name: use_counter_worker_dedicated_mls_groupremove
-  - name: use_counter_worker_dedicated_mls_receive
-  - name: use_counter_worker_dedicated_mls_send
-  - name: use_counter_worker_dedicated_mls_statedelete
-  - name: use_counter_worker_dedicated_mls_statedeletegroup
-  - name: use_counter_worker_service_mls_deriveexporter
-  - name: use_counter_worker_service_mls_generatecredentialbasic
-  - name: use_counter_worker_service_mls_generatekeypackage
-  - name: use_counter_worker_service_mls_generatesignaturekeypair
-  - name: use_counter_worker_service_mls_groupadd
-  - name: use_counter_worker_service_mls_groupclose
-  - name: use_counter_worker_service_mls_groupcreate
-  - name: use_counter_worker_service_mls_groupjoin
-  - name: use_counter_worker_service_mls_groupmembers
-  - name: use_counter_worker_service_mls_groupproposeadd
-  - name: use_counter_worker_service_mls_groupproposeremove
-  - name: use_counter_worker_service_mls_groupremove
-  - name: use_counter_worker_service_mls_receive
-  - name: use_counter_worker_service_mls_send
-  - name: use_counter_worker_service_mls_statedelete
-  - name: use_counter_worker_service_mls_statedeletegroup
+  - name: use_counter_worker_shared_cookiestore_delete
+  - name: use_counter_worker_shared_cookiestore_get
+  - name: use_counter_worker_shared_cookiestore_getall
+  - name: use_counter_worker_shared_cookiestore_set
   - name: use_counter_worker_shared_mls_deriveexporter
   - name: use_counter_worker_shared_mls_generatecredentialbasic
   - name: use_counter_worker_shared_mls_generatekeypackage
@@ -2464,159 +2610,13 @@ use_counters:
   - name: use_counter_worker_shared_mls_send
   - name: use_counter_worker_shared_mls_statedelete
   - name: use_counter_worker_shared_mls_statedeletegroup
-  - name: use_counter_doc_components_shim_resolved
-  - name: use_counter_page_components_shim_resolved
-  - name: use_counter_doc_js_thenable
-  - name: use_counter_doc_js_thenable_proto
-  - name: use_counter_doc_js_thenable_standard_proto
-  - name: use_counter_page_js_thenable
-  - name: use_counter_page_js_thenable_proto
-  - name: use_counter_page_js_thenable_standard_proto
-  - name: use_counter_doc_js_legacy_lang_subtag
-  - name: use_counter_page_js_legacy_lang_subtag
-  - name: use_counter_doc_js_ic_stub_oom
-  - name: use_counter_doc_js_ic_stub_too_large
-  - name: use_counter_page_js_ic_stub_oom
-  - name: use_counter_page_js_ic_stub_too_large
-  - name: use_counter_doc_cookiestore_delete
-  - name: use_counter_doc_cookiestore_get
-  - name: use_counter_doc_cookiestore_getall
-  - name: use_counter_doc_cookiestore_set
-  - name: use_counter_page_cookiestore_delete
-  - name: use_counter_page_cookiestore_get
-  - name: use_counter_page_cookiestore_getall
-  - name: use_counter_page_cookiestore_set
-  - name: use_counter_worker_dedicated_cookiestore_delete
-  - name: use_counter_worker_dedicated_cookiestore_get
-  - name: use_counter_worker_dedicated_cookiestore_getall
-  - name: use_counter_worker_dedicated_cookiestore_set
-  - name: use_counter_worker_service_cookiestore_delete
-  - name: use_counter_worker_service_cookiestore_get
-  - name: use_counter_worker_service_cookiestore_getall
-  - name: use_counter_worker_service_cookiestore_set
-  - name: use_counter_worker_shared_cookiestore_delete
-  - name: use_counter_worker_shared_cookiestore_get
-  - name: use_counter_worker_shared_cookiestore_getall
-  - name: use_counter_worker_shared_cookiestore_set
-  - name: use_counter_doc_js_errorstack_getter
-  - name: use_counter_doc_js_errorstack_getter_no_errordata
-  - name: use_counter_doc_js_errorstack_setter
-  - name: use_counter_doc_js_errorstack_setter_no_errordata
-  - name: use_counter_doc_js_errorstack_setter_nonstring
-  - name: use_counter_page_js_errorstack_getter
-  - name: use_counter_page_js_errorstack_getter_no_errordata
-  - name: use_counter_page_js_errorstack_setter
-  - name: use_counter_page_js_errorstack_setter_no_errordata
-  - name: use_counter_page_js_errorstack_setter_nonstring
-  - name: use_counter_doc_sectioning_h1_with_no_font_size_or_margins
-  - name: use_counter_page_sectioning_h1_with_no_font_size_or_margins
-  - name: use_counter_css_doc_css_hyphenate_limit_chars
-  - name: use_counter_css_page_css_hyphenate_limit_chars
-  - name: use_counter_doc_js_dateparse
-  - name: use_counter_doc_js_dateparse_impl_def
-  - name: use_counter_page_js_dateparse
-  - name: use_counter_page_js_dateparse_impl_def
-  - name: use_counter_doc_htmldocument_caretrangefrompoint
-  - name: use_counter_doc_htmldocument_exitpictureinpicture
-  - name: use_counter_doc_htmldocument_featurepolicy
-  - name: use_counter_doc_htmldocument_onbeforecopy
-  - name: use_counter_doc_htmldocument_onbeforecut
-  - name: use_counter_doc_htmldocument_onbeforepaste
-  - name: use_counter_doc_htmldocument_oncancel
-  - name: use_counter_doc_htmldocument_onfreeze
-  - name: use_counter_doc_htmldocument_onmousewheel
-  - name: use_counter_doc_htmldocument_onresume
-  - name: use_counter_doc_htmldocument_onsearch
-  - name: use_counter_doc_htmldocument_onwebkitfullscreenchange
-  - name: use_counter_doc_htmldocument_onwebkitfullscreenerror
-  - name: use_counter_doc_htmldocument_pictureinpictureelement
-  - name: use_counter_doc_htmldocument_pictureinpictureenabled
-  - name: use_counter_doc_htmldocument_registerelement
-  - name: use_counter_doc_htmldocument_wasdiscarded
-  - name: use_counter_doc_htmldocument_webkitcancelfullscreen
-  - name: use_counter_doc_htmldocument_webkitcurrentfullscreenelement
-  - name: use_counter_doc_htmldocument_webkitexitfullscreen
-  - name: use_counter_doc_htmldocument_webkitfullscreenelement
-  - name: use_counter_doc_htmldocument_webkitfullscreenenabled
-  - name: use_counter_doc_htmldocument_webkithidden
-  - name: use_counter_doc_htmldocument_webkitisfullscreen
-  - name: use_counter_doc_htmldocument_webkitvisibilitystate
-  - name: use_counter_doc_htmldocument_xmlencoding
-  - name: use_counter_doc_htmldocument_xmlstandalone
-  - name: use_counter_doc_htmldocument_xmlversion
-  - name: use_counter_page_htmldocument_caretrangefrompoint
-  - name: use_counter_page_htmldocument_exitpictureinpicture
-  - name: use_counter_page_htmldocument_featurepolicy
-  - name: use_counter_page_htmldocument_onbeforecopy
-  - name: use_counter_page_htmldocument_onbeforecut
-  - name: use_counter_page_htmldocument_onbeforepaste
-  - name: use_counter_page_htmldocument_oncancel
-  - name: use_counter_page_htmldocument_onfreeze
-  - name: use_counter_page_htmldocument_onmousewheel
-  - name: use_counter_page_htmldocument_onresume
-  - name: use_counter_page_htmldocument_onsearch
-  - name: use_counter_page_htmldocument_onwebkitfullscreenchange
-  - name: use_counter_page_htmldocument_onwebkitfullscreenerror
-  - name: use_counter_page_htmldocument_pictureinpictureelement
-  - name: use_counter_page_htmldocument_pictureinpictureenabled
-  - name: use_counter_page_htmldocument_registerelement
-  - name: use_counter_page_htmldocument_wasdiscarded
-  - name: use_counter_page_htmldocument_webkitcancelfullscreen
-  - name: use_counter_page_htmldocument_webkitcurrentfullscreenelement
-  - name: use_counter_page_htmldocument_webkitexitfullscreen
-  - name: use_counter_page_htmldocument_webkitfullscreenelement
-  - name: use_counter_page_htmldocument_webkitfullscreenenabled
-  - name: use_counter_page_htmldocument_webkithidden
-  - name: use_counter_page_htmldocument_webkitisfullscreen
-  - name: use_counter_page_htmldocument_webkitvisibilitystate
-  - name: use_counter_page_htmldocument_xmlencoding
-  - name: use_counter_page_htmldocument_xmlstandalone
-  - name: use_counter_page_htmldocument_xmlversion
-  - name: use_counter_deprecated_ops_doc_after_script_execute_event
-  - name: use_counter_deprecated_ops_doc_before_script_execute_event
-  - name: use_counter_deprecated_ops_page_after_script_execute_event
-  - name: use_counter_deprecated_ops_page_before_script_execute_event
-  - name: use_counter_doc_js_optimize_array_species_fuse
-  - name: use_counter_doc_js_thenable_object_proto
-  - name: use_counter_page_js_optimize_array_species_fuse
-  - name: use_counter_page_js_thenable_object_proto
-  - name: use_counter_doc_js_optimize_promise_lookup_fuse
-  - name: use_counter_page_js_optimize_promise_lookup_fuse
-  - name: use_counter_page_invalid_text_directives
-  - name: use_counter_page_text_directive_not_created
-  - name: use_counter_page_text_directive_pages
-  - name: use_counter_doc_invalid_text_directives
-  - name: use_counter_doc_text_directive_not_created
-  - name: use_counter_doc_text_directive_pages
-  - name: use_counter_doc_math_mlused
-  - name: use_counter_page_math_mlused
-  - name: use_counter_doc_animation_commitstyles
-  - name: use_counter_doc_commit_styles_non_filling_final_value
-  - name: use_counter_page_animation_commitstyles
-  - name: use_counter_page_commit_styles_non_filling_final_value
-  - name: use_counter_doc_js_regexp_symbol_protocol_on_primitive
-  - name: use_counter_page_js_regexp_symbol_protocol_on_primitive
-  - name: use_counter_doc_js_large_oom_recovered
-  - name: use_counter_doc_js_large_oom_reported
-  - name: use_counter_doc_js_small_oom_recovered
-  - name: use_counter_doc_js_small_oom_reported
-  - name: use_counter_page_js_large_oom_recovered
-  - name: use_counter_page_js_large_oom_reported
-  - name: use_counter_page_js_small_oom_recovered
-  - name: use_counter_page_js_small_oom_reported
-  - name: use_counter_css_doc_css_view_transition_class
-  - name: use_counter_css_page_css_view_transition_class
-  - name: use_counter_doc_js_error_capturestacktrace
-  - name: use_counter_doc_js_error_capturestacktrace_ctor
-  - name: use_counter_doc_js_error_capturestacktrace_uncallable_ctor
-  - name: use_counter_page_js_error_capturestacktrace
-  - name: use_counter_page_js_error_capturestacktrace_ctor
-  - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
-  - name: use_counter_css_doc_css_text_decoration_trim
-  - name: use_counter_css_page_css_text_decoration_trim
-  - name: use_counter_css_doc_css_text_autospace
-  - name: use_counter_css_page_css_text_autospace
-  - name: use_counter_doc_js_use_asm
-  - name: use_counter_page_js_use_asm
-  - name: use_counter_css_doc_css_math_shift
-  - name: use_counter_css_page_css_math_shift
+  - name: use_counter_worker_shared_private_browsing_caches_delete
+  - name: use_counter_worker_shared_private_browsing_caches_has
+  - name: use_counter_worker_shared_private_browsing_caches_keys
+  - name: use_counter_worker_shared_private_browsing_caches_match
+  - name: use_counter_worker_shared_private_browsing_caches_open
+  - name: use_counter_worker_shared_private_browsing_idbfactory_delete_database
+  - name: use_counter_worker_shared_private_browsing_idbfactory_open
+  - name: use_counter_worker_shared_pushmanager_subscribe
+  - name: use_counter_worker_shared_pushsubscription_unsubscribe
+  - name: use_counter_worker_shared_scheduler_posttask

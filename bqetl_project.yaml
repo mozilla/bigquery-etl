@@ -364,6 +364,7 @@ schema:
     skip:
     # see comment in query file
     - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
+    - sql/moz-fx-data-shared-prod/*_stable/**
 
 docs:
   docs_dir: docs

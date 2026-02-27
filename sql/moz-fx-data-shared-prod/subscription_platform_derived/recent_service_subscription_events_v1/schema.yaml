@@ -456,6 +456,11 @@ fields:
       mode: NULLABLE
       description: |-
         Last-touch attribution UTM term.
+    - name: channel_group
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        Categorized marketing channel group (Direct, Marketing Owned, Marketing Paid, Product Owned, or Miscellaneous)
   - name: ended_reason
     type: STRING
     mode: NULLABLE
@@ -909,6 +914,11 @@ fields:
       mode: NULLABLE
       description: |-
         Last-touch attribution UTM term.
+    - name: channel_group
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        Categorized marketing channel group (Direct, Marketing Owned, Marketing Paid, Product Owned, or Miscellaneous)
   - name: ended_reason
     type: STRING
     mode: NULLABLE

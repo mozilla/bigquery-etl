@@ -2,11 +2,11 @@ friendly_name: Slow Startup Events By Startup Type Version And Device
 description: |-
   Break out slow startup frequency by device info
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_google_play_store
   arguments: ["--date", "{{ds}}"]

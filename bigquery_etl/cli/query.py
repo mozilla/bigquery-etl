@@ -15,7 +15,7 @@ import sys
 import tempfile
 from concurrent import futures
 from datetime import date, timedelta
-from functools import partial
+from functools import cache, partial
 from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
@@ -77,6 +77,17 @@ from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun
 from .generate import generate_all
+
+
+@cache
+def skip_schema_deploy():
+    """Return a list of files for which schema deploy should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+        for file in glob(skip, recursive=True)
+    ]
+
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
@@ -2104,8 +2115,7 @@ def update(
     query_files = [
         query_file
         for query_file in query_files
-        if str(query_file)
-        not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+        if str(query_file) not in skip_schema_deploy()
         and (
             not skip_existing
             or (query_file.parent / SCHEMA_FILE).exists() is False
@@ -2695,8 +2705,7 @@ def deploy(
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file
             for artifact_file in query_files + metadata_files_without_query_file
-            if str(artifact_file)
-            not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+            if str(artifact_file) not in skip_schema_deploy()
         }
         for future in futures.as_completed(future_to_query):
             artifact_file = future_to_query[future]

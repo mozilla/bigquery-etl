@@ -1,3 +1,13 @@
+2026-02-20:
+  start_date: 2024-03-01
+  end_date: 2026-02-20
+  reason: Schema changes requiring reprocessing
+  watchers:
+  - lmcfall@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+
 2026-01-23:
   start_date: 2024-01-01
   end_date: 2026-01-22

@@ -132,6 +132,11 @@ telemetry_id_to_activity_staging AS (
     is_dau_at_least_4_of_first_7_days,
     is_dau_at_least_3_of_first_7_days,
     is_dau_at_least_2_of_first_7_days,
+    is_dau_at_least_5_of_first_7_days,
+    is_dau_at_least_6_of_first_7_days,
+    is_dau_at_least_7_of_first_7_days,
+    set_default,
+    is_dau_on_days_6_or_7,
   FROM
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`
   WHERE
@@ -142,6 +147,11 @@ telemetry_id_to_activity_staging AS (
       OR is_dau_at_least_4_of_first_7_days IS TRUE
       OR is_dau_at_least_3_of_first_7_days IS TRUE
       OR is_dau_at_least_2_of_first_7_days IS TRUE
+      OR is_dau_at_least_5_of_first_7_days IS TRUE
+      OR is_dau_at_least_6_of_first_7_days IS TRUE
+      OR is_dau_at_least_7_of_first_7_days IS TRUE
+      OR set_default IS TRUE
+      OR is_dau_on_days_6_or_7 IS TRUE
     )
     AND report_date = @submission_date
     AND first_seen_date < @submission_date --needed since this is a required partition filter
@@ -159,6 +169,11 @@ telemetry_id_to_activity_staging AS (
     CAST(NULL AS BOOLEAN) AS is_dau_at_least_4_of_first_7_days,
     CAST(NULL AS BOOLEAN) AS is_dau_at_least_3_of_first_7_days,
     CAST(NULL AS BOOLEAN) AS is_dau_at_least_2_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_5_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_6_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_7_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS set_default,
+    CAST(NULL AS BOOLEAN) AS is_dau_on_days_6_or_7,
   FROM
     old_events
   WHERE
@@ -184,6 +199,11 @@ telemetry_id_to_activity AS (
     MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days,
     MAX(COALESCE(is_dau_at_least_3_of_first_7_days, FALSE)) AS is_dau_at_least_3_of_first_7_days,
     MAX(COALESCE(is_dau_at_least_2_of_first_7_days, FALSE)) AS is_dau_at_least_2_of_first_7_days,
+    MAX(COALESCE(is_dau_at_least_5_of_first_7_days, FALSE)) AS is_dau_at_least_5_of_first_7_days,
+    MAX(COALESCE(is_dau_at_least_6_of_first_7_days, FALSE)) AS is_dau_at_least_6_of_first_7_days,
+    MAX(COALESCE(is_dau_at_least_7_of_first_7_days, FALSE)) AS is_dau_at_least_7_of_first_7_days,
+    MAX(COALESCE(set_default, FALSE)) AS set_default,
+    MAX(COALESCE(is_dau_on_days_6_or_7, FALSE)) AS is_dau_on_days_6_or_7,
     MAX(COALESCE(firefox_first_run, FALSE)) AS firefox_first_run,
     MAX(COALESCE(firefox_first_ad_click, FALSE)) AS firefox_first_ad_click,
     MAX(COALESCE(firefox_first_search, FALSE)) AS firefox_first_search,
@@ -214,6 +234,11 @@ SELECT
   MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days,
   MAX(COALESCE(is_dau_at_least_3_of_first_7_days, FALSE)) AS is_dau_at_least_3_of_first_7_days,
   MAX(COALESCE(is_dau_at_least_2_of_first_7_days, FALSE)) AS is_dau_at_least_2_of_first_7_days,
+  MAX(COALESCE(is_dau_at_least_5_of_first_7_days, FALSE)) AS is_dau_at_least_5_of_first_7_days,
+  MAX(COALESCE(is_dau_at_least_6_of_first_7_days, FALSE)) AS is_dau_at_least_6_of_first_7_days,
+  MAX(COALESCE(is_dau_at_least_7_of_first_7_days, FALSE)) AS is_dau_at_least_7_of_first_7_days,
+  MAX(COALESCE(set_default, FALSE)) AS set_default,
+  MAX(COALESCE(is_dau_on_days_6_or_7, FALSE)) AS is_dau_on_days_6_or_7,
 FROM
   ga_ids_to_dl_token
 INNER JOIN

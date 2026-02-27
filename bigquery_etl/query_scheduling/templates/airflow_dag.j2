@@ -225,7 +225,7 @@ with DAG(
                 'python',
                 'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
             ] + {{ task.arguments }},
-            image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
+            image='us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
             {%+ if task.container_resources -%}

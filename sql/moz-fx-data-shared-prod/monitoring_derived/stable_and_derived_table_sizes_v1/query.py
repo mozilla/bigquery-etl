@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 """Determine stable and derived table size partitions by performing dry runs."""
+
 import datetime
 from fnmatch import fnmatchcase
 from functools import partial, cache
@@ -11,9 +12,7 @@ import click
 from google.cloud import bigquery, exceptions
 
 
-def get_tables(
-    client: bigquery.Client, dataset: str
-) -> List[Tuple[str, str]]:
+def get_tables(client: bigquery.Client, dataset: str) -> List[Tuple[str, str]]:
     """Returns list of all available tables."""
     return [(table.dataset_id, table.table_id) for table in client.list_tables(dataset)]
 
@@ -109,9 +108,11 @@ def save_table_sizes(
     job_config.time_partitioning = bigquery.TimePartitioning(field="submission_date")
 
     partition_date = date.strftime("%Y%m%d")
+    full_dest_table_id = f"{destination_project}.{destination_dataset}.{destination_table}${partition_date}"
+    print(f"Writing {len(table_sizes)} rows to {full_dest_table_id}")
     client.load_table_from_json(
         table_sizes,
-        f"{destination_project}.{destination_dataset}.{destination_table}${partition_date}",
+        full_dest_table_id,
         job_config=job_config,
     ).result()
 
@@ -125,12 +126,23 @@ def save_table_sizes(
     default="moz-fx-data-shared-prod",
     help="Project of tables to get sizes for",
 )
-@click.option("--dataset", default=("*_derived", "*_stable"))  # pattern
-@click.option("--destination_project", help="Project to write results to. Defaults to --project value.")
+@click.option("--dataset", multiple=True, default=("*_derived", "*_stable"))  # pattern
+@click.option(
+    "--destination_project",
+    help="Project to write results to. Defaults to --project value.",
+)
 @click.option("--destination_dataset", default="monitoring_derived")
 @click.option("--destination_table", default="stable_and_derived_table_sizes_v1")
 @click.option("--dry_run", "--dry-run", default=False, is_flag=True)
-def main(date, project, dataset, destination_project, destination_dataset, destination_table, dry_run):
+def main(
+    date,
+    project,
+    dataset,
+    destination_project,
+    destination_dataset,
+    destination_table,
+    dry_run,
+):
     if destination_project is None:
         destination_project = project
 
@@ -146,8 +158,10 @@ def main(date, project, dataset, destination_project, destination_dataset, desti
                 dataset.dataset_id
                 for dataset in list(client.list_datasets())
                 if fnmatchcase(dataset.dataset_id, arg_dataset)
-                and dataset.dataset_id not in ("monitoring_derived", "backfills_staging_derived")
+                and dataset.dataset_id
+                not in ("monitoring_derived", "backfills_staging_derived")
             ]
+            print(f"Found {len(datasets)} datasets matching {arg_dataset}")
             with ThreadPool(20) as p:
                 tables = p.map(
                     partial(get_tables, client),

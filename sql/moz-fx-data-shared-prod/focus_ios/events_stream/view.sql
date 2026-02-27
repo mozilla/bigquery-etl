@@ -13,29 +13,18 @@ SELECT
   CONCAT(document_id, '-', document_event_number) AS event_id,
   *,
   STRUCT(
-    STRUCT(
-      LAX_BOOL(event_extra.corrupt) AS `corrupt`,
-      LAX_BOOL(event_extra.is_enabled) AS `is_enabled`
-    ) AS `boolean`,
-    STRUCT(
-      LAX_INT64(event_extra.current_item) AS `current_item`,
-      LAX_INT64(event_extra.from_version) AS `from_version`,
-      LAX_INT64(event_extra.initial_version) AS `initial_version`,
-      LAX_INT64(event_extra.migrated_version) AS `migrated_version`,
-      LAX_INT64(event_extra.to_version) AS `to_version`
-    ) AS `quantity`,
+    STRUCT(LAX_BOOL(event_extra.is_enabled) AS `is_enabled`) AS `boolean`,
+    STRUCT(LAX_INT64(event_extra.current_item) AS `current_item`) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.branch) AS `branch`,
       JSON_VALUE(event_extra.card_type) AS `card_type`,
       JSON_VALUE(event_extra.conflict_slug) AS `conflict_slug`,
       JSON_VALUE(event_extra.engine_name) AS `engine_name`,
-      JSON_VALUE(event_extra.error) AS `error`,
       JSON_VALUE(event_extra.error_string) AS `error_string`,
       JSON_VALUE(event_extra.experiment) AS `experiment`,
       JSON_VALUE(event_extra.experiment_type) AS `experiment_type`,
       JSON_VALUE(event_extra.feature_id) AS `feature_id`,
       JSON_VALUE(event_extra.item) AS `item`,
-      JSON_VALUE(event_extra.migration_error) AS `migration_error`,
       JSON_VALUE(event_extra.part_id) AS `part_id`,
       JSON_VALUE(event_extra.reason) AS `reason`,
       JSON_VALUE(event_extra.slug) AS `slug`,

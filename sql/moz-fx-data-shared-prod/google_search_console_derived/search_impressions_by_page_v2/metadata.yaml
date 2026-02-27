@@ -14,10 +14,10 @@ description: |-
   For the developer.mozilla.org domain, we started exporting Google Search Console data directly to BigQuery in April 2024.
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1890816.
 
+  For the firefox.com domain, we started exporting Google Search Console data directly to BigQuery on 2025-07-26.
+
   For the other domains, we started exporting Google Search Console data directly to BigQuery in July 2023.
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c34.
-
-  Note: migrated from mozilla.org to firefox.com starting 2025-07-26.
 owners:
 - srose@mozilla.com
 labels:

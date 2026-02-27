@@ -95,7 +95,6 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.onboarding_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.first_session_v1
-  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.onboarding_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.extensionsession_v1

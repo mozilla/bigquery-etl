@@ -1,0 +1,17 @@
+friendly_name: sumo_syndicate
+description: |
+  Syndicated SUMO data from moz-fx-sumo-prod. User-facing views into this data
+  can be found in the sumo_metrics_derived namespace.
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: moz-fx-sumo-prod
+    syndicated_dataset: sumo
+  syndicated_tables:
+    - kitsune_questions
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

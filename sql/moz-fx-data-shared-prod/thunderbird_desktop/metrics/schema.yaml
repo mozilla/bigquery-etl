@@ -17404,6 +17404,21 @@ fields:
         A ''miss'' means no valid token was available.
 
         '
+    - name: calendar_view_initialized
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which calendar views are displayed to the user. Each view is counted
+        when it is initialized, as that only happens when the view is first displayed
+        to the user.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

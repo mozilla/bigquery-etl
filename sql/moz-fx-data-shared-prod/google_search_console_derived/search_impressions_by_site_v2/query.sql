@@ -1,11 +1,11 @@
 {% set gsc_export_dataset_ids = [
     'moz-fx-data-marketing-prod.searchconsole_addons',
     'moz-fx-data-marketing-prod.searchconsole_blog',
+    'moz-fx-data-marekting-prod.searchconsole_firefox',
     'moz-fx-data-marketing-prod.searchconsole_getpocket',
     'moz-fx-data-marketing-prod.searchconsole_mdn',
     'moz-fx-data-marketing-prod.searchconsole_support',
     'moz-fx-data-marketing-prod.searchconsole_www',
-    'moz-fx-data-marekting-prod.searchconsole_firefox',
 ] %}
 WITH searchdata_site_impression_union AS (
   {% for gsc_export_dataset_id in gsc_export_dataset_ids %}

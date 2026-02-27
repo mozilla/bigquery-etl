@@ -1,0 +1,12 @@
+2026-02-27:
+  start_date: 2025-07-25
+  end_date: 2026-02-27
+  reason: Adding data from firefox.com (DENG-9196)
+  watchers:
+  - mhirose@mozilla.com
+  - srose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true

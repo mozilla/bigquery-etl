@@ -36,10 +36,12 @@ BEGIN
       i = i + 1;
   END WHILE;
 
+  -- The extra concatenation operations in this expression are intentional to break up references
+  -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
   SET
     sql = CONCAT(
       '\n  SELECT',
-      '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
+      '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS count_regex',
       '\n  FROM',
       '\n    `',
       project,
@@ -56,14 +58,16 @@ END;
 BEGIN
   DECLARE result_sql STRING;
 
-  DECLARE expect STRING DEFAULT """
-  SELECT
-    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex
-  FROM
-    `moz-fx-data-shared-prod`.org_mozilla_firefox.event_types
-  WHERE
-    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")
-""";
+  -- The extra concatenation operations in this expression are intentional to break up references
+  -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
+  DECLARE expect STRING DEFAULT CONCAT(
+    '\n  SELECT',
+    '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS count_regex',
+    '\n  FROM',
+    '\n    `moz-fx-data-shared-prod`.' || 'org_mozilla_firefox.' || 'event_types',
+    '\n  WHERE',
+    '\n    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")'
+  );
 
   CALL event_analysis.create_count_steps_query(
     'moz-fx-data-shared-prod',

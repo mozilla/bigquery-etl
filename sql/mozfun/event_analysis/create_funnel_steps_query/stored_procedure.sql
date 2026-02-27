@@ -59,13 +59,15 @@ BEGIN
         funnel_step_i = funnel_step_i + 1;
     END WHILE;
 
+    -- The extra concatenation operations in this expression are intentional to break up references
+    -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
     SET
       funnel_step_filters = CONCAT(
         '\n  SELECT',
         '\n    ',
         i,
         ' AS step,',
-        '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS step_regex',
+        '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS step_regex',
         '\n  FROM',
         '\n    `',
         project,
@@ -80,9 +82,11 @@ BEGIN
     SET
       funnel_event_filters = ARRAY_CONCAT(funnel_event_filters, [funnel_step_filters]);
 
+    -- The extra concatenation operations in this expression are intentional to break up references
+    -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
     SET
       funnel_regex_assembly = CONCAT(
-        'event_analysis.create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT ',
+        'event_analysis.' || 'create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT ',
         i,
         '), TRUE)'
       );
@@ -113,35 +117,37 @@ END;
 BEGIN
   DECLARE result_sql STRING;
 
-  DECLARE expect STRING DEFAULT """
-WITH step_regexes AS (
-  SELECT
-    1 AS step,
-    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS step_regex
-  FROM
-    `moz-fx-data-shared-prod`.org_mozilla_firefox.event_types
-  WHERE
-    (category = "collections" AND event = "tab_select_opened")
-
-  UNION ALL
-
-  SELECT
-    2 AS step,
-    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS step_regex
-  FROM
-    `moz-fx-data-shared-prod`.org_mozilla_firefox.event_types
-  WHERE
-    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")
-)
-
-SELECT
-  [
-    event_analysis.create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT 1), TRUE),
-    event_analysis.create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT 2), TRUE)
-  ]
-FROM
-  step_regexes
-""";
+  -- The extra concatenation operations in this expression are intentional to break up references
+  -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
+  DECLARE expect STRING DEFAULT CONCAT(
+    '\nWITH step_regexes AS (',
+    '\n  SELECT',
+    '\n    1 AS step,',
+    '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS step_regex',
+    '\n  FROM',
+    '\n    `moz-fx-data-shared-prod`.' || 'org_mozilla_firefox.' || 'event_types',
+    '\n  WHERE',
+    '\n    (category = "collections" AND event = "tab_select_opened")',
+    '\n',
+    '\n  UNION ALL',
+    '\n',
+    '\n  SELECT',
+    '\n    2 AS step,',
+    '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS step_regex',
+    '\n  FROM',
+    '\n    `moz-fx-data-shared-prod`.' || 'org_mozilla_firefox.' || 'event_types',
+    '\n  WHERE',
+    '\n    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")',
+    '\n)',
+    '\n',
+    '\nSELECT',
+    '\n  [',
+    '\n    event_analysis.' || 'create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT 1), TRUE),',
+    '\n    event_analysis.' || 'create_funnel_regex(ARRAY_AGG(step_regex ORDER BY step LIMIT 2), TRUE)',
+    '\n  ]',
+    '\nFROM',
+    '\n  step_regexes'
+  );
 
   CALL event_analysis.create_funnel_steps_query(
     'moz-fx-data-shared-prod',

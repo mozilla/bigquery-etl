@@ -190,7 +190,7 @@ today_metrics_enriched AS (
   FROM
     today_metrics
   LEFT JOIN
-    `moz-fx-data-shared-prod.static.csa_gblmkt_languages` AS languages
+    `mozdata.static.csa_gblmkt_languages` AS languages
     ON today_metrics.locale = languages.code
 )
 SELECT

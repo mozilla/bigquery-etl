@@ -1,6 +1,6 @@
 WITH tickets AS (
   SELECT
-    DATE(TIMESTAMP(created_at), "America/Los_Angeles") AS date_pst,
+    DATE(TIMESTAMP(created_at), "UTC") AS date_utc,
       -- Map product names to match SSSR conventions
     CASE
       custom_product
@@ -19,7 +19,7 @@ WITH tickets AS (
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket`
 )
 SELECT
-  date_pst AS `date`,
+  date_utc AS `date`,
   product,
   COUNT(DISTINCT ticket_id) AS zendesk_tickets_created,
   CURRENT_TIMESTAMP() AS etl_timestamp

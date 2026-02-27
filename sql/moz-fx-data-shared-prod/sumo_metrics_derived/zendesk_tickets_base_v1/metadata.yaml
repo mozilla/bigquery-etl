@@ -2,7 +2,7 @@ friendly_name: Zendesk Tickets Base (Daily)
 description: |
   Daily metrics for SUMO support tickets from Zendesk.
 
-  Grain: Daily x Product (PST timezone)
+  Grain: Daily x Product (UTC timezone)
 
   Single source of truth tracking:
   - Support tickets created each day

@@ -15,10 +15,6 @@ WITH questions AS (
     q.question_id
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` q
-  WHERE
-    DATE(TIMESTAMP(q.created_utc), "America/Los_Angeles")
-    BETWEEN '2024-07-01'
-    AND '2026-01-05'
 ),
 deduped AS (
   SELECT

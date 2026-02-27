@@ -17,10 +17,6 @@ WITH tickets AS (
     id AS ticket_id
   FROM
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket`
-  WHERE
-    DATE(TIMESTAMP(created_at), "America/Los_Angeles")
-    BETWEEN '2024-07-01'
-    AND '2026-01-05'
 )
 SELECT
   date_pst AS `date`,

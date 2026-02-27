@@ -228,12 +228,15 @@ fields:
   - name: antispyware
     type: STRING
     mode: REPEATED
+    description: Names of antispyware products registred on the host system
   - name: av
     type: STRING
     mode: REPEATED
+    description: Names of antivirus products registred on the host system
   - name: firewall
     type: STRING
     mode: REPEATED
+    description: Names of firewall products registred on the host system
   description: Information about the security applications registered with Windows
     on the host computer
 - name: server_os
@@ -243,6 +246,7 @@ fields:
 - name: signatures
   type: STRING
   mode: REPEATED
+  description: Array of all the signatures that were found during module enumeration
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE

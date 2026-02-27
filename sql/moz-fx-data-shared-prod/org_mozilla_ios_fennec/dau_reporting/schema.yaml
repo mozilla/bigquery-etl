@@ -441,6 +441,15 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

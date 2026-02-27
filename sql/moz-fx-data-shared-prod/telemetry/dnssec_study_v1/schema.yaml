@@ -382,6 +382,7 @@ fields:
     - name: partner_names
       type: STRING
       mode: REPEATED
+      description: The list of names from the `app.partner` children prefs, as `app.partner.<name>=<name>`.
   - name: profile
     type: RECORD
     mode: NULLABLE
@@ -661,6 +662,10 @@ fields:
       - name: extensions
         type: STRING
         mode: REPEATED
+        description: 'This lists the avaible CPU extensions as strings. E.g.: ''hasMMX'',
+          ''hasSSE'', ''hasSSE2'', ''hasSSE3'', ''hasSSSE3'', ''hasSSE4A'', ''hasSSE4_1'',
+          ''hasSSE4_2'', ''hasAVX'', ''hasAVX2'', ''hasAES'', ''hasEDSP'', ''hasARMv6'',
+          ''hasARMv7'', ''hasNEON''.'
       - name: family
         type: INTEGER
         mode: NULLABLE
@@ -1286,6 +1291,7 @@ fields:
     - name: tcp_rrsig
       type: INTEGER
       mode: REPEATED
+      description: This property is deprecated and no longer used
     - name: tcp_smimea
       type: INTEGER
       mode: REPEATED
@@ -1319,6 +1325,7 @@ fields:
     - name: udp_a_web_ext
       type: STRING
       mode: REPEATED
+      description: Deprecated
     - name: tcp_acd
       type: INTEGER
       mode: REPEATED
@@ -1460,9 +1467,11 @@ fields:
     - name: webext_a
       type: STRING
       mode: REPEATED
+      description: Results from dns.resolve() call made using a domain name we control
     - name: webext_a_u
       type: STRING
       mode: REPEATED
+      description: Results from dns.resolve() with a per-client domain name we control
     - name: udp_a_afirst
       type: INTEGER
       mode: REPEATED
@@ -1499,6 +1508,7 @@ fields:
     - name: webext_a_prefix
       type: STRING
       mode: REPEATED
+      description: Results from dns.resolve() with a prefixed domain name we control
     - name: udp_newone_alt
       type: INTEGER
       mode: REPEATED
@@ -1787,6 +1797,7 @@ fields:
     - name: reason
       type: STRING
       mode: NULLABLE
+    description: A list of queries that failed
   - name: has_errors
     type: BOOLEAN
     mode: NULLABLE

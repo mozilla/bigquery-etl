@@ -577,12 +577,28 @@ fields:
     - name: background_update_reasons
       type: STRING
       mode: REPEATED
+      description: 'List of reasons that the background update task did not run.
+
+        '
     - name: background_update_states
       type: STRING
       mode: REPEATED
+      description: 'Ordered list of string descriptions of the states that the update
+        state machine reached.
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

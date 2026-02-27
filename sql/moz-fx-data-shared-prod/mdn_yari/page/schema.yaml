@@ -497,6 +497,9 @@ fields:
     - name: navigator_user_languages
       type: STRING
       mode: REPEATED
+      description: 'The user''s preferred languages.
+
+        '
   - name: url
     type: RECORD
     mode: NULLABLE

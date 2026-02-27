@@ -2494,9 +2494,24 @@ fields:
     - name: characteristics_gamepads
       type: STRING
       mode: REPEATED
+      description: "The information of the gamepads inserted on the user device. Each\
+        \ string represents one gamepad. We use a JSON array to describe a gamepad,\
+        \ every value represents one property of the gamepad. Following are the details:\n\
+        \  index 0: The ID of the game pad\n  index 1: Which hand for the gamepad.\n\
+        \  index 2: Number of buttons\n  index 3: Number of axes\n  index 4: Number\
+        \ of haptics\n  index 5: Number of lights\n  index 6: Number of touches\n"
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

@@ -719,18 +719,35 @@ fields:
     - name: dll_blocklist_list
       type: STRING
       mode: REPEATED
+      description: Semicolon-separated list of blocked DLLS, Windows-only
     - name: environment_experimental_features
       type: STRING
       mode: REPEATED
+      description: 'Specifies the enabled experimental features from about:preferences#experimental.
+
+        '
     - name: crash_utility_actors_name
       type: STRING
       mode: REPEATED
+      description: Comma-separated list of IPC actors name running on this Utility
+        process instance
     - name: environment_nimbus_enrollments
       type: STRING
       mode: REPEATED
+      description: A comma-separated string that specifies the active Nimbus experiments
+        and rollouts, as well as their branches.
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

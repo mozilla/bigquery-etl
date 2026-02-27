@@ -7,6 +7,8 @@ fields:
 - name: argv
   type: STRING
   mode: REPEATED
+  description: Full mach commandline. If the commandline contains absolute paths they
+    will be sanitized.
 - name: build_attrs
   type: RECORD
   mode: NULLABLE
@@ -86,6 +88,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: File extension
+  description: This array contains a list of objects with {ext, count} properties
+    giving the count of files changed since the last invocation grouped by file type
 - name: metadata
   type: RECORD
   mode: NULLABLE

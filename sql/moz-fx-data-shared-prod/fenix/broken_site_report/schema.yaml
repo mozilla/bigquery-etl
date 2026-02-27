@@ -534,24 +534,51 @@ fields:
     - name: broken_site_report_browser_info_app_default_locales
       type: STRING
       mode: REPEATED
+      description: 'Locale strings, ie `["en-US", "en"]`
+
+        '
     - name: broken_site_report_browser_info_security_antispyware
       type: STRING
       mode: REPEATED
+      description: 'Which antispyware software was reported on this system.
+
+        '
     - name: broken_site_report_browser_info_security_antivirus
       type: STRING
       mode: REPEATED
+      description: 'Which antivirus software was reported on this system.
+
+        '
     - name: broken_site_report_browser_info_security_firewall
       type: STRING
       mode: REPEATED
+      description: 'Which firewall software was reported on this system.
+
+        '
     - name: broken_site_report_tab_info_languages
       type: STRING
       mode: REPEATED
+      description: 'The languages the site actually sees (may be overridden)
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
     - name: broken_site_report_tab_info_antitracking_blocked_origins
       type: STRING
       mode: REPEATED
+      description: 'List of origins which were blocked by antitracking.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

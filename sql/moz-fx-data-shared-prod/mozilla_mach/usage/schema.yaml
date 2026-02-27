@@ -487,9 +487,25 @@ fields:
     - name: mach_argv
       type: STRING
       mode: REPEATED
+      description: 'Parameters provided to mach. Absolute paths are sanitized to be
+        relative to one of a few key base paths, such as the "$topsrcdir", "$topobjdir",
+        or "$HOME". For example: "/home/mozilla/dev/firefox/python/mozbuild" would
+        be replaced with "$topsrcdir/python/mozbuild". If a valid replacement base
+        path cannot be found, the path is replaced with "<path omitted>".
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

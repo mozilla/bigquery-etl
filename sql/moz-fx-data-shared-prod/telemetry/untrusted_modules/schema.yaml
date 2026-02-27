@@ -382,6 +382,7 @@ fields:
     - name: partner_names
       type: STRING
       mode: REPEATED
+      description: The list of names from the `app.partner` children prefs, as `app.partner.<name>=<name>`.
   - name: profile
     type: RECORD
     mode: NULLABLE
@@ -651,6 +652,10 @@ fields:
       - name: extensions
         type: STRING
         mode: REPEATED
+        description: 'This lists the avaible CPU extensions as strings. E.g.: ''hasMMX'',
+          ''hasSSE'', ''hasSSE2'', ''hasSSE3'', ''hasSSSE3'', ''hasSSE4A'', ''hasSSE4_1'',
+          ''hasSSE4_2'', ''hasAVX'', ''hasAVX2'', ''hasAES'', ''hasEDSP'', ''hasARMv6'',
+          ''hasARMv7'', ''hasNEON''.'
       - name: family
         type: INTEGER
         mode: NULLABLE
@@ -1345,6 +1350,7 @@ fields:
           mode: NULLABLE
           description: Module offset, the RVA of the program counter for this stack
             frame.
+        description: Stack object, an array of frames
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

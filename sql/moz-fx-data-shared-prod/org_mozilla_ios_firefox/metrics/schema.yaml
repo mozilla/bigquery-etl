@@ -2614,9 +2614,21 @@ fields:
     - name: logins_store_migration_errors
       type: STRING
       mode: REPEATED
+      description: 'Errors discovered in the migration.
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

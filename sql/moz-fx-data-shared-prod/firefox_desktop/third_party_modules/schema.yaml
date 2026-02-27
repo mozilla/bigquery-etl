@@ -520,18 +520,45 @@ fields:
     - name: third_party_modules_blocked_modules
       type: STRING
       mode: REPEATED
+      description: 'List of all DLL filenames that are on the dynamic blocklist.
+
+        '
     - name: windows_security_antispyware
       type: STRING
       mode: REPEATED
+      description: 'Product names of registered antispyware programs.
+
+        Windows only.
+
+        '
     - name: windows_security_antivirus
       type: STRING
       mode: REPEATED
+      description: 'Product names of registered antivirus programs.
+
+        Windows only.
+
+        '
     - name: windows_security_firewall
       type: STRING
       mode: REPEATED
+      description: 'Product names of registered firewall programs.
+
+        Windows only.
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

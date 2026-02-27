@@ -1253,9 +1253,22 @@ fields:
     - name: background_update_reasons_to_not_update
       type: STRING
       mode: REPEATED
+      description: 'Records which error was causing the background updater to fail.
+        This list supercedes the `background-update.reason` in `mozapps/update/metrics.yaml`
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

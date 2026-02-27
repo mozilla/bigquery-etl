@@ -363,6 +363,9 @@ fields:
     - name: provider_request_ids_returned
       type: STRING
       mode: REPEATED
+      description: 'The ids of the ads returned by the provider. Should not be null.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

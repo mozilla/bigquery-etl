@@ -19626,99 +19626,241 @@ fields:
     - name: metrics_mozilla_products
       type: STRING
       mode: REPEATED
+      description: 'A list of all the Mozilla products installed on device. We currently
+        scan
+
+        for: Firefox, Firefox Beta, Firefox Aurora, Firefox Nightly, Firefox
+
+        Fdroid, Firefox Lite, Reference Browser, Reference Browser Debug, Fenix,
+
+        Focus, and Lockwise.
+
+        '
     - name: metrics_syncing_items
       type: STRING
       mode: REPEATED
+      description: 'The preference keys for the switch preferences the user has enabled
+        to sync with FxA. We currently track: Bookmarks and History.
+
+        '
     - name: addons_enabled_addons
       type: STRING
       mode: REPEATED
+      description: 'A list of all enabled add-ons on the device.
+
+        '
     - name: addons_installed_addons
       type: STRING
       mode: REPEATED
+      description: 'A list of all installed add-ons on the device.
+
+        '
     - name: preferences_accessibility_services
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has touch exploration or switch services
+        enabled.
+
+        These are built into the Android OS, not Fenix prefs.
+
+        default: ""
+
+        '
     - name: preferences_open_links_in_a_private_tab
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled open links in a private tab.
+        default: false
+
+        '
     - name: preferences_remote_debugging
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has remote debugging enabled default:
+        false
+
+        '
     - name: preferences_search_bookmarks
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled bookmark search suggestions
+        default: true
+
+        '
     - name: preferences_search_browsing_history
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled browsing history suggestions.
+        default: true
+
+        '
     - name: preferences_search_suggestions_private
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled showing search suggestions
+        in private mode. default: false (we prompt the user, asking them to make a
+        selection)
+
+        '
     - name: preferences_show_clipboard_suggestions
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled clipboard search suggestions.
+        default: true
+
+        '
     - name: preferences_show_search_shortcuts
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled search shortcuts. default:
+        true
+
+        '
     - name: preferences_show_search_suggestions
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has search suggestions enabled default:
+        true
+
+        '
     - name: preferences_show_voice_search
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has enabled the voice search button. default:
+        true
+
+        '
     - name: preferences_sync
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user is signed into FxA default: false
+
+        '
     - name: preferences_sync_items
       type: STRING
       mode: REPEATED
+      description: 'The list of items the user has chosen to sync with FxA.
+
+        default: "" if the user is signed out. Otherwise defaults to
+
+        whatever is set in their FxA account. New accounts set:
+
+        [bookmarks, history, passwords, tabs]
+
+        '
     - name: preferences_telemetry
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has telemetry enabled. Note we should
+        never receive a "false" value for this since telemetry would not send in that
+        case. default: true
+
+        '
     - name: preferences_toolbar_position
       type: STRING
       mode: REPEATED
+      description: 'The position of the toolbar default: bottom (defaults to top if
+        the user has accessibility services)
+
+        '
     - name: preferences_tracking_protection
       type: STRING
       mode: REPEATED
+      description: 'What type of enhanced tracking protection the user has enabled.
+        "standard," "strict," "custom," or "" (if disabled) default: "standard"
+
+        '
     - name: preferences_open_links_in_app
       type: STRING
       mode: REPEATED
+      description: 'Whether or not the user has the open links in apps feature enabled.
+        default: false
+
+        '
     - name: preferences_theme
       type: STRING
       mode: REPEATED
+      description: 'The theme the user has enabled. "light," "dark," "system," or
+        "battery" default: "system" for API 28+, else "light"
+
+        '
     - name: logins_store_migration_errors
       type: STRING
       mode: REPEATED
+      description: 'Errors discovered in the migration.
+
+        '
     - name: intl_accept_languages
       type: STRING
       mode: REPEATED
+      description: 'The languages for the Accept-Languages header.
+
+        '
     - name: intl_app_locales
       type: STRING
       mode: REPEATED
+      description: 'The negotiated Locales that are being used.
+
+        '
     - name: intl_available_locales
       type: STRING
       mode: REPEATED
+      description: 'The Locales that are available for use.
+
+        '
     - name: intl_regional_prefs_locales
       type: STRING
       mode: REPEATED
+      description: 'The regional preferences for the OS.
+
+        '
     - name: intl_requested_locales
       type: STRING
       mode: REPEATED
+      description: 'The Locales that are being requested.
+
+        '
     - name: intl_system_locales
       type: STRING
       mode: REPEATED
+      description: 'The Locales for the OS.
+
+        '
     - name: system_cpu_extensions
       type: STRING
       mode: REPEATED
+      description: 'Recognized CPU extensions.
+
+        '
     - name: pkcs11_third_party_module_profile_entries
       type: STRING
       mode: REPEATED
+      description: 'A list of PKCS#11 module filenames (leaf names only) that are
+        in the profile at launch time.
+
+        '
     - name: xpi_database_startup_load_reasons
       type: STRING
       mode: REPEATED
+      description: 'List of reasons the XPI Database was updated.
+
+        Examples include "appChanged", "directoryState".
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

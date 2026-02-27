@@ -631,15 +631,33 @@ fields:
     - name: newtab_blocked_sponsors
       type: STRING
       mode: REPEATED
+      description: 'The advertiser names that have been dismissed by the user.
+
+        '
     - name: newtab_sov_allocation
       type: STRING
       mode: REPEATED
+      description: 'The partner group assignment for sov
+
+        '
     - name: newtab_selected_topics
       type: STRING
       mode: REPEATED
+      description: 'The list of topics the user selected
+
+        '
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+      description: 'The list of requested uploader capabilities for the ping this
+        is sent in.
+
+        Should be the same as the ones defined for that particular ping.
+
+
+        This metric is only attached to a ping if it already contains other data.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

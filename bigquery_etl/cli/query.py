@@ -817,136 +817,140 @@ def backfill(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    for query_file in query_files:
-        query_file_path = Path(query_file)
-
-        is_python_script = query_file_path.suffix == ".py"
-
-        try:
-            metadata = Metadata.of_query_file(str(query_file_path))
-        except FileNotFoundError:
-            click.echo(f"Can't run backfill without metadata for {query_file_path}.")
-            continue
-
-        depends_on_past = metadata.scheduling.get("depends_on_past", False)
-        # If date_partition_parameter isn't set it's assumed to be submission_date:
-        # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
-
-        partitioning_type = None
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            partitioning_type = metadata.bigquery.time_partitioning.type
-
-        date_range = BackfillDateRange(
-            start_date.date(),
-            end_date.date(),
-            excludes=[date.fromisoformat(x) for x in exclude],
-            range_type=partitioning_type or PartitionType.DAY,
+    if len(query_files) > 1:
+        raise click.ClickException(
+            f"Found multiple query source files to backfill: {query_files}"
         )
 
-        if depends_on_past and exclude:
-            click.echo(
-                f"Warning: depends_on_past = True for {query_file_path} but the"
-                f"following dates will be excluded from the backfill: {exclude}"
+    query_file = query_files[0]
+    query_file_path = Path(query_file)
+
+    is_python_script = query_file_path.suffix == ".py"
+
+    try:
+        metadata = Metadata.of_query_file(str(query_file_path))
+    except FileNotFoundError:
+        raise click.ClickException(
+            f"Can't run backfill without metadata for {query_file_path}."
+        )
+
+    depends_on_past = metadata.scheduling.get("depends_on_past", False)
+    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+
+    partitioning_type = None
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        partitioning_type = metadata.bigquery.time_partitioning.type
+
+    date_range = BackfillDateRange(
+        start_date.date(),
+        end_date.date(),
+        excludes=[date.fromisoformat(x) for x in exclude],
+        range_type=partitioning_type or PartitionType.DAY,
+    )
+
+    if depends_on_past and exclude:
+        click.echo(
+            f"Warning: depends_on_past = True for {query_file_path} but the"
+            f"following dates will be excluded from the backfill: {exclude}"
+        )
+
+    if is_python_script:
+        if query_script_entrypoint is None or query_script_date_arg is None:
+            raise click.ClickException(
+                "Backfill for query scripts require --query-script-entrypoint and "
+                f"--query-script-date-arg arguments: {query_file_path}"
             )
 
-        if is_python_script:
-            if query_script_entrypoint is None or query_script_date_arg is None:
-                raise click.ClickException(
-                    "Backfill for query scripts require --query-script-entrypoint and "
-                    f"--query-script-date-arg arguments: {query_file_path}"
-                )
-
-            if dry_run:
-                raise click.ClickException(
-                    "--dry-run argument is not compatible with query scripts. Dry run must be "
-                    "implemented in the script and controlled via an argument, "
-                    "e.g. --query-script-arg '--dry-run'"
-                )
-
-            # attempt to import the query script using the file path
-            query_spec = importlib.util.spec_from_file_location(
-                "query", str(query_file)
+        if dry_run:
+            raise click.ClickException(
+                "--dry-run argument is not compatible with query scripts. Dry run must be "
+                "implemented in the script and controlled via an argument, "
+                "e.g. --query-script-arg '--dry-run'"
             )
-            query_module = importlib.util.module_from_spec(query_spec)
-            query_spec.loader.exec_module(query_module)
-            entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            if not isinstance(entrypoint_command, Callable):
-                raise click.ClickException(
-                    f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
-                )
+        # attempt to import the query script using the file path
+        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
+        query_module = importlib.util.module_from_spec(query_spec)
+        query_spec.loader.exec_module(query_module)
+        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            backfill_query = partial(
-                _backfill_script,
-                entrypoint_command=entrypoint_command,
-                query_script_date_arg=query_script_date_arg,
-                query_script_args=query_script_arg,
+        if not isinstance(entrypoint_command, Callable):
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
             )
-        else:
-            # adding copy logic for cleaner handling of overrides
-            scheduling_metadata = metadata.scheduling.copy()
-            scheduling_metadata.update(json.loads(scheduling_overrides))
-            date_partition_parameter = scheduling_metadata.get(
-                "date_partition_parameter", "submission_date"
-            )
-            scheduling_parameters = scheduling_metadata.get("parameters", [])
-            date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
-            client = bigquery.Client(project=project_id)
-            project, dataset, table = extract_from_query_path(query_file_path)
-            try:
-                client.get_table(f"{project}.{dataset}.{table}")
-            except NotFound:
-                ctx.invoke(
-                    initialize,
-                    name=query_file,
-                    dry_run=dry_run,
-                    billing_project=billing_project,
-                )
+        backfill_query = partial(
+            _backfill_script,
+            entrypoint_command=entrypoint_command,
+            query_script_date_arg=query_script_date_arg,
+            query_script_args=query_script_arg,
+        )
+    else:
+        # adding copy logic for cleaner handling of overrides
+        scheduling_metadata = metadata.scheduling.copy()
+        scheduling_metadata.update(json.loads(scheduling_overrides))
+        date_partition_parameter = scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
+        )
+        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
-            backfill_query = partial(
-                _backfill_query,
-                query_file_path,
-                project_id,
-                date_partition_parameter,
-                date_partition_offset,
-                max_rows,
-                dry_run,
-                scheduling_parameters,
-                ctx.args,
-                partitioning_type,
-                destination_table=destination_table,
-                run_checks=checks,
-                checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+        client = bigquery.Client(project=project_id)
+        project, dataset, table = extract_from_query_path(query_file_path)
+        try:
+            client.get_table(f"{project}.{dataset}.{table}")
+        except NotFound:
+            ctx.invoke(
+                initialize,
+                name=query_file,
+                dry_run=dry_run,
                 billing_project=billing_project,
             )
 
-        if not depends_on_past and parallelism > 1:
-            # run backfill for dates in parallel if depends_on_past is false
-            failed_backfills = []
-            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
-                future_to_date = {
-                    executor.submit(backfill_query, backfill_date): backfill_date
-                    for backfill_date in date_range
-                }
-                for future in futures.as_completed(future_to_date):
-                    backfill_date = future_to_date[future]
-                    try:
-                        future.result()
-                    except Exception as e:  # TODO: More specific exception(s)
-                        click.echo(f"Encountered exception {e}: {backfill_date}.")
-                        failed_backfills.append(backfill_date)
-                    else:
-                        click.echo(f"Completed processing: {backfill_date}.")
-            if failed_backfills:
-                raise RuntimeError(
-                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
-                )
-        else:
-            # if data depends on previous runs, then execute backfill sequentially
-            for backfill_date in date_range:
-                click.echo(f"Running backfill for {backfill_date}")
-                backfill_query(backfill_date)
+        backfill_query = partial(
+            _backfill_query,
+            query_file_path,
+            project_id,
+            date_partition_parameter,
+            date_partition_offset,
+            max_rows,
+            dry_run,
+            scheduling_parameters,
+            ctx.args,
+            partitioning_type,
+            destination_table=destination_table,
+            run_checks=checks,
+            checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+            billing_project=billing_project,
+        )
+
+    if not depends_on_past and parallelism > 1:
+        # run backfill for dates in parallel if depends_on_past is false
+        failed_backfills = []
+        with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+            future_to_date = {
+                executor.submit(backfill_query, backfill_date): backfill_date
+                for backfill_date in date_range
+            }
+            for future in futures.as_completed(future_to_date):
+                backfill_date = future_to_date[future]
+                try:
+                    future.result()
+                except Exception as e:  # TODO: More specific exception(s)
+                    click.echo(f"Encountered exception {e}: {backfill_date}.")
+                    failed_backfills.append(backfill_date)
+                else:
+                    click.echo(f"Completed processing: {backfill_date}.")
+        if failed_backfills:
+            raise RuntimeError(
+                f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+            )
+    else:
+        # if data depends on previous runs, then execute backfill sequentially
+        for backfill_date in date_range:
+            click.echo(f"Running backfill for {backfill_date}")
+            backfill_query(backfill_date)
 
 
 @query.command(

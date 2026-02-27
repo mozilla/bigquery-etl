@@ -45,6 +45,7 @@ from ..backfill.validate import (
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
+    validate_query_script_options,
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
@@ -137,8 +138,29 @@ def backfill(ctx):
     help="Path of the custom query to run the backfill. Optional.",
 )
 @click.option(
+    "--query-script-entrypoint",
+    help="Name of the Click command in the query.py to use in the backfill. "
+    "Must be a @click.command() function. Required when custom_query_path is a .py file.",
+)
+@click.option(
+    "--query-script-date-arg",
+    help="Name of the date argument of the query.py accepting a YYYY-MM-DD string. "
+    "Required when custom_query_path is a .py file.",
+)
+@click.option(
+    "--query-script-arg",
+    help="CLI arguments to pass into query.py if backfilling a python script. "
+    'Specified like `--query-script-arg="--project=abc"`',
+    multiple=True,
+)
+@click.option(
+    "--query-script-dry-run-arg",
+    help="CLI argument to append for the dry run pass of the backfill before the real run, "
+    'e.g. "--dry-run". If not provided, the backfill will not be dry run.',
+)
+@click.option(
     "--shredder_mitigation/--no_shredder_mitigation",
-    help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
+    help="Whether to run a backfill using an auto-generated query that mitigates shredder effect.",
 )
 @click.option(
     "--override-retention-range-limit",
@@ -168,6 +190,10 @@ def create(
     exclude,
     watcher,
     custom_query_path,
+    query_script_entrypoint,
+    query_script_date_arg,
+    query_script_arg,
+    query_script_dry_run_arg,
     shredder_mitigation,
     override_retention_range_limit,
     override_depends_on_past_end_date,
@@ -187,6 +213,17 @@ def create(
         sql_dir, qualified_table_name
     )
 
+    # set default query_script_args only if query is a python script
+    if query_script_arg:
+        query_script_args = list(query_script_arg)
+    elif query_script_entrypoint:
+        query_script_args = [
+            "--destination-table="
+            f"{get_backfill_staging_qualified_table_name(qualified_table_name, date.today())}"
+        ]
+    else:
+        query_script_args = None
+
     new_entry = Backfill(
         entry_date=date.today(),
         start_date=start_date.date(),
@@ -200,6 +237,10 @@ def create(
         override_retention_limit=override_retention_range_limit,
         override_depends_on_past_end_date=override_depends_on_past_end_date,
         billing_project=billing_project,
+        query_script_entrypoint=query_script_entrypoint or None,
+        query_script_date_arg=query_script_date_arg or None,
+        query_script_dry_run_arg=query_script_dry_run_arg or None,
+        query_script_args=query_script_args,
     )
 
     backfill_file = get_backfill_file_from_qualified_table_name(
@@ -207,17 +248,29 @@ def create(
     )
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
+    validate_query_script_options(new_entry, backfill_file)
 
     if (backfill_file.parent / METADATA_FILE).exists():
         validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
 
-    backfill_file.write_text(
-        "\n".join(
-            backfill.to_yaml() for backfill in sorted(existing_backfills, reverse=True)
+    with backfill_file.open("w") as f:
+        f.write(
+            "\n".join(
+                backfill.to_yaml()
+                for backfill in sorted(existing_backfills, reverse=True)
+            )
         )
-    )
+        if query_script_entrypoint is not None:
+            f.write(
+                "# WARNING: Destination tables arguments for python scripts are not automatically "
+                "configured to write to a backfill staging table. "
+                "Adjust the query_script_arg values as needed.\n"
+                "# Destination table should be "
+                f"{get_backfill_staging_qualified_table_name(qualified_table_name, date.today())} "
+                f"in order for the copy to production to work."
+            )
 
     click.echo(f"Created backfill entry in {backfill_file}.")
 
@@ -543,12 +596,19 @@ def initiate(
     )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+    is_python_script = (Path(sql_dir) / project / dataset / table / "query.py").exists()
+    query_path = (
+        Path(sql_dir)
+        / project
+        / dataset
+        / table
+        / ("query.py" if is_python_script else "query.sql")
+    )
 
     # create schema before deploying staging table if it does not exist
     schema_path = query_path.parent / SCHEMA_FILE
 
-    if not schema_path.exists():
+    if not schema_path.exists() and not is_python_script:
         # if schema doesn't exist, a schema file is created to allow backfill staging table deployment
         Schema.from_query_file(
             query_file=query_path,
@@ -564,9 +624,12 @@ def initiate(
             respect_dryrun_skip=False,
         )
     except (SkippedDeployException, FailedDeployException) as e:
-        raise RuntimeError(
-            f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
-        ) from e
+        if is_python_script:
+            click.echo("No schema.yaml, backfill staging table not deployed")
+        else:
+            raise RuntimeError(
+                f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
+            ) from e
 
     billing_project = DEFAULT_BILLING_PROJECT
 
@@ -579,19 +642,22 @@ def initiate(
         )
         sys.exit(1)
 
-    click.echo(
-        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
-    )
+    if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
+        click.echo(
+            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+        )
 
-    _initiate_backfill(
-        ctx,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        entry_to_initiate,
-        parallelism,
-        dry_run=True,
-        billing_project=billing_project,
-    )
+        _initiate_backfill(
+            ctx,
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+            entry_to_initiate,
+            parallelism,
+            dry_run=True,
+            billing_project=billing_project,
+            is_python_script=is_python_script,
+            query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
+        )
 
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
@@ -603,6 +669,7 @@ def initiate(
         entry_to_initiate,
         parallelism,
         billing_project=billing_project,
+        is_python_script=is_python_script,
     )
 
     click.echo(
@@ -618,6 +685,8 @@ def _initiate_backfill(
     parallelism: int = 16,
     dry_run: bool = False,
     billing_project=DEFAULT_BILLING_PROJECT,
+    is_python_script=False,
+    query_script_dry_run_arg=None,
 ):
     if not is_authenticated():
         click.echo(
@@ -631,7 +700,11 @@ def _initiate_backfill(
     logging_str = f"""Initiating backfill for {qualified_table_name} (destination: {backfill_staging_qualified_table_name}).
                     Query will be executed in {billing_project}."""
 
-    if dry_run:
+    if query_script_dry_run_arg:
+        logging_str += (
+            f"  This is a python script dry run using {query_script_dry_run_arg}."
+        )
+    elif dry_run:
         logging_str += "  This is a dry run."
 
     log.info(logging_str)
@@ -687,8 +760,15 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
-    # rewrite query to query the staging table instead of the prod table if table depends on past
-    if metadata.scheduling.get("depends_on_past"):
+    scheduling_overrides = "{}"
+    if entry.ignore_date_partition_offset:
+        scheduling_overrides = '{"date_partition_offset": 0}'
+
+    override_retention_limit = entry.override_retention_limit
+
+    # rewrite query to query the staging table instead of the prod table
+    # and copy previous partition if table depends on past
+    if metadata.scheduling.get("depends_on_past") and not is_python_script:
         query_path = (
             custom_query_path or Path("sql") / project / dataset / table / "query.sql"
         )
@@ -705,20 +785,13 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
-    scheduling_overrides = "{}"
-    if entry.ignore_date_partition_offset:
-        scheduling_overrides = '{"date_partition_offset": 0}'
-
-    override_retention_limit = entry.override_retention_limit
-
-    # copy previous partition if depends_on_past
-    _initialize_previous_partition(
-        client,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        metadata,
-        entry,
-    )
+        _initialize_previous_partition(
+            client,
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+            metadata,
+            entry,
+        )
 
     # Backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -732,7 +805,7 @@ def _initiate_backfill(
             exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
-            dry_run=dry_run,
+            dry_run=dry_run and query_script_dry_run_arg is None,
             **(
                 {
                     k: param
@@ -740,6 +813,17 @@ def _initiate_backfill(
                         ("custom_query_path", custom_query_path),
                         ("checks", checks),
                         ("checks_file_name", custom_checks_name),
+                        ("query_script_entrypoint", entry.query_script_entrypoint),
+                        ("query_script_date_arg", entry.query_script_date_arg),
+                        (
+                            "query_script_arg",
+                            (entry.query_script_args or [])
+                            + (
+                                [query_script_dry_run_arg]
+                                if query_script_dry_run_arg
+                                else []
+                            ),
+                        ),
                     ]
                     if param is not None
                 }

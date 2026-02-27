@@ -2,7 +2,7 @@ friendly_name: Kitsune Forum Questions Base (Daily)
 description: |
   Daily metrics for SUMO forum questions from the Kitsune database.
 
-  Grain: Daily x Product (PST timezone)
+  Grain: Daily x Product (UTC timezone)
 
   Single source of truth tracking:
   - Forum questions posted each day

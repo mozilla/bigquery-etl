@@ -1,6 +1,6 @@
 WITH questions AS (
   SELECT
-    DATE(TIMESTAMP(q.created_utc), "America/Los_Angeles") AS date_pst,
+    DATE(TIMESTAMP(q.created_utc), "UTC") AS date_utc,
       -- Normalize product names to match other SUMO datasets
     CASE
       q.product
@@ -18,18 +18,18 @@ WITH questions AS (
 ),
 deduped AS (
   SELECT
-    date_pst,
+    date_utc,
     question_id,
     product
   FROM
     questions
   GROUP BY
-    date_pst,
+    date_utc,
     question_id,
     product
 )
 SELECT
-  date_pst AS `date`,
+  date_utc AS `date`,
   product,
   COUNT(*) AS forum_questions_posted,
   CURRENT_TIMESTAMP() AS etl_timestamp

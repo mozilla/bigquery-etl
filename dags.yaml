@@ -406,17 +406,6 @@ bqetl_deletion_request_volume:
   tags:
     - impact/tier_3
 
-bqetl_fenix_event_rollup:
-  schedule_interval: 0 2 * * *
-  default_args:
-    owner: wlachance@mozilla.com
-    start_date: "2020-09-09"
-    email: ["wlachance@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_1
-
 bqetl_org_mozilla_fenix_derived:
   schedule_interval: 0 2 * * *
   default_args:
@@ -2577,3 +2566,26 @@ bqetl_rust_component_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_semrush:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - sherrera@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: sherrera@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-02-24'
+  description: Daily ingestion of Semrush analytics data.
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 0 14 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

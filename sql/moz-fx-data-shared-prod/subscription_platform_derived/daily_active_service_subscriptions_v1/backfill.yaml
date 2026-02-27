@@ -5,7 +5,7 @@
   watchers:
   - phlee@mozilla.com
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true
   override_depends_on_past_end_date: false

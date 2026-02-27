@@ -92,4 +92,5 @@ CREATE OR REPLACE FUNCTION sumo.map_product_slug(product_slug STRING) AS (
 SELECT
   assert.equals('firefox', sumo.map_product_slug('/firefox/')),
   assert.equals('mozilla-vpn', sumo.map_product_slug('/mozilla-vpn/')),
+  assert.equals('lockwise', sumo.map_product_slug('/firefox-lockwise/')),
   assert.equals('other', sumo.map_product_slug('/unknown-product/'))

@@ -7,10 +7,6 @@ on:
     types:
       - opened
       - synchronize
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
   merge_group:
   workflow_dispatch:
     inputs:

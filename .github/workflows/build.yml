@@ -7,6 +7,10 @@ on:
     types:
       - opened
       - synchronize
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
   merge_group:
   workflow_dispatch:
     inputs:
@@ -35,6 +39,9 @@ jobs:
   decide-runs:
     name: Decide what checks to run based on changed files
     runs-on: ubuntu-latest
+    if: |
+      (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
     outputs:
       validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
       deploy: ${{ steps.set-flags.outputs.deploy }}

@@ -169,9 +169,6 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution) OVER w1) AS attribution,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
     `moz-fx-data-shared-prod.udf.mode_last`(
-      ARRAY_AGG(attribution_msclkid) OVER w1
-    ) AS attribution_msclkid,
-    `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(attribution_dltoken) OVER w1
     ) AS attribution_dltoken,
     `moz-fx-data-shared-prod.udf.mode_last`(
@@ -195,7 +192,10 @@ windowed AS (
     ) AS distributor_channel,
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(distribution_partner_id) OVER w1
-    ) AS distribution_partner_id
+    ) AS distribution_partner_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_msclkid) OVER w1
+    ) AS attribution_msclkid,
   FROM
     with_date_offsets
   LEFT JOIN

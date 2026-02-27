@@ -2567,7 +2567,6 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
-<<<<<<< deng-10640
 bqetl_sumo_metrics:
   schedule_interval: 0 3 * * *
   description: |
@@ -2588,7 +2587,7 @@ bqetl_sumo_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_2
-=======
+
 bqetl_semrush:
   catchup: false
   default_args:
@@ -2611,4 +2610,3 @@ bqetl_semrush:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
->>>>>>> main

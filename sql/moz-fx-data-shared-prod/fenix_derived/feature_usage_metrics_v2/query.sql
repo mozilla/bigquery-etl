@@ -1,3 +1,4 @@
+-- test change
 WITH baseline_clients AS (
   SELECT
     submission_date AS dau_date,

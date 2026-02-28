@@ -214,6 +214,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   - sql/moz-fx-data-shared-prod/zoom/**/*.sql
   - sql/moz-fx-data-shared-prod/taskclusteretl/person_mozilla_com/view.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/public_data_report_user_activity_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_dev_cycle_derived/firefox_major_release_dates_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF

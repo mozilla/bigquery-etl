@@ -86,7 +86,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2026-02-27"
+  DATE(submission_timestamp) >= "2026-02-28"
 GROUP BY
   submission_date,
   window_start,

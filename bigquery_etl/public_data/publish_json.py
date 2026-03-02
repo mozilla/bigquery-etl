@@ -145,7 +145,7 @@ class JsonPublisher:
         try:
             if order_by_field:
                 ordered_temp_table = (
-                    f"{self.project_id}.tmp.{self.table}_{self.version}_"
+                    f"{self.project_id}.tmp.publish_public_{self.table}_{self.version}_"
                     + "".join(random.choice(string.ascii_lowercase) for _ in range(12))
                     + "_ordered_temp"
                 )

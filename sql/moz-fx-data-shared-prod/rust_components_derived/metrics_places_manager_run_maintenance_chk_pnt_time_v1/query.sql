@@ -8,13 +8,15 @@ SELECT
   q[500] AS q50,
   q[950] AS q95,
   q[990] AS q99,
-  q[999] AS q999
+  q[999] AS q999,
+  sample_count
 FROM
   (
     SELECT
       normalized_channel AS channel,
       DATE(submission_timestamp) AS submission_date,
-      APPROX_QUANTILES(CAST(VALUES .key AS INT64), 1000) AS q
+      APPROX_QUANTILES(CAST(VALUES .key AS INT64), 1000) AS q,
+      COUNT(*) AS sample_count
     FROM
       `mozdata.fenix.metrics`
     CROSS JOIN

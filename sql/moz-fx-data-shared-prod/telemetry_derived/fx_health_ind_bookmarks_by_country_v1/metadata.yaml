@@ -2,10 +2,10 @@ friendly_name: Firefox Health Indicator - Bookmarks By Country
 description: |-
   Please provide a description for the query
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

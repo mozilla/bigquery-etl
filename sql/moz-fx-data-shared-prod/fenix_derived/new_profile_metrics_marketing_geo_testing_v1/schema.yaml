@@ -138,3 +138,9 @@ fields:
   mode: NULLABLE
   description: |
     The number of new profiles retained after week 4.
+
+- name: paid_vs_organic_gclid
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Categorised as "Paid" if play_store_attribution_install_referrer_response value contained gclid (Google click id).

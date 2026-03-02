@@ -107,6 +107,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 )
                 version = int(basename.split(".")[1])
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
+                schema_id = schema.get("$id", "")
                 bq_schema = {}
 
                 # Schemas without `bq_dataset_family` and `bq_table` metadata (like glean/glean)
@@ -117,6 +118,13 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                     or "bq_dataset_family" not in pipeline_meta
                     or "bq_table" not in pipeline_meta
                 ):
+                    continue
+
+                # Ignore temporary glean v2 schemas: https://mozilla-hub.atlassian.net/browse/DENG-10558
+                if schema_id in [
+                    "moz://mozilla.org/schemas/glean/ping/2",
+                    "moz://mozilla.org/schemas/glean-min/ping/2",
+                ]:
                     continue
 
                 try:
@@ -130,7 +138,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 schemas.append(
                     SchemaFile(
                         schema=bq_schema,
-                        schema_id=schema.get("$id", ""),
+                        schema_id=schema_id,
                         bq_dataset_family=pipeline_meta["bq_dataset_family"],
                         bq_table=pipeline_meta["bq_table"],
                         document_namespace=document_namespace,

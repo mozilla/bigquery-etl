@@ -5,21 +5,11 @@
   sample_id: 0
   event_category: "client1-new-event-category"
   event_name: "client1-new-event-name"
+  criteria: "any_event"
   event: "client1-new-event"
   first_submission_timestamp: 2025-10-29T12:00:00+00:00
   first_event_timestamp: 2025-10-29T12:00:00+00:00
   event_extra: {date: 2025-10-29}
-
-# Test 2: Existing event - uses previous (earlier) data
-- client_id: client2-existing
-  profile_group_id: "client2-existing-profile"
-  sample_id: 1
-  event_category: "client2-existing-event-category"
-  event_name: "client2-existing-event-name"
-  event: "client2-existing-event"
-  first_submission_timestamp: 2025-10-15T08:00:00+00:00
-  first_event_timestamp: 2025-10-15T08:00:00+00:00
-  event_extra: {date: 2025-10-15}
 
 # Test 3: Multiple events - aggregated to minimum
 - client_id: client3-multiple
@@ -27,6 +17,7 @@
   sample_id: 2
   event_category: "client3-multiple-event-category"
   event_name: "client3-multiple-event-name"
+  criteria: "any_event"
   event: "client3-multiple-event"
   first_submission_timestamp: 2025-10-29T08:00:00+00:00
   first_event_timestamp: 2025-10-29T08:00:00+00:00
@@ -38,18 +29,8 @@
   sample_id: 3
   event_category: "client4-event-category"
   event_name: "client4-event-name"
+  criteria: "any_event"
   event: "client4-event"
   first_submission_timestamp: 2025-10-29T10:00:00+00:00
   first_event_timestamp: 2025-10-29T10:00:00+00:00
   event_extra: {profile: a}
-
-# Test 8: History-only record - preserved from FULL JOIN
-- client_id: client8-history-only
-  profile_group_id: "client8-profile"
-  sample_id: 7
-  event_category: "client8-event-category"
-  event_name: "client8-event-name"
-  event: "client8-event"
-  first_submission_timestamp: 2025-10-20T09:00:00+00:00
-  first_event_timestamp: 2025-10-20T09:00:00+00:00
-  event_extra: {date: 2025-10-20}

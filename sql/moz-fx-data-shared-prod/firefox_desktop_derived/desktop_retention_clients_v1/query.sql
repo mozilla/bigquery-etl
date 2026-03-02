@@ -105,6 +105,7 @@ clients_data AS (
       au.retention_active.day_27.active_on_metric_date
       AND au.retention_active.day_27.active_in_week_3
     ) AS retained_week_4,
+    mozfun.bits28.active_in_range(au.days_desktop_active_bits, -2, 3) AS active_in_last_3_days,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily` AS cd
   INNER JOIN
@@ -146,6 +147,7 @@ SELECT
   cd.ping_sent_week_4,
   cd.active_metric_date,
   cd.retained_week_4,
+  cd.active_in_last_3_days,
   COALESCE(np.is_new_profile, FALSE) AS new_profile_metric_date,
   COALESCE(np.repeat_profile, FALSE) AS repeat_profile,
   COALESCE(np.retained_week_4_new_profile, FALSE) AS retained_week_4_new_profile,

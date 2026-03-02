@@ -57,6 +57,7 @@ SELECT
   COUNT(new_profiles.client_id) AS new_profiles,
   COUNTIF(profile_activation.is_activated) AS activations,
   COUNTIF(profile_retention.retained_week_4) AS retained_week_4,
+  new_profiles.paid_vs_organic_gclid,
 FROM
   new_profiles
 LEFT JOIN
@@ -66,27 +67,4 @@ LEFT JOIN
   profile_retention
   USING (first_seen_date, client_id)
 GROUP BY
-  first_seen_date,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  city,
-  geo_subdivision,
-  os,
-  os_version,
-  device_manufacturer,
-  is_mobile,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  play_store_attribution_content,
-  play_store_attribution_term,
-  meta_attribution_app,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  distribution_id,
-  device_type
+  ALL

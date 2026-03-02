@@ -1,0 +1,163 @@
+fields:
+
+- mode: NULLABLE
+  name: funnel_date
+  type: DATE
+  description: Date of the funnel activity (submission_date for TOF/installs, first_seen_date for profiles)
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: >
+    Country with tier label, e.g. "US (Core)", "DE (Growth)", or "Emerging" for Rest of World (Tier 3).
+    EU countries are excluded from core funnels due to cookie banner impact on tracking.
+
+- mode: NULLABLE
+  name: funnel_derived
+  type: STRING
+  description: >
+    Funnel type based on OS and acquisition source. Values: "mozorg windows funnel" (full funnel with installs),
+    "mozorg mac funnel" (no install data), "mozorg other" (non-Windows/Mac OS),
+    "partner" (partner distribution, starts at profiles), "Unknown" (EU countries and unattributed traffic).
+
+- mode: NULLABLE
+  name: channel_raw
+  type: STRING
+  description: GA4 cross-channel primary channel group from web session attribution (e.g. "Organic Search", "Paid Search", "Direct")
+
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Google Ads campaign name, with fallback to campaigns_v2 lookup by campaign ID. NULL for non-paid traffic.
+
+- mode: NULLABLE
+  name: campaign_id
+  type: STRING
+  description: Google Ads campaign ID from GA4 attribution
+
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: GA4 cross-channel traffic source (e.g. "google", "bing", "mozilla.org")
+
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: GA4 cross-channel traffic medium (e.g. "organic", "cpc", "referral")
+
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized operating system of the Firefox profile (e.g. "Windows", "Mac", "Linux"). Only populated from telemetry (profiles CTE).
+
+- mode: NULLABLE
+  name: partner_org
+  type: STRING
+  description: Partner organization name. Only populated when funnel_derived = "partner", NULL otherwise.
+
+- mode: NULLABLE
+  name: distribution_model
+  type: STRING
+  description: Partner distribution model. Only populated when funnel_derived = "partner", NULL otherwise.
+
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Partner distribution ID. Only populated when funnel_derived = "partner", NULL otherwise.
+
+- mode: NULLABLE
+  name: visits
+  type: INTEGER
+  description: >
+    Count of GA4 desktop sessions on mozilla.org and firefox.com.
+    Excludes existing Firefox users, internal cross-site referrals (mozilla.org <-> firefox.com),
+    and EU countries. NULL for partner funnel.
+
+- mode: NULLABLE
+  name: downloads
+  type: INTEGER
+  description: >
+    Count of GA4 sessions with at least one Firefox desktop download event.
+    NULL for partner funnel.
+
+- mode: NULLABLE
+  name: installs
+  type: INTEGER
+  description: >
+    Count of successful new Firefox installations from Windows installer telemetry.
+    Excludes silent installs, upgrades/reinstalls, non-release channels, and partner distributions.
+    Only available for "mozorg windows funnel" (NULL for Mac and other funnels).
+
+- mode: NULLABLE
+  name: new_profiles
+  type: INTEGER
+  description: >
+    Count of new Firefox profiles created, from clients_first_seen_28_days_later telemetry.
+    Filtered to release channel only.
+
+- mode: NULLABLE
+  name: return_user
+  type: INTEGER
+  description: >
+    Count of new profiles that were active on any day after their first day (qualified_second_day).
+    Requires both a URI visit and browser interaction on the same day within days 2-28.
+
+- mode: NULLABLE
+  name: retained_week4
+  type: INTEGER
+  description: >
+    Count of new profiles still active in week 4 of the 28-day observation window (qualified_week4).
+    Requires both a URI visit and browser interaction on the same day within days 22-28.
+
+- mode: NULLABLE
+  name: country_tier
+  type: STRING
+  description: >
+    Country tier for filtering. Values: "Core" (Tier 1 markets), "Growth" (Tier 2 markets),
+    "Emerging" (Rest of World / Tier 3), "Unknown" (unmapped countries).
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: >
+    Derived channel bucket. Values: "Paid Search" (has a Google Ads campaign),
+    "Organic Search" (GA4 classified as Organic Search),
+    "Web - Organic/Other" (everything else including direct, referral, social).
+
+- mode: NULLABLE
+  name: subchannel
+  type: STRING
+  description: >
+    Campaign type classification for Paid Search, based on campaign naming conventions.
+    Values: "Brand" (_brand_), "Non-Brand" (_nonbrand_), "Competitor" (_comp_),
+    "PMax" (pmax), "Other" (paid but unclassified), "All" (non-Paid Search).
+
+- mode: NULLABLE
+  name: visits_last_year
+  type: INTEGER
+  description: Number of visits exactly 364 days ago.
+
+- mode: NULLABLE
+  name: downloads_last_year
+  type: INTEGER
+  description: Number of downloads exactly 364 days ago.
+
+- mode: NULLABLE
+  name: installs_last_year
+  type: INTEGER
+  description: Number of installs exactly 364 days ago.
+
+- mode: NULLABLE
+  name: new_profiles_last_year
+  type: INTEGER
+  description: Number of new_profiles exactly 364 days ago.
+
+- mode: NULLABLE
+  name: return_user_last_year
+  type: INTEGER
+  description: Number of return_users exactly 364 days ago.
+
+- mode: NULLABLE
+  name: retained_week4_last_year
+  type: INTEGER
+  description: Number of retained_week4 exactly 364 days ago.

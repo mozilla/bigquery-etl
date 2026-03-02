@@ -46,6 +46,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..util import extract_from_query_path
+from ..util.common import block_coding_agents
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
@@ -62,24 +63,23 @@ METRIC_STATUS_FAILURES = [
 ]
 
 
-@click.group(
-    help="""
-        Commands for managing monitoring of datasets.
-        """
-)
+@click.group(help="""
+    Commands for managing monitoring of datasets.
+    """)
 @click.pass_context
 def monitoring(ctx):
     """Create the CLI group for the monitoring command."""
     pass
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy monitors defined in the BigConfig files to Bigeye.
 
     Requires BigConfig API key to be set via BIGEYE_API_KEY env variable.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
@@ -233,11 +233,12 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
     return statements
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy custom SQL rules.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -478,13 +479,11 @@ def _update_bigconfig(
             )
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Update BigConfig files based on monitoring metadata.
 
     Requires BigConfig credentials to be set via BIGEYE_API_CRED_FILE env variable.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -546,11 +545,9 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
         print(f"Error processing {metadata_file}: {e}")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Validate BigConfig files.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -595,11 +592,12 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
     click.echo("All BigConfig files are valid.")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Set partition column for view or table in Bigeye.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -698,11 +696,12 @@ def set_partition_column(
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Delete deployed monitors. Use --custom-sql and/or --metrics flags to select which types of monitors to delete.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -785,6 +784,8 @@ def delete(
     help="""
     Runs Bigeye monitors.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
 
     \t./bqetl monitoring run ga_derived.downloads_with_attribution_v2
@@ -794,6 +795,7 @@ def delete(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -914,13 +916,11 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
 
 # TODO: remove this command once checks have been migrated
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Create BigConfig files from ETL check.sql files.
 
     This is a temporary command and will be removed after checks have been migrated.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option

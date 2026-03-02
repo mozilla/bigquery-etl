@@ -2,10 +2,10 @@ friendly_name: Firefox Health Indicator - Page Reloads by Country
 description: |-
   Aggregate table used in Firefox Health Indicator dashboard, calculates number of users doing page reloads per country per day
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

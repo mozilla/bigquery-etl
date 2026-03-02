@@ -1,5 +1,5 @@
-import distutils
 import os
+import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -528,10 +528,7 @@ class TestMetadata:
         self.check_test_level(runner=runner, metadata=metadata, expected_result=True)
 
     def test_level_is_not_string(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": ["gold", "silver"],
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": ["gold", "silver"]}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -541,16 +538,11 @@ class TestMetadata:
 
             with pytest.raises(ValueError) as e:
                 _ = Metadata.from_file(metadata_path)
-            expected_exc = (
-                "ERROR. Invalid level in metadata with type 'list'. Must be a string."
-            )
+            expected_exc = "Invalid label format: ['gold', 'silver']"
             assert (str(e.value)) == expected_exc
 
     def test_level_multiple_values(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "silver, gold",
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": "silver, gold"}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -560,14 +552,27 @@ class TestMetadata:
 
             with pytest.raises(ValueError) as e:
                 _ = Metadata.from_file(metadata_path)
-            expected_exc = "ERROR. Invalid level in metadata: silver, gold. Must be only one of ['bronze', 'gold', 'silver']."
+            expected_exc = "Invalid label format: silver, gold"
             assert (str(e.value)) == expected_exc
 
     def test_level_unknown_value(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "kpi",
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
         }
+        metadata = {"friendly_name": "test", "labels": {"level": "kpi"}}
 
         with runner.isolated_filesystem():
             os.makedirs(self.test_path, exist_ok=True)
@@ -575,19 +580,27 @@ class TestMetadata:
             with open(metadata_path, "w") as f:
                 f.write(yaml.safe_dump(metadata))
 
-            with pytest.raises(ValueError) as e:
-                _ = Metadata.from_file(metadata_path)
-            expected_exc = "ERROR. Invalid level in metadata: kpi. Must be only one of ['bronze', 'gold', 'silver']."
-            assert (str(e.value)) == expected_exc
+            Metadata.from_file(metadata_path)
+            expected_exception = "Invalid level in metadata: kpi. Must be one of "
+            self.check_test_level(
+                runner=runner,
+                query=query,
+                schema=schema,
+                metadata=metadata,
+                with_unittests=True,
+                with_bigeye_metrics=True,
+                expected_result=False,
+                expected_exception=expected_exception,
+                capfd=capfd,
+            )
 
     def test_level_gold_comply_is_table(self, runner, capfd):
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -624,8 +637,7 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         schema = {
             "fields": [
@@ -660,9 +672,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -698,9 +709,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -736,9 +746,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "silver",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "silver"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -775,9 +784,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
             "scheduling": {"dag_name": "bqetl_default"},
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -815,8 +823,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
             "scheduling": {"dag_name": "bqetl_default"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
@@ -856,8 +863,7 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "gold",
-            "labels": {"change_controlled": "true", "foo": "abc"},
+            "labels": {"change_controlled": "true", "foo": "abc", "level": "gold"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -896,8 +902,8 @@ class TestMetadata:
             "friendly_name": "test",
             "description": "Table description.",
             "owners": ["test@example.org", "test2@example.org"],
-            "level": "silver",
             "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"level": "silver"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -941,10 +947,7 @@ class TestMetadata:
         )
 
     def test_level_silver_not_comply_missing_all(self, runner, capfd):
-        metadata = {
-            "friendly_name": "test",
-            "level": "silver",
-        }
+        metadata = {"friendly_name": "test", "labels": {"level": "silver"}}
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
             "fields": [
@@ -991,7 +994,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
-            "level": "bronze",
+            "labels": {"level": "bronze"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
 
@@ -1009,7 +1012,7 @@ class TestMetadata:
         metadata = {
             "friendly_name": "test",
             "description": "Table description.",
-            "level": "bronze",
+            "labels": {"level": "bronze"},
         }
         query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
         schema = {
@@ -1038,7 +1041,7 @@ class TestMetadata:
 
     def test_metadata_update_with_no_deprecation(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/"
@@ -1052,14 +1055,14 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:mozilla-confidential",
+            "workgroup:mozilla-confidential/data-viewers",
             "workgroup:test/test",
         ]
         assert "deprecated" not in metadata
 
     def test_metadata_update_with_deprecation(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
@@ -1092,13 +1095,13 @@ class TestMetadata:
                 "role": "roles/bigquery.dataEditor",
             },
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.metadataViewer",
             },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {
-                "members": ["workgroup:mozilla-confidential"],
+                "members": ["workgroup:mozilla-confidential/data-viewers"],
                 "role": "roles/bigquery.dataViewer",
             }
         ]
@@ -1113,7 +1116,7 @@ class TestMetadata:
         log.set_threshold(log.WARN)
 
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = (
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
@@ -1165,7 +1168,7 @@ class TestMetadata:
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v2/"
@@ -1174,9 +1177,84 @@ class TestMetadata:
 
         assert mock_bigquery_client().update_table.call_count == 0
 
+    @patch("bigquery_etl.cli.metadata._publish_metadata")
+    def test_metadata_publish_skip_ingestion_true(self, mock_publish, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+
+            def invoke_command(project_id, table_id):
+                runner.invoke(
+                    publish,
+                    [
+                        table_id,
+                        f"--sql-dir={str(tmpdirname)}",
+                        "--skip-stable-datasets=true",
+                        "--parallelism=1",
+                        f"--project-id={project_id}",
+                    ],
+                    catch_exceptions=False,
+                )
+
+            invoke_command("moz-fx-data-shared-prod", "test_derived.test_v1")
+            invoke_command("moz-fx-data-shared-prod", "test_stable.test_v1")
+            invoke_command("glam-fenix-dev", "test_stable.test_v1")
+
+        assert mock_publish.call_count == 2
+        mock_publish.assert_any_call(
+            "moz-fx-data-shared-prod",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "moz-fx-data-shared-prod"
+            / "test_derived"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+        mock_publish.assert_any_call(
+            "glam-fenix-dev",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "glam-fenix-dev"
+            / "test_stable"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+
+    @patch("bigquery_etl.cli.metadata._publish_metadata")
+    def test_metadata_publish_skip_ingestion_false(self, mock_publish, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+
+            def invoke_command(project_id, table_id):
+                runner.invoke(
+                    publish,
+                    [
+                        table_id,
+                        f"--sql-dir={str(tmpdirname)}",
+                        "--skip-stable-datasets=false",
+                        "--parallelism=1",
+                        f"--project-id={project_id}",
+                    ],
+                    catch_exceptions=False,
+                )
+
+            invoke_command("moz-fx-data-shared-prod", "test_derived.test_v1")
+            invoke_command("moz-fx-data-shared-prod", "test_stable.test_v1")
+            invoke_command("glam-fenix-dev", "test_stable.test_v1")
+
+        assert mock_publish.call_count == 3
+        mock_publish.assert_any_call(
+            "moz-fx-data-shared-prod",
+            credentials=None,
+            metadata_file=Path(tmpdirname)
+            / "moz-fx-data-shared-prod"
+            / "test_stable"
+            / "test_v1"
+            / "metadata.yaml",
+        )
+
     def test_metadata_deprecate_default_deletion_date(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1200,7 +1278,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_set_deletion_date(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1226,7 +1304,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_set_invalid_deletion_date_should_fail(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = (
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
@@ -1253,7 +1331,7 @@ class TestMetadata:
 
     def test_metadata_deprecate_no_metadata(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
 
             qualified_table_name = "moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v2"
             result = runner.invoke(

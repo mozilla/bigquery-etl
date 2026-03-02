@@ -221,13 +221,15 @@ function run_glean_sql {
     fi
     if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
+            # Set additional arguments for these queries (can be modified to change clustering)
+            local additional_args="--replace --clustering_fields=channel"
             pids=()
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
-                run_query "$(basename "$directory")" true &
+                run_query "$(basename "$directory")" true 0 99 "$(basename "$directory")" "$additional_args" &
                 pids+=($!)
             done
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
-                run_query "$(basename "$directory")" true &
+                run_query "$(basename "$directory")" true 0 99 "$(basename "$directory")" "$additional_args" &
                 pids+=($!)
             done
             wait_pids "${pids[@]}"

@@ -28,40 +28,35 @@ class TestUtilCommon:
 
     def test_metrics_render(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['days_of_use'],
                     platform='firefox_desktop'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert r"{{ metrics.calculate" not in rendered_sql
         assert "days_of_use" in rendered_sql
 
     def test_non_existing_metrics_render(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['not-existing'],
                     platform='firefox_desktop'
                 ) }}
             )
-        """
-        )
+        """)
 
         with pytest.raises(ValueError):
             render(file_path.name, template_folder=file_path.parent)
 
     def test_render_multiple_metrics(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.calculate(
                     metrics=['days_of_use', 'uri_count', 'ad_clicks'],
@@ -70,8 +65,7 @@ class TestUtilCommon:
                     where='submission_date = "2023-01-01"'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert "metrics.calculate" not in rendered_sql
         assert r"{{" not in rendered_sql
@@ -85,8 +79,7 @@ class TestUtilCommon:
 
     def test_render_data_source(self, tmp_path):
         file_path = tmp_path / "test_query.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             SELECT * FROM (
                 {{ metrics.data_source(
                     data_source="main",
@@ -94,8 +87,7 @@ class TestUtilCommon:
                     where='submission_date = "2023-01-01"'
                 ) }}
             )
-        """
-        )
+        """)
         rendered_sql = render(file_path.name, template_folder=file_path.parent)
         assert "metrics.data_source" not in rendered_sql
         assert r"{{" not in rendered_sql
@@ -104,11 +96,9 @@ class TestUtilCommon:
 
     def test_checks_render(self, tmp_path):
         file_path = tmp_path / "checks.sql"
-        file_path.write_text(
-            r"""
+        file_path.write_text(r"""
             {{ min_row_count(1, "submission_date = @submission_date") }}
-        """
-        )
+        """)
         kwargs = {
             "project_id": "project",
             "dataset_id": "dataset",

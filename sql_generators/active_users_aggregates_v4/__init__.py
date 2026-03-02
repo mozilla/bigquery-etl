@@ -122,7 +122,9 @@ def generate(target_project, output_dir, use_cloud_function):
         """Load, render and output unitest template."""
         test_folder = ""
         parts = 2
-        output_path = Path("tests") / output_dir
+        # Handle absolute and relative paths for tests
+        output_path = Path("tests").joinpath(*output_dir.parts[output_dir.is_absolute():])
+
         for group in templates[template_type]:
             try:
                 for file_name, file_template in group[source].items():
@@ -268,32 +270,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 channels=CHECKS_TEMPLATE_CHANNELS[browser.name],
             )
 
-        # Write query SQL files.
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-            basename="query.sql",
-            sql=query_sql,
-            skip_existing=False,
-        )
-
-        # Write metadata YAML files.
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-            basename="metadata.yaml",
-            sql=render(
-                metadata_template,
-                template_folder=THIS_PATH / "templates",
-                app_value=browser.value,
-                app_name=browser.name,
-                table_name=TABLE_NAME,
-                format=False,
-            ),
-            skip_existing=False,
-        )
-
-        # Write schema YAML files.
+        # Write table schema YAML.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -305,6 +282,8 @@ def generate(target_project, output_dir, use_cloud_function):
             ),
             skip_existing=False,
         )
+
+        # Write view schema YAML.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
@@ -317,30 +296,16 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # Write backfill YAML files.
-        if browser.name == "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-                basename="backfill.yaml",
-                sql=render(
-                    desktop_backfill_template,
-                    template_folder=THIS_PATH / "templates",
-                    format=False,
-                ),
-                skip_existing=False,
-            )
-
-        # Write checks sql files.
+        # Write query SQL.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-            basename="checks.sql",
-            sql=checks_sql,
+            basename="query.sql",
+            sql=query_sql,
             skip_existing=False,
         )
 
-        # Write view sql files.
+        # Write view SQL.
         if browser.name == "focus_android":
             write_sql(
                 output_dir=output_dir,
@@ -370,7 +335,32 @@ def generate(target_project, output_dir, use_cloud_function):
                 skip_existing=False,
             )
 
-        # Write BigEye config files.
+        # Write metadata YAML.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="metadata.yaml",
+            sql=render(
+                metadata_template,
+                template_folder=THIS_PATH / "templates",
+                app_value=browser.value,
+                app_name=browser.name,
+                table_name=TABLE_NAME,
+                format=False,
+            ),
+            skip_existing=False,
+        )
+
+        # Write checks SQL.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="checks.sql",
+            sql=checks_sql,
+            skip_existing=False,
+        )
+
+        # Write BigEye Config YAML.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -381,3 +371,17 @@ def generate(target_project, output_dir, use_cloud_function):
             ),
             skip_existing=False,
         )
+
+        # Write backfill YAML.
+        if browser.name == "firefox_desktop":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+                basename="backfill.yaml",
+                sql=render(
+                    desktop_backfill_template,
+                    template_folder=THIS_PATH / "templates",
+                    format=False,
+                ),
+                skip_existing=False,
+            )

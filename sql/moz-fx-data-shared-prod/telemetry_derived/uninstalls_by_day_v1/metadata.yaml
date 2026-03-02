@@ -2,10 +2,10 @@ friendly_name: Uninstalls By Day
 description: |-
   Records number of unique clients uninstalling by day
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

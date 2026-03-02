@@ -23,6 +23,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: country where the newtab event is reported
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
 - name: homepage_category
   type: STRING
   mode: NULLABLE

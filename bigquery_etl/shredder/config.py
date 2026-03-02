@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
-from typing import List
+from typing import List, Optional
 
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -113,8 +113,6 @@ USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
 MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
 NIMBUS_USER_ID = "metrics.string.nimbus_nimbus_user_id"
-# Cirrus events only contain one unique nimbus user id per ping
-CIRRUS_EVENTS_NIMBUS_USER_ID = '(SELECT value FROM UNNEST(events), UNNEST(extra) WHERE key = "nimbus_user_id" LIMIT 1)'
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -307,11 +305,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.main_v5"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.main_use_counter_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.new_profile_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.saved_session_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.saved_session_v5"): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_stable.saved_session_use_counter_v4"
-    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_icq_v1_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_addon_v3"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_error_v3"): DESKTOP_SRC,
@@ -707,27 +700,27 @@ DELETE_TARGETS: DeleteIndex = {
     # Cirrus tables use sources from the upstream glean app
     DeleteTarget(
         table="experimenter_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): EXPERIMENTER_BACKEND_SRC,
     DeleteTarget(
         table="experimenter_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): EXPERIMENTER_BACKEND_SRC,
     DeleteTarget(
         table="subscription_platform_backend_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): SUBPLAT_CIRRUS_SRC,
     DeleteTarget(
         table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): SUBPLAT_CIRRUS_SRC,
     DeleteTarget(
         table="accounts_cirrus_stable.enrollment_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): FXA_UNHASHED_SRC,
     DeleteTarget(
         table="accounts_cirrus_stable.enrollment_status_v1",
-        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+        field=NIMBUS_USER_ID,
     ): FXA_UNHASHED_SRC,
 }
 
@@ -788,13 +781,19 @@ GLEAN_IGNORE_LIST = {
 
 
 def find_glean_targets(
-    pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
+    pool: ThreadPool,
+    client: bigquery.Client,
+    project: str = SHARED_PROD,
+    column_removal_backfill_tables: Optional[List] = None,
 ) -> DeleteIndex:
     """Return a dict like DELETE_TARGETS for glean tables.
 
     Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
+    if column_removal_backfill_tables is None:
+        column_removal_backfill_tables = []
+
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
 
     def stable_tables_by_schema(schema_id):
@@ -927,7 +926,7 @@ def find_glean_targets(
                     channel_to_app_name[table.dataset_id.replace("_stable", "")]
                 ] += (source,)
 
-    return {
+    delete_targets = {
         **{
             # glean stable tables that have a source
             DeleteTarget(
@@ -1000,6 +999,20 @@ def find_glean_targets(
             and all(field.name != CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
             and qualified_table_id(table) not in skipped_tables
+        },
+    }
+
+    return {
+        **delete_targets,
+        # backfill tables are included with no deletion requests sources if they normally would not be shredded
+        **{
+            DeleteTarget(
+                table=qualified_table_id(table),
+                field=tuple(),
+            ): tuple()
+            for table in glean_stable_tables
+            if qualified_table_id(table) in column_removal_backfill_tables
+            and qualified_table_id(table) not in {d.table for d in delete_targets}
         },
     }
 

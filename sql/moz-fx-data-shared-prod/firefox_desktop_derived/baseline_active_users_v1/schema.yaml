@@ -315,3 +315,7 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Indicates if the client is included in the desktop KPI.
+- name: attribution_msclkid
+  type: STRING
+  mode: NULLABLE
+  description: Unique token created at Firefox download time using the Microsoft Store.

@@ -21,14 +21,7 @@ subscription_start_events AS (
   SELECT
     subscription.started_at AS `timestamp`,
     'Subscription Start' AS type,
-    CONCAT(
-      IF(
-        subscription.customer_service_subscription_number = 1,
-        'New Customer',
-        'Returning Customer'
-      ),
-      IF(subscription.is_trial, ' Trial', '')
-    ) AS reason,
+    subscription.started_reason AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription

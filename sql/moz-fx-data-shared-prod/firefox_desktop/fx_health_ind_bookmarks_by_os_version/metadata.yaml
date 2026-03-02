@@ -1,5 +1,0 @@
-friendly_name: Firefox Health Indicator - Bookmarks By OS Version
-description: |-
-  Bookmarks added and opened per DAU, broken out by OS, OS version, channel, and date.
-owners:
-- kwindau@mozilla.com

@@ -1,0 +1,15 @@
+fields:
+- name: country_code
+  type: STRING
+  mode: REQUIRED
+  description: ISO 3166-1 alpha-2 code.
+- name: tier
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Tier value corresponding to the country (possible values include: Tier 1, Tier 2, Tier 3, or null).
+- name: has_web_cookie_consent
+  type: BOOLEAN
+  mode: REQUIRED
+  description: |-
+    Flag indicating if the country has a cookie banner.

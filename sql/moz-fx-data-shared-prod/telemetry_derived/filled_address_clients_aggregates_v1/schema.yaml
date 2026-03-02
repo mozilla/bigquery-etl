@@ -1,0 +1,17 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date of Airflow job
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country code of the clients.
+- name: clients
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of clients that have autofilled their address information.
+- name: fill_counts
+  type: INTEGER
+  mode: NULLABLE
+  description: The fill count of clients that have autofilled their address information.

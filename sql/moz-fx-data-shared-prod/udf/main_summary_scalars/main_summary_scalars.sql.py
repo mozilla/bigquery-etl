@@ -75,7 +75,7 @@ def collect_fields(main_schema):
 
 def make_field(source, target, s, schema_fields, keyed=False):
     """Build a scalar definition."""
-    (name, sql_type) = s
+    name, sql_type = s
     if name in schema_fields:
         source = "processes.%s.%s" % (source, name)
     else:
@@ -144,9 +144,7 @@ CREATE OR REPLACE FUNCTION udf.main_summary_scalars(processes ANY TYPE, addition
     %s
   )
 );
-""" % (  # noqa E501
-        scalar_fields,
-    )
+""" % (scalar_fields,)  # noqa E501
 
     open(os.path.join(root, "main_summary_scalars.sql"), "w").write(scalars_sql)
 

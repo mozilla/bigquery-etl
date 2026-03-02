@@ -7,4 +7,3 @@ description: |-
   & `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile` (mobile).
 owners:
 - kwindau@mozilla.com
-level: bronze

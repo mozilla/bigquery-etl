@@ -36,5 +36,10 @@ SELECT
   {% else %}
     "Organic" AS paid_vs_organic,
   {% endif %}
+  {% if 'play_store_attribution_install_referrer_response' in product_attribution_fields %}
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(play_store_info.play_store_attribution_install_referrer_response) AS paid_vs_organic_gclid,
+  {% else %}
+    CAST(NULL AS STRING) AS paid_vs_organic_gclid,
+  {% endif %}
   FROM
   `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

@@ -26,7 +26,7 @@ from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..util.common import project_dirs
+from ..util.common import block_coding_agents, project_dirs
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -90,8 +90,7 @@ def mozfun(ctx):
     ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("routine", "project")
 
 
-@routine.command(
-    help="""Create a new routine. Specify whether the routine is a UDF or
+@routine.command(help="""Create a new routine. Specify whether the routine is a UDF or
     stored procedure by adding a --udf or --stored_prodecure flag.
 
     Examples:
@@ -107,8 +106,7 @@ def mozfun(ctx):
     \b
     # Create a UDF in a project other than shared-prod
     ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
-    """
-)
+    """)
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
@@ -152,9 +150,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
     # create SQL file with UDF definition
     if udf:
         routine_file = routine_path / UDF_FILE
-        routine_file.write_text(
-            reformat(
-                f"""
+        routine_file.write_text(reformat(f"""
                 -- Definition for {dataset}.{name}
                 -- For more information on writing UDFs see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
@@ -165,15 +161,10 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
                 -- Tests
                 SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
-                """
-            )
-            + "\n"
-        )
+                """) + "\n")
     elif stored_procedure:
         stored_procedure_file = routine_path / PROCEDURE_FILE
-        stored_procedure_file.write_text(
-            reformat(
-                f"""
+        stored_procedure_file.write_text(reformat(f"""
                 -- Definition for {dataset}.{name}
                 CREATE OR REPLACE PROCEDURE {dataset}.{name}()
                 BEGIN
@@ -182,10 +173,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
                 -- Tests
                 SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
-                """
-            )
-            + "\n"
-        )
+                """) + "\n")
 
     # create default metadata.yaml
     metadata_file = routine_path / "metadata.yaml"
@@ -213,9 +201,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
             @sql(../examples/fenix_app_info.sql)
             -->
-            """.split(
-                        "\n"
-                    ),
+            """.split("\n"),
                 )
             )
         )
@@ -224,9 +210,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
 
 mozfun.add_command(copy.copy(create))
-mozfun.commands[
-    "create"
-].help = """
+mozfun.commands["create"].help = """
 Create a new mozfun routine. Specify whether the routine is a UDF or
 stored procedure by adding a --udf or --stored_prodecure flag. UDFs
 are added to the `mozfun` project.
@@ -243,8 +227,7 @@ Examples:
 """
 
 
-@routine.command(
-    help="""Get routine information.
+@routine.command(help="""Get routine information.
 
     Examples:
 
@@ -255,8 +238,7 @@ Examples:
     \b
     # Get usage information of specific routine
     ./bqetl routine info --usages udf.get_key
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()
@@ -311,9 +293,7 @@ def info(ctx, name, sql_dir, project_id, usages):
 
 
 mozfun.add_command(copy.copy(info))
-mozfun.commands[
-    "info"
-].help = """Get mozfun routine information.
+mozfun.commands["info"].help = """Get mozfun routine information.
 
 Examples:
 
@@ -389,6 +369,8 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -400,6 +382,7 @@ Examples:
     ./bqetl routine validate udf.*
     """,
 )
+@block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
 @click.option(
@@ -451,10 +434,11 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
 
 
 mozfun.add_command(copy.copy(publish))
-mozfun.commands[
-    "publish"
-].help = """Publish mozfun routines. This command is used
-by Airflow only."""
+mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
+by Airflow only.
+
+Coding agents aren't allowed to run this command.
+"""
 
 
 @routine.command(
@@ -539,9 +523,7 @@ def rename(ctx, name, new_name, sql_dir, project_id):
 
 
 mozfun.add_command(copy.copy(rename))
-mozfun.commands[
-    "rename"
-].help = """Rename mozfun routine or mozfun routine dataset.
+mozfun.commands["rename"].help = """Rename mozfun routine or mozfun routine dataset.
 Replaces all usages in queries with the new name.
 
 Examples:

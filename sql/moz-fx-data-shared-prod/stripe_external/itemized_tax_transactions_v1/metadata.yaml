@@ -8,7 +8,10 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_subplat
+  # Unscheduled because this specific report type can no longer be retrieved from the Stripa API as of 2026-02-11.
+  # This report type has been superseded by a newer version being retrieved by the `itemized_tax_transactions_v2` ETL.
+  # See https://bugzilla.mozilla.org/show_bug.cgi?id=2016156.
+  #dag_name: bqetl_subplat
   arguments:
     - --date={{ ds }}
     - --api-key={{ var.value.stripe_api_key }}

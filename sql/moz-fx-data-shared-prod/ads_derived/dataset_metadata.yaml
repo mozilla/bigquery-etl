@@ -10,4 +10,4 @@ workgroup_access:
       - workgroup:ads/data-developers
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:ads
+      - workgroup:ads/data-viewers

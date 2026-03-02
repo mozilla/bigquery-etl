@@ -17,6 +17,11 @@
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date
+			{% if app_id == "org_mozilla_fenix" %}
+			-- There's still some older builds under the `org_mozilla_fenix` app_id reporting
+			-- channels other than "nightly", so let's ignore the really old builds.
+			AND SAFE_CAST(client_info.app_build AS INT64) >= 21850000
+			{% endif %}
   ),
   lagged AS (
     SELECT

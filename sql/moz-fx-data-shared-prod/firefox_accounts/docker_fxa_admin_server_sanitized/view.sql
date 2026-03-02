@@ -36,7 +36,8 @@ SELECT
       STRUCT(jsonPayload.fields.event, jsonPayload.fields.search_type) AS fields
     ) AS jsonPayload
   ),
-  CAST(NULL AS ARRAY<STRUCT<id STRING>>) AS errorGroups
+  CAST(NULL AS ARRAY<STRUCT<id STRING>>) AS errorGroups,
+  NULL AS appHubSource
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1`
 UNION ALL

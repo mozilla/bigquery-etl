@@ -6,6 +6,9 @@ description: |-
 
   The sending to adMarketplace takes place in a separate DAG defined in
   the telemetry-airflow repository directly.
+
+  Note: This table processes data from 2 days ago,ensuring complete upstream data from the Merino sanitization job (~16 hours).
+  This is a temporary measure until the sanitization job is further optimized.
 owners:
   - ctroy@mozilla.com
 workgroup_access:
@@ -20,3 +23,4 @@ bigquery:
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  date_partition_offset: -1

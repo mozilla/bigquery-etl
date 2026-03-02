@@ -2,7 +2,7 @@ default:
   project: moz-fx-data-shared-prod
   sql_dir: sql/
   sql_generators_dir: sql_generators/
-  test_project: bigquery-etl-integration-test
+  test_project: moz-fx-data-integration-tests
   non_user_facing_dataset_suffixes:  # suffixes of datasets with non-user-facing views
   - _derived
   - _external
@@ -62,7 +62,7 @@ monitoring:
     - baseline_v1
 
 dry_run:
-  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
@@ -131,7 +131,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
   - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
-  - sql/**/apple_ads_external*/**/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
@@ -291,7 +290,7 @@ dry_run:
   - moz-fx-data-backfill-31
 
 deprecation:
-  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  retain_dataset_roles:  # the following roles are retain permissions on datasets when a dataset table is deprecated
   - roles/bigquery.dataEditor  # operational access
 
 format:
@@ -324,7 +323,7 @@ routine:
   test_projects:
   - sql/mozfun
   - sql/moz-fx-data-shared-prod
-  - sql/bigquery-etl-integration-test
+  - sql/moz-fx-data-integration-tests
 
 view:
   validation:
@@ -341,6 +340,14 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
+    # Resources exceeded
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_search_with_ads_count/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_cumulative_ad_clicks/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_ad_clicks_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_cumulative_search_with_ads_count_v1/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_live_v1/view.sql
 
 schema:
   base_schemas_dir: bigquery_etl/schema
@@ -352,6 +359,7 @@ schema:
     skip:
     # see comment in query file
     - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
+    - sql/moz-fx-data-shared-prod/*_stable/**
 
 docs:
   docs_dir: docs
@@ -375,10 +383,7 @@ render:
 metadata:
   validation:
     skip:
-    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
-  deploy:
-    skip:
-    - sql/moz-fx-data-shared-prod/*_stable
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml  # backfill compatibility issue
 
 generate:
   glean_usage:
@@ -386,7 +391,7 @@ generate:
     - firefox_fire_tv
     - firefox_reality
     - firefox_reality_pc
-    skip_existing: # Skip automatically updating the following artifacts
+    skip_existing:  # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
@@ -433,11 +438,11 @@ generate:
       - org.mozilla.fenix.nightly
       - org.mozilla.fennec.aurora
       skip_pings:
-      - topsites-impression # access denied
-      - serp-categorization # access denied
-      - background-update # table doesn't exist
-      events_tables: # overwrite event tables
-        pine: # Probe info returns pings that don't have tables, only use events_v1
+      - topsites-impression  # access denied
+      - serp-categorization  # access denied
+      - background-update  # table doesn't exist
+      events_tables:  # overwrite event tables
+        pine:  # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
       manual_refresh_apps:  # apps to use manual materialized view refreshes for on-demand billing
       - firefox_desktop
@@ -451,8 +456,8 @@ generate:
     events_first_seen:
       include_apps:
       - firefox_desktop
-      # - firefox_ios
-      # - fenix
+      - fenix
+      - firefox_ios
     metrics_clients_last_seen:
       skip_apps:
       - accounts_cirrus
@@ -630,6 +635,14 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fennec_aurora_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_derived.events_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta_derived.events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

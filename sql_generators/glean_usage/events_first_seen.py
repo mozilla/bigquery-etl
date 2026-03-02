@@ -64,7 +64,7 @@ class EventsFirstSeenTable(GleanTable):
                 parallelism=parallelism,
                 id_token=id_token,
                 custom_render_kwargs={
-                    "app_id": app_id_info["bq_dataset_family"],
+                    "app_id_dataset": app_id_info["bq_dataset_family"],
                     **events_first_seen,
                 },
             )

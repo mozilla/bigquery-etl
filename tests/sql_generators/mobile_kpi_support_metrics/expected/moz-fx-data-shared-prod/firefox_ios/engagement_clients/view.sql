@@ -40,6 +40,7 @@ attribution AS (
     adjust_network,
     adjust_attribution_timestamp,
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 )
@@ -67,6 +68,7 @@ SELECT
   attribution.adjust_network,
   attribution.adjust_attribution_timestamp,
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

@@ -2,10 +2,10 @@ friendly_name: Uninstalls Relative To Profile Creation
 description: |-
   Number of clients uninstalling each date relative to their profile creation date
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

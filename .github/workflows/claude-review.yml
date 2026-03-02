@@ -1,0 +1,141 @@
+name: Claude Code Review
+
+on:
+  # Trigger when PR is marked ready for review or updated
+  pull_request:
+    types: [ready_for_review, opened, synchronize, reopened]
+
+  # Trigger on PR comments with @claude
+  issue_comment:
+    types: [created]
+
+  # Trigger on PR review comments
+  pull_request_review_comment:
+    types: [created]
+
+  # Trigger on PR review submissions
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+
+    # Security and draft PR filtering
+    if: |
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.draft == false &&
+        github.event.pull_request.head.repo.full_name == github.repository
+      ) || (
+        (github.event_name == 'issue_comment' ||
+         github.event_name == 'pull_request_review_comment' ||
+         github.event_name == 'pull_request_review') &&
+        github.event.issue.pull_request != null
+      )
+
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          # Comment-based trigger configuration
+          trigger_phrase: "@claude"
+
+          # Progress tracking and sticky comments
+          track_progress: true
+          use_sticky_comment: true
+          include_fix_links: false
+
+          # Custom prompt for BigQuery ETL review
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+
+            You are reviewing code for Mozilla's BigQuery ETL infrastructure. This repository contains:
+            - SQL queries (Jinja2 templates) that power dashboards and data products
+            - Python CLI tools and utilities (bigquery_etl/)
+            - Airflow DAG configurations (dags.yaml)
+            - User-Defined Functions (UDFs) in the mozfun/ directory
+
+            Please read the project instructions in AGENTS.md before reviewing.
+
+            ## Review Focus Areas:
+
+            ### SQL Query Quality (sql/**/*.sql)
+            - **Syntax & BigQuery Best Practices**: Proper SQL syntax, efficient query patterns
+            - **Jinja2 Templating**: Correct variable usage ({{ project_id }}, {{ dataset_id }}), template logic
+            - **Performance**: Use of partitioning/clustering, avoid SELECT *, proper date filters on partitioned tables
+            - **Security**: SQL injection risks, no hardcoded credentials or secrets
+            - **Formatting**: Verify SQL follows project formatting standards (suggest running ./bqetl format if needed)
+
+            ### Metadata & Schema Files
+            - **metadata.yaml**: Required fields present (owners, description), proper email format for owners
+            - **schema.yaml**: Correct BigQuery data types, field descriptions, mode (NULLABLE/REQUIRED/REPEATED)
+            - **Completeness**: All new tables have both metadata.yaml and schema.yaml
+            - **Versioning**: Table names follow versioning convention (_v1, _v2, etc.)
+
+            ### Data Quality Checks (checks.sql)
+            - Presence of data quality checks for critical queries
+            - Validation logic appropriateness
+            - Coverage of key data integrity constraints
+
+            ### UDFs & Functions (sql/mozfun/**)
+            - Function documentation and usage examples
+            - Proper input/output types
+            - Test coverage in tests/sql/mozfun/
+            - Public documentation for shared functions
+
+            ### Python Code (bigquery_etl/**)
+            - Code quality and PEP 8 compliance
+            - Type hints and comprehensive docstrings
+            - Test coverage in tests/** directory
+            - Integration with ./bqetl CLI tool
+            - No breaking changes to existing APIs
+
+            ### DAG Configuration (dags.yaml)
+            - Proper schedule intervals (cron expressions)
+            - Correct dependency definitions
+            - Owner assignments valid
+            - Task timeout and retry configurations appropriate
+
+            ### Project Structure & Conventions
+            - Files in correct locations: sql/<project>/<dataset>/<table_v1>/
+            - Follows conventions documented in AGENTS.md
+            - Test files mirror structure in tests/sql/
+            - No direct commits (per workflow guidelines in AGENTS.md)
+
+            ### Testing
+            - SQL tests exist for new queries
+            - Python tests for new utilities
+            - Tests follow naming conventions
+
+            ## Output Format:
+            - Use inline comments for specific code issues with file path and line numbers
+            - Provide a summary comment with overall assessment
+            - Flag critical issues clearly (Security, Data Corruption Risk, Breaking Change)
+            - Suggest improvements for performance and maintainability
+            - Reference relevant documentation when suggesting changes
+
+            ## Important Reminders:
+            - Check if changes affect scheduled queries or dashboards
+            - Verify schema modifications won't break downstream consumers
+            - Ensure SQL generators (sql_generators/) are used when appropriate
+            - Validate that changes align with docs/cookbooks/ best practices
+
+          # Restrict tools for security and relevance
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Grep,Glob"
+            --max-turns 10

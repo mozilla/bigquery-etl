@@ -52,7 +52,7 @@ class BigQueryAPI:
                 bigquery.SchemaField("project_id", "STRING"),
                 bigquery.SchemaField("line_item", "STRING"),
                 bigquery.SchemaField("organization_id", "STRING"),
-                bigquery.SchemaField("amount_value", "FLOAT"),
+                bigquery.SchemaField("amount_value", "NUMERIC"),
                 bigquery.SchemaField("currency", "STRING"),
             ],
             autodetect=False,

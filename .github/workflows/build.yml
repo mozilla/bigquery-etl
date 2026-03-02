@@ -206,6 +206,8 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
+          retries: '3'
+          backoff: '250'
       - &export-dryrun-id-token
         name: Export ID Token for Python
         env:
@@ -241,6 +243,8 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
+          retries: '3'
+          backoff: '250'
       - &set-stage-project-id
         name: Set project ID for integration tests
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV

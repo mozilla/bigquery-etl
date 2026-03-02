@@ -250,3 +250,9 @@ fields:
   name: attribution_msclkid
   type: STRING
   description: Unique token created at Firefox download time using the Microsoft Store.
+- mode: NULLABLE
+  name: policies_is_enterprise
+  type: BOOLEAN
+  description: |-
+    Attempt to determine if the user is an enterprise user based on various signals.
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise.

@@ -1,0 +1,9 @@
+friendly_name: Mozcloud Derived
+description: |-
+  Please provide a description for the dataset
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

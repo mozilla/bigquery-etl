@@ -1,0 +1,51 @@
+fields:
+
+- mode: NULLABLE
+  name: run_date
+  type: TIMESTAMP
+  description: Date the measurement was taken, used for table partitioning.
+
+- mode: NULLABLE
+  name: measured_at
+  type: TIMESTAMP
+  description: Exact UTC timestamp when the uptime measurement was taken.
+
+- mode: NULLABLE
+  name: app
+  type: STRING
+  description: MozCloud service name (e.g. fxa, merino, sync).
+
+- mode: NULLABLE
+  name: requests_per_sec
+  type: FLOAT
+  description: >-
+    Average requests per second over the 30-day lookback window, used to
+    determine the volume tier.
+
+- mode: NULLABLE
+  name: volume_tier
+  type: STRING
+  description: >-
+    Volume tier classification (high, medium, low, very-low) derived from
+    the average request rate.
+
+- mode: NULLABLE
+  name: rate_window
+  type: STRING
+  description: >-
+    PromQL rate window used for uptime calculation (e.g. 10m, 20m, 30m),
+    determined by the volume tier.
+
+- mode: NULLABLE
+  name: error_threshold_pct
+  type: FLOAT
+  description: >-
+    5xx error rate percentage above which a rate-window interval is counted
+    as downtime, determined by the volume tier.
+
+- mode: NULLABLE
+  name: uptime_pct
+  type: FLOAT
+  description: >-
+    Percentage of rate-window intervals over the 30-day lookback where the
+    5xx error rate was below the volume-tier threshold.

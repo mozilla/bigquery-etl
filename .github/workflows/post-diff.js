@@ -17,13 +17,6 @@ async function minimize_pr_diff_comments() {
     if (!process.env.PR_NUMBER) {
         return;
     }
-    const { viewer } = await graphql_authorized(
-        `query {
-            viewer {
-                login
-            }
-        }`
-    );
     const { repository } = await graphql_authorized(
         `query($repo_owner:String!, $repo_name:String!, $pr_number:Int!) {
             repository(owner: $repo_owner, name: $repo_name) {
@@ -49,7 +42,7 @@ async function minimize_pr_diff_comments() {
     );
     for (const comment of repository.pullRequest.comments.nodes) {
         if (
-            comment.author.login === viewer.login
+            comment.author.login === "github-actions"
             && comment.bodyText.includes(diff_file)
             && !comment.isMinimized
         ) {

@@ -246,3 +246,7 @@ fields:
   name: distribution_partner_id
   type: STRING
   description: pref mozilla.partner.id, null on failure
+- mode: NULLABLE
+  name: attribution_msclkid
+  type: STRING
+  description: Unique token created at Firefox download time using the Microsoft Store.

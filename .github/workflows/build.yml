@@ -7,6 +7,10 @@ on:
     types:
       - opened
       - synchronize
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
   merge_group:
   workflow_dispatch:
     inputs:
@@ -35,6 +39,9 @@ jobs:
   decide-runs:
     name: Decide what checks to run based on changed files
     runs-on: ubuntu-latest
+    if: |
+      (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
     outputs:
       validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
       deploy: ${{ steps.set-flags.outputs.deploy }}
@@ -47,6 +54,7 @@ jobs:
           persist-credentials: false
           filter: blob:none
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - id: changed-files-routines
         uses: tj-actions/changed-files@v47
         with:
@@ -106,6 +114,7 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - &setup-python
         name: Set up Python
         id: setup_python
@@ -176,11 +185,13 @@ jobs:
     name: Test bqetl
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
-    if: (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true') && github.event.pull_request.head.repo.fork != true
+    if: |
+      (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: &job-env
+      name: ${{ github.event.pull_request.head.repo.fork == true && 'external-fork' || 'dev' }}
     steps:
       - *checkout
       - *setup-python
@@ -213,11 +224,12 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
-    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    if: |
+      (needs.decide-runs.outputs.validate-bqetl == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -243,18 +255,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - &checkout-with-creds
         uses: actions/checkout@v6
         with:
           persist-credentials: true
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
@@ -362,7 +374,7 @@ jobs:
     name: Build and Deploy Documentation
     runs-on: ubuntu-latest
     needs: [generate-sql]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: write
     steps:
@@ -397,12 +409,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-sql, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -463,12 +474,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -514,12 +524,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -537,12 +546,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -563,12 +571,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-changes-to-stage, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
-      needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -585,11 +592,12 @@ jobs:
     name: Validate Metadata
     needs: [build, decide-runs]
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    if: |
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -634,11 +642,12 @@ jobs:
     name: Generate Private SQL
     runs-on: ubuntu-latest
     needs: [generate-sql, decide-runs]
-    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    if: |
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -691,15 +700,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (github.ref != 'refs/heads/main') &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
-      - *checkout-with-history
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          filter: blob:none
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
@@ -714,7 +726,7 @@ jobs:
           bqetl_script="$PWD/script/bqetl"
 
           # Get parent commit on main from which this branch diverged
-          MAIN_MERGE_BASE=$(git merge-base HEAD origin/main || true)
+          MAIN_MERGE_BASE=$(git merge-base HEAD $GITHUB_REF || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
 
           # Check if the generated-sql branch can be re-used
@@ -735,6 +747,11 @@ jobs:
           cd "$bigquery_etl"
           export GENERATED_SQL_CHANGED=false
 
+          if [[ -n $MAIN_MERGE_BASE ]]; then
+            echo "Checking out $MAIN_MERGE_BASE for diff"
+            git checkout $MAIN_MERGE_BASE
+          fi
+
           # If SQL generators changed, re-run SQL generation
           if [[ $(git diff --name-only --diff-filter=d ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql_generators) ]]; then
             echo "SQL generator changed; re-generate SQL"
@@ -746,6 +763,8 @@ jobs:
             echo "SQL file was removed; re-generate SQL"
             GENERATED_SQL_CHANGED=true
           fi
+
+          git checkout main
 
           if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
             # Re-run SQL generation
@@ -793,11 +812,12 @@ jobs:
     name: Generate DAGs
     runs-on: ubuntu-latest
     needs: [generate-sql, private-generate-sql, decide-runs]
-    if: github.event.pull_request.head.repo.fork != true && (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    if: |
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -851,7 +871,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-dags, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - name: Pull telemetry-airflow
@@ -977,7 +997,7 @@ jobs:
     name: Push Generated SQL
     runs-on: ubuntu-latest
     needs: [validate-dags]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: dev
     steps:
       - uses: actions/download-artifact@v6
@@ -1017,7 +1037,7 @@ jobs:
     name: Push Private Generated SQL
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: dev
     steps:
       - uses: actions/download-artifact@v6
@@ -1057,7 +1077,7 @@ jobs:
     name: Deploy to Private GAR
     runs-on: ubuntu-latest
     needs: [private-generate-sql, build, generate-sql]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
@@ -1100,7 +1120,7 @@ jobs:
     name: Trigger Airflow Artifact Deployment
     runs-on: ubuntu-latest
     needs: [deploy-to-private-gar]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       id-token: write
       contents: read
@@ -1137,12 +1157,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test-sql, validate-views, validate-metadata, dry-run-sql, test-routines, decide-runs]
     if: |
-      github.event.pull_request.head.repo.fork != true &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
     permissions:
       id-token: write
       contents: read
-    environment: dev
+    environment: *job-env
     steps:
       - *checkout
       - *setup-python
@@ -1152,20 +1171,6 @@ jobs:
       - name: Delete stage datasets
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
-
-  manual-trigger-required-for-fork:
-    name: Manual Trigger Required for Fork
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.fork == true
-    steps:
-      - name: Manually trigger integration tests for fork
-        run: |
-          echo "Integration tests for this fork need to be triggered manually"
-          echo "Users with write access to the repository can trigger integration tests by following these steps:"
-          echo "  Open the following page:"
-          echo "    https://github.com/mozilla/bigquery-etl/actions/workflows/build.yml"
-          echo "  Choose the 'Run workflow' dropdown and provide '${{ github.event.pull_request.head.label }}' as parameter."
-          exit 1
 
   deploy-to-pypi:
     name: Deploy to PyPI
@@ -1202,7 +1207,7 @@ jobs:
     name: 🔃 Synchronize bigquery-etl submodule
     runs-on: ubuntu-latest
     needs: [push-generated-sql]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: dev
     steps:
       - &setup-ssh-keys-telemetry-airflow-dags
@@ -1231,7 +1236,7 @@ jobs:
     name: 🔃 Synchronize private-bigquery-etl submodule
     runs-on: ubuntu-latest
     needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: dev
     steps:
       - name: Setup SSH keys for multiple repos

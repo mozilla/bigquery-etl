@@ -63,6 +63,8 @@ jobs:
           prompt: |
             Review this pull request for code quality, best practices, and potential issues.
 
+            Refer to CONTRIBUTING.md for contribution guidelines.
+
             Focus on:
             - SQL query quality and BigQuery best practices
             - Security concerns

@@ -157,7 +157,9 @@ SELECT
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
       metrics.quantity.characteristics_audio_unique_samples,
-      metrics.quantity.characteristics_storage_quota
+      metrics.quantity.characteristics_storage_quota,
+      metrics.quantity.characteristics_avail_left,
+      metrics.quantity.characteristics_avail_top
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -388,7 +390,15 @@ SELECT
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
       metrics.string.characteristics_svg_substring_length,
-      metrics.string.characteristics_timezone_offset_web
+      metrics.string.characteristics_timezone_offset_web,
+      metrics.string.characteristics_gl2_alpha,
+      metrics.string.characteristics_gl2_alpha_software,
+      metrics.string.characteristics_gl2_antialias,
+      metrics.string.characteristics_gl2_antialias_software,
+      metrics.string.characteristics_gl_alpha,
+      metrics.string.characteristics_gl_alpha_software,
+      metrics.string.characteristics_gl_antialias,
+      metrics.string.characteristics_gl_antialias_software
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -659,7 +669,9 @@ SELECT
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
       metrics.quantity.characteristics_audio_unique_samples,
-      metrics.quantity.characteristics_storage_quota
+      metrics.quantity.characteristics_storage_quota,
+      metrics.quantity.characteristics_avail_left,
+      metrics.quantity.characteristics_avail_top
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -890,7 +902,15 @@ SELECT
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
       metrics.string.characteristics_svg_substring_length,
-      metrics.string.characteristics_timezone_offset_web
+      metrics.string.characteristics_timezone_offset_web,
+      metrics.string.characteristics_gl2_alpha,
+      metrics.string.characteristics_gl2_alpha_software,
+      metrics.string.characteristics_gl2_antialias,
+      metrics.string.characteristics_gl2_antialias_software,
+      metrics.string.characteristics_gl_alpha,
+      metrics.string.characteristics_gl_alpha_software,
+      metrics.string.characteristics_gl_antialias,
+      metrics.string.characteristics_gl_antialias_software
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -1161,7 +1181,9 @@ SELECT
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
       metrics.quantity.characteristics_audio_unique_samples,
-      metrics.quantity.characteristics_storage_quota
+      metrics.quantity.characteristics_storage_quota,
+      metrics.quantity.characteristics_avail_left,
+      metrics.quantity.characteristics_avail_top
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1392,7 +1414,15 @@ SELECT
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
       metrics.string.characteristics_svg_substring_length,
-      metrics.string.characteristics_timezone_offset_web
+      metrics.string.characteristics_timezone_offset_web,
+      metrics.string.characteristics_gl2_alpha,
+      metrics.string.characteristics_gl2_alpha_software,
+      metrics.string.characteristics_gl2_antialias,
+      metrics.string.characteristics_gl2_antialias_software,
+      metrics.string.characteristics_gl_alpha,
+      metrics.string.characteristics_gl_alpha_software,
+      metrics.string.characteristics_gl_antialias,
+      metrics.string.characteristics_gl_antialias_software
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -1663,7 +1693,9 @@ SELECT
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
       metrics.quantity.characteristics_audio_unique_samples,
-      metrics.quantity.characteristics_storage_quota
+      metrics.quantity.characteristics_storage_quota,
+      metrics.quantity.characteristics_avail_left,
+      metrics.quantity.characteristics_avail_top
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1894,7 +1926,15 @@ SELECT
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
       metrics.string.characteristics_svg_substring_length,
-      metrics.string.characteristics_timezone_offset_web
+      metrics.string.characteristics_timezone_offset_web,
+      metrics.string.characteristics_gl2_alpha,
+      metrics.string.characteristics_gl2_alpha_software,
+      metrics.string.characteristics_gl2_antialias,
+      metrics.string.characteristics_gl2_antialias_software,
+      metrics.string.characteristics_gl_alpha,
+      metrics.string.characteristics_gl_alpha_software,
+      metrics.string.characteristics_gl_antialias,
+      metrics.string.characteristics_gl_antialias_software
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,
@@ -2165,7 +2205,9 @@ SELECT
       metrics.quantity.characteristics_gl2_version_software,
       metrics.quantity.characteristics_timezone_offset_web,
       metrics.quantity.characteristics_audio_unique_samples,
-      metrics.quantity.characteristics_storage_quota
+      metrics.quantity.characteristics_storage_quota,
+      metrics.quantity.characteristics_avail_left,
+      metrics.quantity.characteristics_avail_top
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -2396,7 +2438,15 @@ SELECT
       metrics.string.characteristics_svg_emoji_set,
       metrics.string.characteristics_svg_extent_of_char,
       metrics.string.characteristics_svg_substring_length,
-      metrics.string.characteristics_timezone_offset_web
+      metrics.string.characteristics_timezone_offset_web,
+      metrics.string.characteristics_gl2_alpha,
+      metrics.string.characteristics_gl2_alpha_software,
+      metrics.string.characteristics_gl2_antialias,
+      metrics.string.characteristics_gl2_antialias_software,
+      metrics.string.characteristics_gl_alpha,
+      metrics.string.characteristics_gl_alpha_software,
+      metrics.string.characteristics_gl_antialias,
+      metrics.string.characteristics_gl_antialias_software
     ) AS `string`,
     STRUCT(
       metrics.string_list.characteristics_gamepads,

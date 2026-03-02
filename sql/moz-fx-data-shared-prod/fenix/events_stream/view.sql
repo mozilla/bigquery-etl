@@ -116,6 +116,7 @@ SELECT
       LAX_BOOL(event_extra.hit) AS `hit`,
       LAX_BOOL(event_extra.hls_decoder) AS `hls_decoder`,
       LAX_BOOL(event_extra.hyphen_compat) AS `hyphen_compat`,
+      LAX_BOOL(event_extra.is_addon_active) AS `is_addon_active`,
       LAX_BOOL(event_extra.is_deleted) AS `is_deleted`,
       LAX_BOOL(event_extra.is_frame) AS `is_frame`,
       LAX_BOOL(event_extra.is_hardware_accelerated) AS `is_hardware_accelerated`,

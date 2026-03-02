@@ -11741,6 +11741,78 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used MozunlockorientationDeprecated
+    - name: use_counter2_location_ancestororigins_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got Location.ancestorOrigins
+    - name: use_counter2_location_ancestororigins_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got Location.ancestorOrigins
+    - name: use_counter2_location_ancestororigins_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set Location.ancestorOrigins
+    - name: use_counter2_location_ancestororigins_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set Location.ancestorOrigins
+    - name: use_counter2_navigator_requestmidiaccess_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigator.requestMIDIAccess
+    - name: use_counter2_navigator_requestmidiaccess_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigator.requestMIDIAccess
+    - name: use_counter2_reportingobserver_constructor_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called ReportingObserver.constructor
+    - name: use_counter2_reportingobserver_constructor_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called ReportingObserver.constructor
+    - name: use_counter2_videodecoder_constructor_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called VideoDecoder.constructor
+    - name: use_counter2_videodecoder_constructor_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called VideoDecoder.constructor
+    - name: use_counter2_videoencoder_constructor_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called VideoEncoder.constructor
+    - name: use_counter2_videoencoder_constructor_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called VideoEncoder.constructor
+    - name: use_counter2_wakelock_request_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called WakeLock.request
+    - name: use_counter2_wakelock_request_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called WakeLock.request
+    - name: use_counter2_window_orientation_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got Window.orientation
+    - name: use_counter2_window_orientation_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got Window.orientation
+    - name: use_counter2_window_orientation_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set Window.orientation
+    - name: use_counter2_window_orientation_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set Window.orientation
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23338,6 +23410,78 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used MozunlockorientationDeprecated
+        - name: use_counter2_location_ancestororigins_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got Location.ancestorOrigins
+        - name: use_counter2_location_ancestororigins_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got Location.ancestorOrigins
+        - name: use_counter2_location_ancestororigins_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set Location.ancestorOrigins
+        - name: use_counter2_location_ancestororigins_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set Location.ancestorOrigins
+        - name: use_counter2_navigator_requestmidiaccess_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigator.requestMIDIAccess
+        - name: use_counter2_navigator_requestmidiaccess_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigator.requestMIDIAccess
+        - name: use_counter2_reportingobserver_constructor_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called ReportingObserver.constructor
+        - name: use_counter2_reportingobserver_constructor_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called ReportingObserver.constructor
+        - name: use_counter2_videodecoder_constructor_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called VideoDecoder.constructor
+        - name: use_counter2_videodecoder_constructor_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called VideoDecoder.constructor
+        - name: use_counter2_videoencoder_constructor_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called VideoEncoder.constructor
+        - name: use_counter2_videoencoder_constructor_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called VideoEncoder.constructor
+        - name: use_counter2_wakelock_request_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called WakeLock.request
+        - name: use_counter2_wakelock_request_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called WakeLock.request
+        - name: use_counter2_window_orientation_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got Window.orientation
+        - name: use_counter2_window_orientation_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got Window.orientation
+        - name: use_counter2_window_orientation_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set Window.orientation
+        - name: use_counter2_window_orientation_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set Window.orientation
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

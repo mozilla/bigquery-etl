@@ -366,6 +366,16 @@ fields:
         This metric is only attached to a ping if it already contains other data.
 
         '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
+      description: 'The Nimbus context object that is recorded to Glean
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

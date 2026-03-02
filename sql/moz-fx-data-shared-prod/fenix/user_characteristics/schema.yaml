@@ -1069,6 +1069,18 @@ fields:
         integer. Acts as a disk-size proxy for fingerprinting entropy analysis.
 
         '
+    - name: characteristics_avail_left
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available left property
+
+        '
+    - name: characteristics_avail_top
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available top property
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -2487,6 +2499,58 @@ fields:
       description: 'The timezone offset in minutes exposed to web content via getTimezoneOffset()
 
         '
+    - name: characteristics_gl2_alpha
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether alpha was granted for the default WebGL2 context.
+
+        '
+    - name: characteristics_gl2_alpha_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether alpha was granted for the default WebGL2 context (software
+        rendering).
+
+        '
+    - name: characteristics_gl2_antialias
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether antialias was granted for the default WebGL2 context.
+
+        '
+    - name: characteristics_gl2_antialias_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether antialias was granted for the default WebGL2 context (software
+        rendering).
+
+        '
+    - name: characteristics_gl_alpha
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether alpha was granted for the default WebGL context.
+
+        '
+    - name: characteristics_gl_alpha_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether alpha was granted for the default WebGL context (software
+        rendering).
+
+        '
+    - name: characteristics_gl_antialias
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether antialias was granted for the default WebGL context.
+
+        '
+    - name: characteristics_gl_antialias_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether antialias was granted for the default WebGL context (software
+        rendering).
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -2900,11 +2964,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'The list of GL parameters of GL1. Parameters: ALIASED_LINE_WIDTH_RANGE,
-        ALIASED_POINT_SIZE_RANGE, MAX_COMBINED_TEXTURE_IMAGE_UNITS, MAX_CUBE_MAP_TEXTURE_SIZE,
-        MAX_FRAGMENT_UNIFORM_VECTORS, MAX_RENDERBUFFER_SIZE, MAX_TEXTURE_IMAGE_UNITS,
-        MAX_TEXTURE_SIZE, MAX_VARYING_VECTORS, MAX_VERTEX_ATTRIBS, MAX_VERTEX_TEXTURE_IMAGE_UNITS,
-        MAX_VERTEX_UNIFORM_VECTORS, MAX_VIEWPORT_DIMS, SHADING_LANGUAGE_VERSION, STENCIL_BACK_VALUE_MASK,
-        STENCIL_BACK_WRITEMASK, STENCIL_VALUE_MASK, STENCIL_WRITEMASK, SUBPIXEL_BITS.
+        ALIASED_POINT_SIZE_RANGE, IMPLEMENTATION_COLOR_READ_FORMAT, IMPLEMENTATION_COLOR_READ_TYPE,
+        MAX_COMBINED_TEXTURE_IMAGE_UNITS, MAX_CUBE_MAP_TEXTURE_SIZE, MAX_FRAGMENT_UNIFORM_VECTORS,
+        MAX_RENDERBUFFER_SIZE, MAX_TEXTURE_IMAGE_UNITS, MAX_TEXTURE_SIZE, MAX_VARYING_VECTORS,
+        MAX_VERTEX_ATTRIBS, MAX_VERTEX_TEXTURE_IMAGE_UNITS, MAX_VERTEX_UNIFORM_VECTORS,
+        MAX_VIEWPORT_DIMS, SHADING_LANGUAGE_VERSION, STENCIL_BACK_VALUE_MASK, STENCIL_BACK_WRITEMASK,
+        STENCIL_VALUE_MASK, STENCIL_WRITEMASK, SUBPIXEL_BITS.
 
         '
     - name: characteristics_gl_params_software

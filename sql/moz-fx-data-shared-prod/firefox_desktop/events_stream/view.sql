@@ -70,6 +70,8 @@ SELECT
       LAX_BOOL(event_extra.hyphen_compat) AS `hyphen_compat`,
       LAX_BOOL(event_extra.image) AS `image`,
       LAX_BOOL(event_extra.in_shutdown) AS `in_shutdown`,
+      LAX_BOOL(event_extra.inPrivateBrowsing) AS `inPrivateBrowsing`,
+      LAX_BOOL(event_extra.is_addon_active) AS `is_addon_active`,
       LAX_BOOL(event_extra.is_customizing) AS `is_customizing`,
       LAX_BOOL(event_extra.is_deleted) AS `is_deleted`,
       LAX_BOOL(event_extra.is_extensions_button_visible) AS `is_extensions_button_visible`,

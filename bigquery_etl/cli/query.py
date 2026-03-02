@@ -168,28 +168,24 @@ def query(ctx):
 )
 @click.option(
     "--live",
-    help=(
-        """Using this option creates a query that consists of two tables with
+    help=("""Using this option creates a query that consists of two tables with
         different schedules based on a single base query, one that runs daily
         and pulls from stable tables and another that runs more frequently and
         pulls from live tables, plus a view that unions the two tables.
-        """
-    ),
+        """),
     default=False,
     is_flag=True,
 )
 @click.option(
     "--hourly",
-    help=(
-        """This options is a special case of the --live option for
+    help=("""This options is a special case of the --live option for
         tables that update hourly.
 
         Using this option creates a query that consists of two tables with
         different schedules based on a single base query, one that runs daily
         and pulls from stable tables and another that runs hourly and
         pulls from live tables, plus a view that unions the two tables.
-        """
-    ),
+        """),
     default=False,
     is_flag=True,
 )

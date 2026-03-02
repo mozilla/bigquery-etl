@@ -796,8 +796,7 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
 from argparse import ArgumentParser
 
 def main():
@@ -808,8 +807,7 @@ def main():
     submission_date = args.submission_date
     table_id = args.table_id
     print(f"writing to {table_id} for {submission_date}")
-                """
-                )
+                """)
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
@@ -871,8 +869,7 @@ def main():
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py", "w"
             ) as f:
-                f.write(
-                    """
+                f.write("""
 import click
 
 @click.command
@@ -880,8 +877,7 @@ import click
 @click.option("--table-id")
 def main(submission_date, table_id):
     print(f"writing to {table_id} for {submission_date}")
-                """
-                )
+                """)
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
@@ -976,16 +972,14 @@ def main(submission_date, table_id):
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
 import click
 
 @click.command
 @click.option("--submission-date", help="Date in yyyy-mm-dd")
 def main(submission_date):
     print(submission_date)
-                """
-                )
+                """)
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
@@ -1073,14 +1067,12 @@ def main(submission_date):
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -1136,14 +1128,12 @@ def main(submission_date):
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -1200,14 +1190,12 @@ def main(submission_date):
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",

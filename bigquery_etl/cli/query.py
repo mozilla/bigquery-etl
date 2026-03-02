@@ -425,7 +425,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, live, hourly
                 expiration_days=30,
             )
             parameters = [
-                "interval_start:TIMESTAMP:{{}}",
+                "interval_start:TIMESTAMP:{{(execution_date - macros.timedelta(hours=1).strftime('%Y-%m-%d 00:00:00'))}}",
                 "interval_end:TIMESTAMP:{{(execution_date - macros.timedelta(hours=1).strftime('%Y-%m-%d %H:%M:%S'))}}",
             ]
             destination_table = f"{live_table_name}${{{{(execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d)}}}}"

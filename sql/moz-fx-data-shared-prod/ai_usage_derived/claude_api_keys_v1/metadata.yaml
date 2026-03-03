@@ -1,0 +1,19 @@
+friendly_name: Claude API Keys
+description: |-
+  API keys from the Anthropic Admin API, linked to user information.
+  Maps API key IDs to the users who created them.
+owners:
+- mcastelluccio@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_ai_usage
+  owner1: mcastelluccio
+scheduling:
+  dag_name: bqetl_ai_usage
+  secrets:
+  - deploy_target: ANTHROPIC_ADMIN_API_KEY
+    key: bqetl_ai_usage__anthropic_admin_api_key
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

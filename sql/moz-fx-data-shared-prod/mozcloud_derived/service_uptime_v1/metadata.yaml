@@ -18,6 +18,4 @@ bigquery:
     field: run_date
     require_partition_filter: false
     expiration_days: null
-  clustering:
-    fields: []
 require_column_descriptions: true

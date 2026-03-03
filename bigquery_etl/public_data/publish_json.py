@@ -145,8 +145,8 @@ class JsonPublisher:
         try:
             if order_by_field:
                 ordered_temp_table = (
-                    f"{self.project_id}.tmp.{self.table}_{self.version}_"
-                    + "".join(random.choice(string.ascii_lowercase) for _ in range(12))
+                    f"{self.project_id}.tmp.publish_public_{self.table}_{self.version}_"
+                    + "".join(random.choices(string.ascii_lowercase, k=12))
                     + "_ordered_temp"
                 )
                 logging.info(
@@ -250,20 +250,30 @@ class JsonPublisher:
         for tmp_blob in tmp_blobs:
             # only copy gzipped files to target directory
             if "tmp.gz" in tmp_blob.name:
-                # remove .tmp from the final file name
                 file_name = tmp_blob.name.split("/")[-1].replace(".tmp.gz", "")
+                gz_file_name = file_name.replace(".json", ".json.gz")
 
-                logging.info(f"""Move {tmp_blob.name} to {gcs_path + file_name}""")
-
-                bucket.rename_blob(tmp_blob, gcs_path + file_name)
-
-                # set Content-Type to json and encoding to gzip
-                blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
+                # .json: served as decompressed JSON (GCS transcodes content_encoding:gzip)
+                logging.info(f"""Copy {tmp_blob.name} to {gcs_path + file_name}""")
+                bucket.copy_blob(tmp_blob, bucket, gcs_path + file_name)
+                json_blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
                     gcs_path + file_name
                 )
-                blob.content_type = "application/json"
-                blob.content_encoding = "gzip"
-                blob.patch()
+                json_blob.content_type = "application/json"
+                json_blob.content_encoding = "gzip"
+                json_blob.patch()
+
+                # .json.gz: served as raw gzip bytes for compressed download
+                logging.info(f"""Copy {tmp_blob.name} to {gcs_path + gz_file_name}""")
+                bucket.copy_blob(tmp_blob, bucket, gcs_path + gz_file_name)
+                gz_blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
+                    gcs_path + gz_file_name
+                )
+                gz_blob.content_type = "application/json"
+                gz_blob.content_encoding = ""
+                gz_blob.patch()
+
+                tmp_blob.delete()
 
     def _write_results_to_temp_table(self):
         """Write the query results to a temporary table and return the table name."""

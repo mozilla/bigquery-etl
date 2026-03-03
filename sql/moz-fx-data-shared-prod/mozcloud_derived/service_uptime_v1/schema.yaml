@@ -2,7 +2,7 @@ fields:
 
 - mode: NULLABLE
   name: run_date
-  type: TIMESTAMP
+  type: DATE
   description: Date the measurement was taken, used for table partitioning.
 
 - mode: NULLABLE

@@ -1,7 +1,10 @@
 friendly_name: Service Uptime
 description: |-
+  30-day rolling uptime measurements for MozCloud services, calculated from
+  GCP Load Balancer request counts via the Cloud Monitoring Prometheus API.
+  Each row represents one service measured at a point in time. Uptime is the
+  percentage of rate-window intervals where the 5xx error rate was below the
+  volume-tier threshold.
   Please provide a description for the query
 owners:
-- example@mozilla.com
-labels:
-  owner: example
+- wstuckey@mozilla.com

@@ -6,7 +6,7 @@ description: |-
   percentage of rate-window intervals where the 5xx error rate was below the
   volume-tier threshold.
 owners:
-- example@mozilla.com
+- wstuckey@mozilla.com
 labels:
   incremental: true
   schedule: daily

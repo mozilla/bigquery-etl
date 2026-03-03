@@ -19,24 +19,38 @@ from google.cloud import bigquery
 V2_PROJECT_ID = "moz-fx-metric-scope-v2-prod"
 
 # Ordered high → low. First tier whose min_rps is met wins.
+# Tier names reflect the order-of-magnitude lower bound of their req/sec range.
+# Tiers control rate window only; error threshold is computed dynamically.
 VOLUME_TIERS = [
-    {"name": "high", "min_rps": 100, "rate_window": "10m", "error_threshold": 0.01},
-    {"name": "medium", "min_rps": 10, "rate_window": "20m", "error_threshold": 0.05},
-    {"name": "low", "min_rps": 1, "rate_window": "20m", "error_threshold": 0.10},
-    {"name": "very-low", "min_rps": 0, "rate_window": "30m", "error_threshold": 0.10},
+    {"name": "10k", "min_rps": 10000, "rate_window": "1m"},
+    {"name": "1k", "min_rps": 1000, "rate_window": "5m"},
+    {"name": "100", "min_rps": 100, "rate_window": "10m"},
+    {"name": "10", "min_rps": 10, "rate_window": "15m"},
+    {"name": "1", "min_rps": 1, "rate_window": "20m"},
+    {"name": "<1", "min_rps": 0, "rate_window": "25m"},
 ]
 
-SLO_THRESHOLDS = [99.9, 99.0, 98.0, 95.0]
+# Threshold formula: T = max(BASE_THRESHOLD, CONFIDENCE_MULTIPLIER / sqrt(N))
+# where N = expected requests in the rate window.
+# CONFIDENCE_MULTIPLIER sets how many noise standard deviations above zero
+# the threshold sits — higher = fewer false positives, less sensitive.
+BASE_THRESHOLD = 0.01  # strictest threshold applied to high-volume services
+CONFIDENCE_MULTIPLIER = 2  # ~2 standard deviations above the noise floor
+
+LOOKBACK_DAYS = [90, 30, 7, 1]
 
 APP_CODES = {
-    "grafana": {"metric_scope": V2_PROJECT_ID},
-    "monitor": {"metric_scope": V2_PROJECT_ID},
-    "fxa": {"metric_scope": V2_PROJECT_ID},
-    "remote-settings": {"metric_scope": V2_PROJECT_ID},
-    "merino": {"metric_scope": V2_PROJECT_ID},
-    "sync": {"metric_scope": V2_PROJECT_ID},
-    "autopush": {"metric_scope": V2_PROJECT_ID},
-    "experimenter": {"metric_scope": V2_PROJECT_ID},
+    "grafana": {},
+    "monitor": {},
+    "vpn": {},
+    "autograph": {},
+    "relay": {},
+    "fxa": {},
+    "remote-settings": {},
+    "merino": {},
+    "sync": {},
+    "autopush": {},
+    "experimenter": {},
 }
 
 TRAFFIC_QUERY = """
@@ -47,7 +61,7 @@ avg_over_time(
     backend_target_type="BACKEND_SERVICE",
     backend_type="NETWORK_ENDPOINT_GROUP",
     cache_result="DISABLED"
-  }[10m]))[30d:10m]
+  }[10m]))[${LOOKBACK}d:10m]
 )
 """
 
@@ -56,31 +70,36 @@ UPTIME_QUERY = """
 avg_over_time(
   (
     (
-      sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
-        backend_target_name=~".*-${APP_TOKEN}.*",
-        monitored_resource="https_lb_rule",
-        backend_target_type="BACKEND_SERVICE",
-        backend_type="NETWORK_ENDPOINT_GROUP",
-        cache_result="DISABLED",
-        response_code_class="500"
-      }[${RATE_WINDOW}]))
+      (
+        sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
+          backend_target_name=~".*-${APP_TOKEN}.*",
+          monitored_resource="https_lb_rule",
+          backend_target_type="BACKEND_SERVICE",
+          backend_type="NETWORK_ENDPOINT_GROUP",
+          cache_result="DISABLED",
+          response_code_class="500"
+        }[${RATE_WINDOW}]))) or vector(0)
+      )
       /
-      sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
-        backend_target_name=~".*-${APP_TOKEN}.*",
-        monitored_resource="https_lb_rule",
-        backend_target_type="BACKEND_SERVICE",
-        backend_type="NETWORK_ENDPOINT_GROUP",
-        cache_result="DISABLED"
-      }[${RATE_WINDOW}]))
+      (
+        sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
+          backend_target_name=~".*-${APP_TOKEN}.*",
+          monitored_resource="https_lb_rule",
+          backend_target_type="BACKEND_SERVICE",
+          backend_type="NETWORK_ENDPOINT_GROUP",
+          cache_result="DISABLED"
+        }[${RATE_WINDOW}]))) or vector(1)
+      )
     ) < bool ${THRESHOLD}
-  )[30d:${RATE_WINDOW}]
+  )[${LOOKBACK}d:${RATE_WINDOW}]
 )
 """
 
 SCHEMA = [
     bigquery.SchemaField("run_date", "TIMESTAMP"),
     bigquery.SchemaField("measured_at", "TIMESTAMP"),
-    bigquery.SchemaField("app", "STRING"),
+    bigquery.SchemaField("app_code", "STRING"),
+    bigquery.SchemaField("lookback_days", "INTEGER"),
     bigquery.SchemaField("requests_per_sec", "FLOAT"),
     bigquery.SchemaField("volume_tier", "STRING"),
     bigquery.SchemaField("rate_window", "STRING"),
@@ -105,6 +124,21 @@ def determine_tier(rps: float) -> dict:
         if rps >= tier["min_rps"]:
             return tier
     return VOLUME_TIERS[-1]
+
+
+def compute_threshold(rps: float, rate_window: str) -> float:
+    """Compute error threshold using T = max(BASE_THRESHOLD, c / sqrt(N)).
+
+    N is the expected number of requests in the rate window. The dynamic
+    component ensures low-volume services aren't penalised by noise — the
+    threshold rises until it sits c standard deviations above the noise floor.
+    """
+    window_minutes = int(rate_window.rstrip("m"))
+    n = rps * window_minutes * 60
+    if n <= 0:
+        return 1.0
+    dynamic = CONFIDENCE_MULTIPLIER / (n**0.5)
+    return max(BASE_THRESHOLD, dynamic)
 
 
 def query_promql(
@@ -146,52 +180,65 @@ def query_promql(
     return None
 
 
-def measure_services(apps: dict, query_time: datetime, access_token: str) -> list[dict]:
-    """Measure uptime for all apps and return a list of result dicts."""
+def measure_services(
+    apps: dict, query_time: datetime, access_token: str, lookback_days: list[int]
+) -> list[dict]:
+    """Measure uptime for all apps across all lookback windows."""
     services = []
     run_date = query_time.strftime("%Y-%m-%d")
     measured_at = query_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     for app_key, app_meta in apps.items():
         app_token = f"{app_key}-prod"
-        project_id = app_meta["metric_scope"]
+        project_id = app_meta.get("metric_scope", V2_PROJECT_ID)
 
-        logging.info(f"[{app_key}] Querying traffic volume...")
-        rps = query_promql(
-            project_id,
-            TRAFFIC_QUERY.replace("${APP_TOKEN}", app_token),
-            query_time,
-            access_token,
-        )
+        for lookback in lookback_days:
+            logging.info(f"[{app_key}] [{lookback}d] Querying traffic volume...")
+            rps = query_promql(
+                project_id,
+                TRAFFIC_QUERY.replace("${APP_TOKEN}", app_token).replace(
+                    "${LOOKBACK}", str(lookback)
+                ),
+                query_time,
+                access_token,
+            )
 
-        tier = determine_tier(rps) if rps is not None else VOLUME_TIERS[-1]
-        rps_str = f"{rps:.4f}" if rps is not None else "no data"
-        logging.info(f"[{app_key}] {rps_str} req/sec → {tier['name']} tier")
+            if rps is None:
+                logging.warning(f"[{app_key}] [{lookback}d] No RPS data, skipping.")
+                continue
 
-        logging.info(f"[{app_key}] Querying uptime...")
-        uptime = query_promql(
-            project_id,
-            UPTIME_QUERY.replace("${APP_TOKEN}", app_token)
-            .replace("${RATE_WINDOW}", tier["rate_window"])
-            .replace("${THRESHOLD}", str(tier["error_threshold"])),
-            query_time,
-            access_token,
-        )
-        uptime_str = f"{uptime:.2f}%" if uptime is not None else "no data"
-        logging.info(f"[{app_key}] Uptime: {uptime_str}")
+            tier = determine_tier(rps)
+            error_threshold = compute_threshold(rps, tier["rate_window"])
+            logging.info(
+                f"[{app_key}] [{lookback}d] {rps:.4f} req/sec → {tier['name']} tier (threshold: {error_threshold:.2%})"
+            )
 
-        services.append(
-            {
-                "run_date": run_date,
-                "measured_at": measured_at,
-                "app": app_key,
-                "requests_per_sec": round(rps, 4) if rps is not None else None,
-                "volume_tier": tier["name"],
-                "rate_window": tier["rate_window"],
-                "error_threshold_pct": tier["error_threshold"] * 100,
-                "uptime_pct": round(uptime, 4) if uptime is not None else None,
-            }
-        )
+            logging.info(f"[{app_key}] [{lookback}d] Querying uptime...")
+            uptime = query_promql(
+                project_id,
+                UPTIME_QUERY.replace("${APP_TOKEN}", app_token)
+                .replace("${LOOKBACK}", str(lookback))
+                .replace("${RATE_WINDOW}", tier["rate_window"])
+                .replace("${THRESHOLD}", str(error_threshold)),
+                query_time,
+                access_token,
+            )
+            uptime_str = f"{uptime:.2f}%" if uptime is not None else "no data"
+            logging.info(f"[{app_key}] [{lookback}d] Uptime: {uptime_str}")
+
+            services.append(
+                {
+                    "run_date": run_date,
+                    "measured_at": measured_at,
+                    "app_code": app_key,
+                    "lookback_days": lookback,
+                    "requests_per_sec": round(rps, 4),
+                    "volume_tier": tier["name"],
+                    "rate_window": tier["rate_window"],
+                    "error_threshold_pct": round(error_threshold * 100, 4),
+                    "uptime_pct": round(uptime, 4) if uptime is not None else None,
+                }
+            )
 
     return services
 
@@ -234,6 +281,14 @@ def main():
         "--date",
         help="Date to query uptime for (YYYY-MM-DD). Defaults to today.",
     )
+    parser.add_argument(
+        "--lookback-days",
+        nargs="+",
+        type=int,
+        default=LOOKBACK_DAYS,
+        metavar="N",
+        help="Lookback window(s) in days (default: 90 30 7 1).",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
@@ -256,7 +311,7 @@ def main():
         query_time = datetime.now(timezone.utc)
     access_token = get_access_token()
 
-    services = measure_services(apps, query_time, access_token)
+    services = measure_services(apps, query_time, access_token, args.lookback_days)
     load_to_bigquery(args.project, args.dataset, args.table, services)
 
 

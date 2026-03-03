@@ -11,23 +11,29 @@ fields:
   description: Exact UTC timestamp when the uptime measurement was taken.
 
 - mode: NULLABLE
-  name: app
+  name: app_code
   type: STRING
   description: MozCloud service name (e.g. fxa, merino, sync).
+
+- mode: NULLABLE
+  name: lookback_days
+  type: INTEGER
+  description: Length of the lookback window in days over which uptime is calculated.
 
 - mode: NULLABLE
   name: requests_per_sec
   type: FLOAT
   description: >-
-    Average requests per second over the 30-day lookback window, used to
+    Average requests per second over the lookback window in `lookback_days`, used to
     determine the volume tier.
 
 - mode: NULLABLE
   name: volume_tier
   type: STRING
   description: >-
-    Volume tier classification (high, medium, low, very-low) derived from
-    the average request rate.
+    Volume tier classification derived from the average request rate. One of:
+    10k (≥10000 rps), 1k (≥1000 rps), 100 (≥100 rps), 10 (≥10 rps),
+    1 (≥1 rps), <1 (<1 rps).
 
 - mode: NULLABLE
   name: rate_window
@@ -40,8 +46,9 @@ fields:
   name: error_threshold_pct
   type: FLOAT
   description: >-
-    5xx error rate percentage above which a rate-window interval is counted
-    as downtime, determined by the volume tier.
+    5xx error rate percentage above which a rate-window interval is counted as
+    downtime. Dynamically computed as max(BASE_THRESHOLD, CONFIDENCE_MULTIPLIER
+    / sqrt(rps * window_seconds)) to account for noise at low traffic volumes.
 
 - mode: NULLABLE
   name: uptime_pct

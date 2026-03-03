@@ -8,7 +8,7 @@ For each service:
 """
 
 import logging
-import time
+import sys
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 
@@ -16,6 +16,7 @@ import google.auth
 import google.auth.transport.requests
 import requests
 from google.cloud import bigquery
+from requests.adapters import HTTPAdapter, Retry
 
 V2_PROJECT_ID = "moz-fx-metric-scope-v2-prod"
 
@@ -49,7 +50,7 @@ APP_CODES = {
     "sync": {},
     "autopush": {},
     "experimenter": {},
-    "socorro": {},
+    "socorro": {"components": ["socorro", "antenna"]},
     "symbols": {},
 }
 
@@ -99,6 +100,7 @@ SCHEMA = [
     bigquery.SchemaField("run_date", "DATE"),
     bigquery.SchemaField("measured_at", "TIMESTAMP"),
     bigquery.SchemaField("app_code", "STRING"),
+    bigquery.SchemaField("component", "STRING"),
     bigquery.SchemaField("lookback_days", "INTEGER"),
     bigquery.SchemaField("requests_per_sec", "FLOAT"),
     bigquery.SchemaField("volume_tier", "STRING"),
@@ -133,34 +135,26 @@ RETRY_BACKOFF_BASE = 2  # seconds; delay = base ** attempt (2, 4, 8)
 
 def _post_with_retry(url: str, headers: dict, data: dict) -> requests.Response | None:
     """POST with exponential backoff retry on transient errors."""
-    for attempt in range(MAX_RETRIES):
-        try:
-            response = requests.post(url, headers=headers, data=data)
-            response.raise_for_status()
-            return response
-        except requests.exceptions.HTTPError as e:
-            status = e.response.status_code if e.response is not None else None
-            if status in RETRYABLE_STATUS_CODES and attempt < MAX_RETRIES - 1:
-                delay = RETRY_BACKOFF_BASE**attempt
-                logging.warning(
-                    f"HTTP {status}, retrying in {delay}s (attempt {attempt + 1}/{MAX_RETRIES})"
-                )
-                time.sleep(delay)
-            else:
-                logging.error(f"HTTP error: {e}")
-                if e.response is not None:
-                    logging.error(f"Response body: {e.response.text}")
-                return None
-        except requests.exceptions.RequestException as e:
-            if attempt < MAX_RETRIES - 1:
-                delay = RETRY_BACKOFF_BASE**attempt
-                logging.warning(
-                    f"Request error: {e}, retrying in {delay}s (attempt {attempt + 1}/{MAX_RETRIES})"
-                )
-                time.sleep(delay)
-            else:
-                logging.error(f"Request error: {e}")
-                return None
+    session = requests.Session()
+    retry = Retry(
+        total=MAX_RETRIES,
+        backoff_factor=RETRY_BACKOFF_BASE,
+        status_forcelist=RETRYABLE_STATUS_CODES,
+        raise_on_status=False,
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    try:
+        response = session.post(url, headers=headers, data=data, timeout=60)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"HTTP error: {e}")
+        if e.response is not None:
+            logging.error(f"Response body: {e.response.text}")
+        return None
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Request error: {e}")
+        return None
     return None
 
 
@@ -211,65 +205,76 @@ def measure_services(
     measured_at = query_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     for app_key, app_meta in apps.items():
-        app_token = f"{app_key}-prod"
+        base_token = f"{app_key}-prod"
         project_id = app_meta.get("metric_scope", V2_PROJECT_ID)
+        components = app_meta.get("components", [])
 
-        for lookback in lookback_windows:
-            logging.info(f"[{app_key}] [{lookback}] Querying traffic volume...")
-            rps = query_promql(
-                project_id,
-                TRAFFIC_QUERY.replace("${APP_TOKEN}", app_token)
-                .replace("${LOOKBACK}", lookback)
-                .replace("${RATE_WINDOW}", rate_window),
-                query_time,
-                access_token,
-            )
+        # Measure the app total first, then each named component.
+        # component=None means the app-level aggregate (no component suffix).
+        targets = [(base_token, None)] + [(f"{base_token}-{c}", c) for c in components]
 
-            if rps is None:
-                logging.warning(f"[{app_key}] [{lookback}] No RPS data, skipping.")
-                continue
+        for app_token, component in targets:
+            label = f"{app_key}/{component}" if component else app_key
 
-            tier = determine_tier(rps)
-            logging.info(
-                f"[{app_key}] [{lookback}] {rps:.4f} req/sec → {tier['name']} tier (threshold: {ERROR_THRESHOLD:.2%})"
-            )
+            for lookback in lookback_windows:
+                logging.info(f"[{label}] [{lookback}] Querying traffic volume...")
+                rps = query_promql(
+                    project_id,
+                    TRAFFIC_QUERY.replace("${APP_TOKEN}", app_token)
+                    .replace("${LOOKBACK}", lookback)
+                    .replace("${RATE_WINDOW}", rate_window),
+                    query_time,
+                    access_token,
+                )
 
-            logging.info(f"[{app_key}] [{lookback}] Querying uptime...")
-            uptime = query_promql(
-                project_id,
-                UPTIME_QUERY.replace("${APP_TOKEN}", app_token)
-                .replace("${LOOKBACK}", lookback)
-                .replace("${RATE_WINDOW}", rate_window)
-                .replace("${THRESHOLD}", str(ERROR_THRESHOLD)),
-                query_time,
-                access_token,
-            )
-            uptime_str = f"{uptime:.2f}%" if uptime is not None else "no data"
-            logging.info(f"[{app_key}] [{lookback}] Uptime: {uptime_str}")
+                if rps is None:
+                    logging.warning(f"[{label}] [{lookback}] No RPS data, skipping.")
+                    continue
 
-            services.append(
-                {
-                    "run_date": run_date,
-                    "measured_at": measured_at,
-                    "app_code": app_key,
-                    "lookback_days": int(lookback.rstrip("d")),
-                    "requests_per_sec": round(rps, 4),
-                    "volume_tier": tier["name"],
-                    "rate_window": rate_window,
-                    "error_threshold": ERROR_THRESHOLD,
-                    "uptime": round(uptime / 100, 6) if uptime is not None else None,
-                }
-            )
+                tier = determine_tier(rps)
+                logging.info(
+                    f"[{label}] [{lookback}] {rps:.4f} req/sec → {tier['name']} tier (threshold: {ERROR_THRESHOLD:.2%})"
+                )
+
+                logging.info(f"[{label}] [{lookback}] Querying uptime...")
+                uptime = query_promql(
+                    project_id,
+                    UPTIME_QUERY.replace("${APP_TOKEN}", app_token)
+                    .replace("${LOOKBACK}", lookback)
+                    .replace("${RATE_WINDOW}", rate_window)
+                    .replace("${THRESHOLD}", str(ERROR_THRESHOLD)),
+                    query_time,
+                    access_token,
+                )
+                uptime_str = f"{uptime:.2f}%" if uptime is not None else "no data"
+                logging.info(f"[{label}] [{lookback}] Uptime: {uptime_str}")
+
+                services.append(
+                    {
+                        "run_date": run_date,
+                        "measured_at": measured_at,
+                        "app_code": app_key,
+                        "component": component,
+                        "lookback_days": int(lookback.rstrip("d")),
+                        "requests_per_sec": round(rps, 4),
+                        "volume_tier": tier["name"],
+                        "rate_window": rate_window,
+                        "error_threshold": ERROR_THRESHOLD,
+                        "uptime": (
+                            round(uptime / 100, 6) if uptime is not None else None
+                        ),
+                    }
+                )
 
     return services
 
 
 def load_to_bigquery(
-    project: str, dataset: str, table: str, records: list[dict]
+    project: str, dataset: str, table: str, records: list[dict], query_time: datetime
 ) -> None:
     """Load service uptime records to BigQuery."""
     client = bigquery.Client(project)
-    destination = f"{project}.{dataset}.{table}"
+    destination = f"{project}.{dataset}.{table}${query_time.strftime('%Y%m%d')}"
 
     time_partitioning = bigquery.TimePartitioning(
         type_=bigquery.TimePartitioningType.DAY,
@@ -324,7 +329,7 @@ def main():
             logging.error(
                 f"Unknown app '{args.app}'. Available: {', '.join(APP_CODES)}"
             )
-            raise SystemExit(1)
+            raise sys.exit(1)
         apps = {args.app: APP_CODES[args.app]}
     else:
         apps = APP_CODES
@@ -340,7 +345,7 @@ def main():
     services = measure_services(
         apps, query_time, access_token, args.lookback, args.rate_window
     )
-    load_to_bigquery(args.project, args.dataset, args.table, services)
+    load_to_bigquery(args.project, args.dataset, args.table, services, query_time)
 
 
 if __name__ == "__main__":

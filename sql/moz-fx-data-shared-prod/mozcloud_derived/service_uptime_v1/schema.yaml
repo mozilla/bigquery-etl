@@ -16,6 +16,13 @@ fields:
   description: MozCloud service name (e.g. fxa, merino, sync).
 
 - mode: NULLABLE
+  name: component
+  type: STRING
+  description: >-
+    Individual backend component within the app (e.g. auth, content). NULL means
+    the row represents the app-level aggregate across all components.
+
+- mode: NULLABLE
   name: lookback_days
   type: INTEGER
   description: Length of the lookback window in days over which uptime is calculated.

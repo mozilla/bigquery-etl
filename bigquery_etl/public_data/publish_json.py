@@ -133,18 +133,50 @@ class JsonPublisher:
 
         logging.info(f"""Export JSON for {result_table} to {self.stage_gcs_path}""")
 
-        table_ref = self.client.get_table(result_table)
+        order_by_field = None
+        if (
+            self.metadata.bigquery
+            and self.metadata.bigquery.time_partitioning
+            and self.metadata.bigquery.time_partitioning.field
+        ):
+            order_by_field = self.metadata.bigquery.time_partitioning.field
 
-        job_config = bigquery.ExtractJobConfig()
-        job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+        ordered_temp_table = None
+        try:
+            if order_by_field:
+                ordered_temp_table = (
+                    f"{self.project_id}.tmp.publish_public_{self.table}_{self.version}_"
+                    + "".join(random.choices(string.ascii_lowercase, k=12))
+                    + "_ordered_temp"
+                )
+                logging.info(
+                    f"Creating ordered temp table {ordered_temp_table} "
+                    f"ordered by {order_by_field}"
+                )
+                query_job = self.client.query(
+                    f"SELECT * FROM `{result_table}` ORDER BY {order_by_field} ASC",
+                    job_config=bigquery.QueryJobConfig(destination=ordered_temp_table),
+                )
+                query_job.result()
+                export_table = ordered_temp_table
+            else:
+                export_table = result_table
 
-        # "*" makes sure that files larger than 1GB get split up into JSON files
-        # files are written to a stage directory first
-        destination_uri = f"gs://{self.target_bucket}/{self.stage_gcs_path}*.ndjson"
-        extract_job = self.client.extract_table(
-            table_ref, destination_uri, location="US", job_config=job_config
-        )
-        extract_job.result()
+            table_ref = self.client.get_table(export_table)
+
+            job_config = bigquery.ExtractJobConfig()
+            job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+
+            # "*" makes sure that files larger than 1GB get split up into JSON files
+            # files are written to a stage directory first
+            destination_uri = f"gs://{self.target_bucket}/{self.stage_gcs_path}*.ndjson"
+            extract_job = self.client.extract_table(
+                table_ref, destination_uri, location="US", job_config=job_config
+            )
+            extract_job.result()
+        finally:
+            if ordered_temp_table:
+                self.client.delete_table(ordered_temp_table, not_found_ok=True)
 
         self._gcp_convert_ndjson_to_json(prefix)
 

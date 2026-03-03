@@ -1,0 +1,58 @@
+fields:
+- name: os_grouped
+  type: STRING
+  mode: NULLABLE
+  description: The grouped name of the operating system running at the client.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: submission_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
+- name: country_segmentation
+  type: STRING
+  mode: NULLABLE
+  description: Country grouping that identifies major countries individually and groups
+    the rest as 'ROW' (Rest of World).
+- name: daily_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of daily active users, corresponding to the count of clients
+    that reported at least one ping on the submission_date and qualify as active.
+- name: weekly_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of weekly active users, corresponding to the count of clients
+    that reported at least one ping on the previous 7 days from the submission_date
+    and qualify as active.
+- name: monthly_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of monthly active users, corresponding to the count of clients
+    that reported at least one ping on the previous 28 days from the submission_date
+    and qualify as active.
+- name: tou_daily_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of daily active users who have accepted the Terms of Use,
+    corresponding to the count of clients that reported at least one ping on the
+    submission_date and qualify as active.
+- name: tou_weekly_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of weekly active users who have accepted the Terms of Use,
+    corresponding to the count of clients that reported at least one ping on the
+    previous 7 days from the submission_date and qualify as active.
+- name: tou_monthly_active_users
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of monthly active users who have accepted the Terms of Use,
+    corresponding to the count of clients that reported at least one ping on the
+    previous 28 days from the submission_date and qualify as active.

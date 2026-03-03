@@ -1,6 +1,6 @@
 friendly_name: Mozcloud
 description: |-
-  Please provide a description for the dataset
+  Mozcloud and Cloud Eng platform metrics and KPIs
 dataset_base_acl: view
 user_facing: true
 workgroup_access:

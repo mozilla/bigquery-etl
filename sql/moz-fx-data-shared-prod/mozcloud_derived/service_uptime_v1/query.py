@@ -98,8 +98,8 @@ SCHEMA = [
     bigquery.SchemaField("requests_per_sec", "FLOAT"),
     bigquery.SchemaField("volume_tier", "STRING"),
     bigquery.SchemaField("rate_window", "STRING"),
-    bigquery.SchemaField("error_threshold_pct", "FLOAT"),
-    bigquery.SchemaField("uptime_pct", "FLOAT"),
+    bigquery.SchemaField("error_threshold", "FLOAT"),
+    bigquery.SchemaField("uptime", "FLOAT"),
 ]
 
 
@@ -218,8 +218,8 @@ def measure_services(
                     "requests_per_sec": round(rps, 4),
                     "volume_tier": tier["name"],
                     "rate_window": rate_window,
-                    "error_threshold_pct": ERROR_THRESHOLD * 100,
-                    "uptime_pct": round(uptime, 4) if uptime is not None else None,
+                    "error_threshold": ERROR_THRESHOLD,
+                    "uptime": round(uptime / 100, 6) if uptime is not None else None,
                 }
             )
 

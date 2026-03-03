@@ -2587,6 +2587,25 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
+bqetl_ai_usage:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: phlee@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-01-21'
+  description: |
+    Monitors LLM API usage and costs across different providers.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+
 bqetl_semrush:
   catchup: false
   default_args:

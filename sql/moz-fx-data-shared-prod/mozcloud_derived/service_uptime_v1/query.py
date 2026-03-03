@@ -35,6 +35,8 @@ ERROR_THRESHOLD = 0.01  # fraction of 500 responses that defines an "up" window
 
 VALID_LOOKBACKS = ["90d", "30d", "7d", "1d"]
 
+# App codes here are hardcoded for now. Eventually we will want to pull them from
+# the tenant table when that exists.
 APP_CODES = {
     "grafana": {},
     "monitor": {},

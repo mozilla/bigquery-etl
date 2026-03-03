@@ -153,8 +153,9 @@ class JsonPublisher:
                     f"Creating ordered temp table {ordered_temp_table} "
                     f"ordered by {order_by_field}"
                 )
+                # add where clause if partition filter is required
                 query_job = self.client.query(
-                    f"SELECT * FROM `{result_table}` ORDER BY {order_by_field} ASC",
+                    f"SELECT * FROM `{result_table}` WHERE {order_by_field} IS NOT NULL ORDER BY {order_by_field} ASC",
                     job_config=bigquery.QueryJobConfig(destination=ordered_temp_table),
                 )
                 query_job.result()

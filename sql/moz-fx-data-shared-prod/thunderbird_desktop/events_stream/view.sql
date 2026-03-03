@@ -413,7 +413,6 @@ SELECT
       JSON_VALUE(event_extra.selftype) AS `selftype`,
       JSON_VALUE(event_extra.server_stack) AS `server_stack`,
       JSON_VALUE(event_extra.session_id) AS `session_id`,
-      JSON_VALUE(event_extra.setting) AS `setting`,
       JSON_VALUE(event_extra.severity) AS `severity`,
       JSON_VALUE(event_extra.shortcut) AS `shortcut`,
       JSON_VALUE(event_extra.signature) AS `signature`,

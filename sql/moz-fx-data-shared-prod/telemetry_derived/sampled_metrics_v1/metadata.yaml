@@ -1,0 +1,17 @@
+friendly_name: Sampled Metrics
+description: |-
+  Tracks client-side sampled Glean metrics and their sample rates.
+  Populated from the Experimenter API by extracting active experiments
+  and rollouts that use gleanInternalSdk to control metric sampling.
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: true
+  owner1: efilho
+  dag: bqetl_sampled_metrics
+scheduling:
+  dag_name: bqetl_sampled_metrics
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

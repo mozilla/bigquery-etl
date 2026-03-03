@@ -8,6 +8,7 @@ For each service:
 """
 
 import logging
+import time
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 
@@ -121,6 +122,44 @@ def determine_tier(rps: float) -> dict:
     return VOLUME_TIERS[-1]
 
 
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
+MAX_RETRIES = 3
+RETRY_BACKOFF_BASE = 2  # seconds; delay = base ** attempt (2, 4, 8)
+
+
+def _post_with_retry(url: str, headers: dict, data: dict) -> requests.Response | None:
+    """POST with exponential backoff retry on transient errors."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            status = e.response.status_code if e.response is not None else None
+            if status in RETRYABLE_STATUS_CODES and attempt < MAX_RETRIES - 1:
+                delay = RETRY_BACKOFF_BASE**attempt
+                logging.warning(
+                    f"HTTP {status}, retrying in {delay}s (attempt {attempt + 1}/{MAX_RETRIES})"
+                )
+                time.sleep(delay)
+            else:
+                logging.error(f"HTTP error: {e}")
+                if e.response is not None:
+                    logging.error(f"Response body: {e.response.text}")
+                return None
+        except requests.exceptions.RequestException as e:
+            if attempt < MAX_RETRIES - 1:
+                delay = RETRY_BACKOFF_BASE**attempt
+                logging.warning(
+                    f"Request error: {e}, retrying in {delay}s (attempt {attempt + 1}/{MAX_RETRIES})"
+                )
+                time.sleep(delay)
+            else:
+                logging.error(f"Request error: {e}")
+                return None
+    return None
+
+
 def query_promql(
     project_id: str,
     promql_query: str,
@@ -136,12 +175,12 @@ def query_promql(
     time_str = query_time.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     try:
-        response = requests.post(
-            url, headers=headers, data={"query": promql_query, "time": time_str}
+        response = _post_with_retry(
+            url, headers, {"query": promql_query, "time": time_str}
         )
-        response.raise_for_status()
+        if response is None:
+            return None
         data = response.json()
-
         if data.get("status") == "success" and data.get("data"):
             result = data["data"].get("result")
             result_type = data["data"].get("resultType")
@@ -149,11 +188,6 @@ def query_promql(
                 return float(result[1])
             elif result and result_type == "vector":
                 return float(result[0]["value"][1])
-
-    except requests.exceptions.RequestException as e:
-        logging.error(f"HTTP error: {e}")
-        if e.response is not None:
-            logging.error(f"Response body: {e.response.text}")
     except (KeyError, IndexError, ValueError) as e:
         logging.error(f"Parse error: {e}")
 

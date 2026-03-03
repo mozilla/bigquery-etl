@@ -49,6 +49,8 @@ APP_CODES = {
     "sync": {},
     "autopush": {},
     "experimenter": {},
+    "socorro": {},
+    "symbols": {},
 }
 
 TRAFFIC_QUERY = """

@@ -12764,8 +12764,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -12955,6 +12954,19 @@ fields:
         geckoview metric of the same name).
 
         '
+    - name: wallpapers_new_wallpaper_applied
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many and which type of wallpapers were applied.
+
+        '
     - name: avif_a1lx
       type: RECORD
       mode: REPEATED
@@ -13083,19 +13095,6 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram AVIF_SEQUENCE.
-
-        '
-    - name: wallpapers_new_wallpaper_applied
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'How many and which type of wallpapers were applied.
 
         '
     - name: power_cpu_time_per_process_type_ms
@@ -13993,24 +13992,6 @@ fields:
         in one of the labels.
 
         '
-    - name: fog_validation_gvsv_audio_stream_init_gvst
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Incremented when an audio stream is initialized, recorded alongside
-        the
-
-        Glean API for the purposes of Validation (hence GVSV).
-
-        Uses a single label due to only labeled counters being supported
-
-        '
     - name: networking_residual_cache_folder_removal
       type: RECORD
       mode: REPEATED
@@ -14138,6 +14119,24 @@ fields:
         mode: NULLABLE
       description: 'Counts the preferred video codec being signaled to us to identify
         preferred video codec.
+
+        '
+    - name: fog_validation_gvsv_audio_stream_init_gvst
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        Glean API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
 
         '
     - name: gpu_process_crash_fallbacks

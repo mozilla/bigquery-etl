@@ -46,6 +46,12 @@ google_play_store_derived__slow_startup_events_by_startup_type_version_and_devic
     secret="airflow-gke-secrets",
     key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
 )
+google_play_store_derived__vitals_error_count__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood = Secret(
+    deploy_type="env",
+    deploy_target="GOOGLE_PLAY_STORE_SRVC_ACCT_INFO",
+    secret="airflow-gke-secrets",
+    key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
+)
 
 
 default_args = {
@@ -114,5 +120,20 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
+        ],
+    )
+
+    google_play_store_derived__vitals_error_count__v1 = GKEPodOperator(
+        task_id="google_play_store_derived__vitals_error_count__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/google_play_store_derived/vitals_error_count_v1/query.py",
+        ]
+        + ["--date={{macros.ds_add(ds, -1)}}"],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            google_play_store_derived__vitals_error_count__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
     )

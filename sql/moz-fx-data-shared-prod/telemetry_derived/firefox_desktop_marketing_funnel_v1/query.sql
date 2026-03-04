@@ -60,13 +60,7 @@ WITH top_of_funnel_base AS (
 ),
 top_of_funnel AS (
   SELECT
-    top_of_funnel_base.* EXCEPT (os, country_code, has_visits, firefox_desktop_downloads),
-    -- Country format: "US (Tier 1)" or "ROW" for Rest of World (Tier 3)
-    IF(
-      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
-      "ROW",
-      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    ) AS country,
+    top_of_funnel_base.* EXCEPT (os, has_visits, firefox_desktop_downloads),
     -- Determine funnel type based on OS
     CASE
       WHEN os = 'windows'
@@ -178,12 +172,7 @@ windows_installer_installs_base AS (
 windows_installer_installs AS (
   SELECT
     submission_date,
-    -- Country format: "US (Tier 1)" or "ROW" for Rest of World (Tier 3)
-    IF(
-      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
-      "ROW",
-      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    ) AS country,
+    country_code,
     'mozorg windows funnel' AS funnel_derived,  -- Always Windows (Mac has no installer data)
     -- Get attribution from ga4_attr_by_dltoken lookup
     channel_raw,
@@ -255,12 +244,7 @@ fresh_download_profiles AS (
 desktop_funnels_telemetry AS (
   SELECT
     cfs28.first_seen_date AS submission_date,
-    IF(
-      COALESCE(tier_mapping.tier, 'Tier 3') = 'Tier 3',
-      "ROW",
-      tier_mapping.country_code || " (" || tier_mapping.tier || ")"
-    ) AS country,
-    -- Reclassify "other" and EU countries as "Unknown" funnel
+    cfs28.country,
     IF(
       cfs28.funnel_derived = 'other'
       OR tier_mapping.has_web_cookie_consent,
@@ -327,8 +311,8 @@ final AS (
       desktop_funnels_telemetry.submission_date
     ) AS funnel_date,
     COALESCE(
-      top_of_funnel.country,
-      windows_installer.country,
+      top_of_funnel.country_code,
+      windows_installer.country_code,
       desktop_funnels_telemetry.country
     ) AS country,
     COALESCE(
@@ -399,7 +383,7 @@ final AS (
   FULL JOIN
     windows_installer_installs AS windows_installer
     ON top_of_funnel.submission_date = windows_installer.submission_date
-    AND top_of_funnel.country = windows_installer.country
+    AND top_of_funnel.country_code = windows_installer.country_code
     AND top_of_funnel.funnel_derived = windows_installer.funnel_derived
     AND COALESCE(top_of_funnel.channel_raw, '') = COALESCE(windows_installer.channel_raw, '')
     AND COALESCE(top_of_funnel.campaign, '') = COALESCE(windows_installer.campaign, '')
@@ -410,7 +394,7 @@ final AS (
   FULL JOIN
     desktop_funnels_telemetry
     ON top_of_funnel.submission_date = desktop_funnels_telemetry.submission_date
-    AND top_of_funnel.country = desktop_funnels_telemetry.country
+    AND top_of_funnel.country_code = desktop_funnels_telemetry.country
     AND top_of_funnel.funnel_derived = desktop_funnels_telemetry.funnel_derived
     AND COALESCE(top_of_funnel.channel_raw, '') = COALESCE(
       desktop_funnels_telemetry.channel_raw,
@@ -428,24 +412,8 @@ final AS (
 -- Final SELECT: Add Derived Dimensions and Year-over-Year Metrics
 -- =============================================================================
 SELECT
-  * REPLACE (
-    -- Remap tier names to user-friendly labels: Tier 1 -> Core, Tier 2 -> Growth, ROW -> Emerging
-    CASE
-      WHEN country = 'ROW'
-        THEN 'Emerging'
-      ELSE REGEXP_REPLACE(REGEXP_REPLACE(country, r'Tier 1', 'Core'), r'Tier 2', 'Growth')
-    END AS country
-  ),
-  -- Country tier as separate dimension for filtering
-  CASE
-    WHEN country = 'ROW'
-      THEN 'Emerging'
-    WHEN country LIKE '%(Tier 1)'
-      THEN 'Core'
-    WHEN country LIKE '%(Tier 2)'
-      THEN 'Growth'
-    ELSE 'Unknown'
-  END AS country_tier,
+  final.*,
+  tier_mapping.tier AS country_tier,
   -- Derived channel: simplify attribution into three buckets
   --   - Paid Search: Has a campaign (from Google Ads)
   --   - Organic Search: GA4 classified as Organic Search
@@ -477,3 +445,6 @@ SELECT
   END AS subchannel,
 FROM
   final
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
+  ON final.country = tier_mapping.country_code

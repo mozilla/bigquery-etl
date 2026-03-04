@@ -10,7 +10,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
-  - workgroup:sre-managed/access-events
+  - workgroup:platform/access-events
 references:
   view.sql:
   - moz-fx-data-bq-people.composer_workday.worker

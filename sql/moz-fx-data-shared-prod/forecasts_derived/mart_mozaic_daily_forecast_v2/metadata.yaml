@@ -21,9 +21,9 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/external-outerbounds-task-default
+  - workgroup:dataplatform/external-outerbounds-task-default
   - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:dataops-managed/external-outerbounds-task-default
+  - workgroup:dataplatform/external-outerbounds-task-default
 require_column_descriptions: true

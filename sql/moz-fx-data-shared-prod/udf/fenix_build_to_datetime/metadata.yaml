@@ -29,5 +29,5 @@ owners: []
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope

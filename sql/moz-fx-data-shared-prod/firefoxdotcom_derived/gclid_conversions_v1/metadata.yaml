@@ -25,7 +25,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/external-census
+  - workgroup:dataplatform/external-census
   - workgroup:mozilla-confidential/data-viewers
 - role: roles/bigquery.metadataViewer
   members:

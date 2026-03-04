@@ -5,8 +5,8 @@ owners: []
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:cloudops-managed/telescope
   - workgroup:mozilla-confidential/data-viewers
+  - workgroup:remote-settings/telescope
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_live.event_v4

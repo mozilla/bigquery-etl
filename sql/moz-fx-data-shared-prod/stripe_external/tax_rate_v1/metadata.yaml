@@ -17,7 +17,7 @@ scheduling:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:stripe/viewers
+  - workgroup:stripe/data-viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/developers

@@ -36,3 +36,6 @@ fields:
 - name: q999
   type: INTEGER
   description: 99.9th percentile{% if metric.unit %} ({{ metric.unit }}){% endif %}
+- name: sample_count
+  type: INTEGER
+  description: Number of samples for the label / date

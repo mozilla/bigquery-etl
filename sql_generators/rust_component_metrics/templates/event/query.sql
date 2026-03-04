@@ -3,7 +3,7 @@ SELECT
     "{{ application }}" as application,
     normalized_channel AS channel,
     COUNT(*) as count
-FROM `mozdata.{{ dataset_name }}.events`
+FROM `moz-fx-data-shared-prod.{{ dataset_name }}.events`
 CROSS JOIN UNNEST(events) as events 
 WHERE
   events.category = "{{ category }}" AND

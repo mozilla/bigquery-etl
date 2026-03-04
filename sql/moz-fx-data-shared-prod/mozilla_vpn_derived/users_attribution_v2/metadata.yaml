@@ -2,6 +2,7 @@ friendly_name: Mozilla VPN users attribution archive
 description: |-
   Archive of VPN users' attribution data between 2020-06-25 and 2022-03-23, augmented with some user data.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

@@ -1095,19 +1095,14 @@ def run(
     if dataset_prefix and dataset_id:
         effective_dataset = f"{dataset_prefix}{dataset_id}"
 
-    # auto-infer destination_table when --write is used
+    # auto-infer destination_table when --write is used; query_files[0] is already
+    # the target file with project/dataset/prefix applied by prepare_target_files
     effective_destination_table = destination_table
     if write and not destination_table:
         query_project, query_dataset, query_table = extract_from_query_path(
             query_files[0]
         )
-        sanitized_dataset = sanitize_dataset_id(
-            f"{dataset_prefix}{query_dataset}" if dataset_prefix else query_dataset
-        )
-        inferred_project = destination_project_id or query_project
-        effective_destination_table = (
-            f"{inferred_project}.{sanitized_dataset}.{query_table}"
-        )
+        effective_destination_table = f"{query_project}.{query_dataset}.{query_table}"
         click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
 
     _run_query(

@@ -188,3 +188,85 @@ class TestPublishJson(object):
         mock_out.write.assert_called_with(
             json.dumps(publisher.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
         )
+
+    def test_publish_table_as_json_with_partition_field(self):
+        """Ordered temp table is created, used for export, and cleaned up."""
+        mock_client = Mock()
+        query_job = Mock()
+        query_job.result.return_value = None
+        mock_client.query.return_value = query_job
+        extract_job = Mock()
+        extract_job.result.return_value = None
+        mock_client.extract_table.return_value = extract_job
+
+        publisher = JsonPublisher(
+            mock_client,
+            self.mock_storage_client,
+            self.project_id,
+            str(self.non_incremental_sql_path),
+            self.api_version,
+            self.test_bucket,
+        )
+        partition_mock = Mock()
+        partition_mock.field = "submission_date"
+        bigquery_mock = Mock()
+        bigquery_mock.time_partitioning = partition_mock
+        publisher.metadata.bigquery = bigquery_mock
+
+        publisher._gcp_convert_ndjson_to_json = Mock()
+
+        result_table = "test.non_incremental_query_v1"
+        publisher._publish_table_as_json(result_table)
+
+        # Ordering query issued with correct SQL
+        mock_client.query.assert_called_once()
+        query_sql = mock_client.query.call_args[0][0]
+        assert f"FROM `{result_table}`" in query_sql
+        assert "WHERE submission_date IS NOT NULL" in query_sql
+        assert "ORDER BY submission_date ASC" in query_sql
+
+        # Extraction used the ordered temp table, not the original
+        get_table_arg = mock_client.get_table.call_args[0][0]
+        assert get_table_arg != result_table
+        assert f"{self.project_id}.tmp." in get_table_arg
+        assert "_ordered_temp" in get_table_arg
+
+        # Ordered temp table cleaned up
+        mock_client.delete_table.assert_called_once()
+        assert mock_client.delete_table.call_args[0][0] == get_table_arg
+        assert mock_client.delete_table.call_args[1].get("not_found_ok") is True
+
+    def test_publish_table_as_json_with_require_partition_filter_uses_not_null(self):
+        """Ordering query includes IS NOT NULL to satisfy partition filter requirement."""
+        mock_client = Mock()
+        query_job = Mock()
+        query_job.result.return_value = None
+        mock_client.query.return_value = query_job
+        extract_job = Mock()
+        extract_job.result.return_value = None
+        mock_client.extract_table.return_value = extract_job
+
+        publisher = JsonPublisher(
+            mock_client,
+            self.mock_storage_client,
+            self.project_id,
+            str(self.non_incremental_sql_path),
+            self.api_version,
+            self.test_bucket,
+        )
+        partition_mock = Mock()
+        partition_mock.field = "submission_date"
+        partition_mock.require_partition_filter = True
+        bigquery_mock = Mock()
+        bigquery_mock.time_partitioning = partition_mock
+        publisher.metadata.bigquery = bigquery_mock
+
+        publisher._gcp_convert_ndjson_to_json = Mock()
+
+        result_table = "test.non_incremental_query_v1"
+        publisher._publish_table_as_json(result_table)
+
+        mock_client.query.assert_called_once()
+        query_sql = mock_client.query.call_args[0][0]
+        assert "WHERE submission_date IS NOT NULL" in query_sql
+        assert "ORDER BY submission_date ASC" in query_sql

@@ -287,7 +287,7 @@ def auto_deploy_if_needed(
 
     try:
         client.get_table(table_ref)
-        click.echo(f"✓ Table exists: {table_ref}")
+        click.echo(f"✅ Table exists: {table_ref}")
     except NotFound:
         try:
             deploy_table(

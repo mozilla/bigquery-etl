@@ -1010,6 +1010,11 @@ def run(
         )
         sys.exit(1)
 
+    if destination_table and write:
+        raise click.UsageError(
+            "--destination_table and --write are mutually exclusive."
+        )
+
     target = ctx.obj.get("target") if ctx.obj else None
     destination_project_id = target.project_id if target else None
     dataset_prefix = target.dataset_prefix if target else None
@@ -1023,8 +1028,7 @@ def run(
                 name, sql_dir, destination_project_id, silent=True
             )
 
-    # fall back to source directory if not found in target
-    if not query_files:
+    else:  # fall back to source directory if not found in target
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found
@@ -1055,16 +1059,18 @@ def run(
     if dataset_prefix and dataset_id:
         effective_dataset = f"{dataset_prefix}{dataset_id}"
 
-    # auto-infer destination_table when --write is used with --target, otherwise
-    # query run expect the --destination_table parameter to be set
+    # auto-infer destination_table when --write is used
     effective_destination_table = destination_table
-    if write and not destination_table and (destination_project_id or dataset_prefix):
+    if write and not destination_table:
         query_project, query_dataset, query_table = extract_from_query_path(
             query_files[0]
         )
-        sanitized_dataset = sanitize_dataset_id(query_dataset)
+        sanitized_dataset = sanitize_dataset_id(
+            f"{dataset_prefix}{query_dataset}" if dataset_prefix else query_dataset
+        )
+        inferred_project = destination_project_id or query_project
         effective_destination_table = (
-            f"{query_project}.{sanitized_dataset}.{query_table}"
+            f"{inferred_project}.{sanitized_dataset}.{query_table}"
         )
         click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
 

@@ -2,4 +2,4 @@
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:sre-managed/access-events
+      - workgroup:platform/access-events

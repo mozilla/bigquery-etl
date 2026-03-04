@@ -412,8 +412,7 @@ final AS (
 -- Final SELECT: Add Derived Dimensions and Year-over-Year Metrics
 -- =============================================================================
 SELECT
-  final.*,
-  tier_mapping.tier AS country_tier,
+  *,
   -- Derived channel: simplify attribution into three buckets
   --   - Paid Search: Has a campaign (from Google Ads)
   --   - Organic Search: GA4 classified as Organic Search
@@ -445,6 +444,3 @@ SELECT
   END AS subchannel,
 FROM
   final
-LEFT JOIN
-  `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
-  ON final.country = tier_mapping.country_code

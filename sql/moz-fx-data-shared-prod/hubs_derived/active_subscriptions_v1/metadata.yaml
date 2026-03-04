@@ -2,11 +2,13 @@ friendly_name: Active Hubs Subscriptions
 description: |
   Aggregated count of active Hubs subscriptions.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: hubs
   schedule: daily
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   date_partition_offset: -7
   date_partition_parameter: date

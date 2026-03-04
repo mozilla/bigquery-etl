@@ -2,11 +2,13 @@ friendly_name: Hubs Subscription Events
 description: |
   Aggregated count of Hubs subscription start/end events.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: hubs
   schedule: daily
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   date_partition_offset: -8
   date_partition_parameter: date

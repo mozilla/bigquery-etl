@@ -11,12 +11,14 @@ description: |-
   This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
   Fields which Fivetran doesn't sync and fields specific to Stripe Connect have been omitted.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
   schedule: hourly
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: date

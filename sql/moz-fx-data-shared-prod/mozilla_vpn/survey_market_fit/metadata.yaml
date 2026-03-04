@@ -2,9 +2,11 @@ friendly_name: Mozilla VPN Product/Market Fit Survey
 description: |
   An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN Product/Market Fit Survey.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

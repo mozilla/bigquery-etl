@@ -6,11 +6,13 @@ description: |-
     valid_from <= {timestamp}
     AND valid_to > {timestamp}
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   schedule: hourly
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null

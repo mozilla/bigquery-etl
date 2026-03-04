@@ -2,12 +2,14 @@ friendly_name: Mozilla VPN Intercept Survey Q3
 description: |
   An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN Intercept Survey Q3 survey.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   arguments:

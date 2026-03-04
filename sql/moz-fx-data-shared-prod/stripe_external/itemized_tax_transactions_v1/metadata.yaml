@@ -2,11 +2,13 @@ friendly_name: Stripe itemized tax transactions report
 description: |
   Import itemized tax transactions report from the Stripe API.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   arguments:
   - --date={{ ds }}

@@ -2,12 +2,14 @@ friendly_name: Guardian Apple Events
 description: |
   Guardian Apple IAP Subscriptions reformatted to match Subscription Platform's Firestore database for Apple IAP Events after parsing
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: null

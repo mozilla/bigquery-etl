@@ -2,12 +2,14 @@ friendly_name: Active Firefox Relay Subscription IDs
 description: |
   IDs of active Firefox Relay subscriptions by date.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: relay
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   depends_on_past: true

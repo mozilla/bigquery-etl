@@ -2,9 +2,11 @@ friendly_name: Active Mozilla VPN Subscription IDs
 description: |
   IDs of active Mozilla VPN subscriptions by date.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

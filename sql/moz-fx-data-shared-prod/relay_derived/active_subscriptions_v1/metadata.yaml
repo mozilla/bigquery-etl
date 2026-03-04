@@ -2,12 +2,14 @@ friendly_name: Active Firefox Relay Subscriptions
 description: |
   Aggregated count of active Firefox Relay subscriptions.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: relay
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_offset: -7

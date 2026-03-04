@@ -2,11 +2,13 @@ friendly_name: Production Stripe invoice discounts
 description: |-
   Production Stripe invoice discounts combined from Fivetran's newer `discount` and older `invoice_discount` tables.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   schedule: hourly
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null

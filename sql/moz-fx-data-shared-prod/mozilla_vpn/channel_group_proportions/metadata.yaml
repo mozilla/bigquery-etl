@@ -2,9 +2,11 @@ friendly_name: Channel Group Proportions
 description: |
   Count of new subscriptions by utm values, and by channel group as a percent of the total for that date
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

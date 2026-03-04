@@ -10,11 +10,13 @@ description: |-
   Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
   In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   schedule: hourly
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null

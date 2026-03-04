@@ -2,13 +2,15 @@ friendly_name: Recent FxA GCP stdout events (prod)
 description: |
   FxA server events extracted from stdout logs from the past two days.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: fxa
   schedule: hourly
   table_type: client_level
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null

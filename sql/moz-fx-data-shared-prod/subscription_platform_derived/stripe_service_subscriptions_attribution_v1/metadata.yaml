@@ -2,12 +2,14 @@ friendly_name: Stripe service subscriptions attribution
 description: |-
   Attribution for Stripe service subscriptions based on FxA log events.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
   schedule: hourly
   dag: bqetl_subplat_hourly
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: date

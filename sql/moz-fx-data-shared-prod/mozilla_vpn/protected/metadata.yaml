@@ -2,9 +2,11 @@ friendly_name: Mozilla VPN protected users
 description: |
   First time that accounts were protected by the Mozilla VPN
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

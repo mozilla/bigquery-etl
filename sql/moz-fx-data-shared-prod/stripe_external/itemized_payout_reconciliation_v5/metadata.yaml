@@ -2,12 +2,14 @@ friendly_name: Stripe itemized payout reconciliation report
 description: |
   Import itemized payout reconciliation report from the Stripe API.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   arguments:

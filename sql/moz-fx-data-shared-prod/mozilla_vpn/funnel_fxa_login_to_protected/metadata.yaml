@@ -2,9 +2,11 @@ friendly_name: Funnel FxA Login to Protected
 description: |
   Funnel from FxA Login to Protected with 2-day time limit
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

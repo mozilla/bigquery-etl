@@ -2,12 +2,14 @@ friendly_name: Active Mozilla VPN Subscriptions
 description: |
   Aggregated count of active Mozilla VPN subscriptions.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
   dag: bqetl_subplat
-  owner1: srose
+  owner1: phlee
+  owner2: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_offset: -7

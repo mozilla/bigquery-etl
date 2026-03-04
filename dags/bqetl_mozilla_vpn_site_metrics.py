@@ -89,8 +89,12 @@ with DAG(
         destination_table="funnel_ga_to_subscriptions_v2",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="phlee@mozilla.com",
+        email=[
+            "phlee@mozilla.com",
+            "srose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="date",
         depends_on_past=False,
     )

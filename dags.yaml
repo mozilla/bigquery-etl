@@ -2628,3 +2628,27 @@ bqetl_semrush:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_cloud_eng_daily:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: wstuckey@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-03-04'
+  description: Daily task runner for Cloud Eng bqetl tasks
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/no_triage

@@ -6,7 +6,7 @@ WITH delete_account_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -23,7 +23,7 @@ delete_account_delete_account_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     delete_account_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -44,7 +44,7 @@ add_two_factor_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -61,7 +61,7 @@ add_two_factor_add_two_factor_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     add_two_factor_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -82,7 +82,7 @@ device_signout_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -99,7 +99,7 @@ device_signout_device_signout_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     device_signout_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -120,7 +120,7 @@ google_play_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -137,7 +137,7 @@ google_play_google_play_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     google_play_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -158,7 +158,7 @@ apple_store_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -175,7 +175,7 @@ apple_store_apple_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     apple_store_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -196,7 +196,7 @@ google_unlink_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -213,7 +213,7 @@ google_unlink_google_unlink_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     google_unlink_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -234,7 +234,7 @@ apple_unlink_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -251,7 +251,7 @@ apple_unlink_apple_unlink_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     apple_unlink_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -272,7 +272,7 @@ google_unlink_confirm_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -289,7 +289,7 @@ google_unlink_confirm_google_unlink_confirm_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     google_unlink_confirm_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -310,7 +310,7 @@ apple_unlink_confirm_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -327,7 +327,7 @@ apple_unlink_confirm_apple_unlink_confirm_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     apple_unlink_confirm_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -348,7 +348,7 @@ change_password_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -365,7 +365,7 @@ change_password_change_password_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     change_password_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -386,7 +386,7 @@ secondary_email_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -403,7 +403,7 @@ secondary_email_secondary_email_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     secondary_email_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -424,7 +424,7 @@ display_name_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -441,7 +441,7 @@ display_name_display_name_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     display_name_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -462,7 +462,7 @@ recovery_key_account_pref_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -479,7 +479,7 @@ recovery_key_recovery_key_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     recovery_key_account_pref_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)

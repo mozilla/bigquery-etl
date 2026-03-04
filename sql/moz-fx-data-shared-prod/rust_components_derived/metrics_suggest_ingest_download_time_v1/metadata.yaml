@@ -24,4 +24,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.firefox_desktop.metrics
+  - moz-fx-data-shared-prod.firefox_desktop.metrics

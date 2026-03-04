@@ -6,7 +6,7 @@ WITH legacy_user_upgrade_intent_legacy_dashboard_view AS (
     client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
-    mozdata.monitor_frontend.events_unnested
+    moz-fx-data-shared-prod.monitor_frontend.events_unnested
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event_category = 'dashboard'
@@ -21,7 +21,7 @@ legacy_user_upgrade_intent_upgrade_intent AS (
     client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
-    mozdata.monitor_frontend.events_unnested
+    moz-fx-data-shared-prod.monitor_frontend.events_unnested
   INNER JOIN
     legacy_user_upgrade_intent_legacy_dashboard_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -39,7 +39,7 @@ new_user_upgrade_intent_new_dashboard_view AS (
     client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
-    mozdata.monitor_frontend.events_unnested
+    moz-fx-data-shared-prod.monitor_frontend.events_unnested
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event_category = 'dashboard'
@@ -54,7 +54,7 @@ new_user_upgrade_intent_upgrade_intent AS (
     client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
-    mozdata.monitor_frontend.events_unnested
+    moz-fx-data-shared-prod.monitor_frontend.events_unnested
   INNER JOIN
     new_user_upgrade_intent_new_dashboard_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)

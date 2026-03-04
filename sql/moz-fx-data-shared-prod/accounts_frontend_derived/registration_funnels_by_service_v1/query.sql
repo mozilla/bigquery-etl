@@ -17,7 +17,7 @@ WITH registration_overall_success_by_service_reg_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -35,7 +35,7 @@ registration_overall_success_by_service_reg_email_code_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registration_overall_success_by_service_reg_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -57,7 +57,7 @@ registration_overall_success_by_service_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registration_overall_success_by_service_reg_email_code_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -89,7 +89,7 @@ registrations_from_google_deeplink_google_deeplink AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -107,7 +107,7 @@ registrations_from_google_deeplink_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_deeplink_google_deeplink AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -129,7 +129,7 @@ registrations_from_google_deeplink_google_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_deeplink_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -161,7 +161,7 @@ registrations_from_apple_deeplink_apple_deeplink AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -179,7 +179,7 @@ registrations_from_apple_deeplink_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_deeplink_apple_deeplink AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -201,7 +201,7 @@ registrations_from_apple_deeplink_apple_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_deeplink_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -233,7 +233,7 @@ registrations_from_google_email_first_email_first_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -251,7 +251,7 @@ registrations_from_google_email_first_email_first_google_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_google_email_first_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -273,7 +273,7 @@ registrations_from_google_email_first_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_email_first_email_first_google_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -295,7 +295,7 @@ registrations_from_google_email_first_google_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_email_first_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -327,7 +327,7 @@ registrations_from_apple_email_first_email_first_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -345,7 +345,7 @@ registrations_from_apple_email_first_email_first_apple_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_apple_email_first_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -367,7 +367,7 @@ registrations_from_apple_email_first_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_email_first_email_first_apple_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -389,7 +389,7 @@ registrations_from_apple_email_first_apple_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_email_first_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -421,7 +421,7 @@ registrations_from_google_login_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -439,7 +439,7 @@ registrations_from_google_login_login_google_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_google_login_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -461,7 +461,7 @@ registrations_from_google_login_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_login_login_google_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -483,7 +483,7 @@ registrations_from_google_login_google_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_login_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -515,7 +515,7 @@ registrations_from_apple_login_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -533,7 +533,7 @@ registrations_from_apple_login_login_apple_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_apple_login_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -555,7 +555,7 @@ registrations_from_apple_login_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_login_login_apple_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -577,7 +577,7 @@ registrations_from_apple_login_apple_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_login_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -609,7 +609,7 @@ registrations_from_google_reg_reg_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -627,7 +627,7 @@ registrations_from_google_reg_reg_google_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_google_reg_reg_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -649,7 +649,7 @@ registrations_from_google_reg_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_reg_reg_google_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -671,7 +671,7 @@ registrations_from_google_reg_google_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_google_reg_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -703,7 +703,7 @@ registrations_from_apple_reg_reg_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-01-01")
@@ -721,7 +721,7 @@ registrations_from_apple_reg_reg_apple_start AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     registrations_from_apple_reg_reg_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -743,7 +743,7 @@ registrations_from_apple_reg_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_reg_reg_apple_start AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -765,7 +765,7 @@ registrations_from_apple_reg_apple_reg_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     registrations_from_apple_reg_reg_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)

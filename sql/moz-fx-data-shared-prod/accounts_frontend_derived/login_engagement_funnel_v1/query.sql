@@ -17,7 +17,7 @@ WITH login_engage_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -35,7 +35,7 @@ login_engage_login_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_engage_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -67,7 +67,7 @@ login_submit_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -85,7 +85,7 @@ login_submit_login_submit AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_submit_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -117,7 +117,7 @@ login_submit_success_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -135,7 +135,7 @@ login_submit_success_login_submit_success AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_submit_success_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -167,7 +167,7 @@ login_diff_account_engage_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -185,7 +185,7 @@ login_diff_account_engage_login_diff_account_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_diff_account_engage_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -217,7 +217,7 @@ login_forgot_pw_engage_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -235,7 +235,7 @@ login_forgot_pw_engage_login_forgot_pw_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_forgot_pw_engage_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -267,7 +267,7 @@ login_google_engage_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -285,7 +285,7 @@ login_google_engage_login_google_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_google_engage_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -317,7 +317,7 @@ login_apple_engage_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -335,7 +335,7 @@ login_apple_engage_login_apple_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     login_apple_engage_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)

@@ -16,6 +16,6 @@ bigquery:
 workgroup_access: []
 references:
   query.sql:
-  - mozdata.activity_stream.sessions
-  - mozdata.firefox_desktop.newtab
+  - moz-fx-data-shared-prod.activity_stream.sessions
+  - moz-fx-data-shared-prod.firefox_desktop.newtab
 deprecated: true

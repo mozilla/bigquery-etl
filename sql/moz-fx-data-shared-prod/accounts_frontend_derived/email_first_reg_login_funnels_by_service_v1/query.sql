@@ -17,7 +17,7 @@ WITH email_first_login_success_by_service_email_first_view AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event = 'email.first_view'
@@ -30,7 +30,7 @@ email_first_login_success_by_service_login_view AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     email_first_login_success_by_service_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -47,7 +47,7 @@ email_first_login_success_by_service_login_success AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     email_first_login_success_by_service_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -74,7 +74,7 @@ email_first_registration_success_by_service_email_first_view AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event = 'email.first_view'
@@ -87,7 +87,7 @@ email_first_registration_success_by_service_reg_view AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     email_first_registration_success_by_service_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -104,7 +104,7 @@ email_first_registration_success_by_service_reg_success AS (
     client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     email_first_registration_success_by_service_reg_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)

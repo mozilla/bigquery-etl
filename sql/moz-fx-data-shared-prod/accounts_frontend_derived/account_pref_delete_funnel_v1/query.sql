@@ -6,7 +6,7 @@ WITH accounts_pref_delete_account_delete_account_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2024-07-25")
@@ -23,7 +23,7 @@ accounts_pref_delete_account_delete_account_engage AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     accounts_pref_delete_account_delete_account_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -44,7 +44,7 @@ accounts_pref_delete_account_delete_account_submit AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     accounts_pref_delete_account_delete_account_engage AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -65,7 +65,7 @@ accounts_pref_delete_account_delete_account_password_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     accounts_pref_delete_account_delete_account_submit AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -86,7 +86,7 @@ accounts_pref_delete_account_delete_account_password_submit AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     accounts_pref_delete_account_delete_account_password_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -107,7 +107,7 @@ accounts_pref_delete_account_account_deleted AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     accounts_pref_delete_account_delete_account_password_submit AS prev
     ON prev.submission_date = DATE(submission_timestamp)

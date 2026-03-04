@@ -22,4 +22,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.accounts_frontend.events_stream
+  - moz-fx-data-shared-prod.accounts_frontend.events_stream

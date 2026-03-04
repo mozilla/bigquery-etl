@@ -20,7 +20,7 @@ FROM
       APPROX_QUANTILES(CAST(VALUES .key AS INT64), 1000) AS q,
       COUNT(*) AS sample_count
     FROM
-      `mozdata.firefox_desktop.metrics`
+      `moz-fx-data-shared-prod.firefox_desktop.metrics`
     CROSS JOIN
       UNNEST(metrics.labeled_timing_distribution.suggest_ingest_download_time) AS distribution
     CROSS JOIN

@@ -29,6 +29,6 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop.serp_events
   - moz-fx-data-shared-prod.search.mobile_search_aggregates
   - moz-fx-data-shared-prod.search.search_aggregates
-  - mozdata.search.search_dau_aggregates
-  - mozdata.telemetry.desktop_active_users
-  - mozdata.telemetry.mobile_active_users
+  - moz-fx-data-shared-prod.search.search_dau_aggregates
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users
+  - moz-fx-data-shared-prod.telemetry.mobile_active_users

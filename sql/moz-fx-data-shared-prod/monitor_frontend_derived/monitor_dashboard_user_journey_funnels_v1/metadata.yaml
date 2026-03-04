@@ -22,4 +22,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.monitor_frontend.events_unnested
+  - moz-fx-data-shared-prod.monitor_frontend.events_unnested

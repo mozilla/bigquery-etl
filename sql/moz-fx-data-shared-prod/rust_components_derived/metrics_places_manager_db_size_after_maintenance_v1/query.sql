@@ -18,7 +18,7 @@ FROM
       APPROX_QUANTILES(CAST(VALUES .key AS INT64), 1000) AS q,
       COUNT(*) AS sample_count
     FROM
-      `mozdata.fenix.metrics`
+      `moz-fx-data-shared-prod.fenix.metrics`
     CROSS JOIN
       UNNEST(metrics.memory_distribution.places_manager_db_size_after_maintenance.values) AS values
   -- This generates multiple rows based on the `value` field.  This is needed to make the `APPROX_QUANTILES`

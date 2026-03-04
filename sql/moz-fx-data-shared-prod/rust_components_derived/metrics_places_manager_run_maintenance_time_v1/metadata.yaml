@@ -24,4 +24,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.fenix.metrics
+  - moz-fx-data-shared-prod.fenix.metrics

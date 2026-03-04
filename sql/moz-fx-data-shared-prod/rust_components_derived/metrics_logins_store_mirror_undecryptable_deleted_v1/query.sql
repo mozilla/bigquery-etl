@@ -4,7 +4,7 @@ SELECT
   normalized_channel AS channel,
   SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count
 FROM
-  `mozdata.fenix.metrics`
+  `moz-fx-data-shared-prod.fenix.metrics`
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND metrics.counter.logins_store_mirror_undecryptable_deleted IS NOT NULL
@@ -19,7 +19,7 @@ SELECT
   normalized_channel AS channel,
   SUM(metrics.counter.logins_store_mirror_undecryptable_deleted) AS count
 FROM
-  `mozdata.firefox_ios.metrics`
+  `moz-fx-data-shared-prod.firefox_ios.metrics`
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND metrics.counter.logins_store_mirror_undecryptable_deleted IS NOT NULL

@@ -8,7 +8,7 @@ WITH registration_overall_success_by_service_reg_view AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -26,7 +26,7 @@ registration_overall_success_by_service_reg_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_overall_success_by_service_reg_view AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -48,7 +48,7 @@ registration_email_confirmation_overall_success_by_service_reg_view AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -66,7 +66,7 @@ registration_email_confirmation_overall_success_by_service_reg_email_code_view A
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_email_confirmation_overall_success_by_service_reg_view AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -88,7 +88,7 @@ registration_email_confirmation_overall_success_by_service_reg_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_email_confirmation_overall_success_by_service_reg_email_code_view AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -110,7 +110,7 @@ google_reg_third_party_auth_completions_google_signin_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -128,7 +128,7 @@ google_reg_third_party_auth_completions_reg_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     google_reg_third_party_auth_completions_google_signin_complete AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -150,7 +150,7 @@ google_login_third_party_auth_completions_google_signin_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -168,7 +168,7 @@ google_login_third_party_auth_completions_login_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     google_login_third_party_auth_completions_google_signin_complete AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -190,7 +190,7 @@ apple_reg_third_party_auth_completions_apple_signin_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -208,7 +208,7 @@ apple_reg_third_party_auth_completions_reg_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     apple_reg_third_party_auth_completions_apple_signin_complete AS prev
     ON prev.submission_date = DATE(timestamp)
@@ -230,7 +230,7 @@ apple_login_third_party_auth_completions_apple_signin_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
       DATE(timestamp) >= DATE("2023-01-01")
@@ -248,7 +248,7 @@ apple_login_third_party_auth_completions_login_complete AS (
     user_id AS client_id_column,
     flow_id AS column
   FROM
-    mozdata.firefox_accounts.fxa_all_events
+    moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     apple_login_third_party_auth_completions_apple_signin_complete AS prev
     ON prev.submission_date = DATE(timestamp)

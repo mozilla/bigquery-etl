@@ -33,5 +33,5 @@ references:
   - moz-fx-data-shared-prod.focus_ios.baseline
   - moz-fx-data-shared-prod.search.acer_cohort
   - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
-  - mozdata.telemetry.desktop_active_users
-  - mozdata.telemetry.mobile_active_users
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users
+  - moz-fx-data-shared-prod.telemetry.mobile_active_users

@@ -14,7 +14,7 @@ WITH pwd_reset_without_recovery_key_pwd_reset_view AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event = 'password_reset.view'
@@ -27,7 +27,7 @@ pwd_reset_without_recovery_key_create_new_pwd_view_no_rk AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_without_recovery_key_pwd_reset_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -44,7 +44,7 @@ pwd_reset_without_recovery_key_pwd_reset_success_no_rk AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_without_recovery_key_create_new_pwd_view_no_rk AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -68,7 +68,7 @@ pwd_reset_with_recovery_key_pwd_reset_view AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event = 'password_reset.view'
@@ -81,7 +81,7 @@ pwd_reset_with_recovery_key_create_new_pwd_view_with_rk AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_with_recovery_key_pwd_reset_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -98,7 +98,7 @@ pwd_reset_with_recovery_key_pwd_reset_success_with_rk AS (
     client_id AS client_id_column,
     client_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_with_recovery_key_create_new_pwd_view_with_rk AS prev
     ON prev.submission_date = DATE(submission_timestamp)

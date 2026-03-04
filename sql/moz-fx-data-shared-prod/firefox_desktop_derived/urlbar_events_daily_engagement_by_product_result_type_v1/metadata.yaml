@@ -25,5 +25,5 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.firefox_desktop.urlbar_events
+  - moz-fx-data-shared-prod.firefox_desktop.urlbar_events
 require_column_descriptions: false

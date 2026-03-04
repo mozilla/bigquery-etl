@@ -29,5 +29,5 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - mozdata.firefox_desktop.profile_restore
+  - moz-fx-data-shared-prod.firefox_desktop.profile_restore
 require_column_descriptions: true

@@ -18,7 +18,7 @@ FROM
       APPROX_QUANTILES(CAST(VALUES .key AS INT64), 1000) AS q,
       COUNT(*) AS sample_count
     FROM
-      `mozdata.fenix.metrics`
+      `moz-fx-data-shared-prod.fenix.metrics`
     CROSS JOIN
       UNNEST(
         metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time.values

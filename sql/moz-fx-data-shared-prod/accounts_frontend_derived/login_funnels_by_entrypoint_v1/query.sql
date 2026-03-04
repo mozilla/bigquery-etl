@@ -7,7 +7,7 @@ WITH login_complete_by_service_login_view AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.events_stream
+    moz-fx-data-shared-prod.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event = 'login.view'
@@ -21,7 +21,7 @@ login_complete_by_service_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.events_stream
+    moz-fx-data-shared-prod.accounts_backend.events_stream
   INNER JOIN
     login_complete_by_service_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)

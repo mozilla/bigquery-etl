@@ -4,7 +4,7 @@ SELECT
   normalized_channel AS channel,
   COUNT(*) AS count
 FROM
-  `mozdata.fenix.events`
+  `moz-fx-data-shared-prod.fenix.events`
 CROSS JOIN
   UNNEST(events) AS events
 WHERE
@@ -22,7 +22,7 @@ SELECT
   normalized_channel AS channel,
   COUNT(*) AS count
 FROM
-  `mozdata.firefox_ios.events`
+  `moz-fx-data-shared-prod.firefox_ios.events`
 CROSS JOIN
   UNNEST(events) AS events
 WHERE

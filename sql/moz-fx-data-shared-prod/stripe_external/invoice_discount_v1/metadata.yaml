@@ -1,6 +1,7 @@
 friendly_name: Prod Stripe invoice_discount
 description: Production Stripe invoice_discount table from Fivetran
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: hourly

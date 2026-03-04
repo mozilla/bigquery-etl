@@ -3,4 +3,5 @@ description: 'Aggregated count of active Hubs subscriptions.
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

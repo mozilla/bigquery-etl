@@ -11,7 +11,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_cloud_eng_daily
 bigquery:
   time_partitioning:
     type: day

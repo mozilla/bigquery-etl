@@ -1,0 +1,29 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Logical date used by the orchestrator. Also, used for partitioning.
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name as defined inside Google Play Store.
+
+- name: report_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The type of error. The value should correspond to one of the possible values in ErrorType:
+    https://developers.google.com/play/developer/reporting/reference/rest/v1beta1/ErrorType
+
+- name: error_report_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Absolute count of individual error reports that have been received for an app.
+
+- name: distinct_users
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Count of distinct users for which reports have been received (approximation).
+    Do not aggregate this count further, as it may result in users being counted multiple times.

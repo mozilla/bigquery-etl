@@ -9,13 +9,15 @@ SELECT
     q[500] as q50,
     q[950] as q95,
     q[990] as q99,
-    q[999] as q999
+    q[999] as q999,
+    sample_count
 FROM (
   SELECT
       DATE(submission_timestamp) AS submission_date,
       normalized_channel AS channel,
       distribution.key as label,
-      APPROX_QUANTILES(CAST(values.key AS INT64), 1000) as q
+      APPROX_QUANTILES(CAST(values.key AS INT64), 1000) as q,
+      COUNT(*) as sample_count
   FROM `mozdata.{{ dataset_name }}.metrics`
   CROSS JOIN UNNEST(metrics.{{ metric.table }}.{{ category }}_{{ metric.name }}) as distribution
   CROSS JOIN UNNEST(distribution.value.values) as values 

@@ -189,7 +189,6 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
     udf.mode_last(ARRAY_AGG(attribution) OVER w1) AS attribution,
     udf.mode_last(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
-    udf.mode_last(ARRAY_AGG(attribution_msclkid) OVER w1) AS attribution_msclkid,
     udf.mode_last(ARRAY_AGG(attribution_dltoken) OVER w1) AS attribution_dltoken,
     udf.mode_last(ARRAY_AGG(attribution_dlsource) OVER w1) AS attribution_dlsource,
     udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
@@ -200,7 +199,8 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(distribution_version) OVER w1) AS distribution_version,
     udf.mode_last(ARRAY_AGG(distributor) OVER w1) AS distributor,
     udf.mode_last(ARRAY_AGG(distributor_channel) OVER w1) AS distributor_channel,
-    udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id
+    udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id,
+    udf.mode_last(ARRAY_AGG(attribution_msclkid) OVER w1) AS attribution_msclkid,
   FROM
     with_date_offsets
   LEFT JOIN

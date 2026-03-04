@@ -44,7 +44,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+    docker_image = (
+        "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
+    )
 
     export_public_data_json_test__non_incremental_query__v1 = GKEPodOperator(
         task_id="export_public_data_json_test__non_incremental_query__v1",

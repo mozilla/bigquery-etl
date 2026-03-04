@@ -645,6 +645,26 @@ bqetl_releases:
   tags:
     - impact/tier_2
 
+bqetl_sampled_metrics:
+  default_args:
+    depends_on_past: false
+    email:
+      - efilho@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2026-02-17"
+  description: |
+    Imports sampled Glean metrics from the Experimenter API.
+    Tracks which metrics are client-side sampled and their sample rates.
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_ctxsvc_derived:
   default_args:
     depends_on_past: false
@@ -2566,3 +2586,69 @@ bqetl_rust_component_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_ai_usage:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: phlee@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-01-21'
+  description: |
+    Monitors LLM API usage and costs across different providers.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_semrush:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - sherrera@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: sherrera@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-02-24'
+  description: Daily ingestion of Semrush analytics data.
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: 0 14 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+bqetl_cloud_eng_daily:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: wstuckey@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-03-04'
+  description: Daily task runner for Cloud Eng bqetl tasks
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/no_triage

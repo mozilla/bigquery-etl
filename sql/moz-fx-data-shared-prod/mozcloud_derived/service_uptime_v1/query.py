@@ -1,0 +1,352 @@
+"""
+Uptime measurement script for MozCloud services.
+
+For each service:
+  1. Queries request volume to auto-determine the volume tier
+  2. Queries service uptime using a fixed rate window
+  3. Loads per-service results to BigQuery
+"""
+
+import logging
+import sys
+from argparse import ArgumentParser
+from datetime import datetime, timezone
+
+import google.auth
+import google.auth.transport.requests
+import requests
+from google.cloud import bigquery
+from requests.adapters import HTTPAdapter, Retry
+
+V2_PROJECT_ID = "moz-fx-metric-scope-v2-prod"
+
+# Ordered high → low. First tier whose min_rps is met wins.
+# Tier names reflect the order-of-magnitude lower bound of their req/sec range.
+VOLUME_TIERS = [
+    {"name": "10k", "min_rps": 10000},
+    {"name": "1k", "min_rps": 1000},
+    {"name": "100", "min_rps": 100},
+    {"name": "10", "min_rps": 10},
+    {"name": "1", "min_rps": 1},
+    {"name": "<1", "min_rps": 0},
+]
+
+DEFAULT_RATE_WINDOW = "10m"
+ERROR_THRESHOLD = 0.01  # fraction of 500 responses that defines an "up" window
+
+VALID_LOOKBACKS = ["90d", "30d", "7d", "1d"]
+
+# App codes here are hardcoded for now. Eventually we will want to pull them from
+# the tenant table when that exists.
+APP_CODES = {
+    "grafana": {},
+    "monitor": {},
+    "vpn": {},
+    "autograph": {},
+    "relay": {},
+    "fxa": {},
+    "remote-settings": {},
+    "merino": {},
+    "sync": {},
+    "autopush": {},
+    "experimenter": {},
+    "socorro": {"components": ["socorro", "antenna"]},
+    "symbols": {},
+}
+
+TRAFFIC_QUERY = """
+avg_over_time(
+  sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
+    backend_target_name=~".*-${APP_TOKEN}.*",
+    monitored_resource="https_lb_rule",
+    backend_target_type="BACKEND_SERVICE",
+    backend_type="NETWORK_ENDPOINT_GROUP",
+    cache_result="DISABLED"
+  }[${RATE_WINDOW}]))[${LOOKBACK}:${RATE_WINDOW}]
+)
+"""
+
+UPTIME_QUERY = """
+100 *
+avg_over_time(
+  (
+    (
+      (
+        sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
+          backend_target_name=~".*-${APP_TOKEN}.*",
+          monitored_resource="https_lb_rule",
+          backend_target_type="BACKEND_SERVICE",
+          backend_type="NETWORK_ENDPOINT_GROUP",
+          cache_result="DISABLED",
+          response_code_class="500"
+        }[${RATE_WINDOW}])) or vector(0)
+      )
+      /
+      (
+        sum(rate(loadbalancing_googleapis_com:https_backend_request_count{
+          backend_target_name=~".*-${APP_TOKEN}.*",
+          monitored_resource="https_lb_rule",
+          backend_target_type="BACKEND_SERVICE",
+          backend_type="NETWORK_ENDPOINT_GROUP",
+          cache_result="DISABLED"
+        }[${RATE_WINDOW}])) or vector(1)
+      )
+    ) < bool ${THRESHOLD}
+  )[${LOOKBACK}:${RATE_WINDOW}]
+)
+"""
+
+SCHEMA = [
+    bigquery.SchemaField("run_date", "DATE"),
+    bigquery.SchemaField("measured_at", "TIMESTAMP"),
+    bigquery.SchemaField("app_code", "STRING"),
+    bigquery.SchemaField("component", "STRING"),
+    bigquery.SchemaField("lookback_days", "INTEGER"),
+    bigquery.SchemaField("requests_per_sec", "FLOAT"),
+    bigquery.SchemaField("volume_tier", "STRING"),
+    bigquery.SchemaField("rate_window", "STRING"),
+    bigquery.SchemaField("error_threshold", "FLOAT"),
+    bigquery.SchemaField("uptime", "FLOAT"),
+]
+
+
+def get_access_token() -> str:
+    """Get a Google Cloud access token for the Monitoring API."""
+    creds, _ = google.auth.default(
+        scopes=["https://www.googleapis.com/auth/monitoring.read"]
+    )
+    auth_req = google.auth.transport.requests.Request()
+    creds.refresh(auth_req)
+    return creds.token
+
+
+def determine_tier(rps: float) -> dict:
+    """Return the volume tier for a given requests-per-second value."""
+    for tier in VOLUME_TIERS:
+        if rps >= tier["min_rps"]:
+            return tier
+    return VOLUME_TIERS[-1]
+
+
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
+MAX_RETRIES = 3
+RETRY_BACKOFF_BASE = 2  # seconds; delay = base ** attempt (2, 4, 8)
+
+
+def _post_with_retry(url: str, headers: dict, data: dict) -> requests.Response | None:
+    """POST with exponential backoff retry on transient errors."""
+    session = requests.Session()
+    retry = Retry(
+        total=MAX_RETRIES,
+        backoff_factor=RETRY_BACKOFF_BASE,
+        status_forcelist=RETRYABLE_STATUS_CODES,
+        raise_on_status=False,
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    try:
+        response = session.post(url, headers=headers, data=data, timeout=60)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"HTTP error: {e}")
+        if e.response is not None:
+            logging.error(f"Response body: {e.response.text}")
+        return None
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Request error: {e}")
+        return None
+    return None
+
+
+def query_promql(
+    project_id: str,
+    promql_query: str,
+    query_time: datetime,
+    access_token: str,
+) -> float | None:
+    """Query the GCP Monitoring Prometheus API and return a scalar float."""
+    url = f"https://monitoring.googleapis.com/v1/projects/{project_id}/location/global/prometheus/api/v1/query"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    time_str = query_time.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    try:
+        response = _post_with_retry(
+            url, headers, {"query": promql_query, "time": time_str}
+        )
+        if response is None:
+            return None
+        data = response.json()
+        if data.get("status") == "success" and data.get("data"):
+            result = data["data"].get("result")
+            result_type = data["data"].get("resultType")
+            if result and result_type == "scalar":
+                return float(result[1])
+            elif result and result_type == "vector":
+                return float(result[0]["value"][1])
+    except (KeyError, IndexError, ValueError) as e:
+        logging.error(f"Parse error: {e}")
+
+    return None
+
+
+def measure_services(
+    apps: dict,
+    query_time: datetime,
+    access_token: str,
+    lookback_windows: list[str],
+    rate_window: str,
+) -> list[dict]:
+    """Measure uptime for all apps across all lookback windows."""
+    services = []
+    run_date = query_time.strftime("%Y-%m-%d")
+    measured_at = query_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    for app_key, app_meta in apps.items():
+        base_token = f"{app_key}-prod"
+        project_id = app_meta.get("metric_scope", V2_PROJECT_ID)
+        components = app_meta.get("components", [])
+
+        # Measure the app total first, then each named component.
+        # component=None means the app-level aggregate (no component suffix).
+        targets = [(base_token, None)] + [(f"{base_token}-{c}", c) for c in components]
+
+        for app_token, component in targets:
+            label = f"{app_key}/{component}" if component else app_key
+
+            for lookback in lookback_windows:
+                logging.info(f"[{label}] [{lookback}] Querying traffic volume...")
+                rps = query_promql(
+                    project_id,
+                    TRAFFIC_QUERY.replace("${APP_TOKEN}", app_token)
+                    .replace("${LOOKBACK}", lookback)
+                    .replace("${RATE_WINDOW}", rate_window),
+                    query_time,
+                    access_token,
+                )
+
+                if rps is None:
+                    logging.warning(f"[{label}] [{lookback}] No RPS data, skipping.")
+                    continue
+
+                tier = determine_tier(rps)
+                logging.info(
+                    f"[{label}] [{lookback}] {rps:.4f} req/sec → {tier['name']} tier (threshold: {ERROR_THRESHOLD:.2%})"
+                )
+
+                logging.info(f"[{label}] [{lookback}] Querying uptime...")
+                uptime = query_promql(
+                    project_id,
+                    UPTIME_QUERY.replace("${APP_TOKEN}", app_token)
+                    .replace("${LOOKBACK}", lookback)
+                    .replace("${RATE_WINDOW}", rate_window)
+                    .replace("${THRESHOLD}", str(ERROR_THRESHOLD)),
+                    query_time,
+                    access_token,
+                )
+                uptime_str = f"{uptime:.2f}%" if uptime is not None else "no data"
+                logging.info(f"[{label}] [{lookback}] Uptime: {uptime_str}")
+
+                services.append(
+                    {
+                        "run_date": run_date,
+                        "measured_at": measured_at,
+                        "app_code": app_key,
+                        "component": component,
+                        "lookback_days": int(lookback.rstrip("d")),
+                        "requests_per_sec": round(rps, 4),
+                        "volume_tier": tier["name"],
+                        "rate_window": rate_window,
+                        "error_threshold": ERROR_THRESHOLD,
+                        "uptime": (
+                            round(uptime / 100, 6) if uptime is not None else None
+                        ),
+                    }
+                )
+
+    return services
+
+
+def load_to_bigquery(
+    project: str, dataset: str, table: str, records: list[dict], query_time: datetime
+) -> None:
+    """Load service uptime records to BigQuery."""
+    client = bigquery.Client(project)
+    destination = f"{project}.{dataset}.{table}${query_time.strftime('%Y%m%d')}"
+
+    time_partitioning = bigquery.TimePartitioning(
+        type_=bigquery.TimePartitioningType.DAY,
+        field="run_date",
+    )
+
+    job_config = bigquery.LoadJobConfig(
+        schema=SCHEMA,
+        autodetect=False,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+        time_partitioning=time_partitioning,
+    )
+
+    job = client.load_table_from_json(records, destination, job_config=job_config)
+    job.result()
+    logging.info(f"Loaded {len(records)} records to {destination}")
+
+
+def main():
+    """Measure service uptime and SLO compliance for MozCloud apps."""
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--project", default="moz-fx-data-shared-prod")
+    parser.add_argument("--dataset", default="mozcloud_derived")
+    parser.add_argument("--table", default="service_uptime_v1")
+    parser.add_argument("--app", help="Filter to a single app (e.g. 'fxa').")
+    parser.add_argument(
+        "--date",
+        help="Date to query uptime for (YYYY-MM-DD). Defaults to today.",
+    )
+    parser.add_argument(
+        "--lookback",
+        nargs="+",
+        type=str,
+        choices=VALID_LOOKBACKS,
+        default=VALID_LOOKBACKS,
+        metavar="WINDOW",
+        help=f"Lookback window(s) (default: all). Options: {', '.join(VALID_LOOKBACKS)}.",
+    )
+    parser.add_argument(
+        "--rate-window",
+        default=DEFAULT_RATE_WINDOW,
+        metavar="WINDOW",
+        help=f"PromQL rate window for request counts (default: {DEFAULT_RATE_WINDOW}).",
+    )
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO)
+
+    if args.app:
+        if args.app not in APP_CODES:
+            logging.error(
+                f"Unknown app '{args.app}'. Available: {', '.join(APP_CODES)}"
+            )
+            raise sys.exit(1)
+        apps = {args.app: APP_CODES[args.app]}
+    else:
+        apps = APP_CODES
+
+    if args.date:
+        query_time = datetime.strptime(args.date, "%Y-%m-%d").replace(
+            tzinfo=timezone.utc
+        )
+    else:
+        query_time = datetime.now(timezone.utc)
+    access_token = get_access_token()
+
+    services = measure_services(
+        apps, query_time, access_token, args.lookback, args.rate_window
+    )
+    load_to_bigquery(args.project, args.dataset, args.table, services, query_time)
+
+
+if __name__ == "__main__":
+    main()

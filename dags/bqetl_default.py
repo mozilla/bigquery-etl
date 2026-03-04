@@ -64,15 +64,3 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    mozcloud_derived__service_uptime__v1 = GKEPodOperator(
-        task_id="mozcloud_derived__service_uptime__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/mozcloud_derived/service_uptime_v1/query.py",
-        ]
-        + [],
-        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="wstuckey@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
-    )

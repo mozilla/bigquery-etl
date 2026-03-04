@@ -10,10 +10,10 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  dag: bqetl_default
+  dag: bqetl_cloud_eng_daily
   owner1: wstuckey
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_cloud_eng_daily
 bigquery:
   time_partitioning:
     type: day

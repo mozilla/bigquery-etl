@@ -19,8 +19,7 @@ class TestFunnels:
         config_dir = tmp_path / "configs"
         config_dir.mkdir(parents=True)
 
-        config = dedent(
-            """
+        config = dedent("""
             destination_dataset = "mozilla_vpn_derived"
             platform = "mozilla_vpn"
             owners = ["example@mozilla.org"]  # optional; users getting notification if funnel run fails
@@ -90,7 +89,7 @@ class TestFunnels:
 
             [data_sources.events]
             from_expression = '''
-                (SELECT * FROM mozdata.mozilla_vpn.events_unnested
+                (SELECT * FROM `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
                 WHERE client_info.app_channel = 'production' AND client_info.os = 'iOS')
             '''
             submission_date_column = "DATE(submission_timestamp)"
@@ -105,8 +104,7 @@ class TestFunnels:
             friendly_name = "Operating System"
             description = "Normalized Operating System"
             client_id_column = "client_info.client_id"
-            """
-        )
+            """)
         (config_dir / "test-funnel.toml").write_text(config)
 
         generate_funnels(

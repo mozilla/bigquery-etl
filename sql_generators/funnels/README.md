@@ -81,11 +81,11 @@ Data sources specify a table or a SQL query data should be queried from for a `s
 
 [data_sources.main]
 # FROM expression - often just a fully-qualified table name. Sometimes a subquery.
-from_expression = "mozdata.telemetry.main"
+from_expression = "moz-fx-data-shared-prod.telemetry.main"
 
 [data_sources.events]
 from_expression = """
-    (SELECT * FROM mozdata.mozilla_vpn.events_unnested
+    (SELECT * FROM `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
     WHERE client_info.app_channel = 'production' AND client_info.os = 'iOS')
 """
 submission_date_column = "DATE(submission_timestamp)"
@@ -182,7 +182,7 @@ join_previous_step_on = "client_info.client_id"
 
 [data_sources.events]
 from_expression = """
-    (SELECT * FROM mozdata.mozilla_vpn.events_unnested
+    (SELECT * FROM `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
     WHERE client_info.app_channel = 'production' AND client_info.os = 'iOS')
 """
 submission_date_column = "DATE(submission_timestamp)"

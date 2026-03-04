@@ -59,7 +59,6 @@ LEFT JOIN
   AND DATE(bau.submission_date) >= DATE(tou.submission_date)
 WHERE
   bau.is_desktop
-  AND bau.sample_id <= 19
   AND DATE(bau.submission_date) = @submission_date
 GROUP BY
   bau.os_grouped,

@@ -141,6 +141,15 @@ def deploy(
                 and len(p.suffixes) == 1
             ]
         )
+        # if a schema.yaml is among the changed artifacts, include the query
+        if Path(path).name == "schema.yaml":
+            artifact_files.update(
+                p
+                for p in Path(path).parent.iterdir()
+                if p.suffix in [".sql", ".py"]
+                and p.name != "checks.sql"
+                and len(p.suffixes) == 1
+            )
 
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment

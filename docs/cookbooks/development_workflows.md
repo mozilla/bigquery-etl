@@ -9,13 +9,12 @@ This guide covers testing SQL changes in development environments before deployi
 
 ## Target-Based Development
 
-Configure a target in `~/targets.yaml`:
+Configure a target in `./targets.yaml`:
 
 ```yaml
-targets:
-  dev:
-    project_id: dev-sandbox-user  # or moz-fx-data-dev
-    dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
+dev:
+  project_id: dev-sandbox-user  # or moz-fx-data-dev
+  dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
 ```
 
 Use `--target dev` to run and deploy artifacts to the dev environment:

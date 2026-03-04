@@ -7,5 +7,5 @@ dev_shared:
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_{{ artifact.project_id }}_
 
 dev:
-  project_id: ascholtz-dev
+  project_id: user-sandbox. # todo: replace with personal sandbox
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_{{ artifact.project_id }}_

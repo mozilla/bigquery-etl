@@ -91,7 +91,7 @@ def cli(prog_name=None):
                     f"Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
             except Exception as e:
-                warnings.warn(f"Target '{target}' not found: {e}")
+                raise click.ClickException(f"Target '{target}' not found: {e}")
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

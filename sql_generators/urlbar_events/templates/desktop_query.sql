@@ -62,9 +62,15 @@ WITH events_unnested AS (
     ping_info.seq,
     normalized_channel,
     normalized_country_code,
+    normalized_os,
+    client_info.os_version,
+    normalized_app_name AS app_version,
+    metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
+    metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
     `moz-fx-data-shared-prod`.udf.normalize_search_engine(
       mozfun.map.get_key(extra, "search_engine_default_id")
     ) AS normalized_engine,
+    mozfun.map.get_key(extra, "sap") AS sap,
     COALESCE(metrics.boolean.urlbar_pref_suggest_data_collection, FALSE) AS pref_data_collection,
     COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
     COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
@@ -89,26 +95,66 @@ WITH events_unnested AS (
     DATE(submission_timestamp) = @submission_date
     AND event.category = 'urlbar'
     AND event.name IN ('engagement', 'abandonment')
+),
+add_conditionals AS (
+  SELECT
+    submission_date,
+    glean_client_id,
+    legacy_telemetry_client_id,
+    sample_id,
+    event_name,
+    event_timestamp,
+    event_id,
+    experiments,
+    seq,
+    normalized_channel,
+    normalized_country_code,
+    normalized_os,
+    os_version,
+    app_version,
+    pref_ohttp_available,
+    pref_ohttp_enabled,
+    normalized_engine,
+    sap,
+    pref_data_collection,
+    pref_sponsored_suggestions,
+    pref_fx_suggestions,
+    engagement_type,
+    interaction,
+    num_chars_typed,
+    num_total_results,
+    selected_position,
+    selected_result,
+    results,
+    `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
+    get_event_action(event_name, engagement_type) AS event_action,
+    get_is_terminal(selected_result, engagement_type) AS is_terminal,
+    CASE
+      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+        THEN selected_result
+      ELSE NULL
+    END AS engaged_result_type,
+    CASE
+      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+        THEN `mozfun.norm.result_type_to_product_name`(selected_result)
+      ELSE NULL
+    END AS product_engaged_result_type,
+    CASE
+      WHEN get_event_action(event_name, engagement_type) = 'annoyance'
+        THEN engagement_type
+      ELSE NULL
+    END AS annoyance_signal_type,
+    profile_group_id,
+  FROM
+    events_unnested
+),
+final AS (
+  SELECT
+    *
+  FROM
+    add_conditionals
 )
 SELECT
-  *,
-  `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
-  get_event_action(event_name, engagement_type) AS event_action,
-  get_is_terminal(selected_result, engagement_type) AS is_terminal,
-  CASE
-    WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
-      THEN selected_result
-    ELSE NULL
-  END AS engaged_result_type,
-  CASE
-    WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
-      THEN `mozfun.norm.result_type_to_product_name`(selected_result)
-    ELSE NULL
-  END AS product_engaged_result_type,
-  CASE
-    WHEN get_event_action(event_name, engagement_type) = 'annoyance'
-      THEN engagement_type
-    ELSE NULL
-  END AS annoyance_signal_type,
+  *
 FROM
-  events_unnested
+  final

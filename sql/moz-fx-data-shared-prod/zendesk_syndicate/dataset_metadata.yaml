@@ -10,7 +10,7 @@ syndication:
     syndicated_dataset: zendesk
   syndicated_tables:
     - ticket
-  administer_views: false
+  administer_views: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

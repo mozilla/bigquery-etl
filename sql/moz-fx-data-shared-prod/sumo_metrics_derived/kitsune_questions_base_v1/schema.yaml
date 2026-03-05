@@ -1,0 +1,22 @@
+fields:
+- name: date
+  type: DATE
+  mode: REQUIRED
+  description: Date question was created (Pacific Standard Time)
+- name: product
+  type: STRING
+  mode: REQUIRED
+  description: |
+    Mozilla product the question is about. Normalized from Kitsune product field:
+    - 'mobile' → 'firefox-android'
+    - 'ios' → 'firefox-ios'
+    - 'firefox-enterprise' → 'firefox'
+    - Others kept as-is
+- name: forum_questions_posted
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of forum questions posted on this date for this product
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

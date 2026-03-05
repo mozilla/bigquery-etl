@@ -1895,6 +1895,25 @@ bqetl_jira_service_desk:
   tags:
     - impact/tier_2
 
+bqetl_jira_tickets:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mcastelluccio@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-01'
+  description: This DAG schedules Jira ticket ingestion tasks
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_newtab_interactions_hourly:
   schedule_interval: hourly
   description: |

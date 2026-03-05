@@ -1,7 +1,7 @@
 """
 Generate redacted views on top of stable views.
 
-Creates views that exclude sensitive metrics of stored_content and highly_sensitive categories.
+Creates views that exclude sensitive metrics of highly_sensitive categories.
 
 If a view.sql already exists at the target path, no file will be written,
 allowing manual overrides by checking files into the sql/ tree.
@@ -62,7 +62,7 @@ SUFFIXED_METRIC_TYPES = {
 }
 
 # Metrics with these data_sensitivity categories are excluded from redacted views.
-SENSITIVITY_CATEGORIES = ["stored_content", "highly_sensitive"]
+SENSITIVITY_CATEGORIES = ["highly_sensitive"]
 
 
 def _get_glean_app_metrics(v1_name):

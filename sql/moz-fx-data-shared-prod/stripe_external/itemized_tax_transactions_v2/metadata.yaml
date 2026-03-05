@@ -3,8 +3,8 @@ description: |-
   Import itemized tax transactions report from the Stripe API.
   https://docs.stripe.com/reports/report-types/tax#schema-tax-transactions-itemized-2
 owners:
-  - srose@mozilla.com
   - phlee@mozilla.com
+  - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily

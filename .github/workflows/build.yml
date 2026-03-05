@@ -538,6 +538,9 @@ jobs:
       - *auth-gcp-stage
       - *set-stage-project-id
       - name: Run SQL tests
+        env:
+          # unique id to use as dataset suffix
+          CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
 
@@ -560,6 +563,9 @@ jobs:
       - *auth-gcp-stage
       - *set-stage-project-id
       - name: Run routine tests
+        env:
+          # unique id to use as dataset suffix
+          CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
       - name: Validate doc examples

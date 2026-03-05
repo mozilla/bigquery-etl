@@ -35,7 +35,7 @@ fxa_events AS (
     submission_timestamp,
     metrics.string.account_user_id_sha256 AS user_id_sha256,
     IF(
-      metrics.string.relying_party_oauth_client_id = '',
+      metrics.string.relying_party_oauth_client_id = ' ',
       metrics.string.relying_party_service,
       metrics.string.relying_party_oauth_client_id
     ) AS service,

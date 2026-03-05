@@ -2,10 +2,10 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date ticket was created (Pacific Standard Time)
+  description: Date ticket was created (UTC)
 - name: product
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: |
     Mozilla product the ticket is for. Mapped from Zendesk custom_product field:
     - 'firefox-android' → 'firefox-android-reviews'

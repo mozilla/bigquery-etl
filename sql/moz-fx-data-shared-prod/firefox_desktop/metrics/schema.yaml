@@ -3305,6 +3305,14 @@ fields:
       description: 'Recorded when a site exclusion is added.
 
         '
+    - name: fog_ipc_flush_rejections
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we failed to flush individual instances of
+
+        non-parent-process data.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -36574,6 +36582,10 @@ fields:
         value of the `browser.urlbar.maxRichResults` pref.
 
         '
+    - name: data_storage_site_integrity_service_state
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the SiteIntegrityServiceState nsIDataStorage
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -36939,6 +36951,22 @@ fields:
         while reporting fog.data_diretory_info.
 
         (Potentially because they were removed in the interim).
+
+        '
+    - name: media_wmf_codec_no_extension
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Set to true for a given codec when its required Windows Store
+        extension is not installed (WINCODEC_ERR_COMPONENTNOTFOUND during WMF decoder
+        initialization). Recorded once per session. Not recorded when the codec is
+        disabled by pref or DXVA is unavailable.
 
         '
   - name: uuid
@@ -50554,15 +50582,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

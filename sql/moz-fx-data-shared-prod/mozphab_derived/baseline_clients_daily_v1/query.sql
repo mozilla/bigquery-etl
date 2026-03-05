@@ -47,6 +47,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS distributor,
     CAST(NULL AS STRING) AS distributor_channel,
     CAST(NULL AS STRING) AS distribution_partner_id,
+    CAST(NULL AS BOOLEAN) AS policies_is_enterprise,
     ping_info.experiments AS experiments
   FROM
     `moz-fx-data-shared-prod.mozphab_stable.baseline_v1`
@@ -196,6 +197,9 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(attribution_msclkid) OVER w1
     ) AS attribution_msclkid,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(policies_is_enterprise) OVER w1
+    ) AS policies_is_enterprise,
   FROM
     with_date_offsets
   LEFT JOIN

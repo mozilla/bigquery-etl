@@ -10,7 +10,8 @@ SELECT
     distribution_version,
     distributor,
     distributor_channel,
-    distribution_partner_id
+    distribution_partner_id,
+    policies_is_enterprise
   ) REPLACE(
     IFNULL(last_seen.country, '??') AS country,
     IFNULL(city, '??') AS city,
@@ -113,7 +114,8 @@ SELECT
     ) <> 'mozillaonline',
     TRUE,
     FALSE
-  ) AS is_desktop
+  ) AS is_desktop,
+  policies_is_enterprise,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN

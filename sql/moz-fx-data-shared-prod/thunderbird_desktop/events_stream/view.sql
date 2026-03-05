@@ -40,7 +40,6 @@ SELECT
       LAX_BOOL(event_extra.has_username_nul) AS `has_username_nul`,
       LAX_BOOL(event_extra.hidden) AS `hidden`,
       LAX_BOOL(event_extra.history_and_downloads) AS `history_and_downloads`,
-      LAX_BOOL(event_extra.history_form_data_downloads) AS `history_form_data_downloads`,
       LAX_BOOL(event_extra.hit) AS `hit`,
       LAX_BOOL(event_extra.hls_decoder) AS `hls_decoder`,
       LAX_BOOL(event_extra.hyphen_compat) AS `hyphen_compat`,

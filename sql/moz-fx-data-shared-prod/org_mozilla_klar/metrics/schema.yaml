@@ -2439,6 +2439,14 @@ fields:
         delays between connections to the same host.
 
         '
+    - name: fog_ipc_flush_rejections
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we failed to flush individual instances of
+
+        non-parent-process data.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -10452,6 +10460,10 @@ fields:
         e.g. 134217728
 
         '
+    - name: data_storage_site_integrity_service_state
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the SiteIntegrityServiceState nsIDataStorage
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

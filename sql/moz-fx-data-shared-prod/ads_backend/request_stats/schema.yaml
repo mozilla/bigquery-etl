@@ -369,6 +369,24 @@ fields:
         lookup. May be null.
 
         '
+    - name: ad_taxonomy
+      type: STRING
+      mode: NULLABLE
+      description: 'Taxonomy identifier for the contextual categories (e.g. "IAB-3.0").
+        May be null if no contextual information was provided.
+
+        '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: ad_categories
+      type: STRING
+      mode: REPEATED
+      description: 'Comma-separated list of contextual category identifiers from the
+        taxonomy (e.g. "210,315"). May be null if no contextual information was provided.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

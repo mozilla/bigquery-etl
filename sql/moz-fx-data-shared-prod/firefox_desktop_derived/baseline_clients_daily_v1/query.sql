@@ -47,6 +47,7 @@ WITH base AS (
     JSON_VALUE(metrics.object.glean_distribution_ext.distributor) AS distributor,
     JSON_VALUE(metrics.object.glean_distribution_ext.distributorChannel) AS distributor_channel,
     JSON_VALUE(metrics.object.glean_distribution_ext.partnerId) AS distribution_partner_id,
+    metrics.boolean.policies_is_enterprise AS policies_is_enterprise,
     ping_info.experiments AS experiments
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
@@ -196,6 +197,9 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(attribution_msclkid) OVER w1
     ) AS attribution_msclkid,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(policies_is_enterprise) OVER w1
+    ) AS policies_is_enterprise,
   FROM
     with_date_offsets
   LEFT JOIN

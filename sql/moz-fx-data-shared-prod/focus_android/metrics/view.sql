@@ -282,7 +282,8 @@ SELECT
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
-      metrics.counter.network_ssl_token_cache_expired
+      metrics.counter.network_ssl_token_cache_expired,
+      metrics.counter.fog_ipc_flush_rejections
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -837,7 +838,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.data_storage_site_integrity_service_state
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -2115,7 +2117,8 @@ SELECT
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
-      metrics.counter.network_ssl_token_cache_expired
+      metrics.counter.network_ssl_token_cache_expired,
+      metrics.counter.fog_ipc_flush_rejections
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2670,7 +2673,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.data_storage_site_integrity_service_state
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -3948,7 +3952,8 @@ SELECT
       metrics.counter.pdfjs_tagged,
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
-      metrics.counter.network_ssl_token_cache_expired
+      metrics.counter.network_ssl_token_cache_expired,
+      metrics.counter.fog_ipc_flush_rejections
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4503,7 +4508,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.data_storage_site_integrity_service_state
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,

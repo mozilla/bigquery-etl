@@ -2757,6 +2757,14 @@ fields:
         delays between connections to the same host.
 
         '
+    - name: fog_ipc_flush_rejections
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we failed to flush individual instances of
+
+        non-parent-process data.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -22419,6 +22427,10 @@ fields:
       description: 'The version of the Terms of Use the user accepted.
 
         '
+    - name: data_storage_site_integrity_service_state
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the SiteIntegrityServiceState nsIDataStorage
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -44847,15 +44859,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

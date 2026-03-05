@@ -24,7 +24,6 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
-    exit_if_running_under_coding_agent,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -33,6 +32,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import get_credentials
 from ..util import extract_from_query_path
+from ..util.common import block_coding_agents
 
 
 @click.group(help="""
@@ -223,6 +223,7 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -243,8 +244,6 @@ def publish(
     skip_stable_datasets: bool,
 ) -> None:
     """Publish Bigquery metadata."""
-    exit_if_running_under_coding_agent()
-
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )

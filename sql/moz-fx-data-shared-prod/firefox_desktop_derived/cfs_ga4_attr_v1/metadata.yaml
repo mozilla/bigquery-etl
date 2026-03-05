@@ -3,11 +3,11 @@ description: |-
   Starts with Glean baseline_clients_first_seen and left joins to GA4 attribution information
   on download token if a match is found.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: false
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null

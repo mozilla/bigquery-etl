@@ -120,10 +120,7 @@ class TestParseMetadata(object):
         assert metadata.review_bugs() == ["1999999", "12121212"]
         assert metadata.workgroup_access is not None
         assert metadata.workgroup_access[0].role == "roles/bigquery.dataViewer"
-        assert (
-            metadata.workgroup_access[0].members[0]
-            == "workgroup:dataops-managed/external-fides"
-        )
+        assert metadata.workgroup_access[0].members[0] == "workgroup:dataplatform/test"
 
     def test_of_query_file_no_metadata(self):
         metadata_file = (

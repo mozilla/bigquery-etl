@@ -413,7 +413,8 @@ SELECT
       TRUE,
       FALSE
     ) AS has_refunds,
-    CAST(NULL AS BOOL) AS has_fraudulent_charges
+    CAST(NULL AS BOOL) AS has_fraudulent_charges,
+    'Apple App Store' AS payment_method
   ) AS subscription
 FROM
   subscriptions_history AS history

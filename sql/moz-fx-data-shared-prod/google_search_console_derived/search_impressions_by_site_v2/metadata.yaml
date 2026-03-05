@@ -4,6 +4,7 @@ description: |-
     * addons.mozilla.org
     * blog.mozilla.org
     * developer.mozilla.org
+    * firefox.com
     * getpocket.com
     * support.mozilla.org
     * www.mozilla.org
@@ -13,8 +14,11 @@ description: |-
   For the developer.mozilla.org domain, we started exporting Google Search Console data directly to BigQuery in April 2024.
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1890816.
 
+  For the firefox.com domain, we started exporting Google Search Console data directly to BigQuery on 2025-07-26.
+
   For the other domains, we started exporting Google Search Console data directly to BigQuery in July 2023.
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c34.
+
 owners:
 - srose@mozilla.com
 labels:
@@ -33,6 +37,9 @@ scheduling:
   - task_id: wait_for_google_search_console_blog_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_blog.searchdata_site_impression
     partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_firefox_site_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_firefox.searchdata_site_impression
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_getpocket_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_site_impression
     partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
@@ -45,6 +52,7 @@ scheduling:
   - task_id: wait_for_google_search_console_www_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_www.searchdata_site_impression
     partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
+
 bigquery:
   time_partitioning:
     type: day

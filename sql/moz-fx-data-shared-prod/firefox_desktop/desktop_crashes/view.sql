@@ -87,7 +87,8 @@ SELECT
       metrics.string.crash_minidump_sha_256_hash,
       metrics.string.crash_product_id,
       metrics.string.crash_product_name,
-      metrics.string.crash_shutdown_reason
+      metrics.string.crash_shutdown_reason,
+      metrics.string.crash_application_build_id
     ) AS `string`,
     STRUCT(
       CAST(NULL AS STRUCT<`time_unit` STRING, `value` INTEGER>) AS `crash_uptime`,
@@ -122,6 +123,7 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
+    ping_info.server_knobs_config,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,

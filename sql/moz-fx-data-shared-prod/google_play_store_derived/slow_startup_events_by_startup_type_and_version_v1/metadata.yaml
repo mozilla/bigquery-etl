@@ -8,11 +8,11 @@ description: |-
   * org.mozilla.firefox.vpn
   * org.mozilla.focus
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_google_play_store
   arguments: ["--date", "{{ds}}"]

@@ -10,6 +10,9 @@ description: >
 
   The hashed_addon_id is only valid for install_stats:
   https://searchfox.org/firefox-main/rev/ba7a7a320649794a9948b32156f5b438fef5ce7a/toolkit/mozapps/extensions/metrics.yaml#347-349
+
+  This table is build using Glean data and only includes clients with major app_version 148 and above.
+  For clients with older versions please use: `addons_derived.amo_stats_installs_legacy_source_v1`.
 owners:
   - kik@mozilla.com
 labels:

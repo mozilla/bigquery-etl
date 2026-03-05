@@ -2,6 +2,7 @@ friendly_name: Active Hubs Subscription IDs
 description: >
   IDs of active Hubs subscriptions by date.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   application: hubs

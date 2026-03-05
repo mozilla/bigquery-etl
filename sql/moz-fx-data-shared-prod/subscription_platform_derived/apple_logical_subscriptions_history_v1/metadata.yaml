@@ -9,6 +9,7 @@ description: |-
   Some caveats:
     * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false
@@ -18,6 +19,8 @@ scheduling:
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:
+  # Use clustering rather than partitioning because the whole table is being overwritten every time
+  # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.
   time_partitioning: null
   clustering:
     fields:

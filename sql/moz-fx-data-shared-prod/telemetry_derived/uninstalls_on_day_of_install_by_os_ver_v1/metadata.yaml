@@ -2,10 +2,10 @@ friendly_name: Uninstalls On Day Of Install by Os Version
 description: |-
   Uninstalls by OS version split by if the uninstall was on date of installation or not
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:

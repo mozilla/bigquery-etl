@@ -16,7 +16,7 @@ WITH temp_unnested AS (
     ) AS is_clicked,
     (product_selected_result = res.product_result_type AND event_action = 'annoyance') AS is_annoyed
   FROM
-    `mozdata.firefox_desktop.urlbar_events`
+    `moz-fx-data-shared-prod.firefox_desktop.urlbar_events`
   CROSS JOIN
     UNNEST(results) AS res
   WHERE

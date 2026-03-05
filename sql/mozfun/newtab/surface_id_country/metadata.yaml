@@ -1,0 +1,2 @@
+description: Parse country from surface_id for use in Newtab entities
+friendly_name: Surface_Id_Country

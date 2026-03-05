@@ -21,7 +21,6 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import (
-    exit_if_running_under_coding_agent,
     get_glean_app_id_to_app_name_mapping,
     parallelism_option,
     project_id_option,
@@ -32,7 +31,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
-from bigquery_etl.util.common import TempDatasetReference
+from bigquery_etl.util.common import TempDatasetReference, block_coding_agents
 
 QUERY_TEMPLATE = """
 WITH
@@ -380,6 +379,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     Coding agents aren't allowed to run this command.
     """,
 )
+@block_coding_agents
 @project_id_option("moz-fx-data-shar-nonprod-efed")
 @click.option(
     "--dates",
@@ -493,8 +493,6 @@ def copy_deduplicate(
     write_to_v2,
 ):
     """Copy a day's data from live to stable ping tables, dedup on document_id."""
-    exit_if_running_under_coding_agent()
-
     # create a queue for balancing load across projects
     client_q = ClientQueue(billing_projects, parallelism)
 

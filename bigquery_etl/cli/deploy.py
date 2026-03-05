@@ -14,7 +14,6 @@ from google.cloud import bigquery
 from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
-    exit_if_running_under_coding_agent,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
@@ -35,7 +34,7 @@ from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.util.common import render
+from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.view import View
 
@@ -80,6 +79,7 @@ log = logging.getLogger(__name__)
     ./bqetl deploy --tables --table-skip-existing-schemas telemetry_derived/
     """,
 )
+@block_coding_agents
 @click.argument("paths", nargs=-1, required=False)
 @click.option(
     "--tables",
@@ -191,8 +191,6 @@ def deploy(
     view_authorized_only,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    exit_if_running_under_coding_agent()
-
     if not any([tables, views]):
         raise click.UsageError(
             "Must specify at least one artifact type: --tables or --views"

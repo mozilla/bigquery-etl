@@ -2,11 +2,11 @@ friendly_name: WWW Site Downloads
 description: |-
   Data about downloads from firefox.com from GA4
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on_tables_existing:

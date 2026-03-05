@@ -115,7 +115,7 @@ SELECT
     TRUE,
     FALSE
   ) AS is_desktop,
-  policies_is_enterprise,
+  last_seen.policies_is_enterprise,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN

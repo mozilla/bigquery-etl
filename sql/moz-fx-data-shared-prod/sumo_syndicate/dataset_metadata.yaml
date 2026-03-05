@@ -10,7 +10,7 @@ syndication:
     syndicated_dataset: sumo
   syndicated_tables:
     - kitsune_questions
-  administer_views: true
+  administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

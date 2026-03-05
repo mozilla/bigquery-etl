@@ -2,4 +2,5 @@ friendly_name: Apple Subscriptions
 description: >
   Apple subscriptions.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com

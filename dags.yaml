@@ -1408,8 +1408,8 @@ bqetl_google_search_console:
   description: |
     ETLs using data exported from Google Search Console.
 
-    The Google Search Console exports for a date typically complete by 08:00 UTC two days after that date,
-    so these ETLs should generally specify `date_partition_offset: -1` in their scheduling metadata.
+    The Google Search Console exports for a date typically complete by 08:00 UTC three days after that date,
+    so these ETLs should generally specify `date_partition_offset: -2` in their scheduling metadata.
   default_args:
     owner: srose@mozilla.com
     email:

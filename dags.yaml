@@ -174,9 +174,9 @@ bqetl_subplat:
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
   default_args:
-    owner: srose@mozilla.com
+    owner: phlee@mozilla.com
     start_date: "2025-06-10"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "phlee@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -195,9 +195,9 @@ bqetl_subplat_hourly:
     so the last run targeting a particular date partition will happen at 00:30 the following day,
     allowing time for all of the data for that date to be ready from external systems like Stripe.
   default_args:
-    owner: srose@mozilla.com
+    owner: phlee@mozilla.com
     start_date: "2025-06-10"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "phlee@mozilla.com", "srose@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:

@@ -4,4 +4,5 @@ description: 'Count of new subscriptions by utm values, and by channel group as 
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

@@ -3,4 +3,5 @@ description: 'Funnel from FxA Login to Protected with 2-day time limit
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

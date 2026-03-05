@@ -2,6 +2,7 @@ friendly_name: Production Stripe customer discounts
 description: |-
   Production Stripe customer discounts combined from Fivetran's newer `discount` and older `customer_discount` tables.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

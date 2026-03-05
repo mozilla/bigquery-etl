@@ -62,7 +62,7 @@ LEFT JOIN
   AND DATE(bau.submission_date) >= DATE(tou.submission_date)
 WHERE
   bau.is_desktop
-  AND DATE(bau.submission_date) = @submission_date
+  AND bau.submission_date = @submission_date
 GROUP BY
   submission_date,
   bau.first_seen_year,

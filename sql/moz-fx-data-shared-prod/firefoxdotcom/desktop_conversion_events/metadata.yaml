@@ -1,7 +1,13 @@
 friendly_name: Desktop Conversion Events
 description: |-
-  Please provide a description for the query
-owners: []
+  Authorized view for connecting to Google Ads.
+owners:
+- kik@mozilla.com
+- bsaunders@mozilla.com
+labels:
+  authorized: true
+  owner1: kik
+  owner2: bsaunders
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

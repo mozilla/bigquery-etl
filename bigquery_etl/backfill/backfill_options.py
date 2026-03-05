@@ -6,6 +6,7 @@ import click
 
 
 def start_date():
+    """Return a Click option for the backfill start date."""
     return click.option(
         "--start_date",
         "--start-date",
@@ -17,6 +18,7 @@ def start_date():
 
 
 def end_date():
+    """Return a Click option for the backfill end date, defaulting to today."""
     return click.option(
         "--end_date",
         "--end-date",
@@ -28,6 +30,7 @@ def end_date():
 
 
 def exclude():
+    """Return a Click option for dates to exclude from the backfill."""
     return click.option(
         "--exclude",
         "-x",
@@ -39,6 +42,7 @@ def exclude():
 
 
 def custom_query_path():
+    """Return a Click option for an optional custom query path to use in the backfill."""
     return click.option(
         "--custom_query_path",
         "--custom-query-path",
@@ -48,6 +52,7 @@ def custom_query_path():
 
 
 def override_retention():
+    """Return a Click flag option to allow backfilling outside the retention policy limit."""
     return click.option(
         "--override-retention-range-limit",
         "--override_retention_range_limit",
@@ -60,6 +65,7 @@ def override_retention():
 
 
 def query_script_entrypoint():
+    """Return a Click option for the entrypoint command name in a query.py script."""
     return click.option(
         "--query-script-entrypoint",
         help="Name of the Click command in the query.py to use in the backfill. "
@@ -69,6 +75,7 @@ def query_script_entrypoint():
 
 
 def query_script_date_arg():
+    """Return a Click option for the date argument name accepted by a query.py script."""
     return click.option(
         "--query-script-date-arg",
         help="Name of the date argument of the query.py accepting a YYYY-MM-DD string. "
@@ -78,6 +85,7 @@ def query_script_date_arg():
 
 
 def query_script_arg():
+    """Return a Click option for additional CLI arguments to pass into a query.py script."""
     return click.option(
         "--query-script-arg",
         help="CLI arguments to pass into query.py if backfilling a python script. "

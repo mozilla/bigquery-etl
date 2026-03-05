@@ -3,4 +3,5 @@ description: 'Event timestamps where accounts added a device
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

@@ -30,6 +30,7 @@
   is_dau: true
   is_wau: true
   is_mau: true
+  policies_is_enterprise: false
 
 # Test case 2: Initial user in Canada
 - submission_date: 2025-04-01
@@ -62,6 +63,7 @@
   is_dau: false
   is_wau: true
   is_mau: true
+  policies_is_enterprise: false
 
 # Test case 3: Initial user in Japan
 - submission_date: 2025-04-01
@@ -94,3 +96,4 @@
   is_dau: true
   is_wau: true
   is_mau: true
+  policies_is_enterprise: false

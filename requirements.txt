@@ -156,9 +156,9 @@ attrs==25.4.0 \
     #   looker-sdk
     #   mozilla-metric-config-parser
     #   referencing
-authlib==1.6.6 \
-    --hash=sha256:45770e8e056d0f283451d9996fbb59b70d45722b45d854d58f32878d0a40c38e \
-    --hash=sha256:7d9e9bc535c13974313a87f53e8430eb6ea3d1cf6ae4f6efcd793f2e949143fd
+authlib==1.6.7 \
+    --hash=sha256:c637340d9a02789d2efa1d003a7437d10d3e565237bcb5fcbc6c134c7b95bab0 \
+    --hash=sha256:dbf10100011d1e1b34048c9d120e83f13b35d69a826ae762b93d2fb5aafc337b
     # via -r requirements.in
 babel==2.12.1 \
     --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
@@ -2934,7 +2934,6 @@ setuptools==80.10.2 \
     --hash=sha256:8b0e9d10c784bf7d262c4e5ec5d4ec94127ce206e8738f29a437945fbc219b70 \
     --hash=sha256:95b30ddfb717250edb492926c92b5221f7ef3fbcc2b07579bcd4a27da21d0173
     # via
-    #   -r requirements.in
     #   bigeye-sdk
     #   nodeenv
     #   pip-tools

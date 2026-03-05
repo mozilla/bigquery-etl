@@ -28,6 +28,7 @@ import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli import check
@@ -646,29 +647,9 @@ def _backfill_script(
 @sql_dir_option
 @project_id_option(required=True)
 @billing_project_option()
-@click.option(
-    "--start_date",
-    "--start-date",
-    "-s",
-    help="First date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-)
-@click.option(
-    "--end_date",
-    "--end-date",
-    "-e",
-    help="Last date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=str(date.today()),
-)
-@click.option(
-    "--exclude",
-    "-x",
-    multiple=True,
-    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
-    default=[],
-)
+@backfill_options.start_date()
+@backfill_options.end_date()
+@backfill_options.exclude()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -701,12 +682,7 @@ def _backfill_script(
 @click.option(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
-@click.option(
-    "--custom_query_path",
-    "--custom-query-path",
-    help="Name of a custom query to run the backfill. If not given, the process runs as usual.",
-    default=None,
-)
+@backfill_options.custom_query_path()
 @click.option(
     "--checks_file_name",
     "--checks-file-name",
@@ -724,29 +700,10 @@ def _backfill_script(
         "parameters and/or date_partition_parameter as needed."
     ),
 )
-@click.option(
-    "--override-retention-range-limit",
-    required=False,
-    type=bool,
-    is_flag=True,
-    help="True to allow running a backfill outside the retention policy limit.",
-    default=False,
-)
-@click.option(
-    "--query-script-entrypoint",
-    help="Name of the Click command in the query.py to use in the backfill. "
-    "Must be a @click.command() function.",
-)
-@click.option(
-    "--query-script-date-arg",
-    help="Name of the date argument of the query.py accepting a YYYY-MM-DD string.",
-)
-@click.option(
-    "--query-script-arg",
-    help="CLI arguments to pass into query.py if backfilling a python script. "
-    'Specified like `--query-script-arg="--project=abc"`',
-    multiple=True,
-)
+@backfill_options.override_retention()
+@backfill_options.query_script_entrypoint()
+@backfill_options.query_script_date_arg()
+@backfill_options.query_script_arg()
 @click.pass_context
 def backfill(
     ctx,
@@ -845,7 +802,7 @@ def backfill(
     date_range = BackfillDateRange(
         start_date.date(),
         end_date.date(),
-        excludes=[date.fromisoformat(x) for x in exclude],
+        excludes=[x.date() for x in exclude],
         range_type=partitioning_type or PartitionType.DAY,
     )
 

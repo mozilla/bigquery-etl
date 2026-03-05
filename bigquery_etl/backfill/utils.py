@@ -194,7 +194,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     table_metadata_path = dataset_path / table / METADATA_FILE
 
     if not query_file.exists() and not (query_file.parent / "query.py").exists():
-        click.echo(f"No query.sql file found: {qualified_table_name}")
+        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
         sys.exit(1)
 
     # check dataset level metadata

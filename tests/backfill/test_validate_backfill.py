@@ -456,7 +456,7 @@ class TestValidateBackfill(object):
             TEST_BACKFILL_1.watchers,
             status=BackfillStatus.INITIATE,
             custom_query_path="sql/proj/dataset/table/query.py",
-            query_script_date_arg="date",
+            query_script_entrypoint="main",
         )
         with pytest.raises(ValueError):
             validate_query_script_options(entry, TEST_BACKFILL_FILE)

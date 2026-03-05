@@ -15,6 +15,7 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound
 
+from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.parse import (
     BACKFILL_FILE,
@@ -102,57 +103,19 @@ def backfill(ctx):
 )
 @click.argument("qualified_table_name")
 @sql_dir_option
-@click.option(
-    "--start_date",
-    "--start-date",
-    "-s",
-    help="First date to be backfilled. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-)
-@click.option(
-    "--end_date",
-    "--end-date",
-    "-e",
-    help="Last date to be backfilled. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=datetime.today(),
-)
-@click.option(
-    "--exclude",
-    "-x",
-    multiple=True,
-    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=None,
-)
+@backfill_options.start_date()
+@backfill_options.end_date()
+@backfill_options.exclude()
 @click.option(
     "--watcher",
     "-w",
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
-@click.option(
-    "--custom_query_path",
-    "--custom-query-path",
-    help="Path of the custom query to run the backfill. Optional.",
-)
-@click.option(
-    "--query-script-entrypoint",
-    help="Name of the Click command in the query.py to use in the backfill. "
-    "Must be a @click.command() function. Required when custom_query_path is a .py file.",
-)
-@click.option(
-    "--query-script-date-arg",
-    help="Name of the date argument of the query.py accepting a YYYY-MM-DD string. "
-    "Required when custom_query_path is a .py file.",
-)
-@click.option(
-    "--query-script-arg",
-    help="CLI arguments to pass into query.py if backfilling a python script. "
-    'Specified like `--query-script-arg="--project=abc"`',
-    multiple=True,
-)
+@backfill_options.custom_query_path()
+@backfill_options.query_script_entrypoint()
+@backfill_options.query_script_date_arg()
+@backfill_options.query_script_arg()
 @click.option(
     "--query-script-dry-run-arg",
     help="CLI argument to append for the dry run pass of the backfill before the real run, "
@@ -162,15 +125,7 @@ def backfill(ctx):
     "--shredder_mitigation/--no_shredder_mitigation",
     help="Whether to run a backfill using an auto-generated query that mitigates shredder effect.",
 )
-@click.option(
-    "--override-retention-range-limit",
-    "--override_retention_range_limit",
-    required=False,
-    type=bool,
-    is_flag=True,
-    help="True to allow running a backfill outside the retention policy limit.",
-    default=False,
-)
+@backfill_options.override_retention()
 @click.option(
     "--override-depends-on-past-end-date",
     "--override_depends_on_past_end_date",

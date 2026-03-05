@@ -295,7 +295,13 @@ Tables that use a `query.py` file instead of `query.sql` are also supported with
 
 **Importantly, backfills for scripts will not automatically configure the backfill staging table and dry run.**
 The query.py must support destination table and dry run arguments, and the backfill must be configured to use them
-if you would like to use them.
+if you would like to use them. If a destination table is not provided, the backfill will use the script's
+default values, likely writing to the production table.
+
+In order to use the backfill complete step, the script must write to the correct table in the backfill staging
+dataset: `{dataset}__{table_name}_{backfill_date}`. e.g. setting
+`--query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"`
+Otherwise, the backfill complete will do nothing.
 
 Required parameters:
 - `query_script_entrypoint`: The name of the main function inside the python script.
@@ -306,7 +312,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to set the backfill staging table if needed, e.g. `--destination-table=dataset__table_v1_YYYY_MM_DD`.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
-When provided, the system runs the script once with this arugment appended before running the real backfill, mirroring the SQL dry run behaviour. 
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
 The script must implement support for this argument itself.
 
 Example:

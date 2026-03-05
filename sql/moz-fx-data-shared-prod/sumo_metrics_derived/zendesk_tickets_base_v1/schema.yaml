@@ -1,7 +1,7 @@
 fields:
 - name: date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Date ticket was created (Pacific Standard Time)
 - name: product
   type: STRING

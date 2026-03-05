@@ -4,6 +4,7 @@ description: >
   An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN
   Intercept Survey Q3 survey.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   incremental: true

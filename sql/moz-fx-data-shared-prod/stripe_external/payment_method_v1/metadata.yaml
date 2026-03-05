@@ -1,8 +1,8 @@
 friendly_name: Prod Stripe payment method
 description: Production Stripe payment method table from Fivetran
 owners:
-  - srose@mozilla.com
   - phlee@mozilla.com
+  - srose@mozilla.com
 labels:
   schedule: hourly
 scheduling:

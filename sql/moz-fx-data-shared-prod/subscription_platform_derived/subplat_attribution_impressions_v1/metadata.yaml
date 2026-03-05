@@ -6,6 +6,7 @@ description: |-
     * This ETL is delayed by an extra day to allow more time for possible late-arriving data.
       More recent data that is still in flux can be found in `recent_subplat_attribution_impressions_v1`.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true

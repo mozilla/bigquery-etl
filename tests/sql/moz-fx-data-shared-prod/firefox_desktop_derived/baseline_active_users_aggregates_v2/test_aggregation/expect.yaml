@@ -25,6 +25,7 @@
   dau: 0
   wau: 1
   mau: 1
+  policies_is_enterprise: false
 
 - submission_date: 2025-06-02
   first_seen_year: 2025
@@ -51,6 +52,7 @@
   dau: 0
   wau: 0
   mau: 1
+  policies_is_enterprise: false
 
 - submission_date: 2025-06-02
   first_seen_year: 2024
@@ -77,3 +79,4 @@
   dau: 2
   wau: 2
   mau: 2
+  policies_is_enterprise: false

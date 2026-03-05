@@ -3,6 +3,7 @@ friendly_name: Stripe itemized tax transactions report
 description: >
   Import itemized tax transactions report from the Stripe API.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   incremental: true

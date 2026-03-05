@@ -2,6 +2,7 @@ friendly_name: Production Stripe discounts
 description: |-
   Mirror of production Stripe `discount` table from Fivetran.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

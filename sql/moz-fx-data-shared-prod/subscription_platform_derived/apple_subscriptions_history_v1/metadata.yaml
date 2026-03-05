@@ -13,6 +13,7 @@ description: |-
   Some caveats:
     * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

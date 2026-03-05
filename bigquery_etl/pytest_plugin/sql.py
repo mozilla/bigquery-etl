@@ -191,8 +191,8 @@ class SqlTest(pytest.Item, pytest.File):
         )
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        if "CI_RUN_ID" in os.environ:
+            dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:

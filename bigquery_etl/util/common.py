@@ -188,6 +188,20 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
         f.write("\n")
 
 
+def alter_sql_for_sqlglot(sql: str) -> str:
+    """Alter the specified SQL to avoid issues SQLGlot has with some SQL syntax."""
+    # sqlglot parses UDFs with keyword names incorrectly:
+    # https://github.com/tobymao/sqlglot/issues/3332
+    sql = re.sub(
+        r"\.(true|false|null)\(",
+        r".`\1`(",
+        sql,
+        flags=re.IGNORECASE,
+    )
+
+    return sql
+
+
 def qualify_table_references_in_file(path: Path) -> str:
     """Add project id and dataset id to table/view references and persistent udfs in a given query.
 
@@ -243,10 +257,13 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
     # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
-        init_query,
+        alter_sql_for_sqlglot(init_query),
         read="bigquery",
     )
-    sql_query_statements = sqlglot.parse(sql_query, read="bigquery")
+    sql_query_statements = sqlglot.parse(
+        alter_sql_for_sqlglot(sql_query),
+        read="bigquery",
+    )
 
     # tuples of (table identifier, replacement string)
     table_replacements: Set[Tuple[str, str]] = set()

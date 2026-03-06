@@ -33,6 +33,7 @@ SELECT
       LAX_BOOL(event_extra.disableDialog) AS `disableDialog`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.encrypted) AS `encrypted`,
+      LAX_BOOL(event_extra.enrolled) AS `enrolled`,
       LAX_BOOL(event_extra.enter) AS `enter`,
       LAX_BOOL(event_extra.excluded) AS `excluded`,
       LAX_BOOL(event_extra.expand) AS `expand`,

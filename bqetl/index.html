@@ -1,0 +1,4004 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      
+        <link rel="prev" href="../cookbooks/testing/">
+      
+      
+        <link rel="next" href="../reference/configuration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>bqetl CLI - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bqetl-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              bqetl CLI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../mozfun/about/" class="md-tabs__link">
+          
+  
+  
+  UDFs
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cookbooks/common_workflows/" class="md-tabs__link">
+          
+  
+  
+  Cookbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UDFs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UDFs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mozfun
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mozfun
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mozfun
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/addons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Addons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/assert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/bits28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bits28
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/bytes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bytes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/event_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    event_analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/ga/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ga
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/glam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/glean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    glean
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/google_ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/google_search_console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_search_console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/hist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/iap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    iap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/ltv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ltv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/marketing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/mobile_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mobile search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/newtab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Newtab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/serp_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    serp_events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/sumo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sumo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    vpn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moz fx data shared prod
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Moz fx data shared prod
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../moz-fx-data-shared-prod/udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cookbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/common_workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a derived dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bqetl CLI
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bqetl CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autocomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autocomplete
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autocomplete">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        query
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        schedule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-multipart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run-multipart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        initialize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        schema
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="schema">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deploy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dag
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#info_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remove
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dependency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dependency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#show" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        record
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dryrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dryrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        routine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="routine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        publish
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mozfun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mozfun
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="mozfun">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        publish
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-multiple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate-multiple
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scheduled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initiate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        initiate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        complete
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bqetl Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/recommended_practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommended practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/incremental/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/scheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/public_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Public data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/airflow_tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/data_checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/bigconfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bigConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/stage-deploys-continuous-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage Deploy & CI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autocomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autocomplete
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autocomplete">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        query
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        schedule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-multipart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run-multipart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        initialize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        schema
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="schema">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deploy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dag
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#info_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remove
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dependency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dependency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#show" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        record
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dryrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dryrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        routine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="routine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        publish
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mozfun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mozfun
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="mozfun">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        publish
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-multiple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate-multiple
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scheduled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initiate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        initiate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        complete
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="bqetl-cli">bqetl CLI</h1>
+<p>The <code>bqetl</code> command-line tool aims to simplify working with the bigquery-etl repository by supporting common workflows, such as creating, validating and scheduling queries or adding new UDFs.</p>
+<p>Running some commands, for example to create or query tables, will <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request">require Mozilla GCP access</a>.</p>
+<h2 id="installation">Installation</h2>
+<p>Follow the <a href="https://github.com/mozilla/bigquery-etl#quick-start">Quick Start</a> to set up bigquery-etl and the bqetl CLI.</p>
+<h2 id="configuration">Configuration</h2>
+<p><code>bqetl</code> can be configured via the <code>bqetl_project.yaml</code> file. See <a href="https://mozilla.github.io/bigquery-etl/reference/configuration/">Configuration</a> to find available configuration options.</p>
+<h2 id="commands">Commands</h2>
+<p>To list all available commands in the bqetl CLI:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl
+
+Usage:<span class="w"> </span>bqetl<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w">  </span>CLI<span class="w"> </span>tools<span class="w"> </span><span class="k">for</span><span class="w"> </span>working<span class="w"> </span>with<span class="w"> </span>bigquery-etl.
+
+Options:
+<span class="w">  </span>--version<span class="w">  </span>Show<span class="w"> </span>the<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w">  </span>--help<span class="w">     </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w">  </span>alchemer<span class="w">    </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>importing<span class="w"> </span>alchemer<span class="w"> </span>data.
+<span class="w">  </span>dag<span class="w">         </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>DAGs.
+<span class="w">  </span>dependency<span class="w">  </span>Build<span class="w"> </span>and<span class="w"> </span>use<span class="w"> </span>query<span class="w"> </span>dependency<span class="w"> </span>graphs.
+<span class="w">  </span>dryrun<span class="w">      </span>Dry<span class="w"> </span>run<span class="w"> </span>SQL.
+<span class="w">  </span>format<span class="w">      </span>Format<span class="w"> </span>SQL.
+<span class="w">  </span>glam<span class="w">        </span>Tools<span class="w"> </span><span class="k">for</span><span class="w"> </span>GLAM<span class="w"> </span>ETL.
+<span class="w">  </span>mozfun<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>mozfun<span class="w"> </span>routines.
+<span class="w">  </span>query<span class="w">       </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>queries.
+<span class="w">  </span>routine<span class="w">     </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>routines.
+<span class="w">  </span>stripe<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>Stripe<span class="w"> </span>ETL.
+<span class="w">  </span>view<span class="w">        </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>views.
+<span class="w">  </span>backfill<span class="w">    </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>backfills.
+</code></pre></div>
+<p>See help for any command:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span>--help
+</code></pre></div>
+<!--- Documentation for comments is generated via ./bqetl docs generate -->
+
+<h2 id="autocomplete">Autocomplete</h2>
+<p>CLI autocomplete for <code>bqetl</code> can be enabled for bash and zsh shells using the <code>script/bqetl_complete</code> script:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">source</span><span class="w"> </span>script/bqetl_complete
+</code></pre></div>
+<p>Then pressing tab after <code>bqetl</code> commands should print possible commands, e.g. for zsh:
+<div class="highlight"><pre><span></span><code>%<span class="w"> </span>bqetl<span class="w"> </span>query&lt;TAB&gt;&lt;TAB&gt;
+backfill<span class="w">       </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>query.
+create<span class="w">         </span>--<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>query<span class="w"> </span>with<span class="w"> </span>name...
+info<span class="w">           </span>--<span class="w"> </span>Get<span class="w"> </span>information<span class="w"> </span>about<span class="w"> </span>all<span class="w"> </span>or<span class="w"> </span>specific...
+initialize<span class="w">     </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>full<span class="w"> </span>backfill<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination...
+render<span class="w">         </span>--<span class="w"> </span>Render<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>Jinja<span class="w"> </span>template.
+run<span class="w">            </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>query.
+...
+</code></pre></div></p>
+<p><code>source script/bqetl_complete</code> can also be added to <code>~/.bashrc</code> or <code>~/.zshrc</code> to persist settings
+across shell instances.</p>
+<p>For more details on shell completion, see the <a href="https://click.palletsprojects.com/en/8.1.x/shell-completion/">click documentation</a>.</p>
+<h3 id="query"><code>query</code></h3>
+<p>Commands for managing queries.</p>
+<h4 id="create"><code>create</code></h4>
+<p>Create a new query with name
+    <dataset>.<query_name>, for example: telemetry_derived.active_profiles.
+    Use the <code>--project_id</code> option to change the project the query is added to;
+    default is <code>moz-fx-data-shared-prod</code>. Views are automatically generated
+    in the publicly facing dataset.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--owner:<span class="w"> </span>Owner<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="o">(</span>email<span class="w"> </span>address<span class="o">)</span>
+--dag:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>DAG<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span>scheduled<span class="w"> </span>under.If<span class="w"> </span>there<span class="w"> </span>is<span class="w"> </span>no<span class="w"> </span>DAG<span class="w"> </span>name<span class="w"> </span>specified,<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>isscheduled<span class="w"> </span>by<span class="w"> </span>default<span class="w"> </span><span class="k">in</span><span class="w"> </span>DAG<span class="w"> </span>bqetl_default.To<span class="w"> </span>skip<span class="w"> </span>the<span class="w"> </span>automated<span class="w"> </span>scheduling<span class="w"> </span>use<span class="w"> </span>--no_schedule.To<span class="w"> </span>see<span class="w"> </span>available<span class="w"> </span>DAGs<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="sb">`</span>.To<span class="w"> </span>create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DAG<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="sb">`</span>.
+--no_schedule:<span class="w"> </span>Using<span class="w"> </span>this<span class="w"> </span>option<span class="w"> </span>creates<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>without<span class="w"> </span>scheduling<span class="w"> </span>information.<span class="w"> </span>Use<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>add<span class="w"> </span>it<span class="w"> </span>manually<span class="w"> </span><span class="k">if</span><span class="w"> </span>required.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--owner<span class="o">=</span>example@mozilla.com
+
+
+<span class="c1"># The query version gets autocompleted to v1. Queries are created in the</span>
+<span class="c1"># _derived dataset and accompanying views in the public dataset.</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry.deviations<span class="w"> </span>--owner<span class="o">=</span>example@mozilla.com
+</code></pre></div>
+<h4 id="schedule"><code>schedule</code></h4>
+<p>Schedule an existing query</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dag:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>DAG<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span>scheduled<span class="w"> </span>under.<span class="w"> </span>To<span class="w"> </span>see<span class="w"> </span>available<span class="w"> </span>DAGs<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="sb">`</span>.<span class="w"> </span>To<span class="w"> </span>create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DAG<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="sb">`</span>.
+--depends_on_past:<span class="w"> </span>Only<span class="w"> </span>execute<span class="w"> </span>query<span class="w"> </span><span class="k">if</span><span class="w"> </span>previous<span class="w"> </span>scheduled<span class="w"> </span>run<span class="w"> </span>succeeded.
+--task_name:<span class="w"> </span>Custom<span class="w"> </span>name<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Airflow<span class="w"> </span>task.<span class="w"> </span>By<span class="w"> </span>default<span class="w"> </span>the<span class="w"> </span>task<span class="w"> </span>name<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>combination<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span>and<span class="w"> </span>table<span class="w"> </span>name.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dag<span class="o">=</span>bqetl_deviations
+
+
+<span class="c1"># Set a specific name for the task</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dag<span class="o">=</span>bqetl_deviations<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--task-name<span class="o">=</span>deviations
+</code></pre></div>
+<h4 id="info"><code>info</code></h4>
+<p>Get information about all or specific queries.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific queries</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.*
+
+
+<span class="c1"># Get cost and last update timestamp information</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cost<span class="w"> </span>--last_updated
+</code></pre></div>
+<h4 id="backfill"><code>backfill</code></h4>
+<p>Run a backfill for a query. Additional parameters will get passed to bq.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
+--end_date:<span class="w"> </span>Last<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
+--exclude:<span class="w"> </span>Dates<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>backfill.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w">  </span>Cannot<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>with<span class="w"> </span>query.py<span class="w"> </span>backfills.
+--max_rows:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>rows<span class="w"> </span>to<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>result
+--parallelism:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>threads<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>backfill<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel
+--destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
+--checks:<span class="w"> </span>Whether<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>checks<span class="w"> </span>during<span class="w"> </span>backfill
+--custom_query_path:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>given,<span class="w"> </span>the<span class="w"> </span>process<span class="w"> </span>runs<span class="w"> </span>as<span class="w"> </span>usual.
+--checks_file_name:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>file<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>after<span class="w"> </span>each<span class="w"> </span>partition<span class="w"> </span>backfill.<span class="w"> </span>E.g.<span class="w"> </span>custom_checks.sql.<span class="w"> </span>Optional.
+--scheduling_overrides:<span class="w"> </span>Pass<span class="w"> </span>overrides<span class="w"> </span>as<span class="w"> </span>a<span class="w"> </span>JSON<span class="w"> </span>string<span class="w"> </span><span class="k">for</span><span class="w"> </span>scheduling<span class="w"> </span>sections:<span class="w"> </span>parameters<span class="w"> </span>and/or<span class="w"> </span>date_partition_parameter<span class="w"> </span>as<span class="w"> </span>needed.
+--override_retention_range_limit:<span class="w"> </span>True<span class="w"> </span>to<span class="w"> </span>allow<span class="w"> </span>running<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span>outside<span class="w"> </span>the<span class="w"> </span>retention<span class="w"> </span>policy<span class="w"> </span>limit.
+--query_script_entrypoint:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>Click<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>query.py<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>Must<span class="w"> </span>be<span class="w"> </span>a<span class="w"> </span>@click.command<span class="o">()</span><span class="w"> </span><span class="k">function</span>.
+--query_script_date_arg:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>date<span class="w"> </span>argument<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>query.py<span class="w"> </span>accepting<span class="w"> </span>a<span class="w"> </span>YYYY-MM-DD<span class="w"> </span>string.
+--query_script_arg:<span class="w"> </span>CLI<span class="w"> </span>arguments<span class="w"> </span>to<span class="w"> </span>pass<span class="w"> </span>into<span class="w"> </span>query.py<span class="w"> </span><span class="k">if</span><span class="w"> </span>backfilling<span class="w"> </span>a<span class="w"> </span>python<span class="w"> </span>script.<span class="w"> </span>Specified<span class="w"> </span>like<span class="w"> </span><span class="sb">`</span>--query-script-arg<span class="o">=</span><span class="s2">&quot;--project=abc&quot;</span><span class="sb">`</span>
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Backfill for specific date range</span>
+<span class="c1"># second comment line</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project-id<span class="w"> </span>moz-fx-data-shared-prod<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31
+
+
+<span class="c1"># Dryrun backfill for specific date range and exclude date</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project-id<span class="w"> </span>moz-fx-data-shared-prod
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dry_run
+
+
+<span class="c1"># Backfill a query with a query.py</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>monitoring_derived.stable_and_derived_table_sizes_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-entrypoint<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-date-arg<span class="w"> </span>date<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-arg<span class="w"> </span><span class="s2">&quot;--dry-run&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query-script-arg<span class="w"> </span><span class="s2">&quot;--project=moz-fx-data-shared-prod&quot;</span>
+</code></pre></div>
+<h4 id="run"><code>run</code></h4>
+<p>Run a query. Additional parameters will get passed to bq.<br />
+    If a destination_table is set, the query result will be written to BigQuery. Without a destination_table specified, the results are not stored.<br />
+    If the <code>name</code> is not found within the <code>sql/</code> folder bqetl assumes it hasn't been generated yet
+    and will start the generating process for all <code>sql_generators/</code> files.
+    This generation process will take some time and run dryrun calls against BigQuery but this is expected. <br />
+    Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
+    Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+--public_project_id:<span class="w"> </span>Project<span class="w"> </span>with<span class="w"> </span>publicly<span class="w"> </span>accessible<span class="w"> </span>data
+--destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>result<span class="w"> </span>will<span class="w"> </span>not<span class="w"> </span>be<span class="w"> </span>written<span class="w"> </span>to<span class="w"> </span>BigQuery.
+--dataset_id:<span class="w"> </span>Destination<span class="w"> </span>dataset<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>dataset<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Run a query by name</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1
+
+
+<span class="c1"># Run a query file</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>/path/to/query.sql
+
+
+<span class="c1"># Run a query and save the result to BigQuery</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w">         </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w">         </span>--dataset_id<span class="o">=</span>telemetry_derived<span class="w">         </span>--destination_table<span class="o">=</span>ssl_ratios_v1
+</code></pre></div>
+<h4 id="run-multipart"><code>run-multipart</code></h4>
+<p>Run a multipart query.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run-multipart<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>query_dir<span class="o">]</span>
+
+Options:
+
+--using:<span class="w"> </span>comma<span class="w"> </span>separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>join<span class="w"> </span>columns<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>when<span class="w"> </span>combining<span class="w"> </span>results
+--parallelism:<span class="w"> </span>Maximum<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>queries<span class="w"> </span>to<span class="w"> </span>execute<span class="w"> </span>concurrently
+--dataset_id:<span class="w"> </span>Default<span class="w"> </span>dataset,<span class="w"> </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>specified<span class="w"> </span>all<span class="w"> </span>tables<span class="w"> </span>must<span class="w"> </span>be<span class="w"> </span>qualified<span class="w"> </span>with<span class="w"> </span>dataset
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--temp_dataset:<span class="w"> </span>Dataset<span class="w"> </span>where<span class="w"> </span>intermediate<span class="w"> </span>query<span class="w"> </span>results<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>temporarily<span class="w"> </span>stored,<span class="w"> </span>formatted<span class="w"> </span>as<span class="w"> </span>PROJECT_ID.DATASET_ID
+--destination_table:<span class="w"> </span>table<span class="w"> </span>where<span class="w"> </span>combined<span class="w"> </span>results<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>written
+--time_partitioning_field:<span class="w"> </span><span class="nb">time</span><span class="w"> </span>partition<span class="w"> </span>field<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>table
+--clustering_fields:<span class="w"> </span>comma<span class="w"> </span>separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>clustering<span class="w"> </span>fields<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>table
+--dry_run:<span class="w"> </span>Print<span class="w"> </span>bytes<span class="w"> </span>that<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>processed<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>part<span class="w"> </span>and<span class="w"> </span>don<span class="err">&#39;</span>t<span class="w"> </span>run<span class="w"> </span>queries
+--parameters:<span class="w"> </span>query<span class="w"> </span>parameter<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>pass<span class="w"> </span>when<span class="w"> </span>running<span class="w"> </span>parts
+--priority:<span class="w"> </span>Priority<span class="w"> </span><span class="k">for</span><span class="w"> </span>BigQuery<span class="w"> </span>query<span class="w"> </span>jobs<span class="p">;</span><span class="w"> </span>BATCH<span class="w"> </span>priority<span class="w"> </span>will<span class="w"> </span>significantly<span class="w"> </span>slow<span class="w"> </span>down<span class="w"> </span>queries<span class="w"> </span><span class="k">if</span><span class="w"> </span>reserved<span class="w"> </span>slots<span class="w"> </span>are<span class="w"> </span>not<span class="w"> </span>enabled<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>billing<span class="w"> </span>project<span class="p">;</span><span class="w"> </span>defaults<span class="w"> </span>to<span class="w"> </span>INTERACTIVE
+--schema_update_options:<span class="w"> </span>Optional<span class="w"> </span>options<span class="w"> </span><span class="k">for</span><span class="w"> </span>updating<span class="w"> </span>the<span class="w"> </span>schema.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Run a multipart query</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run_multipart<span class="w"> </span>/path/to/query.sql
+</code></pre></div>
+<h4 id="validate"><code>validate</code></h4>
+<p>Validate a query.
+    Checks formatting, scheduling information and dry runs the query.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--validate_schemas:<span class="w"> </span>Require<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>match<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>and<span class="w"> </span>file<span class="w"> </span><span class="k">if</span><span class="w"> </span>present.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>skip<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--ignore-dryrun-skip.
+--no_dryrun:<span class="w"> </span>Skip<span class="w"> </span>running<span class="w"> </span>dryrun.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>False.
+--skip_format_sql:<span class="w"> </span>None
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span>telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># Validate query not in shared-prod</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--use_cloud_function<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ga_derived.blogs_goals_v1
+</code></pre></div>
+<h4 id="initialize"><code>initialize</code></h4>
+<p>Run a full backfill on the destination table for the query.
+       Using this command will:
+        - Create the table if it doesn't exist and run a full backfill.
+        - Run a full backfill if the table exists and is empty.
+        - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
+       It supports <code>query.sql</code> files that use the is_init() pattern.
+       To run in parallel per sample_id, include a @sample_id parameter in the query.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_ids:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>IDs
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>initialization
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>initialization<span class="w"> </span><span class="k">for</span><span class="w"> </span>existing<span class="w"> </span>artifacts,<span class="w"> </span>otherwise<span class="w"> </span>initialization<span class="w"> </span>is<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>empty<span class="w"> </span>tables.
+--force:<span class="w"> </span>Run<span class="w"> </span>the<span class="w"> </span>initialization<span class="w"> </span>even<span class="w"> </span><span class="k">if</span><span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>contains<span class="w"> </span>data.
+--sampling_batch_size:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>sample<span class="w"> </span>IDs<span class="w"> </span>per<span class="w"> </span>initialization<span class="w"> </span>batch<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span><span class="m">0</span>–3,<span class="w"> </span><span class="m">4</span>–7,<span class="w"> </span>etc.<span class="o">)</span>.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+<span class="w">   </span>Examples:
+<span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>init.sql<span class="w"> </span>files:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
+<span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>query.sql<span class="w"> </span>files<span class="w"> </span>and<span class="w"> </span>parallel<span class="w"> </span>run:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
+</code></pre></div>
+<h4 id="render"><code>render</code></h4>
+<p>Render a query Jinja template.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>render<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--output_dir:<span class="w"> </span>Output<span class="w"> </span>directory<span class="w"> </span>generated<span class="w"> </span>SQL<span class="w"> </span>is<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>specified,<span class="w"> </span>rendered<span class="w"> </span>queries<span class="w"> </span>are<span class="w"> </span>printed<span class="w"> </span>to<span class="w"> </span>console.
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>render<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-dir<span class="o">=</span>/tmp
+</code></pre></div>
+<h4 id="schema"><code>schema</code></h4>
+<p>Commands for managing query schemas.</p>
+<h5 id="update"><code>update</code></h5>
+<p>Update the query schema based on the destination table schema and the query schema.
+    If no schema.yaml file exists for a query, one will be created.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_ids:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>IDs
+--update_downstream:<span class="w"> </span>Update<span class="w"> </span>downstream<span class="w"> </span>dependencies.<span class="w"> </span>GCP<span class="w"> </span>authentication<span class="w"> </span>required.
+--tmp_dataset:<span class="w"> </span>GCP<span class="w"> </span>datasets<span class="w"> </span><span class="k">for</span><span class="w"> </span>creating<span class="w"> </span>updated<span class="w"> </span>tables<span class="w"> </span>temporarily.
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>skip<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+--is_init:<span class="w"> </span>Indicates<span class="w"> </span>whether<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>is_init<span class="o">()</span><span class="sb">`</span><span class="w"> </span>condition<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="nb">true</span><span class="w"> </span>of<span class="w"> </span>false.
+--use_dataset_schema:<span class="w"> </span>Use<span class="w"> </span>dataset<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>update<span class="w"> </span>column<span class="w"> </span>descriptions<span class="w"> </span>and<span class="w"> </span>recommend<span class="w"> </span>column<span class="w"> </span>names.<span class="w"> </span>This<span class="w"> </span>option<span class="w"> </span>requires<span class="w"> </span>file<span class="w"> </span>&lt;dataset_name&gt;.yaml<span class="w"> </span>present<span class="w"> </span><span class="k">in</span><span class="w"> </span>bigquery_etl/schema.
+--use_global_schema:<span class="w"> </span>Use<span class="w"> </span>global<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>update<span class="w"> </span>column<span class="w"> </span>descriptions<span class="w"> </span>and<span class="w"> </span>recommend<span class="w"> </span>column<span class="w"> </span>names.<span class="w"> </span>This<span class="w"> </span>option<span class="w"> </span>uses<span class="w"> </span>file<span class="w"> </span>global.yaml<span class="w"> </span><span class="k">in</span><span class="w"> </span>bigquery_etl/schema.
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>updating<span class="w"> </span>schemas<span class="w"> </span><span class="k">for</span><span class="w"> </span>existing<span class="w"> </span>schema<span class="w"> </span>files.<span class="w"> </span>Queries<span class="w"> </span>with<span class="w"> </span>schema.allow_field_addition<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>metadata.yaml<span class="w"> </span>will<span class="w"> </span>still<span class="w"> </span>be<span class="w"> </span>updated.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6
+
+<span class="c1"># Update schema including downstream dependencies (requires GCP)</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span>--update-downstream
+
+<span class="c1"># Skip updating schemas for queries that already have schema.yaml files</span>
+<span class="c1"># (except those with schema.allow_field_addition=true in metadata.yaml)</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span><span class="s1">&#39;*&#39;</span><span class="w"> </span>--skip-existing
+</code></pre></div>
+<h5 id="deploy"><code>deploy</code></h5>
+<p>Deploy the query schema.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_ids:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>IDs
+--force:<span class="w"> </span>Deploy<span class="w"> </span>the<span class="w"> </span>schema<span class="w"> </span>file<span class="w"> </span>without<span class="w"> </span>validating<span class="w"> </span>that<span class="w"> </span>it<span class="w"> </span>matches<span class="w"> </span>the<span class="w"> </span>query
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>skip<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>updating<span class="w"> </span>existing<span class="w"> </span>tables.<span class="w"> </span>This<span class="w"> </span>option<span class="w"> </span>ensures<span class="w"> </span>that<span class="w"> </span>only<span class="w"> </span>new<span class="w"> </span>tables<span class="w"> </span>get<span class="w"> </span>deployed.
+--skip_external_data:<span class="w"> </span>Skip<span class="w"> </span>publishing<span class="w"> </span>external<span class="w"> </span>data,<span class="w"> </span>such<span class="w"> </span>as<span class="w"> </span>Google<span class="w"> </span>Sheets.
+--destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.<span class="w">  </span>Must<span class="w"> </span>be<span class="w"> </span>fully<span class="w"> </span>qualified<span class="w"> </span><span class="o">(</span>project.dataset.table<span class="o">)</span>.
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6
+</code></pre></div>
+<h5 id="validate_1"><code>validate</code></h5>
+<p>Validate the query schema</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>skip<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>validate<span class="w"> </span>telemetry_derived.clients_daily_v6
+</code></pre></div>
+<h3 id="dag"><code>dag</code></h3>
+<p>Commands for managing DAGs.</p>
+<h4 id="info_1"><code>info</code></h4>
+<p>Get information about available DAGs.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--with_tasks:<span class="w"> </span>Include<span class="w"> </span>scheduled<span class="w"> </span>tasks
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get information about all available DAGs</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info
+
+<span class="c1"># Get information about a specific DAG</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>bqetl_ssl_ratios
+
+<span class="c1"># Get information about a specific DAG including scheduled tasks</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>--with_tasks<span class="w"> </span>bqetl_ssl_ratios
+</code></pre></div>
+<h4 id="create_1"><code>create</code></h4>
+<p>Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
+    When creating new DAGs, the DAG name must have a <code>bqetl_</code> prefix.
+    Created DAGs are added to the <code>dags.yaml</code> file.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--schedule_interval:<span class="w"> </span>Schedule<span class="w"> </span>interval<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>DAG.<span class="w"> </span>Schedule<span class="w"> </span>intervals<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>either<span class="w"> </span><span class="k">in</span><span class="w"> </span>CRON<span class="w"> </span>format<span class="w"> </span>or<span class="w"> </span>one<span class="w"> </span>of:<span class="w"> </span>once,<span class="w"> </span>hourly,<span class="w"> </span>daily,<span class="w"> </span>weekly,<span class="w"> </span>monthly,<span class="w"> </span>yearly<span class="w"> </span>or<span class="w"> </span>a<span class="w"> </span>timedelta<span class="w"> </span><span class="o">[]</span>d<span class="o">[]</span>h<span class="o">[]</span>m
+--owner:<span class="w"> </span>Email<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>DAG<span class="w"> </span>owner
+--description:<span class="w"> </span>Description<span class="w"> </span><span class="k">for</span><span class="w"> </span>DAG
+--tag:<span class="w"> </span>Tag<span class="w"> </span>to<span class="w"> </span>apply<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>DAG
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span><span class="k">for</span><span class="w"> </span>which<span class="w"> </span>scheduled<span class="w"> </span>queries<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span>executed
+--email:<span class="w"> </span>Email<span class="w"> </span>addresses<span class="w"> </span>that<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span>send<span class="w"> </span>alerts<span class="w"> </span>to
+--retries:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>retries<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span>attempt<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">case</span><span class="w"> </span>of<span class="w"> </span>failures
+--retry_delay:<span class="w"> </span>Time<span class="w"> </span>period<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>after<span class="w"> </span>failures<span class="w"> </span>before<span class="w"> </span>running<span class="w"> </span>failed<span class="w"> </span>tasks<span class="w"> </span>again
+--catchup:<span class="w"> </span>Allow<span class="w"> </span>DAG<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>past<span class="w"> </span>dates<span class="w"> </span><span class="k">if</span><span class="w"> </span>its<span class="w"> </span>start<span class="w"> </span>date<span class="w"> </span>is<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>past
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_core<span class="w"> </span><span class="se">\</span>
+--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+--description<span class="o">=</span><span class="s2">&quot;Tables derived from `core` pings sent by mobile applications.&quot;</span><span class="w"> </span><span class="se">\</span>
+--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+--start-date<span class="o">=</span><span class="m">2019</span>-07-25
+
+
+<span class="c1"># Create DAG and overwrite default settings</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_ssl_ratios<span class="w"> </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+--description<span class="o">=</span><span class="s2">&quot;The DAG schedules SSL ratios queries.&quot;</span><span class="w"> </span><span class="se">\</span>
+--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+--start-date<span class="o">=</span><span class="m">2019</span>-07-20<span class="w"> </span><span class="se">\</span>
+--email<span class="o">=</span>example2@mozilla.com<span class="w"> </span><span class="se">\</span>
+--email<span class="o">=</span>example3@mozilla.com<span class="w"> </span><span class="se">\</span>
+--retries<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+--retry_delay<span class="o">=</span>30m
+</code></pre></div>
+<h4 id="generate"><code>generate</code></h4>
+<p>Generate Airflow DAGs from DAG definitions.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--output_dir:<span class="w"> </span>Path<span class="w"> </span>directory<span class="w"> </span>with<span class="w"> </span>generated<span class="w"> </span>DAGs
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate all DAGs</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>generate
+
+<span class="c1"># Generate a specific DAG</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_ssl_ratios
+</code></pre></div>
+<h4 id="remove"><code>remove</code></h4>
+<p>Remove a DAG.
+    This will also remove the scheduling information from the queries that were scheduled
+    as part of the DAG.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--output_dir:<span class="w"> </span>Path<span class="w"> </span>directory<span class="w"> </span>with<span class="w"> </span>generated<span class="w"> </span>DAGs
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Remove a specific DAG</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span>bqetl_vrbrowser
+</code></pre></div>
+<h3 id="dependency"><code>dependency</code></h3>
+<p>Build and use query dependency graphs.</p>
+<h4 id="show"><code>show</code></h4>
+<p>Show table references in sql files.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>show<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--without_views:<span class="w"> </span>recursively<span class="w"> </span>resolve<span class="w"> </span>view<span class="w"> </span>references<span class="w"> </span>to<span class="w"> </span>underlying<span class="w"> </span>tables
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+</code></pre></div>
+<h4 id="record"><code>record</code></h4>
+<p>Record table references in metadata. Fails if metadata already contains references section.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>record<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>files<span class="w"> </span>with<span class="w"> </span>existing<span class="w"> </span>references<span class="w"> </span>rather<span class="w"> </span>than<span class="w"> </span>failing
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+</code></pre></div>
+<h3 id="dryrun"><code>dryrun</code></h3>
+<p>Dry run SQL.
+        Uses the dryrun Cloud Function by default which only has access to shared-prod.
+        To dryrun queries accessing tables in another project use set
+        <code>--use-cloud-function=false</code> and ensure that the command line has access to a
+        GCP service account.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--validate_schemas:<span class="w"> </span>Require<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>match<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>and<span class="w"> </span>file<span class="w"> </span><span class="k">if</span><span class="w"> </span>present.
+--respect_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>query<span class="w"> </span>skip<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-skip.
+--project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>perform<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span><span class="k">in</span><span class="w"> </span>when<span class="w"> </span>--use_cloud_function<span class="o">=</span>False
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Examples:
+./bqetl<span class="w"> </span>dryrun<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/
+
+<span class="c1"># Dry run SQL with tables that are not in shared prod</span>
+./bqetl<span class="w"> </span>dryrun<span class="w"> </span>--use-cloud-function<span class="o">=</span><span class="nb">false</span><span class="w"> </span>sql/moz-fx-data-marketing-prod/
+</code></pre></div>
+<h3 id="format"><code>format</code></h3>
+<p>Format SQL files.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>format<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--check:<span class="w"> </span><span class="k">do</span><span class="w"> </span>not<span class="w"> </span>write<span class="w"> </span>changes,<span class="w"> </span>just<span class="w"> </span><span class="k">return</span><span class="w"> </span>status<span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span>code<span class="w"> </span><span class="m">0</span><span class="w"> </span>indicates<span class="w"> </span>nothing<span class="w"> </span>would<span class="w"> </span>change<span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span>code<span class="w"> </span><span class="m">1</span><span class="w"> </span>indicates<span class="w"> </span>some<span class="w"> </span>files<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>reformatted
+--ignore_skip:<span class="w"> </span>Ignore<span class="w"> </span>format<span class="w"> </span>skip<span class="w"> </span>configuration.
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Format a specific file</span>
+./bqetl<span class="w"> </span>format<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+
+<span class="c1"># Format all SQL files in `sql/`</span>
+./bqetl<span class="w"> </span>format<span class="w"> </span>sql
+
+<span class="c1"># Format standard in (will write to standard out)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bqetl<span class="w"> </span>format
+</code></pre></div>
+<h3 id="routine"><code>routine</code></h3>
+<p>Commands for managing routines for internal use.</p>
+<h4 id="create_2"><code>create</code></h4>
+<p>Create a new routine. Specify whether the routine is a UDF or
+    stored procedure by adding a --udf or --stored_prodecure flag.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--udf:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>UDF
+--stored_procedure:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>stored<span class="w"> </span>procedure
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a UDF</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.array_slice
+
+
+<span class="c1"># Create a stored procedure</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>udf.events_daily
+
+
+<span class="c1"># Create a UDF in a project other than shared-prod</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.active_last_week<span class="w"> </span>--project<span class="o">=</span>moz-fx-data-marketing-prod
+</code></pre></div>
+<h4 id="info_2"><code>info</code></h4>
+<p>Get routine information.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--usages:<span class="w"> </span>Show<span class="w"> </span>routine<span class="w"> </span>usages
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get information about all internal routines in a specific dataset</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>udf.*
+
+
+<span class="c1"># Get usage information of specific routine</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>udf.get_key
+</code></pre></div>
+<h4 id="validate_2"><code>validate</code></h4>
+<p>Validate formatting of routines and run tests.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--docs_only:<span class="w"> </span>Only<span class="w"> </span>validate<span class="w"> </span>docs.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Validate all routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate
+
+
+<span class="c1"># Validate selected routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
+</code></pre></div>
+<h4 id="publish"><code>publish</code></h4>
+<p>Publish routines to BigQuery. Requires service account access.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>publish<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dependency_dir:<span class="w"> </span>The<span class="w"> </span>directory<span class="w"> </span>JavaScript<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span><span class="k">for</span><span class="w"> </span>UDFs<span class="w"> </span>are<span class="w"> </span>stored.
+--gcs_bucket:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--gcs_path:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+<span class="c1"># Publish all routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>publish
+
+
+<span class="c1"># Publish selected routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
+</code></pre></div>
+<h4 id="rename"><code>rename</code></h4>
+<p>Rename routine or routine dataset. Replaces all usages in queries with
+    the new name.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span><span class="w"> </span><span class="o">[</span>new_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Rename routine</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_slice<span class="w"> </span>udf.list_slice
+
+
+<span class="c1"># Rename routine matching a specific pattern</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_*<span class="w"> </span>udf.list_*
+</code></pre></div>
+<h3 id="mozfun"><code>mozfun</code></h3>
+<p>Commands for managing public mozfun routines.</p>
+<h4 id="create_3"><code>create</code></h4>
+<p>Create a new mozfun routine. Specify whether the routine is a UDF or
+stored procedure by adding a --udf or --stored_prodecure flag. UDFs
+are added to the <code>mozfun</code> project.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--udf:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>UDF
+--stored_procedure:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>stored<span class="w"> </span>procedure
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a UDF</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>bytes.zero_right
+
+
+<span class="c1"># Create a stored procedure</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>event_analysis.events_daily
+</code></pre></div>
+<h4 id="info_3"><code>info</code></h4>
+<p>Get mozfun routine information.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--usages:<span class="w"> </span>Show<span class="w"> </span>routine<span class="w"> </span>usages
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get information about all internal routines in a specific dataset</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span>hist.*
+
+
+<span class="c1"># Get usage information of specific routine</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>hist.mean
+</code></pre></div>
+<h4 id="validate_3"><code>validate</code></h4>
+<p>Validate formatting of mozfun routines and run tests.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--docs_only:<span class="w"> </span>Only<span class="w"> </span>validate<span class="w"> </span>docs.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Validate all routines</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate
+
+
+<span class="c1"># Validate selected routines</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate<span class="w"> </span>hist.*
+</code></pre></div>
+<h4 id="publish_1"><code>publish</code></h4>
+<p>Publish mozfun routines. This command is used
+by Airflow only.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>publish<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
+
+Options:
+
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dependency_dir:<span class="w"> </span>The<span class="w"> </span>directory<span class="w"> </span>JavaScript<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span><span class="k">for</span><span class="w"> </span>UDFs<span class="w"> </span>are<span class="w"> </span>stored.
+--gcs_bucket:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--gcs_path:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+</code></pre></div>
+<h4 id="rename_1"><code>rename</code></h4>
+<p>Rename mozfun routine or mozfun routine dataset.
+Replaces all usages in queries with the new name.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span><span class="w"> </span><span class="o">[</span>new_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Rename routine</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>hist.extract<span class="w"> </span>hist.ext
+
+
+<span class="c1"># Rename routine matching a specific pattern</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>*.array_*<span class="w"> </span>*.list_*
+
+
+<span class="c1"># Rename routine dataset</span>
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>hist.*<span class="w"> </span>histogram.*
+</code></pre></div>
+<h3 id="backfill_1"><code>backfill</code></h3>
+<p>Commands for managing backfills.</p>
+<h4 id="create_4"><code>create</code></h4>
+<p>Create a new backfill entry in the backfill.yaml file.  Create
+    a backfill.yaml file if it does not already exist.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--end_date:<span class="w"> </span>Last<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--exclude:<span class="w"> </span>Dates<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>backfill.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--watcher:<span class="w"> </span>Watcher<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>backfill<span class="w"> </span><span class="o">(</span>email<span class="w"> </span>address<span class="o">)</span>
+--custom_query_path:<span class="w"> </span>Path<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>custom<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill.<span class="w"> </span>Optional.
+--shredder_mitigation:<span class="w"> </span>Wether<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span>using<span class="w"> </span>an<span class="w"> </span>auto-generated<span class="w"> </span>query<span class="w"> </span>that<span class="w"> </span>mitigates<span class="w"> </span>shredder<span class="w"> </span>effect.
+--override_retention_range_limit:<span class="w"> </span>True<span class="w"> </span>to<span class="w"> </span>allow<span class="w"> </span>running<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span>outside<span class="w"> </span>the<span class="w"> </span>retention<span class="w"> </span>policy<span class="w"> </span>limit.
+--override_depends_on_past_end_date:<span class="w"> </span>If<span class="w"> </span>set,<span class="w"> </span>allow<span class="w"> </span>backfill<span class="w"> </span><span class="k">for</span><span class="w"> </span>depends_on_past<span class="w"> </span>tables<span class="w"> </span>to<span class="w"> </span>have<span class="w"> </span>an<span class="w"> </span>end<span class="w"> </span>date<span class="w"> </span>before<span class="w"> </span>the<span class="w"> </span>entry<span class="w"> </span>date.<span class="w"> </span>In<span class="w"> </span>some<span class="w"> </span>cases,<span class="w"> </span>this<span class="w"> </span>can<span class="w"> </span>cause<span class="w"> </span>inconsistencies<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>data.
+--billing_project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="k">in</span>.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>different<span class="w"> </span>slot<span class="w"> </span>reservation<span class="w"> </span>than<span class="w"> </span>the<span class="w"> </span>one<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>query<span class="err">&#39;</span>s<span class="w"> </span>default<span class="w"> </span>project.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
+</code></pre></div>
+<h4 id="validate_4"><code>validate</code></h4>
+<p>Validate backfill.yaml file format and content.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--ignore_missing_metadata:<span class="w"> </span>Ignore<span class="w"> </span>backfills<span class="w"> </span><span class="k">for</span><span class="w"> </span>tables<span class="w"> </span>missing<span class="w"> </span>metadata.yaml.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>checked-in<span class="w"> </span>queries<span class="w"> </span>without<span class="w"> </span>running<span class="w"> </span>sql<span class="w"> </span>generation.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># validate all backfill.yaml files if table is not specified</span>
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>validated<span class="p">;</span>
+default<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+
+<span class="w">    </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate
+</code></pre></div>
+<h4 id="validate-multiple"><code>validate-multiple</code></h4>
+<p>Validates multiple backfill.yaml files format and content.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate-multiple<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>backfill_files<span class="o">]</span>
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>This<span class="w"> </span><span class="nb">command</span><span class="w"> </span>was<span class="w"> </span>created<span class="w"> </span>to<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>pre-commit<span class="w"> </span>hook<span class="w"> </span><span class="k">for</span><span class="w"> </span>backfill<span class="w"> </span>file<span class="w"> </span>changes<span class="w"> </span>related<span class="w"> </span>validation.
+
+
+<span class="c1"># validate all backfill.yaml files if table is not specified</span>
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>validated<span class="p">;</span>
+default<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+
+Example:
+
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate-multiple<span class="w">         </span>sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml<span class="w">         </span>sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
+</code></pre></div>
+<h4 id="info_4"><code>info</code></h4>
+<p>Get backfill(s) information from all or specific table(s).</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--status:<span class="w"> </span>Filter<span class="w"> </span>backfills<span class="w"> </span>with<span class="w"> </span>this<span class="w"> </span>status.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific table.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># Get info for all tables.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info
+
+
+<span class="c1"># Get info from all tables with specific status.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span>--status<span class="o">=</span>Initiate
+</code></pre></div>
+<h4 id="scheduled"><code>scheduled</code></h4>
+<p>Get information on backfill(s) that require processing.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--status:<span class="w"> </span>Whether<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>backfills<span class="w"> </span>to<span class="w"> </span>process<span class="w"> </span>or<span class="w"> </span>to<span class="w"> </span>complete.
+--json_path:<span class="w"> </span>None
+--ignore_old_entries:<span class="w"> </span>If<span class="w"> </span>set,<span class="w"> </span>entries<span class="w"> </span>older<span class="w"> </span>than<span class="w"> </span><span class="m">28</span><span class="w"> </span>days<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>ignored<span class="w"> </span>due<span class="w"> </span>to<span class="w"> </span>BigQuery<span class="w"> </span>retention<span class="w"> </span>settings.
+--ignore_missing_metadata:<span class="w"> </span>Ignore<span class="w"> </span>backfills<span class="w"> </span><span class="k">for</span><span class="w"> </span>tables<span class="w"> </span>missing<span class="w"> </span>metadata.yaml.<span class="w"> </span>This<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>checked-in<span class="w"> </span>queries<span class="w"> </span>without<span class="w"> </span>running<span class="w"> </span>sql<span class="w"> </span>generation.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific table.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># Get info for all tables.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled
+</code></pre></div>
+<h4 id="initiate"><code>initiate</code></h4>
+<p>Process entry in backfill.yaml with Initiate status that has not yet been processed.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>initiate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--parallelism:<span class="w"> </span>Maximum<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>queries<span class="w"> </span>to<span class="w"> </span>execute<span class="w"> </span>concurrently
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+
+<span class="c1"># Initiate backfill entry for specific table</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>initiate<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>
+default<span class="w"> </span>project_id<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+</code></pre></div>
+<h4 id="complete"><code>complete</code></h4>
+<p>Complete entry in backfill.yaml with Complete status that has not yet been processed..</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span><span class="nb">complete</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>Coding<span class="w"> </span>agents<span class="w"> </span>aren<span class="err">&#39;</span>t<span class="w"> </span>allowed<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>this<span class="w"> </span>command.
+
+
+
+<span class="c1"># Complete backfill entry for specific table</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>
+default<span class="w"> </span>project_id<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

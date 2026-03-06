@@ -30,7 +30,7 @@ mozilla-metric-config-parser==2026.1.1
 mozilla-schema-generator==0.5.1
 mypy==1.15.0
 openai==2.6.1
-pandas==2.3.3
+pandas==3.0.0
 paramiko==4.0.0
 pathos==0.3.4
 pip-tools==7.5.2

@@ -10,10 +10,10 @@ owners:
 labels:
   incremental: true
   owner1: lmcfall
-  dag: bqetl_braze_currents
-scheduling:
-  dag_name: bqetl_braze_currents
-  date_partition_parameter: click_time
+#   dag: bqetl_braze_currents
+# scheduling:
+#   dag_name: bqetl_braze_currents
+#   date_partition_parameter: click_time
 bigquery:
   time_partitioning:
     type: day

@@ -1,0 +1,62 @@
+# Subscription 1: no synthetic record because same purchase date as previous change
+- timestamp: 2000-01-02 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s1
+    status: 1
+    last_transaction:
+      purchase_date: 2000-01-01 00:00:00Z
+
+# Subscription 2: no synthetic record because purchase date not in past
+- timestamp: 2000-02-01 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    original_transaction_id: s2
+    status: 1
+    last_transaction:
+      purchase_date: 2000-02-01 00:00:00Z
+
+# Subscription 3: no synthetic record because purchase date not after previous change
+- timestamp: 2000-03-02 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s3
+    status: 1
+    last_transaction:
+      purchase_date: 2000-03-01 00:00:00Z
+
+# Subscription 4: no synthetic record because subscription not active
+- timestamp: 2000-04-02 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s4
+    status: 2
+    last_transaction:
+      purchase_date: 2000-04-01 00:00:00Z
+
+# Subscription 5: synthetic record for new subscription
+- timestamp: 2000-05-02 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    original_transaction_id: s5
+    status: 1
+    last_transaction:
+      purchase_date: 2000-05-01 00:00:00Z
+
+# Subscription 6: synthetic record for subscription update
+- timestamp: 2000-06-02 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s6
+    status: 1
+    last_transaction:
+      purchase_date: 2000-06-01 00:00:00Z
+
+# Subscription 7: synthetic record for subscription grace period update
+- timestamp: 2000-07-07 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s7
+    status: 4
+    last_transaction:
+      purchase_date: 2000-07-01 00:00:00Z

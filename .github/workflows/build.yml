@@ -990,10 +990,15 @@ jobs:
         run: npm i @octokit/graphql@7.0.2
       - name: Find PR number
         id: find-pr
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_PR_TITLE: ${{ github.event.pull_request.title }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "pr_number=$EVENT_PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$EVENT_PR_TITLE" >> $GITHUB_OUTPUT
           else
             # Use gh CLI to find PR for this branch
             PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
@@ -1002,8 +1007,6 @@ jobs:
             echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
             echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
           fi
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Post diff to GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -32,6 +32,9 @@ on:
           - 'true'
 
 
+# Drop all default GITHUB_TOKEN permissions; each job declares its own least-privilege set.
+permissions: {}
+
 env:
   PYTHON_VERSION: '3.11'
 
@@ -39,6 +42,8 @@ jobs:
   decide-runs:
     name: Decide what checks to run based on changed files
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: |
       (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
@@ -108,6 +113,8 @@ jobs:
   build:
     name: Build Environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - &checkout
         uses: actions/checkout@v6
@@ -146,6 +153,8 @@ jobs:
   verify-requirements:
     name: Verify Requirements
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build]
     steps:
       - *checkout
@@ -159,6 +168,8 @@ jobs:
   verify-format-yaml:
     name: Verify YAML Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build]
     steps:
       - *checkout
@@ -170,6 +181,8 @@ jobs:
   verify-format-sql:
     name: Verify SQL Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
@@ -632,6 +645,8 @@ jobs:
   validate-backfills:
     name: Validate Backfills
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [generate-sql, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:

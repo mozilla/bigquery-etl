@@ -643,17 +643,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    braze_external__braze_sends_combined__v1 = bigquery_etl_query(
-        task_id="braze_external__braze_sends_combined__v1",
-        destination_table="braze_sends_combined_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
-        date_partition_parameter="click_time",
-        depends_on_past=False,
-    )
-
     braze_external__braze_clicks__v1.set_upstream(
         braze_external__braze_currents_firefox_click__v1
     )
@@ -688,16 +677,4 @@ with DAG(
 
     braze_external__braze_sends__v1.set_upstream(
         wait_for_checks__fail_braze_derived__users__v1
-    )
-
-    braze_external__braze_sends_combined__v1.set_upstream(
-        braze_external__braze_clicks__v1
-    )
-
-    braze_external__braze_sends_combined__v1.set_upstream(
-        braze_external__braze_opens__v1
-    )
-
-    braze_external__braze_sends_combined__v1.set_upstream(
-        braze_external__braze_sends__v1
     )

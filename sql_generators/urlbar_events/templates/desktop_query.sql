@@ -62,15 +62,9 @@ WITH events_unnested AS (
     ping_info.seq,
     normalized_channel,
     normalized_country_code,
-    normalized_os,
-    client_info.os_version,
-    normalized_app_name AS app_version,
-    metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
-    metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
     `moz-fx-data-shared-prod`.udf.normalize_search_engine(
       mozfun.map.get_key(extra, "search_engine_default_id")
     ) AS normalized_engine,
-    mozfun.map.get_key(extra, "sap") AS sap,
     COALESCE(metrics.boolean.urlbar_pref_suggest_data_collection, FALSE) AS pref_data_collection,
     COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
     COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
@@ -88,6 +82,12 @@ WITH events_unnested AS (
       SPLIT(mozfun.map.get_key(extra, "results"), ','),
       SPLIT(mozfun.map.get_key(extra, "groups"), ',')
     ) AS results,
+    normalized_os,
+    client_info.os_version,
+    normalized_app_name AS app_version,
+    metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
+    metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
+    mozfun.map.get_key(extra, "sap") AS sap
   FROM
     `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event
@@ -109,13 +109,7 @@ add_conditionals AS (
     seq,
     normalized_channel,
     normalized_country_code,
-    normalized_os,
-    os_version,
-    app_version,
-    pref_ohttp_available,
-    pref_ohttp_enabled,
     normalized_engine,
-    sap,
     pref_data_collection,
     pref_sponsored_suggestions,
     pref_fx_suggestions,
@@ -145,6 +139,12 @@ add_conditionals AS (
       ELSE NULL
     END AS annoyance_signal_type,
     profile_group_id,
+    normalized_os,
+    os_version,
+    app_version,
+    pref_ohttp_available,
+    pref_ohttp_enabled,
+    sap
   FROM
     events_unnested
 ),

@@ -1,0 +1,21 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the usage bucket
+- name: api_key_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the API key used. Null for usage in the Anthropic Console.
+- name: model
+  type: STRING
+  mode: NULLABLE
+  description: Model used (e.g., claude-sonnet-4-20250514)
+- name: model_family
+  type: STRING
+  mode: NULLABLE
+  description: Model family extracted from the model name (e.g., claude-sonnet, claude-opus, claude-haiku).
+- name: cost_usd
+  type: NUMERIC
+  mode: NULLABLE
+  description: Estimated cost in USD, computed from token counts and published Anthropic pricing.

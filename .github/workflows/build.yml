@@ -32,6 +32,9 @@ on:
           - 'true'
 
 
+# Drop all default GITHUB_TOKEN permissions; each job declares its own least-privilege set.
+permissions: {}
+
 env:
   PYTHON_VERSION: '3.11'
 
@@ -39,6 +42,8 @@ jobs:
   decide-runs:
     name: Decide what checks to run based on changed files
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: |
       (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
@@ -108,6 +113,8 @@ jobs:
   build:
     name: Build Environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - &checkout
         uses: actions/checkout@v6
@@ -146,6 +153,8 @@ jobs:
   verify-requirements:
     name: Verify Requirements
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build]
     steps:
       - *checkout
@@ -159,6 +168,8 @@ jobs:
   verify-format-yaml:
     name: Verify YAML Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build]
     steps:
       - *checkout
@@ -170,6 +181,8 @@ jobs:
   verify-format-sql:
     name: Verify SQL Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
@@ -632,6 +645,8 @@ jobs:
   validate-backfills:
     name: Validate Backfills
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [generate-sql, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
@@ -975,10 +990,15 @@ jobs:
         run: npm i @octokit/graphql@7.0.2
       - name: Find PR number
         id: find-pr
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_PR_TITLE: ${{ github.event.pull_request.title }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "pr_number=$EVENT_PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pr_title=$EVENT_PR_TITLE" >> $GITHUB_OUTPUT
           else
             # Use gh CLI to find PR for this branch
             PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
@@ -987,8 +1007,6 @@ jobs:
             echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
             echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
           fi
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Post diff to GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

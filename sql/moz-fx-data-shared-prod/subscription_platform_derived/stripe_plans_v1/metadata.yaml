@@ -2,6 +2,7 @@ friendly_name: Stripe plans
 description: |-
   Stripe plans.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

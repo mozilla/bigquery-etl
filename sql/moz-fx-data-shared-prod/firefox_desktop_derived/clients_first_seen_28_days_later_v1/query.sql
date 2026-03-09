@@ -15,6 +15,7 @@ WITH clients_first_seen_28_days_ago AS (
     baseline_distribution_partner_id AS partner_id,
     baseline_attribution.campaign AS attribution_campaign,
     baseline_attribution.content AS attribution_content,
+    baseline_attribution_msclkid AS attribution_msclkid,
     baseline_attribution_dltoken AS attribution_dltoken,
     baseline_attribution_dlsource AS attribution_dlsource,
     baseline_attribution_experiment AS attribution_experiment,
@@ -152,6 +153,7 @@ SELECT
     FALSE
   ) AS qualified_week4,
   @submission_date AS submission_date,
-  app_build_id
+  app_build_id,
+  attribution_msclkid,
 FROM
   clients_first_seen_28_days_ago_with_days_seen

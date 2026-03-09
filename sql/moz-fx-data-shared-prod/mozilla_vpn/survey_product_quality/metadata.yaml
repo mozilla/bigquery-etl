@@ -6,4 +6,5 @@ description: 'An import of survey data from Alchemer (SurveyGizmo) for the Mozil
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

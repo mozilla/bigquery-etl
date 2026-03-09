@@ -2748,7 +2748,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_animation_range_start,
       metrics.counter.use_counter_css_page_css_animation_range,
       metrics.counter.use_counter_css_page_css_animation_range_end,
-      metrics.counter.use_counter_css_page_css_animation_range_start
+      metrics.counter.use_counter_css_page_css_animation_range_start,
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5520,7 +5522,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_animation_range_start,
       metrics.counter.use_counter_css_page_css_animation_range,
       metrics.counter.use_counter_css_page_css_animation_range_end,
-      metrics.counter.use_counter_css_page_css_animation_range_start
+      metrics.counter.use_counter_css_page_css_animation_range_start,
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8292,7 +8296,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_animation_range_start,
       metrics.counter.use_counter_css_page_css_animation_range,
       metrics.counter.use_counter_css_page_css_animation_range_end,
-      metrics.counter.use_counter_css_page_css_animation_range_start
+      metrics.counter.use_counter_css_page_css_animation_range_start,
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11064,7 +11070,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_animation_range_start,
       metrics.counter.use_counter_css_page_css_animation_range,
       metrics.counter.use_counter_css_page_css_animation_range_end,
-      metrics.counter.use_counter_css_page_css_animation_range_start
+      metrics.counter.use_counter_css_page_css_animation_range_start,
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13836,7 +13844,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_animation_range_start,
       metrics.counter.use_counter_css_page_css_animation_range,
       metrics.counter.use_counter_css_page_css_animation_range_end,
-      metrics.counter.use_counter_css_page_css_animation_range_start
+      metrics.counter.use_counter_css_page_css_animation_range_start,
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

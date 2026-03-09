@@ -1,0 +1,35 @@
+friendly_name: Zendesk Tickets Base (Daily)
+description: "Daily metrics for SUMO support tickets from Zendesk.\n\nGrain: Daily\
+  \ x Product (UTC timezone)\n\nSingle source of truth tracking:\n- Support tickets\
+  \ created each day\n- Product breakdown\n- Includes app review tickets (firefox-android-reviews,\
+  \ firefox-ios-reviews)\n\nReplaces duplicated q1 CTEs in:\n- daily-sssr-by-product.sql\n\
+  - daily-sssr-excl-app-reviews.sql\n\nProduct Mapping:\n- 'firefox-android' \u2192\
+  \ 'firefox-android-reviews'\n- 'firefox-ios' \u2192 'firefox-ios-reviews'\n- 'firefox-private-network-vpn'\
+  \ \u2192 'mozilla-vpn'\n- 'vpn_relay_bundle' \u2192 'mozilla-vpn'\n\nUsed by:\n\
+  - SSSR calculation queries\n- Support volume dashboards\n- Ticket escalation reports\n"
+owners:
+- plee@mozilla.com
+labels:
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: plee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket

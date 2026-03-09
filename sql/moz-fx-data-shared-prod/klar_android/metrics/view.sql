@@ -1166,7 +1166,9 @@ SELECT
       metrics.custom_distribution.quotamanager_initialize_temporarystorage_non_persisted_zero_usage_origins,
       metrics.custom_distribution.webrtcdtls_key_exchange_algorithm,
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
-      metrics.custom_distribution.networking_http_3_upload_throughput_1_10
+      metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
+      metrics.custom_distribution.dom_script_memory_cache_ever_hit,
+      metrics.custom_distribution.dom_script_memory_cache_ref_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

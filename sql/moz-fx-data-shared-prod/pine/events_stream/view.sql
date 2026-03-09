@@ -442,6 +442,7 @@ SELECT
       JSON_VALUE(event_extra.scroll_position) AS `scroll_position`,
       JSON_VALUE(event_extra.search_domain) AS `search_domain`,
       JSON_VALUE(event_extra.search_mode) AS `search_mode`,
+      JSON_VALUE(event_extra.selection) AS `selection`,
       JSON_VALUE(event_extra.selfdetails) AS `selfdetails`,
       JSON_VALUE(event_extra.selftype) AS `selftype`,
       JSON_VALUE(event_extra.server_stack) AS `server_stack`,

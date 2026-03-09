@@ -9,9 +9,11 @@ SELECT
     STRUCT(LAX_BOOL(event_extra.blocked) AS `blocked`) AS `boolean`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
+      JSON_VALUE(event_extra.feature) AS `feature`,
       JSON_VALUE(event_extra.id) AS `id`,
       JSON_VALUE(event_extra.name) AS `name`,
       JSON_VALUE(event_extra.reason) AS `reason`,
+      JSON_VALUE(event_extra.selection) AS `selection`,
       JSON_VALUE(event_extra.value) AS `value`
     ) AS `string`
   ) AS extras

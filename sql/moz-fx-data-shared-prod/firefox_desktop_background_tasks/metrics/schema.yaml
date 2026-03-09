@@ -1352,6 +1352,21 @@ fields:
         Telemetry scalar os.environment.is_default_handler.
 
         '
+    - name: browser_ai_control_is_blocking
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Status of the AI controls per feature setting.
+
+        When true, the feature enhancement is blocked.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

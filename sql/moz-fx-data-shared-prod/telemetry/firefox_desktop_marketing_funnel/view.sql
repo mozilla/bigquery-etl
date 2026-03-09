@@ -9,3 +9,5 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
   ON marketing_funnel.country = tier_mapping.country_code
+WHERE
+  (NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE) OR funnel_derived = 'partner')

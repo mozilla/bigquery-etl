@@ -75,11 +75,6 @@ top_of_funnel AS (
     COUNTIF(firefox_desktop_downloads > 0) AS downloads
   FROM
     top_of_funnel_base
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
-    USING (country_code)
-  WHERE
-    NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
   GROUP BY
     ALL
 ),
@@ -184,13 +179,8 @@ windows_installer_installs AS (
   FROM
     windows_installer_installs_base
   LEFT JOIN
-    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
-    USING (country_code)
-  LEFT JOIN
     ga4_attr_by_dltoken_dedup
     USING (dltoken)
-  WHERE
-    NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
   GROUP BY
     ALL
 ),
@@ -287,11 +277,6 @@ desktop_funnels_telemetry AS (
     cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
     AND cfs28.is_desktop
     AND cfs28.normalized_channel = 'release'
-    -- Exclude EU for core funnels, but keep partner funnel metrics
-    AND (
-      NOT COALESCE(tier_mapping.has_web_cookie_consent, FALSE)
-      OR cfs28.funnel_derived = 'partner'
-    )
   GROUP BY
     ALL
 ),

@@ -1,11 +1,11 @@
 fields:
 - name: date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Date question was created (Pacific Standard Time)
 - name: product
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: |
     Mozilla product the question is about. Normalized from Kitsune product field:
     - 'mobile' → 'firefox-android'

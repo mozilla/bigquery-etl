@@ -2,7 +2,7 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date question was created (Pacific Standard Time)
+  description: Date question was created (UTC Time)
 - name: product
   type: STRING
   mode: NULLABLE

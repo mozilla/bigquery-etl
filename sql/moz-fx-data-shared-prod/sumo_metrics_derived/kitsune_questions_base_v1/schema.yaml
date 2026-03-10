@@ -7,7 +7,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |
-    Mozilla product the question is about. Normalized from Kitsune product field:
+    Mozilla product the question is about. This value is normalized from the original product field in Kitsune:
     - 'mobile' → 'firefox-android'
     - 'ios' → 'firefox-ios'
     - 'firefox-enterprise' → 'firefox'

@@ -1,6 +1,9 @@
 friendly_name: Kitsune Forum Questions Base (Daily)
 description: |
-  Daily metrics for SUMO forum questions from the Kitsune database.
+  Daily metrics aggregated from SUMO forum questions. 
+  This metrics are based in data from Kitsune's database, which is the platform that supports SUMO.
+  
+  The dates are in UTC timezone.
 
   Grain: Daily x Product (UTC timezone)
 

@@ -2,7 +2,7 @@ fields:
 - name: creation_date
   type: DATE
   mode: NULLABLE
-  description: Date question was created (UTC Time)
+  description: Date when the question was created in the forum, converted to UTC Time.
 - name: product
   type: STRING
   mode: NULLABLE

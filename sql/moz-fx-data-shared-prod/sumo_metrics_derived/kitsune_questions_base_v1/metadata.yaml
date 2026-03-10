@@ -14,7 +14,7 @@ description: |
   - Engagement metrics (answers, votes, helpful answers)
   - Locale distribution
 
-  Replaces duplicated q2 CTEs in:
+  This table supports the same use cases of the following manual queries:
   - daily-sssr-by-product.sql
   - daily-sssr-excl-app-reviews.sql
 

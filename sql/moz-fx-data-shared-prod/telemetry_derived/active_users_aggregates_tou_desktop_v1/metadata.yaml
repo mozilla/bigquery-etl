@@ -1,0 +1,24 @@
+friendly_name: Active Users Aggregates Tou Desktop
+description: |-
+  Aggregated table of daily, weekly, and monthly active users segmented by Terms of Use
+  acceptance status, built to support the Terms of Use acceptance rate dashboard. This
+  derived table replaces a Looker PDT that was causing inflated aggregates, providing
+  performant, pre-aggregated data without relying on Looker-side caching.
+
+  Jira ticket: https://mozilla-hub.atlassian.net/browse/DO-2122
+owners:
+- rbaffourawuah@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: active_users_aggregates_tou_desktop_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_date'
+    require_partition_filter: true
+    expiration_days: null
+require_column_descriptions: true

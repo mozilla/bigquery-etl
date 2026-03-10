@@ -47,6 +47,8 @@ description: |-
   Fields with data_sensitivity categories [{SENSITIVITY_CATEGORIES}] are removed.
 
   See the full (access-restricted) data in `{source_view_short}`.
+labels:
+    authorized: true
 """
 
 # Probeinfo metric types that get a "2" suffix in BQ due to ingestion pipeline fix.

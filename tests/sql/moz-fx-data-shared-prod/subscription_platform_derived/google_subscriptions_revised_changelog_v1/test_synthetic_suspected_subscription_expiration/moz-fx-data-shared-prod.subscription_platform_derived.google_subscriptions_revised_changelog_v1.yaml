@@ -1,0 +1,10 @@
+# Subscription 1: no synthetic record because subscription not active
+- id: s1-2000-01-01T00:00:00.000000-UPDATE
+  timestamp: 2000-01-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 1999-12-01 00:00:00Z
+    expiry_time: 2000-01-01 00:00:00Z

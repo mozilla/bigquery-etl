@@ -1,0 +1,17 @@
+friendly_name: Google Play Store (Syndicate)
+description: |
+  Syndicated Google Play Store data from moz-fx-data-marketing-prod (synced using data transfer). User-facing views into this data can be found
+  in the google_play_store dataset.
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-marketing-prod"
+    syndicated_dataset: "google_play_store"
+  syndicated_tables:
+    - TODO: Add list of tables to be syndicated
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

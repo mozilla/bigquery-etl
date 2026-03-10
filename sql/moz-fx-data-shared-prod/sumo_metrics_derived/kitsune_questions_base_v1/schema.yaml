@@ -1,5 +1,5 @@
 fields:
-- name: date
+- name: creation_date
   type: DATE
   mode: NULLABLE
   description: Date question was created (UTC Time)

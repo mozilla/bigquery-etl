@@ -1,4 +1,4 @@
-friendly_name: Vitals - Lmk Rate
+friendly_name: Vitals - LMK Rate
 description: |-
   Pulls lmk rate data from Google Play Store API for the following apps:
 

@@ -1,6 +1,6 @@
-friendly_name: Vitals - Anr Rate
+friendly_name: Vitals - ANR Rate
 description: |-
-  Pulls crash rate data from Google Play Store API for the following apps:
+  Pulls anr rate data from Google Play Store API for the following apps:
 
   - org.mozilla.firefox
   - org.mozilla.firefox_beta

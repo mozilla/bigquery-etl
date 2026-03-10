@@ -67,13 +67,15 @@ SELECT
   api_key_id,
   model,
   CONCAT('claude-', REGEXP_EXTRACT(model, r'(opus|sonnet|haiku)')) AS model_family,
-  ROUND(
-    (uncached_input_tokens / 1e6 * input_mtok) + (
-      cache_creation_5m_input_tokens / 1e6 * cache_write_5m_mtok
-    ) + (cache_creation_1h_input_tokens / 1e6 * cache_write_1h_mtok) + (
-      cache_read_input_tokens / 1e6 * cache_read_mtok
-    ) + (output_tokens / 1e6 * output_mtok) + (web_search_requests / 1e3 * web_search_per_1k),
-    6
+  CAST(
+    ROUND(
+      (uncached_input_tokens / 1e6 * input_mtok) + (
+        cache_creation_5m_input_tokens / 1e6 * cache_write_5m_mtok
+      ) + (cache_creation_1h_input_tokens / 1e6 * cache_write_1h_mtok) + (
+        cache_read_input_tokens / 1e6 * cache_read_mtok
+      ) + (output_tokens / 1e6 * output_mtok) + (web_search_requests / 1e3 * web_search_per_1k),
+      6
+    ) AS NUMERIC
   ) AS cost_usd
 FROM
   usage_with_pricing

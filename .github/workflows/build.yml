@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    environment:
+    environment: &build-env
       name: ${{ github.event.pull_request.head.repo.fork == true && github.event.pull_request.author_association != 'MEMBER' && 'external-fork' || 'dev' }}
     steps:
       - &checkout
@@ -162,6 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment: *build-env
     needs: [build]
     steps:
       - *checkout
@@ -177,6 +178,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment: *build-env
     needs: [build]
     steps:
       - *checkout
@@ -190,6 +192,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment: *build-env
     needs: [build, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
@@ -660,6 +663,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment: *build-env
     needs: [generate-sql, decide-runs]
     if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
     steps:
@@ -949,6 +953,7 @@ jobs:
   generate-diff:
     name: Generate and Post SQL Diff
     runs-on: ubuntu-latest
+    environment: *build-env
     needs: [generate-dags, main-generate-sql-and-dags, decide-runs]
     if: |
       (github.ref != 'refs/heads/main') &&

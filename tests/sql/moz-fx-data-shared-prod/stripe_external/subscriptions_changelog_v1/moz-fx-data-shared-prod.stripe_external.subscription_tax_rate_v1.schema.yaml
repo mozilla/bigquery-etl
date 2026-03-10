@@ -1,0 +1,10 @@
+fields:
+- name: subscription_id
+  type: STRING
+  mode: NULLABLE
+- name: tax_rate_id
+  type: STRING
+  mode: NULLABLE
+- name: _fivetran_synced
+  type: TIMESTAMP
+  mode: NULLABLE

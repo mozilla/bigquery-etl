@@ -1,8 +1,8 @@
 friendly_name: Kitsune Forum Questions Base (Daily)
 description: |
-  Daily metrics aggregated from SUMO forum questions. 
+  Daily metrics aggregated from SUMO forum questions.
   This metrics are based in data from Kitsune's database, which is the platform that supports SUMO.
-  
+
   The dates are in UTC timezone.
 
   Grain: Date x Product
@@ -10,9 +10,6 @@ description: |
   Single source of truth tracking:
   - Forum questions posted each day
   - Product breakdown
-  - Quality metrics (spam, locked, archived)
-  - Engagement metrics (answers, votes, helpful answers)
-  - Locale distribution
 
   This table supports the same use cases of the following manual queries:
   - daily-sssr-by-product.sql
@@ -24,10 +21,11 @@ description: |
   - Community engagement reports
 owners:
   - plee@mozilla.com
+  - mozilla/kpi_table_reviewers
 labels:
+  level: gold
   incremental: false
   application: sumo
-  team: support
   type: base_metrics
   schedule: daily
 scheduling:

@@ -17,6 +17,8 @@ WITH tickets AS (
     id AS ticket_id
   FROM
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket`
+  WHERE
+    DATE(TIMESTAMP(created_at), "UTC") = @submission_date
 )
 SELECT
   date_utc AS `date`,

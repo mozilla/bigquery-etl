@@ -1,5 +1,7 @@
 # BigQuery ETL
 
+Hello, world!
+
 This repository contains Mozilla Data Team's:
 
 - Derived ETL jobs that do not require a custom container

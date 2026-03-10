@@ -100,11 +100,15 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - name: Decide which jobs to run
         id: set-flags
+        env:
+          VALIDATE_ROUTINES: ${{ steps.changed-files-routines.outputs.any_changed }}
+          VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
+          VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
         run: |
-          echo "validate-routines=${{ steps.changed-files-routines.outputs.any_changed }}" >> $GITHUB_OUTPUT
-          echo "validate-sql=${{ steps.changed-files-sql.outputs.any_changed }}" >> $GITHUB_OUTPUT
-          echo "validate-bqetl=${{ steps.changed-files-bqetl.outputs.any_changed }}" >> $GITHUB_OUTPUT
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
+          echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
+          echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
             echo "deploy=false" >> $GITHUB_OUTPUT
@@ -144,7 +148,8 @@ jobs:
           pip install --no-deps -r requirements.txt
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
-        if: steps.restore-venv.outputs.cache-hit != 'true'
+        # Don't let forked PRs update the shared cache.
+        if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
         uses: actions/cache/save@v5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
@@ -288,6 +293,8 @@ jobs:
         name: Set project ID
         run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-dryrun.outputs.project_id }}" >> $GITHUB_ENV
       - name: Generate SQL content
+        env:
+          TRIGGER_SQL_GENERATION: ${{ github.event.inputs.trigger-sql-generation }}
         run: |
           # Fetch main branch for merge-base
           git fetch origin main --no-tags
@@ -322,12 +329,12 @@ jobs:
           cd $GITHUB_WORKSPACE
           export GENERATED_SQL_CHANGED=false
 
-          if [ "${{ github.event.inputs.trigger-sql-generation }}" = "true" ]; then
+          if [ "$TRIGGER_SQL_GENERATION" = "true" ]; then
             echo "trigger-sql-generation was set to true; run SQL generation"
             GENERATED_SQL_CHANGED=true
           fi
 
-          if [ "${{ github.ref_name }}" = main ]; then
+          if [ "$GITHUB_REF_NAME" = main ]; then
             echo "On main branch; generate SQL"
             GENERATED_SQL_CHANGED=true
           fi
@@ -462,13 +469,15 @@ jobs:
       - *auth-gcp-stage
       - name: Deploy changes to stage
         timeout-minutes: 60
+        env:
+          SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
         run: |
-          if [ "${{ github.event.inputs.skip-stage-deploys }}" != "true" ]; then
+          if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
             git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
             PATH=".venv/bin:$PATH" script/bqetl stage deploy \
-              --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" \
+              --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" \
               --remove-updated-artifacts \
               $PATHS
           fi
@@ -511,8 +520,10 @@ jobs:
       - *auth-gcp-dryrun
       - *export-dryrun-id-token
       - name: Dry run queries
+        env:
+          SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
         run: |
-          if [ "${{ github.ref_name }}" = main ]; then
+          if [ "$GITHUB_REF_NAME" = main ]; then
             echo "Skip dryruns on main. Dryruns will run in Airflow"
             exit 0
           elif git log --format=%B --no-merges -n 1 |
@@ -520,7 +531,7 @@ jobs:
             echo "Check dry run for all queries because [run-tests] in" \
               "commit message"
             PATHS=sql
-          elif [ "${{ github.event.inputs.skip-stage-deploys }}" = "true" ]; then
+          elif [ "$SKIP_STAGE_DEPLOYS" = "true" ]; then
             PATHS=sql
           elif [ -d "sql/moz-fx-data-integration-tests" ]; then
             PATHS="sql/moz-fx-data-integration-tests"
@@ -991,12 +1002,11 @@ jobs:
       - name: Find PR number
         id: find-pr
         env:
-          EVENT_NAME: ${{ github.event_name }}
           EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
           EVENT_PR_TITLE: ${{ github.event.pull_request.title }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$EVENT_NAME" = "pull_request" ]; then
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             echo "pr_number=$EVENT_PR_NUMBER" >> $GITHUB_OUTPUT
             echo "pr_title=$EVENT_PR_TITLE" >> $GITHUB_OUTPUT
           else
@@ -1051,10 +1061,10 @@ jobs:
             echo "No changes to push"
           else
             git commit -m "Auto-push due to change on main branch [ci skip]" \
-              -m "Created from ${{ github.sha }}"
-            git tag c-${{ github.sha }}
+              -m "Created from $GITHUB_SHA"
+            git tag "c-$GITHUB_SHA"
             git push
-            git push origin c-${{ github.sha }}
+            git push origin "c-$GITHUB_SHA"
           fi
 
   push-private-generated-sql:
@@ -1093,7 +1103,7 @@ jobs:
             echo "No changes to push"
           else
             git commit -m "Auto-push due to change on main branch [ci skip]" \
-              -m "Created from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }} and $private_bqetl_sha"
+              -m "Created from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA and $private_bqetl_sha"
             git push
           fi
 
@@ -1162,13 +1172,15 @@ jobs:
           id_token_include_email: true
           create_credentials_file: false
       - name: Generate API Token and DAG run note
+        env:
+          AUTH_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         run: |
-          REPO_URL="${{ github.server_url }}/${{ github.repository }}"
-          RUN_URL="${REPO_URL}/actions/runs/${{ github.run_id }}"
-          NOTE="DAG triggered by **[${{ github.actor }}](https://github.com/${{ github.actor }})** "
-          NOTE="${NOTE}from ${{ github.repository }} CI build [${{ github.run_number }}](${RUN_URL})"
+          REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+          RUN_URL="${REPO_URL}/actions/runs/${GITHUB_RUN_ID}"
+          NOTE="DAG triggered by **[${GITHUB_ACTOR}](https://github.com/${GITHUB_ACTOR})** "
+          NOTE="${NOTE}from ${GITHUB_REPOSITORY} CI build [${GITHUB_RUN_NUMBER}](${RUN_URL})"
           echo "DAGRUN_NOTE=${NOTE}" >> $GITHUB_ENV
-          echo "ID_TOKEN=${{ steps.auth.outputs.id_token }}" >> $GITHUB_ENV
+          echo "ID_TOKEN=${AUTH_ID_TOKEN}" >> $GITHUB_ENV
       - name: Trigger bqetl-artifact-deployment in Airflow
         run: |
           curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
@@ -1194,7 +1206,7 @@ jobs:
       - *set-stage-project-id
       - name: Delete stage datasets
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${{ github.sha }}_${{ github.run_id }}" --delete-expired
+          PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" --delete-expired
 
   deploy-to-pypi:
     name: Deploy to PyPI

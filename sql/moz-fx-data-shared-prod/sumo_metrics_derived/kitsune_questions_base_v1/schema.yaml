@@ -15,7 +15,7 @@ fields:
 - name: forum_questions_posted
   type: INTEGER
   mode: NULLABLE
-  description: Total number of forum questions posted on this date for this product
+  description: Total number of questions posted in the forum.
 - name: etl_timestamp
   type: TIMESTAMP
   mode: NULLABLE

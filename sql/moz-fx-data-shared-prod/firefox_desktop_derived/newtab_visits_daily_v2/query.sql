@@ -18,6 +18,8 @@ WITH events_unnested AS (
     metrics.boolean.topsites_enabled AS organic_topsites_enabled,
     metrics.boolean.newtab_search_enabled AS newtab_search_enabled,
     metrics.boolean.newtab_weather_enabled AS newtab_weather_enabled,
+    metrics.boolean.newtab_weather_enabled
+    OR metrics.string_list.enabled_widgets IS NOT NULL AS widgets_enabled,
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     metadata.geo.subdivision1 AS geo_subdivision,
     metrics.string.search_engine_default_engine_id AS default_search_engine,
@@ -58,7 +60,7 @@ WITH events_unnested AS (
         AND name IN (
           'opened',
           'closed',
-          -- widgets
+          -- legacy widgets
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
@@ -71,6 +73,11 @@ WITH events_unnested AS (
           'widgets_timer_user_event',
           'widgets_lists_impression',
           'widgets_timer_impression',
+          -- scalable widgets
+          'widgets_impression',
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_event',
           -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',
@@ -265,6 +272,7 @@ core_visit_metrics AS (
     LOGICAL_OR(
       event_category = 'newtab'
       AND event_name IN (
+        -- legacy widgets
         'weather_change_display',
         'weather_open_provider_url',
         'weather_location_selected',
@@ -272,7 +280,11 @@ core_visit_metrics AS (
         'widgets_lists_change_display',
         'widgets_timer_change_display',
         'widgets_timer_toggle_notification',
-        'widgets_timer_user_event'
+        'widgets_timer_user_event',
+        -- scalable widgets
+        'widgets_enabled',
+        'widgets_user_event',
+        'widgets_container_event'
       )
     )
     AND LOGICAL_OR(is_default_ui) AS is_widget_interaction,
@@ -316,6 +328,7 @@ core_visit_metrics AS (
     AND LOGICAL_OR(is_default_ui) AS is_section,
     ANY_VALUE(ping_info.experiments) AS experiments,
     ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
+    ANY_VALUE(widgets_enabled) AS widgets_enabled,
     ANY_VALUE(default_search_engine) AS default_search_engine,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(topsite_rows) AS topsite_rows,
@@ -388,7 +401,11 @@ core_visit_metrics AS (
           'sections_follow_section',
           'sections_unblock_section',
           'sections_unfollow_section',
-          'inline_selection_click'
+          'inline_selection_click',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_event'
         )
       ),
       0
@@ -424,7 +441,11 @@ core_visit_metrics AS (
           'sections_follow_section',
           'sections_unblock_section',
           'sections_unfollow_section',
-          'inline_selection_click'
+          'inline_selection_click',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_event'
         )
       ),
       0
@@ -511,6 +532,7 @@ core_visit_metrics AS (
       COUNTIF(
         event_category = 'newtab'
         AND event_name IN (
+          -- legacy widgets
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
@@ -518,7 +540,11 @@ core_visit_metrics AS (
           'widgets_lists_change_display',
           'widgets_timer_change_display',
           'widgets_timer_toggle_notification',
-          'widgets_timer_user_event'
+          'widgets_timer_user_event',
+          -- scalable widgets
+          'widgets_enabled',
+          'widgets_user_event',
+          'widgets_container_event'
         )
       ),
       0
@@ -528,9 +554,12 @@ core_visit_metrics AS (
       COUNTIF(
         event_category = 'newtab'
         AND event_name IN (
+          -- legacy widgets
           'weather_impression',
           'widgets_lists_impression',
-          'widgets_timer_impression'
+          'widgets_timer_impression',
+          --scalable widgets
+          'widgets_impression'
         )
       ),
       0

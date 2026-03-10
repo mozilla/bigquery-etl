@@ -5,7 +5,7 @@ description: |
   
   The dates are in UTC timezone.
 
-  Grain: Daily x Product (UTC timezone)
+  Grain: Date x Product
 
   Single source of truth tracking:
   - Forum questions posted each day

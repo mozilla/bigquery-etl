@@ -36,5 +36,5 @@ SELECT
 FROM
   deduped
 GROUP BY
-  `date`,
+  `creation_date`,
   product

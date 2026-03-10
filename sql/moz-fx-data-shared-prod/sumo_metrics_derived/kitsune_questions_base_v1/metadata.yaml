@@ -23,7 +23,6 @@ owners:
   - plee@mozilla.com
   - mozilla/kpi_table_reviewers
 labels:
-  level: gold
   incremental: false
   application: sumo
   type: base_metrics

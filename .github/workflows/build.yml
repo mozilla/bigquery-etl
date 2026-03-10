@@ -149,7 +149,7 @@ jobs:
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
         # Don't let forked PRs update the shared cache.
-        if: steps.restore-venv.outputs.cache-hit != 'true' && github.event_name != 'pull_request_target'
+        if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
         uses: actions/cache/save@v5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}

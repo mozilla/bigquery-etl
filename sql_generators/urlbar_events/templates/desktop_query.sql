@@ -84,7 +84,7 @@ WITH events_unnested AS (
     ) AS results,
     normalized_os,
     client_info.os_version,
-    normalized_app_name AS app_version,
+    client_info.app_display_version as app_display_version,
     metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
     metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
     mozfun.map.get_key(extra, "sap") AS sap
@@ -141,7 +141,7 @@ add_conditionals AS (
     profile_group_id,
     normalized_os,
     os_version,
-    app_version,
+    app_display_version,
     pref_ohttp_available,
     pref_ohttp_enabled,
     sap

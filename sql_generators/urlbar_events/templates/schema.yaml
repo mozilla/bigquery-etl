@@ -173,7 +173,7 @@ fields:
     mode: NULLABLE
     description: Version of the operating system version running at the client. E.g.
         "100.9.11".
-  - name: app_version
+  - name: app_display_version
     type: STRING
     mode: NULLABLE
     description: User visible version string (e.g. "1.0.3") for the browser.

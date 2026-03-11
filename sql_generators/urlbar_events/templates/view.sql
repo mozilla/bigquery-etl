@@ -17,7 +17,7 @@ SELECT
   normalized_os,
   os_version,
   normalized_engine,
-  app_version,
+  app_display_version,
   pref_ohttp_available,
   pref_ohttp_enabled,
   sap,

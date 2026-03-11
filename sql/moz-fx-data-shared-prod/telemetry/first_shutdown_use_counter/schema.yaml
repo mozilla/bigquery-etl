@@ -11813,6 +11813,322 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page set Window.orientation
+    - name: use_counter2_navigateevent_downloadrequest_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigateEvent.downloadRequest
+    - name: use_counter2_navigateevent_downloadrequest_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigateEvent.downloadRequest
+    - name: use_counter2_navigateevent_downloadrequest_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigateEvent.downloadRequest
+    - name: use_counter2_navigateevent_downloadrequest_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigateEvent.downloadRequest
+    - name: use_counter2_navigateevent_formdata_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigateEvent.formData
+    - name: use_counter2_navigateevent_formdata_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigateEvent.formData
+    - name: use_counter2_navigateevent_formdata_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigateEvent.formData
+    - name: use_counter2_navigateevent_formdata_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigateEvent.formData
+    - name: use_counter2_navigateevent_hasuavisualtransition_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigateEvent.hasUAVisualTransition
+    - name: use_counter2_navigateevent_hasuavisualtransition_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigateEvent.hasUAVisualTransition
+    - name: use_counter2_navigateevent_hasuavisualtransition_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigateEvent.hasUAVisualTransition
+    - name: use_counter2_navigateevent_hasuavisualtransition_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigateEvent.hasUAVisualTransition
+    - name: use_counter2_navigateevent_intercept_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NavigateEvent.intercept
+    - name: use_counter2_navigateevent_intercept_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NavigateEvent.intercept
+    - name: use_counter2_navigateevent_scroll_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NavigateEvent.scroll
+    - name: use_counter2_navigateevent_scroll_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NavigateEvent.scroll
+    - name: use_counter2_navigateevent_sourceelement_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigateEvent.sourceElement
+    - name: use_counter2_navigateevent_sourceelement_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigateEvent.sourceElement
+    - name: use_counter2_navigateevent_sourceelement_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigateEvent.sourceElement
+    - name: use_counter2_navigateevent_sourceelement_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigateEvent.sourceElement
+    - name: use_counter2_navigateeventinterceptwithprecommithandler_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document calls NavigateEvent.intercept() with a precommitHandler
+    - name: use_counter2_navigateeventinterceptwithprecommithandler_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page calls NavigateEvent.intercept() with a precommitHandler
+    - name: use_counter2_navigation_back_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.back
+    - name: use_counter2_navigation_back_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.back
+    - name: use_counter2_navigation_entries_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.entries
+    - name: use_counter2_navigation_entries_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.entries
+    - name: use_counter2_navigation_forward_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.forward
+    - name: use_counter2_navigation_forward_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.forward
+    - name: use_counter2_navigation_navigate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.navigate
+    - name: use_counter2_navigation_navigate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.navigate
+    - name: use_counter2_navigation_reload_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.reload
+    - name: use_counter2_navigation_reload_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.reload
+    - name: use_counter2_navigation_traverseto_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.traverseTo
+    - name: use_counter2_navigation_traverseto_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.traverseTo
+    - name: use_counter2_navigation_updatecurrententry_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Navigation.updateCurrentEntry
+    - name: use_counter2_navigation_updatecurrententry_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Navigation.updateCurrentEntry
+    - name: use_counter2_navigationactivation_entry_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationActivation.entry
+    - name: use_counter2_navigationactivation_entry_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationActivation.entry
+    - name: use_counter2_navigationactivation_entry_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationActivation.entry
+    - name: use_counter2_navigationactivation_entry_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationActivation.entry
+    - name: use_counter2_navigationactivation_from_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationActivation.from
+    - name: use_counter2_navigationactivation_from_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationActivation.from
+    - name: use_counter2_navigationactivation_from_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationActivation.from
+    - name: use_counter2_navigationactivation_from_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationActivation.from
+    - name: use_counter2_navigationactivation_navigationtype_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationActivation.navigationType
+    - name: use_counter2_navigationactivation_navigationtype_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationActivation.navigationType
+    - name: use_counter2_navigationactivation_navigationtype_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationActivation.navigationType
+    - name: use_counter2_navigationactivation_navigationtype_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationActivation.navigationType
+    - name: use_counter2_navigationhistoryentry_getstate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NavigationHistoryEntry.getState
+    - name: use_counter2_navigationhistoryentry_getstate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NavigationHistoryEntry.getState
+    - name: use_counter2_navigationoncurrententrychange_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document adds an event listener for currententrychange
+        on Navigation
+    - name: use_counter2_navigationoncurrententrychange_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page adds an event listener for currententrychange on
+        Navigation
+    - name: use_counter2_navigationonnavigate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document adds an event listener for navigate on Navigation
+    - name: use_counter2_navigationonnavigate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page adds an event listener for navigate on Navigation
+    - name: use_counter2_navigationonnavigateerror_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document adds an event listener for navigateerror on
+        Navigation
+    - name: use_counter2_navigationonnavigateerror_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page adds an event listener for navigateerror on Navigation
+    - name: use_counter2_navigationonnavigatesuccess_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document adds an event listener for navigatesuccess on
+        Navigation
+    - name: use_counter2_navigationonnavigatesuccess_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page adds an event listener for navigatesuccess on Navigation
+    - name: use_counter2_navigationprecommitcontroller_addhandler_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NavigationPrecommitController.addHandler
+    - name: use_counter2_navigationprecommitcontroller_addhandler_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NavigationPrecommitController.addHandler
+    - name: use_counter2_navigationprecommitcontroller_redirect_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called NavigationPrecommitController.redirect
+    - name: use_counter2_navigationprecommitcontroller_redirect_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called NavigationPrecommitController.redirect
+    - name: use_counter2_navigationtransition_committed_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationTransition.committed
+    - name: use_counter2_navigationtransition_committed_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationTransition.committed
+    - name: use_counter2_navigationtransition_committed_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationTransition.committed
+    - name: use_counter2_navigationtransition_committed_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationTransition.committed
+    - name: use_counter2_navigationtransition_finished_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationTransition.finished
+    - name: use_counter2_navigationtransition_finished_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationTransition.finished
+    - name: use_counter2_navigationtransition_finished_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationTransition.finished
+    - name: use_counter2_navigationtransition_finished_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationTransition.finished
+    - name: use_counter2_navigationtransition_from_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationTransition.from
+    - name: use_counter2_navigationtransition_from_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationTransition.from
+    - name: use_counter2_navigationtransition_from_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationTransition.from
+    - name: use_counter2_navigationtransition_from_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationTransition.from
+    - name: use_counter2_navigationtransition_navigationtype_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document got NavigationTransition.navigationType
+    - name: use_counter2_navigationtransition_navigationtype_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page got NavigationTransition.navigationType
+    - name: use_counter2_navigationtransition_navigationtype_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document set NavigationTransition.navigationType
+    - name: use_counter2_navigationtransition_navigationtype_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page set NavigationTransition.navigationType
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23482,6 +23798,324 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page set Window.orientation
+        - name: use_counter2_navigateevent_downloadrequest_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigateEvent.downloadRequest
+        - name: use_counter2_navigateevent_downloadrequest_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigateEvent.downloadRequest
+        - name: use_counter2_navigateevent_downloadrequest_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigateEvent.downloadRequest
+        - name: use_counter2_navigateevent_downloadrequest_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigateEvent.downloadRequest
+        - name: use_counter2_navigateevent_formdata_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigateEvent.formData
+        - name: use_counter2_navigateevent_formdata_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigateEvent.formData
+        - name: use_counter2_navigateevent_formdata_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigateEvent.formData
+        - name: use_counter2_navigateevent_formdata_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigateEvent.formData
+        - name: use_counter2_navigateevent_hasuavisualtransition_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigateEvent.hasUAVisualTransition
+        - name: use_counter2_navigateevent_hasuavisualtransition_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigateEvent.hasUAVisualTransition
+        - name: use_counter2_navigateevent_hasuavisualtransition_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigateEvent.hasUAVisualTransition
+        - name: use_counter2_navigateevent_hasuavisualtransition_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigateEvent.hasUAVisualTransition
+        - name: use_counter2_navigateevent_intercept_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NavigateEvent.intercept
+        - name: use_counter2_navigateevent_intercept_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NavigateEvent.intercept
+        - name: use_counter2_navigateevent_scroll_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NavigateEvent.scroll
+        - name: use_counter2_navigateevent_scroll_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NavigateEvent.scroll
+        - name: use_counter2_navigateevent_sourceelement_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigateEvent.sourceElement
+        - name: use_counter2_navigateevent_sourceelement_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigateEvent.sourceElement
+        - name: use_counter2_navigateevent_sourceelement_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigateEvent.sourceElement
+        - name: use_counter2_navigateevent_sourceelement_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigateEvent.sourceElement
+        - name: use_counter2_navigateeventinterceptwithprecommithandler_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document calls NavigateEvent.intercept() with a precommitHandler
+        - name: use_counter2_navigateeventinterceptwithprecommithandler_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page calls NavigateEvent.intercept() with a precommitHandler
+        - name: use_counter2_navigation_back_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.back
+        - name: use_counter2_navigation_back_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.back
+        - name: use_counter2_navigation_entries_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.entries
+        - name: use_counter2_navigation_entries_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.entries
+        - name: use_counter2_navigation_forward_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.forward
+        - name: use_counter2_navigation_forward_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.forward
+        - name: use_counter2_navigation_navigate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.navigate
+        - name: use_counter2_navigation_navigate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.navigate
+        - name: use_counter2_navigation_reload_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.reload
+        - name: use_counter2_navigation_reload_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.reload
+        - name: use_counter2_navigation_traverseto_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.traverseTo
+        - name: use_counter2_navigation_traverseto_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.traverseTo
+        - name: use_counter2_navigation_updatecurrententry_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Navigation.updateCurrentEntry
+        - name: use_counter2_navigation_updatecurrententry_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Navigation.updateCurrentEntry
+        - name: use_counter2_navigationactivation_entry_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationActivation.entry
+        - name: use_counter2_navigationactivation_entry_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationActivation.entry
+        - name: use_counter2_navigationactivation_entry_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationActivation.entry
+        - name: use_counter2_navigationactivation_entry_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationActivation.entry
+        - name: use_counter2_navigationactivation_from_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationActivation.from
+        - name: use_counter2_navigationactivation_from_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationActivation.from
+        - name: use_counter2_navigationactivation_from_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationActivation.from
+        - name: use_counter2_navigationactivation_from_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationActivation.from
+        - name: use_counter2_navigationactivation_navigationtype_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationActivation.navigationType
+        - name: use_counter2_navigationactivation_navigationtype_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationActivation.navigationType
+        - name: use_counter2_navigationactivation_navigationtype_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationActivation.navigationType
+        - name: use_counter2_navigationactivation_navigationtype_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationActivation.navigationType
+        - name: use_counter2_navigationhistoryentry_getstate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NavigationHistoryEntry.getState
+        - name: use_counter2_navigationhistoryentry_getstate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NavigationHistoryEntry.getState
+        - name: use_counter2_navigationoncurrententrychange_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document adds an event listener for currententrychange
+            on Navigation
+        - name: use_counter2_navigationoncurrententrychange_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page adds an event listener for currententrychange
+            on Navigation
+        - name: use_counter2_navigationonnavigate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document adds an event listener for navigate on Navigation
+        - name: use_counter2_navigationonnavigate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page adds an event listener for navigate on Navigation
+        - name: use_counter2_navigationonnavigateerror_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document adds an event listener for navigateerror
+            on Navigation
+        - name: use_counter2_navigationonnavigateerror_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page adds an event listener for navigateerror on
+            Navigation
+        - name: use_counter2_navigationonnavigatesuccess_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document adds an event listener for navigatesuccess
+            on Navigation
+        - name: use_counter2_navigationonnavigatesuccess_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page adds an event listener for navigatesuccess on
+            Navigation
+        - name: use_counter2_navigationprecommitcontroller_addhandler_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NavigationPrecommitController.addHandler
+        - name: use_counter2_navigationprecommitcontroller_addhandler_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NavigationPrecommitController.addHandler
+        - name: use_counter2_navigationprecommitcontroller_redirect_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called NavigationPrecommitController.redirect
+        - name: use_counter2_navigationprecommitcontroller_redirect_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called NavigationPrecommitController.redirect
+        - name: use_counter2_navigationtransition_committed_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationTransition.committed
+        - name: use_counter2_navigationtransition_committed_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationTransition.committed
+        - name: use_counter2_navigationtransition_committed_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationTransition.committed
+        - name: use_counter2_navigationtransition_committed_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationTransition.committed
+        - name: use_counter2_navigationtransition_finished_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationTransition.finished
+        - name: use_counter2_navigationtransition_finished_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationTransition.finished
+        - name: use_counter2_navigationtransition_finished_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationTransition.finished
+        - name: use_counter2_navigationtransition_finished_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationTransition.finished
+        - name: use_counter2_navigationtransition_from_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationTransition.from
+        - name: use_counter2_navigationtransition_from_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationTransition.from
+        - name: use_counter2_navigationtransition_from_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationTransition.from
+        - name: use_counter2_navigationtransition_from_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationTransition.from
+        - name: use_counter2_navigationtransition_navigationtype_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document got NavigationTransition.navigationType
+        - name: use_counter2_navigationtransition_navigationtype_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page got NavigationTransition.navigationType
+        - name: use_counter2_navigationtransition_navigationtype_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document set NavigationTransition.navigationType
+        - name: use_counter2_navigationtransition_navigationtype_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page set NavigationTransition.navigationType
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -9145,6 +9145,18 @@ fields:
         A ''miss'' means no valid token was available.
 
         '
+    - name: custom_review_prompt_record_nimbus_event_attempts
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Counts Nimbus event recording attempts after the custom review
+        prompt is shown, labeled by result.
   - name: string
     type: RECORD
     mode: NULLABLE

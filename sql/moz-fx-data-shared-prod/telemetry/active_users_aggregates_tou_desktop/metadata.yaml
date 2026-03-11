@@ -1,0 +1,19 @@
+friendly_name: Active Users Aggregates ToU Desktop
+description: |-
+  Aggregated table of daily, weekly, and monthly active desktop users segmented by Terms of Use
+  acceptance status, built to support the Terms of Use acceptance rate dashboard. This
+  derived table replaces a Looker PDT that was causing inflated aggregates, providing
+  performant, pre-aggregated data without relying on Looker-side caching.
+owners:
+- rbaffourawuah@mozilla.com
+- mhirose@mozilla.com
+labels:
+  owner1: rbaffourawuah
+  owner2: mhirose
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.active_users_aggregates_tou_desktop_v1

@@ -20712,6 +20712,577 @@ fields:
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_doc_navigate_event_intercept_with_precommit_handler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document calls NavigateEvent.intercept() with a precommitHandler.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigateevent_downloadrequest_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigateEvent.downloadRequest. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_downloadrequest_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigateEvent.downloadRequest. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_formdata_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigateEvent.formData. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_formdata_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigateEvent.formData. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_hasuavisualtransition_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigateEvent.hasUAVisualTransition. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_hasuavisualtransition_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigateEvent.hasUAVisualTransition. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_intercept
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called NavigateEvent.intercept. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_scroll
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called NavigateEvent.scroll. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_sourceelement_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigateEvent.sourceElement. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigateevent_sourceelement_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigateEvent.sourceElement. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_back
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.back. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_entries
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.entries. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_forward
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.forward. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_navigate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.navigate. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_oncurrententrychange
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document adds an event listener for currententrychange
+        on Navigation. Compare against `use.counter.content_documents_destroyed` to
+        calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_onnavigate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document adds an event listener for navigate on Navigation.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigation_onnavigateerror
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document adds an event listener for navigateerror on
+        Navigation. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_doc_navigation_onnavigatesuccess
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document adds an event listener for navigatesuccess
+        on Navigation. Compare against `use.counter.content_documents_destroyed` to
+        calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_reload
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.reload. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_traverseto
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.traverseTo. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigation_updatecurrententry
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Navigation.updateCurrentEntry.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_entry_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationActivation.entry. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_entry_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationActivation.entry. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_from_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationActivation.from. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_from_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationActivation.from. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_navigationtype_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationActivation.navigationType. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationactivation_navigationtype_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationActivation.navigationType. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationhistoryentry_getstate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called NavigationHistoryEntry.getState.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigationprecommitcontroller_addhandler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called NavigationPrecommitController.addHandler.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigationprecommitcontroller_redirect
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called NavigationPrecommitController.redirect.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_committed_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationTransition.committed. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_committed_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationTransition.committed. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_finished_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationTransition.finished. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_finished_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationTransition.finished. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_from_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationTransition.from. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_from_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationTransition.from. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_navigationtype_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document got NavigationTransition.navigationType. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_navigationtransition_navigationtype_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document set NavigationTransition.navigationType. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigate_event_intercept_with_precommit_handler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page calls NavigateEvent.intercept() with a precommitHandler.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigateevent_downloadrequest_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigateEvent.downloadRequest. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_downloadrequest_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigateEvent.downloadRequest. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_formdata_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigateEvent.formData. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_formdata_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigateEvent.formData. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_hasuavisualtransition_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigateEvent.hasUAVisualTransition. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigateevent_hasuavisualtransition_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigateEvent.hasUAVisualTransition. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigateevent_intercept
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called NavigateEvent.intercept. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigateevent_scroll
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called NavigateEvent.scroll. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_sourceelement_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigateEvent.sourceElement. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigateevent_sourceelement_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigateEvent.sourceElement. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_back
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.back. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_entries
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.entries. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_forward
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.forward. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_navigate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.navigate. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_oncurrententrychange
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page adds an event listener for currententrychange on
+        Navigation. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_onnavigate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page adds an event listener for navigate on Navigation.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigation_onnavigateerror
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page adds an event listener for navigateerror on Navigation.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigation_onnavigatesuccess
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page adds an event listener for navigatesuccess on Navigation.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigation_reload
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.reload. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_traverseto
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.traverseTo. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigation_updatecurrententry
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Navigation.updateCurrentEntry. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigationactivation_entry_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationActivation.entry. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationactivation_entry_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationActivation.entry. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationactivation_from_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationActivation.from. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationactivation_from_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationActivation.from. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationactivation_navigationtype_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationActivation.navigationType. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigationactivation_navigationtype_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationActivation.navigationType. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigationhistoryentry_getstate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called NavigationHistoryEntry.getState.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigationprecommitcontroller_addhandler
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called NavigationPrecommitController.addHandler.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigationprecommitcontroller_redirect
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called NavigationPrecommitController.redirect.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_committed_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationTransition.committed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_committed_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationTransition.committed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_finished_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationTransition.finished. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_finished_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationTransition.finished. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_from_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationTransition.from. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_from_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationTransition.from. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_navigationtransition_navigationtype_getter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page got NavigationTransition.navigationType. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_navigationtransition_navigationtype_setter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page set NavigationTransition.navigationType. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

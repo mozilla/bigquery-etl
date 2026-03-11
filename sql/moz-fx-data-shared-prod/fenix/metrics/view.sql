@@ -1102,7 +1102,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.custom_review_prompt_record_nimbus_event_attempts
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3188,7 +3189,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.custom_review_prompt_record_nimbus_event_attempts
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5294,7 +5296,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.custom_review_prompt_record_nimbus_event_attempts
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

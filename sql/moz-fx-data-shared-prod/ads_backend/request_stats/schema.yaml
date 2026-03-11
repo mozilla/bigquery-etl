@@ -387,6 +387,24 @@ fields:
         taxonomy (e.g. "210,315"). May be null if no contextual information was provided.
 
         '
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: ad_flags
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'The boolean state of all MARS experiment-backed feature flags
+        at the time this ping was recorded.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

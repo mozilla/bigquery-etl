@@ -174,9 +174,9 @@ bqetl_subplat:
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
   default_args:
-    owner: srose@mozilla.com
+    owner: phlee@mozilla.com
     start_date: "2025-06-10"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "phlee@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -195,9 +195,9 @@ bqetl_subplat_hourly:
     so the last run targeting a particular date partition will happen at 00:30 the following day,
     allowing time for all of the data for that date to be ready from external systems like Stripe.
   default_args:
-    owner: srose@mozilla.com
+    owner: phlee@mozilla.com
     start_date: "2025-06-10"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "phlee@mozilla.com", "srose@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -1408,8 +1408,8 @@ bqetl_google_search_console:
   description: |
     ETLs using data exported from Google Search Console.
 
-    The Google Search Console exports for a date typically complete by 08:00 UTC two days after that date,
-    so these ETLs should generally specify `date_partition_offset: -1` in their scheduling metadata.
+    The Google Search Console exports for a date typically complete by 08:00 UTC three days after that date,
+    so these ETLs should generally specify `date_partition_offset: -2` in their scheduling metadata.
   default_args:
     owner: srose@mozilla.com
     email:
@@ -1890,6 +1890,25 @@ bqetl_jira_service_desk:
     retry_delay: 30m
     start_date: '2024-12-16'
   description: This DAG schedules some tasks that fetch data from the Jira API for service desk tickets
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_jira_tickets:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mcastelluccio@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-01'
+  description: This DAG schedules Jira ticket ingestion tasks
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:
@@ -2587,6 +2606,27 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
+bqetl_sumo_metrics:
+  schedule_interval: 0 3 * * *
+  description: |
+    Daily derived metrics for Mozilla Support (SUMO) covering:
+    - Content freshness and quality tracking for knowledge base articles
+    - Translation/localization metrics for priority locales (30-day SLA)
+    - Forum questions and engagement metrics from Kitsune
+    - Support ticket volume from Zendesk
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+    start_date: '2025-07-14'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_ai_usage:
   default_args:
     depends_on_past: false
@@ -2628,3 +2668,27 @@ bqetl_semrush:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_cloud_eng_daily:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: wstuckey@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-03-04'
+  description: Daily task runner for Cloud Eng bqetl tasks
+  max_active_runs: null
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/no_triage

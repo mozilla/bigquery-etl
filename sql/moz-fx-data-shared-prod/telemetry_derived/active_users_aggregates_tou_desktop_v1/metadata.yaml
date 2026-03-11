@@ -11,8 +11,6 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  level: gold
-  change_controlled: true
   shredder_mitigation: true
   owner1: rbaffourawuah
   owner2: mhirose

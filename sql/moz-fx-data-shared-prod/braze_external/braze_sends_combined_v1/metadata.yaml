@@ -10,6 +10,8 @@ owners:
 labels:
   incremental: true
   owner1: lmcfall
+scheduling:
+  date_partition_parameter: click_time
 bigquery:
   time_partitioning:
     type: day

@@ -1,0 +1,14 @@
+friendly_name: mozcloud_tenants
+dataset_base_acl: syndicate
+description: tenant_export syndicate views
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-platform-mgmt-global"
+    syndicated_dataset: "tenant_export"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

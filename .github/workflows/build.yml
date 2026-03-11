@@ -44,9 +44,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
+    if: &is-allowed-event |
+      case(
+        github.event_name == 'pull_request_target', github.event.pull_request.head.repo.fork == true,
+        github.event_name == 'pull_request', github.event.pull_request.head.repo.fork != true,
+        true
+      )
     outputs:
       validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
       deploy: ${{ steps.set-flags.outputs.deploy }}
@@ -121,6 +124,7 @@ jobs:
       contents: read
     environment: &build-env
       name: ${{ github.event.pull_request.head.repo.fork == true && github.event.pull_request.author_association != 'MEMBER' && 'external-fork' || 'dev' }}
+    if: *is-allowed-event
     steps:
       - &checkout
         uses: actions/checkout@v6

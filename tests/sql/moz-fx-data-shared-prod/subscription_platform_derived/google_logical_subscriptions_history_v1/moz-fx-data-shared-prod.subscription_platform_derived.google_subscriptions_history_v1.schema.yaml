@@ -1,0 +1,343 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    History record ID.
+- name: valid_from
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    Start of the time range this history record is considered valid for (inclusive).
+- name: valid_to
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31 23:59:59.999999).
+- name: google_subscriptions_revised_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `google_subscriptions_revised_changelog_v1` record this history record was derived from.
+- name: original_subscription_purchase_token
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The subscription's original purchase token.
+    This can differ from `subscription.metadata.purchase_token` if the subscription has had a series of purchases (e.g. upgrades/downgrades).
+- name: subscription
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Google subscription as it ostensibly was during the time range this history record is considered valid for.
+  fields:
+  - name: metadata
+    type: RECORD
+    mode: NULLABLE
+    description: |-
+      Custom subscription metadata recorded by SubPlat.
+    fields:
+    - name: package_name
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The package name of the application for which this subscription was purchased.
+    - name: sku
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The purchased SKU (which Google also refers to as the product ID or subscription ID).
+    - name: sku_type
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The type of purchased SKU (should always be "subs").
+    - name: purchase_token
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The token provided to the user's device when the subscription was purchased.
+    - name: form_of_payment
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The form of payment for the subscription (should always be "GOOGLE_PLAY").
+    - name: is_mutable
+      type: BOOLEAN
+      mode: NULLABLE
+      description: |-
+        Whether SubPlat considers the Firestore record to be mutable.
+    - name: latest_notification_type
+      type: INTEGER
+      mode: NULLABLE
+      # The value descriptions were copied from https://developer.android.com/google/play/billing/rtdn-reference#sub.
+      description: |-
+        The type of the latest real-time developer notification SubPlat received for the subscription.
+
+        * `1` - SUBSCRIPTION_RECOVERED (from SUBSCRIPTION_ON_HOLD)
+        * `2` - SUBSCRIPTION_RENEWED
+        * `3` - SUBSCRIPTION_CANCELED (auto-renewal was disabled, either voluntarily or involuntarily)
+        * `4` - SUBSCRIPTION_PURCHASED
+        * `5` - SUBSCRIPTION_ON_HOLD (not receiving service)
+        * `6` - SUBSCRIPTION_IN_GRACE_PERIOD (still receiving service)
+        * `7` - SUBSCRIPTION_RESTARTED (user restored a subscription which was canceled but hadn't expired yet from Play > Account > Subscriptions)
+        * `8` - SUBSCRIPTION_PRICE_CHANGE_CONFIRMED (by the user)
+        * `9` - SUBSCRIPTION_DEFERRED (recurrence time was extended)
+        * `10` - SUBSCRIPTION_PAUSED (not receiving service)
+        * `11` - SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
+        * `12` - SUBSCRIPTION_REVOKED
+        * `13` - SUBSCRIPTION_EXPIRED
+        * `20` - SUBSCRIPTION_PENDING_PURCHASE_CANCELED
+    - name: replaced_by_another_purchase
+      type: BOOLEAN
+      mode: NULLABLE
+      description: |-
+        Whether the subscription has been replaced by another purchase (e.g. upgrade or downgrade).
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The customer's Mozilla Account user ID.
+        SubPlat sets this to "invalid" if the subscription is replaced by another purchase.
+    - name: verified_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: |-
+        When SubPlat last retrieved the subscription's data from the Google Play API.
+  # The Google Play API field descriptions were copied from https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions.
+  - name: kind
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      This kind represents a subscriptionPurchase object in the androidpublisher service.
+  - name: order_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The order ID of the latest recurring order associated with the purchase of the subscription.
+      If the subscription was canceled because payment was declined, this will be the order ID from the payment declined order.
+  - name: purchase_type
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The type of purchase of the subscription.
+      This field is only set if this purchase was not made using the standard in-app billing flow.
+
+      Possible values are:
+      * `0` - Test (i.e. purchased from a license testing account)
+      * `1` - Promo (i.e. purchased using a promo code)
+  - name: linked_purchase_token
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The purchase token of the originating purchase if this subscription is one of the following:
+      * Re-signup of a canceled but non-lapsed subscription
+      * Upgrade/downgrade from a previous subscription
+  - name: payment_state
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The payment state of the subscription. Not present for canceled, expired subscriptions.
+
+      Possible values are:
+      * `0` - Payment pending
+      * `1` - Payment received
+      * `2` - Free trial
+      * `3` - Pending deferred upgrade/downgrade
+  - name: acknowledgement_state
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The acknowledgement state of the subscription product.
+
+      Possible values are:
+      * `0` - Yet to be acknowledged
+      * `1` - Acknowledged
+  - name: start_time
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      Time at which the subscription was granted.
+  - name: expiry_time
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      Time at which the subscription will expire.
+  - name: auto_resume_time
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      Time at which the subscription will be automatically resumed.
+      Only present if the user has requested to pause the subscription.
+  - name: auto_renewing
+    type: BOOLEAN
+    mode: NULLABLE
+    description: |-
+      Whether the subscription will automatically be renewed when it reaches its current expiry time.
+  - name: cancel_reason
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The reason why a subscription was canceled or is not auto-renewing.
+
+      Possible values are:
+      * `0` - User canceled the subscription
+      * `1` - Subscription was canceled by the system, for example because of a billing problem
+      * `2` - Subscription was replaced with a new subscription
+      * `3` - Subscription was canceled by the developer
+  - name: user_cancellation_time
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time at which the subscription was canceled by the user.
+      Only present if `cancel_reason` is "0".
+  - name: cancel_survey_result
+    type: RECORD
+    mode: NULLABLE
+    description: |-
+      Information provided by the user when they complete the subscription cancellation flow (cancellation reason survey).
+    fields:
+    - name: cancel_survey_reason
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        The cancellation reason the user chose in the survey.
+
+        Possible values are:
+        * `0` - Other
+        * `1` - I don't use this service enough
+        * `2` - Technical issues
+        * `3` - Cost-related reasons
+        * `4` - I found a better app
+    - name: user_input_cancel_reason
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        The customized input cancel reason from the user.
+        Only present when `cancel_survey_reason` is "0".
+  - name: price_currency_code
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      ISO 4217 currency code for the subscription price.
+  - name: price_amount_micros
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      Price of the subscription.
+      For tax exclusive countries, the price doesn't include tax.
+      For tax inclusive countries, the price includes tax.
+      Price is expressed in micro-units, where 1,000,000 micro-units represents one unit of the currency.
+  - name: price_change
+    type: RECORD
+    mode: NULLABLE
+    description: |-
+      The latest price change information available.
+      This is present only when there is an upcoming price change for the subscription yet to be applied.
+      Once the subscription renews with the new price or the subscription is canceled, no price change information will be returned.
+    fields:
+    - name: new_price
+      type: RECORD
+      mode: NULLABLE
+      description: |-
+        The new price the subscription will renew with if the price change is accepted by the user.
+      fields:
+      - name: currency
+        type: STRING
+        mode: NULLABLE
+        description: |-
+          3 letter currency code, as defined by ISO 4217.
+      - name: price_micros
+        type: INTEGER
+        mode: NULLABLE
+        description: |-
+          Price in 1/million of the currency base unit.
+    - name: state
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        The current state of the price change.
+
+        Possible values are:
+        * `0` - Outstanding: State for a pending price change waiting for the user to agree.
+          In this state, you can optionally seek confirmation from the user using the In-App API.
+        * `1` - Accepted: State for an accepted price change that the subscription will renew with unless it's canceled.
+          The price change takes effect on a future date when the subscription renews.
+          Note that the change might not occur when the subscription is renewed next.
+  - name: introductory_price_info
+    type: RECORD
+    mode: NULLABLE
+    description: |-
+      Introductory price information of the subscription.
+      This is only present when the subscription was purchased with an introductory price.
+      This field does not indicate the subscription is currently in introductory price period.
+    fields:
+    - name: introductory_price_amount_micros
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        Introductory price of the subscription, not including tax.
+        Price is expressed in micro-units, where 1,000,000 micro-units represents one unit of the currency.
+    - name: introductory_price_currency_code
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        ISO 4217 currency code for the introductory subscription price.
+    - name: introductory_price_cycles
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        The number of billing periods to offer introductory pricing.
+    - name: introductory_price_period
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        Introductory price period, specified in ISO 8601 format.
+        Common values are (but not limited to) "P1W" (one week), "P1M" (one month), "P3M" (three months), "P6M" (six months), and "P1Y" (one year).
+  - name: promotion_type
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The type of promotion applied on this purchase.
+      This field is only set if a promotion is applied when the subscription was purchased.
+
+      Possible values are:
+      * `0` - One time code
+      * `1` - Vanity code
+  - name: promotion_code
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The promotion code applied on this purchase.
+      This field is only set if a vanity code promotion is applied when the subscription was purchased.
+  - name: country_code
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      ISO 3166-1 alpha-2 billing country/region code of the user at the time the subscription was granted.
+  - name: external_account_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      User account identifier in the third-party service.
+      Only present if account linking happened as part of the subscription purchase flow.
+  - name: obfuscated_external_account_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      An obfuscated version of the ID that is uniquely associated with the user's account in your app.
+      Present for the following purchases:
+      * If account linking happened as part of the subscription purchase flow.
+      * It was specified using `BillingFlowParams.Builder.setObfuscatedAccountId` when the purchase was made.
+  - name: obfuscated_external_profile_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      An obfuscated version of the ID that is uniquely associated with the user's profile in your app.
+      Only present if specified using `BillingFlowParams.Builder.setObfuscatedProfileId` when the purchase was made.
+  - name: developer_payload
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      A developer-specified string that contains supplemental information about an order.

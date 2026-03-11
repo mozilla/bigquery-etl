@@ -16,7 +16,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Total number of questions posted in the forum.
-- name: etl_timestamp
+- name: generated_time
   type: TIMESTAMP
   mode: NULLABLE
   description: Timestamp when this record was loaded into BigQuery

@@ -32,7 +32,7 @@ SELECT
   date_utc AS `creation_date`,
   product,
   COUNT(*) AS forum_questions_posted,
-  CURRENT_TIMESTAMP() AS etl_timestamp
+  CURRENT_TIMESTAMP() AS generated_time
 FROM
   deduped
 GROUP BY

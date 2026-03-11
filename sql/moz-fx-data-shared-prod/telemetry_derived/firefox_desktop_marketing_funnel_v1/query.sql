@@ -235,12 +235,7 @@ desktop_funnels_telemetry AS (
   SELECT
     cfs28.first_seen_date AS submission_date,
     cfs28.country,
-    IF(
-      cfs28.funnel_derived = 'other'
-      OR tier_mapping.has_web_cookie_consent,
-      'Unknown',
-      cfs28.funnel_derived
-    ) AS funnel_derived,
+    IF(cfs28.funnel_derived = 'other', 'Unknown', cfs28.funnel_derived) AS funnel_derived,
     cfs28.normalized_os,
     -- Partner-specific dimensions (NULL for non-partner funnels to reduce cardinality)
     IF(cfs28.funnel_derived = 'partner', cfs28.partner_org, CAST(NULL AS STRING)) AS partner_org,
@@ -270,9 +265,6 @@ desktop_funnels_telemetry AS (
   LEFT JOIN
     ga4_attribution AS ga4_attr
     USING (client_id)
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.marketing_country_tier_mapping_v1` AS tier_mapping
-    ON cfs28.country = tier_mapping.country_code
   WHERE
     cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
     AND cfs28.is_desktop

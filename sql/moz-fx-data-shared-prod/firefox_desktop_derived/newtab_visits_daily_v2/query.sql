@@ -77,7 +77,7 @@ WITH events_unnested AS (
           'widgets_impression',
           'widgets_enabled',
           'widgets_user_event',
-          'widgets_container_event',
+          'widgets_container_action',
           -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',
@@ -284,7 +284,7 @@ core_visit_metrics AS (
         -- scalable widgets
         'widgets_enabled',
         'widgets_user_event',
-        'widgets_container_event'
+        'widgets_container_action'
       )
     )
     AND LOGICAL_OR(is_default_ui) AS is_widget_interaction,
@@ -405,7 +405,7 @@ core_visit_metrics AS (
           -- scalable widgets
           'widgets_enabled',
           'widgets_user_event',
-          'widgets_container_event'
+          'widgets_container_action'
         )
       ),
       0
@@ -445,7 +445,7 @@ core_visit_metrics AS (
           -- scalable widgets
           'widgets_enabled',
           'widgets_user_event',
-          'widgets_container_event'
+          'widgets_container_action'
         )
       ),
       0
@@ -544,7 +544,7 @@ core_visit_metrics AS (
           -- scalable widgets
           'widgets_enabled',
           'widgets_user_event',
-          'widgets_container_event'
+          'widgets_container_action'
         )
       ),
       0

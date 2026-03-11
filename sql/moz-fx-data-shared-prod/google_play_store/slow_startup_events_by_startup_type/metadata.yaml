@@ -1,16 +1,12 @@
-friendly_name: Slow Startups by Startup Type V1
-description: 'Pulls slow startup data from Google Play Store API for
+friendly_name: Slow Startups by Startup Type
+description: |-
+  Pulls slow startup data from Google Play Store API for the following apps:
 
-  * org.mozilla.firefox
-
-  * org.mozilla.firefox_beta
-
-  * org.mozilla.fenix
-
-  * org.mozilla.klar
-
-  * org.mozilla.firefox.vpn
-
-  * org.mozilla.focus'
+  - org.mozilla.firefox
+  - org.mozilla.firefox_beta
+  - org.mozilla.fenix
+  - org.mozilla.klar
+  - org.mozilla.firefox.vpn
+  - org.mozilla.focus
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com

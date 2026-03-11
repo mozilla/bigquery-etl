@@ -4,7 +4,7 @@ WITH clients_first_seen_9_days_ago AS (
   SELECT
     cfs.client_id,
     cfs.first_seen_date,
-    m.first_seen_date AS first_main_ping_date,
+    first_seen_v1.first_seen_date AS first_main_ping_date,
     cfs.country,
     cfs.attribution_campaign,
     cfs.attribution_content,
@@ -12,11 +12,11 @@ WITH clients_first_seen_9_days_ago AS (
     cfs.attribution_medium,
     cfs.attribution_source
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs --contains all new clients, including those that never sent a main ping
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen` AS cfs --contains all new clients, including those that never sent a main ping
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` m -- the "old" CFS table, contains the date of the client's *first main ping*
-    ON cfs.client_id = m.client_id
-    AND m.first_seen_date
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` AS first_seen_v1 -- the "old" CFS table, contains the date of the client's *first main ping*
+    ON cfs.client_id = first_seen_v1.client_id
+    AND first_seen_v1.first_seen_date
     -- join so that we only get "first main ping" dates from clients that sent their first main ping within -1 and +6 days from their first_seen_date.
     -- we will miss ~5% of clients that send their first main ping later, this is a trade-off we make to have a two-week reporting cadence (one week to send their first main ping, then we report on the outcomes *one week after that*
     BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 1 DAY)
@@ -30,24 +30,26 @@ clients_last_seen_raw AS (
   SELECT
     cls.client_id,
     cls.first_seen_date,
-    clients.first_main_ping_date,
     cls.country,
     cls.submission_date,
     cls.days_since_seen,
     cls.active_hours_sum,
+    cls.search_with_ads_count_all,
+    IF(COALESCE(cls.is_default_browser, FALSE), 1, 0) AS default_browser,
     cls.days_visited_1_uri_bits,
     cls.days_interacted_bits,
-    cls.search_with_ads_count_all
+    cls.days_visited_1_uri_bits & days_interacted_bits AS dau_bits,
+    first_seen_clients.first_main_ping_date,
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
-  JOIN
-    clients_first_seen_9_days_ago clients
-    ON cls.client_id = clients.client_id
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen` AS cls
+  INNER JOIN
+    clients_first_seen_9_days_ago AS first_seen_clients
+    USING (client_id)
   WHERE
     cls.submission_date
     -- join the clients_last_seen so that we get the first 7 days of each client's main ping records (for the clients that sent > 0 main pings in their first week)
-    BETWEEN clients.first_main_ping_date
-    AND DATE_ADD(clients.first_main_ping_date, INTERVAL 6 DAY)
+    BETWEEN first_seen_clients.first_main_ping_date
+    AND DATE_ADD(first_seen_clients.first_main_ping_date, INTERVAL 6 DAY)
     AND cls.submission_date >= DATE_SUB(@report_date, INTERVAL 1 DAY)
 ),
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
@@ -66,9 +68,15 @@ client_activity_first_7_days AS (
     ANY_VALUE(
       CASE
         WHEN submission_date = DATE_ADD(first_main_ping_date, INTERVAL 6 DAY)
-          THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
+          THEN BIT_COUNT(dau_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings
+    ANY_VALUE(
+      CASE
+        WHEN submission_date = DATE_ADD(first_main_ping_date, INTERVAL 6 DAY)
+          THEN dau_bits
+      END
+    ) AS dau_bits, -- dau_bits during client's first 7 days starting from their first main ping
   -- if a client doesn't send a ping on `submission_date` their last active day's value will be carried forward
   -- so we only take measurements from days that they send a ping.
     SUM(
@@ -84,7 +92,8 @@ client_activity_first_7_days AS (
           THEN COALESCE(search_with_ads_count_all, 0)
         ELSE 0
       END
-    ) AS search_with_ads_count_all
+    ) AS search_with_ads_count_all,
+    SUM(default_browser) AS default_browser_number_of_days,
   FROM
     clients_last_seen_raw
   GROUP BY
@@ -105,8 +114,10 @@ combined AS (
       cfs.country
     ) AS country, -- Conversion events & LTV are based on their first observed country in CLS, use that country if its available
     COALESCE(dou, 0) AS dou,
+    COALESCE(dau_bits, 0) AS dau_bits,
     COALESCE(active_hours_sum, 0) AS active_hours_sum,
-    COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all
+    COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all,
+    COALESCE(default_browser_number_of_days, 0) AS default_browser_number_of_days,
   FROM
     clients_first_seen_9_days_ago AS cfs
   LEFT JOIN
@@ -133,5 +144,10 @@ SELECT
   IF(dou >= 4, TRUE, FALSE) AS is_dau_at_least_4_of_first_7_days,
   IF(dou >= 3, TRUE, FALSE) AS is_dau_at_least_3_of_first_7_days,
   IF(dou >= 2, TRUE, FALSE) AS is_dau_at_least_2_of_first_7_days,
+  IF(dou >= 5, TRUE, FALSE) AS is_dau_at_least_5_of_first_7_days,
+  IF(dou >= 6, TRUE, FALSE) AS is_dau_at_least_6_of_first_7_days,
+  IF(dou >= 7, TRUE, FALSE) AS is_dau_at_least_7_of_first_7_days,
+  default_browser_number_of_days > 0 AS set_default,
+  mozfun.bits28.active_in_range(dau_bits, -1, 2) AS is_dau_on_days_6_or_7,
 FROM
   combined

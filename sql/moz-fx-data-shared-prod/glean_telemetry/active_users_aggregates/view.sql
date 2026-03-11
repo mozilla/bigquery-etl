@@ -34,6 +34,7 @@ SELECT
   app_version_is_major_release,
   os_grouped,
   mozfun.norm.partnership(distribution_id) AS partnership,
+  CAST(NULL AS BOOLEAN) AS policies_is_enterprise,
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
 UNION ALL
@@ -71,5 +72,6 @@ SELECT
   app_version_is_major_release,
   os_grouped,
   mozfun.norm.partnership(distribution_id) AS partnership,
+  policies_is_enterprise,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users_aggregates`

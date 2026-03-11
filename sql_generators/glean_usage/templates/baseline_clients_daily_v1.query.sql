@@ -58,6 +58,7 @@ WITH base AS (
     client_info.attribution,
     client_info.distribution,
     {% if app_name == "firefox_desktop" %}
+    JSON_VALUE(metrics.object.glean_attribution_ext.msclkid) AS attribution_msclkid,
     JSON_VALUE(metrics.object.glean_attribution_ext.dltoken) AS attribution_dltoken,
     JSON_VALUE(metrics.object.glean_attribution_ext.dlsource) AS attribution_dlsource,
     JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
@@ -68,7 +69,9 @@ WITH base AS (
     JSON_VALUE(metrics.object.glean_distribution_ext.distributor) AS distributor,
     JSON_VALUE(metrics.object.glean_distribution_ext.distributorChannel) AS distributor_channel,
     JSON_VALUE(metrics.object.glean_distribution_ext.partnerId) AS distribution_partner_id,
+    metrics.boolean.policies_is_enterprise AS policies_is_enterprise,
     {% else %}
+    CAST(NULL AS STRING) AS attribution_msclkid,
     CAST(NULL AS STRING) AS attribution_dltoken,
     CAST(NULL AS STRING) AS attribution_dlsource,
     CAST(NULL AS STRING) AS attribution_experiment,
@@ -79,11 +82,12 @@ WITH base AS (
     CAST(NULL AS STRING) AS distributor,
     CAST(NULL AS STRING) AS distributor_channel,
     CAST(NULL AS STRING) AS distribution_partner_id,
+    CAST(NULL AS BOOLEAN) AS policies_is_enterprise,
     {% endif %}
     ping_info.experiments AS experiments
   FROM
     `{{ baseline_table }}`
-  WHERE 
+  WHERE
     client_info.client_id IS NOT NULL
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
@@ -197,7 +201,9 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(distribution_version) OVER w1) AS distribution_version,
     udf.mode_last(ARRAY_AGG(distributor) OVER w1) AS distributor,
     udf.mode_last(ARRAY_AGG(distributor_channel) OVER w1) AS distributor_channel,
-    udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id
+    udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id,
+    udf.mode_last(ARRAY_AGG(attribution_msclkid) OVER w1) AS attribution_msclkid,
+    udf.mode_last(ARRAY_AGG(policies_is_enterprise) OVER w1) AS policies_is_enterprise,
   FROM
     with_date_offsets
   LEFT JOIN

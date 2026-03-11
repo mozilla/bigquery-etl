@@ -75,3 +75,23 @@ fields:
   name: is_dau_at_least_2_of_first_7_days
   type: BOOLEAN
   description: Client was a daily active user in at least 2 of first 7 days
+- mode: NULLABLE
+  name: is_dau_at_least_5_of_first_7_days
+  type: BOOLEAN
+  description: Client was a daily active user in at least 5 of first 7 days
+- mode: NULLABLE
+  name: is_dau_at_least_6_of_first_7_days
+  type: BOOLEAN
+  description: Client was a daily active user in at least 6 of first 7 days
+- mode: NULLABLE
+  name: is_dau_at_least_7_of_first_7_days
+  type: BOOLEAN
+  description: Client was a daily active user in at least 7 of first 7 days
+- mode: NULLABLE
+  name: set_default
+  type: BOOLEAN
+  description: Set browser to default at any point in the first 7 days
+- mode: NULLABLE
+  name: is_dau_on_days_6_or_7
+  type: BOOLEAN
+  description: Active on day 6 and / or 7 of their first week

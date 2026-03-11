@@ -4,4 +4,5 @@ description: 'A list of users that attempted to login to FxA, to sign up for or 
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

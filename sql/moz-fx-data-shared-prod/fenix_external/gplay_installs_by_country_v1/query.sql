@@ -28,5 +28,5 @@ SELECT
 FROM
   app_data
 LEFT JOIN
-  mozdata.static.country_codes_v1 AS country_details
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS country_details
   USING (code)

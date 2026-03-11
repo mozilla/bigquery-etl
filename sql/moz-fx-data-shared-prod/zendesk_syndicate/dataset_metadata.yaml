@@ -1,0 +1,17 @@
+friendly_name: zendesk_syndicate
+description: |
+  Syndicated Zendesk data from moz-fx-sumo-prod. User-facing views into this data
+  can be found in the sumo_metrics_derived namespace.
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: moz-fx-sumo-prod
+    syndicated_dataset: zendesk
+  syndicated_tables:
+    - ticket
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

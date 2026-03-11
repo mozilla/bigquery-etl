@@ -17,6 +17,7 @@ from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -198,6 +199,20 @@ def deploy(
         )
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
+
+        # If the artifact has an external_data config (e.g. Google Sheets), the
+        # external source can't be recreated in stage. Remove the query file and
+        # clear external_data from metadata so the table is deployed from schema only.
+        stage_metadata_file = new_artifact_path / METADATA_FILE
+        if stage_metadata_file.exists():
+            try:
+                stage_metadata = Metadata.from_file(stage_metadata_file)
+                if stage_metadata.external_data:
+                    stage_metadata.external_data = None
+                    stage_metadata.write(stage_metadata_file)
+            except Exception:
+                pass
+
         updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure
@@ -354,6 +369,14 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                         break
 
                 path = Path(sql_dir) / project / dataset / name
+                if "*" in name:
+                    # deploy stub for wildcard tables
+                    path = (
+                        Path(sql_dir)
+                        / project
+                        / dataset
+                        / name.replace("*", "wildcard")
+                    )
                 if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
                     # don't create schema for wildcard and metadata tables
@@ -361,7 +384,7 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                     # tables not managed by bigquery-etl by doing a dryrun.
                     # The stage project doesn't have access to prod tables (e.g when referenced)
                     # so we need to create the schema here and deploy it.
-                    if "*" not in name and name != "INFORMATION_SCHEMA":
+                    if name != "INFORMATION_SCHEMA":
                         partitioned_by = None
 
                         if any(

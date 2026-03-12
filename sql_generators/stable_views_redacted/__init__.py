@@ -35,7 +35,7 @@ SELECT
     {metrics_replacement}
   )
 FROM
-  `{source_view}`
+  `{source_table}`
 """
 
 REDACTED_METADATA_TEMPLATE = """\
@@ -43,10 +43,10 @@ REDACTED_METADATA_TEMPLATE = """\
 ---
 friendly_name: Redacted Pings for `{document_namespace}/{document_type}`
 description: |-
-  A redacted view of `{source_view_short}` with sensitive metrics excluded.
+  A redacted view of `{source_table_short}` with sensitive metrics excluded.
   Fields with data_sensitivity categories [{SENSITIVITY_CATEGORIES}] are removed.
 
-  See the full (access-restricted) data in `{source_view_short}`.
+  See the full (access-restricted) data in `{source_table_short}` and `{source_view_short}`.
 labels:
     authorized: true
 """
@@ -264,12 +264,12 @@ def _write_redacted_view(
     full_view_id = (
         f"{target_project}.{schema_file.bq_dataset_family}.{ping_name}_redacted"
     )
-    source_view = f"{target_project}.{schema_file.user_facing_view}"
+    source_table = f"{target_project}.{schema_file.stable_table}"
 
     full_sql = reformat(
         REDACTED_VIEW_QUERY_TEMPLATE.format(
             full_view_id=full_view_id,
-            source_view=source_view,
+            source_table=source_table,
             metrics_replacement=metrics_replacement,
         ),
         trailing_newline=True,
@@ -286,6 +286,7 @@ def _write_redacted_view(
         document_namespace=schema_file.document_namespace,
         document_type=schema_file.document_type,
         source_view_short=schema_file.user_facing_view,
+        source_table_short=schema_file.stable_table,
         SENSITIVITY_CATEGORIES=sensitivity_str,
     )
     metadata_file = target_dir / "metadata.yaml"

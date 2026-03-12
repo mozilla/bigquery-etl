@@ -213,9 +213,6 @@ fields:
 - name: newtab_weather_enabled
   type: BOOLEAN
   description: Whether the weather widget is enabled
-- name: widgets_enabled
-  type: BOOLEAN
-  description: Whether any widget is enabled
 - name: default_search_engine
   type: STRING
   description: Engine_id of the default search engine

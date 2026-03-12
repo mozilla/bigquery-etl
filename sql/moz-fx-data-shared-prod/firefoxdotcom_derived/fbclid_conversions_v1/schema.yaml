@@ -6,7 +6,11 @@ fields:
   - name: fbclid
     mode: NULLABLE
     type: STRING
-    description: "A Google Click ID, which uniquely represent an ad impression for Google ads."
+    description: "A Facebook click ID, which uniquely represent an ad impression for Google ads."
+  - name: ga_country
+    mode: NULLABLE
+    type: STRING
+    description: Country as reported by GA.
   - name: first_wk_5_actv_days_and_1_or_more_search_w_ads
     mode: NULLABLE
     type: BOOLEAN

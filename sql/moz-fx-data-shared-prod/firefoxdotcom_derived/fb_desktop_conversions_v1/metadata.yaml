@@ -9,6 +9,7 @@ owners:
 labels:
   incremental: true
   owner1: kik@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_census_feed
   date_partition_parameter: activity_date

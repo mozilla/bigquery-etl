@@ -18,8 +18,6 @@ WITH events_unnested AS (
     metrics.boolean.topsites_enabled AS organic_topsites_enabled,
     metrics.boolean.newtab_search_enabled AS newtab_search_enabled,
     metrics.boolean.newtab_weather_enabled AS newtab_weather_enabled,
-    metrics.boolean.newtab_weather_enabled
-    OR metrics.string_list.enabled_widgets IS NOT NULL AS widgets_enabled,
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     metadata.geo.subdivision1 AS geo_subdivision,
     metrics.string.search_engine_default_engine_id AS default_search_engine,
@@ -328,7 +326,6 @@ core_visit_metrics AS (
     AND LOGICAL_OR(is_default_ui) AS is_section,
     ANY_VALUE(ping_info.experiments) AS experiments,
     ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
-    ANY_VALUE(widgets_enabled) AS widgets_enabled,
     ANY_VALUE(default_search_engine) AS default_search_engine,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(topsite_rows) AS topsite_rows,

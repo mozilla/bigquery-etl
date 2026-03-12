@@ -1853,6 +1853,13 @@ with DAG(
         parent_group=task_group_firefox_ios,
     ) as bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
@@ -1863,13 +1870,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2037,6 +2037,13 @@ with DAG(
         parent_group=task_group_firefox_ios,
     ) as bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
@@ -2047,13 +2054,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2207,6 +2207,13 @@ with DAG(
         parent_group=task_group_firefox_ios,
     ) as bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
@@ -2217,13 +2224,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         ExternalTaskMarker(

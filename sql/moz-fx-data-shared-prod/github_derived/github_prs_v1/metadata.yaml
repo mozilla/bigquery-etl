@@ -17,7 +17,7 @@ bigquery:
     - repo_name
     - author
 scheduling:
-  dag_name: bqetl_github_derived
+  dag_name: bqetl_github
   arguments:
   - --date
   - "{{ds}}"

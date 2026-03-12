@@ -21,6 +21,7 @@ from bigquery_etl.backfill.validate import (
     validate_entries_are_sorted,
     validate_file,
     validate_old_entry_date,
+    validate_query_script_options,
     validate_shredder_mitigation,
 )
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
@@ -427,3 +428,51 @@ class TestValidateBackfill(object):
         )
 
         validate_old_entry_date(backfill_entry)
+
+    def test_validate_query_script_missing_entrypoint(self):
+        """Error should be raised if query_script_entrypoint is missing for a query script."""
+        entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+            custom_query_path="sql/proj/dataset/table/query.py",
+            query_script_date_arg="date",
+        )
+        with pytest.raises(ValueError):
+            validate_query_script_options(entry, TEST_BACKFILL_FILE)
+
+    def test_validate_query_script_missing_date_arg(self):
+        """Error should be raised if query_script_entrypoint is missing for a query script."""
+        entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+            custom_query_path="sql/proj/dataset/table/query.py",
+            query_script_entrypoint="main",
+        )
+        with pytest.raises(ValueError):
+            validate_query_script_options(entry, TEST_BACKFILL_FILE)
+
+    def test_validate_query_script_valid(self):
+        """No error should be raised if all required arguments are given."""
+        entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+            custom_query_path="sql/proj/dataset/table/query.py",
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        validate_query_script_options(entry, TEST_BACKFILL_FILE)

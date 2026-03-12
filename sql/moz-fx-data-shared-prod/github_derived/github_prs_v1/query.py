@@ -169,12 +169,10 @@ def get_merged_prs(repo, date, token):
     return all_prs
 
 
-def get_bq_row_count(destination, date):
-    """Return the number of rows already loaded for the given date."""
+def get_bq_row_count(destination, date, repo):
+    """Return the number of rows already loaded for the given date and repo."""
     client = bigquery.Client(project="moz-fx-data-shared-prod")
-    query = (
-        f"SELECT COUNT(*) as cnt FROM `{destination}` WHERE DATE(merged_at) = '{date}'"
-    )
+    query = f"SELECT COUNT(*) as cnt FROM `{destination}` WHERE DATE(merged_at) = '{date}' AND repo_name = '{repo}'"
     result = client.query(query).result()
     for row in result:
         return row.cnt
@@ -214,25 +212,25 @@ def load_to_bq(records, destination):
 
     job_config = bigquery.LoadJobConfig(
         schema=[
-            bigquery.SchemaField("repo_name", "STRING"),
-            bigquery.SchemaField("pr_number", "INTEGER"),
-            bigquery.SchemaField("title", "STRING"),
-            bigquery.SchemaField("body", "STRING"),
-            bigquery.SchemaField("author", "STRING"),
-            bigquery.SchemaField("html_url", "STRING"),
-            bigquery.SchemaField("created_at", "TIMESTAMP"),
-            bigquery.SchemaField("updated_at", "TIMESTAMP"),
-            bigquery.SchemaField("merged_at", "TIMESTAMP"),
-            bigquery.SchemaField("base_branch", "STRING"),
-            bigquery.SchemaField("head_branch", "STRING"),
-            bigquery.SchemaField("additions", "INTEGER"),
-            bigquery.SchemaField("deletions", "INTEGER"),
-            bigquery.SchemaField("changed_files", "INTEGER"),
-            bigquery.SchemaField("commits", "INTEGER"),
-            bigquery.SchemaField("comments", "INTEGER"),
-            bigquery.SchemaField("review_comments", "INTEGER"),
-            bigquery.SchemaField("labels", "STRING"),
-            bigquery.SchemaField("requested_reviewers", "STRING"),
+            bigquery.SchemaField("repo_name", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("pr_number", "INTEGER", mode="REQUIRED"),
+            bigquery.SchemaField("title", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("body", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("author", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("html_url", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("created_at", "TIMESTAMP", mode="REQUIRED"),
+            bigquery.SchemaField("updated_at", "TIMESTAMP", mode="REQUIRED"),
+            bigquery.SchemaField("merged_at", "TIMESTAMP", mode="REQUIRED"),
+            bigquery.SchemaField("base_branch", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("head_branch", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("additions", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("deletions", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("changed_files", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("commits", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("comments", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("review_comments", "INTEGER", mode="NULLABLE"),
+            bigquery.SchemaField("labels", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("requested_reviewers", "STRING", mode="NULLABLE"),
         ],
         autodetect=False,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
@@ -243,6 +241,7 @@ def load_to_bq(records, destination):
             type_=bigquery.TimePartitioningType.DAY,
             field="merged_at",
         ),
+        clustering_fields=["repo_name", "author"],
     )
 
     job = client.load_table_from_json(records, destination, job_config=job_config)
@@ -260,7 +259,7 @@ def main():
         sys.exit(1)
 
     # Checks to see if data already present for date and if data is complete
-    existing_count = get_bq_row_count(args.destination, args.date)
+    existing_count = get_bq_row_count(args.destination, args.date, args.repo)
     if existing_count > 0:
         github_count = get_github_pr_count(args.repo, args.date, token)
         # If data present and complete -> exits

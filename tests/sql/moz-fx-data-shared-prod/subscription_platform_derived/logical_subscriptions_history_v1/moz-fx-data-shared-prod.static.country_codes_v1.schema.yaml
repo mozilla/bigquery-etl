@@ -1,0 +1,47 @@
+fields:
+- name: name
+  description: Official country name per ISO 3166
+  type: STRING
+  mode: REQUIRED
+- name: code
+  description: ISO 3166 alpha-2 country code
+  type: STRING
+  mode: REQUIRED
+- name: code_3
+  description: ISO 3166 alpha-3 country code
+  type: STRING
+  mode: REQUIRED
+- name: region_name
+  description: Region name. These are based on the UN Statistics Division standard
+    country or area codes for statistical use (M49), but with the "Americas" region
+    split into "North America" and "South America".
+  type: STRING
+  mode: REQUIRED
+- name: subregion_name
+  description: Sub-region name. These are based on UN Statistics Division standard
+    country or area codes for statistical use (M49), but with the "Latin America and the
+    Caribbean" and "Sub-Saharan Africa" sub-regions split into more specific
+    sub-regions.
+  type: STRING
+  mode: REQUIRED
+- name: pocket_available_on_newtab
+  description: Whether Pocket is available on the newtab page in this country. Note
+    that Pocket might only be available in certain locales/languages within a country.
+  type: BOOL
+  mode: REQUIRED
+- name: mozilla_vpn_available
+  description: Whether Mozilla VPN is available in this country.
+  type: BOOL
+  mode: REQUIRED
+- name: sponsored_tiles_available_on_newtab
+  description: Whether sponsored tiles are available on the newtab page in this country.
+    Note that Pocket might only be available in certain locales/languages within a
+    country.
+  type: BOOL
+  mode: REQUIRED
+- name: ads_value_tier
+  description: Lowercase label detailing the monetary value tier that Mozilla Ads
+    assign to that region based on market size and our existing products, e.g., tier
+    1, tier 2, etc.
+  type: STRING
+  mode: REQUIRED

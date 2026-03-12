@@ -1,0 +1,25 @@
+friendly_name: Resurrection Week 2 Retention
+description: |-
+  Aggregated table tracking resurrected Firefox Desktop users and their week 2 retention.
+  A resurrected user is a returning DAU who had been inactive for 29 or more days (excluding
+  new profiles). Users are grouped by how long they were inactive before returning
+  (29-36, 37-60, 61-120, 121-180, 181-365, and 365+ days). For each group, the table
+  counts the number of resurrections and how many of those users were still active in
+  week 2 (day 8-14) following their return.
+owners:
+- rbaffourawuah@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  shredder_mitigation: true
+  owner1: rbaffourawuah@mozilla.com
+  owner2: mhirose@mozilla.com
+scheduling:
+  dag_name: bqetl_desktop_retention_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_date'
+    require_partition_filter: true
+    expiration_days: null
+require_column_descriptions: true

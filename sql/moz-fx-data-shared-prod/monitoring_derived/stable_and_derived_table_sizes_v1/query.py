@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import click
 from google.cloud import bigquery, exceptions
 
+from bigquery_etl.util.client_queue import ClientQueue
+
 
 def get_tables(client: bigquery.Client, dataset: str) -> List[Tuple[str, str]]:
     """Returns list of all available tables."""
@@ -146,7 +148,11 @@ def main(
     if destination_project is None:
         destination_project = project
 
-    client = bigquery.Client(project)
+    # Use ClientQueue to increase connection pool size
+    client_queue = ClientQueue(
+        billing_projects=[project], parallelism=1, connection_pool_max_size=30
+    )
+    client = client_queue.default_client
 
     for datediff in range(2):
         stable_derived_partition_sizes = []

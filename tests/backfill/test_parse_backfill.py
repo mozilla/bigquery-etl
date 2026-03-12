@@ -477,6 +477,10 @@ class TestParseBackfill(object):
             override_depends_on_past_end_date = False
             ignore_date_partition_offset = False
             billing_project = None
+            query_script_entrypoint = None
+            query_script_date_arg = None
+            query_script_arg = None
+            query_script_dry_run_arg = None
             """
 
         assert actual_backfill_str == expected_backfill_str

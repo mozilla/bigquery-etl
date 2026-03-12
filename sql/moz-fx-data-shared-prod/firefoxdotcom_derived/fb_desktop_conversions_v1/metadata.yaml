@@ -1,0 +1,26 @@
+friendly_name: Facebook Conversion Events
+description: |-
+  Keeps track of each fbclid and related conversion events.
+  Created for exporting to external system.
+
+  Expected grain: max 1 row per fbclid + conversion_name combination.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  owner1: kik@mozilla.com
+scheduling:
+  dag_name: bqetl_census_feed
+  date_partition_parameter: activity_date
+  date_partition_offset: -2
+  parameters: null
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+monitoring:
+  enabled: true

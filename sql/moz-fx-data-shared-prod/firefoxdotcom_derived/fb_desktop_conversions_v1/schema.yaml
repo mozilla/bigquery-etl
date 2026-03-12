@@ -1,0 +1,17 @@
+fields:
+- name: activity_date
+  mode: NULLABLE
+  type: DATE
+  description: Activity Date
+- name: fbclid
+  mode: NULLABLE
+  type: STRING
+  description: Facebook click id.
+- name: conversion_name
+  mode: NULLABLE
+  type: STRING
+  description: Conversion Name
+- name: ga_country
+  mode: NULLABLE
+  type: STRING
+  description: Country as reported by GA.

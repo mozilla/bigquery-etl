@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 
 import rich_click as click
@@ -755,9 +755,10 @@ def _initiate_backfill(
             query_backfill,
             name=f"{dataset}.{table}",
             project_id=project,
-            start_date=datetime.fromisoformat(entry.start_date.isoformat()),
-            end_date=datetime.fromisoformat(entry.end_date.isoformat()),
-            exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
+            # convert date objects to datetime
+            start_date=datetime.combine(entry.start_date, time.min),
+            end_date=datetime.combine(entry.end_date, time.min),
+            exclude=[datetime.combine(e, time.min) for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run and query_script_dry_run_arg is None,

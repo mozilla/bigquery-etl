@@ -21,7 +21,7 @@ description: |
   - Community engagement reports
 owners:
   - plee@mozilla.com
-  - mozilla/kpi_table_reviewers
+  - mozilla/customer_insights
 labels:
   level: silver
   incremental: false

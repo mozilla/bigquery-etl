@@ -9,11 +9,8 @@ WITH firefoxdotcom_first_sessions AS (
   FROM
     `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1` AS ga_sessions_v1,
     UNNEST(gclid_array) AS gclid
-  INNER JOIN
-    `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
-    ON ga_sessions_v1.country = country_names.name
   WHERE
-    country_names.code IN ("US", "CA", "MX", "AU", "JP")
+    country IN ("Australia", "Canada", "Japan", "Mexico", "United States")
   GROUP BY
     gclid
 )

@@ -724,7 +724,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -1168,7 +1170,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1560,7 +1563,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -2561,7 +2565,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -3005,7 +3011,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -3397,7 +3404,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -4398,7 +4406,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -4842,7 +4852,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -5234,7 +5245,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

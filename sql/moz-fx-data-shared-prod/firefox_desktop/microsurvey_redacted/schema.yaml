@@ -1,0 +1,360 @@
+fields:
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_context_parse_error
+      type: INTEGER
+      mode: NULLABLE
+    - name: microsurvey_glean_ping_for_ping_failures
+      type: INTEGER
+      mode: NULLABLE
+    - name: microsurvey_unknown_key_count
+      type: INTEGER
+      mode: NULLABLE
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: microsurvey_attribution_unknown_keys
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: microsurvey_invalid_nested_data
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: microsurvey_unknown_keys
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_screen_index
+      type: INTEGER
+      mode: NULLABLE
+    - name: microsurvey_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_addon_version
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_app_channel
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_app_display_version
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_content
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_dlsource
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_dltoken
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_medium
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_msclkid
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_msstoresignedin
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_source
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_ua
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_attribution_variation
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_bucket_id
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_page
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_reason
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_source
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_locale
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_os
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_os_version
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_ping_type
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_source
+      type: STRING
+      mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_event_context
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_screen_family
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_screen_id
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_event_screen_initials
+      type: STRING
+      mode: NULLABLE
+    - name: microsurvey_message_id
+      type: STRING
+      mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_impression_id
+      type: STRING
+      mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

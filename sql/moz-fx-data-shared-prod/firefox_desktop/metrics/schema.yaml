@@ -3313,6 +3313,19 @@ fields:
         non-parent-process data.
 
         '
+    - name: qrcode_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records how often the QR code dialog is opened from the Share
+        menu.
+
+        '
+    - name: widget_mac_application_menu_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the macOS Firefox application menu is opened
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -14208,6 +14221,57 @@ fields:
           mode: NULLABLE
       description: 'The volume of traffic sent through browsers that were link targets
         for sponsored topsite or content navigations.
+
+        '
+    - name: networking_http_3_final_cwnd
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: final congestion window size in bytes at connection close.
+
+        '
+    - name: networking_http_3_slow_start_exit_cwnd
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: congestion window size in bytes when exiting slow start.
+        Only recorded for connections that exited slow start.
 
         '
   - name: string
@@ -35696,6 +35760,51 @@ fields:
         (last PBM window exited).
 
         '
+    - name: cert_verifier_crlite_not_covered_cert_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The age of a certificate (in milliseconds) when it is not covered
+        by CRLite, measured as the time between the most recent SCT timestamp and
+        the validation time.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -47113,6 +47222,32 @@ fields:
         cache.
 
         '
+    - name: networking_http_3_peer_max_udp_payload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: peer''s max_udp_payload_size transport parameter in bytes.
+        Only recorded when the peer advertises this parameter.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -50649,11 +50784,15 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine identifiers for built-in
-        search engines and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are the search engine identifier for configuration
+        provided search engines and ''other'' for search engines installed via other
+        methods.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
+
+        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
+        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

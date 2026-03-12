@@ -709,7 +709,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1727,7 +1728,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1781,7 +1783,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2796,7 +2800,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3814,7 +3819,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3868,7 +3874,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4903,7 +4911,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_spurious_congestion_event_ratio,
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
-      metrics.custom_distribution.dom_script_memory_cache_ref_count
+      metrics.custom_distribution.dom_script_memory_cache_ref_count,
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5921,7 +5930,8 @@ SELECT
       metrics.timing_distribution.perf_js_exec_asm_js,
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
-      metrics.timing_distribution.private_browsing_cleanup_duration
+      metrics.timing_distribution.private_browsing_cleanup_duration,
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5975,7 +5985,9 @@ SELECT
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
       metrics.memory_distribution.webfont_size_per_page,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
+      metrics.memory_distribution.networking_http_3_final_cwnd,
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

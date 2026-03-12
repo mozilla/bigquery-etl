@@ -542,6 +542,13 @@ fields:
       description: 'Number of successfull crash report submissions
 
         '
+    - name: qrcode_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records how often the QR code dialog is opened from the Share
+        menu.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

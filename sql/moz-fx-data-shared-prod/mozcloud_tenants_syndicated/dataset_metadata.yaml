@@ -1,7 +1,7 @@
 friendly_name: mozcloud_tenants
 dataset_base_acl: syndicate
 description: tenant_export syndicate views
-user_facing: true
+user_facing: false
 labels: {}
 syndication:
   prod:

@@ -1,0 +1,10 @@
+2026-03-12:
+  start_date: 2025-11-15
+  end_date: 2026-03-11
+  reason: DO-2122, new table - backfill to 2025-11-15 as per rbaffourawuah request
+  watchers:
+  - mhirose@mozilla.com
+  status: Initiate
+  shredder_mitigation: true
+  override_retention_limit: false
+  override_depends_on_past_end_date: false

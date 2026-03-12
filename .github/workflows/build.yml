@@ -44,9 +44,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: |
-      (github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.fork == true) &&
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
+    if: &is-allowed-event |
+      case(
+        github.event_name == 'pull_request_target', github.event.pull_request.head.repo.fork == true,
+        github.event_name == 'pull_request', github.event.pull_request.head.repo.fork != true,
+        true
+      )
     outputs:
       validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
       deploy: ${{ steps.set-flags.outputs.deploy }}
@@ -121,6 +124,7 @@ jobs:
       contents: read
     environment: &build-env
       name: ${{ github.event.pull_request.head.repo.fork == true && github.event.pull_request.author_association != 'MEMBER' && 'external-fork' || 'dev' }}
+    if: *is-allowed-event
     steps:
       - &checkout
         uses: actions/checkout@v6
@@ -399,7 +403,8 @@ jobs:
     name: Build and Deploy Documentation
     runs-on: ubuntu-latest
     needs: [generate-sql]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: &is-main-deploy
+      github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: write
     steps:
@@ -1038,7 +1043,7 @@ jobs:
     name: Push Generated SQL
     runs-on: ubuntu-latest
     needs: [validate-dags]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     environment: dev
     steps:
       - uses: actions/download-artifact@v6
@@ -1078,7 +1083,7 @@ jobs:
     name: Push Private Generated SQL
     runs-on: ubuntu-latest
     needs: [private-generate-sql, generate-dags]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     environment: dev
     steps:
       - uses: actions/download-artifact@v6
@@ -1118,7 +1123,7 @@ jobs:
     name: Deploy to Private GAR
     runs-on: ubuntu-latest
     needs: [private-generate-sql, build, generate-sql]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     permissions:
       id-token: write
       contents: read
@@ -1161,7 +1166,7 @@ jobs:
     name: Trigger Airflow Artifact Deployment
     runs-on: ubuntu-latest
     needs: [deploy-to-private-gar]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     permissions:
       id-token: write
       contents: read
@@ -1250,7 +1255,7 @@ jobs:
     name: 🔃 Synchronize bigquery-etl submodule
     runs-on: ubuntu-latest
     needs: [push-generated-sql]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     environment: dev
     steps:
       - &setup-ssh-keys-telemetry-airflow-dags
@@ -1279,7 +1284,7 @@ jobs:
     name: 🔃 Synchronize private-bigquery-etl submodule
     runs-on: ubuntu-latest
     needs: [push-private-generated-sql, sync-bigquery-etl-submodule]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: *is-main-deploy
     environment: dev
     steps:
       - name: Setup SSH keys for multiple repos

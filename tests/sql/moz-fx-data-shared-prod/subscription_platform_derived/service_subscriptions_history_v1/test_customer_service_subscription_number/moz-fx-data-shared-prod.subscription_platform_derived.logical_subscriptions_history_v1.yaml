@@ -1,0 +1,146 @@
+# Customer 1, service 1 subscription 1
+- id: Stripe-sub_1_1_1-2000-01-01T00:00:00.000000-2000-01-01T00:00:00.000000
+  valid_from: 2000-01-01 00:00:00Z
+  valid_to: 2001-01-01 00:00:00Z
+  subscription:
+    id: Stripe-sub_1_1_1-2000-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1_1_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 1
+    services:
+      - id: svc_1
+    is_active: true
+    started_at: 2000-01-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_1_1_1-2000-01-01T00:00:00.000000-2001-01-01T00:00:00.000000
+  valid_from: 2001-01-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Stripe-sub_1_1_1-2000-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1_1_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 1
+    services:
+      - id: svc_1
+    is_active: false
+    started_at: 2000-01-01 00:00:00Z
+    ended_at: 2001-01-01 00:00:00Z
+    started_reason: New Customer
+
+# Customer 1, service 2 subscription 1
+- id: Google-sub_1_2_1-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  subscription:
+    id: Google-sub_1_2_1-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 2
+    services:
+      - id: svc_2
+    is_active: true
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: Returning Customer
+- id: Google-sub_1_2_1-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  subscription:
+    id: Google-sub_1_2_1-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 2
+    services:
+      - id: svc_2
+    is_active: true
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: Returning Customer
+- id: Google-sub_1_2_1-2000-02-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Google-sub_1_2_1-2000-02-01T00:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_1_2_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 2
+    services:
+      - id: svc_2
+    is_active: false
+    started_at: 2000-02-01 00:00:00Z
+    ended_at: 2000-04-01 00:00:00Z
+    started_reason: Returning Customer
+
+# Customer 1, service 1 subscription 2
+- id: Apple-sub_1_1_2-2000-03-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  subscription:
+    id: Apple-sub_1_1_2-2000-03-01T00:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_1_1_2
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 3
+    services:
+      - id: svc_1
+    is_active: true
+    started_at: 2000-03-01 00:00:00Z
+    started_reason: Returning Customer
+- id: Apple-sub_1_1_2-2000-03-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Apple-sub_1_1_2-2000-03-01T00:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_1_1_2
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_subscription_number: 3
+    services:
+      - id: svc_1
+    is_active: false
+    started_at: 2000-03-01 00:00:00Z
+    ended_at: 2000-04-01 00:00:00Z
+    started_reason: Returning Customer
+
+# Customer 2, service 1 subscription 1
+- id: Stripe-sub_2_1_1-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  subscription:
+    id: Stripe-sub_2_1_1-2000-02-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_2_1_1
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_subscription_number: 1
+    services:
+      - id: svc_1
+    is_active: true
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_2_1_1-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Stripe-sub_2_1_1-2000-02-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_2_1_1
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_subscription_number: 1
+    services:
+      - id: svc_1
+    is_active: false
+    started_at: 2000-02-01 00:00:00Z
+    ended_at: 2000-03-01 00:00:00Z
+    started_reason: New Customer

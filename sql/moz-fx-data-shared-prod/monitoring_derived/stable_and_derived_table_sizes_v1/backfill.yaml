@@ -1,0 +1,19 @@
+2026-03-02:
+  start_date: 2026-02-24
+  end_date: 2026-02-26
+  excluded_dates:
+  - 2026-02-25
+  reason: Test for query.py https://mozilla-hub.atlassian.net/browse/DENG-1287
+  watchers:
+  - bewu@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_args:
+  - --destination_dataset=backfills_staging_derived
+  - --destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02
+  query_script_dry_run_arg: --dry-run

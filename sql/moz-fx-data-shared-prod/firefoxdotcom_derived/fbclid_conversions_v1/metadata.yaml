@@ -1,0 +1,24 @@
+friendly_name: fbclid Conversions
+description: |-
+  All conversions for fbclid's.
+
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  owner1: kik@mozilla.com
+  table_type: client_level
+# TODO: try to confirm scheduling here.
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  date_partition_parameter: activity_date
+  date_partition_offset: -2
+  parameters: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: 775
+monitoring:
+  enabled: true

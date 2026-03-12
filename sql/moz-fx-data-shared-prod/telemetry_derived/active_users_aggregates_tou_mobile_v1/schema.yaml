@@ -22,8 +22,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined by
-    the IP geolocation.
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -39,8 +39,8 @@ fields:
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
-  description: Major or first part of the operating system version running at the client.
-    E.g. for version "100.9.11", the major is 100.
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
@@ -49,8 +49,8 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: The optional Windows build number, reported by Windows (e.g. 22000) and
-    not set for other platforms (Windows only).
+  description: The optional Windows build number, reported by Windows (e.g. 22000)
+    and not set for other platforms (Windows only).
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -76,8 +76,8 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser on
-    the client side.
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -90,15 +90,18 @@ fields:
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of daily users on the submission_date (based on sending the ping).
+  description: Number of daily users on the submission_date (based on sending the
+    ping).
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of weekly users on the submission_date (based on sending the ping).
+  description: Number of weekly users on the submission_date (based on sending the
+    ping).
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of monthly users on the submission_date (based on sending the ping).
+  description: Number of monthly users on the submission_date (based on sending the
+    ping).
 - name: dau
   type: INTEGER
   mode: NULLABLE
@@ -120,17 +123,17 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: The number of daily active users who have accepted the Terms of Use,
-    corresponding to the count of clients that reported at least one ping on the
-    submission_date and qualify as active.
+    corresponding to the count of clients that reported at least one ping on the submission_date
+    and qualify as active.
 - name: tou_weekly_active_users
   type: INTEGER
   mode: NULLABLE
   description: The number of weekly active users who have accepted the Terms of Use,
-    corresponding to the count of clients that reported at least one ping on the
-    previous 7 days from the submission_date and qualify as active.
+    corresponding to the count of clients that reported at least one ping on the previous
+    7 days from the submission_date and qualify as active.
 - name: tou_monthly_active_users
   type: INTEGER
   mode: NULLABLE
   description: The number of monthly active users who have accepted the Terms of Use,
-    corresponding to the count of clients that reported at least one ping on the
-    previous 28 days from the submission_date and qualify as active.
+    corresponding to the count of clients that reported at least one ping on the previous
+    28 days from the submission_date and qualify as active.

@@ -289,6 +289,46 @@ For our example:
 
 4. Watchers need to join the #dataops-alerts Slack channel. They will be notified via Slack when processing is complete, and you can validate your backfill data.
 
+### Backfilling with a Python script:
+
+Tables that use a `query.py` file instead of `query.sql` are also supported with backfills, but have additional considerations.
+
+**Importantly, backfills for scripts will not automatically configure the backfill staging table and dry run.**
+The query.py must support destination table and dry run arguments, and the backfill must be configured to use them
+if you would like to use them. If a destination table is not provided, the backfill will use the script's
+default values, likely writing to the production table.
+
+In order to use the backfill complete step, the script must write to the correct table in the backfill staging
+dataset: `{dataset}__{table_name}_{backfill_date}`. e.g. setting
+`--query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"`
+Otherwise, the backfill complete will do nothing.
+
+Required parameters:
+- `query_script_entrypoint`: The name of the main function inside the python script.
+- `query_script_date_arg`: The name of the CLI argument that the entrypoint accepts for the backfill date, formatted as `YYYY-MM-DD`
+(e.g. `submission_date`). The backfill will pass each backfilled date to the script via this argument.
+
+Optional parameters for Python scripts:
+- `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
+Use this to set the backfill staging table if needed, e.g. `--destination-table=dataset__table_v1_YYYY_MM_DD`.
+- `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+The script must implement support for this argument itself.
+
+Example:
+```bash
+bqetl backfill create moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1 \
+    --start-date 2026-02-24 \
+    --end-date 2026-02-26 \
+    --exclude 2026-02-25 \
+    --watcher nobody@mozilla.com \
+    --query-script-entrypoint main \
+    --query-script-date-arg date \
+    --query-script-dry-run-arg "--dry-run" \
+    --query-script-arg "--destination_dataset=backfills_staging_derived" \
+    --query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"
+```
+
 ### Completing the backfill:
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)

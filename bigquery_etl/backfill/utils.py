@@ -193,13 +193,8 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
     table_metadata_path = dataset_path / table / METADATA_FILE
 
-    if not query_file.exists():
-        if (query_file.parent / "query.py").exists():
-            click.echo(
-                f"Backfills with query.py are not supported: {qualified_table_name}"
-            )
-        else:
-            click.echo(f"No query.sql file found: {qualified_table_name}")
+    if not query_file.exists() and not (query_file.parent / "query.py").exists():
+        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
         sys.exit(1)
 
     # check dataset level metadata

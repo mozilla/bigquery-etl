@@ -17505,6 +17505,18 @@ fields:
         to the user.
 
         '
+    - name: nss_initialization_fallbacks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Count of how often various NSS initialization fallback methods
+        are used.
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

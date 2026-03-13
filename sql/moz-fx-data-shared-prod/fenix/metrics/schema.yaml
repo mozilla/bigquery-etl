@@ -18476,6 +18476,18 @@ fields:
         mode: NULLABLE
       description: Counts Nimbus event recording attempts after the custom review
         prompt is shown, labeled by result.
+    - name: nss_initialization_fallbacks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Count of how often various NSS initialization fallback methods
+        are used.
   - name: quantity
     type: RECORD
     mode: NULLABLE

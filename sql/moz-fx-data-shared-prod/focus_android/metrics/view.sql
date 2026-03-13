@@ -674,7 +674,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.nss_initialization_fallbacks
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2515,7 +2516,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.nss_initialization_fallbacks
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4356,7 +4358,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_count,
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
-      metrics.labeled_counter.network_ssl_token_cache_hits
+      metrics.labeled_counter.network_ssl_token_cache_hits,
+      metrics.labeled_counter.nss_initialization_fallbacks
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

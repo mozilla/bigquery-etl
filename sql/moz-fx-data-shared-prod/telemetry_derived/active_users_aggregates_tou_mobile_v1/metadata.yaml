@@ -14,7 +14,6 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  shredder_mitigation: true
   owner1: rbaffourawuah
   owner2: mhirose
   dag: bqetl_analytics_aggregations

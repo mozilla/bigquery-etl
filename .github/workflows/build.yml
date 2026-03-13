@@ -68,11 +68,11 @@ jobs:
         with:
           files: |
             requirements.txt
-            bigquery_etl/routine/.*
+            bigquery_etl/routine/**
             .github/workflows/**
-            sql/mozfun/.*
-            sql/moz-fx-data-shared-prod/udf/.*
-            sql/moz-fx-data-shared-prod/udf_js/.*
+            sql/mozfun/**
+            sql/moz-fx-data-shared-prod/udf/**
+            sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
@@ -84,8 +84,8 @@ jobs:
             sql_generators/**
             dags.yaml
             .github/workflows/**
-            bigquery_etl/query_scheduling/.*
-            tests/sql/.*
+            bigquery_etl/query_scheduling/**
+            tests/sql/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-bqetl

@@ -1,0 +1,30 @@
+friendly_name: GitHub Pull Requests
+description: |-
+  Merged pull requests ingested daily from the GitHub API. Each partition contains
+  PRs merged on that date. Supports multiple repositories via the repo_name field.
+owners:
+- gkaberere@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: merged_at
+    require_partition_filter: false
+  clustering:
+    fields:
+    - repo_name
+    - author
+scheduling:
+  dag_name: bqetl_github
+  arguments:
+  - --date
+  - "{{ds}}"
+  - --repo
+  - mozilla/bigquery-etl
+  - --repo
+  - mozilla/private-bigquery-etl
+  secrets:
+  - deploy_target: GITHUB_TOKEN
+    key: bqetl_github__github_token

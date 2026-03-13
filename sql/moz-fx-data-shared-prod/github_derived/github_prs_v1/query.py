@@ -1,6 +1,5 @@
 """Fetch merged GitHub pull requests from the GitHub API and load to BigQuery."""
 
-import json
 import logging
 import os
 import sys
@@ -9,6 +8,8 @@ from argparse import ArgumentParser
 
 import requests
 from google.cloud import bigquery
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logging.basicConfig(
     level=logging.INFO,
@@ -41,30 +42,40 @@ def parse_args():
     return parser.parse_args()
 
 
-def make_github_request(url, headers, params=None, max_retries=3):
-    """Make a GitHub API request with rate limit handling.
+def make_github_request(url, headers, params=None, retries=5, backoff_factor=2):
+    """Make a GitHub API request with exponential backoff and rate limit handling.
 
-    Retry up to max_retries times if rate limited, sleeping until the
-    reset time reported by GitHub before each retry.
+    Uses exponential backoff for transient errors (5xx). For GitHub rate limiting,
+    sleeps until the reset time reported in X-RateLimit-Reset before retrying.
     """
-    for attempt in range(max_retries):
+    session = requests.Session()
+    session.headers.update(headers)
+    retry = Retry(
+        total=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=[500, 502, 503, 504],
+        raise_on_status=False,
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    for attempt in range(retries):
         try:
-            response = requests.get(url, headers=headers, params=params)
+            response = session.get(url, params=params, timeout=30)
         except Exception as e:
             logging.error(f"Request to {url} failed: {e}")
             return None
 
+        # Daily runs unlikely to hit 429 rate limit
+        # For backfills, rate limit likely, sleeping until Github reported reset time
         is_rate_limited = response.status_code == 429 or (
             response.status_code == 403
             and response.headers.get("X-RateLimit-Remaining") == "0"
         )
-
         if is_rate_limited:
             reset_timestamp = int(response.headers.get("X-RateLimit-Reset", 0))
             sleep_seconds = max(reset_timestamp - time.time(), 0) + 5
             logging.warning(
                 f"Rate limited by GitHub. Sleeping {sleep_seconds:.0f}s before retry "
-                f"(attempt {attempt + 1}/{max_retries})"
+                f"(attempt {attempt + 1}/{retries})"
             )
             time.sleep(sleep_seconds)
             continue
@@ -107,10 +118,8 @@ def get_pr_detail(pr_url, headers):
         "commits": pr.get("commits"),
         "comments": pr.get("comments"),
         "review_comments": pr.get("review_comments"),
-        "labels": json.dumps([label["name"] for label in pr.get("labels", [])]),
-        "requested_reviewers": json.dumps(
-            [r["login"] for r in pr.get("requested_reviewers", [])]
-        ),
+        "labels": [label["name"] for label in pr.get("labels", [])],
+        "requested_reviewers": [r["login"] for r in pr.get("requested_reviewers", [])],
     }
 
 
@@ -231,8 +240,8 @@ def load_to_bq(records, destination):
             bigquery.SchemaField("commits", "INTEGER", mode="NULLABLE"),
             bigquery.SchemaField("comments", "INTEGER", mode="NULLABLE"),
             bigquery.SchemaField("review_comments", "INTEGER", mode="NULLABLE"),
-            bigquery.SchemaField("labels", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("requested_reviewers", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("labels", "STRING", mode="REPEATED"),
+            bigquery.SchemaField("requested_reviewers", "STRING", mode="REPEATED"),
         ],
         autodetect=False,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,

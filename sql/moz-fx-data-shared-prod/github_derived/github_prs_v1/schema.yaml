@@ -69,9 +69,9 @@ fields:
   description: Number of inline code review comments on the pull request.
 - name: labels
   type: STRING
-  mode: NULLABLE
-  description: JSON array of label names applied to the pull request.
+  mode: REPEATED
+  description: Label names applied to the pull request.
 - name: requested_reviewers
   type: STRING
-  mode: NULLABLE
-  description: JSON array of GitHub usernames requested to review the pull request.
+  mode: REPEATED
+  description: GitHub usernames requested to review the pull request.

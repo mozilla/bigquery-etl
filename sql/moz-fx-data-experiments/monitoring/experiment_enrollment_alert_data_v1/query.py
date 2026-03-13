@@ -119,11 +119,14 @@ def main():
 
     print(f"Aggregated data for {len(data)} experiments")
 
+    # Wrap in versioning schema
+    versioned_data = {"v1": data}
+
     # Upload to GCS
     if not args.dry_run:
         storage_client = storage.Client(args.project)
         bucket = storage_client.bucket("mozanalysis")
-        json_str = json.dumps(data, indent=2)
+        json_str = json.dumps(versioned_data, indent=2)
 
         # Dated version
         dated_path = f"enrollment_alerts/enrollment_alerts_{args.date}.json"
@@ -140,7 +143,7 @@ def main():
         print(f"Uploaded to gs://mozanalysis/{latest_path}")
     else:
         print("[DRY RUN] Skipped GCS upload")
-        print(json.dumps(data, indent=2))
+        print(json.dumps(versioned_data, indent=2))
 
 
 if __name__ == "__main__":

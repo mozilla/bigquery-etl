@@ -83,15 +83,10 @@ def main():
 
     bq_client = bigquery.Client(args.project)
 
-    print("Querying enrollment/unenrollment data...")
     enrollment_rows = [dict(row) for row in bq_client.query(ENROLLMENT_QUERY).result()]
-    print(f"Retrieved {len(enrollment_rows)} branch records")
-
-    print("Querying unenrollment reasons...")
     reason_rows = [
         dict(row) for row in bq_client.query(UNENROLLMENT_REASONS_QUERY).result()
     ]
-    print(f"Retrieved {len(reason_rows)} reason records")
 
     # Aggregate into per-experiment structure
     data = {}
@@ -116,8 +111,6 @@ def main():
         if exp in data:
             reason = row["reason"] or "unknown"
             data[exp]["unenrollment_reasons"][reason] = int(row["count"])
-
-    print(f"Aggregated data for {len(data)} experiments")
 
     # Wrap in versioning schema
     versioned_data = {"v1": data}

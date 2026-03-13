@@ -33,8 +33,10 @@ def parse_args():
     )
     parser.add_argument(
         "--repo",
-        default="mozilla/bigquery-etl",
-        help="GitHub repository in owner/repo format.",
+        action="append",
+        dest="repos",
+        default=None,
+        help="GitHub repository in owner/repo format. Can be specified multiple times for additional repos.",
     )
     return parser.parse_args()
 
@@ -252,37 +254,41 @@ def load_to_bq(records, destination):
 def main():
     """Fetch merged GitHub PRs for a given date and load to BigQuery."""
     args = parse_args()
+    repos = args.repos or ["mozilla/bigquery-etl"]
 
     token = os.environ.get("GITHUB_TOKEN")
     if not token:
         logging.critical("GITHUB_TOKEN environment variable not set")
         sys.exit(1)
 
-    # Checks to see if data already present for date and if data is complete
-    existing_count = get_bq_row_count(args.destination, args.date, args.repo)
-    if existing_count > 0:
-        github_count = get_github_pr_count(args.repo, args.date, token)
-        # If data present and complete -> exits
-        if existing_count == github_count:
-            logging.info(
-                f"Destination table has {existing_count} PRs loaded for {args.date} which matches "
-                f"{github_count} PRs reported by GitHub. Load not required. Exiting."
-            )
-            sys.exit(0)
+    for repo in repos:
+        logging.info(f"Processing {repo} for {args.date}")
+
+        # Checks to see if data already present for date and repo
+        existing_count = get_bq_row_count(args.destination, args.date, repo)
+        if existing_count > 0:
+            github_count = get_github_pr_count(repo, args.date, token)
+            # If data present and complete -> skip this repo
+            if existing_count == github_count:
+                logging.info(
+                    f"{repo}: destination table has {existing_count} PRs loaded for {args.date} which matches "
+                    f"{github_count} PRs reported by GitHub. Load not required. Skipping."
+                )
+                continue
+            else:
+                # If data present but incomplete -> exits with failure
+                logging.critical(
+                    f"{repo}: {args.date} has {existing_count} PRs loaded but GitHub reports {github_count}. "
+                    f"DATA IN TABLE IS WRONG! Manual investigation required. Delete incomplete data and rerun for the date"
+                )
+                sys.exit(1)
+
+        records = get_merged_prs(repo, args.date, token)
+
+        if records:
+            load_to_bq(records, args.destination)
         else:
-            # If data present but incomplete -> exits with failure
-            logging.critical(
-                f"{args.date} has {existing_count} PRs loaded but GitHub reports {github_count}. "
-                f"DATA IN TABLE IS WRONG! Manual investigation required. Delete incomplete data and rerun for the date"
-            )
-            sys.exit(1)
-
-    records = get_merged_prs(args.repo, args.date, token)
-
-    if records:
-        load_to_bq(records, args.destination)
-    else:
-        logging.info("No merged PRs found for this date")
+            logging.info(f"{repo}: no merged PRs found for {args.date}")
 
     logging.info("Done.")
 

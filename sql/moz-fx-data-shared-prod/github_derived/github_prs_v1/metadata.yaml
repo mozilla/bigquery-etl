@@ -21,6 +21,10 @@ scheduling:
   arguments:
   - --date
   - "{{ds}}"
+  - --repo
+  - mozilla/bigquery-etl
+  - --repo
+  - mozilla/private-bigquery-etl
   secrets:
   - deploy_target: GITHUB_TOKEN
-    key: bqetl_github_derived__github_token
+    key: bqetl_github__github_token

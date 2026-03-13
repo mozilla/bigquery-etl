@@ -1,0 +1,11 @@
+---
+friendly_name: Experiment Enrollment Alert Data
+description: |-
+  Exports per-experiment enrollment/unenrollment counts by branch and unenrollment reasons
+  for use by Experimenter alerting system. Raw data only; Experimenter handles threshold computations.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_experiments_daily

@@ -1,17 +1,27 @@
 fields:
+
 - name: activity_date
   mode: NULLABLE
   type: DATE
-  description: Activity Date
+  description: The date that the conversion action took place.
+
 - name: fbclid
   mode: NULLABLE
   type: STRING
-  description: Facebook click id.
-- name: conversion_name
+  description: A Facebook Click ID, which uniquely represent an ad impression for Google ads.
+
+- name: ga_event_timestamp
   mode: NULLABLE
-  type: STRING
-  description: Conversion Name
+  type: INTEGER
+  description: |-
+    Earliest timestamp associated with the fbclid, might prove to be critical when formatting fbclid before sending to Conversions API.
+
 - name: ga_country
   mode: NULLABLE
   type: STRING
   description: Country as reported by GA.
+
+- name: conversion_name
+  mode: NULLABLE
+  type: STRING
+  description: Conversion name.

@@ -1,9 +1,9 @@
 friendly_name: Redacted Pings for `firefox-desktop/microsurvey`
 description: |-
-  A redacted view of `firefox_desktop.microsurvey` with sensitive metrics excluded.
+  A redacted view of `firefox_desktop_stable.microsurvey_v1` with sensitive metrics excluded.
   Fields with data_sensitivity categories [highly_sensitive] are removed.
 
-  See the full (access-restricted) data in `firefox_desktop.microsurvey`.
+  See the full (access-restricted) data in `firefox_desktop_stable.microsurvey_v1` and `firefox_desktop.microsurvey`.
 owners: []
 labels:
   authorized: true
@@ -13,4 +13,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_desktop.microsurvey
+  - moz-fx-data-shared-prod.firefox_desktop_stable.microsurvey_v1

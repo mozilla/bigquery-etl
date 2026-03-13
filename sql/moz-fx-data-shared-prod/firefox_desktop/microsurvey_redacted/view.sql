@@ -1,15 +1,17 @@
--- Generated via ./bqetl generate stable_views_redacted
+-- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.microsurvey_redacted`
 AS
 SELECT
   * REPLACE (
+    mozfun.norm.metadata(metadata) AS metadata,
     (
       SELECT AS STRUCT
         metrics.* REPLACE (
           (SELECT AS STRUCT metrics.text2.* EXCEPT (microsurvey_event_input_value)) AS text2
         )
     ) AS metrics
-  )
+  ),
+  LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop.microsurvey`
+  `moz-fx-data-shared-prod.firefox_desktop_stable.microsurvey_v1`

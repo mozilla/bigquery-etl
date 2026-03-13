@@ -16,8 +16,7 @@ WITH unioned AS (
     `moz-fx-data-shared-prod.addons_derived.firefox_desktop_addons_by_client_v1`
   WHERE
     mozfun.norm.truncate_version(app_version, "major") >= 148
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     * EXCEPT (normalized_channel),
     'Fenix' AS app,

@@ -56,7 +56,7 @@ class TestCheck:
         expected = dedent(
             """
         #fail
-        ASSERT(
+        ASSERT (
           (
             SELECT
               COUNT(*)

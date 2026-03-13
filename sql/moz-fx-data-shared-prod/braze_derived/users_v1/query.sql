@@ -66,7 +66,7 @@ WHERE
     OR fxa.account_deleted IS NULL
   )
   AND (
-    EXISTS(
+    EXISTS (
       SELECT
         1
       FROM
@@ -78,7 +78,7 @@ WHERE
         newsletters.email_id = emails.external_id
         AND newsletters.subscribed = TRUE
     )
-    OR EXISTS(
+    OR EXISTS (
       SELECT
         1
       FROM

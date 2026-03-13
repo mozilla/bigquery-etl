@@ -56,7 +56,7 @@ WITH events_unnested AS (
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     sample_id,
     event.name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     GENERATE_UUID() AS event_id,
     ping_info.experiments,
     ping_info.seq,

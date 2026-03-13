@@ -23,7 +23,8 @@ BEGIN
     t1.date = target_date
     AND t2.date = target_date;
 
-  SET rows_added = (SELECT COUNT(*) FROM data_for_target_date);
+  SET
+    rows_added = (SELECT COUNT(*) FROM data_for_target_date);
 
   SELECT
     id,
@@ -33,8 +34,7 @@ BEGIN
   DROP TABLE
     data_for_target_date;
 
-  WHILE
-    expr
+  WHILE expr
   DO
     IF
       expr1
@@ -54,8 +54,24 @@ BEGIN
   END WHILE;
 
   LOOP
+    CALL foo();
+
     LEAVE;
   END LOOP;
+
+  REPEAT
+    EXECUTE IMMEDIATE
+      'SELECT flag'
+      INTO flag;
+
+    UNTIL flag
+  END REPEAT;
+
+  FOR id IN (SELECT id FROM ids)
+  DO
+    SELECT
+      SHA256(id);
+  END FOR;
 
   COMMIT TRANSACTION;
 END;

@@ -80,7 +80,7 @@ base_events_fresh_items AS (
     events ev,
     params
   WHERE
-    EXISTS(
+    EXISTS (
       SELECT
         1
       FROM

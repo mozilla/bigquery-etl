@@ -1,0 +1,38 @@
+friendly_name: Facebook Conversion Events
+description: |-
+  Combines conversion events found inside fbclid_conversion_events_day_2_v1 and fbclid_conversion_events_day_7_v1.
+
+  Expected grain: max 1 row per fbclid + conversion_name combination.
+
+owners:
+- kik@mozilla.com
+
+labels:
+  incremental: true
+  table_type: client_level
+
+scheduling:
+  dag_name: bqetl_census_feed
+  date_partition_parameter: activity_date
+  date_partition_offset: -2
+  parameters: null
+  depends_on_past: true
+  secrets:
+  - deploy_target: FB_ACCESS_TOKEN
+    key: bqetl_fb_access_token
+  - deploy_target: FB_PIXEL_ID
+    key: bqetl_fb_pixel_id
+
+  referenced_tables:
+  - 'moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversions_day_2_v1'
+  - 'moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversions_day_7_v1'
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+
+monitoring:
+  enabled: true

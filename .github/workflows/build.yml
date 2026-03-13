@@ -233,12 +233,9 @@ jobs:
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
-      - &export-dryrun-id-token
-        name: Export ID Token for Python
+      - name: PyTest with linters
         env:
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
-      - name: PyTest with linters
         run: |
           PATH=".venv/bin:$PATH" pytest --black --flake8 \
             --isort --mypy-ignore-missing-imports --pydocstyle \
@@ -268,10 +265,9 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - &set-stage-project-id
-        name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV
       - name: PyTest Integration Test
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m 'integration' -n 8 \
           -p no:bigquery_etl.pytest_plugin.routine \
@@ -297,13 +293,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - &set-dryrun-project-id
-        name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-dryrun.outputs.project_id }}" >> $GITHUB_ENV
       - name: Generate SQL content
         env:
           TRIGGER_SQL_GENERATION: ${{ github.event.inputs.trigger-sql-generation }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           # Fetch main branch for merge-base
           git fetch origin main --no-tags
@@ -475,12 +469,12 @@ jobs:
           find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - *auth-gcp-stage
       - name: Deploy changes to stage
         timeout-minutes: 60
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
@@ -528,10 +522,10 @@ jobs:
           rm -rf tests/
           cp -r /tmp/workspace/staged-generated-sql/tests tests
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Dry run queries
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           if [ "$GITHUB_REF_NAME" = main ]; then
             echo "Skip dryruns on main. Dryruns will run in Airflow"
@@ -570,11 +564,11 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Run SQL tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
 
@@ -595,14 +589,16 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Run routine tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
       - name: Validate doc examples
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
 
@@ -623,8 +619,9 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Validate views
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl view validate
 
@@ -646,8 +643,9 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Verify that metadata files are valid
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl query validate \
             --no-dryrun --skip-format-sql
@@ -697,8 +695,6 @@ jobs:
       - *restore-venv
       - *download-generated-sql
       - *auth-gcp-dryrun
-      - *set-dryrun-project-id
-      - *export-dryrun-id-token
       - &setup-ssh-key-private-bqetl
         name: Setup SSH key for private repo
         run: |
@@ -711,6 +707,9 @@ jobs:
           git clone --branch main --depth 1 \
             git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
       - name: Generate SQL content
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
           export PYTHONPATH="$PWD:$PYTHONPATH"
@@ -758,10 +757,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - *set-dryrun-project-id
       - *setup-ssh-key-private-bqetl
       - name: Generate SQL and DAGs
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
           export PYTHONPATH="$PWD:$PYTHONPATH"
@@ -881,14 +881,15 @@ jobs:
             echo "Restored schema cache from generate-sql job"
           fi
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - *set-dryrun-project-id
       - *setup-ssh-key-private-bqetl
       - name: Pull down private-bigquery-etl content
         run: |
           git clone --branch main --depth 1 \
             git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
       - name: Generate DAGs
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           rm -rf sql/
           cp -rf /tmp/workspace/private-generated-sql/sql sql/
@@ -1183,22 +1184,18 @@ jobs:
           id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
           id_token_include_email: true
           create_credentials_file: false
-      - name: Generate API Token and DAG run note
+      - name: Trigger bqetl-artifact-deployment in Airflow
         env:
-          AUTH_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+          ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         run: |
           REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
           RUN_URL="${REPO_URL}/actions/runs/${GITHUB_RUN_ID}"
           NOTE="DAG triggered by **[${GITHUB_ACTOR}](https://github.com/${GITHUB_ACTOR})** "
           NOTE="${NOTE}from ${GITHUB_REPOSITORY} CI build [${GITHUB_RUN_NUMBER}](${RUN_URL})"
-          echo "DAGRUN_NOTE=${NOTE}" >> $GITHUB_ENV
-          echo "ID_TOKEN=${AUTH_ID_TOKEN}" >> $GITHUB_ENV
-      - name: Trigger bqetl-artifact-deployment in Airflow
-        run: |
           curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
             -H "Authorization: bearer ${ID_TOKEN}" \
             -H "Content-Type:application/json" \
-            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
+            -d "{\"dagrun_note\": \"${NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
 
   reset-stage-env:
     name: Reset Stage Environment
@@ -1215,8 +1212,9 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Delete stage datasets
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" --delete-expired
 

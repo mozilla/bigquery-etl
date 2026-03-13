@@ -269,13 +269,7 @@ deactivate
 
 ## Making a pull request from a fork
 
-When opening a pull-request to merge a fork, the `manual-trigger-required-for-fork` CI task will
-fail and some integration test tasks will be skipped. A user with repository write permissions
-will have to run the [Push to upstream workflow](https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml)
-and provide the `<username>:<branch>` of the fork as parameter. The parameter will also show up
-in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
-Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
-executed.
+Pull requests from forks are handled automatically via environment gates in CI. Fork PRs from Mozilla org members (with [public organization membership](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership)) use the `dev` environment for the initial build and the `external-fork` environment for integration tests. Fork PRs from external contributors use the `external-fork` environment for all CI jobs. A repository maintainer must approve `external-fork` deployments before those jobs run. No manual workflow trigger is needed.
 
 ## Building the Documentation
 

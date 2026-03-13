@@ -46,8 +46,7 @@ valid_clients_scalar_aggregates AS (
     USING (app_build_id, channel)
   {% if use_sample_id %}
   WHERE
-    sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
+    `moz-fx-data-shared-prod`.udf.safe_sample_id(client_id) BETWEEN @min_sample_id AND @max_sample_id
   {% endif %}
 ),
 bucketed_booleans AS (

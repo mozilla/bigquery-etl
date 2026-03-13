@@ -13,11 +13,14 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO, TextIOWrapper
+from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 import yaml
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
+
+from ..schema import SCHEMA_FILE, Schema
 
 QueryParameter = Union[
     bigquery.ArrayQueryParameter,
@@ -56,15 +59,24 @@ class Table:
                 full_name, _ = resource.rsplit(".", 1)
             else:
                 resource_dir, full_name = self.source_path
-            try:
-                table_dir, _ = os.path.split(resource_dir)
+
+            table_dir, _ = os.path.split(resource_dir)
+            if any(
+                os.path.exists(os.path.join(table_dir, f"{full_name}.schema.{ext}"))
+                for ext in ("json", "yaml")
+            ):
                 schema = load(table_dir, f"{full_name}.schema")
                 self.schema = [
                     bigquery.SchemaField.from_api_repr(field)
                     for field in (schema["fields"] if "fields" in schema else schema)
                 ]
-            except FileNotFoundError:
-                pass
+            else:
+                schema_file = (
+                    Path("sql") / full_name.replace(".", os.path.sep) / SCHEMA_FILE
+                )
+                if schema_file.exists():
+                    schema = Schema.from_schema_file(schema_file)
+                    self.schema = schema.to_bigquery_schema()
 
 
 class NDJsonDecodeError(Exception):

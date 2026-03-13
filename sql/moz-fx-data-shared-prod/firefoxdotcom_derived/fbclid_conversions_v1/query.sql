@@ -4,22 +4,17 @@ WITH ga_base AS (
     event_timestamp AS ga_timestamp,
     user_pseudo_id AS ga_client_id,
     event_param.value.string_value AS fbclid,
-    CAST(event_param.value.int_value AS STRING) AS stub_session_id,
     geo.country AS ga_country,
   FROM
-    `moz-fx-data-marketing-prod.analytics_489412379.events_intraday_20260311`,
-  -- `moz-fx-data-marketing-prod.analytics_489412379.events_*`,
+    `moz-fx-data-marketing-prod.analytics_489412379.events_*`,
     UNNEST(event_params) AS event_param
   WHERE
-  -- _TABLE_SUFFIX
-  --     BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@activity_date, INTERVAL 9 DAY))
-  --     AND FORMAT_DATE('%Y%m%d', @activity_date)
-    event_name = "stub_session_set"
+    _TABLE_SUFFIX
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@activity_date, INTERVAL 9 DAY))
+    AND FORMAT_DATE('%Y%m%d', @activity_date)
+    AND event_name = "stub_session_set"
     AND user_pseudo_id IS NOT NULL
-    AND (
-      (event_param.key = 'fbclid' AND event_param.value.string_value IS NOT NULL)
-      OR (event_param.key = "id" AND event_param.value.int_value IS NOT NULL)
-    )
+    AND (event_param.key = 'fbclid' AND event_param.value.string_value IS NOT NULL)
 ),
 ga_fbclid AS (
   SELECT
@@ -32,43 +27,18 @@ ga_fbclid AS (
   WHERE
     fbclid IS NOT NULL
 ),
-ga_stub_session AS (
-  SELECT
-    ga_timestamp,
-    ga_client_id,
-    stub_session_id,
-    ga_country,
-  FROM
-    ga_base
-  WHERE
-    stub_session_id IS NOT NULL
-),
-ga_fbclid_stub_session_mapping AS (
-  SELECT
-    ga_timestamp,
-    ga_client_id,
-    fbclid,
-    stub_session_id,
-    ga_country,
-  FROM
-    ga_fbclid
-  INNER JOIN
-    ga_stub_session
-    USING (ga_timestamp, ga_client_id, ga_country)
-),
 fbclid_dltoken_mapping AS (
   SELECT
     ga_timestamp,
     ga_client_id,
-    stub_session_id,
     ga_dl_token.dl_token,
     fbclid,
     ga_country,
   FROM
-    ga_fbclid_stub_session_mapping
+    ga_fbclid
   INNER JOIN
     `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1` AS ga_dl_token
-    USING (ga_client_id, stub_session_id)
+    USING (ga_client_id)
   WHERE
     ga_dl_token.first_seen_date
     BETWEEN DATE_SUB(@activity_date, INTERVAL 9 DAY)
@@ -79,7 +49,7 @@ fbclid_conversions AS (
     fbclid_dltoken_mapping.fbclid,
     fbclid_dltoken_mapping.ga_country,
     conversion_events.report_date AS activity_date,
-    -- conversion_events.client_id, -- TODO: this can be removed after testing.
+    conversion_events.client_id,
     conversion_events.event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     conversion_events.event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     conversion_events.event_3 AS first_wk_3_actv_days_and_24_active_minutes,

@@ -72,9 +72,6 @@ ORDER BY 1, 2, 3 DESC
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
 parser.add_argument("--project", default="moz-fx-data-experiments")
-parser.add_argument(
-    "--dry_run", action="store_true", help="Print output, skip GCS upload"
-)
 
 
 def main():
@@ -116,27 +113,21 @@ def main():
     versioned_data = {"v1": data}
 
     # Upload to GCS
-    if not args.dry_run:
-        storage_client = storage.Client(args.project)
-        bucket = storage_client.bucket("mozanalysis")
-        json_str = json.dumps(versioned_data, indent=2)
+    storage_client = storage.Client(args.project)
+    bucket = storage_client.bucket("mozanalysis")
+    json_str = json.dumps(versioned_data, indent=2)
 
-        # Dated version
-        dated_path = f"enrollment_alerts/enrollment_alerts_{args.date}.json"
-        bucket.blob(dated_path).upload_from_string(
-            json_str, content_type="application/json"
-        )
-        print(f"Uploaded to gs://mozanalysis/{dated_path}")
+    # Dated version
+    dated_path = f"enrollment_alerts/enrollment_alerts_{args.date}.json"
+    bucket.blob(dated_path).upload_from_string(
+        json_str, content_type="application/json"
+    )
 
-        # Latest version
-        latest_path = "enrollment_alerts/enrollment_alerts_latest.json"
-        bucket.blob(latest_path).upload_from_string(
-            json_str, content_type="application/json"
-        )
-        print(f"Uploaded to gs://mozanalysis/{latest_path}")
-    else:
-        print("[DRY RUN] Skipped GCS upload")
-        print(json.dumps(versioned_data, indent=2))
+    # Latest version
+    latest_path = "enrollment_alerts/enrollment_alerts_latest.json"
+    bucket.blob(latest_path).upload_from_string(
+        json_str, content_type="application/json"
+    )
 
 
 if __name__ == "__main__":

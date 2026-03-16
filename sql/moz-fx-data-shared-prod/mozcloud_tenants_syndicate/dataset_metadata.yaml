@@ -1,4 +1,4 @@
-friendly_name: mozcloud_tenants
+friendly_name: mozcloud_tenants_syndicate
 dataset_base_acl: syndicate
 description: tenant_export syndicate views
 user_facing: false

@@ -3,7 +3,8 @@ fields:
 - name: submission_date
   mode: NULLABLE
   type: DATE
-  description: TODO
+  description: |-
+    Logical date processed, also used for partitioning (scheduled to run with 2 day lag).
 
 - name: activity_date
   mode: NULLABLE

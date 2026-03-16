@@ -11,21 +11,16 @@ fields:
   type: DATE
   description: The date that the conversion action took place.
 
-- name: fbclid
-  mode: NULLABLE
-  type: STRING
-  description: A Facebook Click ID, which uniquely represent an ad impression for Google ads.
-
-- name: ga_event_timestamp
+- name: activity_unix_timestamp
   mode: NULLABLE
   type: INTEGER
-  description: |-
-    Earliest timestamp associated with the fbclid, might prove to be critical when formatting fbclid before sending to Conversions API.
+  description: activity_date in UNIX seconds.
 
-- name: ga_country
+- name: fbc
   mode: NULLABLE
   type: STRING
-  description: Country as reported by GA.
+  description: |-
+    Formatted fbc (expected format: fbc.subdomain_index.creation_time.fbclid).
 
 - name: conversion_name
   mode: NULLABLE

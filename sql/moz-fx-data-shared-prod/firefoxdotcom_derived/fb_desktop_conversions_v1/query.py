@@ -30,7 +30,7 @@ SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 PARTITION_FIELD = "submission_date"
 
 
-SELECT_QUERY = """
+TABLE_QUERY = """
 SELECT submission_date, activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
 FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1`
 WHERE submission_date = @submission_date
@@ -43,16 +43,8 @@ WHERE submission_date = @submission_date
 """
 
 
-def chunk_list(lst, chunk_size):
-    """Split a list into chunks of specified size.
-
-    Args:
-        lst: The list to split
-        chunk_size: Maximum size of each chunk
-
-    Returns:
-        List of chunks (last chunk may be smaller)
-    """
+def chunk_list(lst: List[Any], chunk_size: int) -> List[List[Any]]:
+    """Split a list into chunks of specified size."""
     return [lst[i : i + chunk_size] for i in range(0, len(lst), chunk_size)]
 
 
@@ -139,7 +131,7 @@ def main(
     update_table(
         bq_client,
         submission_date,
-        SELECT_QUERY,
+        TABLE_QUERY,
         f"{destination_table}${partition_decorator}",
     )
 

@@ -101,7 +101,7 @@ def create_event(event_data: DataFrame) -> Event:
         user_data=UserData(
             fbc=event_data["fbc"],
         ),
-        action_source=ActionSource.OTHER,
+        action_source=ActionSource.PHYSICAL_STORE,
     )
 
 

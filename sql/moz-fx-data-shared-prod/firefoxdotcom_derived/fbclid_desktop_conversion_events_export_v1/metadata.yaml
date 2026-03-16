@@ -13,8 +13,9 @@ labels:
 
 scheduling:
   dag_name: bqetl_census_feed
-  date_partition_parameter: submission_date
   date_partition_offset: -2
+  arguments:
+  - --submission_date={{macros.ds_add(ds, -2)}}
   depends_on_past: true
   secrets:
   - deploy_target: FB_ACCESS_TOKEN
@@ -23,7 +24,7 @@ scheduling:
     key: bqetl_fb_pixel_id
 
   referenced_tables:
-  - 'moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_v1'
+  - ['moz-fx-data-shared-prod', 'firefoxdotcom_derived', 'fbclid_desktop_conversion_events_v1']
 
 bigquery:
   time_partitioning:

@@ -9,6 +9,8 @@ the queries directly, but there is no way to restrict permissions such that
 only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
+
+# TODO: remove this comment - CI test change
 """
 
 import glob

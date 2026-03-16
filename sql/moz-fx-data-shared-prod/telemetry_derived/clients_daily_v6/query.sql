@@ -10,6 +10,7 @@ This query depends on the following fields added to the main_v4 schema on 2019-1
 To backfill partitions for 2019-11-22 and earlier, use the last version of this query that read from main_summary_v4:
 https://github.com/mozilla/bigquery-etl/blob/813a485/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql
 */
+-- TODO: remove this comment - CI test change
 WITH base AS (
   SELECT
     *,

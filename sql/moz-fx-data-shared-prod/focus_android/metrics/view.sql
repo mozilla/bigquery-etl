@@ -675,7 +675,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
       metrics.labeled_counter.network_ssl_token_cache_hits,
-      metrics.labeled_counter.nss_initialization_fallbacks
+      metrics.labeled_counter.nss_initialization_fallbacks,
+      metrics.labeled_counter.networking_http_3_slow_start_exit_direction_loss,
+      metrics.labeled_counter.permissions_unused_permissions_expired_by_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1172,7 +1174,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
       metrics.custom_distribution.dom_script_memory_cache_ref_count,
-      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload,
+      metrics.custom_distribution.networking_http_3_congestion_event_count,
+      metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
+      metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1760,7 +1765,8 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_large_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_full,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
-      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
+      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed,
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -2517,7 +2523,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
       metrics.labeled_counter.network_ssl_token_cache_hits,
-      metrics.labeled_counter.nss_initialization_fallbacks
+      metrics.labeled_counter.nss_initialization_fallbacks,
+      metrics.labeled_counter.networking_http_3_slow_start_exit_direction_loss,
+      metrics.labeled_counter.permissions_unused_permissions_expired_by_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3014,7 +3022,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
       metrics.custom_distribution.dom_script_memory_cache_ref_count,
-      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload,
+      metrics.custom_distribution.networking_http_3_congestion_event_count,
+      metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
+      metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -3602,7 +3613,8 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_large_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_full,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
-      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
+      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed,
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -4359,7 +4371,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_realtime_simulation_request_size,
       metrics.labeled_counter.urlclassifier_realtime_simulation_response_size,
       metrics.labeled_counter.network_ssl_token_cache_hits,
-      metrics.labeled_counter.nss_initialization_fallbacks
+      metrics.labeled_counter.nss_initialization_fallbacks,
+      metrics.labeled_counter.networking_http_3_slow_start_exit_direction_loss,
+      metrics.labeled_counter.permissions_unused_permissions_expired_by_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4856,7 +4870,10 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_1_10,
       metrics.custom_distribution.dom_script_memory_cache_ever_hit,
       metrics.custom_distribution.dom_script_memory_cache_ref_count,
-      metrics.custom_distribution.networking_http_3_peer_max_udp_payload
+      metrics.custom_distribution.networking_http_3_peer_max_udp_payload,
+      metrics.custom_distribution.networking_http_3_congestion_event_count,
+      metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
+      metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -5444,7 +5461,8 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_large_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_full,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
-      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
+      metrics.labeled_custom_distribution.sandbox_failed_launch_keyed,
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

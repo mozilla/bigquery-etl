@@ -2,6 +2,7 @@
 
 # https://developers.facebook.com/docs/marketing-api/conversions-api/get-started
 
+import logging
 import os
 from argparse import ArgumentParser
 from datetime import date
@@ -12,12 +13,10 @@ from facebook_business.adobjects.serverside.action_source import ActionSource
 from facebook_business.adobjects.serverside.event import Event
 from facebook_business.adobjects.serverside.event_request import EventRequest
 from facebook_business.adobjects.serverside.user_data import UserData
-
-# from facebook_business.api import FacebookAdsApi
+from facebook_business.api import FacebookAdsApi
 from google.cloud import bigquery
 from pandas import DataFrame
 
-# from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import Schema
 
 API_URI = "https://graph.facebook.com/"
@@ -34,16 +33,12 @@ PARTITION_FIELD = "submission_date"
 SELECT_QUERY = """
 SELECT submission_date, activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
 FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1`
-WHERE submission_date = @submission_date AND ga_country IN ("United States", "India")
+WHERE submission_date = @submission_date
 """
 
-# Expected fbc format: "fbc.{subdomain_index}.{creation_time}.{fbclid}"
 DATA_EXPORT_QUERY = """
-SELECT
-    activity_date,
-    (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
-    CONCAT("fbc.0", CAST(ga_event_timestamp AS STRING), ".", fbclid) AS fbc, conversion_name,
-FROM `{source_table}`
+SELECT activity_date, activity_unix_timestamp, fbc, conversion_name,
+FROM `{source_view}`
 WHERE submission_date = @submission_date
 """
 
@@ -128,13 +123,18 @@ def main(
     pixel_id: int,
 ) -> None:
     """Update table to include data to be pushed to Conversions API, retrieve data for a specific submission_date, format and send it to Conversions API."""
-    # if not (pixel_id and access_token):
-    #     raise Exception("Missing required test config. Please make sure both pixel_id and access_token are provided.")
+    if not (pixel_id and access_token):
+        raise Exception(
+            "Missing required test config. Please make sure both pixel_id and access_token are provided."
+        )
 
     bq_client = bigquery.Client(project_id)
 
     partition_decorator = str(submission_date).replace("-", "")
     destination_table = f"{project_id}.{dataset}.{table_name}"
+    source_view = "_".join(destination_table.split("_")[:-1]).replace("_derived", "")
+
+    logging.info("START | Updating table: %s" % destination_table)
 
     update_table(
         bq_client,
@@ -142,26 +142,40 @@ def main(
         SELECT_QUERY,
         f"{destination_table}${partition_decorator}",
     )
+
+    logging.info("COMPLETE | Updating table: %s" % destination_table)
+    logging.info("START | Getting results to export from view: %s" % source_view)
+
     result_df = get_results_from_bigquery(
         bq_client,
         submission_date,
-        DATA_EXPORT_QUERY.format(source_table=destination_table),
+        DATA_EXPORT_QUERY.format(source_view=source_view),
     )
+    logging.info("COMPLETE | Getting results to export from view: %s" % source_view)
 
     if len(result_df) == 0:
-        print("No results found.")
+        # TODO: should this cause a failure?
+        logging.warning("No results found for export.")
         return
 
     conversion_events = [
         create_event(conversion_event[1]) for conversion_event in result_df.iterrows()
     ]
 
-    # FacebookAdsApi.init(access_token=access_token, crash_log=False)
+    logging.info(
+        "Num of conversion events ready for export: %s" % len(conversion_events)
+    )
 
-    for batch in chunk_list(conversion_events, 1000):
-        # TODO: Investigate what the response looks like and if there's some interesting information we may want to persist?
-        # response = execute_request(pixel_id=pixel_id, events=[batch])
-        print(batch)
+    FacebookAdsApi.init(access_token=access_token, crash_log=False)
+
+    for batch_num, batch in enumerate(chunk_list(conversion_events, 1000)):
+        logging.info("START | Processing batch number: %s" % batch_num)
+
+        response = execute_request(pixel_id=pixel_id, events=batch)
+        logging.info(
+            "COMPLETE | Processing batch number: %s, response: %s."
+            % (batch_num, response)
+        )
 
 
 if __name__ == "__main__":

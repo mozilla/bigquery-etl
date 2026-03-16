@@ -1,6 +1,6 @@
 friendly_name: Facebook Conversion Events
 description: |-
-  Keeps track of which conversion events have been selected to be sent to Conversions API.
+  Contains data for Conversions API export.
 
   Expected grain: max 1 row per fbclid + conversion_name combination.
 

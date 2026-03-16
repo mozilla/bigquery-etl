@@ -2,9 +2,12 @@ fields:
 - name: as_of_date
   type: DATE
   mode: NULLABLE
+  description: 'Date of as of. Computed as: @as_of_date.'
 - name: table_name
   type: STRING
   mode: NULLABLE
+  description: 'Name of table. Computed as: "accounts_linked_to_apple".'
 - name: total_rows
   type: INTEGER
   mode: NULLABLE
+  description: 'Total value of rows. Computed as: COUNT(uid).'

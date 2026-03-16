@@ -17,6 +17,13 @@ sql/**/mkdocs.yml
 generated_docs/
 generated-sql/
 
+# ignore local dev target deployments
+sql/*-sandbox/
+sql/*-sandbox-[0-9]*/
+sql/*/dev_*/
+sql/moz-fx-data-dev/
+targets.yaml
+
 # ignore Bigeye artifacts
 moz-fx-data-shared-prod_APPLY.yml
 moz-fx-data-shared-prod_PLAN.yml

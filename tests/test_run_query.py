@@ -39,6 +39,8 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -78,6 +80,8 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=mozdata:test.query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -114,6 +118,7 @@ class TestRunQuery:
                     "bq",
                     "query",
                     "--destination_table=mozilla-public-data:test.query_v1",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )
@@ -188,6 +193,7 @@ class TestRunQuery:
                 "bq",
                 "query",
                 "--project_id=project-2",
+                "--use_legacy_sql=False",
                 "--session_id=1234567890",
             ],
         )
@@ -332,6 +338,8 @@ class TestRunQuery:
                     "query",
                     "--project_id=moz-fx-data-shared-prod",
                     "--destination_table=query_v1",
+                    "--replace",
+                    "--use_legacy_sql=False",
                     "--dataset_id=test",
                 ],
             )

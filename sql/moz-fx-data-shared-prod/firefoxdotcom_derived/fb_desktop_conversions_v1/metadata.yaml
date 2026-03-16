@@ -16,8 +16,6 @@ scheduling:
   date_partition_parameter: submission_date
   date_partition_offset: -2
   depends_on_past: true
-  arguments:
-  - --submission_date={{ds}}  # TODO: this sould be - 2 days
   secrets:
   - deploy_target: FB_ACCESS_TOKEN
     key: bqetl_fb_access_token

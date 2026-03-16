@@ -3,7 +3,7 @@ tag_deployments:
 - collection:
     name: Operational Checks
     notification_channels:
-    - slack: '#de-bigeye-triage'
+    - slack: '#ds-de-marketing'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_export_v1.submission_date

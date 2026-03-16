@@ -166,7 +166,7 @@ def main(
     client = client_queue.default_client
 
     print(
-        f"Querying dataset {dataset} in project {destination_project} for {date} "
+        f"Querying dataset {dataset} in project {project} for {date} "
         f"to {date - datetime.timedelta(days=lookback_days - 1)}"
     )
 

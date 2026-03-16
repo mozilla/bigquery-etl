@@ -1,9 +1,19 @@
 fields:
 
+- name: submission_date
+  mode: NULLABLE
+  type: DATE
+  description: TODO
+
 - name: activity_date
   mode: NULLABLE
   type: DATE
   description: The date that the conversion action took place.
+
+- name: activity_unix_timestamp
+  mode: NULLABLE
+  type: INTEGER
+  description: TODO
 
 - name: fbclid
   mode: NULLABLE

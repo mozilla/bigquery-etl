@@ -5,16 +5,17 @@
 import os
 from argparse import ArgumentParser
 from datetime import date
-from itertools import batched
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from facebook_business.adobjects.serverside.action_source import ActionSource
 from facebook_business.adobjects.serverside.event import Event
 from facebook_business.adobjects.serverside.event_request import EventRequest
 from facebook_business.adobjects.serverside.user_data import UserData
-from facebook_business.api import FacebookAdsApi
+
+# from facebook_business.api import FacebookAdsApi
 from google.cloud import bigquery
+from pandas import DataFrame
 
 # from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import Schema
@@ -27,72 +28,89 @@ DEFAULT_TABLE_NAME = Path(__file__).parent
 
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
 SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
-PARTITION_FIELD = "activity_date"
+PARTITION_FIELD = "submission_date"
 
 
-# Both contain different conversion events so union should be fine.
-UNION_QUERY = """
-SELECT activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
-FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_day_2_v1`
-WHERE activity_date = @activity_date AND ga_country IN ("United States", "India")
-UNION ALL
-SELECT activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
-FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_day_7_v1`
-WHERE activity_date = @activity_date AND ga_country IN ("United States", "India")
+SELECT_QUERY = """
+SELECT submission_date, activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
+FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1`
+WHERE submission_date = @submission_date AND ga_country IN ("United States", "India")
 """
 
 # Expected fbc format: "fbc.{subdomain_index}.{creation_time}.{fbclid}"
-DATA_SELECT_QUERY = """
-SELECT activity_date, CONCAT("fbc.0", CAST(ga_event_timestamp AS STRING), ".", fbclid) AS fbc, conversion_name,
-FROM `{destination_table}`
-WHERE activity_date = @activity_date
+DATA_EXPORT_QUERY = """
+SELECT
+    activity_date,
+    (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
+    CONCAT("fbc.0", CAST(ga_event_timestamp AS STRING), ".", fbclid) AS fbc, conversion_name,
+FROM `{source_table}`
+WHERE submission_date = @submission_date
 """
 
 
-def update_table(bq_client, activity_date, query, destination_table):
+def chunk_list(lst, chunk_size):
+    """Split a list into chunks of specified size.
+
+    Args:
+        lst: The list to split
+        chunk_size: Maximum size of each chunk
+
+    Returns:
+        List of chunks (last chunk may be smaller)
+    """
+    return [lst[i : i + chunk_size] for i in range(0, len(lst), chunk_size)]
+
+
+def update_table(
+    bq_client: bigquery.Client,
+    submission_date: date,
+    query: str,
+    destination_table: str,
+) -> None:
     """Run query and store the result inside BQ (destination) table to act as store for data export."""
-    query_job = bq_client.query(
-        query=query,
-        job_config=bigquery.QueryJobConfig(
-            destination=destination_table,
-            time_partitioning=bigquery.TimePartitioning(field=PARTITION_FIELD),
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            use_legacy_sql=False,
-            schema=SCHEMA,
-            query_parameters=[
-                bigquery.ScalarQueryParameter("activity_date", "DATE", activity_date),
-            ],
-        ),
+    job_config = bigquery.QueryJobConfig(
+        destination=destination_table,
+        time_partitioning=bigquery.TimePartitioning(field=PARTITION_FIELD),
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        use_legacy_sql=False,
+        query_parameters=[
+            bigquery.ScalarQueryParameter("submission_date", "DATE", submission_date),
+        ],
     )
 
+    query_job = bq_client.query(query=query, job_config=job_config)
     query_job.result()
 
 
-def get_results_from_bigquery(bq_client, activity_date, query):
+def get_results_from_bigquery(
+    bq_client: bigquery.Client, submission_date: date, query: str
+) -> DataFrame:
     """Prepare and retrieve data from a BQ table that should be sent to the Conversions API."""
-    return bq_client.query(
-        query=query,
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
         query_parameters=[
-            bigquery.ScalarQueryParameter("activity_date", "DATE", activity_date),
+            bigquery.ScalarQueryParameter("submission_date", "DATE", submission_date),
         ],
-    ).to_dataframe()
+    )
+
+    return bq_client.query(query=query, job_config=job_config).to_dataframe()
 
 
 # Looks like there's a library for building event:
 # https://developers.facebook.com/documentation/ads-commerce/conversions-api/guides/business-sdk-features#http-service-interface
-def create_event(event_name: str, event_timestamp: int, fbc: str) -> Event:
+def create_event(event_data: DataFrame) -> Event:
     """Format data into Event."""
     return Event(
-        event_name=event_name,
-        event_time=event_timestamp,
+        event_name=event_data["conversion_name"],
+        event_time=event_data["activity_unix_timestamp"],
         user_data=UserData(
-            fbc=fbc,
+            fbc=event_data["fbc"],
         ),
         action_source=ActionSource.OTHER,
     )
 
 
-def execute_request(pixel_id: int, events: List[Event]):
+def execute_request(pixel_id: int, events: List[Event]) -> Any:
     """Send event info to Conversions API."""
     event_request = EventRequest(
         pixel_id=pixel_id,
@@ -102,52 +120,53 @@ def execute_request(pixel_id: int, events: List[Event]):
 
 
 def main(
-    activity_date: date,
+    submission_date: date,
     project_id: str,
     dataset: str,
     table_name: str,
     access_token: str,
     pixel_id: int,
 ) -> None:
-    """Update table to include data to be pushed to Conversions API, retrieve data for a specific activity_date, format and send it to Conversions API."""
-    if not (pixel_id and access_token):
-        raise Exception(
-            "Missing required test config. Got pixel_id: '{pixel_id}', access_token: '{access_token}'".format(
-                pixel_id=pixel_id, access_token=access_token
-            )
-        )
+    """Update table to include data to be pushed to Conversions API, retrieve data for a specific submission_date, format and send it to Conversions API."""
+    # if not (pixel_id and access_token):
+    #     raise Exception("Missing required test config. Please make sure both pixel_id and access_token are provided.")
 
     bq_client = bigquery.Client(project_id)
 
-    table_partition = f"{table_name}${activity_date.replace('-', '')}"
-    destination_table = f"{project_id}.{dataset}.{table_partition}"
+    partition_decorator = str(submission_date).replace("-", "")
+    destination_table = f"{project_id}.{dataset}.{table_name}"
 
-    update_table(bq_client, activity_date, UNION_QUERY, destination_table)
+    update_table(
+        bq_client,
+        submission_date,
+        SELECT_QUERY,
+        f"{destination_table}${partition_decorator}",
+    )
     result_df = get_results_from_bigquery(
         bq_client,
-        activity_date,
-        DATA_SELECT_QUERY.format(source_table=destination_table),
+        submission_date,
+        DATA_EXPORT_QUERY.format(source_table=destination_table),
     )
-    print(result_df)
+
+    if len(result_df) == 0:
+        print("No results found.")
+        return
 
     conversion_events = [
-        create_event(conversion_event) for conversion_event in result_df
+        create_event(conversion_event[1]) for conversion_event in result_df.iterrows()
     ]
-    print(conversion_events)
-    return
 
-    FacebookAdsApi.init(access_token=access_token, crash_log=False)
+    # FacebookAdsApi.init(access_token=access_token, crash_log=False)
 
-    # TODO: check this batching method works as intended.
-    for batch in batched(conversion_events, 1000):
-        response = execute_request(pixel_id=pixel_id, events=[batch])
+    for batch in chunk_list(conversion_events, 1000):
         # TODO: Investigate what the response looks like and if there's some interesting information we may want to persist?
-        print(response)
+        # response = execute_request(pixel_id=pixel_id, events=[batch])
+        print(batch)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--activity_date", type=date.fromisoformat, required=True)
+    parser.add_argument("--submission_date", type=date.fromisoformat, required=True)
     parser.add_argument("--project_id", type=str, default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", type=str, default="firefoxdotcom_derived")
     parser.add_argument(
@@ -167,7 +186,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(
-        activity_date=args.activity_date,
+        submission_date=args.submission_date,
         project_id=args.project_id,
         dataset=args.dataset,
         table_name=args.table_name,

@@ -2709,3 +2709,20 @@ bqetl_cloud_eng_daily:
     - impact/tier_3
     - repo/bigquery-etl
     - triage/no_triage
+
+bqetl_nimbus_feature_monitoring:
+  schedule_interval: 0 3 * * *
+  description: The DAG schedules nimbus feature monitoring queries.
+  default_args:
+    owner: project-nimbus@mozilla.com
+    start_date: "2026-03-16"
+    email:
+      - telemetry-alerts@mozilla.com
+      - project-nimbus@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

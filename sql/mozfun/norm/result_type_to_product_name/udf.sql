@@ -110,6 +110,8 @@ RETURNS STRING AS (
       THEN res
     WHEN res LIKE('rust_%_opt_in')
       THEN SUBSTR(res, 6)
+    WHEN res IN ('ai_chat')
+      THEN 'ai_chat'
     ELSE 'other'
   END
 );

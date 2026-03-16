@@ -1,4 +1,4 @@
-friendly_name: Facebook Conversion Events
+friendly_name: Facebook Conversion Events (External)
 description: |-
   Contains data for Conversions API export, limits what is available and transforms fields into expected format.
 

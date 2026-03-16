@@ -30,15 +30,23 @@ SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 PARTITION_FIELD = "submission_date"
 
 
-TABLE_QUERY = """
-SELECT submission_date, activity_date, fbclid, ga_event_timestamp, ga_country, conversion_name,
-FROM `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1`
-WHERE submission_date = @submission_date
+SQL_QUERY = """
+SELECT
+  submission_date,
+  (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
+  -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
+  CONCAT("fb.0.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS() AS STRING), ".", fbclid) AS fbc,
+  conversion_name,
+FROM
+  `moz-fx-data-shared-prod.firefoxdotcom.fbclid_desktop_conversion_events`
+WHERE
+  submission_date = @submission_date
+  AND ga_country IN ("United States", "India")
 """
 
-DATA_EXPORT_QUERY = """
-SELECT activity_date, activity_unix_timestamp, fbc, conversion_name,
-FROM `{source_view}`
+EXPORT_QUERY = """
+SELECT activity_unix_timestamp, fbc, conversion_name
+FROM `{source_table}`
 WHERE submission_date = @submission_date
 """
 
@@ -124,26 +132,27 @@ def main(
 
     partition_decorator = str(submission_date).replace("-", "")
     destination_table = f"{project_id}.{dataset}.{table_name}"
-    source_view = "_".join(destination_table.split("_")[:-1]).replace("_derived", "")
 
     logging.info("START | Updating table: %s" % destination_table)
 
     update_table(
         bq_client,
         submission_date,
-        TABLE_QUERY,
+        SQL_QUERY,
         f"{destination_table}${partition_decorator}",
     )
 
     logging.info("COMPLETE | Updating table: %s" % destination_table)
-    logging.info("START | Getting results to export from view: %s" % source_view)
+    logging.info("START | Getting results to export from table: %s" % destination_table)
 
     result_df = get_results_from_bigquery(
         bq_client,
         submission_date,
-        DATA_EXPORT_QUERY.format(source_view=source_view),
+        EXPORT_QUERY.format(source_table=destination_table),
     )
-    logging.info("COMPLETE | Getting results to export from view: %s" % source_view)
+    logging.info(
+        "COMPLETE | Getting results to export from table: %s" % destination_table
+    )
 
     if len(result_df) == 0:
         # TODO: should this cause a failure?
@@ -185,7 +194,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--pixel_id",
-        type=str,
+        type=int,
         default=os.getenv("FB_PIXEL_ID", None),
     )
 

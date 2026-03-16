@@ -177,7 +177,7 @@ existing_conversions AS (
     fbclid,
     conversion_name,
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1`
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_v1`
   WHERE
     activity_date < @submission_date
 )

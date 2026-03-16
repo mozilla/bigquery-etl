@@ -1,9 +1,9 @@
-friendly_name: Facebook Conversion Events
+friendly_name: Facebook Conversion Events (External)
 description: |-
-  Contains data for Conversions API export.
+  Retrieves data from firefoxdotcom_derived.fbclid_conversion_events_v1
+  and transforms it into the correct shape in preparation for pushing it to Conversions API.
 
   Expected grain: max 1 row per fbclid + conversion_name combination.
-
 owners:
 - kik@mozilla.com
 
@@ -23,7 +23,7 @@ scheduling:
     key: bqetl_fb_pixel_id
 
   referenced_tables:
-  - 'moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_conversion_events_v1'
+  - 'moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_v1'
 
 bigquery:
   time_partitioning:

@@ -1,0 +1,20 @@
+
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: rollout_slug
+  type: STRING
+- mode: NULLABLE
+  name: dimensions
+  type: JSON
+- mode: NULLABLE
+  name: count_unique_ids
+  type: INT64
+- mode: NULLABLE
+  name: metric
+  type: STRING
+- mode: NULLABLE
+  name: value
+  type: FLOAT64

@@ -472,7 +472,7 @@ def info(ctx, name, sql_dir, project_id):
 
 def _parse_parameter(parameter: str, param_date: str) -> str:
     # TODO: Parse more complex parameters such as macro_ds_add
-    param_name, param_type, param_value = parameter.split(":")
+    param_name, param_type, param_value = parameter.split(":", 2)
     if param_type == "DATE" and param_value != "{{ds}}":
         raise ValueError(f"Unable to parse parameter {parameter}")
 

@@ -570,14 +570,15 @@ def validate_query_parameters(metadata, path):
 
     for parameter in metadata.scheduling.get("parameters", []):
         if not re.fullmatch(
-            r"[a-z0-9_]+:[a-z0-9]+:[^:]*", parameter, flags=re.IGNORECASE
+            r"\w+:[a-z0-9]*:.*", parameter, flags=re.IGNORECASE
         ):
             click.echo(
                 click.style(
                     f"ERROR: {path} contains a invalid query parameter {parameter}."
                     "Parameters must by formatted as NAME:TYPE:VALUE.",
                     fg="red",
-                )
+                ),
+                err=True,
             )
             return False
 

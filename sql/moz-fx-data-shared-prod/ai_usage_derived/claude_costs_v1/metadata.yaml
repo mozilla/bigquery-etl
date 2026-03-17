@@ -1,9 +1,10 @@
 friendly_name: Claude API Costs
 description: |-
-  Daily estimated costs for Claude API usage, derived from claude_usage_v1 token
-  counts and published Anthropic per-model pricing.
-  Pricing source: https://platform.claude.com/docs/en/about-claude/pricing
-  Update query.sql when Anthropic changes rates or adds new models.
+  Daily costs data from the Anthropic Admin Cost API, grouped by workspace and description.
+  Includes cost amounts in USD cents, cost type (tokens, web search, code execution),
+  and model/service tier breakdown.
+
+  API Doc: https://platform.claude.com/docs/en/build-with-claude/usage-cost-api
 owners:
 - phlee@mozilla.com
 labels:
@@ -16,6 +17,8 @@ bigquery:
     require_partition_filter: false
 scheduling:
   dag_name: bqetl_ai_usage
-  depends_on:
-  - task_id: ai_usage_derived__claude_usage__v1
-    dag_name: bqetl_ai_usage
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: ANTHROPIC_ADMIN_API_KEY
+    key: bqetl_ai_usage__anthropic_admin_api_key

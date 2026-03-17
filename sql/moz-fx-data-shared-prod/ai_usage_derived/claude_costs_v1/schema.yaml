@@ -2,20 +2,49 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date of the usage bucket
-- name: api_key_id
+  description: Date of the cost bucket
+- name: workspace_id
   type: STRING
   mode: NULLABLE
-  description: ID of the API key used. Null for usage in the Anthropic Console.
+  description: Workspace ID the cost is associated with. Null for the default workspace.
+- name: amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: Cost in lowest currency units (cents) as a decimal value
+- name: currency
+  type: STRING
+  mode: NULLABLE
+  description: Currency code (always USD)
+- name: cost_type
+  type: STRING
+  mode: NULLABLE
+  description: Type of cost (tokens, web_search, or code_execution). Null if not grouping by description.
+- name: token_type
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Type of token cost (uncached_input_tokens, output_tokens, cache_read_input_tokens,
+    cache_creation.ephemeral_1h_input_tokens, cache_creation.ephemeral_5m_input_tokens).
+    Null for non-token costs.
+- name: context_window
+  type: STRING
+  mode: NULLABLE
+  description: Input context window size (e.g., 0-200k, 200k-1M). Null for non-token costs.
 - name: model
   type: STRING
   mode: NULLABLE
-  description: Model used (e.g., claude-sonnet-4-20250514)
-- name: model_family
+  description: Model name used (e.g., claude-sonnet-4-20250514). Null for non-token costs.
+- name: service_tier
   type: STRING
   mode: NULLABLE
-  description: Model family extracted from the model name (e.g., claude-sonnet, claude-opus, claude-haiku).
-- name: cost_usd
-  type: NUMERIC
+  description: Service tier (standard or batch). Null for non-token costs.
+- name: description
+  type: STRING
   mode: NULLABLE
-  description: Estimated cost in USD, computed from token counts and published Anthropic pricing.
+  description: Human-readable description of the cost item.
+- name: inference_geo
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Inference geography (global, us, or not_available for models that don't support it).
+    Null if not grouping by inference geo.

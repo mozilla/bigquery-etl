@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.mozcloud_tenants_syndicated.deployed_charts`
+  `moz-fx-data-shared-prod.mozcloud_tenants_syndicate.deployed_charts`

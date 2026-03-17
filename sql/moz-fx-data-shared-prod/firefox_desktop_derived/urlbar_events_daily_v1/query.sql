@@ -47,7 +47,7 @@ WITH temp_unnested AS (
     IF(res.result_type LIKE 'rust\\_%', TRUE, FALSE) AS is_offline_suggest,
     IF(
       res.result_type LIKE '%\\_yelp%'
-      OR res.result_type IN ('weather'),
+      OR res.result_type IN ('merino_weather', 'weather'),
       TRUE,
       FALSE
     ) AS is_geo_local,

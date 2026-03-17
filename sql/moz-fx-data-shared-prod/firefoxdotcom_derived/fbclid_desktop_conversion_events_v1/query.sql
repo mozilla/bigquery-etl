@@ -39,7 +39,7 @@ ga_client_mapping AS (
     clients_first_seen_base
     USING (dl_token)
 ),
--- TODO: can fbclid_client_mapping result with more than a single entry per fbclid??
+-- TODO: can fbclid_client_mapping result with more than a single entry per fbclid?
 fbclid_clients AS (
   SELECT
     ga_event_timestamp,

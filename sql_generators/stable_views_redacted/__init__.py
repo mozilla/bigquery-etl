@@ -1,7 +1,9 @@
 """
-Generate redacted views on top of stable views.
+Generate redacted views on top of stable tables.
 
-Creates views that exclude sensitive metrics of highly_sensitive categories.
+Extends the stable_views generator by reusing its view transformations
+(metadata normalization, bot detection, etc.) and adding exclusions for
+metrics with sensitive data_sensitivity categories.
 
 If a view.sql already exists at the target path, no file will be written,
 allowing manual overrides by checking files into the sql/ tree.
@@ -21,57 +23,23 @@ from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-
-PROBEINFO_URL = "https://probeinfo.telemetry.mozilla.org"
-APP_LISTINGS_URL = f"{PROBEINFO_URL}/v2/glean/app-listings"
-
-REDACTED_VIEW_QUERY_TEMPLATE = """\
--- Generated via ./bqetl generate stable_views_redacted
-CREATE OR REPLACE VIEW
-  `{full_view_id}`
-AS
-SELECT
-  * REPLACE(
-    {metrics_replacement}
-  )
-FROM
-  `{source_view}`
-"""
+from sql_generators.glean_usage.common import APP_LISTINGS_URL, get_glean_app_metrics
 
 REDACTED_METADATA_TEMPLATE = """\
 # Generated via ./bqetl generate stable_views_redacted
 ---
 friendly_name: Redacted Pings for `{document_namespace}/{document_type}`
 description: |-
-  A redacted view of `{source_view_short}` with sensitive metrics excluded.
+  A redacted view of `{source_table_short}` with sensitive metrics excluded.
   Fields with data_sensitivity categories [{SENSITIVITY_CATEGORIES}] are removed.
 
-  See the full (access-restricted) data in `{source_view_short}`.
+  See the full (access-restricted) data in `{source_table_short}` and `{source_view_short}`.
 labels:
     authorized: true
 """
 
-# Probeinfo metric types that get a "2" suffix in BQ due to ingestion pipeline fix.
-# For glean/ping/1 views, stable_views aliases these back (text2 -> text).
-# For glean-min/ping/1 views, the suffix remains.
-# Discrepancy between glean and glean-min is a bug in view generation logic
-# See https://bugzilla.mozilla.org/show_bug.cgi?id=1741487
-SUFFIXED_METRIC_TYPES = {
-    "text": "text2",
-    "url": "url2",
-    "jwe": "jwe2",
-    "labeled_rate": "labeled_rate2",
-}
-
 # Metrics with these data_sensitivity categories are excluded from redacted views.
 SENSITIVITY_CATEGORIES = ["highly_sensitive"]
-
-
-def _get_glean_app_metrics(v1_name):
-    """Return a dictionary of the Glean app's metrics."""
-    resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/metrics")
-    resp.raise_for_status()
-    return resp.json()
 
 
 def _get_sensitive_metrics(all_metrics, ping_name):
@@ -106,12 +74,6 @@ def _get_sensitive_metrics(all_metrics, ping_name):
 def _get_metrics_struct_fields(schema_fields):
     """Extract the metrics RECORD's sub-struct names and their column names from BQ schema.
 
-    Note: This reads from the raw stable TABLE schema (from mozilla-pipeline-schemas).
-    For glean-min/ping/1 schemas, field names match the stable view output directly.
-    For glean/ping/1 schemas, the stable view aliases text2->text etc. (see SUFFIXED_METRIC_TYPES),
-    so the raw schema names may differ from the stable view output. Currently only
-    glean-min/ping/1 pings are configured, so this distinction doesn't apply.
-
     Returns dict: {"text2": ["col1", ...], "quantity": ["col1", ...], ...}
     """
     metrics_field = next((f for f in schema_fields if f["name"] == "metrics"), None)
@@ -125,55 +87,35 @@ def _get_metrics_struct_fields(schema_fields):
     return result
 
 
-def _resolve_bq_type_name(probeinfo_type, schema_id, metrics_struct_types):
-    """Map probeinfo metric type to actual BQ field name in the stable view output.
+def _resolve_bq_type_name(probeinfo_type, metrics_struct_types):
+    """Map probeinfo metric type to actual BQ field name in the raw stable table schema.
 
-    For glean/ping/1 views (which alias text2->text): "text" -> "text"
-    For glean-min/ping/1 views (no aliasing): "text" -> "text2"
-    Falls back to checking what actually exists in the schema.
-
-    TODO: Once the glean/glean-min stable view discrepancy is fixed (so both alias
-    text2->text consistently), this function and SUFFIXED_METRIC_TYPES can be removed.
-    The probeinfo metric type name will match the stable view field name directly.
+    Probeinfo uses canonical type names (e.g. "text") but the raw stable table may
+    store these under a "2" suffix (e.g. "text2") due to a historical ingestion fix.
+    This function checks what actually exists in the schema.
     """
-    is_glean_ping_1 = schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-
-    if probeinfo_type in SUFFIXED_METRIC_TYPES:
-        suffixed = SUFFIXED_METRIC_TYPES[probeinfo_type]
-        if is_glean_ping_1:
-            # glean/ping/1 views alias text2->text, so the view exposes "text"
-            if probeinfo_type in metrics_struct_types:
-                return probeinfo_type
-            # fallback: maybe only the suffixed version exists
-            if suffixed in metrics_struct_types:
-                return suffixed
-        else:
-            # glean-min/ping/1 views keep the suffix
-            if suffixed in metrics_struct_types:
-                return suffixed
-            if probeinfo_type in metrics_struct_types:
-                return probeinfo_type
-
-    # Direct match for non-suffixed types
+    # Direct match
     if probeinfo_type in metrics_struct_types:
         return probeinfo_type
+
+    # Try with "2" suffix (historical ingestion fix: text->text2, url->url2, etc.)
+    suffixed = probeinfo_type + "2"
+    if suffixed in metrics_struct_types:
+        return suffixed
 
     return None
 
 
-def _build_metrics_replacement(sensitive_metrics, metrics_struct_types, schema_id):
-    """Build the SQL REPLACE clause for the metrics struct.
+def _add_metrics_redaction(replacements, sensitive_metrics, metrics_struct_types):
+    """Add sensitive metric exclusions to the replacements list.
 
-    Groups sensitive metrics by their BQ type name, then:
-    - If ALL fields in a type are sensitive -> EXCEPT the type entirely
-    - If SOME fields are sensitive -> REPLACE with EXCEPT on sub-struct
+    Groups sensitive metrics by BQ type, then for each type either excludes it
+    entirely (all fields sensitive) or partially (EXCEPT on sub-struct fields).
     """
-    # Group by resolved BQ type
+    # Group sensitive metrics by resolved BQ type name
     by_type = defaultdict(list)
     for m in sensitive_metrics:
-        bq_type = _resolve_bq_type_name(
-            m["metric_type"], schema_id, metrics_struct_types
-        )
+        bq_type = _resolve_bq_type_name(m["metric_type"], metrics_struct_types)
         if bq_type is None:
             raise ValueError(
                 f"Could not resolve BQ type for sensitive metric {m['metric_key']} "
@@ -185,31 +127,22 @@ def _build_metrics_replacement(sensitive_metrics, metrics_struct_types, schema_i
     if not by_type:
         return None
 
-    except_types = []  # types to fully exclude
-    replace_clauses = []  # types to partially exclude
+    except_types = []
+    replace_clauses = []
 
     for bq_type, columns in sorted(by_type.items()):
         all_columns_in_type = metrics_struct_types.get(bq_type, [])
         if set(columns) >= set(all_columns_in_type):
-            # All fields are sensitive, exclude the entire type
             except_types.append(bq_type)
         else:
-            # Only some fields are sensitive
             except_list = ", ".join(sorted(columns))
             replace_clauses.append(
                 f"(SELECT AS STRUCT metrics.{bq_type}.* EXCEPT({except_list})) AS {bq_type}"
             )
 
-    # Build the combined SQL
-    parts = []
-    if except_types:
-        parts.append("metrics.* EXCEPT(" + ", ".join(sorted(except_types)) + ")")
-    else:
-        parts.append("metrics.*")
-
+    # Build the metrics replacement SQL
     if replace_clauses:
         if except_types:
-            # When we have both EXCEPT and REPLACE, wrap in SELECT AS STRUCT with REPLACE
             inner = (
                 "metrics.* EXCEPT("
                 + ", ".join(sorted(except_types))
@@ -219,11 +152,10 @@ def _build_metrics_replacement(sensitive_metrics, metrics_struct_types, schema_i
             )
         else:
             inner = "metrics.* REPLACE(" + ", ".join(replace_clauses) + ")"
-        return "(SELECT AS STRUCT " + inner + ") AS metrics"
-    elif except_types:
-        return "(SELECT AS STRUCT " + parts[0] + ") AS metrics"
     else:
-        return None
+        inner = "metrics.* EXCEPT(" + ", ".join(sorted(except_types)) + ")"
+
+    return replacements + ["(SELECT AS STRUCT " + inner + ") AS metrics"]
 
 
 def _write_redacted_view(
@@ -235,10 +167,6 @@ def _write_redacted_view(
     id_token=None,
 ):
     """Write view.sql, metadata.yaml, and schema.yaml for a redacted view."""
-    VIEW_CREATE_REGEX = re.compile(
-        r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
-    )
-
     ping_name = schema_file.bq_table_unversioned
     target_dir = (
         sql_dir
@@ -252,10 +180,35 @@ def _write_redacted_view(
         logging.info(f"Skipping {target_file} (already exists)")
         return
 
-    metrics_replacement = _build_metrics_replacement(
-        sensitive_metrics, metrics_struct_types, schema_file.schema_id
+    # Import here to avoid circular import at module load time
+    from sql_generators.stable_views import (
+        BOT_GENERATED,
+        VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO,
     )
-    if metrics_replacement is None:
+
+    VIEW_CREATE_REGEX = re.compile(
+        r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
+    )
+
+    # Only glean-min/ping/1 schemas are currently supported. For glean/ping/1,
+    # the stable_views generator applies complex metrics transformations
+    # (text2->text aliasing, datetime parsing, etc.) that we can't easily merge
+    # with the redaction logic. Use a manual view.sql override for those.
+    if schema_file.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+        raise NotImplementedError(
+            f"Redacted view generation for glean/ping/1 schemas is not yet supported "
+            f"({schema_file.bq_dataset_family}.{ping_name}). "
+            f"Use a manual view.sql override instead."
+        )
+
+    # Base replacements matching what stable_views generates for glean-min pings
+    replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
+
+    # Add sensitive metric exclusions
+    replacements = _add_metrics_redaction(
+        replacements, sensitive_metrics, metrics_struct_types
+    )
+    if replacements is None:
         logging.warning(
             f"No metrics to redact for {schema_file.bq_dataset_family}.{ping_name}, skipping"
         )
@@ -264,13 +217,15 @@ def _write_redacted_view(
     full_view_id = (
         f"{target_project}.{schema_file.bq_dataset_family}.{ping_name}_redacted"
     )
-    source_view = f"{target_project}.{schema_file.user_facing_view}"
+    full_source_id = f"{target_project}.{schema_file.stable_table}"
+    replacements_str = ",\n    ".join(replacements)
 
     full_sql = reformat(
-        REDACTED_VIEW_QUERY_TEMPLATE.format(
+        VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(
+            target=full_source_id,
+            replacements=replacements_str,
             full_view_id=full_view_id,
-            source_view=source_view,
-            metrics_replacement=metrics_replacement,
+            bot_generated=BOT_GENERATED,
         ),
         trailing_newline=True,
     )
@@ -286,6 +241,7 @@ def _write_redacted_view(
         document_namespace=schema_file.document_namespace,
         document_type=schema_file.document_type,
         source_view_short=schema_file.user_facing_view,
+        source_table_short=schema_file.stable_table,
         SENSITIVITY_CATEGORIES=sensitivity_str,
     )
     metadata_file = target_dir / "metadata.yaml"
@@ -369,7 +325,7 @@ def generate(target_project, output_dir, log_level, use_cloud_function):
             continue
 
         # Fetch all metrics for this app
-        all_metrics = _get_glean_app_metrics(v1_name)
+        all_metrics = get_glean_app_metrics(v1_name)
 
         for ping_name in ping_names:
             # Find the matching schema

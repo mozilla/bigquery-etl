@@ -1,0 +1,99 @@
+# Subscription 1: start at midnight, end midday on a later date
+- id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-01-01T00:00:00.000000
+  valid_from: 2020-01-01 00:00:00Z
+  valid_to: 2020-01-03 12:00:00Z
+  subscription:
+    id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    service:
+      id: svc_1
+    is_active: true
+    started_at: 2020-01-01 00:00:00Z
+- id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000-2020-01-03T12:00:00.000000
+  valid_from: 2020-01-03 12:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Stripe-sub_1-svc_1-2020-01-01T00:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_1
+    service:
+      id: svc_1
+    is_active: false
+    started_at: 2020-01-01 00:00:00Z
+    ended_at: 2020-01-03 12:00:00Z
+
+# Subscription 2: start midday, end at midnight on a later date
+- id: Apple-sub_2-svc_1-2020-02-01T12:00:00.000000-2020-02-01T12:00:00.000000
+  valid_from: 2020-02-01 12:00:00Z
+  valid_to: 2020-02-03 00:00:00Z
+  subscription:
+    id: Apple-sub_2-svc_1-2020-02-01T12:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_2
+    service:
+      id: svc_1
+    is_active: true
+    started_at: 2020-02-01 12:00:00Z
+- id: Apple-sub_2-svc_1-2020-02-01T12:00:00.000000-2020-02-03T00:00:00.000000
+  valid_from: 2020-02-03 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Apple-sub_2-svc_1-2020-02-01T12:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_2
+    service:
+      id: svc_1
+    is_active: false
+    started_at: 2020-02-01 12:00:00Z
+    ended_at: 2020-02-03 00:00:00Z
+
+# Subscription 3: end with `ended_at` set to prior date
+- id: Google-sub_3-svc_1-2020-03-01T12:00:00.000000-2020-03-01T12:00:00.000000
+  valid_from: 2020-03-01 12:00:00Z
+  valid_to: 2020-03-03 12:00:00Z
+  subscription:
+    id: Google-sub_3-svc_1-2020-03-01T12:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    service:
+      id: svc_1
+    is_active: true
+    started_at: 2020-03-01 12:00:00Z
+- id: Google-sub_3-svc_1-2020-03-01T12:00:00.000000-2020-03-03T12:00:00.000000
+  valid_from: 2020-03-03 12:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Google-sub_3-svc_1-2020-03-01T12:00:00.000000
+    provider: Google
+    provider_subscription_id: sub_3
+    service:
+      id: svc_1
+    is_active: false
+    started_at: 2020-03-01 12:00:00Z
+    ended_at: 2020-03-02 13:00:00Z
+
+# Subscription 4: start and end in same day
+- id: Stripe-sub_4-svc_1-2020-04-01T12:00:00.000000-2020-04-01T12:00:00.000000
+  valid_from: 2020-04-01 12:00:00Z
+  valid_to: 2020-04-01 12:30:00Z
+  subscription:
+    id: Stripe-sub_4-svc_1-2020-04-01T12:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_4
+    service:
+      id: svc_1
+    is_active: true
+    started_at: 2020-04-01 12:00:00Z
+- id: Stripe-sub_4-svc_1-2020-04-01T12:00:00.000000-2020-04-01T12:30:00.000000
+  valid_from: 2020-04-01 12:30:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Stripe-sub_4-svc_1-2020-04-01T12:00:00.000000
+    provider: Stripe
+    provider_subscription_id: sub_4
+    service:
+      id: svc_1
+    is_active: false
+    started_at: 2020-04-01 12:00:00Z
+    ended_at: 2020-04-01 12:30:00Z

@@ -1,11 +1,11 @@
 friendly_name: Cloudflare Browser Usage
 description: Contains data from Cloudflare on browser market share by day, device type, & location
 owners:
-- kwindau@mozilla.com
+- lmcfall@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: lmcfall@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_cloudflare_browser_market_share

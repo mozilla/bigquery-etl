@@ -1,0 +1,33 @@
+# Subscription 1: `synthetic_suspected_subscription_expiration` not excluded because subscription no longer active
+- id: s1-2000-01-01T00:00:00.000000
+  valid_from: 2000-01-01 00:00:00Z
+  valid_to: 2000-02-01 00:00:00Z
+  google_subscriptions_revised_changelog_id: s1-2000-01-01T00:00:00.000000-UPDATE
+  original_subscription_purchase_token: s1
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 1999-12-01 00:00:00Z
+    expiry_time: 2000-01-01 00:00:00Z
+- id: s1-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  google_subscriptions_revised_changelog_id: s1-2000-02-01T00:00:00.000000-UPDATE
+  original_subscription_purchase_token: s1
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 1999-12-01 00:00:00Z
+    expiry_time: 2000-02-01 00:00:00Z
+
+# Subscription 2: `synthetic_suspected_subscription_expiration` excluded
+- id: s2-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  google_subscriptions_revised_changelog_id: s2-2000-03-01T00:00:00.000000-UPDATE
+  original_subscription_purchase_token: s2
+  subscription:
+    metadata:
+      purchase_token: s2
+    start_time: 2000-01-01 00:00:00Z
+    expiry_time: 2000-04-01 00:00:00Z

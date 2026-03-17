@@ -1,0 +1,194 @@
+# Subscription 1: bundle upgrade
+- id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000-2000-01-01T00:00:00.000000
+  valid_from: 2000-01-01 00:00:00Z
+  valid_to: 2001-01-01 00:00:00Z
+  logical_subscriptions_history_id: Stripe-sub_1-2000-01-01T00:00:00.000000-2000-01-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_1-2000-01-01T00:00:00.000000
+    provider_subscription_id: sub_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_1
+    other_services: []
+    is_active: true
+    logical_subscription_started_at: 2000-01-01 00:00:00Z
+    started_at: 2000-01-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000-2001-01-01T00:00:00.000000
+  valid_from: 2001-01-01 00:00:00Z
+  valid_to: 2002-01-01 00:00:00Z
+  logical_subscriptions_history_id: Stripe-sub_1-2000-01-01T00:00:00.000000-2001-01-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_1-2000-01-01T00:00:00.000000
+    provider_subscription_id: sub_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_1
+    other_services:
+      - id: svc_2
+    is_active: true
+    logical_subscription_started_at: 2000-01-01 00:00:00Z
+    started_at: 2000-01-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_1-svc_2-2001-01-01T00:00:00.000000-2001-01-01T00:00:00.000000
+  valid_from: 2001-01-01 00:00:00Z
+  valid_to: 2002-01-01 00:00:00Z
+  logical_subscriptions_history_id: Stripe-sub_1-2000-01-01T00:00:00.000000-2001-01-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_2-2001-01-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_1-2000-01-01T00:00:00.000000
+    provider_subscription_id: sub_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_2
+    other_services:
+      - id: svc_1
+    is_active: true
+    logical_subscription_started_at: 2000-01-01 00:00:00Z
+    started_at: 2001-01-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000-2002-01-01T00:00:00.000000
+  valid_from: 2002-01-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  logical_subscriptions_history_id: Stripe-sub_1-2000-01-01T00:00:00.000000-2002-01-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_1-2000-01-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_1-2000-01-01T00:00:00.000000
+    provider_subscription_id: sub_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_1
+    other_services:
+      - id: svc_2
+    is_active: false
+    logical_subscription_started_at: 2000-01-01 00:00:00Z
+    started_at: 2000-01-01 00:00:00Z
+    ended_at: 2002-01-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_1-svc_2-2001-01-01T00:00:00.000000-2002-01-01T00:00:00.000000
+  valid_from: 2002-01-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  logical_subscriptions_history_id: Stripe-sub_1-2000-01-01T00:00:00.000000-2002-01-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_1-svc_2-2001-01-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_1-2000-01-01T00:00:00.000000
+    provider_subscription_id: sub_1
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_2
+    other_services:
+      - id: svc_1
+    is_active: false
+    logical_subscription_started_at: 2000-01-01 00:00:00Z
+    started_at: 2001-01-01 00:00:00Z
+    ended_at: 2002-01-01 00:00:00Z
+    started_reason: New Customer
+
+# Subscription 2: bundle downgrade
+- id: Stripe-sub_2-svc_1-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  logical_subscriptions_history_id: Stripe-sub_2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_2-svc_1-2000-02-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_2-2000-02-01T00:00:00.000000
+    provider_subscription_id: sub_2
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_1
+    other_services:
+      - id: svc_2
+    is_active: true
+    logical_subscription_started_at: 2000-02-01 00:00:00Z
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_2-svc_2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  logical_subscriptions_history_id: Stripe-sub_2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_2-svc_2-2000-02-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_2-2000-02-01T00:00:00.000000
+    provider_subscription_id: sub_2
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_2
+    other_services:
+      - id: svc_1
+    is_active: true
+    logical_subscription_started_at: 2000-02-01 00:00:00Z
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_2-svc_1-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  logical_subscriptions_history_id: Stripe-sub_2-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_2-svc_1-2000-02-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_2-2000-02-01T00:00:00.000000
+    provider_subscription_id: sub_2
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_1
+    other_services: []
+    is_active: true
+    logical_subscription_started_at: 2000-02-01 00:00:00Z
+    started_at: 2000-02-01 00:00:00Z
+    started_reason: New Customer
+- id: Stripe-sub_2-svc_2-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  logical_subscriptions_history_id: Stripe-sub_2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+  subscription:
+    id: Stripe-sub_2-svc_2-2000-02-01T00:00:00.000000
+    provider: Stripe
+    logical_subscription_id: Stripe-sub_2-2000-02-01T00:00:00.000000
+    provider_subscription_id: sub_2
+    mozilla_account_id: cus_2
+    mozilla_account_id_sha256: def456
+    customer_logical_subscription_number: 1
+    customer_service_subscription_number: 1
+    service:
+      id: svc_2
+    other_services:
+      - id: svc_1
+    is_active: false
+    logical_subscription_started_at: 2000-02-01 00:00:00Z
+    started_at: 2000-02-01 00:00:00Z
+    ended_at: 2000-03-01 00:00:00Z
+    ended_reason: Downgrade
+    started_reason: New Customer

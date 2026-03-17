@@ -57,26 +57,26 @@ jobs:
       validate-bqetl: ${{ steps.set-flags.outputs.validate-bqetl }}
     steps:
       - &checkout-with-history
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: false
           filter: blob:none
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - id: changed-files-routines
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323  # v47.0.5
         with:
           files: |
             requirements.txt
-            bigquery_etl/routine/.*
+            bigquery_etl/routine/**
             .github/workflows/**
-            sql/mozfun/.*
-            sql/moz-fx-data-shared-prod/udf/.*
-            sql/moz-fx-data-shared-prod/udf_js/.*
+            sql/mozfun/**
+            sql/moz-fx-data-shared-prod/udf/**
+            sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323  # v47.0.5
         with:
           files: |
             requirements.txt
@@ -84,12 +84,12 @@ jobs:
             sql_generators/**
             dags.yaml
             .github/workflows/**
-            bigquery_etl/query_scheduling/.*
-            tests/sql/.*
+            bigquery_etl/query_scheduling/**
+            tests/sql/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-bqetl
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323  # v47.0.5
         with:
           files: |
             bqetl_project.yaml
@@ -127,7 +127,7 @@ jobs:
     if: *is-allowed-event
     steps:
       - &checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: false
           filter: blob:none
@@ -135,7 +135,7 @@ jobs:
       - &setup-python
         name: Set up Python
         id: setup_python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -143,7 +143,7 @@ jobs:
       - &restore-venv
         name: Restore cached virtualenv
         id: restore-venv
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -156,7 +156,7 @@ jobs:
       - name: Save cached virtualenv
         # Don't let forked PRs update the shared cache.
         if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -226,19 +226,16 @@ jobs:
       - &auth-gcp-dryrun
         name: Authenticate to GCP (OIDC)
         id: auth-dryrun
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
           token_format: 'id_token'
           id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
           id_token_include_email: true
-      - &export-dryrun-id-token
-        name: Export ID Token for Python
+      - name: PyTest with linters
         env:
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-        run: echo "GOOGLE_GHA_ID_TOKEN=$GOOGLE_GHA_ID_TOKEN" >> $GITHUB_ENV
-      - name: PyTest with linters
         run: |
           PATH=".venv/bin:$PATH" pytest --black --flake8 \
             --isort --mypy-ignore-missing-imports --pydocstyle \
@@ -264,14 +261,13 @@ jobs:
       - &auth-gcp-stage
         name: Authenticate to GCP and Generate ID Token
         id: auth-stage
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
-      - &set-stage-project-id
-        name: Set project ID for integration tests
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-stage.outputs.project_id }}" >> $GITHUB_ENV
       - name: PyTest Integration Test
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m 'integration' -n 8 \
           -p no:bigquery_etl.pytest_plugin.routine \
@@ -289,7 +285,7 @@ jobs:
     environment: *job-env
     steps:
       - &checkout-with-creds
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: true
           fetch-depth: 0
@@ -297,13 +293,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - &set-dryrun-project-id
-        name: Set project ID
-        run: echo "GOOGLE_PROJECT_ID=${{ steps.auth-dryrun.outputs.project_id }}" >> $GITHUB_ENV
       - name: Generate SQL content
         env:
           TRIGGER_SQL_GENERATION: ${{ github.event.inputs.trigger-sql-generation }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           # Fetch main branch for merge-base
           git fetch origin main --no-tags
@@ -390,11 +384,11 @@ jobs:
           if [ -d /tmp/bigquery_etl_schemas ]; then
             cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
           fi
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -412,7 +406,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-generated-sql
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
@@ -451,7 +445,7 @@ jobs:
       - *download-generated-sql
       - &download-schema-cache
         name: Download schema cache if available
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         continue-on-error: true
         with:
           name: schema-cache
@@ -475,12 +469,12 @@ jobs:
           find generated-sql/sql -type f -exec chmod 644 {} \; 2>/dev/null || true
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - *auth-gcp-stage
       - name: Deploy changes to stage
         timeout-minutes: 60
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
@@ -496,7 +490,7 @@ jobs:
           mkdir -p /tmp/workspace/staged-generated-sql
           cp -r sql/ /tmp/workspace/staged-generated-sql/sql
           cp -r tests/ /tmp/workspace/staged-generated-sql/tests
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -516,7 +510,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-staged-sql
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -528,10 +522,10 @@ jobs:
           rm -rf tests/
           cp -r /tmp/workspace/staged-generated-sql/tests tests
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Dry run queries
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           if [ "$GITHUB_REF_NAME" = main ]; then
             echo "Skip dryruns on main. Dryruns will run in Airflow"
@@ -570,11 +564,11 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Run SQL tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
 
@@ -595,14 +589,16 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Run routine tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
       - name: Validate doc examples
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl routine validate --docs-only
 
@@ -623,8 +619,9 @@ jobs:
       - *download-staged-sql
       - *copy-staged-sql
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Validate views
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl view validate
 
@@ -646,8 +643,9 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
       - name: Verify that metadata files are valid
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl query validate \
             --no-dryrun --skip-format-sql
@@ -658,7 +656,7 @@ jobs:
           cp -r sql /tmp/debug_artifacts/sql
       - name: Upload debug artifacts
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
@@ -697,8 +695,6 @@ jobs:
       - *restore-venv
       - *download-generated-sql
       - *auth-gcp-dryrun
-      - *set-dryrun-project-id
-      - *export-dryrun-id-token
       - &setup-ssh-key-private-bqetl
         name: Setup SSH key for private repo
         run: |
@@ -711,6 +707,9 @@ jobs:
           git clone --branch main --depth 1 \
             git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
       - name: Generate SQL content
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
           export PYTHONPATH="$PWD:$PYTHONPATH"
@@ -729,11 +728,11 @@ jobs:
           cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
 
           git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -750,7 +749,7 @@ jobs:
       contents: read
     environment: *job-env
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           ref: main
           persist-credentials: false
@@ -758,10 +757,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - *set-dryrun-project-id
       - *setup-ssh-key-private-bqetl
       - name: Generate SQL and DAGs
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           export PATH="$PWD/.venv/bin:$PATH"
           export PYTHONPATH="$PWD:$PYTHONPATH"
@@ -846,7 +846,7 @@ jobs:
           $bqetl_script dag generate \
             --output-dir /tmp/workspace/main-generated-sql/dags
           rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -866,11 +866,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *download-schema-cache
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -881,14 +881,15 @@ jobs:
             echo "Restored schema cache from generate-sql job"
           fi
       - *auth-gcp-dryrun
-      - *export-dryrun-id-token
-      - *set-dryrun-project-id
       - *setup-ssh-key-private-bqetl
       - name: Pull down private-bigquery-etl content
         run: |
           git clone --branch main --depth 1 \
             git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
       - name: Generate DAGs
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
         run: |
           rm -rf sql/
           cp -rf /tmp/workspace/private-generated-sql/sql sql/
@@ -900,11 +901,11 @@ jobs:
 
           mkdir -p /tmp/workspace/private-generated-sql/dags
           mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
@@ -920,7 +921,7 @@ jobs:
       - name: Pull telemetry-airflow
         run: |
           git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -929,7 +930,7 @@ jobs:
           rm ~/telemetry-airflow/dags/* -f || true
           cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - name: Cache telemetry-airflow dependencies
-        uses: actions/cache@v5
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         with:
           path: ~/telemetry-airflow/.venv
           # yamllint disable-line rule:line-length
@@ -950,7 +951,7 @@ jobs:
           source .venv/bin/activate
           python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
       - name: Upload test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: dag-test-results
           path: ~/telemetry-airflow/test-results/junit.xml
@@ -970,11 +971,11 @@ jobs:
       - *checkout
       - name: Create workspace directory
         run: mkdir -p /tmp/workspace
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -1001,12 +1002,12 @@ jobs:
           cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload diff artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: sql-diff
           path: /tmp/workspace/sql.diff
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6.3.0
         with:
           node-version: '21'
       - name: Install diff dependencies
@@ -1046,7 +1047,7 @@ jobs:
     if: *is-main-deploy
     environment: dev
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -1086,11 +1087,11 @@ jobs:
     if: *is-main-deploy
     environment: dev
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -1130,7 +1131,7 @@ jobs:
     steps:
       - *checkout
       - *download-generated-sql
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -1145,7 +1146,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
       - name: Push Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@v4.3.2
+        uses: mozilla-it/deploy-actions/docker-push@4784cb70739a4f32ce010921f60fb1ebbc791a38  # v6.2.2
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
@@ -1155,7 +1156,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
       - name: Push tagged Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@v4.3.2
+        uses: mozilla-it/deploy-actions/docker-push@4784cb70739a4f32ce010921f60fb1ebbc791a38  # v6.2.2
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
@@ -1174,7 +1175,7 @@ jobs:
     steps:
       - name: Authenticate to GCP and Generate ID Token
         id: auth
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_DEPLOYMENT_SERVICE_ACCOUNT_EMAIL }}
@@ -1183,22 +1184,18 @@ jobs:
           id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
           id_token_include_email: true
           create_credentials_file: false
-      - name: Generate API Token and DAG run note
+      - name: Trigger bqetl-artifact-deployment in Airflow
         env:
-          AUTH_ID_TOKEN: ${{ steps.auth.outputs.id_token }}
+          ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         run: |
           REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
           RUN_URL="${REPO_URL}/actions/runs/${GITHUB_RUN_ID}"
           NOTE="DAG triggered by **[${GITHUB_ACTOR}](https://github.com/${GITHUB_ACTOR})** "
           NOTE="${NOTE}from ${GITHUB_REPOSITORY} CI build [${GITHUB_RUN_NUMBER}](${RUN_URL})"
-          echo "DAGRUN_NOTE=${NOTE}" >> $GITHUB_ENV
-          echo "ID_TOKEN=${AUTH_ID_TOKEN}" >> $GITHUB_ENV
-      - name: Trigger bqetl-artifact-deployment in Airflow
-        run: |
           curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
             -H "Authorization: bearer ${ID_TOKEN}" \
             -H "Content-Type:application/json" \
-            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
+            -d "{\"dagrun_note\": \"${NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
 
   reset-stage-env:
     name: Reset Stage Environment
@@ -1215,8 +1212,9 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-stage
-      - *set-stage-project-id
       - name: Delete stage datasets
+        env:
+          GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
           PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" --delete-expired
 
@@ -1241,7 +1239,7 @@ jobs:
           fi
           echo "Verified: Tag is on main branch"
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install deployment tools
@@ -1249,7 +1247,7 @@ jobs:
       - name: Build distribution files
         run: python -m build --sdist --wheel
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e  # v1.13.0
 
   sync-bigquery-etl-submodule:
     name: 🔃 Synchronize bigquery-etl submodule

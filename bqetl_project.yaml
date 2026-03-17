@@ -209,6 +209,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   - sql/moz-fx-data-shared-prod/zoom/**/*.sql
   - sql/moz-fx-data-shared-prod/taskclusteretl/person_mozilla_com/view.sql
+  - sql/moz-fx-data-shared-prod/firefoxdotcom_derived/fbclid_desktop_conversion_events_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -597,6 +598,10 @@ generate:
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
+  stable_views_redacted:
+    pings:
+      firefox_desktop:
+      - microsurvey
   baseline_clients_city_seen:
     apps:
     - firefox_desktop

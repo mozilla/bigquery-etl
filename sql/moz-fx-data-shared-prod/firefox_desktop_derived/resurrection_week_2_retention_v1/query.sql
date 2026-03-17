@@ -21,10 +21,9 @@ WITH dau AS (
   WHERE
     is_dau = TRUE
     AND is_desktop = TRUE
-    AND sample_id = 0
     AND submission_date
-    BETWEEN DATE_SUB("2025-01-01", INTERVAL 365 DAY)
-    AND CURRENT_DATE()
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 365 DAY)
+    AND @submission_date
 ),
 active_users AS (
   SELECT
@@ -37,10 +36,7 @@ active_users AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users` AS au
   WHERE
-    au.submission_date
-    BETWEEN "2025-01-01"
-    AND CURRENT_DATE()
-    AND au.sample_id = 0
+    au.submission_date = @submission_date
 ),
 final_with_days AS (
   SELECT
@@ -71,8 +67,8 @@ SELECT
       AND 60
       THEN ' 37-60'
     WHEN num_days_since_last_seen
-      BETWEEN 60
-      AND 119
+      BETWEEN 61
+      AND 120
       THEN ' 61-120'
     WHEN num_days_since_last_seen
       BETWEEN 121

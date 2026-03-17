@@ -21,7 +21,7 @@ This DAG pulls currency exchange rate info from the FRED API.
 
 #### Owner
 
-kwindau@mozilla.com
+kbammarito@mozilla.com
 
 #### Tags
 
@@ -38,7 +38,7 @@ external_derived__fred_daily_exchange_rates__v1_bqetl_fred_daily_exchange_rate__
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kbammarito@mozilla.com",
     "start_date": datetime.datetime(2025, 8, 27, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -69,8 +69,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             external_derived__fred_daily_exchange_rates__v1_bqetl_fred_daily_exchange_rate__api_key,
         ],

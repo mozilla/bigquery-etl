@@ -2,10 +2,10 @@ friendly_name: GDP - Gross Domestic Product
 description: |-
   Pulls GDP data by country and year from the World Bank API
 owners:
-- kwindau@mozilla.com
+- kbammarito@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kbammarito
   table_type: aggregate
   dag: bqetl_imf_cpi_data
 scheduling:

@@ -21,7 +21,7 @@ This DAG pulls US unemployment data from the BLS API
 
 #### Owner
 
-kwindau@mozilla.com
+kbammarito@mozilla.com
 
 #### Tags
 
@@ -40,7 +40,7 @@ external_derived__us_unemployment__v1_bqetl_us_bls_unemployment_data__bls_us_api
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kbammarito@mozilla.com",
     "start_date": datetime.datetime(2025, 4, 1, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -71,8 +71,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             external_derived__us_unemployment__v1_bqetl_us_bls_unemployment_data__bls_us_api_key,
         ],

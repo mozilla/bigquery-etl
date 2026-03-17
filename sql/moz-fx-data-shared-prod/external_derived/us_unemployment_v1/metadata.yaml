@@ -3,9 +3,9 @@ description: |-
   Contains monthly unemployment data for the United States from the BLS Government API
   Full truncate & reload each time it runs
 owners:
-- kwindau@mozilla.com
+- kbammarito@mozilla.com
 labels:
-  owner1: kwindau
+  owner1: kbammarito
   dag: bqetl_us_bls_unemployment_data
 scheduling:
   dag_name: bqetl_us_bls_unemployment_data

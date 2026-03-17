@@ -2,10 +2,10 @@ friendly_name: IMF Quarterly Inflation
 description: |-
   Contains quarterly inflation rate data by country from IMF
 owners:
-- kwindau@mozilla.com
+- kbammarito@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kbammarito
   table_type: aggregate
   dag: bqetl_imf_cpi_data
 scheduling:

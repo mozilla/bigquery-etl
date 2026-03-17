@@ -20,7 +20,7 @@ This DAG pulls inflation data from the International Monetary Fund CPI API
 
 #### Owner
 
-kwindau@mozilla.com
+kbammarito@mozilla.com
 
 #### Tags
 
@@ -30,7 +30,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "kbammarito@mozilla.com",
     "start_date": datetime.datetime(2025, 1, 1, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -59,8 +59,8 @@ with DAG(
         dataset_id="external_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -72,8 +72,8 @@ with DAG(
         dataset_id="external_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -85,8 +85,8 @@ with DAG(
         dataset_id="external_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -100,8 +100,8 @@ with DAG(
         ]
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     external_derived__monthly_inflation__v1 = GKEPodOperator(
@@ -112,8 +112,8 @@ with DAG(
         ]
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     external_derived__quarterly_inflation__v1 = GKEPodOperator(
@@ -124,8 +124,8 @@ with DAG(
         ]
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kbammarito@mozilla.com",
+        email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     checks__fail_external_derived__gdp__v1.set_upstream(external_derived__gdp__v1)

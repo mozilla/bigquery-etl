@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_use_counter_analysis.py`](https://git
 DAG to prepare use counter data for Firefox Desktop & Fenix for visualization
 #### Owner
 
-kwindau@mozilla.com
+lmcfall@mozilla.com
 
 #### Tags
 
@@ -29,7 +29,7 @@ kwindau@mozilla.com
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2023, 12, 13, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -70,8 +70,8 @@ with DAG(
         destination_table="fenix_use_counters_v2",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="lmcfall@mozilla.com",
+        email=["lmcfall@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -81,8 +81,8 @@ with DAG(
         destination_table="firefox_desktop_use_counters_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="lmcfall@mozilla.com",
+        email=["lmcfall@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

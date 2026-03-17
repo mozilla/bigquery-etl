@@ -21,7 +21,7 @@ Pulls device usage market share data from Cloudflare API
 
 #### Owner
 
-kwindau@mozilla.com
+lmcfall@mozilla.com
 
 #### Tags
 
@@ -38,7 +38,7 @@ cloudflare_derived__device_usage__v1_bqetl_cloudflare_device_market_share__cloud
 
 
 default_args = {
-    "owner": "kwindau@mozilla.com",
+    "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2024, 6, 16, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
@@ -69,8 +69,8 @@ with DAG(
         ]
         + ["--date", "{{ds}}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="lmcfall@mozilla.com",
+        email=["lmcfall@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             cloudflare_derived__device_usage__v1_bqetl_cloudflare_device_market_share__cloudflare_auth_token,
         ],

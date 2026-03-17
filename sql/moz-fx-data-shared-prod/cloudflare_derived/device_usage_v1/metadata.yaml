@@ -2,10 +2,10 @@ friendly_name: Cloudflare Device Usage
 description: |-
   Contains data from Cloudflare on usage by device type by day
 owners:
-- kwindau@mozilla.com
+- lmcfall@mozilla.com
 labels:
   level: bronze
-  owner1: kwindau
+  owner1: lmcfall
   table_type: aggregate
   dag: bqetl_cloudflare_device_market_share
 scheduling:

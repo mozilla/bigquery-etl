@@ -102,7 +102,8 @@ temp_session AS (
     LOGICAL_OR(is_offline_suggest) AS is_offline_suggest,
     LOGICAL_OR(is_geo_local) AS is_geo_local,
     LOGICAL_OR(is_from_device) AS is_from_device,
-    LOGICAL_OR(is_top_pick) AS is_top_pick
+    LOGICAL_OR(is_top_pick) AS is_top_pick,
+    LOGICAL_OR(is_ai) AS is_ai
   FROM
     temp_unnested
   GROUP BY
@@ -135,6 +136,7 @@ total_urlbar_sessions AS (
     is_geo_local,
     is_from_device,
     is_top_pick,
+    is_ai,
     COUNT(DISTINCT event_id) AS urlbar_sessions
   FROM
     temp_session
@@ -162,7 +164,8 @@ total_urlbar_sessions AS (
     is_offline_suggest,
     is_geo_local,
     is_from_device,
-    is_top_pick
+    is_top_pick,
+    is_ai
 ),
 daily_counts AS (
   SELECT
@@ -189,6 +192,7 @@ daily_counts AS (
     is_geo_local,
     is_from_device,
     is_top_pick,
+    is_ai,
     COUNTIF(is_impression) AS urlbar_impressions,
     COUNTIF(is_clicked) AS urlbar_clicks,
     COUNTIF(is_annoyed) AS urlbar_annoyances,
@@ -217,7 +221,8 @@ daily_counts AS (
     is_offline_suggest,
     is_geo_local,
     is_from_device,
-    is_top_pick
+    is_top_pick,
+    is_ai
 ),
 join_counts_sessions AS (
   SELECT
@@ -247,7 +252,8 @@ join_counts_sessions AS (
     is_offline_suggest,
     is_geo_local,
     is_from_device,
-    is_top_pick
+    is_top_pick,
+    is_ai
   FROM
     daily_counts
   LEFT JOIN
@@ -274,7 +280,8 @@ join_counts_sessions AS (
       is_offline_suggest,
       is_geo_local,
       is_from_device,
-      is_top_pick
+      is_top_pick,
+      is_ai
     )
 ),
 final AS (

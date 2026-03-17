@@ -22,6 +22,7 @@ SELECT
   is_geo_local,
   is_from_device,
   is_top_pick,
+  is_ai,
   firefox_suggest_enabled,
   sponsored_suggestions_enabled,
   product_result_type,

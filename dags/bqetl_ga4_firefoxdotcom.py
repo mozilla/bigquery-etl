@@ -298,8 +298,7 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -2)}}"]
-        + ["--submission_date={{macros.ds_add(ds, -2)}}"],
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -2)}}"],
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(

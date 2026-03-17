@@ -33,8 +33,6 @@ labels:
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   date_partition_offset: -2
-  parameters:
-  - --submission_date={{macros.ds_add(ds, -2)}}
   depends_on_past: true
 bigquery:
   time_partitioning:

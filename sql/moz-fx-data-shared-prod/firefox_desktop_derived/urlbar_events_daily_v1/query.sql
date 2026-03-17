@@ -39,7 +39,7 @@ WITH temp_unnested AS (
     IF(
       res.result_type LIKE '%\\_sponsored%'
       OR res.result_type LIKE '%\\_yelp%'
-      OR res.result_type IN ('weather'),
+      OR res.result_type IN ('suggest_sponsor', 'weather'),
       TRUE,
       FALSE
     ) AS is_sponsored,

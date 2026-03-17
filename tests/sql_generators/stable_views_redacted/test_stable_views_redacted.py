@@ -1,15 +1,13 @@
 import pytest
 
+from bigquery_etl.schema.stable_table_schema import SchemaFile
 from sql_generators.stable_views_redacted import (
-    SUFFIXED_METRIC_TYPES,
-    _build_metrics_replacement,
+    _add_metrics_redaction,
     _get_metrics_struct_fields,
     _get_sensitive_metrics,
     _resolve_bq_type_name,
+    _write_redacted_view,
 )
-
-GLEAN_PING_1 = "moz://mozilla.org/schemas/glean/ping/1"
-GLEAN_MIN_PING_1 = "moz://mozilla.org/schemas/glean-min/ping/1"
 
 
 def _make_metric(
@@ -135,36 +133,33 @@ class TestResolveBqTypeName:
             "string": ["microsurvey_event"],
             "quantity": ["microsurvey_event_screen_index"],
         }
-        assert (
-            _resolve_bq_type_name("string", GLEAN_MIN_PING_1, struct_types) == "string"
-        )
-        assert (
-            _resolve_bq_type_name("quantity", GLEAN_MIN_PING_1, struct_types)
-            == "quantity"
-        )
+        assert _resolve_bq_type_name("string", struct_types) == "string"
+        assert _resolve_bq_type_name("quantity", struct_types) == "quantity"
 
-    def test_glean_min_uses_suffixed(self):
+    def test_suffixed_fallback(self):
         struct_types = {"text2": ["microsurvey_event_input_value"]}
-        assert _resolve_bq_type_name("text", GLEAN_MIN_PING_1, struct_types) == "text2"
+        assert _resolve_bq_type_name("text", struct_types) == "text2"
 
-    def test_glean_ping_1_uses_unsuffixed(self):
-        struct_types = {"text": ["microsurvey_event_input_value"]}
-        assert _resolve_bq_type_name("text", GLEAN_PING_1, struct_types) == "text"
+    def test_prefers_direct_match(self):
+        """If both 'text' and 'text2' exist, direct match wins."""
+        struct_types = {
+            "text": ["microsurvey_event_input_value"],
+            "text2": ["other_field"],
+        }
+        assert _resolve_bq_type_name("text", struct_types) == "text"
 
-    def test_all_suffixed_types_glean_min(self):
-        for probeinfo_type, suffixed in SUFFIXED_METRIC_TYPES.items():
+    def test_all_suffixed_types(self):
+        for probeinfo_type in ("text", "url", "jwe", "labeled_rate"):
+            suffixed = probeinfo_type + "2"
             struct_types = {suffixed: ["some_column"]}
-            assert (
-                _resolve_bq_type_name(probeinfo_type, GLEAN_MIN_PING_1, struct_types)
-                == suffixed
-            )
+            assert _resolve_bq_type_name(probeinfo_type, struct_types) == suffixed
 
     def test_unknown_type_returns_none(self):
-        assert _resolve_bq_type_name("nonexistent", GLEAN_MIN_PING_1, {}) is None
+        assert _resolve_bq_type_name("nonexistent", {}) is None
 
 
-class TestBuildMetricsReplacement:
-    """Tests for _build_metrics_replacement."""
+class TestAddMetricsRedaction:
+    """Tests for _add_metrics_redaction."""
 
     def test_partial_exclusion(self):
         """One sensitive text metric among several text metrics."""
@@ -182,8 +177,11 @@ class TestBuildMetricsReplacement:
                 "microsurvey_message_id",
             ]
         }
-        result = _build_metrics_replacement(sensitive, struct_types, GLEAN_MIN_PING_1)
-        assert result == (
+        base_replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
+        result = _add_metrics_redaction(base_replacements, sensitive, struct_types)
+        assert len(result) == 2
+        assert result[0] == "mozfun.norm.metadata(metadata) AS metadata"
+        assert result[1] == (
             "(SELECT AS STRUCT metrics.* REPLACE("
             "(SELECT AS STRUCT metrics.text2.* EXCEPT(microsurvey_event_input_value)) AS text2"
             ")) AS metrics"
@@ -206,8 +204,10 @@ class TestBuildMetricsReplacement:
         struct_types = {
             "text2": ["microsurvey_event_input_value", "microsurvey_event_context"]
         }
-        result = _build_metrics_replacement(sensitive, struct_types, GLEAN_MIN_PING_1)
-        assert result == "(SELECT AS STRUCT metrics.* EXCEPT(text2)) AS metrics"
+        base_replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
+        result = _add_metrics_redaction(base_replacements, sensitive, struct_types)
+        assert len(result) == 2
+        assert result[1] == "(SELECT AS STRUCT metrics.* EXCEPT(text2)) AS metrics"
 
     def test_mixed_exclusion(self):
         """Sensitive metrics across types: partial text exclusion + full quantity exclusion."""
@@ -227,8 +227,10 @@ class TestBuildMetricsReplacement:
             "text2": ["microsurvey_event_input_value", "microsurvey_event_context"],
             "quantity": ["microsurvey_event_screen_index"],
         }
-        result = _build_metrics_replacement(sensitive, struct_types, GLEAN_MIN_PING_1)
-        assert result == (
+        base_replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
+        result = _add_metrics_redaction(base_replacements, sensitive, struct_types)
+        assert len(result) == 2
+        assert result[1] == (
             "(SELECT AS STRUCT metrics.* EXCEPT(quantity) REPLACE("
             "(SELECT AS STRUCT metrics.text2.* EXCEPT(microsurvey_event_input_value)) AS text2"
             ")) AS metrics"
@@ -244,19 +246,36 @@ class TestBuildMetricsReplacement:
         ]
         struct_types = {"text2": ["microsurvey_event_input_value"]}
         with pytest.raises(ValueError, match="Could not resolve BQ type"):
-            _build_metrics_replacement(sensitive, struct_types, GLEAN_MIN_PING_1)
+            _add_metrics_redaction([], sensitive, struct_types)
 
-    def test_glean_ping_1_type_resolution(self):
-        """For glean/ping/1 schemas, text type resolves to 'text' not 'text2'."""
-        sensitive = [
-            {
-                "metric_key": "microsurvey.event_input_value",
-                "bq_column_name": "microsurvey_event_input_value",
-                "metric_type": "text",
-            }
-        ]
-        struct_types = {
-            "text": ["microsurvey_event_input_value", "microsurvey_event_context"]
-        }
-        result = _build_metrics_replacement(sensitive, struct_types, GLEAN_PING_1)
-        assert "metrics.text.* EXCEPT(microsurvey_event_input_value)" in result
+    def test_no_sensitive_metrics_returns_none(self):
+        result = _add_metrics_redaction(
+            ["mozfun.norm.metadata(metadata) AS metadata"], [], {"text2": ["col1"]}
+        )
+        assert result is None
+
+
+class TestWriteRedactedView:
+    """Tests for _write_redacted_view."""
+
+    def test_glean_ping_1_raises(self, tmp_path):
+        """glean/ping/1 schemas are not supported and should raise."""
+        schema_file = SchemaFile(
+            schema=[],
+            schema_id="moz://mozilla.org/schemas/glean/ping/1",
+            bq_dataset_family="firefox_desktop",
+            bq_table="baseline_v1",
+            document_namespace="firefox-desktop",
+            document_type="baseline",
+            document_version=1,
+        )
+        with pytest.raises(NotImplementedError, match="glean/ping/1"):
+            _write_redacted_view(
+                target_project="moz-fx-data-shared-prod",
+                sql_dir=tmp_path,
+                schema_file=schema_file,
+                sensitive_metrics=[
+                    {"metric_key": "x", "bq_column_name": "x", "metric_type": "text"}
+                ],
+                metrics_struct_types={"text": ["x"]},
+            )

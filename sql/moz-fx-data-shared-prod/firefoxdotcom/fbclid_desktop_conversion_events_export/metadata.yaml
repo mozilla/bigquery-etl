@@ -1,0 +1,19 @@
+friendly_name: Facebook Conversion Events (External)
+description: |-
+  Contains data for Conversions API export, limits what is available and transforms fields into expected format.
+
+  Expected grain: max 1 row per fbclid + conversion_name combination.
+owners:
+- kik@mozilla.com
+labels:
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_export_v1

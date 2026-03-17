@@ -27,7 +27,6 @@ SELECT
   product_result_type,
   urlbar_impressions,
   urlbar_clicks,
-  urlbar_annoyances,
-  urlbar_sessions
+  urlbar_annoyances
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_daily_v1`

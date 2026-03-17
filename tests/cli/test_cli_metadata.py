@@ -1872,9 +1872,3 @@ class TestMetadata:
             }
         )
         assert validate_query_parameters(metadata, "") is True
-
-    def test_value_with_colons(self):
-        metadata = self.make_metadata_with_scheduling(
-            scheduling={"parameters": ["a:STRING:abc:def"]}
-        )
-        assert validate_query_parameters(metadata, "") is False

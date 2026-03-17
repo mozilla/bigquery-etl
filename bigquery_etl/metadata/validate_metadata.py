@@ -570,7 +570,7 @@ def validate_query_parameters(metadata, path):
 
     for parameter in metadata.scheduling.get("parameters", []):
         if not re.fullmatch(
-            r"\w+:[a-z0-9]*:.*", parameter, flags=re.IGNORECASE
+            r"\w+:[a-z0-9]*:.*", parameter, flags=re.IGNORECASE | re.DOTALL
         ):
             click.echo(
                 click.style(

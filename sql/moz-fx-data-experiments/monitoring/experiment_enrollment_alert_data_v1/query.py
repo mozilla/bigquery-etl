@@ -14,7 +14,13 @@ from google.cloud import bigquery, storage
 
 # BigQuery queries to extract enrollment/unenrollment data
 ENROLLMENT_QUERY = """
-WITH enrollment_totals AS (
+WITH active_experiments AS (
+  SELECT DISTINCT
+    normandy_slug as experiment
+  FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+  WHERE start_date IS NOT NULL
+),
+enrollment_totals AS (
   SELECT
     experiment,
     branch,
@@ -50,28 +56,37 @@ SELECT
   SUM(enrollments) OVER (PARTITION BY experiment) as experiment_total_enrollments,
   SUM(unenrollments) OVER (PARTITION BY experiment) as experiment_total_unenrollments
 FROM combined_by_experiment_branch
+WHERE experiment IN (SELECT experiment FROM active_experiments)
 ORDER BY 1, 2
 """
 
 UNENROLLMENT_REASONS_QUERY = """
-WITH reason_breakdown AS (
-  SELECT
-    experiment,
-    other_details as reason,
-    COUNT(*) as count
-  FROM `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_other_events_overall_v1`
-  WHERE experiment IS NOT NULL AND other_details IS NOT NULL
-  GROUP BY 1, 2
+WITH active_experiments AS (
+  SELECT DISTINCT
+    normandy_slug as experiment
+  FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+  WHERE start_date IS NOT NULL
 )
-SELECT experiment, reason, count
-FROM reason_breakdown
-WHERE reason IS NOT NULL
-ORDER BY 1, 2, 3 DESC
+SELECT
+  experiment,
+  branch,
+  event as reason,
+  COUNT(*) as count
+FROM `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_other_events_overall_v1`
+WHERE experiment IS NOT NULL AND event IS NOT NULL
+  AND experiment IN (SELECT experiment FROM active_experiments)
+GROUP BY 1, 2, 3
+ORDER BY 1, 2, 4 DESC
 """
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True, help="Execution date (YYYY-MM-DD)")
 parser.add_argument("--project", default="moz-fx-data-experiments")
+parser.add_argument(
+    "--gcs_folder",
+    default="enrollment_counts",
+    help="GCS folder name for storing exported data (default: enrollment_counts)",
+)
 
 
 def main():
@@ -102,12 +117,17 @@ def main():
             "unenrollments": int(row["unenrollments"]),
         }
 
-    # Add unenrollment reasons
+    # Add unenrollment reasons by branch
     for row in reason_rows:
         exp = row["experiment"]
         if exp in data:
+            branch = row["branch"]
             reason = row["reason"] or "unknown"
-            data[exp]["unenrollment_reasons"][reason] = int(row["count"])
+            if "reasons_by_branch" not in data[exp]:
+                data[exp]["reasons_by_branch"] = {}
+            if branch not in data[exp]["reasons_by_branch"]:
+                data[exp]["reasons_by_branch"][branch] = {}
+            data[exp]["reasons_by_branch"][branch][reason] = int(row["count"])
 
     # Wrap in versioning schema
     versioned_data = {"v1": data}
@@ -118,13 +138,13 @@ def main():
     json_str = json.dumps(versioned_data, indent=2)
 
     # Dated version
-    dated_path = f"monitoring_alerts/monitoring_alert_{args.date}.json"
+    dated_path = f"{args.gcs_folder}/enrollment_counts_{args.date}.json"
     bucket.blob(dated_path).upload_from_string(
         json_str, content_type="application/json"
     )
 
     # Latest version
-    latest_path = "monitoring_alerts/monitoring_alert_latest.json"
+    latest_path = f"{args.gcs_folder}/enrollment_counts_latest.json"
     bucket.blob(latest_path).upload_from_string(
         json_str, content_type="application/json"
     )

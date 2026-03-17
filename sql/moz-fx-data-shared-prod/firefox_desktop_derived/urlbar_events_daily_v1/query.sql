@@ -64,7 +64,8 @@ WITH temp_unnested AS (
       TRUE,
       FALSE
     ) AS is_from_device,
-    IF(res.result_group = 'top_pick', TRUE, FALSE) AS is_top_pick
+    IF(res.result_group = 'top_pick', TRUE, FALSE) AS is_top_pick,
+    IF(res.result_type LIKE '%ai\\_%', TRUE, FALSE) AS is_ai
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_v2`
   CROSS JOIN

@@ -40,6 +40,11 @@ set -x
     --sql-dir "${SQL_DIR}" \
     --parallelism=20
 
+# Generate redacted views for access-restricted stable views with sensitive metrics
+./script/bqetl generate stable_views_redacted \
+    --target-project "${TARGET_PROJECT}" \
+    --sql-dir "${SQL_DIR}"
+
 # Fill in definitions for generated Glean ETL
 ./script/bqetl generate glean_usage --target-project "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 

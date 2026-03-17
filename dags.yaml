@@ -2151,6 +2151,25 @@ bqetl_glean_dictionary:
     - impact/tier_3
     - repo/bigquery-etl
 
+bqetl_github:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: gkaberere@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-01-01'
+  catchup: true
+  description: Ingests GitHub PR data for delivery visibility and incident analysis.
+  repo: bigquery-etl
+  schedule_interval: 0 8 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_client_attributes:
   default_args:
     depends_on_past: false

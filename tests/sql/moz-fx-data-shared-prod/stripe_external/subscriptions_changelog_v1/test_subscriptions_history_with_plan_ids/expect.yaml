@@ -1,0 +1,69 @@
+- id: sub_1-2000-02-01T00:00:00.000000
+  timestamp: 2000-02-01 00:00:00Z
+  subscription:
+    id: sub_1
+    default_tax_rates: []
+    items:
+      - id: si_1
+        plan:
+          id: plan_1
+          product:
+            id: prod_1
+            name: Product 1
+    cancellation_details: {}
+- id: sub_1-2000-03-01T00:00:00.000000
+  timestamp: 2000-03-01 00:00:00Z
+  subscription:
+    id: sub_1
+    default_tax_rates: []
+    items:
+      - id: si_1
+        plan:
+          id: plan_2
+          product:
+            id: prod_2
+            name: Product 2
+    metadata: {"previous_plan_id": "plan_1"}
+    cancellation_details: {}
+- id: sub_1-2000-04-01T00:00:00.000000
+  timestamp: 2000-04-01 00:00:00Z
+  subscription:
+    id: sub_1
+    default_tax_rates: []
+    items:
+      - id: si_1
+        plan:
+          id: plan_2
+          product:
+            id: prod_2
+            name: Product 2
+    metadata: {"previous_plan_id": "plan_1"}
+    cancellation_details: {}
+- id: sub_1-2000-05-01T00:00:00.000000
+  timestamp: 2000-05-01 00:00:00Z
+  subscription:
+    id: sub_1
+    default_tax_rates: []
+    items:
+      - id: si_1
+        plan:
+          id: plan_3
+          product:
+            id: prod_3
+            name: Product 3
+    metadata: {"previous_plan_id": "plan_2"}
+    cancellation_details: {}
+- id: sub_1-2000-06-01T00:00:00.000000
+  timestamp: 2000-06-01 00:00:00Z
+  subscription:
+    id: sub_1
+    default_tax_rates: []
+    items:
+      - id: si_1
+        plan:
+          id: plan_3
+          product:
+            id: prod_3
+            name: Product 3
+    metadata: {"previous_plan_id": "plan_2"}
+    cancellation_details: {}

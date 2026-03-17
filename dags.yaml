@@ -1270,7 +1270,7 @@ bqetl_use_counter_analysis:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2023-12-13"
@@ -1578,7 +1578,7 @@ bqetl_cloudflare_os_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1598,7 +1598,7 @@ bqetl_cloudflare_browser_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1618,7 +1618,7 @@ bqetl_cloudflare_device_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -2008,7 +2008,7 @@ bqetl_imf_exchange_rates:
     This DAG pulls exchange rate data from the International Monetary Fund API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2026,7 +2026,7 @@ bqetl_imf_cpi_data:
     This DAG pulls inflation data from the International Monetary Fund CPI API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2044,7 +2044,7 @@ bqetl_fred_daily_exchange_rate:
     This DAG pulls currency exchange rate info from the FRED API.
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2062,7 +2062,7 @@ bqetl_us_bls_unemployment_data:
     This DAG pulls US unemployment data from the BLS API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2195,7 +2195,7 @@ bqetl_un_population:
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-01-01'

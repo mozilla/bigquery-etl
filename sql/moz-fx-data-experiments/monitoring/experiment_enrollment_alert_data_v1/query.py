@@ -118,13 +118,13 @@ def main():
     json_str = json.dumps(versioned_data, indent=2)
 
     # Dated version
-    dated_path = f"enrollment_alerts/enrollment_alerts_{args.date}.json"
+    dated_path = f"monitoring_alerts/monitoring_alert_{args.date}.json"
     bucket.blob(dated_path).upload_from_string(
         json_str, content_type="application/json"
     )
 
     # Latest version
-    latest_path = "enrollment_alerts/enrollment_alerts_latest.json"
+    latest_path = "monitoring_alerts/monitoring_alert_latest.json"
     bucket.blob(latest_path).upload_from_string(
         json_str, content_type="application/json"
     )

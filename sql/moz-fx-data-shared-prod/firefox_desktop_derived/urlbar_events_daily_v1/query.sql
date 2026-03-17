@@ -60,8 +60,7 @@ WITH temp_unnested AS (
         'trending_search',
         'trending_search_rich',
         'weather'
-      )
-      OR res.result_type LIKE 'merino\\_%',
+      ),
       TRUE,
       FALSE
     ) AS is_from_device,

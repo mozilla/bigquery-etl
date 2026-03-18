@@ -61,6 +61,9 @@ ORDER BY 1, 2
 """
 
 UNENROLLMENT_REASONS_QUERY = """
+-- Query unenrollment reasons from the 1% sample (sample_id = 0)
+-- This is sufficient for determining relative ranking of reasons for alerts.
+-- Alerts will link to Looker dashboard for detailed analysis of actual counts.
 WITH active_experiments AS (
   SELECT DISTINCT
     normandy_slug as experiment
@@ -77,6 +80,7 @@ LEFT JOIN `mozdata.telemetry.events` events
   ON active_experiments.experiment = events.event_string_value
   AND events.event_category = 'normandy'
   AND events.event_method LIKE 'unenroll%'
+  AND events.sample_id = 0
 GROUP BY 1, 2, 3
 HAVING reason IS NOT NULL
 ORDER BY 1, 4 DESC
@@ -121,6 +125,8 @@ def main():
         }
 
     # Add unenrollment reasons by branch
+    # Note: counts are from 1% sample (sample_id = 0) for performance
+    # These are used for relative ranking only; alerts link to Looker for detailed analysis
     for row in reason_rows:
         exp = row["experiment"]
         if exp in data:

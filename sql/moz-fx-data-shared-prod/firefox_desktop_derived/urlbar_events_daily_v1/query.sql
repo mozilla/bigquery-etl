@@ -102,8 +102,7 @@ temp_session AS (
     LOGICAL_OR(is_online_suggest) AS is_online_suggest,
     LOGICAL_OR(is_offline_suggest) AS is_offline_suggest,
     LOGICAL_OR(is_geo_local) AS is_geo_local,
-    LOGICAL_OR(is_from_device)
-    AND NOT LOGICAL_OR(is_online_suggest) AS is_from_device,
+    LOGICAL_OR(is_from_device) AS is_from_device,
     LOGICAL_OR(is_top_pick) AS is_top_pick,
     LOGICAL_OR(is_ai) AS is_ai
   FROM

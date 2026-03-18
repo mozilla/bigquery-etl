@@ -36,7 +36,7 @@ active_users AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users` AS au
   WHERE
-    au.submission_date = DATE_ADD(@submission_date, INTERVAL 13 day)
+    au.submission_date = @submission_date
 ),
 final_with_days AS (
   SELECT

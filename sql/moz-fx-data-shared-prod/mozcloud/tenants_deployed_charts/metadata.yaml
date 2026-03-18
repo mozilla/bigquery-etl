@@ -1,0 +1,15 @@
+friendly_name: Tenants Deployed Charts
+description: |-
+  MozCloud tenant deployed Helm charts exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a Helm chart deployed by a MozCloud tenant.
+owners:
+- wstuckey@mozilla.com
+labels:
+  owner1: wstuckey
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozcloud_tenants_syndicate.deployed_charts

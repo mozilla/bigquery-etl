@@ -2825,7 +2825,9 @@ SELECT
       metrics.counter.use_counter_page_navigationtransition_from_getter,
       metrics.counter.use_counter_page_navigationtransition_from_setter,
       metrics.counter.use_counter_page_navigationtransition_navigationtype_getter,
-      metrics.counter.use_counter_page_navigationtransition_navigationtype_setter
+      metrics.counter.use_counter_page_navigationtransition_navigationtype_setter,
+      metrics.counter.use_counter_deprecated_ops_doc_old_zecompat_hack,
+      metrics.counter.use_counter_deprecated_ops_page_old_zecompat_hack
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

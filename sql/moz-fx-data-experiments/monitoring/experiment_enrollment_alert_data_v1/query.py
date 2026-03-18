@@ -136,7 +136,9 @@ def main():
                 data[exp]["reasons_by_branch"] = {}
             if branch not in data[exp]["reasons_by_branch"]:
                 data[exp]["reasons_by_branch"][branch] = {}
-            data[exp]["reasons_by_branch"][branch][reason] = int(row["count"])
+            data[exp]["reasons_by_branch"][branch][reason] = {
+                "1pct_count": int(row["count"])
+            }
 
     # Wrap in versioning schema
     versioned_data = {"v1": data}

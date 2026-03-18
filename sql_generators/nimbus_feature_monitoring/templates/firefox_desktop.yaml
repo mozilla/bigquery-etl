@@ -1,45 +1,32 @@
-unique_id: metrics.uuid.legacy_telemetry_profile_group_id
 dataset: firefox_desktop
 source_tables:
-  firefox_desktop.metrics:
-    timestamp_field: submission_timestamp
-dimensions:
-  app_display_version:
-    source_field: client_info.app_display_version
-    source_table: firefox_desktop.metrics
-  app_version_major:
-    source_table: firefox_desktop.metrics
-  app_version_minor:
-    source_table: firefox_desktop.metrics
-  app_version_patch:
-    source_table: firefox_desktop.metrics
-  locale:
-    source_field: client_info.locale
-    source_table: firefox_desktop.metrics
-  normalized_channel:
-    source_table: firefox_desktop.metrics
-  normalized_os:
-    source_table: firefox_desktop.metrics
-  normalized_os_version:
-    source_table: firefox_desktop.metrics
-features:
-  address-autofill-feature:
+  firefox_desktop_metrics:
+    unique_id: metrics.uuid.legacy_telemetry_profile_group_id
+    table_name: metrics
     dimensions:
-      # feature-specific dimensions here
+      app_display_version:
+        field: client_info.app_display_version
+      app_version_major: {}
+      app_version_minor: {}
+      app_version_patch: {}
+      locale:
+        field: client_info.locale
+      normalized_channel: {}
+      normalized_os: {}
+      normalized_os_version: {}
       normalized_country_code:
-        source_table: firefox_desktop.metrics
         value_in: [CA, DE, FR, GB, US]
         # for values not in the list above, replace with default
         value_default: OTHER
+features:
+  address-autofill-feature:
     metrics:
-      login_autofill:
-        source_table: firefox_desktop.metrics
-        source_field: metrics.labeled_counter.pwmgr_form_autofill_result
-        # produces a metric per value suffixed with _{value}
-        client_aggregators: [sum, avg]
-        # aggregation across pings for each unique_id
-        ping_aggregator: sum
-        # aggregation across labels, required for labeled metrics
-        label_aggregator: sum
-        # values not in the list are excluded
-        label_in: [filled, filled_username_only_form]
+      firefox_desktop_metrics:
+        labeled_counter:
+          login_autofill:
+            field: metrics.labeled_counter.pwmgr_form_autofill_result
+            # produces a metric per value suffixed with _{value},
+            # e.g. login_autofill_sum, login_autofill_avg
+            aggregators: [sum, avg]
+            # values not in the list are excluded
+            label_in: [filled, filled_username_only_form]

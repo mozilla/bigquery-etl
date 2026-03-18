@@ -17,58 +17,58 @@ from bigquery_etl.util.common import write_sql
 @dataclass
 class Dimension:
     name: str
-    source_table: str
-    source_field: None|str = None
-    value_in: None|list[Any] = None
-    value_default: Any = None
+    field: None | str
     aggregator: str = "last"
-
-    def __post_init__(self):
-        if self.source_field is None:
-            self.source_field = self.name
-
-
-@dataclass
-class Metric:
-    name: str
-    client_aggregators: list[str]
-    ping_aggregator: str
-    source_table: str
-    source_field: None|str = None
-    label_aggregator: None|str = None
-    label_in: None|list[str] = None
-
-    def __post_init__(self):
-        if self.source_field is None:
-            self.source_field = self.name
+    value_in: None | list[Any] = None
+    value_default: Any = None
+    omit_default_value: bool = False
 
 
 @dataclass
 class SourceTable:
     name: str
     project: str
-    date_field: None|str = None
-    timestamp_field: None|str = None
-
-    def __post_init__(self):
-        if not self.date_field and not self.timestamp_field:
-            raise KeyError("source table missing date or timestamp field")
+    dataset: str
+    table_name: str
+    dimensions: list[Dimension]
+    unique_id: str = "client_info.client_id"
+    date_partition_field: str = "submission_timestamp"
 
     @property
-    def sql_name(self):
-        if self.name.count(".") == 1:
-            return f"`{self.project}.{self.name}`"
-        return self.name
+    def sql_table_name(self):
+        return f"{self.project}.{self.dataset}.{self.table_name}"
 
     @property
     def date_filter(self):
-        if self.date_field:
-            return f"{self.date_field} = @submission_date"
-        return f"DATE({self.timestamp_field}) = @submission_date"
+        return f"CAST({self.date_partition_field} AS DATE) = @submission_date"
 
     @property
     def sort_field(self):
         return self.timestamp_field or self.date_field
+
+    @property
+    def dimension_aggregators(self):
+        return list({d.aggregator for d in self.dimensions})
+
+
+@dataclass
+class Metric:
+    name: str
+    type_: str
+    field: None | str = None
+    aggregators: list[str]|tuple[str, ...] = ("sum",)
+    ping_aggregator: str = "sum"
+    label_aggregator: None | str = None
+    label_in: None | list[str] = None
+
+
+@dataclass
+class Feature:
+    name: str
+    project: str
+    dataset: str
+    metrics: dict[str, list[Metric]]
+    ratios: list[list[str, str]]
 
 
 def generate_queries(project, path, write_dir):
@@ -84,76 +84,74 @@ def generate_queries(project, path, write_dir):
     for app_config_path in path.glob("*.yaml"):
         app_config = yaml.safe_load(app_config_path.read_text())
         dataset = app_config["dataset"]
+        source_tables = [
+            SourceTable(
+                name=source_name,
+                project=source.pop("project", project),
+                dataset=source.pop("dataset", dataset),
+                dimensions=[
+                    Dimension(
+                        name=dim_name,
+                        field=dim.pop("field", dim_name),
+                        **dim,
+                    )
+                    for dim_name, dim in source.pop("dimensions", {}).items()
+                ],
+                **source,
+            )
+            for source_name, source in app_config["source_tables"].items()
+        ]
+        features = [
+            Feature(
+                name=feat_name,
+                project=feat.pop("project", project),
+                dataset=feat.pop("dataset", f"{dataset}_derived"),
+                metrics={
+                    source_name: [
+                        Metric(
+                            name=metric_name,
+                            type_=type_,
+                            field=metric.pop("field", f"metrics.{type_}.{metric_name}"),
+                            **metric,
+                        )
+                        for type_, metrics in metrics_by_label.items()
+                        for metric_name, metric in metrics.items()
+                    ]
+                    for source_name, metrics_by_label in feat.pop("metrics", {}).items()
+                },
+                ratios=feat.pop("ratios", []),
+                **feat,
+            )
+            for feat_name, feat in app_config["features"].items()
+        ]
 
-        # generate per-feature tables
-        dimensions = {
-            key: Dimension(name=key, **value)
-            for key, value in app_config["dimensions"].items()
-        }
-        source_tables = {
-            key: SourceTable(name=key, project=project, **value)
-            for key, value in app_config["source_tables"].items()
-        }
-        features = []
-        for feature, feature_config in app_config["features"].items():
-            feature_dimensions = {
-                key: Dimension(name=key, **value)
-                for key, value in feature_config.get("dimensions", {}).items()
-            }
-            feature_source_tables = {
-                key: SourceTable(name=key, project=project, **value)
-                for key, value in feature_config.get("source_tables", {}).items()
-            }
-            metrics = [
-                Metric(name=key, **value)
-                for key, value in feature_config["metrics"].items()
-            ]
-
+        feature_tables = []
+        for feature in features:
             args = {
-                "dimensions": list({**dimensions, **feature_dimensions}.values()),
-                "metrics": metrics,
+                "source_tables": source_tables,
                 "feature": feature,
-                "project": project,
-                "unique_id": app_config["unique_id"],
-                "ratios": feature_config.get("ratios", []),
             }
-            used_source_tables = {
-                dimension.source_table
-                for dimension in args["dimensions"]
-            } | {
-                metric.source_table
-                for metric in metrics
-            }
-            args["source_tables"] = [
-                value
-                for key, value in {**source_tables, **feature_source_tables}.items()
-                if key in used_source_tables
-            ]
 
-            feature_name_sql = feature.replace("-", "_")
+            feature_name_sql = feature.name.replace("-", "_")
             table = f"nimbus_feature_monitoring_{feature_name_sql}_v1"
-            full_table_name = f"{project}.{dataset}_derived.{table}"
+            sql_table_name = f"{feature.project}.{feature.dataset}_derived.{table}"
+
             write_sql(
                 write_dir / project,
-                full_table_name,
+                sql_table_name,
                 "query.sql",
                 reformat(sql_template.render(**args)),
             )
-
             write_path = Path(write_dir) / project / (dataset + "_derived") / table
-            (write_path / "metadata.yaml").write_text(
-                metadata_template.render(**args)
-            )
-
+            (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
             (write_path / "schema.yaml").write_text(schema)
 
-            features.append((feature, full_table_name))
+            feature_tables.append((feature.name, sql_table_name))
 
         # generate view over feature tables
         view_args = {
-            "dataset": dataset,
-            "features": features,
-            "view": f"{project}.{dataset}.nimbus_feature_monitoring"
+            "feature_tables": feature_tables,
+            "view": f"{project}.{dataset}.nimbus_feature_monitoring",
         }
         write_sql(
             write_dir / project,

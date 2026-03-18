@@ -1,6 +1,6 @@
-friendly_name: Nimbus feature monitoring - {{feature}}
+friendly_name: Nimbus feature monitoring - {{feature.name}}
 description: >-
-  metrics for monitoring the rollout of {{feature}} via nimbus
+  Metrics for monitoring the rollout of {{feature.name}} via nimbus
 owners:
   - project-nimbus@mozilla.com
 labels:
@@ -18,4 +18,5 @@ bigquery:
   clustering:
     fields:
       - rollout_slug
+      - metric
 require_column_descriptions: false

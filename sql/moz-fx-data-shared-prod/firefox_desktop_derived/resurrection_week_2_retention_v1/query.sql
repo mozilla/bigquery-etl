@@ -22,8 +22,8 @@ WITH dau AS (
     is_dau = TRUE
     AND is_desktop = TRUE
     AND submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 365 DAY)
-    AND @submission_date
+    BETWEEN DATE_SUB(DATE_SUB(@submission_date, INTERVAL 13 DAY), INTERVAL 365 DAY)
+    AND DATE_SUB(@submission_date, INTERVAL 13 DAY)
 ),
 active_users AS (
   SELECT
@@ -50,7 +50,7 @@ final_with_days AS (
     ON d.client_id = au.client_id
     AND d.submission_date = au.retention_active.day_13.metric_date
   WHERE
-    d.submission_date = @submission_date
+    d.submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
 )
 SELECT
   submission_date,
@@ -78,7 +78,7 @@ SELECT
       BETWEEN 181
       AND 365
       THEN '181-365'
-    ELSE 'other'
+    ELSE '365+'
   END AS num_days_since_last_seen,
     -- num_days_since_last_seen,
   COUNT(DISTINCT client_id) AS dau,

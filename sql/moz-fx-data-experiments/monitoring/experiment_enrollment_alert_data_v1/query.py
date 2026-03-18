@@ -68,15 +68,15 @@ WITH active_experiments AS (
   WHERE start_date IS NOT NULL
 )
 SELECT
-  event_string_value as experiment,
-  mozfun.map.get_key(event_map_values, 'branch') as branch,
-  mozfun.map.get_key(event_map_values, 'reason') as reason,
+  active_experiments.experiment,
+  mozfun.map.get_key(events.event_map_values, 'branch') as branch,
+  mozfun.map.get_key(events.event_map_values, 'reason') as reason,
   COUNT(*) as count
-FROM `mozdata.telemetry.events`
-WHERE event_category = 'normandy'
-  AND event_method LIKE 'unenroll%'
-  AND sample_id = 0
-  AND event_string_value IN (SELECT experiment FROM active_experiments)
+FROM active_experiments
+LEFT JOIN `mozdata.telemetry.events` events
+  ON active_experiments.experiment = events.event_string_value
+  AND events.event_category = 'normandy'
+  AND events.event_method LIKE 'unenroll%'
 GROUP BY 1, 2, 3
 HAVING reason IS NOT NULL
 ORDER BY 1, 4 DESC

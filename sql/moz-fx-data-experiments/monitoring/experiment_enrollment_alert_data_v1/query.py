@@ -68,15 +68,18 @@ WITH active_experiments AS (
   WHERE start_date IS NOT NULL
 )
 SELECT
-  experiment,
-  branch,
-  event as reason,
+  event_string_value as experiment,
+  mozfun.map.get_key(event_map_values, 'branch') as branch,
+  mozfun.map.get_key(event_map_values, 'reason') as reason,
   COUNT(*) as count
-FROM `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_other_events_overall_v1`
-WHERE experiment IS NOT NULL AND event IS NOT NULL
-  AND experiment IN (SELECT experiment FROM active_experiments)
+FROM `mozdata.telemetry.events`
+WHERE event_category = 'normandy'
+  AND event_method LIKE 'unenroll%'
+  AND sample_id = 0
+  AND event_string_value IN (SELECT experiment FROM active_experiments)
 GROUP BY 1, 2, 3
-ORDER BY 1, 2, 4 DESC
+HAVING reason IS NOT NULL
+ORDER BY 1, 4 DESC
 """
 
 parser = ArgumentParser(description=__doc__)

@@ -36,7 +36,7 @@ active_users AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users` AS au
   WHERE
-    au.submission_date = @submission_date
+    au.submission_date = DATE_ADD(@submission_date, INTERVAL 13 day)
 ),
 final_with_days AS (
   SELECT
@@ -78,8 +78,6 @@ SELECT
       BETWEEN 181
       AND 365
       THEN '181-365'
-    WHEN num_days_since_last_seen > 365
-      THEN '365+'
     ELSE 'other'
   END AS num_days_since_last_seen,
     -- num_days_since_last_seen,

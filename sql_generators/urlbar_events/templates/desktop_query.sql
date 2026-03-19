@@ -67,7 +67,7 @@ WITH events_unnested AS (
     ) AS normalized_engine,
     COALESCE(metrics.boolean.urlbar_pref_suggest_data_collection, FALSE) AS pref_data_collection,
     COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
-    COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
+    COALESCE((metrics.boolean.urlbar_pref_suggest_nonsponsored OR metrics.boolean.urlbar_pref_suggest_all), FALSE) AS pref_fx_suggestions,
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
     mozfun.map.get_key(extra, "interaction") AS interaction,
     SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,

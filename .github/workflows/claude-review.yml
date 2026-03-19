@@ -1,7 +1,7 @@
 # Automated code review using Claude
 # Triggers:
 #   - Once automatically when a PR is opened or marked ready for review
-#   - On demand by commenting "@claude" on a PR
+#   - On demand by commenting "@claude" on a PR (non-fork PRs only)
 name: Claude Code Review
 
 on:
@@ -17,7 +17,7 @@ jobs:
       (
         github.event_name == 'pull_request' &&
         github.event.pull_request.draft == false &&
-        github.event.pull_request.head.repo.full_name == github.repository
+        github.event.pull_request.head.repo.fork != true
       ) || (
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request != null &&
@@ -27,14 +27,25 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      id-token: write
     steps:
+      - name: Check PR is not from a fork
+        if: github.event_name == 'issue_comment'
+        id: fork-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          IS_FORK=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} --jq '.head.repo.fork')
+          echo "is_fork=$IS_FORK" >> "$GITHUB_OUTPUT"
+
       - name: Checkout repository
+        if: steps.fork-check.outputs.is_fork != 'true'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Run Claude Code Review
+        if: steps.fork-check.outputs.is_fork != 'true'
         uses: anthropics/claude-code-action@df37d2f0760a4b5683a6e617c9325bc1a36443f6  # v1.0.75
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

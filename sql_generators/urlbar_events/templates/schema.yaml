@@ -164,3 +164,28 @@ fields:
     type: STRING
     mode: NULLABLE
     description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  - name: normalized_os
+    type: STRING
+    mode: NULLABLE
+    description: The normalized name of the operating system running at the client.
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+    description: Version of the operating system version running at the client. E.g.
+        "100.9.11".
+  - name: app_display_version
+    type: STRING
+    mode: NULLABLE
+    description: User visible version string (e.g. "1.0.3") for the browser.
+  - name: pref_ohttp_available
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether online Suggest is available to the user.
+  - name: pref_ohttp_enabled
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether online Suggest is enabled by the user.
+  - name: sap
+    type: STRING
+    mode: NULLABLE
+    description: Search Access Point

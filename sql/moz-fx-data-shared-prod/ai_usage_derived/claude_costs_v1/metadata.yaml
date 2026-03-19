@@ -1,0 +1,31 @@
+friendly_name: Claude API Costs
+description: |-
+  Daily costs data from the Anthropic Admin Cost API, grouped by workspace and description.
+  Includes cost amounts in USD cents, cost type (tokens, web search, code execution),
+  and model/service tier breakdown.
+
+  API Doc: https://platform.claude.com/docs/en/build-with-claude/usage-cost-api
+owners:
+- phlee@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_ai_usage
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_ai_usage
+  arguments:
+  - --date={{ds}}
+  secrets:
+  - deploy_target: ANTHROPIC_ADMIN_API_KEY
+    key: bqetl_ai_usage__anthropic_admin_api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

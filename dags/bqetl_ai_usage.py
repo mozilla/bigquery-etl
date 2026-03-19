@@ -35,6 +35,12 @@ ai_usage_derived__claude_api_keys__v1_bqetl_ai_usage__anthropic_admin_api_key = 
     secret="airflow-gke-secrets",
     key="bqetl_ai_usage__anthropic_admin_api_key",
 )
+ai_usage_derived__claude_costs__v1_bqetl_ai_usage__anthropic_admin_api_key = Secret(
+    deploy_type="env",
+    deploy_target="ANTHROPIC_ADMIN_API_KEY",
+    secret="airflow-gke-secrets",
+    key="bqetl_ai_usage__anthropic_admin_api_key",
+)
 ai_usage_derived__claude_usage__v1_bqetl_ai_usage__anthropic_admin_api_key = Secret(
     deploy_type="env",
     deploy_target="ANTHROPIC_ADMIN_API_KEY",
@@ -91,6 +97,21 @@ with DAG(
         email=["mcastelluccio@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             ai_usage_derived__claude_api_keys__v1_bqetl_ai_usage__anthropic_admin_api_key,
+        ],
+    )
+
+    ai_usage_derived__claude_costs__v1 = GKEPodOperator(
+        task_id="ai_usage_derived__claude_costs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/ai_usage_derived/claude_costs_v1/query.py",
+        ]
+        + ["--date={{ds}}"],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="phlee@mozilla.com",
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            ai_usage_derived__claude_costs__v1_bqetl_ai_usage__anthropic_admin_api_key,
         ],
     )
 

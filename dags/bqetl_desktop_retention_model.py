@@ -104,6 +104,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
@@ -117,19 +130,6 @@ with DAG(
             failed_states=FAILED_STATES,
             pool="DATA_ENG_EXTERNALTASKSENSOR",
         )
-    )
-
-    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
@@ -207,6 +207,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__resurrection_week_2_retention__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__resurrection_week_2_retention__v1",
+        destination_table="resurrection_week_2_retention_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rbaffourawuah@mozilla.com",
+        email=[
+            "mhirose@mozilla.com",
+            "rbaffourawuah@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__desktop_retention__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_retention__v1",
         destination_table='desktop_retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -277,6 +292,10 @@ with DAG(
 
     firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
         wait_for_firefox_desktop_derived__baseline_active_users__v1
+    )
+
+    firefox_desktop_derived__resurrection_week_2_retention__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__desktop_retention__v1.set_upstream(

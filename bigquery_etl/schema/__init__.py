@@ -48,9 +48,10 @@ class Schema:
         """Create schema from a YAML string."""
         yaml_loader = SchemaLoader
         if sql_dir and sql_dir != DEFAULT_SQL_DIR:
+            custom_sql_dir = sql_dir  # To avoid a NameError in CustomSchemaLoader.
 
             class CustomSchemaLoader(SchemaLoader):
-                sql_dir = sql_dir
+                sql_dir = custom_sql_dir
 
             yaml_loader = CustomSchemaLoader
 

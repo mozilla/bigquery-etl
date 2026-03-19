@@ -1,7 +1,7 @@
 type: BIGCONFIG_FILE
 tag_deployments:
 - collection:
-    name: Operational Checks
+    name: Marketing Metrics
     notification_channels:
     - slack: '#ds-de-marketing'
   deployments:

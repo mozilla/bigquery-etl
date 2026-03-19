@@ -1823,7 +1823,11 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
       metrics.dual_labeled_counter.geolocation_windows_failure,
-      metrics.dual_labeled_counter.urlfixup_suffix
+      metrics.dual_labeled_counter.urlfixup_suffix,
+      metrics.dual_labeled_counter.media_error,
+      metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -3671,7 +3675,11 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
       metrics.dual_labeled_counter.geolocation_windows_failure,
-      metrics.dual_labeled_counter.urlfixup_suffix
+      metrics.dual_labeled_counter.urlfixup_suffix,
+      metrics.dual_labeled_counter.media_error,
+      metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,
@@ -5519,7 +5527,11 @@ SELECT
       metrics.dual_labeled_counter.contentblocking_canvas_fingerprinting_type_text_by_source_per_tab2,
       metrics.dual_labeled_counter.webgpu_expose_adapter,
       metrics.dual_labeled_counter.geolocation_windows_failure,
-      metrics.dual_labeled_counter.urlfixup_suffix
+      metrics.dual_labeled_counter.urlfixup_suffix,
+      metrics.dual_labeled_counter.media_error,
+      metrics.dual_labeled_counter.media_playback_encrypted_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_hw_decode_error,
+      metrics.dual_labeled_counter.media_playback_unencrypted_sw_decode_error
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

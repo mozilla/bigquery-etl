@@ -14,7 +14,11 @@ SELECT
     STRUCT(
       JSON_VALUE(event_extra.error_reason) AS `error_reason`,
       JSON_VALUE(event_extra.nimbus_user_id) AS `nimbus_user_id`,
-      JSON_VALUE(event_extra.subscription_cancellation_reason) AS `subscription_cancellation_reason`
+      JSON_VALUE(event_extra.subscription_billing_country) AS `subscription_billing_country`,
+      JSON_VALUE(
+        event_extra.subscription_cancellation_reason
+      ) AS `subscription_cancellation_reason`,
+      JSON_VALUE(event_extra.trial_conversion_status) AS `trial_conversion_status`
     ) AS `string`
   ) AS extras
 FROM

@@ -45180,11 +45180,15 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine identifiers for built-in
-        search engines and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are the search engine identifier for configuration
+        provided search engines and ''other'' for search engines installed via other
+        methods.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
+
+        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
+        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time
@@ -49240,6 +49244,97 @@ fields:
           mode: NULLABLE
       description: 'Counts how often a .com or other localized suffix is appended
         to a URL as a result of pressing ctrl/cmd + enter in the URL bar.
+
+        '
+    - name: media_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of errors surfaced on a media element, keyed by error type
+        and whether the playback is encrypted. Serves as a high-level signal for all
+        media error categories.
+
+        '
+    - name: media_playback_encrypted_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of fatal decode errors for encrypted (EME) media playback,
+        keyed by codec and key system. Only fires when the decoder gives up after
+        exhausting retries.
+
+        '
+    - name: media_playback_unencrypted_hw_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of decode errors for unencrypted hardware-accelerated media
+        playback, keyed by codec and error name. Only fires when the decoder gives
+        up after exhausting retries. Tracked separately from software errors to measure
+        hw decoder failure rates and inform decisions on whether to retain this probe
+        long-term.
+
+        '
+    - name: media_playback_unencrypted_sw_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of decode errors for unencrypted software media playback,
+        keyed by codec and error name. Only fires when the decoder gives up after
+        exhausting retries. Does not cover encrypted (EME) playback; see media.playback.encrypted_decode_error
+        for that.
 
         '
   - name: text2

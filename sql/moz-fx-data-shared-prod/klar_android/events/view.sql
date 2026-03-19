@@ -23,7 +23,8 @@ SELECT
       metrics.string.region_home_region
     ) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`
+    STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`,
+    STRUCT(metrics.dual_labeled_counter.media_error) AS `dual_labeled_counter`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -632,6 +632,32 @@ fields:
         \ are set to false.\nIt is possible that the user selects the same private\
         \ engine as for the\ndefault engine, and hence both versions of these fields\
         \ will be filled in.\n"
+  - name: dual_labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: media_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of errors surfaced on a media element, keyed by error type
+        and whether the playback is encrypted. Serves as a high-level signal for all
+        media error categories.
+
+        '
   - name: url
     type: RECORD
     mode: NULLABLE

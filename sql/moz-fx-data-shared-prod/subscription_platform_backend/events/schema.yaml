@@ -455,6 +455,13 @@ fields:
         times by the payment provider.
 
         '
+    - name: subscription_is_free_trial
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether the subscription checkout is for a free trial. Values
+        are ''true'' or ''false''.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

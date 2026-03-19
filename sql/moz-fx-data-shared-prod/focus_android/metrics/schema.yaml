@@ -44748,6 +44748,97 @@ fields:
         to a URL as a result of pressing ctrl/cmd + enter in the URL bar.
 
         '
+    - name: media_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of errors surfaced on a media element, keyed by error type
+        and whether the playback is encrypted. Serves as a high-level signal for all
+        media error categories.
+
+        '
+    - name: media_playback_encrypted_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of fatal decode errors for encrypted (EME) media playback,
+        keyed by codec and key system. Only fires when the decoder gives up after
+        exhausting retries.
+
+        '
+    - name: media_playback_unencrypted_hw_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of decode errors for unencrypted hardware-accelerated media
+        playback, keyed by codec and error name. Only fires when the decoder gives
+        up after exhausting retries. Tracked separately from software errors to measure
+        hw decoder failure rates and inform decisions on whether to retain this probe
+        long-term.
+
+        '
+    - name: media_playback_unencrypted_sw_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of decode errors for unencrypted software media playback,
+        keyed by codec and error name. Only fires when the decoder gives up after
+        exhausting retries. Does not cover encrypted (EME) playback; see media.playback.encrypted_decode_error
+        for that.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

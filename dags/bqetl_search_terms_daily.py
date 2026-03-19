@@ -46,6 +46,7 @@ default_args = {
     "start_date": datetime.datetime(2021, 9, 20, 0, 0),
     "end_date": None,
     "email": [
+        "ads-data-team@mozilla.com",
         "cbeck@mozilla.com",
         "najiang@mozilla.com",
         "wstuckey@mozilla.com",
@@ -91,6 +92,7 @@ with DAG(
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "kwindau@mozilla.com",
             "najiang@mozilla.com",
@@ -109,6 +111,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "ctroy@mozilla.com",
             "najiang@mozilla.com",
@@ -128,6 +131,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "kwindau@mozilla.com",
             "najiang@mozilla.com",
@@ -146,6 +150,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="llisi@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "llisi@mozilla.com",
             "najiang@mozilla.com",
@@ -165,6 +170,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="rburwei@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "najiang@mozilla.com",
             "rburwei@mozilla.com",
@@ -183,6 +189,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "ctroy@mozilla.com",
             "najiang@mozilla.com",
@@ -203,6 +210,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "ctroy@mozilla.com",
             "najiang@mozilla.com",
@@ -221,6 +229,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
         email=[
+            "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
             "ctroy@mozilla.com",
             "najiang@mozilla.com",

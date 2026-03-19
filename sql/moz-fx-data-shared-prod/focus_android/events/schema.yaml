@@ -411,6 +411,32 @@ fields:
         scalar policies.is_enterprise.
 
         '
+  - name: dual_labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: media_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count of errors surfaced on a media element, keyed by error type
+        and whether the playback is encrypted. Serves as a high-level signal for all
+        media error categories.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

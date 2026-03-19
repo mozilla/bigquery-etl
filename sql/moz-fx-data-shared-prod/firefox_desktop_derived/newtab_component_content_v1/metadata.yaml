@@ -23,6 +23,7 @@ bigquery:
   clustering:
     fields:
       - country
+      - sample_id
       - client_id
       - newtab_visit_id
     expiration_days: 775

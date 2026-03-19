@@ -12,16 +12,5 @@ owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
 labels:
-  incremental: true
-  shredder_mitigation: true
   owner1: rbaffourawuah@mozilla.com
   owner2: mhirose@mozilla.com
-scheduling:
-  dag_name: bqetl_desktop_retention_model
-bigquery:
-  time_partitioning:
-    type: day
-    field: 'submission_date'
-    require_partition_filter: true
-    expiration_days: null
-require_column_descriptions: true

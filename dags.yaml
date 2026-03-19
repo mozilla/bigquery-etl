@@ -688,6 +688,7 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
+      - ads-data-team@mozilla.com
       - cbeck@mozilla.com
       - najiang@mozilla.com
       - wstuckey@mozilla.com

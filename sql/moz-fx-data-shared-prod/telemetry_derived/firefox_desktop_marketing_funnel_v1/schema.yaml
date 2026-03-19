@@ -110,13 +110,6 @@ fields:
     Requires both a URI visit and browser interaction on the same day within days 22-28.
 
 - mode: NULLABLE
-  name: country_tier
-  type: STRING
-  description: >
-    Country tier for filtering. Values: "Core" (Tier 1 markets), "Growth" (Tier 2 markets),
-    "Emerging" (Rest of World / Tier 3), "Unknown" (unmapped countries).
-
-- mode: NULLABLE
   name: channel
   type: STRING
   description: >

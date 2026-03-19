@@ -1,0 +1,17 @@
+2026-03-02:
+  start_date: 2026-02-25
+  end_date: 2026-02-26
+  reason: Test for query.py https://mozilla-hub.atlassian.net/browse/DENG-1287
+  watchers:
+  - bewu@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: structured_missing_columns
+  query_script_date_arg: date
+  query_script_args:
+  - --destination-dataset=backfills_staging_derived
+  - --destination-table=monitoring_derived__structured_missing_columns_v1_2026_03_02
+  - --skip-exceptions

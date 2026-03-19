@@ -1,0 +1,35 @@
+# Subscription 1: no synthetic record because not initial change
+- timestamp: 2000-01-02 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 2000-01-01 00:00:00Z
+    expiry_time: 2999-02-01 00:00:00Z
+
+# Subscription 2: no synthetic record because start time not in past
+- timestamp: 2000-02-01 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s2
+    start_time: 2000-02-01 00:00:00Z
+    expiry_time: 2999-03-01 00:00:00Z
+
+# Subscription 3: synthetic record for recent new subscription
+- timestamp: 2000-03-02 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s3
+    start_time: 2000-03-01 00:00:00Z
+    expiry_time: 2999-04-01 00:00:00Z
+
+# Subscription 4: synthetic record for belated new subscription
+- timestamp: 2000-04-30 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s4
+    start_time: 2000-04-01 00:00:00Z
+    expiry_time: 2999-05-01 00:00:00Z

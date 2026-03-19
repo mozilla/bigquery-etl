@@ -1,4 +1,12 @@
 friendly_name: Slow Startup Events By Startup Type Version And Device
-description: Break out slow startup frequency by device info
+description: |-
+  Pulls slow startup data from Google Play Store API for the following apps:
+
+  - org.mozilla.firefox
+  - org.mozilla.firefox_beta
+  - org.mozilla.fenix
+  - org.mozilla.klar
+  - org.mozilla.firefox.vpn
+  - org.mozilla.focus
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com

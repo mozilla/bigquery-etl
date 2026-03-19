@@ -3,6 +3,7 @@
 import glob
 import logging
 import os
+import re
 from argparse import ArgumentParser
 from enum import Enum
 from pathlib import Path
@@ -562,6 +563,28 @@ def validate_retention_policy_based_on_table_type(metadata, path):
     return is_valid
 
 
+def validate_query_parameters(metadata, path):
+    """Check that query parameters are correctly formatted as Bigquery parameters (NAME:TYPE:VALUE)."""
+    if metadata.scheduling is None:
+        return True
+
+    for parameter in metadata.scheduling.get("parameters", []):
+        if not re.fullmatch(
+            r"\w+:[a-z0-9]*:.*", parameter, flags=re.IGNORECASE | re.DOTALL
+        ):
+            click.echo(
+                click.style(
+                    f"ERROR: {path} contains a invalid query parameter {parameter}."
+                    "Parameters must by formatted as NAME:TYPE:VALUE.",
+                    fg="red",
+                ),
+                err=True,
+            )
+            return False
+
+    return True
+
+
 class MetadataValidationError(Exception):
     """Metadata validation failed."""
 
@@ -621,6 +644,9 @@ def validate(target):
                         failed = True
 
                     if not validate_col_desc_enforced(root, metadata):
+                        failed = True
+
+                    if not validate_query_parameters(metadata, path):
                         failed = True
 
                     # todo more validation

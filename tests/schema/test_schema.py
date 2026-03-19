@@ -1076,6 +1076,25 @@ class TestSchemaLoader:
             ]
         }
 
+        include_fields_with_replacements_yaml = dedent(f"""
+            fields: !include-fields
+              table: {self.nested_fields_table}
+              field_replacements:
+              - name: client_info
+                type: JSON
+        """)
+        include_fields_with_replacements_result = yaml.load(
+            include_fields_with_replacements_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_fields_with_replacements_result == {
+            "fields": [
+                nested_fields_schema["fields"][0],
+                {"name": "client_info", "type": "JSON"},
+                nested_fields_schema["fields"][2],
+                nested_fields_schema["fields"][3],
+            ]
+        }
+
         include_nested_fields_yaml = dedent(f"""
             fields:
             - name: client_information
@@ -1145,6 +1164,34 @@ class TestSchemaLoader:
                     "fields": [
                         nested_fields_schema["fields"][1]["fields"][0],
                         nested_fields_schema["fields"][1]["fields"][1],
+                    ],
+                }
+            ]
+        }
+
+        include_nested_fields_with_replacements_yaml = dedent(f"""
+            fields:
+            - name: client_information
+              type: RECORD
+              fields: !include-fields
+                table: {self.nested_fields_table}
+                parent_field: client_info
+                field_replacements:
+                - name: distribution
+                  type: JSON
+        """)
+        include_nested_fields_with_replacements_result = yaml.load(
+            include_nested_fields_with_replacements_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_nested_fields_with_replacements_result == {
+            "fields": [
+                {
+                    "name": "client_information",
+                    "type": "RECORD",
+                    "fields": [
+                        nested_fields_schema["fields"][1]["fields"][0],
+                        nested_fields_schema["fields"][1]["fields"][1],
+                        {"name": "distribution", "type": "JSON"},
                     ],
                 }
             ]

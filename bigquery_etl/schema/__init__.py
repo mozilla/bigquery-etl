@@ -642,6 +642,7 @@ def yaml_include_fields_constructor(
     parent_field: Optional[str] = None,
     field_names: Optional[list[str]] = None,
     exclude_field_names: Optional[list[str]] = None,
+    field_replacements: Optional[list[dict]] = None,
 ) -> list[dict]:
     """Load a YAML `!include-fields` tag."""
     if file:
@@ -656,9 +657,12 @@ def yaml_include_fields_constructor(
     if field_names:
         fields_dict = {field["name"]: field for field in fields}
         # Return the fields in the same order as the specified field names.
-        return [fields_dict[field_name] for field_name in field_names]
+        fields = [fields_dict[field_name] for field_name in field_names]
     if exclude_field_names:
-        return [field for field in fields if field["name"] not in exclude_field_names]
+        fields = [field for field in fields if field["name"] not in exclude_field_names]
+    if field_replacements:
+        field_replacements_dict = {field["name"]: field for field in field_replacements}
+        fields = [field_replacements_dict.get(field["name"], field) for field in fields]
     return fields
 
 

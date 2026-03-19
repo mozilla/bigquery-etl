@@ -11,6 +11,7 @@ Some recommendations when using this feature:
   - If the query passes through all fields from an upstream table, then use `!include-fields` with no field parameter.
   - If the query selects specific fields from an upstream table, then use `!include-fields` with the `field_names` parameter specifying fields in the same order the query selects them.
   - If the query selects most fields from an upstream table with `SELECT * EXCEPT (...)`, then use `!include-fields` with the `exclude_field_names` parameter.
+  - If the query replaces some fields from an upstream table with `SELECT * REPLACE (...)`, then use `!include-fields` with the `field_replacements` parameter.
 - Avoid using the `bqetl query schema update` command on `schema.yaml` files with includes, as that will overwrite the includes.
 
 ## YAML tags
@@ -61,6 +62,7 @@ If the included fields are being inserted into part of a larger list, then the [
 - `parent_field`: Optional field path of the struct parent field to include fields from.
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
+- `field_replacements`: Optional list of field definitions to replace the matching included field definitions with.
 
 #### Examples:
 ```yaml
@@ -94,6 +96,16 @@ fields: !include-fields
   field_names:
   - submission_date
   - normalized_channel
+```
+```yaml
+# Include all top-level columns from an ETL table, but replace one of the fields.
+fields: !include-fields
+  table: moz-fx-data-shared-prod.stripe_external.product_v1
+  field_replacements:
+  - name: metadata
+    type: JSON
+    mode: NULLABLE
+    description: Set of key-value pairs attached to the product, stored as a JSON object.
 ```
 ```yaml
 # Include all nested fields in a struct from a stable table.

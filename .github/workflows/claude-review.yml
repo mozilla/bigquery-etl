@@ -2,26 +2,30 @@
 # Triggers:
 #   - Once automatically when a PR is opened or marked ready for review
 #   - On demand by commenting "@claude" on a PR
+# Access: Mozilla org members only (MEMBER author_association)
 name: Claude Code Review
 
 on:
-  pull_request:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [opened, ready_for_review]
 
   issue_comment:
     types: [created]
 
+permissions: {}
+
 jobs:
   review:
     if: |
       (
-        github.event_name == 'pull_request' &&
+        github.event_name == 'pull_request_target' &&
         github.event.pull_request.draft == false &&
-        github.event.pull_request.head.repo.full_name == github.repository
+        github.event.pull_request.author_association == 'MEMBER'
       ) || (
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request != null &&
-        contains(github.event.comment.body, '@claude')
+        contains(github.event.comment.body, '@claude') &&
+        github.event.comment.author_association == 'MEMBER'
       )
     runs-on: ubuntu-latest
     permissions:
@@ -29,10 +33,13 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout repository
+      - name: Checkout PR head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Run Claude Code Review
         uses: anthropics/claude-code-action@df37d2f0760a4b5683a6e617c9325bc1a36443f6  # v1.0.75

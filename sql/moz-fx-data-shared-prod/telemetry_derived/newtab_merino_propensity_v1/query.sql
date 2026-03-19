@@ -1,7 +1,11 @@
 WITH params AS (
   SELECT
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
-    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
+    TIMESTAMP("2026-02-14") AS start_timestamp,
+    TIMESTAMP("2026-02-28") AS end_timestamp,
+--    Temporarily frozen because some of the propensity is diverging due to the
+--    Changes in discovery due to the 'fixed fresh item' ranking changes
+--    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 15 DAY AS start_timestamp,
+--    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY AS end_timestamp,
     11 AS minutes_to_assume_random_ranking,
     "US" AS country,
     200 AS max_items_to_consider,

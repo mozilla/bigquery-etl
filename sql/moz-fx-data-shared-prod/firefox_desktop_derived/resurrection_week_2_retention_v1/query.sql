@@ -22,8 +22,8 @@ WITH dau AS (
     is_dau = TRUE
     AND is_desktop = TRUE
     AND submission_date
-    BETWEEN DATE_SUB(DATE_SUB(@submission_date, INTERVAL 13 DAY), INTERVAL 365 DAY)
-    AND DATE_SUB(@submission_date, INTERVAL 13 DAY)
+    BETWEEN DATE_SUB((DATE_SUB(@submission_date, INTERVAL 13 DAY)), INTERVAL 365 DAY)
+    AND (DATE_SUB(@submission_date, INTERVAL 13 DAY))
 ),
 active_users AS (
   SELECT

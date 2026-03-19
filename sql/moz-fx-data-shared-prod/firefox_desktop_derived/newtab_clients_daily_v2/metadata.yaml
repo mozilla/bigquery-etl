@@ -38,6 +38,7 @@ bigquery:
     - channel
     - country
     - newtab_category
+    - sample_id
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

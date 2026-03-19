@@ -44,11 +44,8 @@ class Schema:
         return cls(schema)
 
     @classmethod
-    def from_schema_file(cls, schema_file: Path, sql_dir: Optional[Path] = None):
-        """Create schema from a yaml schema file."""
-        if not schema_file.is_file() or schema_file.suffix != ".yaml":
-            raise Exception(f"{schema_file} is not a valid YAML schema file.")
-
+    def from_yaml(cls, schema_yaml: str, sql_dir: Optional[Path] = None):
+        """Create schema from a YAML string."""
         yaml_loader = SchemaLoader
         if sql_dir and sql_dir != DEFAULT_SQL_DIR:
 
@@ -57,9 +54,16 @@ class Schema:
 
             yaml_loader = CustomSchemaLoader
 
-        with open(schema_file) as file:
-            schema = yaml.load(file, Loader=yaml_loader)
-            return cls(schema)
+        schema = yaml.load(schema_yaml, Loader=yaml_loader)
+        return cls(schema)
+
+    @classmethod
+    def from_schema_file(cls, schema_file: Path, sql_dir: Optional[Path] = None):
+        """Create schema from a `schema.yaml` file."""
+        if not schema_file.is_file() or schema_file.suffix != ".yaml":
+            raise Exception(f"{schema_file} is not a valid YAML schema file.")
+
+        return cls.from_yaml(schema_file.read_text(), sql_dir=sql_dir)
 
     @classmethod
     def empty(cls):

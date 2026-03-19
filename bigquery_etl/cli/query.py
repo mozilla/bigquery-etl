@@ -2785,3 +2785,72 @@ def validate_schema(
         sys.exit(1)
     else:
         click.echo("\nAll schemas are valid.")
+
+
+@schema.command(
+    name="render",
+    help="""Render `schema.yaml` files, resolving any includes.
+
+    Examples:
+
+    ./bqetl query schema render telemetry_derived.ssl_ratios_v1 --output-dir=/tmp/sql
+    """,
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help=(
+        "Output directory rendered files are written to. "
+        "If not specified, rendered files are printed to the console."
+    ),
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render_schema(
+    name: Optional[str], sql_dir: str | Path, output_dir: Optional[str | Path]
+) -> None:
+    """Render `schema.yaml` files."""
+    sql_dir = Path(sql_dir)
+    if output_dir:
+        output_dir = Path(output_dir)
+
+    schema_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=None, files=[SCHEMA_FILE]
+    )
+
+    render_count = 0
+    copy_count = 0
+
+    # We intentionally don't process `schema.yaml` files in parallel to avoid potential situations where
+    # one file is still being written to while another file tries to read its contents for an include.
+    for schema_file in schema_files:
+        if not output_dir:
+            click.echo(f"# {schema_file}")
+
+        # We only technically render `schema.yaml` files if they actually use any includes,
+        # both for performance and to avoid making superfluous YAML formatting changes.
+        schema_yaml = schema_file.read_text()
+        if "!include" in schema_yaml:
+            if output_dir:
+                click.echo(f"Rendering {schema_file}")
+            rendered_schema_yaml = Schema.from_yaml(schema_yaml, sql_dir).to_yaml()
+            render_count += 1
+        else:
+            rendered_schema_yaml = schema_yaml
+
+        if output_dir:
+            if output_dir != sql_dir or rendered_schema_yaml != schema_yaml:
+                output_file = output_dir / schema_file.relative_to(sql_dir)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file.write_text(rendered_schema_yaml)
+                if rendered_schema_yaml == schema_yaml:
+                    copy_count += 1
+        else:
+            click.echo(rendered_schema_yaml)
+
+    if output_dir:
+        click.echo(f"Rendered {render_count} `{SCHEMA_FILE}` files with includes.")
+        if copy_count > 0:
+            click.echo(f"Copied {copy_count} `{SCHEMA_FILE}` files without includes.")

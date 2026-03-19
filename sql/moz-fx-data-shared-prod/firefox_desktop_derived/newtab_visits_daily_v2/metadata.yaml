@@ -25,3 +25,4 @@ bigquery:
       - channel
       - country
       - newtab_category
+      - sample_id

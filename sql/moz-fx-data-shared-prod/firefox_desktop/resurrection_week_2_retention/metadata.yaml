@@ -12,23 +12,12 @@ owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
 labels:
-  incremental: true
   owner1: rbaffourawuah
   owner2: mhirose
-  dag: bqetl_desktop_retention_model
-scheduling:
-  dag_name: bqetl_desktop_retention_model
-bigquery:
-  time_partitioning:
-    type: day
-    field: submission_date
-    require_partition_filter: true
-    expiration_days: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry.desktop_active_users
-require_column_descriptions: true
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.resurrection_week_2_retention_v1

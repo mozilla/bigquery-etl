@@ -11,7 +11,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  shredder_mitigation: true
+  shredder_mitigation: false
   owner1: rbaffourawuah@mozilla.com
   owner2: mhirose@mozilla.com
 scheduling:

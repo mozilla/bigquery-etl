@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "content-decoding-error"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.content_decoding_error, org_mozilla_firefox_beta.content_decoding_error, org_mozilla_fenix.content_decoding_error, org_mozilla_fenix_nightly.content_decoding_error, org_mozilla_fennec_aurora.content_decoding_error).
+
+  It is used by Looker.
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.content_decoding_error
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.content_decoding_error
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.content_decoding_error
+  - moz-fx-data-shared-prod.org_mozilla_firefox.content_decoding_error
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.content_decoding_error

@@ -1,6 +1,6 @@
-friendly_name: GitHub Pull Requests - private-bigquery-etl
+friendly_name: GitHub Pull Requests - bigquery-etl
 description: |-
-  Merged pull requests ingested daily from the GitHub API for mozilla/private-bigquery-etl.
+  Merged pull requests ingested daily from the GitHub API for mozilla/bigquery-etl.
   Each partition contains PRs merged on that date.
 owners:
 - gkaberere@mozilla.com
@@ -22,9 +22,9 @@ scheduling:
   - --date
   - "{{ds}}"
   - --repo
-  - mozilla/private-bigquery-etl
+  - mozilla/bigquery-etl
   - --destination
-  - moz-fx-data-shared-prod.github_derived.private_bqetl_prs_v1
+  - moz-fx-data-shared-prod.github_external.bqetl_prs_v1
   secrets:
   - deploy_target: GITHUB_TOKEN
     key: bqetl_github__github_token

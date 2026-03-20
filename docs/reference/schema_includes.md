@@ -108,7 +108,7 @@ fields: !include-fields
   - normalized_channel
 ```
 ```yaml
-# Include all top-level columns from an ETL table, but replace one of the fields.
+# Include all top-level columns from an ETL table, but replace a string field with a JSON version.
 fields: !include-fields
   table: moz-fx-data-shared-prod.stripe_external.product_v1
   field_replacements:

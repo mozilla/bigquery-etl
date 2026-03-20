@@ -7,6 +7,7 @@ from google.cloud.bigquery import SchemaField
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema, SchemaLoader
+from bigquery_etl.schema.stable_table_schema import SchemaFile
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -847,8 +848,9 @@ class PatchedSchemaLoader(SchemaLoader):
 
 
 class TestSchemaLoader:
-    nested_fields_table = "moz-fx-data-test-project.test.nested_fields_v1"
     nested_fields_schema_file = "/tests/data/test_sql/moz-fx-data-test-project/test/nested_fields_v1/schema.yaml"
+    nested_fields_table = "moz-fx-data-test-project.test.nested_fields_v1"
+    nested_fields_stable_table = "moz-fx-data-test-project.test_stable.nested_fields_v1"
 
     @pytest.fixture(scope="class")
     def nested_fields_schema(self):
@@ -857,6 +859,26 @@ class TestSchemaLoader:
         )
         with nested_fields_schema_file_path.open() as file_stream:
             return yaml.safe_load(file_stream)
+
+    @pytest.fixture
+    def patch_get_stable_table_schemas(self, monkeypatch, nested_fields_schema):
+        def mock_get_stable_table_schemas():
+            return [
+                SchemaFile(
+                    schema=nested_fields_schema["fields"],
+                    schema_id="mock",
+                    bq_dataset_family="test",
+                    bq_table="nested_fields_v1",
+                    document_namespace="test",
+                    document_type="nested-fields",
+                    document_version=1,
+                )
+            ]
+
+        monkeypatch.setattr(
+            "bigquery_etl.schema.get_stable_table_schemas",
+            mock_get_stable_table_schemas,
+        )
 
     def test_include(self, nested_fields_schema):
         include_file_yaml = dedent(f"""
@@ -947,7 +969,7 @@ class TestSchemaLoader:
             ]
         }
 
-    def test_include_field(self, nested_fields_schema):
+    def test_include_field(self, nested_fields_schema, patch_get_stable_table_schemas):
         include_field_yaml = dedent(f"""
             fields:
             - !include-field
@@ -1032,6 +1054,30 @@ class TestSchemaLoader:
             """)
             yaml.load(include_nonexistent_table_field_yaml, Loader=PatchedSchemaLoader)
 
+        include_stable_table_field_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_stable_table}
+              field: submission_timestamp
+        """)
+        include_stable_table_field_result = yaml.load(
+            include_stable_table_field_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_stable_table_field_result == {
+            "fields": [nested_fields_schema["fields"][0]]
+        }
+
+        with pytest.raises(Exception):
+            include_nonexistent_stable_table_field_yaml = dedent("""
+                fields:
+                - !include-field
+                  table: moz-fx-data-test-project.test_stable.nonexistent
+                  field: submission_timestamp
+            """)
+            yaml.load(
+                include_nonexistent_stable_table_field_yaml, Loader=PatchedSchemaLoader
+            )
+
         include_file_field_yaml = dedent(f"""
             fields:
             - !include-field
@@ -1072,7 +1118,7 @@ class TestSchemaLoader:
             """)
             yaml.load(include_nonexistent_nested_field_yaml, Loader=PatchedSchemaLoader)
 
-    def test_include_fields(self, nested_fields_schema):
+    def test_include_fields(self, nested_fields_schema, patch_get_stable_table_schemas):
         include_fields_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_table}
@@ -1244,6 +1290,26 @@ class TestSchemaLoader:
             """)
             yaml.load(include_nonexistent_table_fields_yaml, Loader=PatchedSchemaLoader)
 
+        include_stable_table_fields_yaml = dedent(f"""
+            fields: !include-fields
+              table: {self.nested_fields_stable_table}
+        """)
+        include_stable_table_fields_result = yaml.load(
+            include_stable_table_fields_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_stable_table_fields_result == {
+            "fields": nested_fields_schema["fields"]
+        }
+
+        with pytest.raises(Exception):
+            include_nonexistent_stable_table_fields_yaml = dedent("""
+                fields: !include-fields
+                  table: moz-fx-data-test-project.test_stable.nonexistent
+            """)
+            yaml.load(
+                include_nonexistent_stable_table_fields_yaml, Loader=PatchedSchemaLoader
+            )
+
         include_file_fields_yaml = dedent(f"""
             fields: !include-fields
               file: {self.nested_fields_schema_file}
@@ -1263,7 +1329,9 @@ class TestSchemaLoader:
             """)
             yaml.load(include_nonexistent_fields_yaml, Loader=PatchedSchemaLoader)
 
-    def test_include_field_description(self, nested_fields_schema):
+    def test_include_field_description(
+        self, nested_fields_schema, patch_get_stable_table_schemas
+    ):
         include_field_description_yaml = dedent(f"""
             fields:
             - name: submission_date
@@ -1363,6 +1431,41 @@ class TestSchemaLoader:
             """)
             yaml.load(
                 include_nonexistent_table_field_description_yaml,
+                Loader=PatchedSchemaLoader,
+            )
+
+        include_stable_table_field_description_yaml = dedent(f"""
+            fields:
+            - name: submission_date
+              type: DATE
+              description: !include-field-description
+                table: {self.nested_fields_stable_table}
+                field: submission_timestamp
+        """)
+        include_stable_table_field_description_result = yaml.load(
+            include_stable_table_field_description_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_stable_table_field_description_result == {
+            "fields": [
+                {
+                    "name": "submission_date",
+                    "type": "DATE",
+                    "description": nested_fields_schema["fields"][0]["description"],
+                }
+            ]
+        }
+
+        with pytest.raises(Exception):
+            include_nonexistent_stable_table_field_description_yaml = dedent("""
+                fields:
+                - name: submission_date
+                  type: DATE
+                  description: !include-field-description
+                    table: moz-fx-data-test-project.test_stable.nonexistent
+                    field: submission_timestamp
+            """)
+            yaml.load(
+                include_nonexistent_stable_table_field_description_yaml,
                 Loader=PatchedSchemaLoader,
             )
 

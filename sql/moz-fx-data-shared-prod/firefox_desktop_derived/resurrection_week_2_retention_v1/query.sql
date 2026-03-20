@@ -53,7 +53,8 @@ final_with_days AS (
     d.submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
 )
 SELECT
-  submission_date,
+  submission_date AS metric_date,
+  @submission_date AS submission_date,
   os,
   normalized_os_version,
   country,

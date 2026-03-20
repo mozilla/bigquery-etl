@@ -72,7 +72,7 @@ If the included fields are being inserted into part of a larger list, then the [
 - `parent_field`: Optional field path of the struct parent field to include fields from.
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
-- `field_replacements`: Optional list of field definitions to replace the matching included field definitions with.
+- `field_replacements`: Optional list of field definitions that will be used in place of the associated field definitions found in the include (matched by field name).
 
 #### Examples:
 ```yaml

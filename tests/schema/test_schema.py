@@ -1194,6 +1194,22 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_specific_fields_in_different_order(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields: !include-fields
+              table: {self.nested_fields_table}
+              field_names:
+              - sample_id
+              - submission_timestamp
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                nested_fields_schema["fields"][3],
+                nested_fields_schema["fields"][0],
+            ]
+        }
+
     def test_include_most_fields(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields: !include-fields

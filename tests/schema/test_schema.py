@@ -880,6 +880,7 @@ class TestSchemaLoader:
             mock_get_stable_table_schemas,
         )
 
+    # !include tag tests...
     def test_include_file(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             !include
@@ -966,6 +967,7 @@ class TestSchemaLoader:
             ]
         }
 
+    # !include-field tag tests...
     def test_include_field(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
@@ -998,7 +1000,56 @@ class TestSchemaLoader:
             "fields": [nested_fields_schema["fields"][1]["fields"][2]["fields"][0]]
         }
 
-    def test_include_field_append_description(self):
+    def test_include_field_new_type(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: sample_id
+              new_type: NUMERIC
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [{**nested_fields_schema["fields"][3], "type": "NUMERIC"}]
+        }
+
+    def test_include_field_new_mode(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution
+              new_mode: REPEATED
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2],
+                    "mode": "REPEATED",
+                }
+            ]
+        }
+
+    def test_include_field_new_description(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.client_id
+              new_description: Actually what this means is...
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][0],
+                    "description": "Actually what this means is...",
+                }
+            ]
+        }
+
+    def test_include_field_append_description(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
             - !include-field
@@ -1010,14 +1061,18 @@ class TestSchemaLoader:
         assert result == {
             "fields": [
                 {
-                    "name": "client_id",
-                    "type": "STRING",
-                    "description": "A UUID uniquely identifying the client.\nAnd one more thing...",
+                    **nested_fields_schema["fields"][1]["fields"][0],
+                    "description": (
+                        nested_fields_schema["fields"][1]["fields"][0][
+                            "description"
+                        ].rstrip()
+                        + "\nAnd one more thing..."
+                    ),
                 }
             ]
         }
 
-    def test_include_field_prepend_description(self):
+    def test_include_field_prepend_description(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
             - !include-field
@@ -1029,9 +1084,13 @@ class TestSchemaLoader:
         assert result == {
             "fields": [
                 {
-                    "name": "client_id",
-                    "type": "STRING",
-                    "description": "First let me say...\nA UUID uniquely identifying the client.",
+                    **nested_fields_schema["fields"][1]["fields"][0],
+                    "description": (
+                        "First let me say...\n"
+                        + nested_fields_schema["fields"][1]["fields"][0][
+                            "description"
+                        ].lstrip()
+                    ),
                 }
             ]
         }
@@ -1110,6 +1169,7 @@ class TestSchemaLoader:
             """)
             yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
+    # !include-fields tag tests...
     def test_include_fields(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields: !include-fields
@@ -1313,6 +1373,7 @@ class TestSchemaLoader:
             """)
             yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
+    # !include-field-description tag tests...
     def test_include_field_description(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
@@ -1355,7 +1416,7 @@ class TestSchemaLoader:
             ]
         }
 
-    def test_include_field_description_append(self):
+    def test_include_field_description_append(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
             - name: client_id
@@ -1371,12 +1432,17 @@ class TestSchemaLoader:
                 {
                     "name": "client_id",
                     "type": "STRING",
-                    "description": "A UUID uniquely identifying the client.\nAnd one more thing...",
+                    "description": (
+                        nested_fields_schema["fields"][1]["fields"][0][
+                            "description"
+                        ].rstrip()
+                        + "\nAnd one more thing..."
+                    ),
                 }
             ]
         }
 
-    def test_include_field_description_prepend(self):
+    def test_include_field_description_prepend(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
             - name: client_id
@@ -1392,7 +1458,12 @@ class TestSchemaLoader:
                 {
                     "name": "client_id",
                     "type": "STRING",
-                    "description": "First let me say...\nA UUID uniquely identifying the client.",
+                    "description": (
+                        "First let me say...\n"
+                        + nested_fields_schema["fields"][1]["fields"][0][
+                            "description"
+                        ].lstrip()
+                    ),
                 }
             ]
         }
@@ -1477,6 +1548,7 @@ class TestSchemaLoader:
             """)
             yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
+    # !flatten-lists tag tests...
     def test_flatten_lists(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields: !flatten-lists

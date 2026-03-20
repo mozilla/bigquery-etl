@@ -624,6 +624,9 @@ def yaml_include_field_constructor(
     field: str,
     file: Optional[str] = None,
     table: Optional[str] = None,
+    new_type: Optional[str] = None,
+    new_mode: Optional[str] = None,
+    new_description: Optional[str] = None,
     append_description: Optional[str] = None,
     prepend_description: Optional[str] = None,
 ) -> dict:
@@ -636,6 +639,12 @@ def yaml_include_field_constructor(
         raise Exception("!include-field tags must specify either `file` or `table`.")
 
     schema_field = schema.get_field(field)
+    if new_type:
+        schema_field["type"] = new_type
+    if new_mode:
+        schema_field["mode"] = new_mode
+    if new_description:
+        schema_field["description"] = new_description
     if append_description or prepend_description:
         description: str = schema_field.get("description", "")
         if append_description:

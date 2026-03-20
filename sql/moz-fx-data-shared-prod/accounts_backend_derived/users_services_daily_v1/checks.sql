@@ -37,7 +37,7 @@ check_results AS (
     events_new
   FULL OUTER JOIN
     events_old
-    USING (day, event_name)
+    USING (`day`, event_name)
   WHERE
     (
       events_new.count_new IS NULL
@@ -105,7 +105,7 @@ check_results AS (
     events_new
   FULL OUTER JOIN
     events_old
-    USING (day, event_name, app_channel)
+    USING (`day`, event_name, app_channel)
   WHERE
     event_name IS NOT NULL
     -- temporary filter until https://github.com/mozilla/fxa/pull/17565 lands in prod

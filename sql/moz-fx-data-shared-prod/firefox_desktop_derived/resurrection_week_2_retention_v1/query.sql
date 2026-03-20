@@ -53,7 +53,8 @@ final_with_days AS (
     d.submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
 )
 SELECT
-  submission_date,
+  submission_date AS metric_date,
+  @submission_date AS submission_date,
   os,
   normalized_os_version,
   country,
@@ -90,8 +91,9 @@ WHERE
   NOT is_new_profile
   AND (num_days_since_last_seen >= 29 OR num_days_since_last_seen IS NULL)
 GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5
+  metric_date,
+  submission_date,
+  os,
+  normalized_os_version,
+  country,
+  num_days_since_last_seen

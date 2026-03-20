@@ -146,7 +146,7 @@ def main():
     # Upload to GCS
     storage_client = storage.Client(args.project)
     bucket = storage_client.bucket("mozanalysis")
-    json_str = json.dumps(versioned_data, indent=2)
+    json_str = json.dumps(versioned_data)
 
     # Dated version
     dated_path = f"{args.gcs_folder}/enrollment_counts_{args.date}.json"
@@ -154,11 +154,9 @@ def main():
         json_str, content_type="application/json"
     )
 
-    # Latest version
+    # Latest version (copy dated version)
     latest_path = f"{args.gcs_folder}/enrollment_counts_latest.json"
-    bucket.blob(latest_path).upload_from_string(
-        json_str, content_type="application/json"
-    )
+    bucket.copy_blob(dated_path, bucket, latest_path)
 
 
 if __name__ == "__main__":

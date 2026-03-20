@@ -2,7 +2,7 @@
 
 import json
 import os
-from functools import cache, wraps
+from functools import cache, lru_cache, wraps
 from pathlib import Path
 from typing import Any, Callable, Concatenate, Dict, Iterable, List, Optional
 
@@ -559,19 +559,24 @@ class SchemaLoader(yaml.FullLoader):
 
     sql_dir = DEFAULT_SQL_DIR
 
-    def resolve_project_file_path(self, project_file_path: str | Path) -> Path:
-        """Return the absolute path to the file, either in the custom SQL directory, current `bqetl` project, or main `bqetl` project."""
+    @lru_cache
+    def load_yaml_from_project_file(self, project_file_path: str | Path) -> Any:
+        """Load the YAML from the specified project file."""
         project_file_path = Path(str(project_file_path).removeprefix("/"))
         if self.sql_dir != DEFAULT_SQL_DIR and project_file_path.is_relative_to(
             DEFAULT_SQL_DIR
         ):
-            return Path(self.sql_dir, project_file_path.relative_to(DEFAULT_SQL_DIR))
-        return resolve_project_file_path(project_file_path)
+            resolved_project_file_path = Path(
+                self.sql_dir, project_file_path.relative_to(DEFAULT_SQL_DIR)
+            )
+        else:
+            resolved_project_file_path = resolve_project_file_path(project_file_path)
+        with resolved_project_file_path.open() as file_stream:
+            return yaml.load(file_stream, Loader=self.__class__)
 
     def get_schema_from_project_file(self, project_file_path: str | Path) -> Schema:
         """Get the schema from the specified project file."""
-        with self.resolve_project_file_path(project_file_path).open() as file_stream:
-            return Schema(yaml.load(file_stream, Loader=self.__class__))
+        return Schema(self.load_yaml_from_project_file(project_file_path))
 
     def get_schema_for_table(self, table: str) -> Schema:
         """Get the schema for the specified table."""
@@ -604,8 +609,7 @@ def yaml_include_constructor(
     loader: SchemaLoader, file: str, jmespath: Optional[str] = None
 ) -> Any:
     """Load a YAML `!include` tag."""
-    with loader.resolve_project_file_path(file).open() as file_stream:
-        data = yaml.load(file_stream, Loader=loader.__class__)
+    data = loader.load_yaml_from_project_file(file)
     if jmespath:
         return jmespath_search(jmespath, data)
     return data

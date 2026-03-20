@@ -620,6 +620,8 @@ def yaml_include_field_constructor(
     field: str,
     file: Optional[str] = None,
     table: Optional[str] = None,
+    append_description: Optional[str] = None,
+    prepend_description: Optional[str] = None,
 ) -> dict:
     """Load a YAML `!include-field` tag."""
     if file:
@@ -628,7 +630,16 @@ def yaml_include_field_constructor(
         schema = loader.get_schema_for_table(table)
     else:
         raise Exception("!include-field tags must specify either `file` or `table`.")
-    return schema.get_field(field)
+
+    schema_field = schema.get_field(field)
+    if append_description or prepend_description:
+        description: str = schema_field.get("description", "")
+        if append_description:
+            description = (description.rstrip() + "\n" + append_description).lstrip()
+        if prepend_description:
+            description = (prepend_description + "\n" + description.lstrip()).rstrip()
+        schema_field["description"] = description
+    return schema_field
 
 
 SchemaLoader.add_constructor("!include-field", yaml_include_field_constructor)
@@ -651,6 +662,7 @@ def yaml_include_fields_constructor(
         schema = loader.get_schema_for_table(table)
     else:
         raise Exception("!include-fields tags must specify either `file` or `table`.")
+
     fields = schema.schema["fields"]
     if parent_field:
         fields = schema.get_field(parent_field)["fields"]
@@ -675,6 +687,8 @@ def yaml_include_field_description_constructor(
     field: str,
     file: Optional[str] = None,
     table: Optional[str] = None,
+    append: Optional[str] = None,
+    prepend: Optional[str] = None,
 ) -> str:
     """Load a YAML `!include-field-description` tag."""
     if file:
@@ -685,7 +699,13 @@ def yaml_include_field_description_constructor(
         raise Exception(
             "!include-field-description tags must specify either `file` or `table`."
         )
-    return schema.get_field(field)["description"]
+
+    description: str = schema.get_field(field).get("description", "")
+    if append:
+        description = (description.rstrip() + "\n" + append).lstrip()
+    if prepend:
+        description = (prepend + "\n" + description.lstrip()).rstrip()
+    return description
 
 
 SchemaLoader.add_constructor(

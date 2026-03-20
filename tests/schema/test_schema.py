@@ -983,6 +983,46 @@ class TestSchemaLoader:
             "fields": [nested_fields_schema["fields"][1]["fields"][2]["fields"][0]]
         }
 
+        include_field_append_description_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.client_id
+              append_description: And one more thing...
+        """)
+        include_field_append_description_result = yaml.load(
+            include_field_append_description_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_field_append_description_result == {
+            "fields": [
+                {
+                    "name": "client_id",
+                    "type": "STRING",
+                    "description": "A UUID uniquely identifying the client.\nAnd one more thing...",
+                }
+            ]
+        }
+
+        include_field_prepend_description_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.client_id
+              prepend_description: First let me say...
+        """)
+        include_field_prepend_description_result = yaml.load(
+            include_field_prepend_description_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_field_prepend_description_result == {
+            "fields": [
+                {
+                    "name": "client_id",
+                    "type": "STRING",
+                    "description": "First let me say...\nA UUID uniquely identifying the client.",
+                }
+            ]
+        }
+
         with pytest.raises(FileNotFoundError):
             include_nonexistent_table_field_yaml = dedent("""
                 fields:
@@ -1264,6 +1304,50 @@ class TestSchemaLoader:
                     "description": nested_fields_schema["fields"][1]["fields"][0][
                         "description"
                     ],
+                }
+            ]
+        }
+
+        include_field_description_append_yaml = dedent(f"""
+            fields:
+            - name: client_id
+              type: STRING
+              description: !include-field-description
+                table: {self.nested_fields_table}
+                field: client_info.client_id
+                append: And one more thing...
+        """)
+        include_field_description_append_result = yaml.load(
+            include_field_description_append_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_field_description_append_result == {
+            "fields": [
+                {
+                    "name": "client_id",
+                    "type": "STRING",
+                    "description": "A UUID uniquely identifying the client.\nAnd one more thing...",
+                }
+            ]
+        }
+
+        include_field_description_prepend_yaml = dedent(f"""
+            fields:
+            - name: client_id
+              type: STRING
+              description: !include-field-description
+                table: {self.nested_fields_table}
+                field: client_info.client_id
+                prepend: First let me say...
+        """)
+        include_field_description_prepend_result = yaml.load(
+            include_field_description_prepend_yaml, Loader=PatchedSchemaLoader
+        )
+        assert include_field_description_prepend_result == {
+            "fields": [
+                {
+                    "name": "client_id",
+                    "type": "STRING",
+                    "description": "First let me say...\nA UUID uniquely identifying the client.",
                 }
             ]
         }

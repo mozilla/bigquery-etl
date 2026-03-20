@@ -25,6 +25,8 @@ Includes a field from the specified table/view or schema YAML file.
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
 - `field`: Field path of the field to include.
+- `append_description`: Optional text to append to the included field's description.
+- `prepend_description`: Optional text to prepend to the included field's description.
 
 #### Examples:
 ```yaml
@@ -33,6 +35,14 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: default_search_engine
+```
+```yaml
+# Include a top-level column from an ETL table, and append extra text to the description.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+  field: default_search_engine
+  append_description: And one more thing...
 ```
 ```yaml
 # Include a nested field from a stable table.
@@ -140,6 +150,8 @@ Includes a field description from the specified table/view or schema YAML file.
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
 - `field`: Field path of the field to include the description from.
+- `append`: Optional text to append to the description.
+- `prepend`: Optional text to prepend to the description.
 
 #### Examples:
 ```yaml
@@ -151,6 +163,17 @@ fields:
   description: !include-field-description
     table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
     field: normalized_channel
+```
+```yaml
+# Include a top-level column description from an ETL table, and append extra text to the description.
+fields:
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+    field: normalized_channel
+    append: And one more thing...
 ```
 ```yaml
 # Include a nested field description from a stable table.

@@ -17,28 +17,23 @@ Built from bigquery-etl repo, [`dags/bqetl_braze.py`](https://github.com/mozilla
 #### Description
 
 ETL for Braze workflows.
-## Triage notes:
-Don't rerun this DAG!
-Ping Chelsey Beck.
-If Chelsey is out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
-
 #### Owner
 
-cbeck@mozilla.com
+lmcfall@mozilla.com
 
 #### Tags
 
-* impact/tier_2
+* impact/tier_3
 * repo/bigquery-etl
-* triage/record_only
+* triage/no_triage
 """
 
 
 default_args = {
-    "owner": "cbeck@mozilla.com",
+    "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 15, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com"],
+    "email": ["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -47,7 +42,7 @@ default_args = {
     "max_active_tis_per_dag": None,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl", "triage/record_only"]
+tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
 
 with DAG(
     "bqetl_braze",
@@ -64,7 +59,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -76,7 +71,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -88,7 +83,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -100,7 +95,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         sql_file_path="sql/moz-fx-data-shared-prod/braze_derived/subscriptions_map_v1/script.sql",
@@ -112,7 +107,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -124,7 +119,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -136,7 +131,7 @@ with DAG(
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -148,7 +143,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -161,7 +156,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -174,7 +169,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -187,7 +182,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -199,7 +194,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -212,7 +207,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -225,7 +220,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -238,7 +233,7 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         sql_file_path="sql/moz-fx-data-shared-prod/braze_external/users_previous_day_snapshot_v1/script.sql",
@@ -251,7 +246,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -264,7 +259,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -277,7 +272,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -290,7 +285,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -303,7 +298,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -316,7 +311,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -342,7 +337,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -355,7 +350,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -368,7 +363,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
@@ -382,7 +377,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
@@ -396,7 +391,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
@@ -410,7 +405,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -423,7 +418,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
@@ -437,7 +432,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
@@ -451,7 +446,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],

@@ -53,6 +53,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized default search engine
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+  description: App version
 - name: pref_ohttp_available
   type: BOOLEAN
   mode: NULLABLE

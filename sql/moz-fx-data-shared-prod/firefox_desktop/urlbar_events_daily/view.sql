@@ -2,32 +2,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.urlbar_events_daily`
 AS
 SELECT
-  submission_date,
-  normalized_country_code,
-  normalized_channel,
-  normalized_os,
-  os_version,
-  normalized_engine,
-  app_display_version,
-  pref_ohttp_available,
-  pref_ohttp_enabled,
-  ohttp_enabled,
-  sap,
-  is_adaptive,
-  is_semantic,
-  is_serp,
-  is_sponsored,
-  is_online_suggest,
-  is_offline_suggest,
-  is_geo_local,
-  is_from_device,
-  is_top_pick,
-  is_ai,
-  firefox_suggest_enabled,
-  sponsored_suggestions_enabled,
-  product_result_type,
-  urlbar_impressions,
-  urlbar_clicks,
-  urlbar_annoyances
+  *
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_daily_v1`

@@ -1,8 +1,12 @@
 fields:
+- name: metric_date
+  type: DATE
+  mode: NULLABLE
+  description: Metric Date - 13 days before the submission date.
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
+  description: The date the query was run and the partition date for this table.
 - name: os
   type: STRING
   mode: NULLABLE

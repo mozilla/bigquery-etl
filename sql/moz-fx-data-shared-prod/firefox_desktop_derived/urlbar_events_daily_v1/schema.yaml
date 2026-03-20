@@ -40,3 +40,76 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: URL Bar Sessions
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the operating system version running at the client. E.g.
+      "100.9.11".
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: Normalized default search engine
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+  description: App version
+- name: pref_ohttp_available
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is available to the user.
+- name: pref_ohttp_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether online Suggest is enabled by the user.
+- name: ohttp_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: If OHTTP both available and enabled. NULL if available is NULL.
+- name: sap
+  type: STRING
+  mode: NULLABLE
+  description: Search Access Point.
+- name: is_adaptive
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from adaptive algorithm.
+- name: is_semantic
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from semantic algorithm.
+- name: is_serp
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag is for when result type is from Search Engine Result Page.
+- name: is_sponsored
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from a sponsored partner.
+- name: is_online_suggest
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from Online Suggest.
+- name: is_offline_suggest
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from Offline Suggest.
+- name: is_geo_local
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type represents a local suggestion based on the client's geolocation.
+- name: is_from_device
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is from the client/device.
+- name: is_top_pick
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is associated with a top_pick group.
+- name: is_ai
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is associated with an "ai" result

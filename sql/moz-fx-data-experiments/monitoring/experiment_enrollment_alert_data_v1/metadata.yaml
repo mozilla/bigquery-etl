@@ -1,0 +1,12 @@
+---
+friendly_name: Experiment Enrollment Alert Data
+description: |-
+  Exports per-experiment enrollment/unenrollment counts by branch and unenrollment reasons to GCS
+  for use by Experimenter alerting system. Raw data only; Experimenter handles threshold computations.
+  Does not create any BigQuery artifacts.
+owners:
+  - ykhurana@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_experiments_daily

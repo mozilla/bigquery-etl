@@ -1037,14 +1037,14 @@ class TestSchemaLoader:
             - !include-field
               table: {self.nested_fields_table}
               field: client_info.client_id
-              new_description: Actually what this means is...
+              new_description: What this actually means is...
         """)
         result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
         assert result == {
             "fields": [
                 {
                     **nested_fields_schema["fields"][1]["fields"][0],
-                    "description": "Actually what this means is...",
+                    "description": "What this actually means is...",
                 }
             ]
         }
@@ -1091,6 +1091,26 @@ class TestSchemaLoader:
                             "description"
                         ].lstrip()
                     ),
+                }
+            ]
+        }
+
+    def test_include_field_new_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              new_fields:
+              - name: client_id_hash
+                type: STRING
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1],
+                    "fields": [{"name": "client_id_hash", "type": "STRING"}],
                 }
             ]
         }

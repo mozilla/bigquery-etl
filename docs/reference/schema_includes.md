@@ -30,6 +30,8 @@ Includes a field from the specified table/view or schema YAML file.
 - `new_description`: Optional description to use in place of the included field's original description.
 - `append_description`: Optional text to append to the included field's description.
 - `prepend_description`: Optional text to prepend to the included field's description.
+- `new_fields`: Optional list of field definitions to use in place of the included field's original list of subfields.
+  - Tip: include tags can be also used in this list.
 
 #### Examples:
 ```yaml
@@ -53,7 +55,7 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: country_code
-  new_description: Actually what this means is...
+  new_description: What this actually means is...
 ```
 ```yaml
 # Include a top-level column from an ETL table, and append extra text to the description.
@@ -62,6 +64,16 @@ fields:
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: default_search_engine
   append_description: And one more thing...
+```
+```yaml
+# Include a top-level column from a stable table, but override its fields.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+  field: client_info
+  new_fields:
+  - name: client_id_hash
+    type: STRING
 ```
 ```yaml
 # Include a nested field from a stable table.
@@ -92,6 +104,7 @@ If the included fields are being inserted into part of a larger list, then the [
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
 - `field_replacements`: Optional list of field definitions that will be used in place of the associated field definitions found in the include (matched by field name).
+  - Tip: include tags can be also used in this list.
 
 #### Examples:
 ```yaml

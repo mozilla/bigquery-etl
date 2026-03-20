@@ -880,54 +880,54 @@ class TestSchemaLoader:
             mock_get_stable_table_schemas,
         )
 
-    def test_include(self, nested_fields_schema):
-        include_file_yaml = dedent(f"""
+    def test_include_file(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             !include
             file: {self.nested_fields_schema_file}
         """)
-        include_file_result = yaml.load(include_file_yaml, Loader=PatchedSchemaLoader)
-        assert include_file_result == nested_fields_schema
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == nested_fields_schema
 
-        include_field_yaml = dedent(f"""
+    def test_include_jmespath_field(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - !include
               file: {self.nested_fields_schema_file}
               jmespath: fields[?name == 'submission_timestamp'] | [0]
         """)
-        include_field_result = yaml.load(include_field_yaml, Loader=PatchedSchemaLoader)
-        assert include_field_result == {"fields": [nested_fields_schema["fields"][0]]}
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][0]]}
 
-        include_specific_fields_yaml = dedent(f"""
+    def test_include_jmespath_specific_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include
               file: {self.nested_fields_schema_file}
               jmespath: fields[?contains(['submission_timestamp', 'sample_id'], name)]
         """)
-        include_specific_fields_result = yaml.load(
-            include_specific_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_specific_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
             ]
         }
 
-        include_most_fields_yaml = dedent(f"""
+    def test_include_jmespath_most_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include
               file: {self.nested_fields_schema_file}
               jmespath: fields[?!contains(['client_info', 'normalized_app_name'], name)]
         """)
-        include_most_fields_result = yaml.load(
-            include_most_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_most_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
             ]
         }
 
-        include_field_description_yaml = dedent(f"""
+    def test_include_jmespath_field_description(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: submission_date
               type: DATE
@@ -935,10 +935,8 @@ class TestSchemaLoader:
                 file: {self.nested_fields_schema_file}
                 jmespath: fields[?name == 'submission_timestamp'] | [0].description
         """)
-        include_field_description_result = yaml.load(
-            include_field_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "submission_date",
@@ -948,7 +946,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_nested_fields_yaml = dedent(f"""
+    def test_include_jmespath_nested_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_information
               type: RECORD
@@ -956,10 +955,8 @@ class TestSchemaLoader:
                 file: {self.nested_fields_schema_file}
                 jmespath: fields[?name == 'client_info'] | [0].fields
         """)
-        include_nested_fields_result = yaml.load(
-            include_nested_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_nested_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_information",
@@ -969,53 +966,48 @@ class TestSchemaLoader:
             ]
         }
 
-    def test_include_field(self, nested_fields_schema, patch_get_stable_table_schemas):
-        include_field_yaml = dedent(f"""
+    def test_include_field(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_table}
               field: submission_timestamp
         """)
-        include_field_result = yaml.load(include_field_yaml, Loader=PatchedSchemaLoader)
-        assert include_field_result == {"fields": [nested_fields_schema["fields"][0]]}
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][0]]}
 
-        include_nested_field_yaml = dedent(f"""
+    def test_include_nested_field(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_table}
               field: client_info.client_id
         """)
-        include_nested_field_result = yaml.load(
-            include_nested_field_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_nested_field_result == {
-            "fields": [nested_fields_schema["fields"][1]["fields"][0]]
-        }
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][1]["fields"][0]]}
 
-        include_further_nested_field_yaml = dedent(f"""
+    def test_include_further_nested_field(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_table}
               field: client_info.distribution.name
         """)
-        include_further_nested_field_result = yaml.load(
-            include_further_nested_field_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_further_nested_field_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [nested_fields_schema["fields"][1]["fields"][2]["fields"][0]]
         }
 
-        include_field_append_description_yaml = dedent(f"""
+    def test_include_field_append_description(self):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_table}
               field: client_info.client_id
               append_description: And one more thing...
         """)
-        include_field_append_description_result = yaml.load(
-            include_field_append_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_append_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_id",
@@ -1025,17 +1017,16 @@ class TestSchemaLoader:
             ]
         }
 
-        include_field_prepend_description_yaml = dedent(f"""
+    def test_include_field_prepend_description(self):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_table}
               field: client_info.client_id
               prepend_description: First let me say...
         """)
-        include_field_prepend_description_result = yaml.load(
-            include_field_prepend_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_prepend_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_id",
@@ -1045,134 +1036,130 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_nonexistent_table_field(self):
         with pytest.raises(FileNotFoundError):
-            include_nonexistent_table_field_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields:
                 - !include-field
                   table: moz-fx-data-test-project.test.nonexistent
                   field: submission_timestamp
             """)
-            yaml.load(include_nonexistent_table_field_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_stable_table_field_yaml = dedent(f"""
+    def test_include_stable_table_field(
+        self, nested_fields_schema, patch_get_stable_table_schemas
+    ):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               table: {self.nested_fields_stable_table}
               field: submission_timestamp
         """)
-        include_stable_table_field_result = yaml.load(
-            include_stable_table_field_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_stable_table_field_result == {
-            "fields": [nested_fields_schema["fields"][0]]
-        }
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][0]]}
 
+    def test_include_nonexistent_stable_table_field(
+        self, patch_get_stable_table_schemas
+    ):
         with pytest.raises(Exception):
-            include_nonexistent_stable_table_field_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields:
                 - !include-field
                   table: moz-fx-data-test-project.test_stable.nonexistent
                   field: submission_timestamp
             """)
-            yaml.load(
-                include_nonexistent_stable_table_field_yaml, Loader=PatchedSchemaLoader
-            )
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_file_field_yaml = dedent(f"""
+    def test_include_file_field(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - !include-field
               file: {self.nested_fields_schema_file}
               field: submission_timestamp
         """)
-        include_file_field_result = yaml.load(
-            include_file_field_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_file_field_result == {
-            "fields": [nested_fields_schema["fields"][0]]
-        }
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": [nested_fields_schema["fields"][0]]}
 
+    def test_include_nonexistent_field(self):
         with pytest.raises(KeyError):
-            include_nonexistent_field_yaml = dedent(f"""
+            schema_yaml = dedent(f"""
                 fields:
                 - !include-field
                   file: {self.nested_fields_schema_file}
                   field: nonexistent
             """)
-            yaml.load(include_nonexistent_field_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
+    def test_include_nonexistent_parent_field(self):
         with pytest.raises(KeyError):
-            include_nonexistent_parent_field_yaml = dedent(f"""
+            schema_yaml = dedent(f"""
                 fields:
                 - !include-field
                   file: {self.nested_fields_schema_file}
                   field: ping_info.client_id
             """)
-            yaml.load(include_nonexistent_parent_field_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
+    def test_include_nonexistent_nested_field(self):
         with pytest.raises(KeyError):
-            include_nonexistent_nested_field_yaml = dedent(f"""
+            schema_yaml = dedent(f"""
                 fields:
                 - !include-field
                   file: {self.nested_fields_schema_file}
                   field: client_info.ping_type
             """)
-            yaml.load(include_nonexistent_nested_field_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-    def test_include_fields(self, nested_fields_schema, patch_get_stable_table_schemas):
-        include_fields_yaml = dedent(f"""
+    def test_include_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_table}
         """)
-        include_fields_result = yaml.load(
-            include_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_fields_result == {"fields": nested_fields_schema["fields"]}
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": nested_fields_schema["fields"]}
 
-        include_specific_fields_yaml = dedent(f"""
+    def test_include_specific_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_table}
               field_names:
               - submission_timestamp
               - sample_id
         """)
-        include_specific_fields_result = yaml.load(
-            include_specific_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_specific_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
             ]
         }
 
-        include_most_fields_yaml = dedent(f"""
+    def test_include_most_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_table}
               exclude_field_names:
               - client_info
               - normalized_app_name
         """)
-        include_most_fields_result = yaml.load(
-            include_most_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_most_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 nested_fields_schema["fields"][0],
                 nested_fields_schema["fields"][3],
             ]
         }
 
-        include_fields_with_replacements_yaml = dedent(f"""
+    def test_include_fields_with_replacements(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_table}
               field_replacements:
               - name: client_info
                 type: JSON
         """)
-        include_fields_with_replacements_result = yaml.load(
-            include_fields_with_replacements_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_fields_with_replacements_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 nested_fields_schema["fields"][0],
                 {"name": "client_info", "type": "JSON"},
@@ -1181,7 +1168,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_nested_fields_yaml = dedent(f"""
+    def test_include_nested_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_information
               type: RECORD
@@ -1189,10 +1177,8 @@ class TestSchemaLoader:
                 table: {self.nested_fields_table}
                 parent_field: client_info
         """)
-        include_nested_fields_result = yaml.load(
-            include_nested_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_nested_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_information",
@@ -1202,7 +1188,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_specific_nested_fields_yaml = dedent(f"""
+    def test_include_specific_nested_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_information
               type: RECORD
@@ -1213,10 +1200,8 @@ class TestSchemaLoader:
                 - client_id
                 - app_channel
         """)
-        include_specific_nested_fields_result = yaml.load(
-            include_specific_nested_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_specific_nested_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_information",
@@ -1229,7 +1214,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_most_nested_fields_yaml = dedent(f"""
+    def test_include_most_nested_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_information
               type: RECORD
@@ -1239,10 +1225,8 @@ class TestSchemaLoader:
                 exclude_field_names:
                 - distribution
         """)
-        include_most_nested_fields_result = yaml.load(
-            include_most_nested_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_most_nested_fields_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_information",
@@ -1255,7 +1239,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_nested_fields_with_replacements_yaml = dedent(f"""
+    def test_include_nested_fields_with_replacements(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_information
               type: RECORD
@@ -1266,10 +1251,8 @@ class TestSchemaLoader:
                 - name: distribution
                   type: JSON
         """)
-        include_nested_fields_with_replacements_result = yaml.load(
-            include_nested_fields_with_replacements_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_nested_fields_with_replacements_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_information",
@@ -1283,56 +1266,55 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_nonexistent_table_fields(self):
         with pytest.raises(FileNotFoundError):
-            include_nonexistent_table_fields_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields: !include-fields
                   table: moz-fx-data-test-project.test.nonexistent
             """)
-            yaml.load(include_nonexistent_table_fields_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_stable_table_fields_yaml = dedent(f"""
+    def test_include_stable_table_fields(
+        self, nested_fields_schema, patch_get_stable_table_schemas
+    ):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               table: {self.nested_fields_stable_table}
         """)
-        include_stable_table_fields_result = yaml.load(
-            include_stable_table_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_stable_table_fields_result == {
-            "fields": nested_fields_schema["fields"]
-        }
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": nested_fields_schema["fields"]}
 
+    def test_include_nonexistent_stable_table_fields(
+        self, patch_get_stable_table_schemas
+    ):
         with pytest.raises(Exception):
-            include_nonexistent_stable_table_fields_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields: !include-fields
                   table: moz-fx-data-test-project.test_stable.nonexistent
             """)
-            yaml.load(
-                include_nonexistent_stable_table_fields_yaml, Loader=PatchedSchemaLoader
-            )
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_file_fields_yaml = dedent(f"""
+    def test_include_file_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields: !include-fields
               file: {self.nested_fields_schema_file}
         """)
-        include_file_fields_result = yaml.load(
-            include_file_fields_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_file_fields_result == {"fields": nested_fields_schema["fields"]}
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {"fields": nested_fields_schema["fields"]}
 
+    def test_include_nonexistent_fields(self):
         with pytest.raises(KeyError):
-            include_nonexistent_fields_yaml = dedent(f"""
+            schema_yaml = dedent(f"""
                 fields:
                 - !include-fields
                   file: {self.nested_fields_schema_file}
                   field_names:
                   - nonexistent
             """)
-            yaml.load(include_nonexistent_fields_yaml, Loader=PatchedSchemaLoader)
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-    def test_include_field_description(
-        self, nested_fields_schema, patch_get_stable_table_schemas
-    ):
-        include_field_description_yaml = dedent(f"""
+    def test_include_field_description(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: submission_date
               type: DATE
@@ -1340,10 +1322,8 @@ class TestSchemaLoader:
                 table: {self.nested_fields_table}
                 field: submission_timestamp
         """)
-        include_field_description_result = yaml.load(
-            include_field_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "submission_date",
@@ -1353,7 +1333,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_nested_field_description_yaml = dedent(f"""
+    def test_include_nested_field_description(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_id
               type: STRING
@@ -1361,10 +1342,8 @@ class TestSchemaLoader:
                 table: {self.nested_fields_table}
                 field: client_info.client_id
         """)
-        include_nested_field_description_result = yaml.load(
-            include_nested_field_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_nested_field_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_id",
@@ -1376,7 +1355,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_field_description_append_yaml = dedent(f"""
+    def test_include_field_description_append(self):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_id
               type: STRING
@@ -1385,10 +1365,8 @@ class TestSchemaLoader:
                 field: client_info.client_id
                 append: And one more thing...
         """)
-        include_field_description_append_result = yaml.load(
-            include_field_description_append_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_description_append_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_id",
@@ -1398,7 +1376,8 @@ class TestSchemaLoader:
             ]
         }
 
-        include_field_description_prepend_yaml = dedent(f"""
+    def test_include_field_description_prepend(self):
+        schema_yaml = dedent(f"""
             fields:
             - name: client_id
               type: STRING
@@ -1407,10 +1386,8 @@ class TestSchemaLoader:
                 field: client_info.client_id
                 prepend: First let me say...
         """)
-        include_field_description_prepend_result = yaml.load(
-            include_field_description_prepend_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_field_description_prepend_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "client_id",
@@ -1420,8 +1397,9 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_nonexistent_table_field_description(self):
         with pytest.raises(FileNotFoundError):
-            include_nonexistent_table_field_description_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields:
                 - name: submission_date
                   type: DATE
@@ -1429,12 +1407,12 @@ class TestSchemaLoader:
                     table: moz-fx-data-test-project.test.nonexistent
                     field: submission_timestamp
             """)
-            yaml.load(
-                include_nonexistent_table_field_description_yaml,
-                Loader=PatchedSchemaLoader,
-            )
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_stable_table_field_description_yaml = dedent(f"""
+    def test_include_stable_table_field_description(
+        self, nested_fields_schema, patch_get_stable_table_schemas
+    ):
+        schema_yaml = dedent(f"""
             fields:
             - name: submission_date
               type: DATE
@@ -1442,10 +1420,8 @@ class TestSchemaLoader:
                 table: {self.nested_fields_stable_table}
                 field: submission_timestamp
         """)
-        include_stable_table_field_description_result = yaml.load(
-            include_stable_table_field_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_stable_table_field_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "submission_date",
@@ -1455,8 +1431,11 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_nonexistent_stable_table_field_description(
+        self, patch_get_stable_table_schemas
+    ):
         with pytest.raises(Exception):
-            include_nonexistent_stable_table_field_description_yaml = dedent("""
+            schema_yaml = dedent("""
                 fields:
                 - name: submission_date
                   type: DATE
@@ -1464,12 +1443,10 @@ class TestSchemaLoader:
                     table: moz-fx-data-test-project.test_stable.nonexistent
                     field: submission_timestamp
             """)
-            yaml.load(
-                include_nonexistent_stable_table_field_description_yaml,
-                Loader=PatchedSchemaLoader,
-            )
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
-        include_file_field_description_yaml = dedent(f"""
+    def test_include_file_field_description(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
             fields:
             - name: submission_date
               type: DATE
@@ -1477,10 +1454,8 @@ class TestSchemaLoader:
                 file: {self.nested_fields_schema_file}
                 field: submission_timestamp
         """)
-        include_file_field_description_result = yaml.load(
-            include_file_field_description_yaml, Loader=PatchedSchemaLoader
-        )
-        assert include_file_field_description_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {
                     "name": "submission_date",
@@ -1490,8 +1465,9 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_nonexistent_field_description(self):
         with pytest.raises(KeyError):
-            include_nonexistent_field_description_yaml = dedent(f"""
+            schema_yaml = dedent(f"""
                 fields:
                 - name: submission_date
                   type: DATE
@@ -1499,12 +1475,10 @@ class TestSchemaLoader:
                     file: {self.nested_fields_schema_file}
                     field: nonexistent
             """)
-            yaml.load(
-                include_nonexistent_field_description_yaml, Loader=PatchedSchemaLoader
-            )
+            yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
 
     def test_flatten_lists(self, nested_fields_schema):
-        flatten_lists_yaml = dedent(f"""
+        schema_yaml = dedent(f"""
             fields: !flatten-lists
             - name: first_seen_date
               type: DATE
@@ -1514,8 +1488,8 @@ class TestSchemaLoader:
               - submission_timestamp
               - sample_id
         """)
-        flatten_lists_result = yaml.load(flatten_lists_yaml, Loader=PatchedSchemaLoader)
-        assert flatten_lists_result == {
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
             "fields": [
                 {"name": "first_seen_date", "type": "DATE"},
                 nested_fields_schema["fields"][0],

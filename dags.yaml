@@ -1769,7 +1769,7 @@ bqetl_shredder_monitoring:
   tags:
     - repo/bigquery-etl
     - impact/tier_3
-    - no_triagetriage/
+    - triage/no_triage
 
 bqetl_fxci:
   description: |

@@ -399,6 +399,22 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring__experiment_enrollment_alert_data__v1 = GKEPodOperator(
+        task_id="monitoring__experiment_enrollment_alert_data__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-experiments/monitoring/experiment_enrollment_alert_data_v1/query.py",
+        ]
+        + [],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="ykhurana@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "ykhurana@mozilla.com",
+        ],
+    )
+
     monitoring__query_cost__v1 = bigquery_etl_query(
         task_id="monitoring__query_cost__v1",
         destination_table="query_cost_v1",

@@ -6,7 +6,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the job is run.
+  description: The date the query was run and the partition date for this table.
 - name: os
   type: STRING
   mode: NULLABLE

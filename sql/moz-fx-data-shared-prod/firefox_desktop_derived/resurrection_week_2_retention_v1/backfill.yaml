@@ -1,6 +1,6 @@
 2026-03-19:
-  start_date: 2025-11-15
-  end_date: 2026-03-11
+  start_date: 2025-01-01
+  end_date: 2025-03-31
   reason: DO-2124, new table - backfill to 2025-01-01 as per rbaffourawuah request
   watchers:
   - mhirose@mozilla.com

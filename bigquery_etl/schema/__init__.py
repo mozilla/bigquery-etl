@@ -331,11 +331,19 @@ class Schema:
     def to_yaml_file(self, yaml_path: Path):
         """Write schema to the YAML file path."""
         with open(yaml_path, "w") as out:
-            yaml.dump(self.schema, out, default_flow_style=False, sort_keys=False)
+            yaml.dump(
+                self.schema,
+                out,
+                Dumper=SchemaDumper,
+                default_flow_style=False,
+                sort_keys=False,
+            )
 
     def to_yaml(self):
         """Return the schema data as YAML."""
-        return yaml.dump(self.schema, default_flow_style=False, sort_keys=False)
+        return yaml.dump(
+            self.schema, Dumper=SchemaDumper, default_flow_style=False, sort_keys=False
+        )
 
     def to_json_file(self, json_path: Path):
         """Write schema to the JSON file path."""
@@ -742,3 +750,11 @@ def yaml_flatten_lists_constructor(loader: SchemaLoader, node: yaml.Node) -> lis
 
 
 SchemaLoader.add_constructor("!flatten-lists", yaml_flatten_lists_constructor)
+
+
+class SchemaDumper(yaml.Dumper):
+    """Dumper for schema YAML files."""
+
+    def ignore_aliases(self, data):
+        """Never use aliases in the output."""
+        return True

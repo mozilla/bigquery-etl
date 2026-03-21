@@ -10,3 +10,4 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_experiments_daily
+  arguments: ["--date", "{{ ds }}"]

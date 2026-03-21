@@ -9,7 +9,8 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_monitoring
-  # Each run will process ds and ds-1 to get derived tables that may take more time to populate.
+  # Each run will process ds to ds-2 to get derived tables that may take more time to populate
+  # adjustable via --lookback-days argument
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', '*_stable', '*']

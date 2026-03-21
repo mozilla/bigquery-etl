@@ -688,6 +688,7 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
+      - ads-data-team@mozilla.com
       - cbeck@mozilla.com
       - najiang@mozilla.com
       - wstuckey@mozilla.com
@@ -1270,7 +1271,7 @@ bqetl_use_counter_analysis:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2023-12-13"
@@ -1423,22 +1424,19 @@ bqetl_google_search_console:
 
 bqetl_braze:
   schedule_interval: 0 5,13,21 * * *
-  description: |
-    ETL for Braze workflows.
-    ## Triage notes:
-    Don't rerun this DAG!
-    Ping Chelsey Beck.
-    If Chelsey is out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
+  description: ETL for Braze workflows.
   default_args:
-    owner: cbeck@mozilla.com
+    owner: lmcfall@mozilla.com
     email:
       - cbeck@mozilla.com
+      - lmcfall@mozilla.com
+      - sherrera@mozilla.com
     start_date: '2024-04-15'
     retries: 3
     retry_delay: 5m
   tags:
-    - impact/tier_2
-    - triage/record_only
+    - impact/tier_3
+    - triage/no_triage
 
 bqetl_braze_currents:
   schedule_interval: 0 5 * * *
@@ -1578,7 +1576,7 @@ bqetl_cloudflare_os_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1598,7 +1596,7 @@ bqetl_cloudflare_browser_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1618,7 +1616,7 @@ bqetl_cloudflare_device_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -2008,7 +2006,7 @@ bqetl_imf_exchange_rates:
     This DAG pulls exchange rate data from the International Monetary Fund API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2026,7 +2024,7 @@ bqetl_imf_cpi_data:
     This DAG pulls inflation data from the International Monetary Fund CPI API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2044,7 +2042,7 @@ bqetl_fred_daily_exchange_rate:
     This DAG pulls currency exchange rate info from the FRED API.
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2062,7 +2060,7 @@ bqetl_us_bls_unemployment_data:
     This DAG pulls US unemployment data from the BLS API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2195,7 +2193,7 @@ bqetl_un_population:
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-01-01'

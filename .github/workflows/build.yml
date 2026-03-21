@@ -384,11 +384,11 @@ jobs:
           if [ -d /tmp/bigquery_etl_schemas ]; then
             cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
           fi
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -406,7 +406,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-generated-sql
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
@@ -445,7 +445,7 @@ jobs:
       - *download-generated-sql
       - &download-schema-cache
         name: Download schema cache if available
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         continue-on-error: true
         with:
           name: schema-cache
@@ -490,7 +490,7 @@ jobs:
           mkdir -p /tmp/workspace/staged-generated-sql
           cp -r sql/ /tmp/workspace/staged-generated-sql/sql
           cp -r tests/ /tmp/workspace/staged-generated-sql/tests
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -510,7 +510,7 @@ jobs:
       - *setup-python
       - *restore-venv
       - &download-staged-sql
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -656,7 +656,7 @@ jobs:
           cp -r sql /tmp/debug_artifacts/sql
       - name: Upload debug artifacts
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
@@ -728,11 +728,11 @@ jobs:
           cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
 
           git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -846,7 +846,7 @@ jobs:
           $bqetl_script dag generate \
             --output-dir /tmp/workspace/main-generated-sql/dags
           rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -866,11 +866,11 @@ jobs:
       - *setup-python
       - *restore-venv
       - *download-schema-cache
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -901,11 +901,11 @@ jobs:
 
           mkdir -p /tmp/workspace/private-generated-sql/dags
           mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
@@ -921,7 +921,7 @@ jobs:
       - name: Pull telemetry-airflow
         run: |
           git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -951,7 +951,7 @@ jobs:
           source .venv/bin/activate
           python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
       - name: Upload test results
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: dag-test-results
           path: ~/telemetry-airflow/test-results/junit.xml
@@ -971,11 +971,11 @@ jobs:
       - *checkout
       - name: Create workspace directory
         run: mkdir -p /tmp/workspace
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -1002,12 +1002,12 @@ jobs:
           cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload diff artifact
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: sql-diff
           path: /tmp/workspace/sql.diff
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6.3.0
         with:
           node-version: '21'
       - name: Install diff dependencies
@@ -1047,7 +1047,7 @@ jobs:
     if: *is-main-deploy
     environment: dev
     steps:
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
@@ -1087,11 +1087,11 @@ jobs:
     if: *is-main-deploy
     environment: dev
     steps:
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
@@ -1131,7 +1131,7 @@ jobs:
     steps:
       - *checkout
       - *download-generated-sql
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53  # v6.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
@@ -1146,7 +1146,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
       - name: Push Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@e2876aeb0f458eba1a39fa46bd072264c5877b11  # v4.3.2
+        uses: mozilla-it/deploy-actions/docker-push@4784cb70739a4f32ce010921f60fb1ebbc791a38  # v6.2.2
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
@@ -1156,7 +1156,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
       - name: Push tagged Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@e2876aeb0f458eba1a39fa46bd072264c5877b11  # v4.3.2
+        uses: mozilla-it/deploy-actions/docker-push@4784cb70739a4f32ce010921f60fb1ebbc791a38  # v6.2.2
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}

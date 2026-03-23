@@ -269,7 +269,7 @@ def prepare_target_directory(
     sql_dir: str,
     destination_project_id: Optional[str],
     dataset_prefix: Optional[str],
-    defer: bool,
+    defer_to_target: bool,
     isolated: bool,
     dataset: Optional[str] = None,
     table_prefix: Optional[str] = None,
@@ -308,7 +308,7 @@ def prepare_target_directory(
         if item.is_file():
             shutil.copy2(item, target_dir / item.name)
 
-    # Write manifest so --defer rewriting can reverse-map deployed → original location
+    # Write manifest so --defer-to-target rewriting can reverse-map deployed → original location
     manifest = {
         "source_project": source_project,
         "source_dataset": source_dataset,
@@ -330,7 +330,7 @@ def prepare_target_directory(
         )
         target_query_file.write_text(sql)
 
-    if defer or isolated:
+    if defer_to_target or isolated:
         rewrite_query_references(
             target_query_file,
             sql_dir,
@@ -420,7 +420,7 @@ def prepare_target_files(
     project_id: str,
     destination_project_id: Optional[str],
     dataset_prefix: Optional[str],
-    defer: bool,
+    defer_to_target: bool,
     isolated: bool,
     auto_deploy: bool = True,
     dataset: Optional[str] = None,
@@ -459,7 +459,7 @@ def prepare_target_files(
                 sql_dir,
                 destination_project_id,
                 dataset_prefix,
-                defer,
+                defer_to_target,
                 isolated,
                 dataset=dataset,
                 table_prefix=table_prefix,

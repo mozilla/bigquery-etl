@@ -280,13 +280,14 @@ def temp_dataset_option(
 
 
 def defer_option():
-    """Generate a --defer option for smart reference rewriting.
+    """Generate a --defer-to-target option for smart reference rewriting.
 
     Only rewrites references to artifacts that exist in the target directory;
     everything else stays pointing at prod.
     """
     return click.option(
-        "--defer",
+        "--defer-to-target",
+        "--defer_to_target",
         is_flag=True,
         default=False,
         help=(

@@ -999,7 +999,7 @@ def run(
     public_project_id,
     destination_table,
     dataset_id,
-    defer,
+    defer_to_target,
     write,
 ):
     """Run a query."""
@@ -1050,7 +1050,7 @@ def run(
         project_id,
         destination_project_id,
         dataset_prefix,
-        defer,
+        defer_to_target,
         isolated=False,
         auto_deploy=write,
         dataset=dataset,

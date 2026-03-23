@@ -84,16 +84,16 @@ sql/moz-fx-data-dev/
   --parameter=submission_date:DATE:2026-02-22 --write
 
 # Run downstream using the dev version of upstream
-./bqetl --target dev query run --defer \
+./bqetl --target dev query run --defer-to-target \
   --parameter=submission_date:DATE:2026-02-22 --write \
   telemetry_derived.clients_daily_v6
 ```
 
-With `--defer`:
+With `--defer-to-target`:
 - References to tables already deployed in dev → dev project
 - References to everything else → prod
 
-Without `--defer` (default): all references stay pointed at prod.
+Without `--defer-to-target` (default): all references stay pointed at prod.
 
 ### 3. Deploy artifacts without running
 
@@ -111,7 +111,7 @@ Without `--defer` (default): all references stay pointed at prod.
 ### 4. Backfill testing
 
 ```bash
-./bqetl --target dev query backfill --defer \
+./bqetl --target dev query backfill --defer-to-target \
   --start-date 2024-01-01 \
   --end-date 2024-01-07 \
   telemetry_derived.clients_daily_v6

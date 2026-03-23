@@ -82,7 +82,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files
+from ..util.target import prepare_target_files, sanitize_dataset_id
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -1018,6 +1018,8 @@ def run(
     target = ctx.obj.get("target") if ctx.obj else None
     destination_project_id = target.project_id if target else None
     dataset_prefix = target.dataset_prefix if target else None
+    dataset = target.dataset if target else None
+    table_prefix = target.table_prefix if target else None
 
     # when using --target, check target directory first, then fall back to source
     query_files = []
@@ -1051,12 +1053,16 @@ def run(
         defer,
         isolated=False,
         auto_deploy=write,
+        dataset=dataset,
+        table_prefix=table_prefix,
     )
 
-    # apply destination project and dataset prefix
+    # apply destination project and dataset
     effective_project = destination_project_id or project_id
     effective_dataset = dataset_id
-    if dataset_prefix and dataset_id:
+    if dataset and dataset_id:
+        effective_dataset = sanitize_dataset_id(dataset)
+    elif dataset_prefix and dataset_id:
         effective_dataset = f"{dataset_prefix}{dataset_id}"
 
     # auto-infer destination_table when --write is used; query_files[0] is already

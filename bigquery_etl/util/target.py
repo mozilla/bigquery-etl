@@ -5,7 +5,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import List, NamedTuple, Optional, Set
 
 import attr
 import cattrs
@@ -23,6 +23,20 @@ from . import extract_from_query_path
 from .common import render as render_template
 
 ROOT = Path(__file__).parent.parent.parent
+
+MANIFEST_FILENAME = ".bqetl_target_info.yaml"
+
+
+class DeployedTableInfo(NamedTuple):
+    """Info about a table deployed to a target environment."""
+
+    target_project: str
+    target_dataset: str
+    target_table: str
+    source_dataset: Optional[str] = (
+        None  # populated from manifest; None for legacy deployments
+    )
+    source_table: Optional[str] = None
 
 
 class _KeepUndefined(jinja2.Undefined):
@@ -58,6 +72,14 @@ class Target:
     name: str = attr.ib()
     project_id: str = attr.ib()
     dataset_prefix: Optional[str] = attr.ib(default=None)
+    dataset: Optional[str] = attr.ib(default=None)
+    table_prefix: Optional[str] = attr.ib(default=None)
+
+    def __attrs_post_init__(self) -> None:
+        if self.dataset is not None and self.dataset_prefix is not None:
+            raise ValueError(
+                "Cannot specify both 'dataset' and 'dataset_prefix' in a target"
+            )
 
 
 def render_dataset_prefix(
@@ -107,9 +129,9 @@ def get_target(target: str) -> Target:
 
 def get_deployed_tables_in_target(
     sql_dir: str, target_project: str
-) -> Set[Tuple[str, str, str]]:
+) -> Set[DeployedTableInfo]:
     """Find all tables deployed in the target directory."""
-    deployed: Set[Tuple[str, str, str]] = set()
+    deployed: Set[DeployedTableInfo] = set()
     target_project_dir = Path(sql_dir) / target_project
 
     if not target_project_dir.exists():
@@ -120,7 +142,27 @@ def get_deployed_tables_in_target(
         if len(parts) >= 3:
             table = parts[-2]
             dataset = parts[-3]
-            deployed.add((target_project, dataset, table))
+
+            source_dataset = None
+            source_table = None
+            manifest_file = query_file.parent / MANIFEST_FILENAME
+            if manifest_file.exists():
+                try:
+                    manifest = yaml.safe_load(manifest_file.read_text())
+                    source_dataset = manifest.get("source_dataset")
+                    source_table = manifest.get("source_table")
+                except Exception:
+                    pass
+
+            deployed.add(
+                DeployedTableInfo(
+                    target_project=target_project,
+                    target_dataset=dataset,
+                    target_table=table,
+                    source_dataset=source_dataset,
+                    source_table=source_table,
+                )
+            )
 
     return deployed
 
@@ -131,6 +173,8 @@ def rewrite_query_references(
     target_project: str,
     dataset_prefix: Optional[str],
     rewrite_all: bool = False,
+    dataset: Optional[str] = None,
+    table_prefix: Optional[str] = None,
 ):
     """Rewrite references in a query file to point to target environment."""
     sql = render_template(
@@ -143,34 +187,48 @@ def rewrite_query_references(
         gcp_project_pattern = (
             r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
         )
+        effective_dataset = sanitize_dataset_id(dataset) if dataset else None
+        sanitized_table_prefix = (
+            sanitize_dataset_id(table_prefix) if table_prefix else ""
+        )
 
-        if dataset_prefix:
-            sql = re.sub(
-                gcp_project_pattern,
-                lambda m: f"`{target_project}`.`{sanitize_dataset_id(dataset_prefix + m.group(2))}`.`{m.group(3)}`",
-                sql,
+        def replace_all(m: re.Match) -> str:
+            target_ds = effective_dataset or (
+                sanitize_dataset_id(f"{dataset_prefix}{m.group(2)}")
+                if dataset_prefix
+                else m.group(2)
             )
-        else:
-            sql = re.sub(
-                gcp_project_pattern,
-                lambda m: f"`{target_project}`.`{m.group(2)}`.`{m.group(3)}`",
-                sql,
-            )
+            return f"`{target_project}`.`{target_ds}`.`{sanitized_table_prefix}{m.group(3)}`"
+
+        sql = re.sub(gcp_project_pattern, replace_all, sql)
     else:
         # smart rewriting: only rewrite references to tables that exist in target
         deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
 
-        for _, deployed_dataset, deployed_table in deployed_tables:
-            original_dataset = deployed_dataset
-            if dataset_prefix:
-                sanitized_prefix = sanitize_dataset_id(dataset_prefix)
-                if deployed_dataset.startswith(sanitized_prefix):
-                    original_dataset = deployed_dataset[len(sanitized_prefix) :]
+        for info in deployed_tables:
+            # Use manifest data when available for precise matching
+            if info.source_dataset is not None and info.source_table is not None:
+                original_dataset = info.source_dataset
+                original_table = info.source_table
+            else:
+                # Legacy deployments without manifest: fall back to prefix-stripping
+                original_dataset = info.target_dataset
+                original_table = info.target_table
+                if dataset_prefix:
+                    sanitized_prefix = sanitize_dataset_id(dataset_prefix)
+                    if original_dataset.startswith(sanitized_prefix):
+                        original_dataset = original_dataset[len(sanitized_prefix) :]
+                if table_prefix:
+                    sanitized_tprefix = sanitize_dataset_id(table_prefix)
+                    if original_table.startswith(sanitized_tprefix):
+                        original_table = original_table[len(sanitized_tprefix) :]
 
             # rewrite fully qualified references from any project
-            # any-project.dataset.table -> target_project.prefix_dataset.table
-            pattern = rf"`?[a-z][a-z0-9\-]*[a-z0-9]`?\.`?{re.escape(original_dataset)}`?\.`?{re.escape(deployed_table)}`?"
-            replacement = f"`{target_project}`.`{deployed_dataset}`.`{deployed_table}`"
+            # any-project.dataset.table -> target_project.target_dataset.target_table
+            pattern = rf"`?[a-z][a-z0-9\-]*[a-z0-9]`?\.`?{re.escape(original_dataset)}`?\.`?{re.escape(original_table)}`?"
+            replacement = (
+                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
+            )
             sql = re.sub(pattern, replacement, sql)
 
     query_file.write_text(sql)
@@ -183,20 +241,35 @@ def prepare_target_directory(
     dataset_prefix: Optional[str],
     defer: bool,
     isolated: bool,
+    dataset: Optional[str] = None,
+    table_prefix: Optional[str] = None,
 ) -> Optional[Path]:
     """Prepare target directory for query execution with --target."""
-    if not destination_project_id and not dataset_prefix:
+    if (
+        not destination_project_id
+        and not dataset_prefix
+        and not dataset
+        and not table_prefix
+    ):
         return None
 
     source_project, source_dataset, source_table = extract_from_query_path(query_file)
     effective_project = destination_project_id or source_project
-    effective_dataset = (
-        sanitize_dataset_id(f"{dataset_prefix}{source_dataset}")
-        if dataset_prefix
-        else source_dataset
+
+    if dataset:
+        effective_dataset = sanitize_dataset_id(dataset)
+    elif dataset_prefix:
+        effective_dataset = sanitize_dataset_id(f"{dataset_prefix}{source_dataset}")
+    else:
+        effective_dataset = source_dataset
+
+    effective_table = (
+        sanitize_dataset_id(f"{table_prefix}{source_table}")
+        if table_prefix
+        else source_table
     )
 
-    target_dir = Path(sql_dir) / effective_project / effective_dataset / source_table
+    target_dir = Path(sql_dir) / effective_project / effective_dataset / effective_table
     target_query_file = target_dir / query_file.name
 
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -205,6 +278,14 @@ def prepare_target_directory(
         if item.is_file():
             shutil.copy2(item, target_dir / item.name)
 
+    # Write manifest so --defer rewriting can reverse-map deployed → original location
+    manifest = {
+        "source_project": source_project,
+        "source_dataset": source_dataset,
+        "source_table": source_table,
+    }
+    (target_dir / MANIFEST_FILENAME).write_text(yaml.dump(manifest))
+
     # for view files, always rewrite the CREATE OR REPLACE VIEW self-reference to
     # match the target directory structure
     if target_query_file.name == "view.sql":
@@ -212,7 +293,7 @@ def prepare_target_directory(
         sql = re.sub(
             r"(CREATE\s+OR\s+REPLACE\s+VIEW\s+)`?[^`\s]+"
             r"`?\.`?[^`\s]+`?\.`?[^`\s]+`?",
-            rf"\1`{effective_project}.{effective_dataset}.{source_table}`",
+            rf"\1`{effective_project}.{effective_dataset}.{effective_table}`",
             sql,
             count=1,
             flags=re.IGNORECASE,
@@ -226,6 +307,8 @@ def prepare_target_directory(
             effective_project,
             dataset_prefix,
             rewrite_all=isolated,
+            dataset=dataset,
+            table_prefix=table_prefix,
         )
 
     return target_query_file
@@ -310,20 +393,30 @@ def prepare_target_files(
     defer: bool,
     isolated: bool,
     auto_deploy: bool = True,
+    dataset: Optional[str] = None,
+    table_prefix: Optional[str] = None,
 ) -> List[Path]:
     """Prepare target directories for multiple query files."""
-    if not destination_project_id and not dataset_prefix:
+    if (
+        not destination_project_id
+        and not dataset_prefix
+        and not dataset
+        and not table_prefix
+    ):
         return query_files
 
-    # render {{ artifact.project_id }} in dataset_prefix using the source project.
+    # render {{ artifact.project_id }} in dataset_prefix/dataset using the source project.
+    source_project = project_id
+    if not source_project and query_files:
+        try:
+            source_project, _, _ = extract_from_query_path(query_files[0])
+        except Exception:
+            pass
+
     if dataset_prefix and "{{" in str(dataset_prefix):
-        source_project = project_id
-        if not source_project and query_files:
-            try:
-                source_project, _, _ = extract_from_query_path(query_files[0])
-            except Exception:
-                pass
         dataset_prefix = render_dataset_prefix(dataset_prefix, source_project or "")
+    if dataset and "{{" in str(dataset):
+        dataset = render_dataset_prefix(dataset, source_project or "")
 
     target_query_files = []
     for query_file in query_files:
@@ -338,10 +431,14 @@ def prepare_target_files(
                 dataset_prefix,
                 defer,
                 isolated,
+                dataset=dataset,
+                table_prefix=table_prefix,
             )
             target_query_files.append(target_file if target_file else query_file)
 
-    if auto_deploy and (destination_project_id or dataset_prefix):
+    if auto_deploy and (
+        destination_project_id or dataset_prefix or dataset or table_prefix
+    ):
         for query_file in target_query_files:
             auto_deploy_if_needed(
                 query_file,

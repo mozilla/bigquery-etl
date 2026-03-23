@@ -11,11 +11,22 @@ This guide covers testing SQL changes in development environments before deployi
 
 Configure a target in `./bqetl_targets.yaml`:
 
+**Per-source-dataset deployment** (one target dataset per source dataset, keeps datasets separate):
 ```yaml
 dev:
-  project_id: dev-sandbox-user  # or moz-fx-data-dev
+  project_id: dev-sandbox-user
   dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
 ```
+
+**Single-dataset deployment** (all artifacts land in one dataset, use `table_prefix` to avoid name collisions):
+```yaml
+dev:
+  project_id: dev-sandbox-user
+  dataset: anna_dev
+  table_prefix: "{{ git.branch }}_{{ git.commit }}_"
+```
+
+`dataset` and `dataset_prefix` are mutually exclusive. `table_prefix` can be used with either.
 
 Use `--target dev` to run and deploy artifacts to the dev environment:
 

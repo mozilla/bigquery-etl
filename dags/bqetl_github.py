@@ -28,7 +28,13 @@ gkaberere@mozilla.com
 * repo/bigquery-etl
 """
 
-github_derived__github_prs__v1_bqetl_github__github_token = Secret(
+github_external__bqetl_prs__v1_bqetl_github__github_token = Secret(
+    deploy_type="env",
+    deploy_target="GITHUB_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_github__github_token",
+)
+github_external__private_bqetl_prs__v1_bqetl_github__github_token = Secret(
     deploy_type="env",
     deploy_target="GITHUB_TOKEN",
     secret="airflow-gke-secrets",
@@ -60,24 +66,46 @@ with DAG(
     catchup=True,
 ) as dag:
 
-    github_derived__github_prs__v1 = GKEPodOperator(
-        task_id="github_derived__github_prs__v1",
+    github_external__bqetl_prs__v1 = GKEPodOperator(
+        task_id="github_external__bqetl_prs__v1",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/github_derived/github_prs_v1/query.py",
+            "sql/moz-fx-data-shared-prod/github_external/bqetl_prs_v1/query.py",
         ]
         + [
             "--date",
             "{{ds}}",
             "--repo",
             "mozilla/bigquery-etl",
-            "--repo",
-            "mozilla/private-bigquery-etl",
+            "--destination",
+            "moz-fx-data-shared-prod.github_external.bqetl_prs_v1",
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="gkaberere@mozilla.com",
         email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
-            github_derived__github_prs__v1_bqetl_github__github_token,
+            github_external__bqetl_prs__v1_bqetl_github__github_token,
+        ],
+    )
+
+    github_external__private_bqetl_prs__v1 = GKEPodOperator(
+        task_id="github_external__private_bqetl_prs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/github_external/private_bqetl_prs_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--repo",
+            "mozilla/private-bigquery-etl",
+            "--destination",
+            "moz-fx-data-shared-prod.github_external.private_bqetl_prs_v1",
+        ],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="gkaberere@mozilla.com",
+        email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            github_external__private_bqetl_prs__v1_bqetl_github__github_token,
         ],
     )

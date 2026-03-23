@@ -13,7 +13,8 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
    1. Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
-   * Optionally add column descriptions to `schema.yaml`
+   * Optionally add or [include](../reference/schema_includes.md#include-field-description) field descriptions in `schema.yaml`.
+   * Optionally replace fields in `schema.yaml` with appropriate [includes](../reference/schema_includes.md) from upstream table schemas.
 1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
    * Add a description of the query
    * Add BigQuery information such as table partitioning or clustering

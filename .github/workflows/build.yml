@@ -373,6 +373,10 @@ jobs:
             cp -a sql/. /tmp/workspace/generated-sql/sql
           fi
 
+          PATH=".venv/bin:$PATH" script/bqetl query schema render \
+            /tmp/workspace/generated-sql/sql/ \
+            --sql-dir=/tmp/workspace/generated-sql/sql/ \
+            --output-dir=/tmp/workspace/generated-sql/sql/
           PATH=".venv/bin:$PATH" script/bqetl dependency record \
             --skip-existing \
             "/tmp/workspace/generated-sql/sql/"
@@ -720,6 +724,7 @@ jobs:
 
           $bqetl_script generate all --target-project moz-fx-data-shared-prod
           $bqetl_script format sql/
+          $bqetl_script query schema render sql/ --output-dir=sql/
           $bqetl_script dependency record --skip-existing sql/
           $bqetl_script metadata update sql/
           $bqetl_script monitoring update sql/
@@ -823,6 +828,8 @@ jobs:
           fi
 
           $bqetl_script format sql/
+          # TODO: uncomment this once https://github.com/mozilla/bigquery-etl/pull/9035 is merged
+          # $bqetl_script query schema render sql/ --output-dir=sql/
           $bqetl_script dependency record --skip-existing sql/
           $bqetl_script metadata update sql/
           $bqetl_script monitoring update sql/
@@ -835,6 +842,8 @@ jobs:
           cd ~/private-bigquery-etl
           $bqetl_script generate all --target-project moz-fx-data-shared-prod
           $bqetl_script format sql/
+          # TODO: uncomment this once https://github.com/mozilla/bigquery-etl/pull/9035 is merged
+          # $bqetl_script query schema render sql/ --output-dir=sql/
           $bqetl_script dependency record --skip-existing sql/
           $bqetl_script metadata update sql/
           $bqetl_script monitoring update sql/

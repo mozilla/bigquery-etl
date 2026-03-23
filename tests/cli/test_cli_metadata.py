@@ -21,6 +21,7 @@ from bigquery_etl.metadata.validate_metadata import (
     validate_asset_level,
     validate_change_control,
     validate_col_desc_enforced,
+    validate_query_parameters,
     validate_shredder_mitigation,
 )
 from bigquery_etl.schema import Schema
@@ -1819,3 +1820,55 @@ class TestMetadata:
 
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is True
+
+    def make_metadata_with_scheduling(self, scheduling):
+        return Metadata(
+            friendly_name="Test",
+            description="Test",
+            owners=["test@example.com"],
+            scheduling=scheduling,
+        )
+
+    def test_empty_parameters(self):
+        metadata = self.make_metadata_with_scheduling(
+            scheduling={"dag_name": "bqetl_test", "parameters": []}
+        )
+        assert validate_query_parameters(metadata, "") is True
+
+    def test_no_parameters(self):
+        metadata = self.make_metadata_with_scheduling(
+            scheduling={"dag_name": "bqetl_test"}
+        )
+        assert validate_query_parameters(metadata, "") is True
+
+    def test_multiline_value(self):
+        metadata = self.make_metadata_with_scheduling(
+            scheduling={
+                "parameters": [
+                    """submission_date:DATE:SELECT
+                    1
+                    FROM
+                    table
+                    """
+                ]
+            }
+        )
+        assert validate_query_parameters(metadata, "") is True
+
+    def test_valid_parameter(self):
+        metadata = self.make_metadata_with_scheduling(
+            scheduling={"parameters": ["submission_date:DATE:2026-01-01"]}
+        )
+        assert validate_query_parameters(metadata, "") is True
+
+    def test_valid_multiple_parameters(self):
+        metadata = self.make_metadata_with_scheduling(
+            scheduling={
+                "parameters": [
+                    "submission_date:DATE:2026-01-01",
+                    "abc:INT64:123",
+                    "a:STRING:abc",
+                ]
+            }
+        )
+        assert validate_query_parameters(metadata, "") is True

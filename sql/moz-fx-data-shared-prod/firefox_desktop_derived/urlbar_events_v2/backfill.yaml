@@ -1,0 +1,13 @@
+2026-03-20:
+  start_date: 2025-01-01
+  end_date: 2026-03-20
+  reason: Populate the new fields with data [DENG-10604](https://mozilla-hub.atlassian.net/browse/DENG-10604)
+  watchers:
+  - kbammarito@mozilla.com
+  - lmcfall@mozilla.com
+  - nflorez@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

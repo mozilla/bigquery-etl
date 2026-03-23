@@ -156,7 +156,8 @@ def main():
 
     # Latest version (copy dated version)
     latest_path = f"{args.gcs_folder}/enrollment_counts_latest.json"
-    bucket.copy_blob(dated_path, bucket, latest_path)
+    source_blob = bucket.blob(dated_path)
+    bucket.copy_blob(source_blob, bucket, latest_path)
 
 
 if __name__ == "__main__":

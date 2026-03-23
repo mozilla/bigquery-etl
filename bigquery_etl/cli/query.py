@@ -1023,14 +1023,14 @@ def run(
 
     # when using --target, check target directory first, then fall back to source
     query_files = []
-    if target:
+    if target and destination_project_id:
         target_project_dir = Path(sql_dir) / destination_project_id
         if target_project_dir.exists():
             query_files = paths_matching_name_pattern(
                 name, sql_dir, destination_project_id, silent=True
             )
 
-    else:  # fall back to source directory if not found in target
+    if not query_files:  # fall back to source directory if not found in target
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found

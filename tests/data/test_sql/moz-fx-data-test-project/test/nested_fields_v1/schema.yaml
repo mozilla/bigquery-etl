@@ -1,0 +1,23 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  description: Time when the ingestion edge server accepted this message.
+- name: client_info
+  type: RECORD
+  fields:
+  - name: client_id
+    type: STRING
+    description: A UUID uniquely identifying the client.
+  - name: app_channel
+    type: STRING
+  - name: distribution
+    type: RECORD
+    fields:
+    - name: name
+      type: STRING
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  description: Hashed version of client_id (ranges from 0 to 99).

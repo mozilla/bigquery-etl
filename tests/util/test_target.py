@@ -11,6 +11,7 @@ from bigquery_etl.util.target import (
     get_deployed_tables_in_target,
     get_target,
     prepare_target_directory,
+    prepare_target_files,
 )
 
 
@@ -269,3 +270,42 @@ class TestPrepareTargetDirectory:
             assert info.target_table == "feature_clients_daily_v6"
             assert info.source_dataset == "telemetry_derived"
             assert info.source_table == "clients_daily_v6"
+
+
+class TestPrepareTargetFiles:
+    def _make_query_file(
+        self, sql_dir: Path, project: str, dataset: str, table: str
+    ) -> Path:
+        query_dir = sql_dir / project / dataset / table
+        query_dir.mkdir(parents=True)
+        query_file = query_dir / "query.sql"
+        query_file.write_text("SELECT 1")
+        return query_file
+
+    def test_table_prefix_artifact_project_id_rendered(self):
+        """{{ artifact.project_id }} in table_prefix is rendered from source project."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sql_dir = Path(tmpdir) / "sql"
+            query_file = self._make_query_file(
+                sql_dir,
+                "moz-fx-data-shared-prod",
+                "telemetry_derived",
+                "clients_daily_v6",
+            )
+
+            result = prepare_target_files(
+                query_files=[query_file],
+                sql_dir=str(sql_dir),
+                project_id="moz-fx-data-shared-prod",
+                destination_project_id="my-dev-project",
+                dataset_prefix=None,
+                defer_to_target=False,
+                isolated=False,
+                auto_deploy=False,
+                dataset="anna_dev",
+                table_prefix="{{ artifact.project_id }}_",
+            )
+
+            assert len(result) == 1
+            # artifact.project_id = sanitize("moz-fx-data-shared-prod") = "moz_fx_data_shared_prod"
+            assert result[0].parent.name == "moz_fx_data_shared_prod_clients_daily_v6"

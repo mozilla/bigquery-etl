@@ -84,13 +84,11 @@ class Target:
             )
 
 
-def render_dataset_prefix(
-    dataset_prefix: Optional[str], project_id: str
-) -> Optional[str]:
-    """Render {{ param }} in a dataset_prefix template."""
-    if not dataset_prefix or "{{" not in str(dataset_prefix):
-        return dataset_prefix
-    return Template(str(dataset_prefix)).render(
+def render_artifact_template(template: Optional[str], project_id: str) -> Optional[str]:
+    """Render {{ artifact.* }} variables in a target config template string."""
+    if not template or "{{" not in str(template):
+        return template
+    return Template(str(template)).render(
         artifact={"project_id": sanitize_dataset_id(project_id or "")}
     )
 
@@ -444,9 +442,11 @@ def prepare_target_files(
             pass
 
     if dataset_prefix and "{{" in str(dataset_prefix):
-        dataset_prefix = render_dataset_prefix(dataset_prefix, source_project or "")
+        dataset_prefix = render_artifact_template(dataset_prefix, source_project or "")
     if dataset and "{{" in str(dataset):
-        dataset = render_dataset_prefix(dataset, source_project or "")
+        dataset = render_artifact_template(dataset, source_project or "")
+    if table_prefix and "{{" in str(table_prefix):
+        table_prefix = render_artifact_template(table_prefix, source_project or "")
 
     target_query_files = []
     for query_file in query_files:

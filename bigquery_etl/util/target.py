@@ -1,6 +1,7 @@
 """Utilities for managing target environments for query deployment."""
 
 import logging
+import os
 import re
 import shutil
 import subprocess
@@ -76,6 +77,7 @@ class Target:
     table_prefix: Optional[str] = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
+        """Check attributes."""
         if self.dataset is not None and self.dataset_prefix is not None:
             raise ValueError(
                 "Cannot specify both 'dataset' and 'dataset_prefix' in a target"
@@ -125,6 +127,34 @@ def get_target(target: str) -> Target:
         return cattrs.structure({**targets[target], "name": target}, Target)
 
     raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+
+
+def get_default_target_name() -> Optional[str]:
+    """Return the default target name, checking sources in priority order.
+
+    1. BQETL_TARGET environment variable
+    2. default_target key in bqetl_targets.yaml
+    """
+    env_target = os.environ.get("BQETL_TARGET")
+    if env_target:
+        return env_target
+
+    targets_file_name = ConfigLoader.get(
+        "default", "targets", fallback="bqetl_targets.yaml"
+    )
+    targets_file = ConfigLoader.project_dir / targets_file_name
+
+    if not targets_file.exists():
+        return None
+
+    try:
+        targets = yaml.safe_load(targets_file.read_text())
+        if isinstance(targets, dict):
+            return targets.get("default_target")
+    except Exception:
+        return None
+
+    return None
 
 
 def get_deployed_tables_in_target(

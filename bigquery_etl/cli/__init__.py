@@ -31,7 +31,7 @@ from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..util.target import get_target
+from ..util.target import get_default_target_name, get_target
 
 
 def cli(prog_name=None):
@@ -73,7 +73,8 @@ def cli(prog_name=None):
     @click.option(
         "--target",
         help="Target environment to use for commands that interact with BigQuery. See"
-        " `bqetl_targets.yaml` for available targets.",
+        " `bqetl_targets.yaml` for available targets. Overrides the BQETL_TARGET"
+        " environment variable and the default_target setting in bqetl_targets.yaml.",
     )
     @click.pass_context
     def group(ctx, log_level, target):
@@ -82,6 +83,9 @@ def cli(prog_name=None):
 
         ctx.ensure_object(dict)
         ctx.obj["target"] = None
+
+        if not target:
+            target = get_default_target_name()
 
         if target:
             try:

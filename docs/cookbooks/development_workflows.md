@@ -28,6 +28,22 @@ dev:
 
 `dataset` and `dataset_prefix` are mutually exclusive. `table_prefix` can be used with either.
 
+To avoid passing `--target` on every invocation, set a default using one of these (listed in priority order):
+
+1. `--target` flag (explicit, highest priority)
+2. `BQETL_TARGET` environment variable — add to your shell profile for a per-session default:
+   ```bash
+   export BQETL_TARGET=dev
+   ```
+3. `default_target` key in `bqetl_targets.yaml`:
+   ```yaml
+   default_target: dev
+
+   dev:
+     project_id: dev-sandbox-user
+     dataset: anna_dev
+   ```
+
 Use `--target dev` to run and deploy artifacts to the dev environment:
 
 ```bash

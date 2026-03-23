@@ -98,11 +98,11 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
-      description: ""
+      description: attribution extension
   - name: distribution
     type: RECORD
     mode: NULLABLE
-    description: ""
+    description: Record containing distribution information.
     fields:
     - name: name
       type: STRING
@@ -111,7 +111,7 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
-      description: ""
+      description: Distribution extension
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -363,11 +363,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of glean_error_invalid_label
       - name: value
         type: INTEGER
         mode: NULLABLE
-        description: ""
+        description: Value of glean_error_invalid_label
     - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
@@ -377,11 +377,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of glean_error_invalid_overflow
       - name: value
         type: INTEGER
         mode: NULLABLE
-        description: ""
+        description: Valu
     - name: glean_error_invalid_state
       type: RECORD
       mode: REPEATED
@@ -391,11 +391,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of glean_error_invalid_state
       - name: value
         type: INTEGER
         mode: NULLABLE
-        description: ""
+        description: Value of glean_error_invalid_state
     - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
@@ -405,11 +405,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of glean_error_invalid_value
       - name: value
         type: INTEGER
         mode: NULLABLE
-        description: ""
+        description: Value of glean_error_invalid_value
     - name: glean_error_invalid_type
       type: RECORD
       mode: REPEATED
@@ -420,11 +420,11 @@ fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of glean_error_invalid_type
       - name: value
         type: INTEGER
         mode: NULLABLE
-        description: ""
+        description: Value of glean_error_invalid_type
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -527,29 +527,29 @@ fields:
     - name: sync_cwts
       type: RECORD
       mode: REPEATED
-      description: ""
+      description: Sync CWTS
       fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of sync_cwts
       - name: value
         type: BOOLEAN
         mode: NULLABLE
-        description: ""
+        description: Value of sync_cwts
     - name: standard_marketing
       type: RECORD
       mode: REPEATED
-      description: ""
+      description: Record of Standard marketing
       fields:
       - name: key
         type: STRING
         mode: NULLABLE
-        description: ""
+        description: Key of standard_marketing
       - name: value
         type: BOOLEAN
         mode: NULLABLE
-        description: ""
+        description: Value of standard_marketing
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
@@ -580,7 +580,7 @@ fields:
 - name: document_event_number
   type: INTEGER
   mode: NULLABLE
-  description: ""
+  description: Document Event Number
 - name: experiment_id
   type: STRING
   mode: NULLABLE

@@ -88,7 +88,6 @@ SELECT
       LAX_BOOL(event_extra.did_select_pw) AS `did_select_pw`,
       LAX_BOOL(event_extra.did_select_un) AS `did_select_un`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
-      LAX_BOOL(event_extra.engagement_abandoned) AS `engagement_abandoned`,
       LAX_BOOL(event_extra.filled) AS `filled`,
       LAX_BOOL(event_extra.first_interaction) AS `first_interaction`,
       LAX_BOOL(event_extra.foreground_tab) AS `foreground_tab`,

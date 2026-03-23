@@ -462,6 +462,11 @@ fields:
         are ''true'' or ''false''.
 
         '
+    - name: subscription_payment_method
+      type: STRING
+      mode: NULLABLE
+      description: "The payment method selected by the customer during checkout (e.g.\
+        \ \u2018card\u2019, \u2018apple_pay\u2019)\n"
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

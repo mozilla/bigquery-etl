@@ -8248,10 +8248,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'HTTP3: Records if a loss-based slow start exit undershot, overshot
-        or exactly matches the congestion window size when closing the connection.
-        This mostly exists to confirm the expected assumption that loss-based exit
-        almost always overshoots.
+      description: 'HTTP3: Records if a congestion-event-based slow start exit undershot,
+        overshot or exactly matches the congestion window size when closing the connection.
+        This mostly exists to confirm the expected assumption that loss- or ecn-based
+        exit almost always overshoots. Only records for connections that saw congestion
+        window growth (new as of Bug 2024352).
 
         '
     - name: permissions_unused_permissions_expired_by_type
@@ -8267,6 +8268,92 @@ fields:
       description: 'Count of permissions expired due to inactivity, broken down by
         permission type (e.g. "desktop-notification", "geo"). Helps identify which
         permission types are expired most often.
+
+        '
+    - name: networking_http_3_congestion_window_growth
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records if a connection ended with a congestion window higher\
+        \ than the initial window size and if it saw slow start exit (in this case\
+        \ because of a congestion event) before ever growing the congestion window.\n\
+        Label explanation:\n  - had_growth: Connection saw congestion window growth\n\
+        \  - no_growth: Connection never surpassed the initial window size\n  - no_growth_but_exit:\
+        \ Connection never surpassed the initial window size but slow start was exited\n\
+        \  - no_growth_then_exit_then_growth: Connection exited slow start before\
+        \ then later growing the congestion window past the initial window size\n\n\
+        This metric can be used to judge how HTTP3 connections behave in regard to\
+        \ their congestion window and keep an eye on the phenomeon that prompted the\
+        \ filtering on most other congestion control metrics, where we only record\
+        \ connections that had congestion window growth past the initial window.\n"
+    - name: networking_http_3_slow_start_exit_direction_heuristic
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTTP3: Records if a heuristic-based slow start exit undershot,
+        overshot or exactly matches the congestion window size when closing the connection.
+        Is used to look for systematic tendencies in slow start exit algorithm accuracy
+        direction. Only records for connections that saw congestion window growth.
+
+        '
+    - name: networking_http_3_slow_start_exit_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records if slow start was exited heuristically or because of a
+        congestion event. Can be used to measure how good an algorithm is at detecting
+        slow start exit before loss occurs. Only records for connections that ever
+        saw congestion window growth.
+
+        '
+    - name: networking_http_3_slow_start_exited_filtered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts whether an HTTP3 connections exited slow start. Is filtered
+        against connections that never grew past the initial congestion window, i.e.
+        only records those that did see growth. Co-exists with http_3_slow_start_exited
+        which is not filtered and also records for connections that never grew the
+        congestion window or never sent data.
+
+        '
+    - name: pdfjs_organize_action
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user performs a page organization
+        action (copy, cut, delete, move, paste), exports selected pages, or saves
+        a PDF modified through page organization.
 
         '
   - name: memory_distribution
@@ -9608,7 +9695,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'HTTP3: final congestion window size in bytes at connection close.
+      description: 'HTTP3: Final congestion window size in bytes at connection close.
+        Only records connections that grew past the initial congestion window (new
+        as of Bug 2024352).
 
         '
     - name: networking_http_3_slow_start_exit_cwnd
@@ -9634,7 +9723,37 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3: congestion window size in bytes when exiting slow start.
-        Only recorded for connections that exited slow start.
+        Only recorded for connections that exited slow start. Also only records connections
+        that grew past the initial congestion window size (new as of Bug 2024352).
+
+        '
+    - name: networking_http_3_final_w_max
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Cubic''s w_max parameter value in bytes at connection close.
+        Only records connections that grew past the initial congestion window and
+        set w_max. The parameter stores the congestion window prior to the last congestion
+        event, i.e. the window size at which congestion occurred. Can be used to approximate
+        a path''s capacity.
 
         '
   - name: string
@@ -19823,6 +19942,33 @@ fields:
       description: 'Distribution of how long after the permission was last modified
         it was expired (currentTime - modificationTime). Helps understand how old
         permissions are when they get cleaned up.
+
+        '
+    - name: networking_http_3_loss_ratio_filtered
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: packet loss ratio (multiply by 10000). Is filtered to only
+        record connections that saw congestion window growth. Co-exists with http_3_loss_ratio
+        to measure the impact congestion control changes have on packet loss.
 
         '
   - name: timespan
@@ -43695,11 +43841,124 @@ fields:
       description: 'HTTP3: Absolute congestion window size difference between exiting
         slow start and closing the connection, as a percentage of the window size
         when closing the connection. Only recorded for connections that exited slow
-        start. Is used to approximate accuracy of slow start exit per connection.
-        The labels separate slow start exit reasons, because congestion event and
-        heuristic based exits are fundamentally different cases that would obscure
-        each other if mixed. For now only records for congestion event exits while
-        heuristics for exiting slow start are still being implemented.
+        start and saw congestion window growth. Is used to approximate accuracy of
+        slow start exit per connection. The labels separate slow start exit reasons,
+        because congestion event and heuristic based exits are fundamentally different
+        cases that would obscure each other if mixed.
+
+        '
+    - name: networking_http_3_hystart_css_entries
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Measures how often CSS (Conservative Slow Start) was entered when
+        using HyStart++. Only records for connections that saw congestion window growth.
+        A jitter-free connection should only see 1 CSS entry. A high value points
+        at spurious CSS entries mid-round, i.e. CSS is entered and exited within 1
+        RTT, which results time spent throttling congestion window growth rate during
+        those extra ACKs where CSS was active.
+
+        '
+    - name: networking_http_3_hystart_css_rounds_finished
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Measures how many CSS (Conservative Slow Start) rounds were finished
+        when using HyStart++. Only records for connections that saw congestion window
+        growth. A count that is higher than the RFC threshold value of 5 rounds that
+        are completed by design points at spurious CSS entries and time spent throttling
+        congestion window growth rate during those extra CSS rounds. Values below
+        5 mean that slow start was not exited (heuristically) on that connection.
+
+        '
+    - name: networking_http_3_slow_start_exit_accuracy_w_max
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: Absolute congestion window size difference between exiting
+        slow start and Cubic''s w_max parameter value when closing the connection,
+        as a percentage of the w_max parameter value. Only recorded for connections
+        that exited slow start and saw congestion window growth. Is used to approximate
+        accuracy of slow start exit per connection. The labels separate slow start
+        exit reasons, because congestion event and heuristic based exits are fundamentally
+        different cases that would obscure each other if mixed. Acts as an alternative
+        measure to http_3_slow_start_exit_accuracy, which uses the final congestion
+        window instead of w_max.
 
         '
   - name: labeled_quantity

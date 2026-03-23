@@ -405,7 +405,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-experiments/monitoring/experiment_enrollment_alert_data_v1/query.py",
         ]
-        + [],
+        + ["--date", "{{ ds }}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="ykhurana@mozilla.com",
         email=[

@@ -677,7 +677,12 @@ SELECT
       metrics.labeled_counter.network_ssl_token_cache_hits,
       metrics.labeled_counter.nss_initialization_fallbacks,
       metrics.labeled_counter.networking_http_3_slow_start_exit_direction_loss,
-      metrics.labeled_counter.permissions_unused_permissions_expired_by_type
+      metrics.labeled_counter.permissions_unused_permissions_expired_by_type,
+      metrics.labeled_counter.networking_http_3_congestion_window_growth,
+      metrics.labeled_counter.networking_http_3_slow_start_exit_direction_heuristic,
+      metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
+      metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
+      metrics.labeled_counter.pdfjs_organize_action
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -729,7 +734,8 @@ SELECT
       metrics.memory_distribution.webfont_size_per_page,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
       metrics.memory_distribution.networking_http_3_final_cwnd,
-      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd
+      metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
+      metrics.memory_distribution.networking_http_3_final_w_max
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -1177,7 +1183,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_peer_max_udp_payload,
       metrics.custom_distribution.networking_http_3_congestion_event_count,
       metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
-      metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry
+      metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry,
+      metrics.custom_distribution.networking_http_3_loss_ratio_filtered
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1766,7 +1773,10 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_full,
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed,
-      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy,
+      metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
+      metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

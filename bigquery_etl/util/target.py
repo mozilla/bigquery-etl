@@ -355,13 +355,16 @@ def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
 
     try:
         result = subprocess.run(
-            ["gcloud", "config", "get-value", "account"],
+            ["gcloud", "config", "get", "account"],
             capture_output=True,
             text=True,
             timeout=5,
         )
         user_email = result.stdout.strip()
 
+        # Explicitly grant ownership to the user. When running as yourself this
+        # is redundant (BigQuery auto-grants dataOwner to the creator), but with
+        # service account impersonation the SA would become the owner instead.
         if user_email and "@" in user_email:
             dataset.access_entries = [
                 bigquery.AccessEntry(

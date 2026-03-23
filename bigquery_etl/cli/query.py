@@ -82,7 +82,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files, sanitize_dataset_id
+from ..util.target import prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 

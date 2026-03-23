@@ -73,7 +73,9 @@ def render_dataset_prefix(
 
 def get_target(target: str) -> Target:
     """Load and return a Target from the targets config file by name."""
-    targets_file_name = ConfigLoader.get("default", "targets", fallback="targets.yaml")
+    targets_file_name = ConfigLoader.get(
+        "default", "targets", fallback="bqetl_targets.yaml"
+    )
     targets_file = ConfigLoader.project_dir / targets_file_name
 
     if not targets_file.exists():

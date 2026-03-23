@@ -39,7 +39,7 @@ class TestTarget:
         # Create temp targets file
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
-            targets_file = tmpdir_path / "targets.yaml"
+            targets_file = tmpdir_path / "bqetl_targets.yaml"
             targets_file.write_text("""
 dev:
   project_id: test-project-dev
@@ -49,7 +49,7 @@ prod:
 """)
 
             # Setup mock config loader
-            mock_config_loader.get.return_value = "targets.yaml"
+            mock_config_loader.get.return_value = "bqetl_targets.yaml"
             mock_config_loader.project_dir = tmpdir_path
 
             target = get_target("dev")
@@ -67,14 +67,14 @@ prod:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
-            targets_file = tmpdir_path / "targets.yaml"
+            targets_file = tmpdir_path / "bqetl_targets.yaml"
             targets_file.write_text("""
 dev:
   project_id: test-project-dev
   dataset_prefix: dev_{{ git.branch }}_{{ git.commit }}_
 """)
 
-            mock_config_loader.get.return_value = "targets.yaml"
+            mock_config_loader.get.return_value = "bqetl_targets.yaml"
             mock_config_loader.project_dir = tmpdir_path
 
             target = get_target("dev")
@@ -88,13 +88,13 @@ dev:
         """Test getting a target that doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
-            targets_file = tmpdir_path / "targets.yaml"
+            targets_file = tmpdir_path / "bqetl_targets.yaml"
             targets_file.write_text("""
 dev:
   project_id: test-project-dev
 """)
 
-            mock_config_loader.get.return_value = "targets.yaml"
+            mock_config_loader.get.return_value = "bqetl_targets.yaml"
             mock_config_loader.project_dir = tmpdir_path
 
             with pytest.raises(Exception, match="Couldn't find target `nonexistent`"):
@@ -106,7 +106,7 @@ dev:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
 
-            mock_config_loader.get.return_value = "targets.yaml"
+            mock_config_loader.get.return_value = "bqetl_targets.yaml"
             mock_config_loader.project_dir = tmpdir_path
 
             with pytest.raises(Exception, match="Targets file not found"):

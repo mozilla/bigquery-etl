@@ -73,7 +73,7 @@ def cli(prog_name=None):
     @click.option(
         "--target",
         help="Target environment to use for commands that interact with BigQuery. See"
-        " `targets.yaml` for available targets.",
+        " `bqetl_targets.yaml` for available targets.",
     )
     @click.pass_context
     def group(ctx, log_level, target):

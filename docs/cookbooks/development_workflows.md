@@ -9,7 +9,7 @@ This guide covers testing SQL changes in development environments before deployi
 
 ## Target-Based Development
 
-Configure a target in `./targets.yaml`:
+Configure a target in `./bqetl_targets.yaml`:
 
 ```yaml
 dev:

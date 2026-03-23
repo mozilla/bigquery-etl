@@ -1,3 +1,8 @@
 fields: !include-fields
   table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2
   parent_field: subscription
+  field_replacements:
+  - !include-field
+    table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2
+    field: subscription.customer
+    new_description: Customer who owns the subscription.

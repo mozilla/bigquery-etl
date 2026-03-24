@@ -639,6 +639,8 @@ def yaml_include_field_constructor(
     append_description: Optional[str] = None,
     prepend_description: Optional[str] = None,
     new_fields: Optional[list[dict]] = None,
+    append_fields: Optional[list[dict]] = None,
+    prepend_fields: Optional[list[dict]] = None,
 ) -> dict:
     """Load a YAML `!include-field` tag."""
     if file:
@@ -666,6 +668,10 @@ def yaml_include_field_constructor(
         schema_field["description"] = description
     if new_fields:
         schema_field["fields"] = new_fields
+    if append_fields:
+        schema_field["fields"] = schema_field["fields"] + append_fields
+    if prepend_fields:
+        schema_field["fields"] = prepend_fields + schema_field["fields"]
     return schema_field
 
 

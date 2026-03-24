@@ -1133,6 +1133,52 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_field_append_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              append_fields:
+              - name: client_id_hash
+                type: STRING
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1],
+                    "fields": [
+                        *nested_fields_schema["fields"][1]["fields"],
+                        {"name": "client_id_hash", "type": "STRING"},
+                    ],
+                }
+            ]
+        }
+
+    def test_include_field_prepend_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              prepend_fields:
+              - name: client_id_hash
+                type: STRING
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1],
+                    "fields": [
+                        {"name": "client_id_hash", "type": "STRING"},
+                        *nested_fields_schema["fields"][1]["fields"],
+                    ],
+                }
+            ]
+        }
+
     def test_include_nonexistent_table_field(self):
         with pytest.raises(FileNotFoundError):
             schema_yaml = dedent("""

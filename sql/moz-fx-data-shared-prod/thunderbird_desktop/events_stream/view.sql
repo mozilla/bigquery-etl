@@ -43,6 +43,7 @@ SELECT
       LAX_BOOL(event_extra.hit) AS `hit`,
       LAX_BOOL(event_extra.hls_decoder) AS `hls_decoder`,
       LAX_BOOL(event_extra.hyphen_compat) AS `hyphen_compat`,
+      LAX_BOOL(event_extra.inPrivateBrowsing) AS `inPrivateBrowsing`,
       LAX_BOOL(event_extra.is_addon_active) AS `is_addon_active`,
       LAX_BOOL(event_extra.is_deleted) AS `is_deleted`,
       LAX_BOOL(event_extra.is_encrypted) AS `is_encrypted`,
@@ -73,7 +74,9 @@ SELECT
       LAX_BOOL(event_extra.toggle_state) AS `toggle_state`,
       LAX_BOOL(event_extra.toggled_on) AS `toggled_on`,
       LAX_BOOL(event_extra.triggered_externally) AS `triggered_externally`,
-      LAX_BOOL(event_extra.vulnerable) AS `vulnerable`
+      LAX_BOOL(event_extra.userAction) AS `userAction`,
+      LAX_BOOL(event_extra.vulnerable) AS `vulnerable`,
+      LAX_BOOL(event_extra.wasActive) AS `wasActive`
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.active_this_session) AS `active_this_session`,

@@ -283,7 +283,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2145,7 +2146,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4007,7 +4009,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

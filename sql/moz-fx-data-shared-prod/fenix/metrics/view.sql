@@ -376,7 +376,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2488,7 +2489,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4620,7 +4622,8 @@ SELECT
       metrics.counter.javascript_self_hosted_cache_total,
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
-      metrics.counter.fog_ipc_flush_rejections
+      metrics.counter.fog_ipc_flush_rejections,
+      metrics.counter.ipprotection_exclusion_added
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

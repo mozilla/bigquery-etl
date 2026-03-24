@@ -2772,6 +2772,12 @@ fields:
         menu.
 
         '
+    - name: ipprotection_exclusion_added
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Recorded when a site exclusion is added.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

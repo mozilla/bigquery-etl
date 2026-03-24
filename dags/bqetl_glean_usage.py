@@ -337,6 +337,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_accounts_derived__wait_for_accounts_frontend_derived__events_stream__v1",
+            external_dag_id="bqetl_accounts_derived",
+            external_task_id="wait_for_accounts_frontend_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_glean_dictionary__wait_for_accounts_frontend_derived__events_stream__v1",
             external_dag_id="bqetl_glean_dictionary",
             external_task_id="wait_for_accounts_frontend_derived__events_stream__v1",

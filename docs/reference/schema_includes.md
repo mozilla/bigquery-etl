@@ -28,6 +28,7 @@ Includes a field from the specified table/view or schema YAML file.
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
 - `field`: Field path of the field to include.
+- `new_name`: Optional name to use in place of the included field's original name.
 - `new_type`: Optional type value to use in place of the included field's original type.
 - `new_mode`: Optional mode value to use in place of the included field's original mode.
 - `new_description`: Optional description to use in place of the included field's original description.
@@ -44,6 +45,14 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: default_search_engine
+```
+```yaml
+# Include a top-level column from an ETL table, but override its name.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+  field: default_search_engine
+  new_name: search_engine
 ```
 ```yaml
 # Include a top-level column from an ETL table, but override its type.

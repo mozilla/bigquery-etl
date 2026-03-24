@@ -1000,6 +1000,24 @@ class TestSchemaLoader:
             "fields": [nested_fields_schema["fields"][1]["fields"][2]["fields"][0]]
         }
 
+    def test_include_field_new_name(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: distribution_name
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "distribution_name",
+                }
+            ]
+        }
+
     def test_include_field_new_type(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:

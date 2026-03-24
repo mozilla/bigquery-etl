@@ -135,10 +135,7 @@ activity_conversion_events AS (
       `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2` AS conversion_events
       USING (client_id)
     WHERE
-      report_date = DATE_SUB(
-        @submission_date,
-        INTERVAL 9 DAY
-      )  -- report_date inside conversion_event_categorization_v2 runs with -9 day lag
+      report_date = @submission_date
       AND first_seen_date
       BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
       AND @submission_date

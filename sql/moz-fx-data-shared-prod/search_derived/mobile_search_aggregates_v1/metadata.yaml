@@ -7,10 +7,10 @@ owners:
 labels:
   level: bronze
   schedule: daily
-  shredder_mitigation: true
+  shredder_mitigation: false
   table_type: aggregate
   dag: bqetl_mobile_search
-  owner1: akommasani
+  owner1: kbammarito
   owner2: cmorales
 scheduling:
   dag_name: bqetl_mobile_search

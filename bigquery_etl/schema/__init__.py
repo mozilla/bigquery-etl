@@ -650,7 +650,7 @@ def yaml_include_field_constructor(
     else:
         raise Exception("!include-field tags must specify either `file` or `table`.")
 
-    schema_field = schema.get_field(field)
+    schema_field = schema.get_field(field).copy()
     if new_name:
         schema_field["name"] = new_name
     if new_type:

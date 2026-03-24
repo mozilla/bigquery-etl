@@ -1179,6 +1179,32 @@ class TestSchemaLoader:
             ]
         }
 
+    def test_include_field_twice(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: distribution_name
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: previous_distribution_name
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "distribution_name",
+                },
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "previous_distribution_name",
+                },
+            ]
+        }
+
     def test_include_nonexistent_table_field(self):
         with pytest.raises(FileNotFoundError):
             schema_yaml = dedent("""

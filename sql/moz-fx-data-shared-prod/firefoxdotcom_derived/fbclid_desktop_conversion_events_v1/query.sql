@@ -4,9 +4,8 @@ WITH ga_fbclid AS (
     user_pseudo_id AS ga_client_id,
     geo.country AS ga_country,
     event_param.value.string_value AS fbclid,
-  -- TODO: there's potentially a 2 day lag with events_ getting populated
   FROM
-    `moz-fx-data-marketing-prod.analytics_489412379.events_*`,
+    `moz-fx-data-marketing-prod.analytics_489412379.events_*`,  -- This appears to be populate with a 2 day lag.
     UNNEST(event_params) AS event_param
   WHERE
     _TABLE_SUFFIX
@@ -39,7 +38,6 @@ ga_client_mapping AS (
     clients_first_seen_base
     USING (dl_token)
 ),
--- TODO: can fbclid_client_mapping result with more than a single entry per fbclid?
 fbclid_clients AS (
   SELECT
     ga_event_timestamp,
@@ -52,7 +50,6 @@ fbclid_clients AS (
     ga_client_mapping
     USING (ga_client_id)
 ),
--- TODO: we could probably consider just building conversion events table for clients in the future.
 day_2_client_conversion_events AS (
   WITH events_stage AS (
     SELECT
@@ -77,15 +74,40 @@ day_2_client_conversion_events AS (
     GROUP BY
       client_id
   ),
-  client_events AS (
+  day_1_events AS (
+    SELECT
+      fbclid,
+      ga_event_timestamp,
+      ga_country,
+      DATE_SUB(@submission_date, INTERVAL 2 DAY) AS activity_date,
+      COALESCE(
+        DATE_SUB(@submission_date, INTERVAL 2 DAY) = firefox_first_run_date,
+        FALSE
+      ) AS firefox_first_run,
+      COALESCE(
+        DATE_SUB(@submission_date, INTERVAL 2 DAY) = firefox_first_ad_click_date,
+        FALSE
+      ) AS firefox_first_ad_click,
+      COALESCE(
+        DATE_SUB(@submission_date, INTERVAL 2 DAY) = firefox_first_search_date,
+        FALSE
+      ) AS firefox_first_search,
+      CAST(NULL AS BOOLEAN) AS returned_second_day,
+    FROM
+      events_stage
+    INNER JOIN
+      fbclid_clients
+      USING (client_id)
+  ),
+  day_2_events AS (
     SELECT
       fbclid,
       ga_event_timestamp,
       ga_country,
       DATE(@submission_date) AS activity_date,
-      COALESCE(@submission_date = firefox_first_run_date, FALSE) AS firefox_first_run,
-      COALESCE(@submission_date = firefox_first_ad_click_date, FALSE) AS firefox_first_ad_click,
-      COALESCE(@submission_date = firefox_first_search_date, FALSE) AS firefox_first_search,
+      CAST(NULL AS BOOLEAN) AS firefox_first_run,
+      CAST(NULL AS BOOLEAN) AS firefox_first_ad_click,
+      CAST(NULL AS BOOLEAN) AS firefox_first_search,
       COALESCE(
         (@submission_date = most_recent_date_running_firefox)
         AND (nbr_days_running_firefox = 2),
@@ -96,6 +118,17 @@ day_2_client_conversion_events AS (
     INNER JOIN
       fbclid_clients
       USING (client_id)
+  ),
+  client_events AS (
+    SELECT
+      *
+    FROM
+      day_1_events
+    UNION ALL
+    SELECT
+      *
+    FROM
+      day_2_events
   )
   SELECT
     * EXCEPT (did_conversion),
@@ -192,3 +225,5 @@ LEFT JOIN
 WHERE
   existing_conversions.fbclid IS NULL
   AND existing_conversions.conversion_name IS NULL
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY fbclid, conversion_name ORDER BY ga_event_timestamp ASC) = 1

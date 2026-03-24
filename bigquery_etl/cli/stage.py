@@ -13,6 +13,7 @@ from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
+from ..cli.query import render_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
@@ -125,6 +126,13 @@ def deploy(
         paths = [path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths]
 
         sql_dir = new_sql_dir
+
+    # If the stage deploy process is going to remove files then any includes in `schema.yaml` files
+    # need to be resolved before that happens.
+    if remove_updated_artifacts:
+        ctx.invoke(
+            render_schema, name=str(sql_dir), sql_dir=sql_dir, output_dir=sql_dir
+        )
 
     artifact_files = set()
 

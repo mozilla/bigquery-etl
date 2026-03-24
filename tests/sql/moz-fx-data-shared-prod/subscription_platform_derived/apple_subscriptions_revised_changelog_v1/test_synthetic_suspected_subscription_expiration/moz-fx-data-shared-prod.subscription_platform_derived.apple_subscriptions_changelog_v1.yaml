@@ -1,0 +1,10 @@
+# Subscription 4: no synthetic record because latest change too recent
+- timestamp: 2999-04-03 00:00:00Z
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s4
+    status: 1
+    last_transaction:
+      expires_date: 2000-04-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 0

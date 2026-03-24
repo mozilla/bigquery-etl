@@ -1,0 +1,17 @@
+# Subscription 2: no synthetic record because expiry time too recent
+- timestamp: 2000-02-01 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s2
+    start_time: 2000-02-01 00:00:00Z
+    expiry_time: 2999-03-01 00:00:00Z
+
+# Subscription 3: synthetic record
+- timestamp: 2000-03-01 00:00:00Z
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s3
+    start_time: 2000-03-01 00:00:00Z
+    expiry_time: 2000-04-01 00:00:00Z

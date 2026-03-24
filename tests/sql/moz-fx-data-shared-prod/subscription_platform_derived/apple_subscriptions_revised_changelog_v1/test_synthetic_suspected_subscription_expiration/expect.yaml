@@ -1,0 +1,38 @@
+# Subscription 4: no synthetic record because latest change too recent
+- id: s4-2999-04-03T00:00:00.000000-UPDATE
+  timestamp: 2999-04-03 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s4
+    status: 1
+    last_transaction:
+      expires_date: 2000-04-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 0
+
+# Subscription 5: synthetic record for future expiration
+- id: s5-2000-05-01T00:00:00.000000-UPDATE
+  timestamp: 2000-05-01 00:00:00Z
+  type: synthetic_suspected_subscription_expiration
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s5
+    status: 2
+    last_transaction:
+      expires_date: 2000-05-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 0
+
+# Subscription 6: synthetic record for past expiration
+- id: s6-2000-06-02T00:00:00.000001-UPDATE
+  timestamp: 2000-06-02 00:00:00.000001Z
+  type: synthetic_suspected_subscription_expiration
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s6
+    status: 2
+    last_transaction:
+      expires_date: 2000-06-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 0

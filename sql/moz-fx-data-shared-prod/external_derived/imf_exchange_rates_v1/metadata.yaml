@@ -3,9 +3,9 @@ description: |-
   Pulls data from the IMF API about exchange rates by country & report period
   Completely overwrites the BQ table each time it runs
 owners:
-- kwindau@mozilla.com
+- kbammarito@mozilla.com
 labels:
-  owner1: kwindau
+  owner1: kbammarito
   table_type: aggregate
 scheduling:
   dag_name: bqetl_imf_exchange_rates

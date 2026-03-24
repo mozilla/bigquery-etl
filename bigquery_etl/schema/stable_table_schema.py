@@ -20,7 +20,7 @@ from bigquery_etl.dryrun import DryRun
 class SchemaFile:
     """Container for metadata about a JSON schema and corresponding BQ table."""
 
-    schema: dict
+    schema: list[dict]
     schema_id: str
     bq_dataset_family: str
     bq_table: str
@@ -108,7 +108,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 version = int(basename.split(".")[1])
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
                 schema_id = schema.get("$id", "")
-                bq_schema = {}
+                bq_schema = []
 
                 # Schemas without `bq_dataset_family` and `bq_table` metadata (like glean/glean)
                 # do not have corresponding BQ tables, so we skip them here.

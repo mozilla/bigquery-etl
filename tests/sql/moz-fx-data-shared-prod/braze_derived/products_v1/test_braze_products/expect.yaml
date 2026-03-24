@@ -14,7 +14,7 @@
       subscription_billing_interval: month
       subscription_interval_count: 3
       subscription_currency: USD
-      subscription_amount: 4.99
+      subscription_amount: '4.99'
       is_bundle: true
       is_trial: false
       is_active: true
@@ -39,7 +39,7 @@
       subscription_billing_interval: month
       subscription_interval_count: 2
       subscription_currency: USD
-      subscription_amount: 2.99
+      subscription_amount: '2.99'
       is_bundle: false
       is_trial: false
       is_active: false
@@ -63,7 +63,7 @@
       subscription_billing_interval: month
       subscription_interval_count: 3
       subscription_currency: USD
-      subscription_amount: 1.99
+      subscription_amount: '1.99'
       is_bundle: false
       is_trial: true
       is_active: false
@@ -89,7 +89,7 @@
       subscription_billing_interval: month
       subscription_interval_count: 3
       subscription_currency: USD
-      subscription_amount: 4.99
+      subscription_amount: '4.99'
       is_bundle: true
       is_trial: false
       is_active: true
@@ -127,7 +127,7 @@
       subscription_billing_interval: month
       subscription_interval_count: 3
       subscription_currency: USD
-      subscription_amount: 4.99
+      subscription_amount: '4.99'
       is_bundle: true
       is_trial: false
       is_active: false

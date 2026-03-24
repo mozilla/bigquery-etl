@@ -271,12 +271,17 @@ For our example:
   ```
 
   - If the table's metadata has the label `shredder_mitigation: true`, use the process to run a [backfill with shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation):
-    - Bump the version of the query.
-    - Make the necessary updates to the new version of the query and schema.
-    - Create the managed backfill for the new version of the query, including the parameter `--shredder_mitigation`.
-      ```bash
-      bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
-      ```
+    For new tables:
+      - Set `shredder_mitigation: false` since there is no data yet to safeguard.
+      - Backfill and validate your data.
+      - Set `shredder_mitigation: true` to protect the validated data. 
+    For existing tables:
+      - Bump the version of the query.
+      - Make the necessary updates to the new version of the query and schema.
+      - Create the managed backfill for the new version of the query, including the parameter `--shredder_mitigation`.
+          ```bash
+          bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
+          ```
 
 2. Fill out the missing details:
   - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.

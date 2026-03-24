@@ -1626,6 +1626,13 @@ def _initialize_in_parallel(
     default=False,
 )
 @click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
@@ -1643,6 +1650,7 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    skip_nonempty,
     sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
@@ -1692,11 +1700,14 @@ def initialize(
                 if skip_existing:
                     # table exists; skip initialization
                     return
-                if not force and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        " Use --force to overwrite the existing destination table."
-                    )
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
             except NotFound:
                 # continue with creating the table
                 pass

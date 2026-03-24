@@ -1,20 +1,15 @@
 WITH questions AS (
   SELECT
     DATE(TIMESTAMP(q.created_utc), "UTC") AS date_utc,
-      -- Normalize product names to match other SUMO datasets
-    CASE
-      q.product
-      WHEN 'mobile'
-        THEN 'firefox-android'
-      WHEN 'ios'
-        THEN 'firefox-ios'
-      WHEN 'firefox-enterprise'
-        THEN 'firefox'
-      ELSE q.product
-    END AS product,
+    -- Normalize product names to match other SUMO datasets
+    COALESCE(m.product_mapping, q.product) AS product,
     q.question_id
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` q
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
+    ON m.product = q.product
+    AND m.source = 'Kitsune'
 ),
 deduped AS (
   SELECT

@@ -4,7 +4,6 @@ WITH cirrus_data AS (
     mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
     mozfun.map.get_key(e.extra, "branch") AS branch,
     mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
-    normalized_channel
   FROM
     `moz-fx-data-shared-prod.accounts_cirrus.enrollment` AS enrollment
   CROSS JOIN
@@ -48,7 +47,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
 LEFT JOIN
-  cirrus_data nimbus
+  cirrus_data AS nimbus
   USING (client_id)
 WHERE
   DATE(submission_timestamp) = @submission_date

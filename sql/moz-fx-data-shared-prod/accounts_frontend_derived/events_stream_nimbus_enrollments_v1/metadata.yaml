@@ -9,7 +9,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: mhirose
 scheduling:
   dag_name: bqetl_accounts_derived
 bigquery:

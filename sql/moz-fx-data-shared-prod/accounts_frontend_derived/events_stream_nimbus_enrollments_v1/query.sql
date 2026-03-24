@@ -2,7 +2,7 @@ WITH cirrus_data AS (
   SELECT DISTINCT
     mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
     mozfun.map.get_key(e.extra, "branch") AS branch,
-    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+    mozfun.map.get_key(e.extra, "nimbus_user_id") AS user_id,
   FROM
     `moz-fx-data-shared-prod.accounts_cirrus.enrollment` AS enrollment
   CROSS JOIN
@@ -47,6 +47,6 @@ FROM
   `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
 LEFT JOIN
   cirrus_data AS nimbus
-  ON nimbus.client_id = acct_fr.metrics.string.account_user_id
+  ON nimbus.user_id = acct_fr.metrics.string.account_user_id
 WHERE
   DATE(submission_timestamp) = @submission_date

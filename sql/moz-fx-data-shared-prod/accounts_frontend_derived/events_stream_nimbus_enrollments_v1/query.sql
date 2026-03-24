@@ -47,6 +47,6 @@ FROM
   `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
 LEFT JOIN
   cirrus_data AS nimbus
-  USING (client_id)
+  ON nimbus.client_id = acct_fr.metrics.string.account_user_id
 WHERE
   DATE(submission_timestamp) = @submission_date

@@ -26,11 +26,8 @@ fields:
   description: |-
     The subscription's original purchase token.
     This can differ from `subscription.metadata.purchase_token` if the subscription has had a series of purchases (e.g. upgrades/downgrades).
-- name: subscription
-  type: RECORD
-  mode: NULLABLE
-  description: |-
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1
+  field: subscription
+  new_description: |-
     Google subscription as it ostensibly was during the time range this history record is considered valid for.
-  fields: !include-fields
-    table: moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1
-    parent_field: subscription

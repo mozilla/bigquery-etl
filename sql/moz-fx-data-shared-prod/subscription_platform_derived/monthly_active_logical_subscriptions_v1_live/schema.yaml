@@ -19,14 +19,11 @@ fields:
   mode: NULLABLE
   description: |-
     ID of the `logical_subscriptions_history_v1` record this monthly snapshot record was derived from.
-- name: subscription
-  type: RECORD
-  mode: NULLABLE
-  description: |-
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
+  field: subscription
+  new_description: |-
     The logical subscription as it ostensibly was at the end of the month.
-  fields: !include-fields
-    table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
-    parent_field: subscription
 - name: was_active_at_month_start
   type: BOOLEAN
   mode: NULLABLE

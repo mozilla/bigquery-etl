@@ -19,14 +19,11 @@ fields:
   mode: NULLABLE
   description: |-
     ID of the `service_subscriptions_history_v1` record this daily snapshot record was derived from.
-- name: subscription
-  type: RECORD
-  mode: NULLABLE
-  description: |-
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription
+  new_description: |-
     The service subscription as it ostensibly was at the end of the day.
-  fields: !include-fields
-    table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
-    parent_field: subscription
 - name: was_active_at_day_start
   type: BOOLEAN
   mode: NULLABLE

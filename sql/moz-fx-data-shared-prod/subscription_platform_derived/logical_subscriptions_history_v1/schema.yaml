@@ -166,26 +166,23 @@ fields: !include-fields
         field: subscription.has_fraudulent_charges
         append_description: |-
           This will be null for Google and Apple subscriptions.
-    - name: first_touch_attribution
-      type: RECORD
-      mode: NULLABLE
-      description: |-
+    - !include-field
+      table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v1
+      field: first_touch_attribution
+      new_description: |-
         First-touch attribution for the subscription (if any).
         For Stripe subscriptions created by SubPlat 2 or earlier this will be the earliest (unbounded) attribution impression found in the SubPlat/FxA logs.
         This will be null for Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later (DENG-8885).
         This will be null for Google and Apple subscriptions.
-      fields: !include-fields
-        table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v1
-        parent_field: first_touch_attribution
-    - name: last_touch_attribution
-      type: RECORD
-      mode: NULLABLE
-      description: |-
+    - !include-field
+      table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
+      field: last_touch_attribution
+      new_description: |-
         Last-touch attribution for the subscription (if any).
         For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
         For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
         This will be null for Google and Apple subscriptions.
-      fields: !flatten-lists
+      new_fields: !flatten-lists
       - !include-fields
         table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
         parent_field: last_touch_attribution

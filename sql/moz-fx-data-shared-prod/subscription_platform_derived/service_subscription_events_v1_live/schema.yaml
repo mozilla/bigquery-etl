@@ -29,14 +29,11 @@ fields:
   mode: NULLABLE
   description: |-
     ID of the `service_subscriptions_history_v1` record this event was derived from.
-- name: subscription
-  type: RECORD
-  mode: NULLABLE
-  description: |-
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription
+  new_description: |-
     The service subscription as it ostensibly was after the event occurred.
-  fields: !include-fields
-    table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
-    parent_field: subscription
 - name: old_subscription
   type: RECORD
   mode: NULLABLE

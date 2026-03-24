@@ -20,11 +20,8 @@ fields:
   mode: NULLABLE
   description: |-
     ID of the `stripe_customers_revised_changelog_v1` record this history record was derived from.
-- name: customer
-  type: RECORD
-  mode: NULLABLE
-  description: |-
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_revised_changelog_v1
+  field: customer
+  new_description: |-
     Stripe customer record as it ostensibly was during the time range this history record is considered valid for.
-  fields: !include-fields
-    table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_revised_changelog_v1
-    parent_field: customer

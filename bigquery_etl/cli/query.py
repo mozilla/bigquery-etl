@@ -1811,7 +1811,9 @@ def initialize(
                         query_files=[query_file],
                         project_id=project,
                         public_project_id=public_project_id,
-                        destination_table=destination_table if public_project_id else full_table_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={

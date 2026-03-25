@@ -182,10 +182,7 @@ fields: !include-fields
         For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
         For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
         This will be null for Google and Apple subscriptions.
-      new_fields: !flatten-lists
-      - !include-fields
-        table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
-        parent_field: last_touch_attribution
+      append_fields:
       - name: channel_group
         type: STRING
         mode: NULLABLE

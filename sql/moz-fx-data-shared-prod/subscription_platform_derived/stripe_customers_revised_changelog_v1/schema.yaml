@@ -229,5 +229,5 @@ fields:
     - name: default_payment_method_id
       type: STRING
       mode: NULLABLE
-      description: ID of a payment method that's attached to the customer, to be used as
-        the customer's default payment method for subscriptions and invoices.
+      description: ID of a payment method that's attached to the customer, to be used
+        as the customer's default payment method for subscriptions and invoices.

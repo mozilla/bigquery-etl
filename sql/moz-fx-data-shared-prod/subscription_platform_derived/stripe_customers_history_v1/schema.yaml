@@ -11,9 +11,11 @@ fields:
 - name: valid_to
   type: TIMESTAMP
   mode: NULLABLE
-  description: End of the time range this history record is considered valid for (non-inclusive).
+  description: 'End of the time range this history record is considered valid for
+    (non-inclusive).
+
     Open-ended history records will have this set to the max timestamp value (9999-12-31
-    23:59:59.999999).
+    23:59:59.999999).'
 - name: stripe_customers_revised_changelog_id
   type: STRING
   mode: NULLABLE
@@ -219,5 +221,5 @@ fields:
     - name: default_payment_method_id
       type: STRING
       mode: NULLABLE
-      description: ID of a payment method that's attached to the customer, to be used as
-        the customer's default payment method for subscriptions and invoices.
+      description: ID of a payment method that's attached to the customer, to be used
+        as the customer's default payment method for subscriptions and invoices.

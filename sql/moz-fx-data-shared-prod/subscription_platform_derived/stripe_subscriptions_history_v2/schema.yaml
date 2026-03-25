@@ -11,9 +11,11 @@ fields:
 - name: valid_to
   type: TIMESTAMP
   mode: NULLABLE
-  description: End of the time range this history record is considered valid for (non-inclusive).
+  description: 'End of the time range this history record is considered valid for
+    (non-inclusive).
+
     Open-ended history records will have this set to the max timestamp value (9999-12-31
-    23:59:59.999999).
+    23:59:59.999999).'
 - name: stripe_subscriptions_revised_changelog_id
   type: STRING
   mode: NULLABLE
@@ -237,8 +239,8 @@ fields:
       - name: default_payment_method_id
         type: STRING
         mode: NULLABLE
-        description: ID of a payment method that's attached to the customer, to be used as
-          the customer's default payment method for subscriptions and invoices.
+        description: ID of a payment method that's attached to the customer, to be
+          used as the customer's default payment method for subscriptions and invoices.
   - name: billing_cycle_anchor
     type: TIMESTAMP
     mode: NULLABLE
@@ -353,9 +355,9 @@ fields:
   - name: discount
     type: RECORD
     mode: NULLABLE
-    description: Describes the current discount applied to this subscription, if there
-      is one. When billing, a discount applied to a subscription overrides a discount
-      applied on a customer-wide basis.
+    description: The current discount applied to this subscription, if there is one.
+      When billing, a discount applied to a subscription overrides a discount applied
+      on a customer-wide basis.
     fields:
     - name: id
       type: STRING
@@ -620,17 +622,22 @@ fields:
     - name: currency
       type: STRING
       mode: NULLABLE
-      description: ISO 4217 code for the actual plan currency, possibly in lowercase.
-        This may differ from `subscription.items[0].plan.currency` if multi-currency prices are being used.
+      description: 'ISO 4217 code for the actual plan currency, possibly in lowercase.
+
+        This may differ from `subscription.items[0].plan.currency` if multi-currency
+        prices are being used.'
     - name: amount
       type: INTEGER
       mode: NULLABLE
-      description: The actual plan amount in whole cents to be charged.
-        This may differ from `subscription.items[0].plan.amount` if multi-currency prices are being used.
+      description: 'The actual plan amount in whole cents to be charged.
+
+        This may differ from `subscription.items[0].plan.amount` if multi-currency
+        prices are being used.'
     - name: session_flow_id
       type: STRING
       mode: NULLABLE
-      description: ID of the subscription flow which resulted in the creation of the subscription.
+      description: ID of the subscription flow which resulted in the creation of the
+        subscription.
     - name: session_entrypoint
       type: STRING
       mode: NULLABLE
@@ -639,18 +646,18 @@ fields:
     - name: session_entrypoint_experiment
       type: STRING
       mode: NULLABLE
-      description: The `entrypoint_experiment` attribution parameter from the subscription flow
-        which resulted in the creation of the subscription.
+      description: The `entrypoint_experiment` attribution parameter from the subscription
+        flow which resulted in the creation of the subscription.
     - name: session_entrypoint_variation
       type: STRING
       mode: NULLABLE
-      description: The `entrypoint_variation` attribution parameter from the subscription flow
-        which resulted in the creation of the subscription.
+      description: The `entrypoint_variation` attribution parameter from the subscription
+        flow which resulted in the creation of the subscription.
     - name: utm_campaign
       type: STRING
       mode: NULLABLE
-      description: The `utm_campaign` attribution parameter from the subscription flow
-        which resulted in the creation of the subscription.
+      description: The `utm_campaign` attribution parameter from the subscription
+        flow which resulted in the creation of the subscription.
     - name: utm_content
       type: STRING
       mode: NULLABLE
@@ -719,11 +726,13 @@ fields:
     - name: comment
       type: STRING
       mode: NULLABLE
-      description: Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
+      description: Additional comments about why the user canceled the subscription,
+        if the subscription was canceled explicitly by the user.
     - name: feedback
       type: STRING
       mode: NULLABLE
-      description: The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
+      description: The customer submitted reason for why they canceled, if the subscription
+        was canceled explicitly by the user.
     - name: reason
       type: STRING
       mode: NULLABLE

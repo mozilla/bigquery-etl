@@ -1074,12 +1074,11 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
@@ -1557,6 +1556,7 @@ def validate(
 
 def _initialize_in_parallel(
     project,
+    public_project_id,
     table,
     dataset,
     query_file,
@@ -1573,7 +1573,7 @@ def _initialize_in_parallel(
                 _run_query,
                 [query_file],
                 project,
-                None,
+                public_project_id,
                 table,
                 dataset,
                 addl_templates=addl_templates,
@@ -1626,6 +1626,20 @@ def _initialize_in_parallel(
     default=False,
 )
 @click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--skip-tables-older-than",
+    "--skip_tables_older_than",
+    help="Skip initialization for tables created more than N days ago.",
+    type=int,
+    default=None,
+)
+@click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
@@ -1643,6 +1657,8 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    skip_nonempty,
+    skip_tables_older_than,
     sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
@@ -1686,17 +1702,40 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
+            )
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(table_id_to_check)
+
                 if skip_existing:
                     # table exists; skip initialization
                     return
-                if not force and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        " Use --force to overwrite the existing destination table."
-                    )
+                if skip_tables_older_than is not None and table.created:
+                    age = datetime.datetime.now(datetime.timezone.utc) - table.created
+                    if age.days > skip_tables_older_than:
+                        return
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
             except NotFound:
                 # continue with creating the table
                 pass
@@ -1755,7 +1794,8 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=full_table_id,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1770,8 +1810,10 @@ def initialize(
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
-                        public_project_id=None,
-                        destination_table=full_table_id,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={
@@ -2785,3 +2827,72 @@ def validate_schema(
         sys.exit(1)
     else:
         click.echo("\nAll schemas are valid.")
+
+
+@schema.command(
+    name="render",
+    help="""Render `schema.yaml` files, resolving any includes.
+
+    Examples:
+
+    ./bqetl query schema render telemetry_derived.ssl_ratios_v1 --output-dir=/tmp/sql
+    """,
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help=(
+        "Output directory rendered files are written to. "
+        "If not specified, rendered files are printed to the console."
+    ),
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render_schema(
+    name: Optional[str], sql_dir: str | Path, output_dir: Optional[str | Path]
+) -> None:
+    """Render `schema.yaml` files."""
+    sql_dir = Path(sql_dir)
+    if output_dir:
+        output_dir = Path(output_dir)
+
+    schema_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=None, files=[SCHEMA_FILE]
+    )
+
+    render_count = 0
+    copy_count = 0
+
+    # We intentionally don't process `schema.yaml` files in parallel to avoid potential situations where
+    # one file is still being written to while another file tries to read its contents for an include.
+    for schema_file in schema_files:
+        if not output_dir:
+            click.echo(f"# {schema_file}")
+
+        # We only technically render `schema.yaml` files if they actually use any includes,
+        # both for performance and to avoid making superfluous YAML formatting changes.
+        schema_yaml = schema_file.read_text()
+        if "!include" in schema_yaml:
+            if output_dir:
+                click.echo(f"Rendering {schema_file}")
+            rendered_schema_yaml = Schema.from_yaml(schema_yaml, sql_dir).to_yaml()
+            render_count += 1
+        else:
+            rendered_schema_yaml = schema_yaml
+
+        if output_dir:
+            if output_dir != sql_dir or rendered_schema_yaml != schema_yaml:
+                output_file = output_dir / schema_file.relative_to(sql_dir)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file.write_text(rendered_schema_yaml)
+                if rendered_schema_yaml == schema_yaml:
+                    copy_count += 1
+        else:
+            click.echo(rendered_schema_yaml)
+
+    if output_dir:
+        click.echo(f"Rendered {render_count} `{SCHEMA_FILE}` files with includes.")
+        if copy_count > 0:
+            click.echo(f"Copied {copy_count} `{SCHEMA_FILE}` files without includes.")

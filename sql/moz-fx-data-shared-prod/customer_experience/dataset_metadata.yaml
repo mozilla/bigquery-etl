@@ -6,8 +6,8 @@ description: |-
    - SUMO support.mozilla.com
    - Zendesk
    - External data
-dataset_base_acl: derived
-user_facing: false
+dataset_base_acl: view
+user_facing: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

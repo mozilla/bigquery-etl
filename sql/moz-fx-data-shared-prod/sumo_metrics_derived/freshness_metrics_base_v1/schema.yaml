@@ -1,0 +1,55 @@
+fields:
+- name: date_key
+  type: DATE
+  mode: REQUIRED
+  description: Observation date for freshness measurement (point-in-time snapshot)
+- name: total_articles
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of non-archived en-US articles that existed on this date
+- name: articles_updated_within_6_months
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles with approved revisions in the 6 months prior to this date
+- name: outdated_articles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles NOT updated within 6 months (total_articles - articles_updated_within_6_months)
+- name: articles_0_3_months
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles last updated 0-3 months before this date
+- name: articles_3_6_months
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles last updated 3-6 months before this date
+- name: articles_6_12_months
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles last updated 6-12 months before this date
+- name: articles_12_plus_months
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of articles last updated more than 12 months before this date
+- name: freshness_percentage
+  type: FLOAT
+  mode: NULLABLE
+  description: Percentage of articles updated within 6 months (0-100)
+- name: freshness_tier
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Content health tier based on freshness percentage:
+    excellent (>=80%), good (>=60%), fair (>=40%), poor (<40%)
+- name: meets_75pct_target
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if freshness percentage meets or exceeds 75% target
+- name: meets_90pct_stretch_goal
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if freshness percentage meets or exceeds 90% stretch goal
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

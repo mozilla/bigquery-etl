@@ -1000,6 +1000,24 @@ class TestSchemaLoader:
             "fields": [nested_fields_schema["fields"][1]["fields"][2]["fields"][0]]
         }
 
+    def test_include_field_new_name(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: distribution_name
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "distribution_name",
+                }
+            ]
+        }
+
     def test_include_field_new_type(self, nested_fields_schema):
         schema_yaml = dedent(f"""
             fields:
@@ -1112,6 +1130,78 @@ class TestSchemaLoader:
                     **nested_fields_schema["fields"][1],
                     "fields": [{"name": "client_id_hash", "type": "STRING"}],
                 }
+            ]
+        }
+
+    def test_include_field_append_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              append_fields:
+              - name: client_id_hash
+                type: STRING
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1],
+                    "fields": [
+                        *nested_fields_schema["fields"][1]["fields"],
+                        {"name": "client_id_hash", "type": "STRING"},
+                    ],
+                }
+            ]
+        }
+
+    def test_include_field_prepend_fields(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info
+              prepend_fields:
+              - name: client_id_hash
+                type: STRING
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1],
+                    "fields": [
+                        {"name": "client_id_hash", "type": "STRING"},
+                        *nested_fields_schema["fields"][1]["fields"],
+                    ],
+                }
+            ]
+        }
+
+    def test_include_field_twice(self, nested_fields_schema):
+        schema_yaml = dedent(f"""
+            fields:
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: distribution_name
+            - !include-field
+              table: {self.nested_fields_table}
+              field: client_info.distribution.name
+              new_name: previous_distribution_name
+        """)
+        result = yaml.load(schema_yaml, Loader=PatchedSchemaLoader)
+        assert result == {
+            "fields": [
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "distribution_name",
+                },
+                {
+                    **nested_fields_schema["fields"][1]["fields"][2]["fields"][0],
+                    "name": "previous_distribution_name",
+                },
             ]
         }
 

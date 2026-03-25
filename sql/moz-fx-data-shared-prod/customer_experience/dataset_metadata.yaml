@@ -1,8 +1,13 @@
 friendly_name: Customer Experience
 description: |-
-  Please provide a description for the dataset
-dataset_base_acl: view
-user_facing: true
+  Dataset to store data in the customer experience workspace.
+
+  Includes source-of-truth views from sources such as:
+   - SUMO support.mozilla.com
+   - Zendesk
+   - External data
+dataset_base_acl: derived
+user_facing: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

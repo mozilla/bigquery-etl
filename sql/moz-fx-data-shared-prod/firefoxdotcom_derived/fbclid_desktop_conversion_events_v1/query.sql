@@ -4,7 +4,6 @@ WITH ga_fbclid AS (
     user_pseudo_id AS ga_client_id,
     geo.country AS ga_country,
     event_param.value.string_value AS fbclid,
-  -- TODO: there's potentially a 2 day lag with events_ getting populated
   FROM
     `moz-fx-data-marketing-prod.analytics_489412379.events_*`,
     UNNEST(event_params) AS event_param
@@ -26,20 +25,20 @@ clients_first_seen_base AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 2 DAY)
-    OR first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    first_seen_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
+    AND @submission_date
 ),
 ga_client_mapping AS (
   SELECT
     ga_client_id,
     client_id,
   FROM
-    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1` AS attribution_lookup
+    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1`
   INNER JOIN
     clients_first_seen_base
     USING (dl_token)
 ),
--- TODO: can fbclid_client_mapping result with more than a single entry per fbclid?
 fbclid_clients AS (
   SELECT
     ga_event_timestamp,
@@ -51,12 +50,14 @@ fbclid_clients AS (
   INNER JOIN
     ga_client_mapping
     USING (ga_client_id)
+  WHERE
+    client_id IS NOT NULL
 ),
--- TODO: we could probably consider just building conversion events table for clients in the future.
-day_2_client_conversion_events AS (
+early_conversion_events AS (
   WITH events_stage AS (
     SELECT
       client_id,
+      MIN(first_seen_date) AS first_seen_date,
       MIN(submission_date) AS firefox_first_run_date,
       MIN(
         IF(IFNULL(ad_clicks_count_all, 0) > 0, submission_date, NULL)
@@ -73,7 +74,6 @@ day_2_client_conversion_events AS (
       clients_daily.submission_date
       BETWEEN DATE_SUB(@submission_date, INTERVAL 2 DAY)
       AND @submission_date
-      AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 2 DAY)
     GROUP BY
       client_id
   ),
@@ -87,10 +87,10 @@ day_2_client_conversion_events AS (
       COALESCE(@submission_date = firefox_first_ad_click_date, FALSE) AS firefox_first_ad_click,
       COALESCE(@submission_date = firefox_first_search_date, FALSE) AS firefox_first_search,
       COALESCE(
-        (@submission_date = most_recent_date_running_firefox)
+        (DATE_SUB(@submission_date, INTERVAL 2 DAY) = first_seen_date)
         AND (nbr_days_running_firefox = 2),
         FALSE
-      ) AS returned_second_day,
+      ) AS returned_second_day
     FROM
       events_stage
     INNER JOIN
@@ -111,7 +111,7 @@ day_2_client_conversion_events AS (
   WHERE
     did_conversion
 ),
-day_7_client_conversion_events AS (
+activity_conversion_events AS (
   WITH events_stage AS (
     SELECT
       fbclid,
@@ -135,9 +135,10 @@ day_7_client_conversion_events AS (
       `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2` AS conversion_events
       USING (client_id)
     WHERE
-      report_date = @submission_date  -- report_date inside conversion_event_categorization_v2 runs with -9 day lag
-      AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 9 DAY)
-      AND client_id IS NOT NULL
+      report_date = @submission_date
+      AND first_seen_date
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
+      AND @submission_date
   )
   SELECT
     * EXCEPT (did_conversion),
@@ -164,13 +165,13 @@ current_conversions AS (
   SELECT
     *
   FROM
-    day_2_client_conversion_events
+    early_conversion_events
   UNION ALL
     BY NAME
   SELECT
     *
   FROM
-    day_7_client_conversion_events
+    activity_conversion_events
 ),
 existing_conversions AS (
   SELECT
@@ -192,3 +193,5 @@ LEFT JOIN
 WHERE
   existing_conversions.fbclid IS NULL
   AND existing_conversions.conversion_name IS NULL
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY fbclid, conversion_name ORDER BY ga_event_timestamp ASC) = 1

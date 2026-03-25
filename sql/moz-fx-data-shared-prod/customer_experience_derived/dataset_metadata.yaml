@@ -1,0 +1,13 @@
+friendly_name: Customer Experience Derived
+description: |-
+  Dataset to store source-of-truth and master data or lookup tables
+  from customer experience inputs, such as:
+  - SUMO support.mozilla.com
+  - Zendesk
+  - External data
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

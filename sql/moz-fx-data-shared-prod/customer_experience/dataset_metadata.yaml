@@ -1,0 +1,9 @@
+friendly_name: Customer Experience
+description: |-
+  Please provide a description for the dataset
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

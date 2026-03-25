@@ -1,11 +1,13 @@
 # Schema includes
 
 The [YAML tags](#yaml-tags) listed below can be used in `schema.yaml` files to include content from:
+
 - stable table schemas (i.e. telemetry tables in `*_stable` datasets)
 - `schema.yaml` files for tables or views
 - arbitrary YAML files (e.g. [`bigquery_etl/schema/global.yaml`](https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/schema/global.yaml))
 
-Some recommendations when using this feature:
+## Recommendations
+
 - Be mindful to arrange the includes so the resulting rendered `schema.yaml` file matches the actual schema of the query when it runs.
 - Have the includes mimic the structure of the associated query:
   - If the query passes through all fields from an upstream table, then use `!include-fields` with no field parameter.
@@ -20,26 +22,40 @@ Some recommendations when using this feature:
 
 Includes a field from the specified table/view or schema YAML file.
 
-#### Parameters:
+#### Parameters
+
 - Either `table` or `file` is required:
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
 - `field`: Field path of the field to include.
+- `new_name`: Optional name to use in place of the included field's original name.
 - `new_type`: Optional type value to use in place of the included field's original type.
 - `new_mode`: Optional mode value to use in place of the included field's original mode.
 - `new_description`: Optional description to use in place of the included field's original description.
 - `append_description`: Optional text to append to the included field's description.
 - `prepend_description`: Optional text to prepend to the included field's description.
-- `new_fields`: Optional list of field definitions to use in place of the included field's original list of subfields.
-  - Tip: include tags can be also used in this list.
+- `new_fields`: Optional list of field definitions to use in place of the included struct field's original list of subfields.
+- `append_fields`: Optional list of field definitions to append to the included struct field's list of subfields.
+- `prepend_fields`: Optional list of field definitions to prepend to the included struct field's list of subfields.
 
-#### Examples:
+**Tip:** include tags can be used in the `new_fields`, `append_fields`, and `prepend_fields` lists.
+
+#### Examples
+
 ```yaml
 # Include a top-level column from an ETL table.
 fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: default_search_engine
+```
+```yaml
+# Include a top-level column from an ETL table, but override its name.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+  field: default_search_engine
+  new_name: search_engine
 ```
 ```yaml
 # Include a top-level column from an ETL table, but override its type.
@@ -66,12 +82,24 @@ fields:
   append_description: And one more thing...
 ```
 ```yaml
-# Include a top-level column from a stable table, but override its fields.
+# Include a top-level struct column from a stable table, but exclude one of its subfields.
 fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
   field: client_info
-  new_fields:
+  new_fields: !include-fields
+    table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+    parent_field: client_info
+    exclude_field_names:
+    - client_id
+```
+```yaml
+# Include a top-level struct column from a stable table, but append an additional subfield.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+  field: client_info
+  append_fields:
   - name: client_id_hash
     type: STRING
 ```
@@ -96,7 +124,8 @@ Includes fields from the specified table/view, schema YAML file, or struct field
 
 If the included fields are being inserted into part of a larger list, then the [`!flatten-lists`](#flatten-lists) tag will also need to be used (see examples below).
 
-#### Parameters:
+#### Parameters
+
 - Either `table` or `file` is required:
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
@@ -104,9 +133,11 @@ If the included fields are being inserted into part of a larger list, then the [
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
 - `field_replacements`: Optional list of field definitions that will be used in place of the associated field definitions found in the include (matched by field name).
-  - Tip: include tags can be also used in this list.
 
-#### Examples:
+**Tip:** include tags can be used in the `field_replacements` list.
+
+#### Examples
+
 ```yaml
 # Include all top-level columns from an ETL table.
 fields: !include-fields
@@ -177,7 +208,8 @@ fields: !include-fields
 
 Includes a field description from the specified table/view or schema YAML file.
 
-#### Parameters:
+#### Parameters
+
 - Either `table` or `file` is required:
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
@@ -185,7 +217,8 @@ Includes a field description from the specified table/view or schema YAML file.
 - `append`: Optional text to append to the description.
 - `prepend`: Optional text to prepend to the description.
 
-#### Examples:
+#### Examples
+
 ```yaml
 # Include a top-level column description from an ETL table.
 fields:
@@ -232,11 +265,13 @@ fields:
 
 Includes data from a YAML file.
 
-#### Parameters:
+#### Parameters
+
 - `file`: File path of the YAML file to include from (relative to the root of the repository).
 - `jmespath`: Optional [JMESPath](https://jmespath.org/) expression to select the data.
 
-#### Examples:
+#### Examples
+
 ```yaml
 # Include an entire YAML file.
 !include
@@ -260,7 +295,8 @@ fields: !include
 
 When applied to a list it will flatten any directly nested lists, like those created by using [`!include-fields`](#include-fields) in a list item.
 
-#### Examples:
+#### Examples
+
 ```yaml
 # Include all top-level columns from an ETL table alongside additional fields.
 fields: !flatten-lists

@@ -1,0 +1,10 @@
+friendly_name: CX Product Mappings V1
+description: |
+  Lookup table mapping raw product identifiers to normalized product names
+  across CX data sources (GA4, Zendesk, Kitsune).
+owners:
+- mozilla/customer_insights
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

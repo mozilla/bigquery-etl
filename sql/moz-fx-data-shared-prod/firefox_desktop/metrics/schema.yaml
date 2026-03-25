@@ -15181,6 +15181,11 @@ fields:
         if not known.
 
         '
+    - name: smart_window_model
+      type: STRING
+      mode: NULLABLE
+      description: "Records the model selected by the user, or \u201Ccustom-model\u201D\
+        \n"
   - name: timespan
     type: RECORD
     mode: NULLABLE

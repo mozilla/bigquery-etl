@@ -136,7 +136,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/firefoxdotcom_derived/fbclid_desktop_conversion_events_export_v1/query.py",
         ]
-        + ["--submission_date={{macros.ds_add(ds, -2)}}"],
+        + ["--submission_date={{ds}}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],

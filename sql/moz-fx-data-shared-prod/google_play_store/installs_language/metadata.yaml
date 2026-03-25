@@ -1,0 +1,16 @@
+friendly_name: Google Play Store Installs by Language (444337733603)
+description: |-
+  Google Play Store Installs by Language.
+  Pulled using data transfer (444337733603).
+owners:
+- kik@mozilla.com
+labels:
+  authorized: true
+  owner1: kik
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-marketing-prod.google_play_store.p_Installs_language_v1

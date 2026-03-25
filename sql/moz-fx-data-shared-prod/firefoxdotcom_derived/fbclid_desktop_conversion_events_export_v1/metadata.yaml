@@ -13,9 +13,8 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_census_feed
-  date_partition_offset: -2
   arguments:
-  - --submission_date={{macros.ds_add(ds, -2)}}
+  - --submission_date={{ds}}
   depends_on_past: true
   secrets:
   - deploy_target: FB_ACCESS_TOKEN

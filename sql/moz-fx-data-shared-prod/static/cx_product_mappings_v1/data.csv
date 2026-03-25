@@ -1,0 +1,111 @@
+product,product_mapping,source
+/firefox-preview/,Firefox,GA4
+/privacy-and-security/firefox/,Firefox,GA4
+/firefox/,Firefox,GA4
+/firefox-preview/mobile/,Firefox,GA4
+/firefox-android-esr/mobile/,Firefox Android,GA4
+/mobile/,Firefox Android,GA4
+/firefox/mobile/,Firefox Android,GA4
+/firefox-android-esr/,Firefox Android,GA4
+/firefox/firefox-enterprise/,Firefox Enterprise,GA4
+/firefox/mobile/firefox-enterprise/,Firefox Enterprise,GA4
+/firefox-preview/firefox/mobile/firefox-enterprise/,Firefox Enterprise,GA4
+/firefox-enterprise/,Firefox Enterprise,GA4
+/focus-firefox/,Firefox Focus,GA4
+/klar/,Firefox Focus,GA4
+/firefox/mobile/ios/focus-firefox/,Firefox Focus,GA4
+/firefox-preview/mobile/ios/focus-firefox/,Firefox Focus,GA4
+/firefox/mobile/focus-firefox/,Firefox Focus,GA4
+/mobile/ios/focus-firefox/,Firefox Focus,GA4
+/mobile/focus-firefox/,Firefox Focus,GA4
+/focus-firefox/klar/,Firefox Focus,GA4
+/ios/,Firefox iOS,GA4
+/mobile/ios/,Firefox iOS,GA4
+/firefox/mobile/ios/,Firefox iOS,GA4
+/mobile/relay/,Firefox Relay,GA4
+/relay/,Firefox Relay,GA4
+/firefox/relay/,Firefox Relay,GA4
+/mdn-plus/,Mdn Plus,GA4
+/mozilla-account/,Mozilla Account,GA4
+/mozilla-account/ios/,Mozilla Account,GA4
+/mozilla-account/hubs/,Mozilla Account,GA4
+/mozilla-account/mozilla-vpn/,Mozilla Account,GA4
+/firefox/mozilla-account/mobile/ios/,Mozilla Account,GA4
+/privacy-and-security/mozilla-account/,Mozilla Account,GA4
+/firefox/mozilla-account/mobile/,Mozilla Account,GA4
+/firefox/pocket/mozilla-account/,Mozilla Account,GA4
+/mozilla-account/mozilla-vpn/relay/,Mozilla Account,GA4
+/mozilla-account/mobile/,Mozilla Account,GA4
+/firefox/mozilla-account/,Mozilla Account,GA4
+/mozilla-account/mdn-plus/,Mozilla Account,GA4
+/mozilla-account/relay/,Mozilla Account,GA4
+/firefox/monitor/,Mozilla Monitor,GA4
+/monitor/,Mozilla Monitor,GA4
+/mozilla-vpn/,Mozilla VPN,GA4
+/firefox/mozilla-vpn/,Mozilla VPN,GA4
+/mozilla-vpn/relay/,Mozilla VPN,GA4
+/firefox-private-network/,Mozilla VPN,GA4
+/privacy-and-security/,Other,GA4
+/firefox/pocket/,Other,GA4
+/contributor/,Other,GA4
+/open-badges/,Other,GA4
+/firefox-os/,Other,GA4
+/firefox-lite/,Other,GA4
+/firefox/firefox-os/mobile/ios/,Other,GA4
+/firefox-fire-tv/,Other,GA4
+/firefox-fire-tv/firefox-amazon-devices/,Other,GA4
+/firefox/webmaker/ios/,Other,GA4
+/privacy-and-security/firefox-lite/firefox-reality/firefox/mobile/,Other,GA4
+/pocket/,Other,GA4
+/hubs/,Other,GA4
+/firefox-lockwise/firefox/,Other,GA4
+/contributor/firefox-os/,Other,GA4
+/contributor/mobile/,Other,GA4
+/contributor/firefox/firefox-os/mobile/,Other,GA4
+/firefox/pocket/mobile/ios/,Other,GA4
+/firefox-lockwise/,Other,GA4
+/firefox/firefox-os/mobile/,Other,GA4
+/firefox-reality/,Other,GA4
+/contributor/firefox/,Other,GA4
+/contributor/firefox/webmaker/firefox-os/mobile/,Other,GA4
+/screenshot-go/,Other,GA4
+/firefox-lite/mobile/,Other,GA4
+/firefox-send/,Other,GA4
+/contributor/thunderbird/,Other,GA4
+/webmaker/,Other,GA4
+/contributor/firefox/webmaker/firefox-os/firefox-windows-8-touch/open-badges/mobile/thunderbird/,Other,GA4
+/firefox-windows-8-touch/,Other,GA4
+/firefox-amazon-devices/,Other,GA4
+/firefox-send/firefox/,Other,GA4
+/firefox/mobile/ios/focus-firefox/thunderbird/thunderbird-android/firefox-enterprise/,Other,GA4
+/firefox/mobile/ios/focus-firefox/thunderbird/thunderbird-android/,Other,GA4
+/firefox-preview/firefox/hubs/mobile/ios/thunderbird/firefox-enterprise/,Other,GA4
+/firefox/mobile/ios/thunderbird/thunderbird-android/firefox-enterprise/,Other,GA4
+/firefox/mobile/thunderbird/,Thunderbird,GA4
+/thunderbird/,Thunderbird,GA4
+/firefox/mobile/ios/thunderbird/,Thunderbird,GA4
+/firefox/thunderbird/,Thunderbird,GA4
+/thunderbird-android/,Thunderbird Android,GA4
+/thunderbird/thunderbird-android/,Thunderbird Android,GA4
+/firefox/mobile/ios/thunderbird/thunderbird-android/,Thunderbird Android,GA4
+mozilla-account,Mozilla Account,Zendesk
+relay,Firefox Relay,Zendesk
+monitor,Mozilla Monitor,Zendesk
+mdn-plus,Mdn Plus,Zendesk
+X,Other,Zendesk
+,Other,Zendesk
+firefox-android,Firefox Android,Zendesk
+product_other,Other,Zendesk
+,Other,Zendesk
+pocket,Other,Zendesk
+firefox-private-network-vpn,Mozilla VPN,Zendesk
+firefox-ios,Firefox iOS,Zendesk
+privacy_protection_bundle,Firefox Relay,Zendesk
+vpn_relay_bundle,Mozilla VPN,Zendesk
+thunderbird-android,Thunderbird Android,Kitsune
+firefox,Firefox,Kitsune
+thunderbird,Thunderbird,Kitsune
+ios,Firefox iOS,Kitsune
+focus-firefox,Firefox Focus,Kitsune
+mobile,Firefox Android,Kitsune
+firefox-enterprise,Firefox Enterprise,Kitsune

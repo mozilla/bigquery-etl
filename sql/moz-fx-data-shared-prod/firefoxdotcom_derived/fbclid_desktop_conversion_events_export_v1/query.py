@@ -4,6 +4,7 @@
 
 import logging
 import os
+import sys
 from argparse import ArgumentParser
 from datetime import date
 from pathlib import Path
@@ -132,18 +133,22 @@ def main(
 
     partition_decorator = str(submission_date).replace("-", "")
     destination_table = f"{project_id}.{dataset}.{table_name}"
+    destination_table_with_decorator = f"{destination_table}${partition_decorator}"
 
-    logging.info("START | Updating table: %s" % destination_table)
+    logging.info("Updating table: %s" % destination_table_with_decorator)
 
     update_table(
         bq_client,
         submission_date,
         SQL_QUERY,
-        f"{destination_table}${partition_decorator}",
+        destination_table_with_decorator,
     )
 
-    logging.info("COMPLETE | Updating table: %s" % destination_table)
-    logging.info("START | Getting results to export from table: %s" % destination_table)
+    logging.info("Finished updating table: %s" % destination_table_with_decorator)
+    logging.info(
+        "Getting results to export from table: %s for date: %s"
+        % (destination_table, submission_date)
+    )
 
     result_df = get_results_from_bigquery(
         bq_client,
@@ -151,7 +156,8 @@ def main(
         EXPORT_QUERY.format(source_table=destination_table),
     )
     logging.info(
-        "COMPLETE | Getting results to export from table: %s" % destination_table
+        "Finished getting results to export from table: %s for date: %s"
+        % (destination_table, submission_date)
     )
 
     if len(result_df) == 0:
@@ -169,12 +175,12 @@ def main(
 
     FacebookAdsApi.init(access_token=access_token, crash_log=False)
 
-    for batch_num, batch in enumerate(chunk_list(conversion_events, 1000)):
-        logging.info("START | Processing batch number: %s" % batch_num)
+    for batch_num, batch in enumerate(chunk_list(conversion_events, 1000), start=1):
+        logging.info("Processing batch number: %s" % batch_num)
 
         response = execute_request(pixel_id=pixel_id, events=batch)
         logging.info(
-            "COMPLETE | Processing batch number: %s, response: %s."
+            "Finished processing batch number: %s, response: %s."
             % (batch_num, response)
         )
 
@@ -199,6 +205,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     main(
         submission_date=args.submission_date,

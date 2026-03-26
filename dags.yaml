@@ -688,6 +688,7 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
+      - ads-data-team@mozilla.com
       - cbeck@mozilla.com
       - najiang@mozilla.com
       - wstuckey@mozilla.com
@@ -1270,7 +1271,7 @@ bqetl_use_counter_analysis:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2023-12-13"
@@ -1408,8 +1409,8 @@ bqetl_google_search_console:
   description: |
     ETLs using data exported from Google Search Console.
 
-    The Google Search Console exports for a date typically complete by 08:00 UTC two days after that date,
-    so these ETLs should generally specify `date_partition_offset: -1` in their scheduling metadata.
+    The Google Search Console exports for a date typically complete by 08:00 UTC three days after that date,
+    so these ETLs should generally specify `date_partition_offset: -2` in their scheduling metadata.
   default_args:
     owner: srose@mozilla.com
     email:
@@ -1423,22 +1424,19 @@ bqetl_google_search_console:
 
 bqetl_braze:
   schedule_interval: 0 5,13,21 * * *
-  description: |
-    ETL for Braze workflows.
-    ## Triage notes:
-    Don't rerun this DAG!
-    Ping Chelsey Beck.
-    If Chelsey is out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
+  description: ETL for Braze workflows.
   default_args:
-    owner: cbeck@mozilla.com
+    owner: lmcfall@mozilla.com
     email:
       - cbeck@mozilla.com
+      - lmcfall@mozilla.com
+      - sherrera@mozilla.com
     start_date: '2024-04-15'
     retries: 3
     retry_delay: 5m
   tags:
-    - impact/tier_2
-    - triage/record_only
+    - impact/tier_3
+    - triage/no_triage
 
 bqetl_braze_currents:
   schedule_interval: 0 5 * * *
@@ -1578,7 +1576,7 @@ bqetl_cloudflare_os_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1598,7 +1596,7 @@ bqetl_cloudflare_browser_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1618,7 +1616,7 @@ bqetl_cloudflare_device_market_share:
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-06-16'
@@ -1895,6 +1893,25 @@ bqetl_jira_service_desk:
   tags:
     - impact/tier_2
 
+bqetl_jira_tickets:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mcastelluccio@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: mcastelluccio@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-01'
+  description: This DAG schedules Jira ticket ingestion tasks
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_newtab_interactions_hourly:
   schedule_interval: hourly
   description: |
@@ -1989,7 +2006,7 @@ bqetl_imf_exchange_rates:
     This DAG pulls exchange rate data from the International Monetary Fund API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2007,7 +2024,7 @@ bqetl_imf_cpi_data:
     This DAG pulls inflation data from the International Monetary Fund CPI API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2025,7 +2042,7 @@ bqetl_fred_daily_exchange_rate:
     This DAG pulls currency exchange rate info from the FRED API.
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2043,7 +2060,7 @@ bqetl_us_bls_unemployment_data:
     This DAG pulls US unemployment data from the BLS API
   default_args:
     depends_on_past: false
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     email:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
@@ -2132,6 +2149,25 @@ bqetl_glean_dictionary:
     - impact/tier_3
     - repo/bigquery-etl
 
+bqetl_github:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: gkaberere@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-01-01'
+  catchup: true
+  description: Ingests GitHub PR data for delivery visibility and incident analysis.
+  repo: bigquery-etl
+  schedule_interval: 0 8 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_client_attributes:
   default_args:
     depends_on_past: false
@@ -2157,7 +2193,7 @@ bqetl_un_population:
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: kwindau@mozilla.com
+    owner: kbammarito@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2024-01-01'
@@ -2587,6 +2623,27 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
+bqetl_sumo_metrics:
+  schedule_interval: 0 3 * * *
+  description: |
+    Daily derived metrics for Mozilla Support (SUMO) covering:
+    - Content freshness and quality tracking for knowledge base articles
+    - Translation/localization metrics for priority locales (30-day SLA)
+    - Forum questions and engagement metrics from Kitsune
+    - Support ticket volume from Zendesk
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+    start_date: '2025-07-14'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_ai_usage:
   default_args:
     depends_on_past: false
@@ -2652,3 +2709,20 @@ bqetl_cloud_eng_daily:
     - impact/tier_3
     - repo/bigquery-etl
     - triage/no_triage
+
+bqetl_nimbus_feature_monitoring:
+  schedule_interval: 0 3 * * *
+  description: The DAG schedules nimbus feature monitoring queries.
+  default_args:
+    owner: project-nimbus@mozilla.com
+    start_date: "2026-03-16"
+    email:
+      - telemetry-alerts@mozilla.com
+      - project-nimbus@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

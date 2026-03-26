@@ -28,6 +28,7 @@ import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli import check
@@ -471,7 +472,7 @@ def info(ctx, name, sql_dir, project_id):
 
 def _parse_parameter(parameter: str, param_date: str) -> str:
     # TODO: Parse more complex parameters such as macro_ds_add
-    param_name, param_type, param_value = parameter.split(":")
+    param_name, param_type, param_value = parameter.split(":", 2)
     if param_type == "DATE" and param_value != "{{ds}}":
         raise ValueError(f"Unable to parse parameter {parameter}")
 
@@ -646,29 +647,9 @@ def _backfill_script(
 @sql_dir_option
 @project_id_option(required=True)
 @billing_project_option()
-@click.option(
-    "--start_date",
-    "--start-date",
-    "-s",
-    help="First date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-)
-@click.option(
-    "--end_date",
-    "--end-date",
-    "-e",
-    help="Last date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=str(date.today()),
-)
-@click.option(
-    "--exclude",
-    "-x",
-    multiple=True,
-    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
-    default=[],
-)
+@backfill_options.start_date()
+@backfill_options.end_date()
+@backfill_options.exclude()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -701,12 +682,7 @@ def _backfill_script(
 @click.option(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
-@click.option(
-    "--custom_query_path",
-    "--custom-query-path",
-    help="Name of a custom query to run the backfill. If not given, the process runs as usual.",
-    default=None,
-)
+@backfill_options.custom_query_path()
 @click.option(
     "--checks_file_name",
     "--checks-file-name",
@@ -724,29 +700,10 @@ def _backfill_script(
         "parameters and/or date_partition_parameter as needed."
     ),
 )
-@click.option(
-    "--override-retention-range-limit",
-    required=False,
-    type=bool,
-    is_flag=True,
-    help="True to allow running a backfill outside the retention policy limit.",
-    default=False,
-)
-@click.option(
-    "--query-script-entrypoint",
-    help="Name of the Click command in the query.py to use in the backfill. "
-    "Must be a @click.command() function.",
-)
-@click.option(
-    "--query-script-date-arg",
-    help="Name of the date argument of the query.py accepting a YYYY-MM-DD string.",
-)
-@click.option(
-    "--query-script-arg",
-    help="CLI arguments to pass into query.py if backfilling a python script. "
-    'Specified like `--query-script-arg="--project=abc"`',
-    multiple=True,
-)
+@backfill_options.override_retention()
+@backfill_options.query_script_entrypoint()
+@backfill_options.query_script_date_arg()
+@backfill_options.query_script_arg()
 @click.pass_context
 def backfill(
     ctx,
@@ -817,136 +774,140 @@ def backfill(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    for query_file in query_files:
-        query_file_path = Path(query_file)
-
-        is_python_script = query_file_path.suffix == ".py"
-
-        try:
-            metadata = Metadata.of_query_file(str(query_file_path))
-        except FileNotFoundError:
-            click.echo(f"Can't run backfill without metadata for {query_file_path}.")
-            continue
-
-        depends_on_past = metadata.scheduling.get("depends_on_past", False)
-        # If date_partition_parameter isn't set it's assumed to be submission_date:
-        # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
-
-        partitioning_type = None
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            partitioning_type = metadata.bigquery.time_partitioning.type
-
-        date_range = BackfillDateRange(
-            start_date.date(),
-            end_date.date(),
-            excludes=[date.fromisoformat(x) for x in exclude],
-            range_type=partitioning_type or PartitionType.DAY,
+    if len(query_files) > 1:
+        raise click.ClickException(
+            f"Found multiple query source files to backfill: {query_files}"
         )
 
-        if depends_on_past and exclude:
-            click.echo(
-                f"Warning: depends_on_past = True for {query_file_path} but the"
-                f"following dates will be excluded from the backfill: {exclude}"
+    query_file = query_files[0]
+    query_file_path = Path(query_file)
+
+    is_python_script = query_file_path.suffix == ".py"
+
+    try:
+        metadata = Metadata.of_query_file(str(query_file_path))
+    except FileNotFoundError:
+        raise click.ClickException(
+            f"Can't run backfill without metadata for {query_file_path}."
+        )
+
+    depends_on_past = metadata.scheduling.get("depends_on_past", False)
+    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+
+    partitioning_type = None
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        partitioning_type = metadata.bigquery.time_partitioning.type
+
+    date_range = BackfillDateRange(
+        start_date.date(),
+        end_date.date(),
+        excludes=[x.date() for x in exclude],
+        range_type=partitioning_type or PartitionType.DAY,
+    )
+
+    if depends_on_past and exclude:
+        click.echo(
+            f"Warning: depends_on_past = True for {query_file_path} but the"
+            f"following dates will be excluded from the backfill: {exclude}"
+        )
+
+    if is_python_script:
+        if query_script_entrypoint is None or query_script_date_arg is None:
+            raise click.ClickException(
+                "Backfill for query scripts require --query-script-entrypoint and "
+                f"--query-script-date-arg arguments: {query_file_path}"
             )
 
-        if is_python_script:
-            if query_script_entrypoint is None or query_script_date_arg is None:
-                raise click.ClickException(
-                    "Backfill for query scripts require --query-script-entrypoint and "
-                    f"--query-script-date-arg arguments: {query_file_path}"
-                )
-
-            if dry_run:
-                raise click.ClickException(
-                    "--dry-run argument is not compatible with query scripts. Dry run must be "
-                    "implemented in the script and controlled via an argument, "
-                    "e.g. --query-script-arg '--dry-run'"
-                )
-
-            # attempt to import the query script using the file path
-            query_spec = importlib.util.spec_from_file_location(
-                "query", str(query_file)
+        if dry_run:
+            raise click.ClickException(
+                "--dry-run argument is not compatible with query scripts. Dry run must be "
+                "implemented in the script and controlled via an argument, "
+                "e.g. --query-script-arg '--dry-run'"
             )
-            query_module = importlib.util.module_from_spec(query_spec)
-            query_spec.loader.exec_module(query_module)
-            entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            if not isinstance(entrypoint_command, Callable):
-                raise click.ClickException(
-                    f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
-                )
+        # attempt to import the query script using the file path
+        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
+        query_module = importlib.util.module_from_spec(query_spec)
+        query_spec.loader.exec_module(query_module)
+        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            backfill_query = partial(
-                _backfill_script,
-                entrypoint_command=entrypoint_command,
-                query_script_date_arg=query_script_date_arg,
-                query_script_args=query_script_arg,
+        if not isinstance(entrypoint_command, Callable):
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
             )
-        else:
-            # adding copy logic for cleaner handling of overrides
-            scheduling_metadata = metadata.scheduling.copy()
-            scheduling_metadata.update(json.loads(scheduling_overrides))
-            date_partition_parameter = scheduling_metadata.get(
-                "date_partition_parameter", "submission_date"
-            )
-            scheduling_parameters = scheduling_metadata.get("parameters", [])
-            date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
-            client = bigquery.Client(project=project_id)
-            project, dataset, table = extract_from_query_path(query_file_path)
-            try:
-                client.get_table(f"{project}.{dataset}.{table}")
-            except NotFound:
-                ctx.invoke(
-                    initialize,
-                    name=query_file,
-                    dry_run=dry_run,
-                    billing_project=billing_project,
-                )
+        backfill_query = partial(
+            _backfill_script,
+            entrypoint_command=entrypoint_command,
+            query_script_date_arg=query_script_date_arg,
+            query_script_args=query_script_arg,
+        )
+    else:
+        # adding copy logic for cleaner handling of overrides
+        scheduling_metadata = metadata.scheduling.copy()
+        scheduling_metadata.update(json.loads(scheduling_overrides))
+        date_partition_parameter = scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
+        )
+        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
-            backfill_query = partial(
-                _backfill_query,
-                query_file_path,
-                project_id,
-                date_partition_parameter,
-                date_partition_offset,
-                max_rows,
-                dry_run,
-                scheduling_parameters,
-                ctx.args,
-                partitioning_type,
-                destination_table=destination_table,
-                run_checks=checks,
-                checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+        client = bigquery.Client(project=project_id)
+        project, dataset, table = extract_from_query_path(query_file_path)
+        try:
+            client.get_table(f"{project}.{dataset}.{table}")
+        except NotFound:
+            ctx.invoke(
+                initialize,
+                name=query_file,
+                dry_run=dry_run,
                 billing_project=billing_project,
             )
 
-        if not depends_on_past and parallelism > 1:
-            # run backfill for dates in parallel if depends_on_past is false
-            failed_backfills = []
-            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
-                future_to_date = {
-                    executor.submit(backfill_query, backfill_date): backfill_date
-                    for backfill_date in date_range
-                }
-                for future in futures.as_completed(future_to_date):
-                    backfill_date = future_to_date[future]
-                    try:
-                        future.result()
-                    except Exception as e:  # TODO: More specific exception(s)
-                        click.echo(f"Encountered exception {e}: {backfill_date}.")
-                        failed_backfills.append(backfill_date)
-                    else:
-                        click.echo(f"Completed processing: {backfill_date}.")
-            if failed_backfills:
-                raise RuntimeError(
-                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
-                )
-        else:
-            # if data depends on previous runs, then execute backfill sequentially
-            for backfill_date in date_range:
-                click.echo(f"Running backfill for {backfill_date}")
-                backfill_query(backfill_date)
+        backfill_query = partial(
+            _backfill_query,
+            query_file_path,
+            project_id,
+            date_partition_parameter,
+            date_partition_offset,
+            max_rows,
+            dry_run,
+            scheduling_parameters,
+            ctx.args,
+            partitioning_type,
+            destination_table=destination_table,
+            run_checks=checks,
+            checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+            billing_project=billing_project,
+        )
+
+    if not depends_on_past and parallelism > 1:
+        # run backfill for dates in parallel if depends_on_past is false
+        failed_backfills = []
+        with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+            future_to_date = {
+                executor.submit(backfill_query, backfill_date): backfill_date
+                for backfill_date in date_range
+            }
+            for future in futures.as_completed(future_to_date):
+                backfill_date = future_to_date[future]
+                try:
+                    future.result()
+                except Exception as e:  # TODO: More specific exception(s)
+                    click.echo(f"Encountered exception {e}: {backfill_date}.")
+                    failed_backfills.append(backfill_date)
+                else:
+                    click.echo(f"Completed processing: {backfill_date}.")
+        if failed_backfills:
+            raise RuntimeError(
+                f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+            )
+    else:
+        # if data depends on previous runs, then execute backfill sequentially
+        for backfill_date in date_range:
+            click.echo(f"Running backfill for {backfill_date}")
+            backfill_query(backfill_date)
 
 
 @query.command(
@@ -1113,12 +1074,11 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
@@ -1596,6 +1556,7 @@ def validate(
 
 def _initialize_in_parallel(
     project,
+    public_project_id,
     table,
     dataset,
     query_file,
@@ -1612,7 +1573,7 @@ def _initialize_in_parallel(
                 _run_query,
                 [query_file],
                 project,
-                None,
+                public_project_id,
                 table,
                 dataset,
                 addl_templates=addl_templates,
@@ -1665,6 +1626,20 @@ def _initialize_in_parallel(
     default=False,
 )
 @click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--skip-tables-older-than",
+    "--skip_tables_older_than",
+    help="Skip initialization for tables created more than N days ago.",
+    type=int,
+    default=None,
+)
+@click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
@@ -1682,6 +1657,8 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    skip_nonempty,
+    skip_tables_older_than,
     sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
@@ -1725,17 +1702,40 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
+            )
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(table_id_to_check)
+
                 if skip_existing:
                     # table exists; skip initialization
                     return
-                if not force and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        " Use --force to overwrite the existing destination table."
-                    )
+                if skip_tables_older_than is not None and table.created:
+                    age = datetime.datetime.now(datetime.timezone.utc) - table.created
+                    if age.days > skip_tables_older_than:
+                        return
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
             except NotFound:
                 # continue with creating the table
                 pass
@@ -1794,7 +1794,8 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=full_table_id,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1809,8 +1810,10 @@ def initialize(
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
-                        public_project_id=None,
-                        destination_table=full_table_id,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={
@@ -2824,3 +2827,72 @@ def validate_schema(
         sys.exit(1)
     else:
         click.echo("\nAll schemas are valid.")
+
+
+@schema.command(
+    name="render",
+    help="""Render `schema.yaml` files, resolving any includes.
+
+    Examples:
+
+    ./bqetl query schema render telemetry_derived.ssl_ratios_v1 --output-dir=/tmp/sql
+    """,
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help=(
+        "Output directory rendered files are written to. "
+        "If not specified, rendered files are printed to the console."
+    ),
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render_schema(
+    name: Optional[str], sql_dir: str | Path, output_dir: Optional[str | Path]
+) -> None:
+    """Render `schema.yaml` files."""
+    sql_dir = Path(sql_dir)
+    if output_dir:
+        output_dir = Path(output_dir)
+
+    schema_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=None, files=[SCHEMA_FILE]
+    )
+
+    render_count = 0
+    copy_count = 0
+
+    # We intentionally don't process `schema.yaml` files in parallel to avoid potential situations where
+    # one file is still being written to while another file tries to read its contents for an include.
+    for schema_file in schema_files:
+        if not output_dir:
+            click.echo(f"# {schema_file}")
+
+        # We only technically render `schema.yaml` files if they actually use any includes,
+        # both for performance and to avoid making superfluous YAML formatting changes.
+        schema_yaml = schema_file.read_text()
+        if "!include" in schema_yaml:
+            if output_dir:
+                click.echo(f"Rendering {schema_file}")
+            rendered_schema_yaml = Schema.from_yaml(schema_yaml, sql_dir).to_yaml()
+            render_count += 1
+        else:
+            rendered_schema_yaml = schema_yaml
+
+        if output_dir:
+            if output_dir != sql_dir or rendered_schema_yaml != schema_yaml:
+                output_file = output_dir / schema_file.relative_to(sql_dir)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file.write_text(rendered_schema_yaml)
+                if rendered_schema_yaml == schema_yaml:
+                    copy_count += 1
+        else:
+            click.echo(rendered_schema_yaml)
+
+    if output_dir:
+        click.echo(f"Rendered {render_count} `{SCHEMA_FILE}` files with includes.")
+        if copy_count > 0:
+            click.echo(f"Copied {copy_count} `{SCHEMA_FILE}` files without includes.")

@@ -84,6 +84,26 @@ def get_bqetl_project_root() -> Path | None:
     return None
 
 
+def resolve_project_file_path(project_file_path: str | Path) -> Path:
+    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+
+    bqetl_project_root = get_bqetl_project_root()
+    if bqetl_project_root:
+        absolute_project_file_path = bqetl_project_root / relative_project_file_path
+        if absolute_project_file_path.exists():
+            return absolute_project_file_path
+
+    # Fall back to checking the main `bqetl` project if necessary.
+    if (
+        bqetl_project_root != ROOT
+        and (root_project_file_path := ROOT / relative_project_file_path).exists()
+    ):
+        return root_project_file_path
+
+    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+
+
 def render(
     sql_filename,
     template_folder=".",

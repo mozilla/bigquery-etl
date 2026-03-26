@@ -41,7 +41,7 @@ from bigquery_etl.cli.backfill import (
     validate_multiple,
 )
 from bigquery_etl.cli.stage import QUERY_FILE
-from bigquery_etl.deploy import FailedDeployException
+from bigquery_etl.deploy import FailedDeployException, SkippedDeployException
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
@@ -423,6 +423,59 @@ class TestBackfill:
             "Backfill entries cannot contain more than one entry with Initiate status"
             in str(result.exception)
         )
+
+    def test_create_backfill_script(self, runner):
+        """Test backfill creation for with all python script arguments."""
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2026-01-01",
+                "--query-script-entrypoint=main",
+                "--query-script-date-arg=date",
+                "--query-script-arg=--project=test",
+                "--query-script-arg=--dataset=staging",
+            ],
+        )
+        assert result.exit_code == 0
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        entry = Backfill.entries_from_file(backfill_file)[0]
+        assert entry.query_script_entrypoint == "main"
+        assert entry.query_script_date_arg == "date"
+        assert entry.query_script_args == ["--project=test", "--dataset=staging"]
+
+    def test_create_backfill_script_missing_entrypoint(self, runner):
+        """Backfill creation should fail for a python script if the entrypoint argument is missing."""
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2026-01-01",
+                "--custom-query-path=sql/proj/dataset/table/query.py",
+                "--query-script-date-arg=date",
+            ],
+        )
+        assert result.exit_code == 1
+        assert "--query-script-entrypoint" in str(result.exception)
+
+    def test_create_backfill_script_missing_date_arg(self, runner):
+        """Backfill creation should fail for a python script if the date argument is missing."""
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2026-01-01",
+                "--query-script-entrypoint=main",
+            ],
+        )
+        assert result.exit_code == 1
+        assert "--query-script-date-arg" in str(result.exception)
 
     def test_validate_backfill(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
@@ -2038,6 +2091,134 @@ class TestBackfill:
             assert result.exit_code == 0
             assert mock_shredder_mitigation.call_count == 2
             assert mock_backfill.call_count == 2
+
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_backfill_query_script(self, mock_client, runner):
+        """Python script arguments from the backfill.yaml should be passed to the backfill."""
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+            query_script_args=["--dataset=staging"],
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+            entry=entry,
+            is_python_script=True,
+        )
+
+        call_kwargs = mock_context.invoke.call_args[1]
+        assert call_kwargs["query_script_entrypoint"] == "main"
+        assert call_kwargs["query_script_date_arg"] == "date"
+        assert call_kwargs["query_script_arg"] == ["--dataset=staging"]
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    def test_initiate_backfill_script_skips_depends_on_past(
+        self, mock_initialize_partition, mock_client, runner
+    ):
+        """Query script with depends_on_past should not attempt a query rewrite and partition copy."""
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(
+            yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST)
+        )
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+            query_script_args=["--dataset=staging"],
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+            entry=entry,
+            is_python_script=True,
+        )
+
+        assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+        assert mock_initialize_partition.call_count == 0
+
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_script_dry_run(
+        self, mock_client, mock_should_initiate, mock_deploy_table, runner
+    ):
+        """Query script should only be dry run if the dry run arg is given."""
+        mock_should_initiate.return_value = True
+        mock_deploy_table.side_effect = SkippedDeployException()
+
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            query_script_entrypoint="main",
+            query_script_date_arg="date",
+        )
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        # no dry run
+        with patch("bigquery_etl.cli.backfill.query_backfill") as mock_backfill:
+            runner.invoke(
+                initiate,
+                ["moz-fx-data-shared-prod.test.test_query_v1"],
+            )
+
+        assert mock_backfill.call_count == 1
+        assert mock_backfill.call_args.kwargs["dry_run"] is False
+        assert mock_backfill.call_args.kwargs["query_script_arg"] == []
+
+        backfill_entry.query_script_dry_run_arg = "--dry-run"
+        (Path(QUERY_DIR) / BACKFILL_FILE).write_text(backfill_entry.to_yaml())
+
+        # with dry run
+        with patch("bigquery_etl.cli.backfill.query_backfill") as mock_backfill:
+            runner.invoke(
+                initiate,
+                ["moz-fx-data-shared-prod.test.test_query_v1"],
+            )
+
+        assert mock_backfill.call_count == 2
+        # the backfill function requires dry_run false for query.py backfills
+        assert mock_backfill.call_args_list[0].kwargs["dry_run"] is False
+        assert mock_backfill.call_args_list[0].kwargs["query_script_arg"] == [
+            "--dry-run"
+        ]
+        assert mock_backfill.call_args_list[1].kwargs["dry_run"] is False
+        assert mock_backfill.call_args_list[1].kwargs["query_script_arg"] == []
 
     @patch("bigquery_etl.cli.backfill.deploy_table")
     def test_validate_backfill_initiate_with_label_true_and_entry_dont_match_should_fail(

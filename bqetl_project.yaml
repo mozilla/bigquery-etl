@@ -604,6 +604,10 @@ generate:
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
+  stable_views_redacted:
+    pings:
+      firefox_desktop:
+      - microsurvey
   baseline_clients_city_seen:
     apps:
     - firefox_desktop

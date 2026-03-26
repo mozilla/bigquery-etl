@@ -1,0 +1,14 @@
+friendly_name: Remote Settings Uptake Live
+description: |-
+  Used to query our clients synchronization uptake and visualize telemetry rates
+  in Grafana as a cross check for operational monitoring of the Remote Settings service.
+owners:
+  - fx-delivery-tools@mozilla.com
+labels:
+  materialized_view: true
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers
+      - workgroup:remote-settings/telescope

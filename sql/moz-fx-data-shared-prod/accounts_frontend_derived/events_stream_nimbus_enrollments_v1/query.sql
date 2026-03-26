@@ -42,7 +42,7 @@ SELECT
   acct_fr.document_event_number,
   nimbus.experiment_id,
   nimbus.branch,
-  @submission_date AS submission_date
+  @submission_date AS as_of_date
 FROM
   `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
 LEFT JOIN

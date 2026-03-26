@@ -10,12 +10,13 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
+  dag: bqetl_accounts_derived
 scheduling:
   dag_name: bqetl_accounts_derived
 bigquery:
   time_partitioning:
     type: day
-    field: 'as_of_date'
+    field: as_of_date
     require_partition_filter: false
     expiration_days: null
 require_column_descriptions: true

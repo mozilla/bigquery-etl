@@ -1,16 +1,18 @@
-CREATE OR REPLACE MATERIALIZED VIEW
+CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring_derived.remote_settings_uptake_live_v1`
-OPTIONS
-  (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
 SELECT
   submission_timestamp,
   SAFE_CAST(mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER) AS major_version,
   client_info.client_id AS client_id,
+  'desktop' AS platform,
   normalized_channel,
+  normalized_os,
+  normalized_os_version,
+  normalized_country_code,
   -- Extra attributes
   -- See https://searchfox.org/firefox-main/rev/1427c88632d1474d/services/common/metrics.yaml
-  mozfun.map.get_key(e.extra, 'value') AS extra_status,
+  mozfun.map.get_key(e.extra, 'value') AS extra_status, -- It's 'status' in our uptake.
   mozfun.map.get_key(e.extra, 'trigger') AS extra_trigger,
   mozfun.map.get_key(e.extra, 'source') AS extra_source,
   mozfun.map.get_key(e.extra, 'errorName') AS extra_errorname,

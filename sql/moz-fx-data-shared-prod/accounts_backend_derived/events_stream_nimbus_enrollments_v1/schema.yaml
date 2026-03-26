@@ -553,7 +553,3 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Nimbus experiment branch.
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.

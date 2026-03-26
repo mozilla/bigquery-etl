@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW
+CREATE OR CREATE MATERIALIZED VIEW
   `moz-fx-data-shared-prod.monitoring_derived.remote_settings_uptake_live_v1`
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
@@ -10,7 +10,7 @@ SELECT
   normalized_channel,
   -- Extra attributes
   -- See https://searchfox.org/firefox-main/rev/1427c88632d1474d/services/common/metrics.yaml
-  mozfun.map.get_key(e.extra, 'value') AS extra_value, -- wish it was kept as 'status' when migrated to Glean :(
+  mozfun.map.get_key(e.extra, 'value') AS extra_status,
   mozfun.map.get_key(e.extra, 'trigger') AS extra_trigger,
   mozfun.map.get_key(e.extra, 'source') AS extra_source,
   mozfun.map.get_key(e.extra, 'errorName') AS extra_errorname,

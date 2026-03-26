@@ -77,6 +77,12 @@ with DAG(
         "monitoring__experimenter_experiments__v1_external",
     ) as monitoring__experimenter_experiments__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_nimbus_feature_monitoring__wait_for_monitoring__experimenter_experiments__v1",
+            external_dag_id="bqetl_nimbus_feature_monitoring",
+            external_task_id="wait_for_monitoring__experimenter_experiments__v1",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_monitoring__wait_for_monitoring__experimenter_experiments__v1",
             external_dag_id="bqetl_monitoring",
             external_task_id="wait_for_monitoring__experimenter_experiments__v1",

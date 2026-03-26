@@ -3862,6 +3862,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_nimbus_feature_monitoring__wait_for_firefox_desktop_derived__events_stream__v1",
+            external_dag_id="bqetl_nimbus_feature_monitoring",
+            external_task_id="wait_for_firefox_desktop_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_experiments_daily__wait_for_firefox_desktop_derived__events_stream__v1",
             external_dag_id="bqetl_experiments_daily",
             external_task_id="wait_for_firefox_desktop_derived__events_stream__v1",

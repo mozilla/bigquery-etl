@@ -289,7 +289,7 @@ def rewrite_query_references(
             sanitize_bq_id(dataset_prefix) if dataset_prefix else None
         )
         sanitized_artifact_prefix = (
-            sanitize_bq_id(artifact_prefix) if artifact_prefix else None
+            sanitize_bq_id(artifact_prefix) if artifact_prefix else ""
         )
 
         def matches_target_config(info: DeployedTableInfo) -> bool:

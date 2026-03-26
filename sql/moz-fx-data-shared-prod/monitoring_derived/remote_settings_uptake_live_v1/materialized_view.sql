@@ -26,7 +26,7 @@ AS (
       END
     ) AS n_client_id_count,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.events_live`
+    `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
   INNER JOIN UNNEST(events) AS e ON
     e.category = 'uptake.remotecontent.result'
     AND e.name = 'uptake_remotesettings'

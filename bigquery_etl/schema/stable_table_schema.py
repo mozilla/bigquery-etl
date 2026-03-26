@@ -59,7 +59,7 @@ def prod_schemas_uri():
     with the most recent production schemas deploy.
     """
     dryrun = DryRun(
-        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql",
+        "moz-fx-data-shared-prod/firefox_desktop_stable/foo/query.sql",
         content="SELECT 1",
         use_cache=False,
     )

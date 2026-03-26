@@ -1,6 +1,6 @@
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -37,18 +37,18 @@ class TestTarget:
         target = Target(name="test", project_id="test-project", dataset="anna_dev")
         assert target.dataset == "anna_dev"
         assert target.dataset_prefix is None
-        assert target.table_prefix is None
+        assert target.artifact_prefix is None
 
-    def test_target_with_table_prefix(self):
-        """Test Target with table_prefix."""
+    def test_target_with_artifact_prefix(self):
+        """Test Target with artifact_prefix."""
         target = Target(
             name="test",
             project_id="test-project",
             dataset="anna_dev",
-            table_prefix="feature_",
+            artifact_prefix="feature_",
         )
         assert target.dataset == "anna_dev"
-        assert target.table_prefix == "feature_"
+        assert target.artifact_prefix == "feature_"
 
     def test_target_dataset_and_dataset_prefix_mutually_exclusive(self):
         """Test that dataset and dataset_prefix cannot both be set."""
@@ -60,19 +60,16 @@ class TestTarget:
                 dataset_prefix="prefix_",
             )
 
+    @patch(
+        "bigquery_etl.util.target._get_user_context", return_value={"name": "testuser"}
+    )
+    @patch(
+        "bigquery_etl.util.target._get_git_context",
+        return_value={"branch": "main", "commit": "abc123de"},
+    )
     @patch("bigquery_etl.util.target.ConfigLoader")
-    @patch("bigquery_etl.util.target.git.Repo")
-    def test_get_target_success(self, mock_repo, mock_config_loader):
+    def test_get_target_success(self, mock_config_loader, _mock_git, _mock_user):
         """Test successfully getting a target with git info."""
-        # Setup mock git repo
-        mock_branch = MagicMock()
-        mock_branch.name = "main"
-        mock_commit = MagicMock()
-        mock_commit.hexsha = "abc123def456"
-        mock_branch.commit = mock_commit
-        mock_repo.return_value.active_branch = mock_branch
-
-        # Create temp targets file
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
             targets_file = tmpdir_path / "bqetl_targets.yaml"
@@ -84,7 +81,6 @@ prod:
   project_id: test-project-prod
 """)
 
-            # Setup mock config loader
             mock_config_loader.get.return_value = "bqetl_targets.yaml"
             mock_config_loader.project_dir = tmpdir_path
 
@@ -94,13 +90,16 @@ prod:
             assert target.project_id == "test-project-dev"
             assert target.dataset_prefix == "dev_main_abc123de_"
 
+    @patch(
+        "bigquery_etl.util.target._get_user_context", return_value={"name": "unknown"}
+    )
+    @patch(
+        "bigquery_etl.util.target._get_git_context",
+        return_value={"branch": "unknown", "commit": "unknown"},
+    )
     @patch("bigquery_etl.util.target.ConfigLoader")
-    @patch("bigquery_etl.util.target.git.Repo")
-    def test_get_target_no_git_repo(self, mock_repo, mock_config_loader):
+    def test_get_target_no_git_repo(self, mock_config_loader, _mock_git, _mock_user):
         """Test getting a target when not in a git repo."""
-        # Setup git to raise exception
-        mock_repo.side_effect = Exception("Not a git repository")
-
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
             targets_file = tmpdir_path / "bqetl_targets.yaml"
@@ -185,8 +184,8 @@ class TestPrepareTargetDirectory:
             assert result.parent.name == "clients_daily_v6"
             assert result.parent.parent.parent.name == "my-dev-project"
 
-    def test_table_prefix_prepended_to_table_name(self):
-        """table_prefix is prepended to the artifact name."""
+    def test_artifact_prefix_prepended_to_table_name(self):
+        """artifact_prefix is prepended to the artifact name."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sql_dir = Path(tmpdir) / "sql"
             query_file = self._make_query_file(
@@ -204,7 +203,7 @@ class TestPrepareTargetDirectory:
                 defer_to_target=False,
                 isolated=False,
                 dataset="anna_dev",
-                table_prefix="feature_",
+                artifact_prefix="feature_",
             )
 
             assert result is not None
@@ -230,7 +229,7 @@ class TestPrepareTargetDirectory:
                 defer_to_target=False,
                 isolated=False,
                 dataset="anna_dev",
-                table_prefix="feature_",
+                artifact_prefix="feature_",
             )
 
             manifest_file = result.parent / MANIFEST_FILENAME
@@ -259,7 +258,7 @@ class TestPrepareTargetDirectory:
                 defer_to_target=False,
                 isolated=False,
                 dataset="anna_dev",
-                table_prefix="feature_",
+                artifact_prefix="feature_",
             )
 
             deployed = get_deployed_tables_in_target(str(sql_dir), "my-dev-project")
@@ -282,8 +281,8 @@ class TestPrepareTargetFiles:
         query_file.write_text("SELECT 1")
         return query_file
 
-    def test_table_prefix_artifact_project_id_rendered(self):
-        """{{ artifact.project_id }} in table_prefix is rendered from source project."""
+    def test_artifact_prefix_artifact_project_id_rendered(self):
+        """{{ artifact.project_id }} in artifact_prefix is rendered from source project."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sql_dir = Path(tmpdir) / "sql"
             query_file = self._make_query_file(
@@ -293,17 +292,20 @@ class TestPrepareTargetFiles:
                 "clients_daily_v6",
             )
 
+            target = Target(
+                name="test",
+                project_id="my-dev-project",
+                dataset="anna_dev",
+                artifact_prefix="{{ artifact.project_id }}_",
+            )
             result = prepare_target_files(
                 query_files=[query_file],
                 sql_dir=str(sql_dir),
                 project_id="moz-fx-data-shared-prod",
-                destination_project_id="my-dev-project",
-                dataset_prefix=None,
+                target=target,
                 defer_to_target=False,
                 isolated=False,
                 auto_deploy=False,
-                dataset="anna_dev",
-                table_prefix="{{ artifact.project_id }}_",
             )
 
             assert len(result) == 1

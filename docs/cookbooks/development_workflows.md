@@ -18,15 +18,15 @@ dev:
   dataset_prefix: user_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}
 ```
 
-**Single-dataset deployment** (all artifacts land in one dataset, use `table_prefix` to avoid name collisions):
+**Single-dataset deployment** (all artifacts land in one dataset, use `artifact_prefix` to avoid name collisions):
 ```yaml
 dev:
   project_id: dev-sandbox-user
   dataset: anna_dev
-  table_prefix: "{{ git.branch }}_{{ git.commit }}_"
+  artifact_prefix: "{{ git.branch }}_{{ git.commit }}_"
 ```
 
-`dataset` and `dataset_prefix` are mutually exclusive. `table_prefix` can be used with either.
+`dataset` and `dataset_prefix` are mutually exclusive. `artifact_prefix` can be used with either.
 
 To avoid passing `--target` on every invocation, set a default using one of these (listed in priority order):
 
@@ -53,16 +53,11 @@ Use `--target dev` to run and deploy artifacts to the dev environment:
 
 What happens automatically:
 1. Copies to `sql/dev-sandbox-user/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
-2. Rewrites references (deployed tables → dev, others → prod)
+2. Rewrites references if `--defer-to-target` is specified (deployed tables → dev, others → prod)
 3. Deploys schema to `dev-sandbox-user.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`
 4. Runs query and populates data
 
-Add generated directories to `.gitignore`:
-```gitignore
-sql/*-sandbox/
-sql/*/dev_*/
-sql/moz-fx-data-dev/
-```
+Generated target directories are already covered by `.gitignore`. If your dev project path isn't excluded by the standard patterns, add it to `.git/info/exclude` (a local, untracked gitignore) rather than modifying `.gitignore`.
 
 ## Common Workflows
 
@@ -90,12 +85,12 @@ sql/moz-fx-data-dev/
 ```
 
 With `--defer-to-target`:
-- References to tables already deployed in dev → dev project
+- Rewrites references to tables already deployed in dev → dev project
 - References to everything else → prod
 
-Without `--defer-to-target` (default): all references stay pointed at prod.
+Without `--defer-to-target` (default): no rewrites — all references stay pointed at prod.
 
-### 3. Deploy artifacts without running
+### 3. Deploy artifacts without running _(future)_
 
 ```bash
 # Deploy table schema only (no data)
@@ -108,7 +103,7 @@ Without `--defer-to-target` (default): all references stay pointed at prod.
 ./bqetl --target dev deploy --routines udf.normalize_metadata
 ```
 
-### 4. Backfill testing
+### 4. Backfill testing  _(future)_
 
 ```bash
 ./bqetl --target dev query backfill --defer-to-target \

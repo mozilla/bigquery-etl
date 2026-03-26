@@ -23,8 +23,7 @@ generated-sql/
 # ignore local dev target deployments
 sql/*-sandbox/
 sql/*-sandbox-[0-9]*/
-sql/*/dev_*/
-sql/moz-fx-data-dev/
+sql/moz-fx-data-shared-dev/
 bqetl_targets.yaml
 
 # ignore Bigeye artifacts

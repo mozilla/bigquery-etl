@@ -82,7 +82,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files, sanitize_dataset_id
+from ..util.target import prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -1016,22 +1016,27 @@ def run(
         )
 
     target = ctx.obj.get("target") if ctx.obj else None
-    destination_project_id = target.project_id if target else None
-    dataset_prefix = target.dataset_prefix if target else None
-    dataset = target.dataset if target else None
-    table_prefix = target.table_prefix if target else None
 
-    # when using --target, check target directory first, then fall back to source
-    query_files = []
-    if target and destination_project_id:
-        target_project_dir = Path(sql_dir) / destination_project_id
+    if target and dataset_id:
+        raise click.UsageError("--dataset-id and --target are mutually exclusive.")
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
+    # supplement with any queries that only exist in the target project directory
+    # (source takes precedence — target-only queries are appended to avoid using
+    # stale copies when the same query exists in both)
+    if target and target.project_id:
+        target_project_dir = Path(sql_dir) / target.project_id
         if target_project_dir.exists():
-            query_files = paths_matching_name_pattern(
-                name, sql_dir, destination_project_id, silent=True
+            source_keys = {
+                (ds, t) for _, ds, t in map(extract_from_query_path, query_files)
+            }
+            target_files = paths_matching_name_pattern(
+                name, sql_dir, target.project_id, silent=True
             )
-
-    if not query_files:  # fall back to source directory if not found in target
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+            for f in target_files:
+                _, ds, t = extract_from_query_path(f)
+                if (ds, t) not in source_keys:
+                    query_files.append(f)
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1044,26 +1049,20 @@ def run(
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     # prepare target directories if using --target
-    query_files = prepare_target_files(
-        query_files,
-        sql_dir,
-        project_id,
-        destination_project_id,
-        dataset_prefix,
-        defer_to_target,
-        isolated=False,
-        auto_deploy=write,
-        dataset=dataset,
-        table_prefix=table_prefix,
-    )
+    if target:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=write,
+        )
 
     # apply destination project and dataset
-    effective_project = destination_project_id or project_id
+    effective_project = (target.project_id if target else None) or project_id
     effective_dataset = dataset_id
-    if dataset and dataset_id:
-        effective_dataset = sanitize_dataset_id(dataset)
-    elif dataset_prefix and dataset_id:
-        effective_dataset = f"{dataset_prefix}{dataset_id}"
 
     # auto-infer destination_table when --write is used; query_files[0] is already
     # the target file with project/dataset/prefix applied by prepare_target_files

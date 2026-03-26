@@ -178,6 +178,30 @@ accounts_cirrus AS (
     `moz-fx-data-shared-prod.accounts_cirrus.enrollment` AS enrollment
   CROSS JOIN
     UNNEST(events) AS e
+),
+experimenter_cirrus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
+    mozfun.map.get_key(e.extra, "branch") AS branch,
+    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+    normalized_channel
+  FROM
+    `moz-fx-data-shared-prod.experimenter_cirrus.enrollment` AS enrollment
+  CROSS JOIN
+    UNNEST(events) AS e
+),
+subscription_platform_backend_cirrus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
+    mozfun.map.get_key(e.extra, "branch") AS branch,
+    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+    normalized_channel
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_backend_cirrus.enrollment` AS enrollment
+  CROSS JOIN
+    UNNEST(events) AS e
 )
 SELECT
   submission_date,
@@ -261,6 +285,16 @@ FROM
       *
     FROM
       accounts_cirrus
+    UNION ALL
+    SELECT
+      *
+    FROM
+      experimenter_cirrus
+    UNION ALL
+    SELECT
+      *
+    FROM
+      subscription_platform_backend_cirrus
   )
 WHERE
   submission_date = @submission_date

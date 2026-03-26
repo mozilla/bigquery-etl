@@ -350,6 +350,50 @@ SELECT
   exposure_count,
   validation_failed_count
 FROM
+  `moz-fx-data-shared-prod.experimenter_cirrus_derived.experiment_events_live_v1`
+WHERE
+  window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+UNION ALL
+SELECT
+  type,
+  experiment,
+  branch,
+  normalized_channel,
+  window_start,
+  window_end,
+  enroll_count,
+  unenroll_count,
+  graduate_count,
+  update_count,
+  enroll_failed_count,
+  unenroll_failed_count,
+  update_failed_count,
+  disqualification_count,
+  exposure_count,
+  validation_failed_count
+FROM
+  `moz-fx-data-shared-prod.subscription_platform_backend_cirrus_derived.experiment_events_live_v1`
+WHERE
+  window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+UNION ALL
+SELECT
+  type,
+  experiment,
+  branch,
+  normalized_channel,
+  window_start,
+  window_end,
+  enroll_count,
+  unenroll_count,
+  graduate_count,
+  update_count,
+  enroll_failed_count,
+  unenroll_failed_count,
+  update_failed_count,
+  disqualification_count,
+  exposure_count,
+  validation_failed_count
+FROM
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v2`
 WHERE
   window_start <= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))

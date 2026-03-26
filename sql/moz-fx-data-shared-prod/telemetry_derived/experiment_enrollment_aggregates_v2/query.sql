@@ -317,6 +317,38 @@ accounts_cirrus AS (
     event.category = 'cirrus_events'
     AND DATE(submission_timestamp) = @submission_date
 ),
+experimenter_cirrus AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
+    event.name AS event_method,
+    TRUE AS validation_errors_valid
+  FROM
+    `moz-fx-data-shared-prod.experimenter_cirrus.enrollment`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'cirrus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+subscription_platform_backend_cirrus AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
+    event.name AS event_method,
+    TRUE AS validation_errors_valid
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_backend_cirrus.enrollment`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'cirrus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
 all_events AS (
   SELECT
     *
@@ -392,6 +424,16 @@ all_events AS (
     *
   FROM
     accounts_cirrus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    experimenter_cirrus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    subscription_platform_backend_cirrus
 )
 SELECT
   `type`,

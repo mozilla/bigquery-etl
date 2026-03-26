@@ -1,4 +1,4 @@
-CREATE OR CREATE MATERIALIZED VIEW
+CREATE OR REPLACE MATERIALIZED VIEW
   `moz-fx-data-shared-prod.monitoring_derived.remote_settings_uptake_live_v1`
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)

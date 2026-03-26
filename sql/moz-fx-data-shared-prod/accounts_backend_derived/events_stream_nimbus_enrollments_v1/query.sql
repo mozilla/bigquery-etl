@@ -41,7 +41,6 @@ SELECT
   acct_bck.is_bot_generated,
   acct_bck.document_event_number,
   acct_bck.extras,
-  @submission_date AS submission_date,
   nimbus.experiment_id,
   nimbus.branch
 FROM

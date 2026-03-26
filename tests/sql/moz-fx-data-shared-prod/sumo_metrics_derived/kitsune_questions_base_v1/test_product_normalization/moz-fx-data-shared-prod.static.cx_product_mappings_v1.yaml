@@ -1,0 +1,9 @@
+- product: mobile
+  product_mapping: firefox-android
+  source: Kitsune
+- product: ios
+  product_mapping: firefox-ios
+  source: Kitsune
+- product: firefox-enterprise
+  product_mapping: firefox
+  source: Kitsune

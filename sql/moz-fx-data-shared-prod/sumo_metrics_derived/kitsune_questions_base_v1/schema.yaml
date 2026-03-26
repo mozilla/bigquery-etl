@@ -1,0 +1,22 @@
+fields:
+- name: creation_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the question was created in the forum, converted to UTC Time.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Mozilla product the question is about. This value is normalized from the original product field in Kitsune:
+    - 'mobile' → 'firefox-android'
+    - 'ios' → 'firefox-ios'
+    - 'firefox-enterprise' → 'firefox'
+    - Other values are kept as-is
+- name: forum_questions_posted
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of questions posted in the forum.
+- name: generated_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

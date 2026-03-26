@@ -1,0 +1,32 @@
+friendly_name: AI Costs Combined
+description: |-
+  Combined daily costs from OpenAI and Claude (Anthropic) APIs.
+  Unions openai_costs_v1 and claude_costs_v1 into a single table with a
+  common schema, normalizing amounts to the same currency units (USD).
+owners:
+- phlee@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_ai_usage
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_ai_usage
+  depends_on:
+  - task_id: ai_usage_derived__openai_costs__v1
+    dag_name: bqetl_ai_usage
+  - task_id: ai_usage_derived__claude_costs__v1
+    dag_name: bqetl_ai_usage
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.ai_usage_derived.claude_costs_v1
+  - moz-fx-data-shared-prod.ai_usage_derived.openai_costs_v1

@@ -85,6 +85,17 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    ai_usage_derived__ai_costs_combined__v1 = bigquery_etl_query(
+        task_id="ai_usage_derived__ai_costs_combined__v1",
+        destination_table="ai_costs_combined_v1",
+        dataset_id="ai_usage_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="phlee@mozilla.com",
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     ai_usage_derived__claude_api_keys__v1 = GKEPodOperator(
         task_id="ai_usage_derived__claude_api_keys__v1",
         arguments=[
@@ -158,4 +169,12 @@ with DAG(
         secrets=[
             ai_usage_derived__openai_costs__v1_bqetl_ai_usage__openai_admin_api_key,
         ],
+    )
+
+    ai_usage_derived__ai_costs_combined__v1.set_upstream(
+        ai_usage_derived__claude_costs__v1
+    )
+
+    ai_usage_derived__ai_costs_combined__v1.set_upstream(
+        ai_usage_derived__openai_costs__v1
     )

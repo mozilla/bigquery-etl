@@ -13,7 +13,7 @@ from ..backfill.parse import (
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
-from .utils import MAX_BACKFILL_ENTRY_AGE_DAYS
+from .utils import MAX_BACKFILL_ENTRY_AGE_DAYS, NBR_DAYS_RETAINED
 
 
 def validate_duplicate_entry_dates(
@@ -116,6 +116,23 @@ def validate_old_entry_date(backfill_entry: Backfill) -> None:
         )
 
 
+def validate_retention_range(backfill_entry: Backfill) -> None:
+    """Check if start date exceeds retention limit."""
+    if (
+        backfill_entry.status != BackfillStatus.INITIATE
+        or backfill_entry.override_retention_limit
+    ):
+        return
+    if backfill_entry.start_date < datetime.date.today() - datetime.timedelta(
+        days=NBR_DAYS_RETAINED
+    ):
+        raise ValueError(
+            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date "
+            "due to retention policies. "
+            "Add `override_retention_limit: true` to backfill to override this check."
+        )
+
+
 def validate_query_script_options(
     backfill_entry: Backfill, backfill_file: Path
 ) -> None:
@@ -153,6 +170,7 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         )
         validate_depends_on_past_end_date(backfill_entry, backfill_file)
         validate_old_entry_date(backfill_entry)
+        validate_retention_range(backfill_entry)
         validate_query_script_options(backfill_entry, backfill_file)
     validate_entries_are_sorted(backfills)
 

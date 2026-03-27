@@ -30,7 +30,11 @@ from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
-from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..backfill.utils import (
+    NBR_DAYS_RETAINED,
+    QUALIFIED_TABLE_NAME_RE,
+    qualified_table_name_matching,
+)
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
@@ -99,7 +103,6 @@ INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
-NBR_DAYS_RETAINED = 775
 GLOBAL_SCHEMA_NAME = "global.yaml"
 
 

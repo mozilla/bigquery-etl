@@ -11,7 +11,7 @@ from bigquery_etl.backfill.parse import (
     Backfill,
     BackfillStatus,
 )
-from bigquery_etl.backfill.utils import MAX_BACKFILL_ENTRY_AGE_DAYS
+from bigquery_etl.backfill.utils import MAX_BACKFILL_ENTRY_AGE_DAYS, NBR_DAYS_RETAINED
 from bigquery_etl.backfill.validate import (
     validate_default_reason,
     validate_default_watchers,
@@ -22,6 +22,7 @@ from bigquery_etl.backfill.validate import (
     validate_file,
     validate_old_entry_date,
     validate_query_script_options,
+    validate_retention_range,
     validate_shredder_mitigation,
 )
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
@@ -428,6 +429,66 @@ class TestValidateBackfill(object):
         )
 
         validate_old_entry_date(backfill_entry)
+
+    def test_validate_retention_range_exceeds_limit(self):
+        """Error should be raised if start_date exceeds retention limit for initiate entries."""
+        backfill_entry = Backfill(
+            entry_date=TEST_BACKFILL_1.entry_date,
+            start_date=date(2019, 1, 1),
+            end_date=TEST_BACKFILL_1.end_date,
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+        )
+
+        with pytest.raises(ValueError) as e:
+            validate_retention_range(backfill_entry)
+
+        assert f"more than {NBR_DAYS_RETAINED} days" in str(e.value)
+
+    def test_validate_retention_range_override(self):
+        """No error should be raised if override_retention_limit is True."""
+        backfill_entry = Backfill(
+            entry_date=TEST_BACKFILL_1.entry_date,
+            start_date=date(2019, 1, 1),
+            end_date=TEST_BACKFILL_1.end_date,
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+            override_retention_limit=True,
+        )
+
+        validate_retention_range(backfill_entry)
+
+    def test_validate_retention_range_complete_status(self):
+        """No error should be raised for complete entries even if start_date exceeds limit."""
+        backfill_entry = Backfill(
+            entry_date=TEST_BACKFILL_1.entry_date,
+            start_date=date(2019, 1, 1),
+            end_date=TEST_BACKFILL_1.end_date,
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.COMPLETE,
+        )
+
+        validate_retention_range(backfill_entry)
+
+    def test_validate_retention_range_within_limit(self):
+        """No error should be raised if start_date is within retention limit."""
+        backfill_entry = Backfill(
+            entry_date=TEST_BACKFILL_1.entry_date,
+            start_date=TEST_BACKFILL_1.start_date,
+            end_date=TEST_BACKFILL_1.end_date,
+            excluded_dates=TEST_BACKFILL_1.excluded_dates,
+            reason=VALID_REASON,
+            watchers=TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+        )
+
+        validate_retention_range(backfill_entry)
 
     def test_validate_query_script_missing_entrypoint(self):
         """Error should be raised if query_script_entrypoint is missing for a query script."""

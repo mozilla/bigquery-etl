@@ -17,6 +17,7 @@ from google.cloud.exceptions import Conflict, NotFound
 
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.interactive import is_interactive, prompt_for_options
 from ..backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_BILLING_PROJECT,
@@ -50,6 +51,7 @@ from ..backfill.validate import (
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
+    QualifiedTableNameType,
     billing_project_option,
     is_authenticated,
     project_id_option,
@@ -92,25 +94,43 @@ def backfill(ctx):
     help="""Create a new backfill entry in the backfill.yaml file.  Create
     a backfill.yaml file if it does not already exist.
 
+    Run without arguments to enter interactive mode, which prompts for each
+    option with descriptions.
+
     Examples:
 
     \b
+    # Interactive mode
+    ./bqetl backfill create
+
+    \b
+    # Non-interactive mode
     ./bqetl backfill create moz-fx-data-shared-prod.telemetry_derived.deviations_v1 \\
       --start_date=2021-03-01 \\
       --end_date=2021-03-31 \\
       --exclude=2021-03-03 \\
     """,
 )
-@click.argument("qualified_table_name")
+@click.argument(
+    "qualified_table_name",
+    required=False,
+    type=QualifiedTableNameType(with_project=True),
+    default=None,
+)
 @sql_dir_option
-@backfill_options.start_date()
+@backfill_options.start_date(required=False, default=None)
 @backfill_options.end_date()
 @backfill_options.exclude()
 @click.option(
     "--watcher",
     "-w",
-    help="Watcher of the backfill (email address)",
-    default=DEFAULT_WATCHER,
+    multiple=True,
+    help="Watcher of the backfill (email address). Can be specified multiple times.",
+)
+@click.option(
+    "--reason",
+    default=DEFAULT_REASON,
+    help="Reason for the backfill, including links to any related bugzilla or jira tickets.",
 )
 @backfill_options.custom_query_path()
 @backfill_options.query_script_entrypoint()
@@ -137,6 +157,7 @@ def backfill(ctx):
 @billing_project_option()
 @click.pass_context
 def create(
+    # Any new options must be added to the return value of prompt_for_options
     ctx,
     qualified_table_name,
     sql_dir,
@@ -144,6 +165,7 @@ def create(
     end_date,
     exclude,
     watcher,
+    reason,
     custom_query_path,
     query_script_entrypoint,
     query_script_date_arg,
@@ -158,6 +180,26 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
+    # Enter interactive mode if required options are missing
+    if is_interactive(qualified_table_name, start_date):
+        opts = prompt_for_options(sql_dir, qualified_table_name)
+        qualified_table_name = opts["qualified_table_name"]
+        start_date = opts["start_date"]
+        end_date = opts["end_date"]
+        exclude = opts["exclude"]
+        watcher = opts["watcher"]
+        custom_query_path = opts["custom_query_path"]
+        query_script_entrypoint = opts.get("query_script_entrypoint")
+        query_script_date_arg = opts.get("query_script_date_arg")
+        query_script_arg = opts.get("query_script_arg")
+        query_script_dry_run_arg = opts.get("query_script_dry_run_arg")
+        reason = opts["reason"]
+        shredder_mitigation = opts["shredder_mitigation"]
+        override_retention_range_limit = opts["override_retention_range_limit"]
+        override_depends_on_past_end_date = opts.get(
+            "override_depends_on_past_end_date", False
+        )
+
     if errors := validate_table_metadata(
         sql_dir, qualified_table_name, ignore_missing_metadata=True
     ):
@@ -184,8 +226,8 @@ def create(
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
-        reason=DEFAULT_REASON,
-        watchers=[watcher],
+        reason=reason,
+        watchers=list(watcher) if watcher else [DEFAULT_WATCHER],
         status=BackfillStatus.INITIATE,
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,

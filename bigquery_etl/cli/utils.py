@@ -28,6 +28,38 @@ CHECKS_FILE_RE = re.compile(
 GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
+class QualifiedTableNameType(click.ParamType):
+    """Click parameter type for qualified table names.
+
+    Accepts project.dataset.table (with_project=True) or dataset.table (with_project=False).
+    """
+
+    name = "table_name"
+
+    def __init__(self, with_project=True):
+        """Create QualifiedTableNameType with or without project qualification."""
+        self.with_project = with_project
+
+    def convert(self, value, param, ctx):
+        """Validate and return the qualified table name string."""
+        if isinstance(value, str):
+            parts = value.split(".")
+            expected = 3 if self.with_project else 2
+            fmt = "project.dataset.table" if self.with_project else "dataset.table"
+            if len(parts) != expected:
+                self.fail(f"Expected format {fmt}, got '{value}'.", param, ctx)
+            segment_re = re.compile(r"^[a-zA-Z0-9_-]+$")
+            for part in parts:
+                if not segment_re.match(part):
+                    self.fail(
+                        f"Invalid segment '{part}' in '{value}'. "
+                        "Only alphanumeric characters, underscores, and hyphens are allowed.",
+                        param,
+                        ctx,
+                    )
+        return value
+
+
 def is_valid_dir(ctx, param, value):
     """Check if the parameter provided via click is an existing directory."""
     if not os.path.isdir(value) or not os.path.exists(value):

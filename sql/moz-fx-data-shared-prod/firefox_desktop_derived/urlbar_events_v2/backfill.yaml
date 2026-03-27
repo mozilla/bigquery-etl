@@ -1,7 +1,7 @@
 2026-03-25:
   start_date: 2025-01-01
   end_date: 2025-01-31
-  reason: Populate the new fields with data as above. That backfill possibly failed because of a database error. Trying again with a shorter timeframe.
+  reason: Populate the new fields with data as before. That backfill possibly failed because of a database error. Trying again with a shorter timeframe.
   watchers:
   - kbammarito@mozilla.com
   - nflorez@mozilla.com

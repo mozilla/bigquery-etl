@@ -232,7 +232,6 @@ SELECT
       JSON_VALUE(event_extra.cancel_reason) AS `cancel_reason`,
       JSON_VALUE(event_extra.captivePortal) AS `captivePortal`,
       JSON_VALUE(event_extra.captiveState) AS `captiveState`,
-      JSON_VALUE(event_extra.card_type) AS `card_type`,
       JSON_VALUE(event_extra.category) AS `category`,
       JSON_VALUE(event_extra.category_name) AS `category_name`,
       JSON_VALUE(event_extra.caught_exceptio) AS `caught_exceptio`,

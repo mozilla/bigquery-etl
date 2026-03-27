@@ -7,7 +7,7 @@ description: |-
    - Zendesk
    - External data
 dataset_base_acl: view
-user_facing: true
+user_facing: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

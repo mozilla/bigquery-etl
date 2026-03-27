@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring_derived.remote_settings_uptake_live_v1`
+  `moz-fx-data-shared-prod.monitoring.remote_settings_uptake_live_v1`
 AS
 SELECT
   submission_timestamp,

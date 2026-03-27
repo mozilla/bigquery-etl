@@ -1,3 +1,15 @@
+2026-03-27:
+  start_date: 2025-02-01
+  end_date: 2026-03-26
+  reason: The shorter backfill succeeded. Now populate the new fields with data from Feb 2025 onward.
+  watchers:
+  - kbammarito@mozilla.com
+  - nflorez@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
 2026-03-25:
   start_date: 2025-01-01
   end_date: 2025-01-31
@@ -5,7 +17,7 @@
   watchers:
   - kbammarito@mozilla.com
   - nflorez@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

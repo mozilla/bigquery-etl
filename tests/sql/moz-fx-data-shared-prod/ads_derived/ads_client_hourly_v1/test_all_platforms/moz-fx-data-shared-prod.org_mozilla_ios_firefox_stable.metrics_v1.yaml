@@ -1,6 +1,31 @@
 # iOS - 2 pings in the same hour, same dimensions, so they roll up into 1 output row.
 # Ping 1: has ops (new=3, request_ads=1, record_impression=4) + client_error for 'new'
 # Ping 2: has ops (new=2, request_ads=1) only
+# Schema stub row (2025-01-14): filtered out by WHERE clause, but ensures all
+# labeled_string and labeled_counter fields exist in the inferred schema.
+- submission_timestamp: "2025-01-14 10:00:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 1
+    labeled_string:
+      ads_client_client_error:
+        - key: new
+          value: stub
+      ads_client_build_cache_error:
+        - key: timeout
+          value: stub
+      ads_client_deserialization_error:
+        - key: parse_error
+          value: stub
+      ads_client_http_cache_outcome:
+        - key: miss
+          value: stub
 - submission_timestamp: "2025-01-15 10:30:00 UTC"
   normalized_country_code: US
   normalized_channel: release

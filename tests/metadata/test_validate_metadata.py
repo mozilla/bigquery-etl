@@ -122,7 +122,9 @@ class TestValidateMetadata(object):
         )
         assert not validate_dataset_classification("telemetry_derived", metadata)
 
-    def test_validate_dataset_classification_non_user_facing_without_internal_suffix(self):
+    def test_validate_dataset_classification_non_user_facing_without_internal_suffix(
+        self,
+    ):
         metadata = DatasetMetadata(
             friendly_name="Test",
             description="Test",

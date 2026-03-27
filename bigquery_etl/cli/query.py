@@ -64,6 +64,7 @@ from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -1512,6 +1513,7 @@ def validate(
     billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
+    validate_all_datasets = name is None
     if name is None:
         name = "*.*"
 
@@ -1542,6 +1544,17 @@ def validate(
 
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
+
+    # Also validate datasets with no query files when no name argument is passed
+    if validate_all_datasets and (
+        project_id is None or project_id == "moz-fx-data-shared-prod"
+    ):
+        for dataset_path in (Path(sql_dir) / "moz-fx-data-shared-prod").iterdir():
+            if (
+                dataset_path.is_dir()
+                and (dataset_path / DATASET_METADATA_FILE).exists()
+            ):
+                dataset_dirs.add(dataset_path)
 
     for dataset_dir in dataset_dirs:
         try:

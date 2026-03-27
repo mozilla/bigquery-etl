@@ -594,6 +594,8 @@ def validate_dataset_classification(dataset_name, dataset_metadata):
     Intended to mirror the deploy-time assertions in
     https://github.com/mozilla-services/cloudops-infra/blob/5d3611b03866534d7742db55ea4b0ff0670479e1/projects/data-shared/tf/modules/bigquery/bqetl_tfvars.py#L121
     """
+    # ops assertion only runs on new datasets so old datasets might not follow the convention
+    exemptions = ["activity_stream_bi"]
     is_valid = True
     user_facing = dataset_metadata.user_facing
 
@@ -611,7 +613,9 @@ def validate_dataset_classification(dataset_name, dataset_metadata):
         dataset_name.endswith(suffix) for suffix in INTERNAL_DATASET_SUFFIXES
     )
 
-    if user_facing and has_internal_suffix:
+    if dataset_name in exemptions:
+        pass
+    elif user_facing and has_internal_suffix:
         click.echo(
             click.style(
                 f"ERROR: Dataset '{dataset_name}' is marked user_facing=True "

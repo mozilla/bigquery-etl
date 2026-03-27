@@ -585,6 +585,54 @@ def validate_query_parameters(metadata, path):
     return True
 
 
+INTERNAL_DATASET_SUFFIXES = ("_derived", "_external", "_syndicate")
+
+
+def validate_dataset_classification(dataset_name, dataset_metadata):
+    """Ensure dataset naming conventions match user_facing classification.
+
+    Intended to mirror the deploy-time assertions in
+    https://github.com/mozilla-services/cloudops-infra/blob/5d3611b03866534d7742db55ea4b0ff0670479e1/projects/data-shared/tf/modules/bigquery/bqetl_tfvars.py#L121
+    """
+    is_valid = True
+    user_facing = dataset_metadata.user_facing
+
+    if dataset_name.endswith("_live") or dataset_name.endswith("_stable"):
+        click.echo(
+            click.style(
+                f"ERROR: Dataset '{dataset_name}' ends with '_live' or '_stable' "
+                "which should not be managed via dataset_metadata.yaml.",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    has_internal_suffix = any(
+        dataset_name.endswith(suffix) for suffix in INTERNAL_DATASET_SUFFIXES
+    )
+
+    if user_facing and has_internal_suffix:
+        click.echo(
+            click.style(
+                f"ERROR: Dataset '{dataset_name}' is marked user_facing=True "
+                "but has an internal suffix (_derived, _external, _syndicate).",
+                fg="red",
+            )
+        )
+        is_valid = False
+    elif not user_facing and not has_internal_suffix:
+        click.echo(
+            click.style(
+                f"ERROR: Dataset '{dataset_name}' is marked user_facing=False "
+                "but does not have an internal suffix (_derived, _external, _syndicate).",
+                fg="red",
+            )
+        )
+        is_valid = False
+
+    return is_valid
+
+
 class MetadataValidationError(Exception):
     """Metadata validation failed."""
 
@@ -668,7 +716,13 @@ def validate_datasets(target):
             for file in files:
                 if DatasetMetadata.is_dataset_metadata_file(file):
                     path = os.path.join(root, file)
-                    _ = DatasetMetadata.from_file(path)
+                    dataset_metadata = DatasetMetadata.from_file(path)
+                    dataset_name = Path(root).name
+
+                    if not validate_dataset_classification(
+                        dataset_name, dataset_metadata
+                    ):
+                        failed = True
     else:
         raise ValueError(f"Invalid target: {target}, target must be a directory.")
 

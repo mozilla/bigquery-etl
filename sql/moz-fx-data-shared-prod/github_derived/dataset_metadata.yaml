@@ -1,0 +1,11 @@
+friendly_name: GitHub Derived
+description: |-
+  Derived tables built on top of github_external. Includes vector embeddings
+  for semantic search and aggregated delivery metrics.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

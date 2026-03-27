@@ -1,0 +1,11 @@
+# Android-nightly (Fenix) - 1 ping with only a build_cache_error
+- submission_timestamp: "2025-01-15 10:45:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  client_info:
+    app_display_version: "133.0.0"
+  metrics:
+    labeled_string:
+      ads_client_build_cache_error:
+        - key: timeout
+          value: cache_build_failed

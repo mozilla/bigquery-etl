@@ -1,0 +1,13 @@
+# Android - 1 ping with ops only
+- submission_timestamp: "2025-01-15 10:20:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 2
+        - key: request_ads
+          value: 1

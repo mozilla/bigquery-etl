@@ -1154,7 +1154,11 @@ def _run_query(
         except FileNotFoundError:
             logging.warning("No metadata.yaml found for %s", query_file)
 
-        if not use_public_table and destination_table is not None:
+        if (
+            not use_public_table
+            and destination_table is not None
+            and query_file.name != "script.sql"
+        ):
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
 

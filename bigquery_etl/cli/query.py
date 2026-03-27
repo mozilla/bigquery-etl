@@ -31,8 +31,8 @@ from google.cloud.exceptions import NotFound
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.utils import (
-    NBR_DAYS_RETAINED,
     QUALIFIED_TABLE_NAME_RE,
+    get_effective_retention_days,
     qualified_table_name_matching,
 )
 from ..cli import check
@@ -739,21 +739,6 @@ def backfill(
         )
         sys.exit(1)
 
-    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
-    if (
-        not override_retention_range_limit
-        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
-    ):
-        # Exit - cannot backfill due to risk of losing data
-        click.echo(
-            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
-        )
-        sys.exit(1)
-
-    # If override retention policy is true, continue to run the backfill
-    if override_retention_range_limit:
-        click.echo("Over-riding retention limit - ensure data exists in source tables")
-
     if custom_query_path:
         query_files = paths_matching_name_pattern(
             custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
@@ -794,6 +779,20 @@ def backfill(
         raise click.ClickException(
             f"Can't run backfill without metadata for {query_file_path}."
         )
+
+    # Check retention limit using the effective retention (considers partition expiration_days)
+    retention_days = get_effective_retention_days(metadata)
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=retention_days)
+    ):
+        click.echo(
+            f"Cannot backfill more than {retention_days} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
     # If date_partition_parameter isn't set it's assumed to be submission_date:

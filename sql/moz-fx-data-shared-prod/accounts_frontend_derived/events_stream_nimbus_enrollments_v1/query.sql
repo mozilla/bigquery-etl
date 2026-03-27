@@ -41,8 +41,7 @@ SELECT
   acct_fr.is_bot_generated,
   acct_fr.document_event_number,
   nimbus.experiment_id,
-  nimbus.branch,
-  @submission_date AS submission_date
+  nimbus.branch
 FROM
   `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
 LEFT JOIN

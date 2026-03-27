@@ -26,12 +26,11 @@ scheduling:
   - --destination
   - moz-fx-data-shared-prod.github_derived.pr_embeddings_v1
   - --vertex-project
-  - TBD  # confirm with DSRE which GCP project to use for Vertex AI
-  - --vertex-location
-  - us-west1
+  - mozdata.nonprod # should switch to moz-fx-data-shared-prod once vertex AI enabled
   referenced_tables:
   - ['moz-fx-data-shared-prod', 'github_external', 'bqetl_prs_v1']
   - ['moz-fx-data-shared-prod', 'github_external', 'private_bqetl_prs_v1']
-  - ['moz-fx-data-shared-prod', 'github_external', 'lookml_generator_prs_v1']
-  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_default_prs_v1']
-  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_private_prs_v1']
+# Once PR-9091 merged, add looker tables as dependencies by uncommenting below
+#  - ['moz-fx-data-shared-prod', 'github_external', 'lookml_generator_prs_v1']
+#  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_default_prs_v1']
+#  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_private_prs_v1']

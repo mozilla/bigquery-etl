@@ -1,0 +1,106 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the submission (partition field).
+- name: submission_hour
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Submission timestamp truncated to the hour.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Client platform. One of: ios (org_mozilla_ios_firefox),
+    android (org_mozilla_firefox), android-nightly (org_mozilla_fenix).
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166-1 alpha-2 country code.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Application display version (client_info.app_display_version).
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized release channel (e.g. release, beta, nightly).
+- name: ping_count
+  type: INT64
+  mode: NULLABLE
+  description: Number of metrics pings with at least one ads_client metric entry.
+- name: op_new
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Total count of 'new' operations from ads_client.client_operation_total
+    labeled_counter.
+- name: op_request_ads
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Total count of 'request_ads' operations from ads_client.client_operation_total
+    labeled_counter.
+- name: op_record_click
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Total count of 'record_click' operations from ads_client.client_operation_total
+    labeled_counter.
+- name: op_record_impression
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Total count of 'record_impression' operations from
+    ads_client.client_operation_total labeled_counter.
+- name: op_report_ad
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Total count of 'report_ad' operations from ads_client.client_operation_total
+    labeled_counter.
+- name: client_error_new_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with a 'new' entry in ads_client.client_error labeled_string.
+- name: client_error_request_ads_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with a 'request_ads' entry in ads_client.client_error
+    labeled_string.
+- name: client_error_record_click_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with a 'record_click' entry in ads_client.client_error
+    labeled_string.
+- name: client_error_record_impression_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with a 'record_impression' entry in ads_client.client_error
+    labeled_string.
+- name: client_error_report_ad_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with a 'report_ad' entry in ads_client.client_error
+    labeled_string.
+- name: build_cache_error_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with any entry in ads_client.build_cache_error labeled_string.
+- name: deserialization_error_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with any entry in ads_client.deserialization_error
+    labeled_string.
+- name: http_cache_outcome_pings
+  type: INT64
+  mode: NULLABLE
+  description: >-
+    Number of pings with any entry in ads_client.http_cache_outcome labeled_string.

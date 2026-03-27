@@ -1,0 +1,33 @@
+# iOS - 2 pings in the same hour, same dimensions, so they roll up into 1 output row.
+# Ping 1: has ops (new=3, request_ads=1, record_impression=4) + client_error for 'new'
+# Ping 2: has ops (new=2, request_ads=1) only
+- submission_timestamp: "2025-01-15 10:30:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 3
+        - key: request_ads
+          value: 1
+        - key: record_impression
+          value: 4
+    labeled_string:
+      ads_client_client_error:
+        - key: new
+          value: some_error
+- submission_timestamp: "2025-01-15 10:55:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 2
+        - key: request_ads
+          value: 1

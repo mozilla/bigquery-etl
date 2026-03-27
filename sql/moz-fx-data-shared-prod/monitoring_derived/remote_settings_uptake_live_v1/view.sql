@@ -24,5 +24,3 @@ FROM
 INNER JOIN UNNEST(events) AS e ON
   e.category = 'uptake.remotecontent.result'
   AND e.name = 'uptake_remotesettings'
-WHERE
-  DATE(submission_timestamp) > '2010-01-01'

@@ -2,7 +2,7 @@ friendly_name: GitHub PR Embeddings
 description: |-
   Vector embeddings of GitHub PR descriptions generated daily via Vertex AI
   text-embedding-004 model. Each row corresponds to one merged PR. Embeddings enable
-  semantic search across all tracked repositories. Partitioned by merged_at.
+  semantic search across all tracked repositories. Partitioned by merged_date.
 owners:
 - gkaberere@mozilla.com
 labels:
@@ -11,7 +11,7 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: merged_at
+    field: merged_date
     require_partition_filter: false
   clustering:
     fields:

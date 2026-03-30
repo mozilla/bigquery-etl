@@ -1074,12 +1074,11 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
@@ -1557,6 +1556,7 @@ def validate(
 
 def _initialize_in_parallel(
     project,
+    public_project_id,
     table,
     dataset,
     query_file,
@@ -1573,7 +1573,7 @@ def _initialize_in_parallel(
                 _run_query,
                 [query_file],
                 project,
-                None,
+                public_project_id,
                 table,
                 dataset,
                 addl_templates=addl_templates,
@@ -1702,9 +1702,25 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
+            )
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(table_id_to_check)
+
                 if skip_existing:
                     # table exists; skip initialization
                     return
@@ -1778,7 +1794,8 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=full_table_id,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1793,8 +1810,10 @@ def initialize(
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
-                        public_project_id=None,
-                        destination_table=full_table_id,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={

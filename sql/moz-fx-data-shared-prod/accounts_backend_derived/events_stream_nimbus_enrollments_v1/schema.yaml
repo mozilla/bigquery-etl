@@ -1,8 +1,4 @@
 fields:
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-  description: Row identifier UUID. When unnesting the results column, use 'COUNT(DISTINCT event_id)' to count events.
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -510,41 +506,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Document Event Number.
-- name: extras
-  type: RECORD
-  mode: NULLABLE
-  description: Extra fields for the event
-  fields:
-  - name: boolean
-    type: RECORD
-    mode: NULLABLE
-    description: Boolean fields
-    fields:
-    - name: linking
-      type: BOOLEAN
-      mode: NULLABLE
-      description: Linking boolean
-  - name: string
-    type: RECORD
-    mode: NULLABLE
-    description: Record of event extras
-    fields:
-    - name: error_code
-      type: STRING
-      mode: NULLABLE
-      description: Error code associated with the event.
-    - name: reason
-      type: STRING
-      mode: NULLABLE
-      description: Reason for the event.
-    - name: scopes
-      type: STRING
-      mode: NULLABLE
-      description: Scopes associated with the event.
-    - name: type
-      type: STRING
-      mode: NULLABLE
-      description: Type of the event.
 - name: experiment_id
   type: STRING
   mode: NULLABLE
@@ -553,7 +514,3 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Nimbus experiment branch.
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.

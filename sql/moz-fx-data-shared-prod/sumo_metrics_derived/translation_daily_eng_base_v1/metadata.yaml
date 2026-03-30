@@ -20,9 +20,6 @@ labels:
   application: sumo
   type: base_metrics
   schedule: daily
-references:
-  - "SUMO Wiki Database (PostgreSQL via EXTERNAL_QUERY)"
-  - "Translation SLA: 30 days from English article review"
 bigquery:
   time_partitioning:
     type: day

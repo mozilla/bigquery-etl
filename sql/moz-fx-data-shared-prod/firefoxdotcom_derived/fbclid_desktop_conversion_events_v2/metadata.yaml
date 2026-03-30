@@ -1,0 +1,44 @@
+friendly_name: fbclid Conversions
+description: |-
+  Keeps track of each fbclid and related conversion events. This includes the following events:
+
+  early_conversion_events:
+  - firefox_first_run
+  - firefox_first_ad_click
+  - firefox_first_search
+  - returned_second_day
+
+  activity_conversion_events:
+  - first_wk_5_actv_days_and_1_or_more_search_w_ads
+  - first_wk_3_actv_days_and_1_or_more_search_w_ads
+  - first_wk_3_actv_days_and_24_active_minutes
+  - is_dau_at_least_4_of_first_7_days
+  - is_dau_at_least_3_of_first_7_days
+  - is_dau_at_least_2_of_first_7_days
+  - is_dau_at_least_5_of_first_7_days
+  - is_dau_at_least_6_of_first_7_days
+  - is_dau_at_least_7_of_first_7_days
+  - set_default
+  - is_dau_on_days_6_or_7
+
+  Expected grain: max 1 row per fbclid + conversion_name combination.
+owners:
+- kik@mozilla.com
+
+labels:
+  incremental: true
+  table_type: client_level
+
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on_past: true
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+
+monitoring:
+  enabled: true

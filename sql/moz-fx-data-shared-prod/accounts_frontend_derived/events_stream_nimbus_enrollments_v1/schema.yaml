@@ -1,8 +1,4 @@
 fields:
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-  description: Row identifier UUID. When unnesting the results column, use 'COUNT(DISTINCT event_id)' to count events.
 - name: additional_properties
   type: STRING
   mode: NULLABLE

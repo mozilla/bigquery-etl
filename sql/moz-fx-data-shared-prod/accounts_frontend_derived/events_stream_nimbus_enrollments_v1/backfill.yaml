@@ -4,7 +4,7 @@
   reason: deng_10290, initial backfill from 2026-03-25 back to 2024-02-11
   watchers:
   - mhirose@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

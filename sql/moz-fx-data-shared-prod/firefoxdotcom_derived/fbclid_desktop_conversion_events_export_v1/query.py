@@ -38,6 +38,7 @@ SELECT
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
   CONCAT("fb.0.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS() AS STRING), ".", fbclid) AS fbc,
   conversion_name,
+  CURRENT_TIMESTAMP() AS run_timestamp,
 FROM
   `moz-fx-data-shared-prod.firefoxdotcom.fbclid_desktop_conversion_events`
 WHERE

@@ -76,15 +76,22 @@ def cli(prog_name=None):
         " `bqetl_targets.yaml` for available targets. Overrides the BQETL_TARGET"
         " environment variable and the default_target setting in bqetl_targets.yaml.",
     )
+    @click.option(
+        "--no-target",
+        "--no_target",
+        is_flag=True,
+        default=False,
+        help="Disable the default target, ignoring BQETL_TARGET and default_target in bqetl_targets.yaml.",
+    )
     @click.pass_context
-    def group(ctx, log_level, target):
+    def group(ctx, log_level, target, no_target):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
 
         ctx.ensure_object(dict)
         ctx.obj["target"] = None
 
-        if not target:
+        if not target and not no_target:
             target = get_default_target_name()
 
         if target:

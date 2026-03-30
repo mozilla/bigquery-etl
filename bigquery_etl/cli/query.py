@@ -1021,22 +1021,6 @@ def run(
         raise click.UsageError("--dataset-id and --target are mutually exclusive.")
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
-    # supplement with any queries that only exist in the target project directory
-    # (source takes precedence — target-only queries are appended to avoid using
-    # stale copies when the same query exists in both)
-    if target and target.project_id:
-        target_project_dir = Path(sql_dir) / target.project_id
-        if target_project_dir.exists():
-            source_keys = {
-                (ds, t) for _, ds, t in map(extract_from_query_path, query_files)
-            }
-            target_files = paths_matching_name_pattern(
-                name, sql_dir, target.project_id, silent=True
-            )
-            for f in target_files:
-                _, ds, t = extract_from_query_path(f)
-                if (ds, t) not in source_keys:
-                    query_files.append(f)
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1049,7 +1033,7 @@ def run(
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     # prepare target directories if using --target
-    if target:
+    if target and target.project_id != project_id:
         query_files = prepare_target_files(
             query_files,
             sql_dir,

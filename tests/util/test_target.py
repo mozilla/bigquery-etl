@@ -61,14 +61,15 @@ class TestTarget:
             )
 
     @patch(
-        "bigquery_etl.util.target._get_user_context", return_value={"name": "testuser"}
+        "bigquery_etl.util.target._get_account_context",
+        return_value={"username": "testuser"},
     )
     @patch(
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "main", "commit": "abc123de"},
     )
     @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_success(self, mock_config_loader, _mock_git, _mock_user):
+    def test_get_target_success(self, mock_config_loader, _mock_git, _mock_account):
         """Test successfully getting a target with git info."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
@@ -91,14 +92,15 @@ prod:
             assert target.dataset_prefix == "dev_main_abc123de_"
 
     @patch(
-        "bigquery_etl.util.target._get_user_context", return_value={"name": "unknown"}
+        "bigquery_etl.util.target._get_account_context",
+        return_value={"username": "unknown"},
     )
     @patch(
         "bigquery_etl.util.target._get_git_context",
         return_value={"branch": "unknown", "commit": "unknown"},
     )
     @patch("bigquery_etl.util.target.ConfigLoader")
-    def test_get_target_no_git_repo(self, mock_config_loader, _mock_git, _mock_user):
+    def test_get_target_no_git_repo(self, mock_config_loader, _mock_git, _mock_account):
         """Test getting a target when not in a git repo."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)

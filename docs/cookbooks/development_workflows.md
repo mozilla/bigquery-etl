@@ -9,7 +9,7 @@ This guide covers testing SQL changes in development environments before deployi
 
 ## Target-Based Development
 
-Configure a target in `./bqetl_targets.yaml`:
+Configure a target in `./bqetl_targets.yaml`. When running commands from `private-bigquery-etl`, targets are still read from `bigquery-etl/bqetl_targets.yaml`.
 
 **Per-source-dataset deployment** (one target dataset per source dataset, keeps datasets separate):
 ```yaml
@@ -52,6 +52,7 @@ Use `--target dev` to run and deploy artifacts to the dev environment:
 ```
 
 What happens automatically:
+
 1. Copies to `sql/dev-sandbox-user/user_<branch>_<commit>_moz_fx_data_shared_prod_telemetry_derived/clients_daily_v6/`
 2. Rewrites references if `--defer-to-target` is specified (deployed tables → dev, others → prod)
 3. Deploys schema to `dev-sandbox-user.user_<branch>_<commit>_..._telemetry_derived.clients_daily_v6`

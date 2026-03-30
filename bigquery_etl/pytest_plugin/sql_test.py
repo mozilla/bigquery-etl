@@ -97,7 +97,7 @@ def dataset(bq: bigquery.Client, dataset_id: str):
     try:
         result = bq.get_dataset(dataset_id)
     except NotFound:
-        result = bq.create_dataset(dataset_id)
+        result = bq.create_dataset(dataset_id, exists_ok=True)
     try:
         yield result.reference
     finally:

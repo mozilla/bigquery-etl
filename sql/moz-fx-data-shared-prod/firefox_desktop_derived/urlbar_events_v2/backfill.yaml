@@ -4,7 +4,7 @@
   reason: The previous backfill failed, possibly due to Kubernetes errors. Trying again with three months.
   watchers:
   - kbammarito@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

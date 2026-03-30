@@ -1,15 +1,4 @@
 2026-03-30:
-  start_date: 2025-05-01
-  end_date: 2025-10-31
-  reason: The previous backfill succeeded. Trying with six months.
-  watchers:
-  - kbammarito@mozilla.com
-  status: Initiate
-  shredder_mitigation: false
-  override_retention_limit: false
-  override_depends_on_past_end_date: false
-  ignore_date_partition_offset: false
-2026-03-30:
   start_date: 2025-02-01
   end_date: 2025-04-30
   reason: The previous backfill failed, possibly due to Kubernetes errors. Trying again with three months.

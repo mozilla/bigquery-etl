@@ -743,6 +743,7 @@ jobs:
         with:
           name: private-bigquery-etl-sha
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
+          archive: false
 
   main-generate-sql-and-dags:
     name: Generate SQL and DAGs from Main Branch
@@ -964,6 +965,7 @@ jobs:
         with:
           name: dag-test-results
           path: ~/telemetry-airflow/test-results/junit.xml
+          archive: false
 
   generate-diff:
     name: Generate and Post SQL Diff
@@ -1015,6 +1017,7 @@ jobs:
         with:
           name: sql-diff
           path: /tmp/workspace/sql.diff
+          archive: false
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6.3.0
         with:

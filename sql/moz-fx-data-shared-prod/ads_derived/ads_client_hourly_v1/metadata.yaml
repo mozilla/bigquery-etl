@@ -1,11 +1,16 @@
-friendly_name: Ads Client Hourly
+friendly_name: Ads Client Operations and Errors Hourly
 description: |-
-  Hourly aggregate of ads client metrics pings across iOS and Android platforms.
-  Includes operation counts (client_operation_total labeled_counter) and error ping
-  counts (client_error, build_cache_error, deserialization_error, http_cache_outcome
-  labeled_string metrics) broken down by key, plus total ping count, country,
-  app version, and channel dimensions.
-  Only pings containing at least one ads_client metric entry are included.
+  Hourly aggregates tracking the performance and reliability of the ads client SDK
+  across mobile (iOS and Android) and potentially desktop platforms in the future.
+
+  Monitors SDK operation counts (new client creation, ad requests, click/impression recording,
+  ad reporting) and tracks errors encountered during these operations (client errors by operation type,
+  cache build failures, deserialization errors, HTTP cache outcomes).
+
+  This data is used to monitor SDK health, identify error patterns, and measure
+  operational volume by platform, country, app version, and channel.
+
+  Only pings containing at least one ads_client SDK metric are included.
 owners:
   - ahanot@mozilla.com
   - mozilla/ads_data_team
@@ -30,7 +35,8 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-      - platform
+      - surface
+      - normalized_os
       - normalized_country_code
 workgroup_access:
   - role: roles/bigquery.dataViewer

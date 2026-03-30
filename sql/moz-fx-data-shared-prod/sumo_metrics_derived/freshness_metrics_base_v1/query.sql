@@ -97,7 +97,7 @@ WITH external_data AS (
     )
 )
 SELECT
-  date_key,
+  event_date,
   total_articles,
   articles_updated_within_6_months,
   outdated_articles,

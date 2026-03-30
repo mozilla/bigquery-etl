@@ -141,9 +141,7 @@ activity_conversion_events AS (
       USING (client_id)
     WHERE
       report_date = @submission_date
-      AND first_seen_date
-      BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
-      AND @submission_date
+      AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 9 DAY)
   )
   SELECT
     * EXCEPT (did_conversion),

@@ -1,5 +1,5 @@
 fields:
-- name: date_key
+- name: event_date
   type: DATE
   mode: REQUIRED
   description: Date of English article review or translation activity

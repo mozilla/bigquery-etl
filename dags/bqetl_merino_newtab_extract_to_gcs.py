@@ -98,7 +98,6 @@ with DAG(
             "--source-project=moz-fx-data-shared-prod",
             "--source-dataset=telemetry_derived",
             "--source-table=newtab_merino_extract_v3",
-            "--destination-bucket=merino-airflow-data-prodpy",
             "--destination-bucket=merino-airflow-data-prod",
             "--destination-prefix=newtab-merino-exports/engagement",
             "--deletion-days-old=90",

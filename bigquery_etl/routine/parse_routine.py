@@ -67,6 +67,7 @@ class RawRoutine:
     definitions: List[str] = attr.ib([])
     tests: List[str] = attr.ib([])
     dependencies: List[str] = attr.ib([])
+    test_dependencies: List[str] = attr.ib([])
     description: str = attr.ib()
     is_stored_procedure: bool = attr.ib(False)
 
@@ -187,9 +188,11 @@ class RawRoutine:
                     tests.append(" ".join(statements[procedure_start : i + 1]))
                     procedure_start = -1
 
-        # get routines that could be referenced by the UDF
+        # get routines that could be referenced by the UDF or its tests
         routines = get_routines(project)
         dependencies = []
+        tests_sql = "\n".join(tests)
+        test_dependencies = set()
         for udf in routines:
             udf_re = re.compile(
                 r"\b"
@@ -198,6 +201,12 @@ class RawRoutine:
             )
             if udf_re.search("\n".join(definitions)):
                 dependencies.append(udf["name"])
+            if (
+                udf["name"] != internal_name
+                and udf["name"] not in test_dependencies
+                and udf_re.search(tests_sql)
+            ):
+                test_dependencies.add(udf["name"])
 
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
         dependencies = list(set(dependencies))
@@ -211,6 +220,7 @@ class RawRoutine:
             definitions=definitions,
             tests=tests,
             dependencies=sorted(dependencies),
+            test_dependencies=sorted(test_dependencies),
             is_stored_procedure=is_stored_procedure,
         )
 

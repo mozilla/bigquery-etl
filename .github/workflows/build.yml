@@ -958,11 +958,11 @@ jobs:
         run: |
           cd ~/telemetry-airflow
           source .venv/bin/activate
-          python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
+          python -m pytest tests/dags/test_dag_validity.py --junitxml=dag-test-results.xml
       - name: Upload test results
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
-          path: ~/telemetry-airflow/test-results/junit.xml
+          path: ~/telemetry-airflow/dag-test-results.xml
           archive: false
 
   generate-diff:

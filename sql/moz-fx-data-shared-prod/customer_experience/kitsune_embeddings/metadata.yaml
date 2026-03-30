@@ -1,0 +1,29 @@
+friendly_name: Kitsune Embeddings
+description: |-
+  Structured and ai-supporting data from Kitsune -the application that
+   supports Mozilla Support (SUMO).
+
+  Dimensions:
+  - creation_date
+  - locale
+  - product	
+  - topic
+  - is_solved
+
+  Metrics
+  - votes
+
+  Generated:
+  - summary_generated
+  - category_generated
+  - language_generated	
+  - entities_generated
+  - embedding based on [title, content]
+  - sentiment_score based on [title, content]
+  - recency, assuming 7 days as the time when content begins to lose relevance.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience

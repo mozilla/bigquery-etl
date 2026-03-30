@@ -291,14 +291,13 @@ with DAG(
 
     firefoxdotcom_derived__fbclid_desktop_conversion_events__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__fbclid_desktop_conversion_events__v1",
-        destination_table='fbclid_desktop_conversion_events_v1${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="fbclid_desktop_conversion_events_v1",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -9)}}"],
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(

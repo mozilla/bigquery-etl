@@ -21297,6 +21297,20 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_deprecated_ops_doc_csscontainer_rule_single_condition
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used CSSContainerRuleSingleCondition. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_csscontainer_rule_single_condition
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used CSSContainerRuleSingleCondition. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

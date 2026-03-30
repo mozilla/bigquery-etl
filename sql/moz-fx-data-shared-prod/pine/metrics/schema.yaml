@@ -18698,8 +18698,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Result of each attempt to set the default browser with SetDefaultExtensionHandlersUserChoice()
-        for pdf extension
+      description: 'Result of each attempt to set the default browser by setting the
+        user-choice regkey for pdf extension.
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram BROWSER_SET_DEFAULT_PDF_HANDLER_USER_CHOICE_RESULT.
@@ -20591,6 +20591,34 @@ fields:
         mode: NULLABLE
       description: 'A keyed uint recording how many times the user entered a particular
         search mode through the messaging system.
+
+        '
+    - name: browser_set_default_pdf_handler_modern_settings_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Result of each attempt to set the default PDF handler by opening
+        modern settings through the ms-settings protocol (ms-settings:defaultapps).
+
+        '
+    - name: browser_set_default_pdf_handler_open_with_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Result of each attempt to set the default PDF handler with the
+        undocumented IOpenWithLauncher API for pdfs.
 
         '
   - name: memory_distribution

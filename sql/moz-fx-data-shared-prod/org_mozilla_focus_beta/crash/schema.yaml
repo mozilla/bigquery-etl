@@ -531,6 +531,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The Android application's build ID.
+    - name: crash_id
+      type: STRING
+      mode: NULLABLE
+      description: A UUID for the crash event.
   - name: timespan
     type: RECORD
     mode: NULLABLE

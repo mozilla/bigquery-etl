@@ -36,7 +36,7 @@ WITH external_data AS (
     )
 )
 SELECT
-  review_date AS date_key,
+  review_date AS event_date,
   en_article_id,
   CURRENT_TIMESTAMP() AS etl_timestamp
 FROM

@@ -22,7 +22,7 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: date_key
+    field: event_date
     require_partition_filter: false
 scheduling:
   dag_name: bqetl_sumo_metrics

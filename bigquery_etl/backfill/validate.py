@@ -139,7 +139,7 @@ def validate_retention_range(backfill_entry: Backfill, backfill_file: Path) -> N
         retention_days = get_effective_retention_days(metadata)
 
     if backfill_entry.start_date < backfill_entry.entry_date - datetime.timedelta(
-        days=retention_days
+        days=retention_days - 1
     ):
         raise ValueError(
             f"Cannot backfill more than {retention_days} days prior to entry date "

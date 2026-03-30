@@ -30,7 +30,11 @@ from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
-from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..backfill.utils import (
+    QUALIFIED_TABLE_NAME_RE,
+    get_effective_retention_days,
+    qualified_table_name_matching,
+)
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
@@ -60,6 +64,7 @@ from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -99,7 +104,6 @@ INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
-NBR_DAYS_RETAINED = 775
 GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
@@ -735,21 +739,6 @@ def backfill(
         )
         sys.exit(1)
 
-    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
-    if (
-        not override_retention_range_limit
-        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
-    ):
-        # Exit - cannot backfill due to risk of losing data
-        click.echo(
-            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
-        )
-        sys.exit(1)
-
-    # If override retention policy is true, continue to run the backfill
-    if override_retention_range_limit:
-        click.echo("Over-riding retention limit - ensure data exists in source tables")
-
     if custom_query_path:
         query_files = paths_matching_name_pattern(
             custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
@@ -790,6 +779,20 @@ def backfill(
         raise click.ClickException(
             f"Can't run backfill without metadata for {query_file_path}."
         )
+
+    # Check retention limit using the effective retention (considers partition expiration_days)
+    retention_days = get_effective_retention_days(metadata)
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=retention_days)
+    ):
+        click.echo(
+            f"Cannot backfill more than {retention_days} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
     # If date_partition_parameter isn't set it's assumed to be submission_date:
@@ -1509,6 +1512,7 @@ def validate(
     billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
+    validate_all_datasets = name is None
     if name is None:
         name = "*.*"
 
@@ -1539,6 +1543,17 @@ def validate(
 
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
+
+    # Also validate datasets with no query files when no name argument is passed
+    if validate_all_datasets and (
+        project_id is None or project_id == "moz-fx-data-shared-prod"
+    ):
+        for dataset_path in (Path(sql_dir) / "moz-fx-data-shared-prod").iterdir():
+            if (
+                dataset_path.is_dir()
+                and (dataset_path / DATASET_METADATA_FILE).exists()
+            ):
+                dataset_dirs.add(dataset_path)
 
     for dataset_dir in dataset_dirs:
         try:

@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 import yaml
-from google.api_core.exceptions import BadRequest, NotFound
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from ..schema import SCHEMA_FILE, Schema
@@ -100,10 +100,10 @@ class JsonDecodeError(Exception):
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
-    try:
-        result = bq.get_dataset(dataset_id)
-    except NotFound:
-        result = bq.create_dataset(dataset_id)
+    # The dataset shouldn't already exist, but specifying `exists_ok` is still necessary here
+    # just in case the BigQuery client times out waiting for the initial API call and retries,
+    # except the initial API call actually does create the dataset before the retry executes.
+    result = bq.create_dataset(dataset_id, exists_ok=True)
     try:
         yield result.reference
     finally:

@@ -1,0 +1,13 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: REQUIRED
+  description: Date of English article review or translation activity
+- name: en_article_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique identifier of the English wiki document (wiki_document.id)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

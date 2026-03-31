@@ -470,7 +470,7 @@ class TestValidateBackfill(object):
         with pytest.raises(ValueError) as e:
             validate_retention_range(backfill_entry, TEST_BACKFILL_FILE_WITH_EXPIRATION)
 
-        assert "more than 180 days" in str(e.value)
+        assert "more than 180 days prior to entry date" in str(e.value)
 
     def test_validate_retention_range_exceeds_limit(self):
         """Error should be raised if start_date exceeds retention limit for initiate entries."""
@@ -487,7 +487,7 @@ class TestValidateBackfill(object):
         with pytest.raises(ValueError) as e:
             validate_retention_range(backfill_entry, TEST_BACKFILL_FILE)
 
-        assert f"more than {NBR_DAYS_RETAINED} days" in str(e.value)
+        assert f"more than {NBR_DAYS_RETAINED} days prior to entry date" in str(e.value)
 
     def test_validate_retention_range_override(self):
         """No error should be raised if override_retention_limit is True."""

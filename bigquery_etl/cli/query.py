@@ -1661,6 +1661,13 @@ def _initialize_in_parallel(
     type=int,
     default=4,
 )
+@click.option(
+    "--file",
+    "file_name",
+    help="Only initialize tables whose SQL file matches this filename "
+    "(e.g. materialized_view.sql). Defaults to query.sql, init.sql, and materialized_view.sql.",
+    default=None,
+)
 @click.pass_context
 def initialize(
     ctx,
@@ -1675,6 +1682,7 @@ def initialize(
     skip_nonempty,
     skip_tables_older_than,
     sampling_batch_size,
+    file_name,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1682,17 +1690,21 @@ def initialize(
         sys.exit(1)
 
     if Path(name).exists():
-        # allow name to be a path
         query_files = [Path(name)]
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
             r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
+        files = (
+            [file_name]
+            if file_name
+            else ["query.sql", "init.sql", "materialized_view.sql"]
+        )
         query_files = []
         for project_id in project_ids:
             query_files += paths_matching_name_pattern(
-                name, sql_dir, project_id, file_regex=file_regex
+                name, sql_dir, project_id, files=files, file_regex=file_regex
             )
 
     if not query_files:

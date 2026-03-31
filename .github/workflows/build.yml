@@ -569,12 +569,14 @@ jobs:
       - *restore-venv
       - *download-staged-sql
       - *copy-staged-sql
+      - *auth-gcp-dryrun
       - *auth-gcp-stage
       - name: Run SQL tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
 

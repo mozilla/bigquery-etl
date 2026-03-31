@@ -1,13 +1,13 @@
 # Load libraries
 import json
 import os
+import time
+from argparse import ArgumentParser
 from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
-from argparse import ArgumentParser
-from google.cloud import bigquery
-from google.cloud import storage
+from google.cloud import bigquery, storage
 
 # Configs
 device_usg_configs = {
@@ -192,81 +192,100 @@ def get_device_usage_data(date_of_interest, auth_token):
         device_usage_api_url = generate_device_type_timeseries_api_call(
             start_date, end_date, "1d", loc
         )
-        try:
-            # Call the API and save the response as JSON
-            response = requests.get(
-                device_usage_api_url,
-                headers=headers,
-                timeout=device_usg_configs["timeout_limit"],
-            )
-            response_json = json.loads(response.text)
-
-            # If response was successful, get the result
-            if response_json["success"] is True:
-
-                result = response_json["result"]
-                human_ts, human_dsktp, human_mbl, human_othr = (
-                    parse_device_type_timeseries_response_human(result)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # Call the API and save the response as JSON
+                response = requests.get(
+                    device_usage_api_url,
+                    headers=headers,
+                    timeout=device_usg_configs["timeout_limit"],
                 )
-                bot_ts, bot_dsktp, bot_mbl, bot_othr = (
-                    parse_device_type_timeseries_response_bot(result)
-                )
-                conf_lvl = result["meta"]["confidenceInfo"]["level"]
-                aggr_intvl = result["meta"]["aggInterval"]
-                nrmlztn = result["meta"]["normalization"]
-                lst_upd = result["meta"]["lastUpdated"]
+                response_json = json.loads(response.text)
 
-                # Save to the results dataframe ### FIX BELOW HERE ####
-                human_result_df = make_device_usage_result_df(
-                    "Human",
-                    human_dsktp,
-                    human_mbl,
-                    human_othr,
-                    human_ts,
-                    lst_upd,
-                    nrmlztn,
-                    conf_lvl,
-                    aggr_intvl,
-                    loc,
-                )
+                # If response was successful, get the result
+                if response_json["success"] is True:
 
-                bot_result_df = make_device_usage_result_df(
-                    "Bot",
-                    bot_dsktp,
-                    bot_mbl,
-                    bot_othr,
-                    bot_ts,
-                    lst_upd,
-                    nrmlztn,
-                    conf_lvl,
-                    aggr_intvl,
-                    loc,
-                )
+                    result = response_json["result"]
+                    human_ts, human_dsktp, human_mbl, human_othr = (
+                        parse_device_type_timeseries_response_human(result)
+                    )
+                    bot_ts, bot_dsktp, bot_mbl, bot_othr = (
+                        parse_device_type_timeseries_response_bot(result)
+                    )
+                    conf_lvl = result["meta"]["confidenceInfo"]["level"]
+                    aggr_intvl = result["meta"]["aggInterval"]
+                    nrmlztn = result["meta"]["normalization"]
+                    lst_upd = result["meta"]["lastUpdated"]
 
-                # Union the results
-                new_result_df = pd.concat(
-                    [human_result_df, bot_result_df], ignore_index=True, sort=False
-                )
+                    # Save to the results dataframe ### FIX BELOW HERE ####
+                    human_result_df = make_device_usage_result_df(
+                        "Human",
+                        human_dsktp,
+                        human_mbl,
+                        human_othr,
+                        human_ts,
+                        lst_upd,
+                        nrmlztn,
+                        conf_lvl,
+                        aggr_intvl,
+                        loc,
+                    )
 
-                # Add results to the results dataframe
-                results_df = pd.concat([results_df, new_result_df])
+                    bot_result_df = make_device_usage_result_df(
+                        "Bot",
+                        bot_dsktp,
+                        bot_mbl,
+                        bot_othr,
+                        bot_ts,
+                        lst_upd,
+                        nrmlztn,
+                        conf_lvl,
+                        aggr_intvl,
+                        loc,
+                    )
 
-            # If response was not successful, save to the errors dataframe
-            else:
-                new_errors_df = pd.DataFrame(
-                    {
-                        "StartTime": [start_date],
-                        "EndTime": [end_date],
-                        "Location": [loc],
-                    }
-                )
-                errors_df = pd.concat([errors_df, new_errors_df])
+                    # Union the results
+                    new_result_df = pd.concat(
+                        [human_result_df, bot_result_df], ignore_index=True, sort=False
+                    )
 
-        except:
-            new_errors_df = pd.DataFrame(
-                {"StartTime": [start_date], "EndTime": [end_date], "Location": [loc]}
-            )
-            errors_df = pd.concat([errors_df, new_errors_df])
+                    # Add results to the results dataframe
+                    results_df = pd.concat([results_df, new_result_df])
+                    break
+
+                # If response was not successful, save to the errors dataframe
+                else:
+                    if attempt < max_retries - 1:
+                        print(
+                            f"API returned success=False for Loc: {loc}, retrying (attempt {attempt + 1})..."
+                        )
+                        time.sleep(5 * 2**attempt)
+                    else:
+                        new_errors_df = pd.DataFrame(
+                            {
+                                "StartTime": [start_date],
+                                "EndTime": [end_date],
+                                "Location": [loc],
+                            }
+                        )
+                        errors_df = pd.concat([errors_df, new_errors_df])
+
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(
+                        f"Exception for Loc: {loc}: {e}, retrying (attempt {attempt + 1})..."
+                    )
+                    time.sleep(5 * 2**attempt)
+                else:
+                    new_errors_df = pd.DataFrame(
+                        {
+                            "StartTime": [start_date],
+                            "EndTime": [end_date],
+                            "Location": [loc],
+                        }
+                    )
+                    errors_df = pd.concat([errors_df, new_errors_df])
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = device_usg_configs["bucket"] + device_usg_configs[
@@ -385,7 +404,7 @@ def main():
 
     # STEP 6 - Load results from stage to gold
     device_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_v1`
-SELECT 
+SELECT
 CAST(StartTime AS DATE) AS dte,
 UserType AS user_type,
 Location AS location,
@@ -394,7 +413,7 @@ MobileUsagePct AS mobile_usage_pct,
 OtherUsagePct AS other_usage_pct,
 AggInterval AS aggregation_interval,
 NormalizationType AS normalization_type,
-LastUpdated AS last_updated_ts 
+LastUpdated AS last_updated_ts
 FROM `moz-fx-data-shared-prod.cloudflare_derived.device_results_stg`
 WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_res_to_gold = client.query(device_usg_stg_to_gold_query)

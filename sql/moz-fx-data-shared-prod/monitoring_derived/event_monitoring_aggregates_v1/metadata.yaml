@@ -114,5 +114,6 @@ references:
   - moz-fx-data-shared-prod.relay_backend_stable.events_v1
   - moz-fx-data-shared-prod.subscription_platform_backend_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.subscription_platform_backend_stable.events_v1
+  - moz-fx-data-shared-prod.subscription_platform_frontend_stable.events_v1
   - moz-fx-data-shared-prod.syncstorage_stable.events_v1
   - moz-fx-data-shared-prod.thunderbird_desktop_stable.events_v1

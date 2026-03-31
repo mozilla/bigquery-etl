@@ -3,7 +3,9 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   submission_timestamp,
-  SAFE_CAST(mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER) AS major_version,
+  SAFE_CAST(
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS INTEGER
+  ) AS major_version,
   client_info.client_id AS client_id,
   'desktop' AS platform,
   normalized_channel,
@@ -21,6 +23,7 @@ SELECT
   SAFE_CAST(mozfun.map.get_key(e.extra, 'duration') AS INT64) AS extra_duration,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
-INNER JOIN UNNEST(events) AS e ON
-  e.category = 'uptake.remotecontent.result'
+INNER JOIN
+  UNNEST(events) AS e
+  ON e.category = 'uptake.remotecontent.result'
   AND e.name = 'uptake_remotesettings'

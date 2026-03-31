@@ -37,7 +37,6 @@ unenrollment_totals AS (
     branch,
     SUM(value) as total_unenrollments
   FROM `moz-fx-data-shared-prod.telemetry_derived.experiment_unenrollment_overall_v1`
-  INNER JOIN active_experiments USING (experiment, branch)
   WHERE experiment IS NOT NULL AND branch IS NOT NULL
   GROUP BY 1, 2
 ),

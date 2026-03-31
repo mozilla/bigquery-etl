@@ -18,7 +18,7 @@ scheduling:
   dag_name: bqetl_ads_hourly
   date_partition_parameter: null
   destination_table: >-
-    ads_client_hourly_v1${{
+    ads_client_operations_and_errors_hourly_v1${{
     (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:
@@ -26,7 +26,7 @@ scheduling:
       submission_date:DATE:{{
       (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
       }}
-  query_file_path: sql/moz-fx-data-shared-prod/ads_derived/ads_client_hourly_v1/query.sql
+  query_file_path: sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql
 bigquery:
   time_partitioning:
     type: day

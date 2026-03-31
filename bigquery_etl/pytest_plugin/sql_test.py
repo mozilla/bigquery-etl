@@ -21,6 +21,7 @@ from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 
 from ..schema import SCHEMA_FILE, Schema
+from ..schema.stable_table_schema import get_stable_table_schemas
 
 QueryParameter = Union[
     bigquery.ArrayQueryParameter,
@@ -77,6 +78,11 @@ class Table:
                 if schema_file.exists():
                     schema = Schema.from_schema_file(schema_file)
                     self.schema = schema.to_bigquery_schema()
+                elif "_stable." in full_name:
+                    for stable_table_schema in get_stable_table_schemas():
+                        if full_name.endswith("." + stable_table_schema.stable_table):
+                            schema = Schema({"fields": stable_table_schema.schema})
+                            self.schema = schema.to_bigquery_schema()
 
 
 class NDJsonDecodeError(Exception):

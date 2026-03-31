@@ -326,6 +326,9 @@ def rewrite_query_references(
 
         def expected_target_dataset(info: DeployedTableInfo) -> Optional[str]:
             """Render the target dataset for a specific deployed artifact."""
+            # source_project/source_dataset are guaranteed non-None by the caller
+            assert info.source_project is not None
+            assert info.source_dataset is not None
             if target.dataset:
                 rendered = render_artifact_template(
                     target.dataset, info.source_project, info.source_dataset

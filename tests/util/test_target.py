@@ -241,7 +241,9 @@ class TestPrepareTargetDirectory:
             assert manifest["source_dataset"] == "telemetry_derived"
             assert manifest["source_table"] == "clients_daily_v6"
 
-    def test_get_deployed_tables_reads_manifest(self):
+    @patch("bigquery_etl.util.target.bigquery.Client")
+    @patch("bigquery_etl.util.target._table_exists", return_value=True)
+    def test_get_deployed_tables_reads_manifest(self, _mock_table_exists, _mock_client):
         """get_deployed_tables_in_target reads manifest for source info."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sql_dir = Path(tmpdir) / "sql"

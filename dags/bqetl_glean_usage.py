@@ -229,13 +229,6 @@ with DAG(
         parent_group=task_group_accounts_backend,
     ) as accounts_backend_derived__events_stream__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_accounts_derived__wait_for_accounts_backend_derived__events_stream__v1",
-            external_dag_id="bqetl_accounts_derived",
-            external_task_id="wait_for_accounts_backend_derived__events_stream__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_generated_funnels__wait_for_accounts_backend_derived__events_stream__v1",
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_accounts_backend_derived__events_stream__v1",
@@ -345,13 +338,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_accounts_frontend_derived__events_stream__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_accounts_derived__wait_for_accounts_frontend_derived__events_stream__v1",
-            external_dag_id="bqetl_accounts_derived",
-            external_task_id="wait_for_accounts_frontend_derived__events_stream__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
         )
 
         ExternalTaskMarker(

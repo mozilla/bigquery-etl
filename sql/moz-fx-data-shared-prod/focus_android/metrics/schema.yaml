@@ -8370,6 +8370,20 @@ fields:
         a PDF modified through page organization.
 
         '
+    - name: netwerk_happy_eyeballs_https_record_available
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Happy Eyeballs: whether an HTTPS service record was available
+        during connection establishment.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -19983,6 +19997,137 @@ fields:
       description: 'HTTP3: packet loss ratio (multiply by 10000). Is filtered to only
         record connections that saw congestion window growth. Co-exists with http_3_loss_ratio
         to measure the impact congestion control changes have on packet loss.
+
+        '
+    - name: netwerk_happy_eyeballs_cancelled_attempt_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: number of in-flight connection attempts cancelled
+        when the winning attempt succeeded.
+
+        '
+    - name: netwerk_happy_eyeballs_connection_attempt_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: number of connection attempts started before one
+        succeeded or all failed.
+
+        '
+    - name: netwerk_happy_eyeballs_connection_establishment_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: end-to-end time in milliseconds from algorithm
+        start to a successful connection or final failure.
+
+        '
+    - name: netwerk_happy_eyeballs_time_to_first_attempt
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: time in milliseconds from algorithm start to the
+        first connection attempt being dispatched. Captures DNS wait time before racing
+        begins.
+
+        '
+    - name: netwerk_happy_eyeballs_winning_attempt_index
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Happy Eyeballs: 1-based index of the connection attempt that ultimately
+        succeeded (e.g. 1 = first attempt won).
 
         '
   - name: timespan
@@ -43973,6 +44118,39 @@ fields:
         different cases that would obscure each other if mixed. Acts as an alternative
         measure to http_3_slow_start_exit_accuracy, which uses the final congestion
         window instead of w_max.
+
+        '
+    - name: netwerk_happy_eyeballs_dns_resolution_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Happy Eyeballs: time in milliseconds to resolve each DNS record
+        type (A, AAAA, HTTPS).
 
         '
   - name: labeled_quantity

@@ -715,7 +715,12 @@ SELECT
       metrics.custom_distribution.networking_http_3_congestion_event_count,
       metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
       metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry,
-      metrics.custom_distribution.networking_http_3_loss_ratio_filtered
+      metrics.custom_distribution.networking_http_3_loss_ratio_filtered,
+      metrics.custom_distribution.netwerk_happy_eyeballs_cancelled_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1117,7 +1122,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_direction_heuristic,
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
-      metrics.labeled_counter.pdfjs_organize_action
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2038,7 +2044,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
-      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -2828,7 +2835,12 @@ SELECT
       metrics.custom_distribution.networking_http_3_congestion_event_count,
       metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
       metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry,
-      metrics.custom_distribution.networking_http_3_loss_ratio_filtered
+      metrics.custom_distribution.networking_http_3_loss_ratio_filtered,
+      metrics.custom_distribution.netwerk_happy_eyeballs_cancelled_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3230,7 +3242,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_direction_heuristic,
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
-      metrics.labeled_counter.pdfjs_organize_action
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4151,7 +4164,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
-      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -4961,7 +4975,12 @@ SELECT
       metrics.custom_distribution.networking_http_3_congestion_event_count,
       metrics.custom_distribution.permissions_unused_permission_age_at_expiry,
       metrics.custom_distribution.permissions_unused_permission_modified_age_at_expiry,
-      metrics.custom_distribution.networking_http_3_loss_ratio_filtered
+      metrics.custom_distribution.networking_http_3_loss_ratio_filtered,
+      metrics.custom_distribution.netwerk_happy_eyeballs_cancelled_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
+      metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
+      metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5363,7 +5382,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_direction_heuristic,
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
-      metrics.labeled_counter.pdfjs_organize_action
+      metrics.labeled_counter.pdfjs_organize_action,
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6284,7 +6304,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
-      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max
+      metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

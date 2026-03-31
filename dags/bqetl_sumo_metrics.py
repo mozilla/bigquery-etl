@@ -57,6 +57,17 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    sumo_metrics_derived__freshness_metrics_base__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__freshness_metrics_base__v1",
+        destination_table="freshness_metrics_base_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     sumo_metrics_derived__kitsune_questions_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__kitsune_questions_base__v1",
         destination_table="kitsune_questions_base_v1",

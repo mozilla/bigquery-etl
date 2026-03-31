@@ -60,7 +60,7 @@ SELECT
   SUM(enrollments) OVER (PARTITION BY experiment) as experiment_total_enrollments,
   SUM(unenrollments) OVER (PARTITION BY experiment) as experiment_total_unenrollments
 FROM combined_by_experiment_branch
-WHERE experiment IN (SELECT DISTINCT experiment FROM active_experiments)
+INNER JOIN active_experiments USING (experiment, branch)
 ORDER BY 1, 2
 """
 

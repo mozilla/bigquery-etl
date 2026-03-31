@@ -197,11 +197,7 @@ class RawRoutine:
         tests_sql = "\n".join(tests)
         test_dependencies = set()
         for udf in routines:
-            udf_re = re.compile(
-                r"\b"
-                + r"\.".join(f"`?{name}`?" for name in udf["name"].split("."))
-                + r"\("
-            )
+            udf_re = routine_usage_pattern(udf["name"], udf["project"])
             if udf_re.search("\n".join(definitions)):
                 dependencies.append(udf["name"])
             if (
@@ -294,6 +290,12 @@ def accumulate_dependencies(deps, raw_routines, udf_name):
         return deps + [udf_name]
 
 
+def routine_usage_pattern(routine_name: str, project: str) -> re.Pattern:
+    """Return a regular expression pattern to match usages of the specified routine."""
+    dataset, name = routine_name.split(".")
+    return re.compile(rf"(?<![\w\.`])(`?{project}`?\.)?`?{dataset}`?\.`?{name}`?(?=\()")
+
+
 def routine_usages_in_text(text, project):
     """Return a list of routine names used in the provided SQL text."""
     sql = sqlparse.format(text, strip_comments=True)
@@ -302,7 +304,7 @@ def routine_usages_in_text(text, project):
     udf_usages = []
 
     for routine in routines:
-        if routine["name"] in sql:
+        if re.search(routine_usage_pattern(routine["name"], routine["project"]), sql):
             udf_usages.append(routine["name"])
 
     # the TEMP_UDF_RE matches udf_js, remove since it's not a valid UDF
@@ -346,7 +348,9 @@ def sub_local_routines(test, project, raw_routines=None, stored_procedure_test=F
         if stored_procedure_test:
             replace_name = f"{GENERIC_DATASET}.{replace_name}"
         sql = re.sub(
-            rf"(?<![\w\.`])(`?{match['project']}`?\.)?`?{match['dataset']}`?\.`?{match['name']}`?(?=\()",
+            routine_usage_pattern(
+                f"{match['dataset']}.{match['name']}", match["project"]
+            ),
             replace_name,
             sql,
         )

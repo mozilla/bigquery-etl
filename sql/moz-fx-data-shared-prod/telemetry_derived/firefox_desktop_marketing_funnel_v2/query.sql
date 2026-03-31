@@ -5,7 +5,6 @@
 -- Metrics: Visits (sessions) and Downloads (click events)
 -- Granularity: Daily, by country, funnel type, and attribution dimensions
 -- =============================================================================
--- TODO: may need to grab a 28 day window for first seen for late available metrics to work
 WITH clients_first_seen AS (
   SELECT
     *,
@@ -13,9 +12,8 @@ WITH clients_first_seen AS (
     `moz-fx-data-shared-prod.telemetry.clients_first_seen`
   -- Join to GA4 attribution directly (no dltoken dedup here as multiple client_ids could come from the same dltoken)
   WHERE
-    first_seen_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND @submission_date
+    first_seen_date = @submission_date
+    OR first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 top_of_funnel_base AS (
   SELECT
@@ -65,9 +63,7 @@ top_of_funnel_base AS (
     `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
     ON ga4.country = country_names.name
   WHERE
-    session_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND @submission_date
+    session_date = @submission_date
     AND device_category = 'desktop'
     -- Exclude existing Firefox users - we want new acquisition only
     AND COALESCE(browser, '') NOT IN ('Firefox', 'Mozilla')
@@ -171,9 +167,7 @@ windows_installer_installs_base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_installer.install` AS installs
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND succeeded  -- Only successful installs
     AND NOT had_old_install  -- Exclude upgrades/reinstalls (new installs only)
   -- Only count installs from tracked mozilla.org downloads
@@ -201,43 +195,7 @@ windows_installer_installs AS (
     ALL
 ),
 -- =============================================================================
--- CTE 4: fresh_download_profiles - Profile Filtering (Currently Unused)
--- =============================================================================
--- PURPOSE: Identify profiles that were created shortly after a tracked download
--- LOGIC: Only count the FIRST profile per download token within 30 days
--- USE CASE: Could be used to filter desktop_funnels_telemetry for stricter attribution
--- STATUS: Currently not used in final join but kept for potential future use
--- =============================================================================
-fresh_download_profiles AS (
-  SELECT
-    client_id,
-    cfs.first_seen_date,
-    cfs.attribution_dltoken,
-  FROM
-    clients_first_seen AS cfs
-  INNER JOIN
-    ga4_attr_by_dltoken_dedup AS ga4_attr
-    USING (client_id)
-  WHERE
-    cfs.funnel_derived IN ('mozorg windows funnel', 'mozorg mac funnel')
-    AND cfs.is_desktop
-    AND cfs.attribution_dltoken IS NOT NULL
-  -- Download must have occurred within 30 days before profile creation
-    AND ga4_attr.ga4_session_date
-    BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 30 DAY)
-    AND cfs.first_seen_date
-  -- Assign row id to profiles per download to identify the first one
-  QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        cfs.attribution_dltoken
-      ORDER BY
-        cfs.first_seen_date,
-        cfs.client_id
-    ) = 1
-),
--- =============================================================================
--- CTE 5: desktop_funnels_telemetry - Firefox Profile Metrics
+-- CTE 4: desktop_funnels_telemetry - Firefox Profile Metrics
 -- =============================================================================
 -- Source: Firefox telemetry (clients_first_seen_28_days_later)
 -- Metrics:
@@ -246,9 +204,10 @@ fresh_download_profiles AS (
 --   - retained_week4: Profiles still active in week 4 (qualified_week4)
 -- Granularity: Daily, by country, funnel type, and attribution dimensions
 -- =============================================================================
-desktop_funnels_telemetry AS (
+desktop_funnels_telemetry_base AS (
   SELECT
-    clients_first_seen.first_seen_date AS submission_date,
+    client_id,
+    clients_first_seen.first_seen_date,
     clients_first_seen.country,
     IF(
       clients_first_seen.funnel_derived = 'other',
@@ -278,34 +237,37 @@ desktop_funnels_telemetry AS (
     ga4_attr.campaign_id,
     ga4_attr.`source`,
     ga4_attr.medium,
-    -- Profile metrics
-    COUNT(clients_first_seen.client_id) AS new_profiles,
-    COUNTIF(cfs28.qualified_second_day) AS return_user,      -- Active on day 2
-    COUNTIF(cfs28.qualified_week4) AS retained_week4         -- Active in week 4
   FROM
     clients_first_seen
   -- Join to GA4 attribution directly (no dltoken dedup here as multiple client_ids could come from the same dltoken)
   LEFT JOIN
     ga4_attribution AS ga4_attr
     USING (client_id)
-  LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs28
-    ON clients_first_seen.client_id = cfs28.client_id
-    AND clients_first_seen.first_seen_date = cfs28.first_seen_date
   WHERE
     clients_first_seen.is_desktop
-    AND clients_first_seen.normalized_channel = 'release'
-    AND cfs28.normalized_channel = 'release'
+    AND normalized_channel = 'release'
+),
+desktop_funnels_telemetry AS (
+  SELECT
+    desktop_funnels_telemetry_base.* EXCEPT (client_id, first_seen_date),
+    first_seen_date AS submission_date,
+    -- Profile metrics
+    COUNT(
+      IF(first_seen_date = @submission_date, desktop_funnels_telemetry_base.client_id, NULL)
+    ) AS new_profiles,
+    COUNTIF(cfs28.qualified_second_day) AS return_user,      -- Active on day 2
+    COUNTIF(cfs28.qualified_week4) AS retained_week4         -- Active in week 4
+  FROM
+    desktop_funnels_telemetry_base
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs28
+    USING (client_id, first_seen_date)
+  WHERE
+    cfs28.normalized_channel = "release"
+    AND cfs28.is_desktop
   GROUP BY
     ALL
 ),
--- =============================================================================
--- CTE 6: final - Unified Funnel Metrics
--- =============================================================================
--- Combines TOF (visits/downloads), installs, and telemetry (profiles/retention)
--- Join strategy: FULL JOINs to preserve all data even when metrics don't align
--- Attribution dimensions must match for rows to combine
--- =============================================================================
 combined AS (
   SELECT
     -- Use COALESCE to get dimensions from whichever source has data (TOF, installs, or telemetry)
@@ -378,7 +340,7 @@ combined AS (
         THEN CAST(NULL AS INTEGER)
       ELSE CAST(NULL AS INTEGER)
     END AS installs,
-    COALESCE(desktop_funnels_telemetry.new_profiles, 0) AS new_profiles,
+    COALESCE(desktop_funnels_telemetry.new_profiles) AS new_profiles,
     COALESCE(desktop_funnels_telemetry.return_user) AS return_user,
     COALESCE(desktop_funnels_telemetry.retained_week4) AS retained_week4
   FROM
@@ -412,6 +374,13 @@ combined AS (
     AND COALESCE(top_of_funnel.source, '') = COALESCE(desktop_funnels_telemetry.source, '')
     AND COALESCE(top_of_funnel.medium, '') = COALESCE(desktop_funnels_telemetry.medium, '')
 ),
+-- =============================================================================
+-- CTE 6: final - Unified Funnel Metrics
+-- =============================================================================
+-- Combines TOF (visits/downloads), installs, and telemetry (profiles/retention)
+-- Join strategy: FULL JOINs to preserve all data even when metrics don't align
+-- Attribution dimensions must match for rows to combine
+-- =============================================================================
 final AS (
   SELECT
     *,

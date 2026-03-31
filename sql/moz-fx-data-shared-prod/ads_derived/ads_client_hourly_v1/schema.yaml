@@ -73,11 +73,6 @@ fields:
     description: >-
       Total count of 'report_ad' operations from ads_client.client_operation_total
       labeled_counter.
-  - name: client_error_new
-    type: INT64
-    mode: NULLABLE
-    description: >-
-      Total number of 'new' error occurrences from ads_client.client_error labeled_string.
   - name: client_error_request_ads
     type: INT64
     mode: NULLABLE
@@ -102,19 +97,78 @@ fields:
     description: >-
       Total number of 'report_ad' error occurrences from ads_client.client_error
       labeled_string.
-  - name: build_cache_error
+  - name: build_cache_error_builder_error
     type: INT64
     mode: NULLABLE
     description: >-
-      Total number of error occurrences from ads_client.build_cache_error labeled_string.
-  - name: deserialization_error
+      Total number of 'builder_error' occurrences from ads_client.build_cache_error labeled_string.
+  - name: build_cache_error_database_error
     type: INT64
     mode: NULLABLE
     description: >-
-      Total number of error occurrences from ads_client.deserialization_error
-      labeled_string.
-  - name: http_cache_outcome
+      Total number of 'database_error' occurrences from ads_client.build_cache_error labeled_string.
+  - name: build_cache_error_empty_db_path
     type: INT64
     mode: NULLABLE
     description: >-
-      Total number of outcomes recorded in ads_client.http_cache_outcome labeled_string.
+      Total number of 'empty_db_path' occurrences from ads_client.build_cache_error labeled_string.
+  - name: build_cache_error_invalid_max_size
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'invalid_max_size' occurrences from ads_client.build_cache_error labeled_string.
+  - name: build_cache_error_invalid_ttl
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'invalid_ttl' occurrences from ads_client.build_cache_error labeled_string.
+  - name: deserialization_error_invalid_ad_item
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'invalid_ad_item' occurrences from ads_client.deserialization_error labeled_string.
+  - name: deserialization_error_invalid_array
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'invalid_array' occurrences from ads_client.deserialization_error labeled_string.
+  - name: deserialization_error_invalid_structure
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'invalid_structure' occurrences from ads_client.deserialization_error labeled_string.
+  - name: http_cache_outcome_cleanup_failed
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'cleanup_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_hit
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'hit' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_lookup_failed
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'lookup_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_miss_not_cacheable
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'miss_not_cacheable' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_miss_stored
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'miss_stored' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_no_cache
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'no_cache' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_store_failed
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'store_failed' occurrences from ads_client.http_cache_outcome labeled_string.

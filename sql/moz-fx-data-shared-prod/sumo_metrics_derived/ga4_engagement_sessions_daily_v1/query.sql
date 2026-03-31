@@ -9,9 +9,6 @@ engagement_events AS (
     UNNEST(event_params) AS ep
   WHERE
     event_name = 'user_engagement'
-    AND event_date
-    BETWEEN '20240701'
-    AND '20260105'
     AND ep.key = 'content_group'
     AND ep.value.string_value IN ('kb-article', 'support-forum-question-details')
 ),

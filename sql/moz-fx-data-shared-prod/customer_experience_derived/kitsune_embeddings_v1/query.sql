@@ -11,7 +11,7 @@ WITH kitsune AS (
  FROM
    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions`
  WHERE
-   DATE(creation_date) = @submission_date
+   DATE(created_date) = @submission_date
 )
 ,
 kitsune_generated AS
@@ -99,23 +99,24 @@ SELECT
     metadata.prompt_version,
     metadata.analysis_timestamp,
     CASE
-      WHEN category_generated IS NOT NULL AND LENGTH(TRIM(category_generated)) > 0
-      AND language_generated IS NOT NULL AND LENGTH(TRIM(language_generated)) > 0
-      AND sentiment_score IS NOT NULL AND sentiment_score BETWEEN -1 AND 1
-      AND entities_generated IS NOT NULL
-      AND ARRAY_LENGTH(entities_generated) > 0
-      AND ARRAY_LENGTH(ARRAY(
-            SELECT 1
-            FROM UNNEST(entities_generated) t
+        WHEN category_generated IS NOT NULL AND LENGTH(TRIM(category_generated)) > 0
+        AND language_generated IS NOT NULL AND LENGTH(TRIM(language_generated)) > 0
+        AND sentiment_score IS NOT NULL AND sentiment_score BETWEEN -1 AND 1
+        AND entities_generated IS NOT NULL
+        AND ARRAY_LENGTH(entities_generated) > 0
+        AND ARRAY_LENGTH(ARRAY(
+            SELECT 1 FROM UNNEST(entities_generated) t
             WHERE t IS NOT NULL AND LENGTH(TRIM(t)) > 0
-          )) = ARRAY_LENGTH(entities_generated)
-      AND entities_generated IS NOT NULL
-      AND ARRAY_LENGTH(topics_generated) > 0
-      AND ARRAY_LENGTH(ARRAY(
+            )) = ARRAY_LENGTH(entities_generated)
+        AND entities_generated IS NOT NULL
+        AND ARRAY_LENGTH(topics_generated) > 0
+        AND ARRAY_LENGTH(ARRAY(
             SELECT 1
             FROM UNNEST(topics_generated) t
             WHERE t IS NOT NULL AND LENGTH(TRIM(t)) > 0
           )) = ARRAY_LENGTH(topics_generated)
+        AND embedding IS NOT NULL
+        AND sentiment_score IS NOT NULL
       THEN 'SUCCESS'
       ELSE 'FAILED'
     END AS status

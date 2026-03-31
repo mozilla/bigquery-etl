@@ -13,8 +13,9 @@ WITH clients_first_seen AS (
     `moz-fx-data-shared-prod.telemetry.clients_first_seen`
   -- Join to GA4 attribution directly (no dltoken dedup here as multiple client_ids could come from the same dltoken)
   WHERE
-    first_seen_date = @submission_date
-    -- OR first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    first_seen_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
 ),
 top_of_funnel_base AS (
   SELECT
@@ -64,7 +65,9 @@ top_of_funnel_base AS (
     `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
     ON ga4.country = country_names.name
   WHERE
-    session_date = @submission_date
+    session_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
     AND device_category = 'desktop'
     -- Exclude existing Firefox users - we want new acquisition only
     AND COALESCE(browser, '') NOT IN ('Firefox', 'Mozilla')
@@ -168,7 +171,9 @@ windows_installer_installs_base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_installer.install` AS installs
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
     AND succeeded  -- Only successful installs
     AND NOT had_old_install  -- Exclude upgrades/reinstalls (new installs only)
   -- Only count installs from tracked mozilla.org downloads
@@ -274,7 +279,7 @@ desktop_funnels_telemetry AS (
     ga4_attr.`source`,
     ga4_attr.medium,
     -- Profile metrics
-    COUNT(clients_first_seen.*) AS new_profiles,
+    COUNT(clients_first_seen.client_id) AS new_profiles,
     COUNTIF(cfs28.qualified_second_day) AS return_user,      -- Active on day 2
     COUNTIF(cfs28.qualified_week4) AS retained_week4         -- Active in week 4
   FROM
@@ -470,8 +475,8 @@ SELECT
   COALESCE(previous.downloads, final.downloads) AS downloads,
   COALESCE(previous.installs, final.installs) AS installs,
   COALESCE(previous.new_profiles, final.new_profiles) AS new_profiles,
-  COALESCE(previous.return_user, final.return_user) AS return_user,
-  COALESCE(previous.retained_week4, final.retained_week4) AS retained_week4,
+  COALESCE(final.return_user, previous.return_user) AS return_user,
+  COALESCE(final.retained_week4, previous.retained_week4) AS retained_week4,
 FROM
   final
 FULL OUTER JOIN

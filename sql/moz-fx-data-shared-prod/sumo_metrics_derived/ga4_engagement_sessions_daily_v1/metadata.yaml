@@ -24,7 +24,7 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: date
+    field: event_date
     require_partition_filter: false
   clustering:
     fields:

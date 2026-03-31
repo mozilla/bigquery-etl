@@ -6,6 +6,7 @@
   normalized_channel: nightly
   client_info:
     app_display_version: "133.0.0"
+    os: Android
   metrics:
     labeled_counter:
       ads_client_client_operation_total:
@@ -29,6 +30,7 @@
   normalized_channel: nightly
   client_info:
     app_display_version: "133.0.0"
+    os: Android
   metrics:
     labeled_string:
       ads_client_build_cache_error:

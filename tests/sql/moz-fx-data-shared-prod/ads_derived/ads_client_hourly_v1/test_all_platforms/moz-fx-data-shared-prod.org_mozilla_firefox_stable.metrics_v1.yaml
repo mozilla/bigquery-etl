@@ -6,6 +6,7 @@
   normalized_channel: release
   client_info:
     app_display_version: "132.0.0"
+    os: Android
   metrics:
     labeled_counter:
       ads_client_client_operation_total:
@@ -29,6 +30,7 @@
   normalized_channel: release
   client_info:
     app_display_version: "132.0.0"
+    os: Android
   metrics:
     labeled_counter:
       ads_client_client_operation_total:

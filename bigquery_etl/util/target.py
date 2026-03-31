@@ -93,7 +93,7 @@ def render_artifact_template(
     """Render {{ artifact.* }} variables in a target config template string."""
     if not template or "{{" not in str(template):
         return template
-    return Template(str(template)).render(
+    return Template(str(template), undefined=jinja2.StrictUndefined).render(
         artifact={
             "project_id": sanitize_bq_id(project_id or ""),
             "dataset_id": sanitize_bq_id(dataset_id or ""),
@@ -117,7 +117,7 @@ def _get_git_context() -> dict:
         repo = git.Repo(project_root)
         return {
             "branch": repo.active_branch.name,
-            "commit": repo.active_branch.commit.hexsha[:8],
+            "commit": repo.active_branch.commit.hexsha,
         }
     except Exception:
         logging.warning(
@@ -145,7 +145,10 @@ def _get_gcloud_account() -> str:
             .json()
             .get("email", "")
         )
-    except Exception:
+    except Exception as e:
+        logging.warning(
+            f"Could not determine GCP account from credentials. Using empty string for account.username: {e}"
+        )
         return ""
 
 
@@ -201,14 +204,20 @@ def get_default_target_name() -> Optional[str]:
     if not targets_file.exists():
         return None
 
-    try:
-        targets = yaml.safe_load(targets_file.read_text())
-        if isinstance(targets, dict):
-            return targets.get("default_target")
-    except Exception:
-        return None
+    targets = yaml.safe_load(targets_file.read_text())
+    if isinstance(targets, dict):
+        return targets.get("default_target")
 
     return None
+
+
+def _table_exists(client: bigquery.Client, table_ref: str) -> bool:
+    """Return True if the table exists in BigQuery."""
+    try:
+        client.get_table(table_ref)
+        return True
+    except NotFound:
+        return False
 
 
 def get_deployed_tables_in_target(
@@ -258,18 +267,22 @@ def get_deployed_tables_in_target(
                 )
             )
 
-    return deployed
+    client = bigquery.Client(project=target_project)
+    return {
+        info
+        for info in deployed
+        if _table_exists(
+            client, f"{info.target_project}.{info.target_dataset}.{info.target_table}"
+        )
+    }
 
 
 def rewrite_query_references(
     query_file: Path,
     sql_dir: str,
     target_project: str,
-    dataset_prefix: Optional[str],
+    target: "Target",
     rewrite_all: bool = False,
-    dataset: Optional[str] = None,
-    artifact_prefix: Optional[str] = None,
-    target: Optional["Target"] = None,
 ):
     """Rewrite references in a query file to point to target environment."""
     sql = render_template(
@@ -282,24 +295,23 @@ def rewrite_query_references(
         gcp_project_pattern = (
             r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
         )
-        raw_dataset = target.dataset if target else dataset
-        raw_dataset_prefix = target.dataset_prefix if target else dataset_prefix
-        raw_artifact_prefix = target.artifact_prefix if target else artifact_prefix
 
         def replace_all(m: re.Match) -> str:
             src_project, src_dataset, src_table = m.group(1), m.group(2), m.group(3)
             rendered_artifact_prefix = sanitize_bq_id(
-                render_artifact_template(raw_artifact_prefix, src_project, src_dataset)
+                render_artifact_template(
+                    target.artifact_prefix, src_project, src_dataset
+                )
                 or ""
             )
-            if raw_dataset:
+            if target.dataset:
                 rendered = render_artifact_template(
-                    raw_dataset, src_project, src_dataset
+                    target.dataset, src_project, src_dataset
                 )
                 target_ds = sanitize_bq_id(rendered) if rendered else src_dataset
-            elif raw_dataset_prefix:
+            elif target.dataset_prefix:
                 rendered = render_artifact_template(
-                    raw_dataset_prefix, src_project, src_dataset
+                    target.dataset_prefix, src_project, src_dataset
                 )
                 prefix = sanitize_bq_id(rendered) if rendered else ""
                 target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
@@ -312,28 +324,21 @@ def rewrite_query_references(
         # smart rewriting: only rewrite references to tables that exist in target
         deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
 
-        # Use the raw (unrendered) templates from Target when available so each
-        # artifact can be filtered against its own source project/dataset. This
-        # handles cases where artifact.project_id differs across deployed tables.
-        raw_dataset = target.dataset if target else dataset
-        raw_dataset_prefix = target.dataset_prefix if target else dataset_prefix
-
         def expected_target_dataset(info: DeployedTableInfo) -> Optional[str]:
             """Render the target dataset for a specific deployed artifact."""
-            src_project = info.source_project or ""
-            src_dataset = info.source_dataset or ""
-            if raw_dataset:
+            if target.dataset:
                 rendered = render_artifact_template(
-                    raw_dataset, src_project, src_dataset
+                    target.dataset, info.source_project, info.source_dataset
                 )
                 return sanitize_bq_id(rendered) if rendered else None
-            if raw_dataset_prefix:
+            if target.dataset_prefix:
                 rendered = render_artifact_template(
-                    raw_dataset_prefix, src_project, src_dataset
+                    target.dataset_prefix, info.source_project, info.source_dataset
                 )
                 prefix = sanitize_bq_id(rendered) if rendered else ""
-                return sanitize_bq_id(f"{prefix}{src_dataset}")
-            return None
+                return sanitize_bq_id(f"{prefix}{info.source_dataset}")
+            # no dataset or dataset_prefix — target dataset equals source dataset
+            return info.source_dataset
 
         for info in deployed_tables:
             if (
@@ -366,51 +371,49 @@ def rewrite_query_references(
 def prepare_target_directory(
     query_file: Path,
     sql_dir: str,
-    destination_project_id: Optional[str],
-    dataset_prefix: Optional[str],
+    target: "Target",
     defer_to_target: bool,
     isolated: bool,
-    dataset: Optional[str] = None,
-    artifact_prefix: Optional[str] = None,
     copied_target_dirs: Optional[Set[Path]] = None,
-    target: Optional["Target"] = None,
-) -> Optional[Path]:
+) -> Path:
     """Prepare target directory for query execution with --target."""
-    if (
-        not destination_project_id
-        and not dataset_prefix
-        and not dataset
-        and not artifact_prefix
-    ):
-        return None
-
     source_project, source_dataset, source_table = extract_from_query_path(query_file)
-    effective_project = destination_project_id or source_project
+    effective_project = target.project_id or source_project
 
-    if dataset:
-        effective_dataset = sanitize_bq_id(dataset)
-    elif dataset_prefix:
-        effective_dataset = sanitize_bq_id(f"{dataset_prefix}{source_dataset}")
+    rendered_dataset = render_artifact_template(
+        target.dataset, source_project, source_dataset
+    )
+    rendered_dataset_prefix = render_artifact_template(
+        target.dataset_prefix, source_project, source_dataset
+    )
+    rendered_artifact_prefix = render_artifact_template(
+        target.artifact_prefix, source_project, source_dataset
+    )
+
+    if rendered_dataset:
+        effective_dataset = sanitize_bq_id(rendered_dataset)
+    elif rendered_dataset_prefix:
+        effective_dataset = sanitize_bq_id(f"{rendered_dataset_prefix}{source_dataset}")
     else:
         effective_dataset = source_dataset
 
     effective_table = (
-        sanitize_bq_id(f"{artifact_prefix}{source_table}")
-        if artifact_prefix
+        sanitize_bq_id(f"{rendered_artifact_prefix}{source_table}")
+        if rendered_artifact_prefix
         else source_table
     )
 
     target_dir = Path(sql_dir) / effective_project / effective_dataset / effective_table
     target_query_file = target_dir / query_file.name
 
+    if target_dir == query_file.parent:
+        return query_file
+
     target_dir.mkdir(parents=True, exist_ok=True)
 
     # Copy source files and write the manifest once per target directory per
-    # prepare_target_files() call. Skipping on subsequent calls within the same
-    # invocation prevents a later part file (e.g. part2.sql) from overwriting
-    # already-rewritten content from an earlier part file (e.g. part1.sql).
-    # The set is None when called outside prepare_target_files, in which case
-    # we always copy (safe because no other part files are being processed).
+    # prepare_target_files() call, so reruns always get fresh source files while
+    # multiple files from the same table don't overwrite each other's rewrites.
     if copied_target_dirs is None or target_dir not in copied_target_dirs:
         source_dir = query_file.parent
         for item in source_dir.iterdir():
@@ -446,11 +449,8 @@ def prepare_target_directory(
             target_query_file,
             sql_dir,
             effective_project,
-            dataset_prefix,
+            target,
             rewrite_all=isolated,
-            dataset=dataset,
-            artifact_prefix=artifact_prefix,
-            target=target,
         )
 
     return target_query_file
@@ -526,49 +526,18 @@ def prepare_target_files(
     auto_deploy: bool = True,
 ) -> List[Path]:
     """Prepare target directories for multiple query files."""
-    # resolve source_project for {{ artifact.* }} template rendering below.
-    source_project = project_id
-    if not source_project and query_files:
-        try:
-            source_project, _, _ = extract_from_query_path(query_files[0])
-        except Exception:
-            pass
-
-    target_query_files = []
     copied_target_dirs: Set[Path] = set()
-    for query_file in query_files:
-        query_file_project = query_file.parent.parent.parent.name
-        if query_file_project == (target.project_id or project_id):
-            target_query_files.append(query_file)
-        else:
-            try:
-                _, source_dataset, _ = extract_from_query_path(query_file)
-            except Exception:
-                source_dataset = ""
-
-            rendered_dataset_prefix = render_artifact_template(
-                target.dataset_prefix, source_project or "", source_dataset
-            )
-            rendered_dataset = render_artifact_template(
-                target.dataset, source_project or "", source_dataset
-            )
-            rendered_artifact_prefix = render_artifact_template(
-                target.artifact_prefix, source_project or "", source_dataset
-            )
-
-            target_file = prepare_target_directory(
-                query_file,
-                sql_dir,
-                target.project_id,
-                rendered_dataset_prefix,
-                defer_to_target,
-                isolated,
-                dataset=rendered_dataset,
-                artifact_prefix=rendered_artifact_prefix,
-                copied_target_dirs=copied_target_dirs,
-                target=target,
-            )
-            target_query_files.append(target_file if target_file else query_file)
+    target_query_files = [
+        prepare_target_directory(
+            query_file,
+            sql_dir,
+            target,
+            defer_to_target,
+            isolated,
+            copied_target_dirs=copied_target_dirs,
+        )
+        for query_file in query_files
+    ]
 
     if auto_deploy:
         for query_file in target_query_files:

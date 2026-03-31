@@ -91,18 +91,18 @@ def cli(prog_name=None):
         ctx.ensure_object(dict)
         ctx.obj["target"] = None
 
-        if not target and not no_target:
-            target = get_default_target_name()
+        try:
+            if not target and not no_target:
+                target = get_default_target_name()
 
-        if target:
-            try:
+            if target:
                 parsed_target = get_target(target)
                 ctx.obj["target"] = parsed_target
                 click.echo(
                     f"Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
-            except Exception as e:
-                raise click.ClickException(f"Target '{target}' not found: {e}")
+        except Exception as e:
+            raise click.ClickException(f"Failed to load target '{target}': {e}")
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

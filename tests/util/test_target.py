@@ -174,14 +174,11 @@ class TestPrepareTargetDirectory:
             result = prepare_target_directory(
                 query_file,
                 str(sql_dir),
-                destination_project_id="my-dev-project",
-                dataset_prefix=None,
+                Target(name="test", project_id="my-dev-project", dataset="anna_dev"),
                 defer_to_target=False,
                 isolated=False,
-                dataset="anna_dev",
             )
 
-            assert result is not None
             assert result.parent.parent.name == "anna_dev"
             assert result.parent.name == "clients_daily_v6"
             assert result.parent.parent.parent.name == "my-dev-project"
@@ -200,15 +197,16 @@ class TestPrepareTargetDirectory:
             result = prepare_target_directory(
                 query_file,
                 str(sql_dir),
-                destination_project_id="my-dev-project",
-                dataset_prefix=None,
+                Target(
+                    name="test",
+                    project_id="my-dev-project",
+                    dataset="anna_dev",
+                    artifact_prefix="feature_",
+                ),
                 defer_to_target=False,
                 isolated=False,
-                dataset="anna_dev",
-                artifact_prefix="feature_",
             )
 
-            assert result is not None
             assert result.parent.name == "feature_clients_daily_v6"
             assert result.parent.parent.name == "anna_dev"
 
@@ -226,12 +224,14 @@ class TestPrepareTargetDirectory:
             result = prepare_target_directory(
                 query_file,
                 str(sql_dir),
-                destination_project_id="my-dev-project",
-                dataset_prefix=None,
+                Target(
+                    name="test",
+                    project_id="my-dev-project",
+                    dataset="anna_dev",
+                    artifact_prefix="feature_",
+                ),
                 defer_to_target=False,
                 isolated=False,
-                dataset="anna_dev",
-                artifact_prefix="feature_",
             )
 
             manifest_file = result.parent / MANIFEST_FILENAME
@@ -255,12 +255,14 @@ class TestPrepareTargetDirectory:
             prepare_target_directory(
                 query_file,
                 str(sql_dir),
-                destination_project_id="my-dev-project",
-                dataset_prefix=None,
+                Target(
+                    name="test",
+                    project_id="my-dev-project",
+                    dataset="anna_dev",
+                    artifact_prefix="feature_",
+                ),
                 defer_to_target=False,
                 isolated=False,
-                dataset="anna_dev",
-                artifact_prefix="feature_",
             )
 
             deployed = get_deployed_tables_in_target(str(sql_dir), "my-dev-project")

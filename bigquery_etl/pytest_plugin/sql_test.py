@@ -103,7 +103,10 @@ def dataset(bq: bigquery.Client, dataset_id: str):
     try:
         result = bq.get_dataset(dataset_id)
     except NotFound:
-        result = bq.create_dataset(dataset_id)
+        # Specifying `exists_ok` after we just confirmed the dataset doesn't exist might seem nonsensical,
+        # but it's necessary in case the BigQuery client times out waiting for the initial API call and retries,
+        # except the initial API call actually does create the dataset before the retry executes.
+        result = bq.create_dataset(dataset_id, exists_ok=True)
     try:
         yield result.reference
     finally:

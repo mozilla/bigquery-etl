@@ -11,7 +11,6 @@ WITH cirrus_data AS (
     DATE(submission_timestamp) = @submission_date
 )
 SELECT
-  acct_fr.event_id,
   acct_fr.additional_properties,
   acct_fr.client_info,
   acct_fr.document_id,
@@ -41,10 +40,9 @@ SELECT
   acct_fr.is_bot_generated,
   acct_fr.document_event_number,
   nimbus.experiment_id,
-  nimbus.branch,
-  @submission_date AS submission_date
+  nimbus.branch
 FROM
-  `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS acct_fr
+  `moz-fx-data-shared-prod.accounts_frontend_derived.events_stream_v1` AS acct_fr
 LEFT JOIN
   cirrus_data AS nimbus
   ON nimbus.user_id = acct_fr.metrics.string.account_user_id

@@ -5,13 +5,13 @@ fields:
   description: Event date (YYYYMMDD parsed to DATE)
 - name: product
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: |
     Mozilla product mapped from URL slug using sumo.map_product_slug() UDF.
     Examples: firefox, thunderbird, mozilla-vpn, pocket, etc.
 - name: content_type
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: |
     Type of content engaged with:
     - 'kb': Knowledge base article (content_group = 'kb-article')

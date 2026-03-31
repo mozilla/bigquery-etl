@@ -1,7 +1,7 @@
 2026-03-31:
   start_date: 2025-05-01
-  end_date: 2025-10-31
-  reason: The three-month backfill succeeded. Trying with six months.
+  end_date: 2026-03-31
+  reason: The three-month backfill succeeded. Trying to complete whole backfill.
   watchers:
   - kbammarito@mozilla.com
   status: Initiate

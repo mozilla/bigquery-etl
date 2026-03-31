@@ -18,13 +18,13 @@
         - key: new
           value: stub
       ads_client_build_cache_error:
-        - key: timeout
+        - key: builder_error
           value: stub
       ads_client_deserialization_error:
-        - key: parse_error
+        - key: invalid_ad_item
           value: stub
       ads_client_http_cache_outcome:
-        - key: miss
+        - key: hit
           value: stub
 - submission_timestamp: "2025-01-15 10:30:00 UTC"
   normalized_country_code: US
@@ -42,7 +42,7 @@
           value: 4
     labeled_string:
       ads_client_client_error:
-        - key: new
+        - key: request_ads
           value: some_error
 - submission_timestamp: "2025-01-15 10:55:00 UTC"
   normalized_country_code: US

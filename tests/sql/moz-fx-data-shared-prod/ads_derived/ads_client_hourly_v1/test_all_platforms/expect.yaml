@@ -15,14 +15,25 @@
   op_record_click: 0
   op_record_impression: 4
   op_report_ad: 0
-  client_error_new: 1
-  client_error_request_ads: 0
+  client_error_request_ads: 1
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
-  build_cache_error: 0
-  deserialization_error: 0
-  http_cache_outcome: 0
+  build_cache_error_builder_error: 0
+  build_cache_error_database_error: 0
+  build_cache_error_empty_db_path: 0
+  build_cache_error_invalid_max_size: 0
+  build_cache_error_invalid_ttl: 0
+  deserialization_error_invalid_ad_item: 0
+  deserialization_error_invalid_array: 0
+  deserialization_error_invalid_structure: 0
+  http_cache_outcome_cleanup_failed: 0
+  http_cache_outcome_hit: 0
+  http_cache_outcome_lookup_failed: 0
+  http_cache_outcome_miss_not_cacheable: 0
+  http_cache_outcome_miss_stored: 0
+  http_cache_outcome_no_cache: 0
+  http_cache_outcome_store_failed: 0
 # Android Release: 1 ping with ops only
 - submission_date: "2025-01-15"
   submission_hour: "2025-01-15T10:00:00+00:00"
@@ -39,14 +50,25 @@
   op_record_click: 0
   op_record_impression: 0
   op_report_ad: 0
-  client_error_new: 0
   client_error_request_ads: 0
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
-  build_cache_error: 0
-  deserialization_error: 0
-  http_cache_outcome: 0
+  build_cache_error_builder_error: 0
+  build_cache_error_database_error: 0
+  build_cache_error_empty_db_path: 0
+  build_cache_error_invalid_max_size: 0
+  build_cache_error_invalid_ttl: 0
+  deserialization_error_invalid_ad_item: 0
+  deserialization_error_invalid_array: 0
+  deserialization_error_invalid_structure: 0
+  http_cache_outcome_cleanup_failed: 0
+  http_cache_outcome_hit: 0
+  http_cache_outcome_lookup_failed: 0
+  http_cache_outcome_miss_not_cacheable: 0
+  http_cache_outcome_miss_stored: 0
+  http_cache_outcome_no_cache: 0
+  http_cache_outcome_store_failed: 0
 # Android-nightly (Fenix): 1 ping with 1 build_cache_error occurrence
 - submission_date: "2025-01-15"
   submission_hour: "2025-01-15T10:00:00+00:00"
@@ -63,11 +85,22 @@
   op_record_click: 0
   op_record_impression: 0
   op_report_ad: 0
-  client_error_new: 0
   client_error_request_ads: 0
   client_error_record_click: 0
   client_error_record_impression: 0
   client_error_report_ad: 0
-  build_cache_error: 1
-  deserialization_error: 0
-  http_cache_outcome: 0
+  build_cache_error_builder_error: 0
+  build_cache_error_database_error: 1
+  build_cache_error_empty_db_path: 0
+  build_cache_error_invalid_max_size: 0
+  build_cache_error_invalid_ttl: 0
+  deserialization_error_invalid_ad_item: 0
+  deserialization_error_invalid_array: 0
+  deserialization_error_invalid_structure: 0
+  http_cache_outcome_cleanup_failed: 0
+  http_cache_outcome_hit: 0
+  http_cache_outcome_lookup_failed: 0
+  http_cache_outcome_miss_not_cacheable: 0
+  http_cache_outcome_miss_stored: 0
+  http_cache_outcome_no_cache: 0
+  http_cache_outcome_store_failed: 0

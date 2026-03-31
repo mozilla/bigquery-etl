@@ -26,7 +26,10 @@ TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX_RE_STR = r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:(?:AGGREGATE\s+|TABLE\s+)?FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
-    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+(?:`?[a-zA-Z0-9_-]+`?\.)?`?({UDF_CHAR}+)`?\.`?({UDF_CHAR}+)`?",
+    (
+        rf"(?P<prefix>{PERSISTENT_UDF_PREFIX_RE_STR}\s+)"
+        rf"(?:`?(?P<project>[a-zA-Z0-9_-]+)`?\.)?`?(?P<dataset>{UDF_CHAR}+)`?\.`?(?P<name>{UDF_CHAR}+)`?"
+    ),
     re.IGNORECASE,
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
@@ -310,16 +313,19 @@ def routine_usages_in_text(text, project):
 
 
 def routine_usage_definitions(text, project, raw_routines=None):
-    """Return a list of definitions of routines used in provided SQL text."""
+    """Return a list of fully qualified definitions of routines used in provided SQL text."""
     if raw_routines is None:
         raw_routines = read_routine_dir()
     deps = []
     for udf_usage in routine_usages_in_text(text, project):
         deps = accumulate_dependencies(deps, raw_routines, udf_usage)
     return [
-        statement
+        PERSISTENT_UDF_RE.sub(
+            rf"\g<prefix>`{routine.project}.\g<dataset>.\g<name>`", statement
+        )
         for udf_name in deps
-        for statement in raw_routines[udf_name].definitions
+        for routine in (raw_routines[udf_name],)
+        for statement in routine.definitions
         if statement not in text
     ]
 
@@ -335,19 +341,15 @@ def sub_local_routines(test, project, raw_routines=None, stored_procedure_test=F
 
     sql = prepend_routine_usage_definitions(test, project, raw_routines)
 
-    for name, routine in raw_routines.items():
-        if name in sql:
-            for defn in routine.definitions:
-                match = PERSISTENT_UDF_RE.match(defn)
-                dataset, name = match.group(1), match.group(2)
-                replace_name = f"{dataset}_{name}"
-                if stored_procedure_test:
-                    replace_name = f"{GENERIC_DATASET}.{replace_name}"
-                sql = re.sub(
-                    rf"(?<![\w\.])(`?{routine.project}`?\.)?`?{dataset}`?\.`?{name}`?(?=\()",
-                    replace_name,
-                    sql,
-                )
+    for match in PERSISTENT_UDF_RE.finditer(sql):
+        replace_name = f"{match['dataset']}_{match['name']}"
+        if stored_procedure_test:
+            replace_name = f"{GENERIC_DATASET}.{replace_name}"
+        sql = re.sub(
+            rf"(?<![\w\.`])(`?{match['project']}`?\.)?`?{match['dataset']}`?\.`?{match['name']}`?(?=\()",
+            replace_name,
+            sql,
+        )
 
     if not stored_procedure_test:
         sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)

@@ -4,9 +4,9 @@ description: |-
   in Grafana as a cross check for operational monitoring of the Remote Settings service.
 owners:
   - fx-delivery-tools@mozilla.com
-labels: {}
+labels:
+  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential/data-viewers
       - workgroup:remote-settings/telescope

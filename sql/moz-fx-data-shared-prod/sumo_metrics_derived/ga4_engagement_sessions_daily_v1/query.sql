@@ -72,8 +72,6 @@ SELECT
   CURRENT_TIMESTAMP() AS etl_timestamp
 FROM
   events_with_product
-WHERE
-  PARSE_DATE('%Y%m%d', event_date) IS NOT NULL
 GROUP BY
   `event_date`,
   product,

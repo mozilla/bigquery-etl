@@ -23,12 +23,6 @@ labels:
 scheduling:
   dag_name: bqetl_sumo_metrics
   depends_on_past: false
-bigquery:
-  time_partitioning:
-    type: day
-    field: event_date
-    require_partition_filter: false
-    expiration_days: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

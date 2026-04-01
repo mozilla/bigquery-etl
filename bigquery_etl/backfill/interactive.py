@@ -5,7 +5,7 @@ from pathlib import Path
 
 import rich_click as click
 
-from ..cli.utils import QualifiedTableNameType
+from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from .utils import qualified_table_name_matching
 
@@ -58,7 +58,7 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
 
     watchers = []
     while True:
-        watcher = click.prompt("Watcher email address")
+        watcher = click.prompt("Watcher email address", type=EmailType())
         watchers.append(watcher)
         if not click.confirm("Add another watcher?", default=False):
             break

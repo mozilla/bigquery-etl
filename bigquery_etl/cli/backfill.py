@@ -207,7 +207,7 @@ def create(
         sys.exit(1)
 
     existing_backfills = get_entries_from_qualified_table_name(
-        sql_dir, qualified_table_name
+        sql_dir, qualified_table_name, table_not_exists_ok=True
     )
 
     # set default query_script_args only if query is a python script
@@ -251,6 +251,8 @@ def create(
         validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
+
+    backfill_file.parent.mkdir(parents=True, exist_ok=True)
 
     with backfill_file.open("w") as f:
         f.write(

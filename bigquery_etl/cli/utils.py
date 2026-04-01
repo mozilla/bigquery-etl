@@ -15,6 +15,7 @@ from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.query_scheduling.utils import is_email
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
@@ -57,6 +58,18 @@ class QualifiedTableNameType(click.ParamType):
                         param,
                         ctx,
                     )
+        return value
+
+
+class EmailType(click.ParamType):
+    """Click parameter type that validates email addresses."""
+
+    name = "email"
+
+    def convert(self, value, param, ctx):
+        """Validate that the value is an email address."""
+        if not is_email(value):
+            self.fail(f"'{value}' is not a valid email address.", param, ctx)
         return value
 
 

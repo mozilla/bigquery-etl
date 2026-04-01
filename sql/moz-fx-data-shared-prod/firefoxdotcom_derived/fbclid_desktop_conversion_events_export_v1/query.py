@@ -43,7 +43,20 @@ FROM
   `moz-fx-data-shared-prod.firefoxdotcom.fbclid_desktop_conversion_events`
 WHERE
   submission_date = @submission_date
-  AND ga_country IN ("United States", "India")
+  AND ga_country IN (
+    "Argentina",
+    "Australia",
+    "Bangladesh",
+    "Canada",
+    "China",
+    "Hong Kong",
+    "India",
+    "Indonesia",
+    "Mexico",
+    "Thailand",
+    "United States",
+    "Vietnam"
+  )
 """
 
 EXPORT_QUERY = """

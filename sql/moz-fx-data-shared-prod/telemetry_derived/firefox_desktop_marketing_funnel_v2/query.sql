@@ -262,9 +262,6 @@ desktop_funnels_telemetry AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later` AS cfs28
     USING (client_id, first_seen_date)
-  WHERE
-    cfs28.normalized_channel = "release"
-    AND cfs28.is_desktop
   GROUP BY
     ALL
 ),
@@ -340,9 +337,9 @@ combined AS (
         THEN CAST(NULL AS INTEGER)
       ELSE CAST(NULL AS INTEGER)
     END AS installs,
-    COALESCE(desktop_funnels_telemetry.new_profiles) AS new_profiles,
-    COALESCE(desktop_funnels_telemetry.return_user) AS return_user,
-    COALESCE(desktop_funnels_telemetry.retained_week4) AS retained_week4
+    desktop_funnels_telemetry.new_profiles,
+    desktop_funnels_telemetry.return_user,
+    desktop_funnels_telemetry.retained_week4,
   FROM
     top_of_funnel
   -- Join installs on all attribution dimensions

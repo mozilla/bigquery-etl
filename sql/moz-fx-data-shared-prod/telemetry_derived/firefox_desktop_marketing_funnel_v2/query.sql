@@ -10,7 +10,6 @@ WITH clients_first_seen AS (
     *,
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen`
-  -- Join to GA4 attribution directly (no dltoken dedup here as multiple client_ids could come from the same dltoken)
   WHERE
     first_seen_date = @submission_date
     OR first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
@@ -121,6 +120,9 @@ ga4_attribution AS (
     ON SAFE_CAST(ga4_first_gad_campaignid_from_event_params AS INT64) = campaigns_v2.campaign_id
   WHERE
     attribution_dltoken IS NOT NULL
+    AND ga4_attr.first_seen_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
 ),
 ga4_attr_by_dltoken_dedup AS (
   SELECT
@@ -265,6 +267,13 @@ desktop_funnels_telemetry AS (
   GROUP BY
     ALL
 ),
+-- =============================================================================
+-- CTE 5: combined - Firefox Profile Metrics
+-- =============================================================================
+-- Source: top_of_funnel, windows_installer, desktop_funnels_telemetry
+-- Combines all metrics from different funnels together with the following priority: top_of_funnel, windows_installer, desktop_funnels_telemetry
+-- Granularity: Daily, by country, funnel type, and attribution dimensions
+-- =============================================================================
 combined AS (
   SELECT
     -- Use COALESCE to get dimensions from whichever source has data (TOF, installs, or telemetry)

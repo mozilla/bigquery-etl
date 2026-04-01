@@ -8,7 +8,6 @@ SELECT
   STRUCT(
     STRUCT(
       LAX_BOOL(event_extra.after_reset) AS `after_reset`,
-      LAX_BOOL(event_extra.agreed) AS `agreed`,
       LAX_BOOL(event_extra.alt_text_modal) AS `alt_text_modal`,
       LAX_BOOL(event_extra.app_foreground) AS `app_foreground`,
       LAX_BOOL(event_extra.auto_show) AS `auto_show`,
@@ -142,8 +141,6 @@ SELECT
       LAX_INT64(event_extra.last_line_len) AS `last_line_len`,
       LAX_INT64(event_extra.last_used) AS `last_used`,
       LAX_INT64(event_extra.length) AS `length`,
-      LAX_INT64(event_extra.length_chars) AS `length_chars`,
-      LAX_INT64(event_extra.length_words) AS `length_words`,
       LAX_INT64(event_extra.linenumber) AS `linenumber`,
       LAX_INT64(event_extra.memory_bytes) AS `memory_bytes`,
       LAX_INT64(event_extra.metadata_loaded_time) AS `metadata_loaded_time`,
@@ -177,7 +174,6 @@ SELECT
       LAX_INT64(event_extra.source_line) AS `source_line`,
       LAX_INT64(event_extra.source_text_code_units) AS `source_text_code_units`,
       LAX_INT64(event_extra.source_text_word_count) AS `source_text_word_count`,
-      LAX_INT64(event_extra.summarize_duration_ms) AS `summarize_duration_ms`,
       LAX_INT64(event_extra.tab_count) AS `tab_count`,
       LAX_INT64(event_extra.time) AS `time`,
       LAX_INT64(event_extra.time_per_output_token) AS `time_per_output_token`,
@@ -256,7 +252,6 @@ SELECT
       JSON_VALUE(event_extra.conflictingSlug) AS `conflictingSlug`,
       JSON_VALUE(event_extra.connection_id) AS `connection_id`,
       JSON_VALUE(event_extra.connection_type) AS `connection_type`,
-      JSON_VALUE(event_extra.content_type) AS `content_type`,
       JSON_VALUE(event_extra.contenttype) AS `contenttype`,
       JSON_VALUE(event_extra.context) AS `context`,
       JSON_VALUE(event_extra.context_type) AS `context_type`,

@@ -36,5 +36,5 @@ workgroup_access:
   - workgroup:sumo/bq-automation
 references:
   query.sql:
-  - EXTERNAL_QUERY('projects/moz-fx-sumo-prod/locations/us/connections/sumo-prod-prod-db',
-    '\n        WITH date_range
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_revision

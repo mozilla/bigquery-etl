@@ -53,6 +53,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_telemetry_derived__newtab_interactions_hourly__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__newtab_interactions_hourly__v1",
         external_dag_id="bqetl_newtab_interactions_hourly",
@@ -63,6 +76,21 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    ads_derived__ads_client_operations_and_errors_hourly__v1 = bigquery_etl_query(
+        task_id="ads_derived__ads_client_operations_and_errors_hourly__v1",
+        destination_table='ads_client_operations_and_errors_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
+        dataset_id="ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ahanot@mozilla.com",
+        email=["ahanot@mozilla.com", "cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=[
+            "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"
+        ],
+        sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql",
     )
 
     ads_derived__test_ads_bqetl__v1 = bigquery_etl_query(
@@ -78,6 +106,10 @@ with DAG(
             "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/native_desktop_ad_metrics_hourly_v1/query.sql",
+    )
+
+    ads_derived__ads_client_operations_and_errors_hourly__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     ads_derived__test_ads_bqetl__v1.set_upstream(

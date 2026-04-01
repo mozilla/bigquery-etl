@@ -124,7 +124,10 @@ SELECT
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
       metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.user_ai_summarize_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_consented,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1748,7 +1751,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.ai_summarize_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2244,7 +2248,10 @@ SELECT
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
       metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.user_ai_summarize_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_consented,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3868,7 +3875,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.ai_summarize_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4384,7 +4392,10 @@ SELECT
       metrics.boolean.preferences_show_sponsor_suggestions_enabled,
       metrics.boolean.preferences_global_privacy_control_enabled,
       metrics.boolean.preferences_app_zygote_isolated_content_processes_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.user_ai_summarize_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_consented,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -6008,7 +6019,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.ai_summarize_duration
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

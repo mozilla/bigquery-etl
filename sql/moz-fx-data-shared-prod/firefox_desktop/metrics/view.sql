@@ -42,6 +42,10 @@ SELECT
               metrics.datetime.legacy_telemetry_session_start_date
             ) AS legacy_telemetry_session_start_date,
             metrics.datetime.legacy_telemetry_session_start_date AS raw_legacy_telemetry_session_start_date,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.smart_window_memories_last_updated
+            ) AS smart_window_memories_last_updated,
+            metrics.datetime.smart_window_memories_last_updated AS raw_smart_window_memories_last_updated,
             mozfun.glean.parse_datetime(metrics.datetime.termsofuse_date) AS termsofuse_date,
             metrics.datetime.termsofuse_date AS raw_termsofuse_date
           ) AS datetime

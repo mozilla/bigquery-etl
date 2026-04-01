@@ -15391,6 +15391,15 @@ fields:
     - name: raw_legacy_telemetry_session_start_date
       type: STRING
       mode: NULLABLE
+    - name: smart_window_memories_last_updated
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Date when memories were last updated
+
+        '
+    - name: raw_smart_window_memories_last_updated
+      type: STRING
+      mode: NULLABLE
     - name: termsofuse_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -36932,6 +36941,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of entries stored in the SiteIntegrityServiceState nsIDataStorage
+    - name: smart_window_chat_storage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Size of the chat storage
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -55160,6 +55175,19 @@ fields:
       description: 'Events on the startup timeline, in millis since process creation.
 
         See `StartupTimeline.h`
+
+        '
+    - name: smart_window_memories_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of memories stored for a user, split by source
 
         '
   - name: labeled_memory_distribution

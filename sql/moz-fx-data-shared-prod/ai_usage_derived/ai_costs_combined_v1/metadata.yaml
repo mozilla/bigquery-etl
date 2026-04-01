@@ -7,11 +7,6 @@ owners:
 - phlee@mozilla.com
 labels:
   schedule: daily
-bigquery:
-  time_partitioning:
-    type: day
-    field: date
-    require_partition_filter: false
 scheduling:
   dag_name: bqetl_ai_usage
   depends_on:

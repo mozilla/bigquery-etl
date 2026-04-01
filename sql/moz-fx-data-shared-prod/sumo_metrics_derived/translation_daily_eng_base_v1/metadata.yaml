@@ -20,11 +20,6 @@ labels:
   application: sumo
   type: base_metrics
   schedule: daily
-bigquery:
-  time_partitioning:
-    type: day
-    field: event_date
-    require_partition_filter: false
 scheduling:
   dag_name: bqetl_sumo_metrics
   depends_on_past: false

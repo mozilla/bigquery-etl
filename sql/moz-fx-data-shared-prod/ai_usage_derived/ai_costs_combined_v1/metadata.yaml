@@ -16,12 +16,6 @@ scheduling:
     dag_name: bqetl_ai_usage
   - task_id: ai_usage_derived__claude_costs__v1
     dag_name: bqetl_ai_usage
-bigquery:
-  time_partitioning:
-    type: day
-    field: date
-    require_partition_filter: false
-    expiration_days: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

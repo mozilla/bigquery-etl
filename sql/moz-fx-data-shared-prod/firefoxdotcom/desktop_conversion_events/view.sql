@@ -14,7 +14,6 @@ WITH firefoxdotcom_first_sessions AS (
       "Australia",
       "Argentina",
       "Bangladesh",
-      "Brazil",
       "Canada",
       "Japan",
       "India",

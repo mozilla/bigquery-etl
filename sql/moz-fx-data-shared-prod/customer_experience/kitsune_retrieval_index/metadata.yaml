@@ -1,12 +1,12 @@
 friendly_name: Kitsune Embeddings
 description: |-
-  Structured and ai-supporting data from Kitsune -the application that
-   supports Mozilla Support (SUMO).
+  AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
+   to support grounded question answering over Mozilla Support (SUMO) data.
 
   Dimensions:
   - creation_date
   - locale
-  - product	
+  - product
   - topic
   - is_solved
 
@@ -16,7 +16,7 @@ description: |-
   Generated:
   - summary_generated
   - category_generated
-  - language_generated	
+  - language_generated
   - entities_generated
   - embedding based on [title, content]
   - sentiment_score based on [title, content]

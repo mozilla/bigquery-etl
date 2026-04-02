@@ -2,17 +2,17 @@ friendly_name: Zendesk Embeddings
 description: |-
   AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
    to support grounded question answering over Mozilla Support (SUMO) data.
-  
+
   Dimensions:
   - creation_date
   - locale
   - product	
   - topic
   - is_solved
-  
+
   Metrics
   - votes
-  
+
   Generated:
   - summary_generated
   - category_generated
@@ -21,7 +21,7 @@ description: |-
   - embedding based on [title, content]
   - sentiment_score based on [title, content]
   - recency, assuming 7 days as the time when content begins to lose relevance.
-  
+
   Metadata
   - Additional data to support technical processes, such as backfills or investigations.
 owners:

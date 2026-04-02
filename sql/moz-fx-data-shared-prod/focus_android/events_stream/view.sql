@@ -8,15 +8,13 @@ WITH events_stream_union AS (
     e.* REPLACE ("release" AS normalized_channel),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_focus_beta" AS normalized_app_id,
     e.* REPLACE ("beta" AS normalized_channel),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_focus_nightly" AS normalized_app_id,
     e.* REPLACE ("nightly" AS normalized_channel),
@@ -55,8 +53,11 @@ SELECT
       LAX_BOOL(event_extra.has_description) AS `has_description`,
       LAX_BOOL(event_extra.has_edited_title) AS `has_edited_title`,
       LAX_BOOL(event_extra.has_empty_password) AS `has_empty_password`,
+      LAX_BOOL(event_extra.has_form_action_origin) AS `has_form_action_origin`,
       LAX_BOOL(event_extra.has_ftp_origin) AS `has_ftp_origin`,
+      LAX_BOOL(event_extra.has_http_realm) AS `has_http_realm`,
       LAX_BOOL(event_extra.has_non_http_origin) AS `has_non_http_origin`,
+      LAX_BOOL(event_extra.has_origin) AS `has_origin`,
       LAX_BOOL(event_extra.has_punycode_form_action_origin) AS `has_punycode_form_action_origin`,
       LAX_BOOL(event_extra.has_punycode_origin) AS `has_punycode_origin`,
       LAX_BOOL(event_extra.has_rtcp_mux) AS `has_rtcp_mux`,

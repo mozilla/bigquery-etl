@@ -242,8 +242,9 @@ SELECT
 FROM
   ratios_cte
 -- unpivot to create consistent schema for wildcard table selects
-  UNPIVOT(
-    value FOR metric IN (
+  UNPIVOT (
+    value
+    FOR metric IN (
       formautofill_availability_count_true,
       login_autofill_sum,
       login_autofill_avg,

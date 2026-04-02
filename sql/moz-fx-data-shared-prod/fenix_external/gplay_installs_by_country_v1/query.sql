@@ -1,6 +1,6 @@
 WITH app_data AS (
   SELECT
-    Date AS date,
+    `Date` AS date,
     mozfun.norm.firefox_android_package_name_to_channel(Package_Name) AS channel,
     Country AS code,
     SUM(Install_events) AS install_count,
@@ -11,12 +11,12 @@ WITH app_data AS (
   WHERE
     mozfun.norm.firefox_android_package_name_to_channel(Package_Name) IS NOT NULL
   GROUP BY
-    date,
+    `date`,
     channel,
     code
 )
 SELECT
-  date,
+  `date`,
   channel,
   code AS country_code,
   country_details.name AS country_name,

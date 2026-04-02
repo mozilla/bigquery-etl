@@ -9,8 +9,8 @@ CREATE TEMP TABLE
     channel STRING,
     events ARRAY<
       STRUCT<
-        source STRUCT<category STRING, name STRING, timestamp TIMESTAMP>,
-        target STRUCT<category STRING, name STRING, timestamp TIMESTAMP>
+        source STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>,
+        target STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>
       >
     >,
     flow_hash STRING
@@ -156,12 +156,12 @@ CREATE TEMP TABLE
             SELECT AS STRUCT
               category AS category,
               name AS name,
-              timestamp AS timestamp
+              `timestamp` AS timestamp
             LIMIT
               100 -- limit number of events considered
           )
           ORDER BY
-            timestamp
+            `timestamp`
         ) AS events
       FROM
         all_app_events

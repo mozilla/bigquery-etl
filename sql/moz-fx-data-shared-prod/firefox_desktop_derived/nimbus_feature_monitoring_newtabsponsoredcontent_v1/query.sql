@@ -236,8 +236,9 @@ SELECT
 FROM
   ratios_cte
 -- unpivot to create consistent schema for wildcard table selects
-  UNPIVOT(
-    value FOR metric IN (
+  UNPIVOT (
+    value
+    FOR metric IN (
       pocket_is_signed_in_count_true,
       pocket_enabled_count_true,
       pocket_sponsored_stories_enabled_count_true,

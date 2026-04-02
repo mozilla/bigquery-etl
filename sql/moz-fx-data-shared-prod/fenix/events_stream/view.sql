@@ -13,8 +13,7 @@ WITH events_stream_union AS (
     ),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_firefox_beta" AS normalized_app_id,
     e.* REPLACE (
@@ -25,8 +24,7 @@ WITH events_stream_union AS (
     ),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_fenix" AS normalized_app_id,
     e.* REPLACE (
@@ -37,8 +35,7 @@ WITH events_stream_union AS (
     ),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_fenix_nightly" AS normalized_app_id,
     e.* REPLACE (
@@ -49,8 +46,7 @@ WITH events_stream_union AS (
     ),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_fennec_aurora" AS normalized_app_id,
     e.* REPLACE (
@@ -101,8 +97,11 @@ SELECT
       LAX_BOOL(event_extra.has_cookie_rule) AS `has_cookie_rule`,
       LAX_BOOL(event_extra.has_description) AS `has_description`,
       LAX_BOOL(event_extra.has_empty_password) AS `has_empty_password`,
+      LAX_BOOL(event_extra.has_form_action_origin) AS `has_form_action_origin`,
       LAX_BOOL(event_extra.has_ftp_origin) AS `has_ftp_origin`,
+      LAX_BOOL(event_extra.has_http_realm) AS `has_http_realm`,
       LAX_BOOL(event_extra.has_non_http_origin) AS `has_non_http_origin`,
+      LAX_BOOL(event_extra.has_origin) AS `has_origin`,
       LAX_BOOL(event_extra.has_punycode_form_action_origin) AS `has_punycode_form_action_origin`,
       LAX_BOOL(event_extra.has_punycode_origin) AS `has_punycode_origin`,
       LAX_BOOL(event_extra.has_rtcp_mux) AS `has_rtcp_mux`,

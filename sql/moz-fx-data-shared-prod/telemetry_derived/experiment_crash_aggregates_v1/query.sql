@@ -222,11 +222,11 @@ SELECT
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 5-minute intervals
-    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
+    INTERVAL (DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
+    INTERVAL ((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
   ) AS window_end,
   crash_process_type,
   crash_signature,

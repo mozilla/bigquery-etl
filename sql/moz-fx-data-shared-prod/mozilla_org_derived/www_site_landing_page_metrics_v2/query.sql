@@ -1,5 +1,5 @@
 SELECT
-  date,
+  `date`,
   'mozilla.org' AS site,
   device_category,
   operating_system,
@@ -73,9 +73,9 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v2`
 WHERE
-  date = @submission_date
+  `date` = @submission_date
 GROUP BY
-  date,
+  `date`,
   site,
   device_category,
   operating_system,

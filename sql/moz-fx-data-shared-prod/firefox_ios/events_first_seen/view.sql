@@ -8,15 +8,13 @@ WITH events_first_seen_union AS (
     * REPLACE ("release" AS normalized_channel)
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events_first_seen`
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_ios_firefoxbeta" AS normalized_app_id,
     * REPLACE ("beta" AS normalized_channel)
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events_first_seen`
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_ios_fennec" AS normalized_app_id,
     * REPLACE ("nightly" AS normalized_channel)

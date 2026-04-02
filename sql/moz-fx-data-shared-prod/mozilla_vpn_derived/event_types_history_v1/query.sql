@@ -3,7 +3,10 @@
   WITH source AS (
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -14,7 +17,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -25,7 +31,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -36,7 +45,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -57,8 +69,8 @@
     SELECT
       category,
       event,
-      MIN(timestamp) AS first_timestamp,
-      ROW_NUMBER() OVER (ORDER BY MIN(timestamp) ASC, category ASC, event ASC) AS primary_index,
+      MIN(`timestamp`) AS first_timestamp,
+      ROW_NUMBER() OVER (ORDER BY MIN(`timestamp`) ASC, category ASC, event ASC) AS primary_index,
     FROM
       sample
     GROUP BY
@@ -69,14 +81,14 @@
     SELECT
       category,
       event,
-      MIN(timestamp) AS first_timestamp,
+      MIN(`timestamp`) AS first_timestamp,
       event_property.key AS event_property,
       ROW_NUMBER() OVER (
         PARTITION BY
           category,
           event
         ORDER BY
-          MIN(timestamp) ASC,
+          MIN(`timestamp`) ASC,
           event_property.key ASC
       ) AS event_property_index,
     FROM
@@ -96,7 +108,7 @@
     SELECT
       category,
       event,
-      MIN(timestamp) AS first_timestamp,
+      MIN(`timestamp`) AS first_timestamp,
       event_property.key AS event_property,
       event_property.value AS event_property_value,
       ROW_NUMBER() OVER (
@@ -105,7 +117,7 @@
           event,
           event_property.key
         ORDER BY
-          MIN(timestamp) ASC,
+          MIN(`timestamp`) ASC,
           event_property.value ASC
       ) AS event_property_value_index,
     FROM
@@ -189,7 +201,10 @@
   WITH all_events AS (
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -200,7 +215,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -211,7 +229,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -222,7 +243,10 @@
     UNION ALL
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL `timestamp` MILLISECOND
+      ) AS timestamp,
       category,
       name AS event,
       extra,
@@ -251,8 +275,8 @@
     SELECT
       category,
       event,
-      MIN(timestamp) AS first_timestamp,
-      ROW_NUMBER() OVER (ORDER BY MIN(timestamp) ASC, category ASC, event ASC) + (
+      MIN(`timestamp`) AS first_timestamp,
+      ROW_NUMBER() OVER (ORDER BY MIN(`timestamp`) ASC, category ASC, event ASC) + (
         SELECT
           MAX(numeric_index)
         FROM
@@ -302,7 +326,7 @@
           category,
           event
         ORDER BY
-          MIN(timestamp) ASC,
+          MIN(`timestamp`) ASC,
           event_property.key ASC
       ) + ANY_VALUE(max_event_property_index) AS event_property_index,
       0 AS max_event_property_value_index
@@ -363,7 +387,7 @@
           current_events.event,
           event_property.key
         ORDER BY
-          MIN(timestamp) ASC,
+          MIN(`timestamp`) ASC,
           event_property.value ASC
       ) + ANY_VALUE(max_event_property_value_index) AS event_property_value_index,
     FROM

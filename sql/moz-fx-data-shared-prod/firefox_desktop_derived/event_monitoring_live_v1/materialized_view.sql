@@ -35,7 +35,7 @@ WITH base_data_leak_blocker_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_events_v1 AS (
   SELECT
@@ -63,7 +63,7 @@ base_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
             -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
     (
@@ -100,7 +100,7 @@ base_newtab_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_nimbus_targeting_context_v1 AS (
   SELECT
@@ -128,7 +128,7 @@ base_nimbus_targeting_context_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_post_profile_restore_v1 AS (
   SELECT
@@ -156,7 +156,7 @@ base_post_profile_restore_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_profile_restore_v1 AS (
   SELECT
@@ -184,7 +184,7 @@ base_profile_restore_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_profiles_v1 AS (
   SELECT
@@ -212,7 +212,7 @@ base_profiles_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_prototype_no_code_events_v1 AS (
   SELECT
@@ -240,7 +240,7 @@ base_prototype_no_code_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_sync_v1 AS (
   SELECT
@@ -268,7 +268,7 @@ base_sync_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_urlbar_keyword_exposure_v1 AS (
   SELECT
@@ -296,7 +296,7 @@ base_urlbar_keyword_exposure_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_urlbar_potential_exposure_v1 AS (
   SELECT
@@ -324,7 +324,7 @@ base_urlbar_potential_exposure_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 combined AS (
   SELECT
@@ -392,7 +392,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2026-04-01"
+  DATE(submission_timestamp) >= "2026-04-02"
 GROUP BY
   submission_date,
   window_start,

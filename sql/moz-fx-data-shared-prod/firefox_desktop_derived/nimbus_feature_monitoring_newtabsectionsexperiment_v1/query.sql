@@ -200,8 +200,9 @@ SELECT
 FROM
   ratios_cte
 -- unpivot to create consistent schema for wildcard table selects
-  UNPIVOT(
-    value FOR metric IN (
+  UNPIVOT (
+    value
+    FOR metric IN (
       newtab_sections_impression_avg,
       newtab_sections_follow_section_avg,
       newtab_sections_unfollow_section_avg,

@@ -7120,8 +7120,10 @@ pivoted_raw AS (
   SELECT
     *
   FROM
-    use_counts_by_day_version_and_country_stg a UNPIVOT(
-      cnt FOR metric IN (
+    use_counts_by_day_version_and_country_stg a
+    UNPIVOT (
+      cnt
+      FOR metric IN (
         use_counter_css_doc_alignment_baseline,
         use_counter_css_doc_background_repeat_x,
         use_counter_css_doc_background_repeat_y,

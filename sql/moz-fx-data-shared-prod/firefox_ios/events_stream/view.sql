@@ -8,15 +8,13 @@ WITH events_stream_union AS (
     e.* REPLACE ("release" AS normalized_channel),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_ios_firefoxbeta" AS normalized_app_id,
     e.* REPLACE ("beta" AS normalized_channel),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.events_stream_v1` AS e
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     "org_mozilla_ios_fennec" AS normalized_app_id,
     e.* REPLACE ("nightly" AS normalized_channel),

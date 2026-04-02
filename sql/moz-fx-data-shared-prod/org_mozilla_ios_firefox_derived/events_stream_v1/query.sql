@@ -1,7 +1,7 @@
 -- Generated via bigquery_etl.glean_usage
 -- convert array of key value pairs to a json object, cast numbers and booleans if possible
 CREATE TEMP FUNCTION from_map_event_extra(input ARRAY<STRUCT<key STRING, value STRING>>)
-RETURNS json AS (
+RETURNS JSON AS (
   IF(
     ARRAY_LENGTH(input) = 0,
     NULL,

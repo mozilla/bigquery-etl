@@ -35,7 +35,7 @@ WITH base_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_interaction_v1 AS (
   SELECT
@@ -63,7 +63,7 @@ base_interaction_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_non_interaction_v1 AS (
   SELECT
@@ -91,7 +91,7 @@ base_non_interaction_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 combined AS (
   SELECT
@@ -119,7 +119,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2026-04-01"
+  DATE(submission_timestamp) >= "2026-04-02"
 GROUP BY
   submission_date,
   window_start,

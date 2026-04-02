@@ -128,4 +128,4 @@ SELECT
 FROM
   ratios_cte
 -- unpivot to create consistent schema for wildcard table selects
-  UNPIVOT(value FOR metric IN (newtab_opened_avg))
+  UNPIVOT (value FOR metric IN (newtab_opened_avg))

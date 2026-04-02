@@ -26,8 +26,7 @@ BEGIN
 
   DECLARE count_sqls ARRAY<STRING> DEFAULT[];
 
-  WHILE
-    i <= ARRAY_LENGTH(funnels)
+  WHILE i <= ARRAY_LENGTH(funnels)
   DO
     CALL event_analysis.get_funnel_steps_sql(
       project,
@@ -37,15 +36,17 @@ BEGIN
       funnel_sql
     );
 
-    SET funnel_sqls = ARRAY_CONCAT(funnel_sqls, [funnel_sql]);
+    SET
+      funnel_sqls = ARRAY_CONCAT(funnel_sqls, [funnel_sql]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET i = 1;
+  SET
+    i = 1;
 
-  WHILE
-    i <= ARRAY_LENGTH(counts)
+  WHILE i <= ARRAY_LENGTH(counts)
   DO
     CALL event_analysis.get_count_sql(
       project,
@@ -55,30 +56,33 @@ BEGIN
       count_sql
     );
 
-    SET count_sqls = ARRAY_CONCAT(count_sqls, [count_sql]);
+    SET
+      count_sqls = ARRAY_CONCAT(count_sqls, [count_sql]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  EXECUTE IMMEDIATE CONCAT(
-    '\nCREATE OR REPLACE VIEW ',
-    '\n  `',
-    project,
-    '`.analysis.',
-    view_name,
-    '\nAS',
-    '\nSELECT ',
-    '\n  ',
-    ARRAY_TO_STRING(ARRAY_CONCAT(funnel_sqls, count_sqls), ',\n'),
-    ',',
-    '\n  *',
-    '\nFROM',
-    '\n  `',
-    project,
-    '`.',
-    dataset,
-    '.events_daily'
-  );
+  EXECUTE IMMEDIATE
+    CONCAT(
+      '\nCREATE OR REPLACE VIEW ',
+      '\n  `',
+      project,
+      '`.analysis.',
+      view_name,
+      '\nAS',
+      '\nSELECT ',
+      '\n  ',
+      ARRAY_TO_STRING(ARRAY_CONCAT(funnel_sqls, count_sqls), ',\n'),
+      ',',
+      '\n  *',
+      '\nFROM',
+      '\n  `',
+      project,
+      '`.',
+      dataset,
+      '.events_daily'
+    );
 END;
 
 -- See create_funnel_steps_query/stored_procedure.sql for tests

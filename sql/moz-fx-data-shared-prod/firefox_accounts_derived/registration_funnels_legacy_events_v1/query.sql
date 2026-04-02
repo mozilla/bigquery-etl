@@ -4,16 +4,16 @@ WITH registration_overall_success_by_service_reg_view AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - view'
 ),
@@ -22,20 +22,20 @@ registration_overall_success_by_service_reg_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_overall_success_by_service_reg_view AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - complete'
 ),
@@ -44,16 +44,16 @@ registration_email_confirmation_overall_success_by_service_reg_view AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - view'
 ),
@@ -62,20 +62,20 @@ registration_email_confirmation_overall_success_by_service_reg_email_code_view A
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_email_confirmation_overall_success_by_service_reg_view AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - signup_code_view'
 ),
@@ -84,20 +84,20 @@ registration_email_confirmation_overall_success_by_service_reg_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     registration_email_confirmation_overall_success_by_service_reg_email_code_view AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - complete'
 ),
@@ -106,16 +106,16 @@ google_reg_third_party_auth_completions_google_signin_complete AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_third_party_auth - google_signin_complete'
 ),
@@ -124,20 +124,20 @@ google_reg_third_party_auth_completions_reg_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     google_reg_third_party_auth_completions_google_signin_complete AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - complete'
 ),
@@ -146,16 +146,16 @@ google_login_third_party_auth_completions_google_signin_complete AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_third_party_auth - google_signin_complete'
 ),
@@ -164,20 +164,20 @@ google_login_third_party_auth_completions_login_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     google_login_third_party_auth_completions_google_signin_complete AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_login - complete'
 ),
@@ -186,16 +186,16 @@ apple_reg_third_party_auth_completions_apple_signin_complete AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_third_party_auth - apple_signin_complete'
 ),
@@ -204,20 +204,20 @@ apple_reg_third_party_auth_completions_reg_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     apple_reg_third_party_auth_completions_apple_signin_complete AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_reg - complete'
 ),
@@ -226,16 +226,16 @@ apple_login_third_party_auth_completions_apple_signin_complete AS (
     flow_id AS join_key,
     service AS service,
     country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_third_party_auth - apple_signin_complete'
 ),
@@ -244,20 +244,20 @@ apple_login_third_party_auth_completions_login_complete AS (
     flow_id AS join_key,
     prev.service AS service,
     prev.country AS country,
-    DATE(timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id AS client_id_column,
     flow_id AS column
   FROM
     moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   INNER JOIN
     apple_login_third_party_auth_completions_apple_signin_complete AS prev
-    ON prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(`timestamp`)
     AND prev.join_key = flow_id
   WHERE
     {% if is_init() %}
-      DATE(timestamp) >= DATE("2023-01-01")
+      DATE(`timestamp`) >= DATE("2023-01-01")
     {% else %}
-      DATE(timestamp) = @submission_date
+      DATE(`timestamp`) = @submission_date
     {% endif %}
     AND event_type = 'fxa_login - complete'
 ),

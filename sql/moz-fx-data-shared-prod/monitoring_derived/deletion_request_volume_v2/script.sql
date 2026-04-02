@@ -11,22 +11,22 @@ FOR record IN (
     schema_name LIKE r"%\_live%"
 )
 DO
-  EXECUTE IMMEDIATE CONCAT(
-    "INSERT deletion_counts (submission_date, dataset_id, num_rows) ",
-    "SELECT PARSE_DATE('%Y%m%d', PARTITION_ID) AS submission_date, REPLACE(TABLE_SCHEMA, '_live', '') AS dataset_id, TOTAL_ROWS AS num_rows ",
-    "FROM ",
-    record.dataset_id,
-    ".INFORMATION_SCHEMA.PARTITIONS ",
-    "WHERE TABLE_NAME = 'deletion_request_v1' AND ",
-    "PARTITION_ID != '__NULL__' AND ",
-    "PARSE_DATE('%Y%m%d', PARTITION_ID) < CURRENT_DATE AND ('",
-    @submission_date,
-    "' IS NULL OR '",
-    @submission_date,
-    "' = PARSE_DATE('%Y%m%d', PARTITION_ID))"
-  );
-END
-FOR;
+  EXECUTE IMMEDIATE
+    CONCAT(
+      "INSERT deletion_counts (submission_date, dataset_id, num_rows) ",
+      "SELECT PARSE_DATE('%Y%m%d', PARTITION_ID) AS submission_date, REPLACE(TABLE_SCHEMA, '_live', '') AS dataset_id, TOTAL_ROWS AS num_rows ",
+      "FROM ",
+      record.dataset_id,
+      ".INFORMATION_SCHEMA.PARTITIONS ",
+      "WHERE TABLE_NAME = 'deletion_request_v1' AND ",
+      "PARTITION_ID != '__NULL__' AND ",
+      "PARSE_DATE('%Y%m%d', PARTITION_ID) < CURRENT_DATE AND ('",
+      @submission_date,
+      "' IS NULL OR '",
+      @submission_date,
+      "' = PARSE_DATE('%Y%m%d', PARTITION_ID))"
+    );
+END FOR;
 
 MERGE
   `moz-fx-data-shared-prod.monitoring_derived.deletion_request_volume_v2` r

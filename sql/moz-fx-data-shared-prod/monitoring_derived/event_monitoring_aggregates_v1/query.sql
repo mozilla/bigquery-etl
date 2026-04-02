@@ -48,7 +48,7 @@ base_firefox_crashreporter_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -123,7 +123,7 @@ base_firefox_desktop_background_defaultagent_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -198,7 +198,7 @@ base_org_mozilla_firefox_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -242,7 +242,7 @@ base_org_mozilla_firefox_home_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -286,7 +286,7 @@ base_org_mozilla_firefox_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -376,7 +376,7 @@ base_org_mozilla_firefox_beta_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -420,7 +420,7 @@ base_org_mozilla_firefox_beta_home_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -464,7 +464,7 @@ base_org_mozilla_firefox_beta_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -554,7 +554,7 @@ base_org_mozilla_fenix_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -598,7 +598,7 @@ base_org_mozilla_fenix_home_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -642,7 +642,7 @@ base_org_mozilla_fenix_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -732,7 +732,7 @@ base_org_mozilla_ios_firefox_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -776,7 +776,7 @@ base_org_mozilla_ios_firefox_first_session_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -820,7 +820,7 @@ base_org_mozilla_ios_firefox_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -910,7 +910,7 @@ base_org_mozilla_ios_firefoxbeta_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -954,7 +954,7 @@ base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -998,7 +998,7 @@ base_org_mozilla_ios_firefoxbeta_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1088,7 +1088,7 @@ base_org_mozilla_ios_fennec_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1132,7 +1132,7 @@ base_org_mozilla_ios_fennec_first_session_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1176,7 +1176,7 @@ base_org_mozilla_ios_fennec_onboarding_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1266,7 +1266,7 @@ base_org_mozilla_reference_browser_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1341,7 +1341,7 @@ base_org_mozilla_mozregression_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1416,7 +1416,7 @@ base_mozphab_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1491,7 +1491,7 @@ base_mozilla_mach_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1566,7 +1566,7 @@ base_org_mozilla_ios_focus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1641,7 +1641,7 @@ base_org_mozilla_ios_klar_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1716,7 +1716,7 @@ base_org_mozilla_focus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1791,7 +1791,7 @@ base_org_mozilla_focus_beta_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1866,7 +1866,7 @@ base_org_mozilla_focus_nightly_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -1941,7 +1941,7 @@ base_org_mozilla_klar_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2016,7 +2016,7 @@ base_mozillavpn_daemonsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2060,7 +2060,7 @@ base_mozillavpn_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2104,7 +2104,7 @@ base_mozillavpn_extensionsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2148,7 +2148,7 @@ base_mozillavpn_main_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2192,7 +2192,7 @@ base_mozillavpn_vpnsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2292,7 +2292,7 @@ base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2336,7 +2336,7 @@ base_org_mozilla_firefox_vpn_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2380,7 +2380,7 @@ base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2424,7 +2424,7 @@ base_org_mozilla_firefox_vpn_main_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2468,7 +2468,7 @@ base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2568,7 +2568,7 @@ base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2612,7 +2612,7 @@ base_org_mozilla_ios_firefoxvpn_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2656,7 +2656,7 @@ base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2700,7 +2700,7 @@ base_org_mozilla_ios_firefoxvpn_main_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2744,7 +2744,7 @@ base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2844,7 +2844,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2888,7 +2888,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2932,7 +2932,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -2976,7 +2976,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3020,7 +3020,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3120,7 +3120,7 @@ base_mozillavpn_backend_cirrus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3195,7 +3195,7 @@ base_glean_dictionary_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3270,7 +3270,7 @@ base_mdn_fred_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3345,7 +3345,7 @@ base_mdn_yari_action_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3389,7 +3389,7 @@ base_mdn_yari_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3464,7 +3464,7 @@ base_bedrock_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3508,7 +3508,7 @@ base_bedrock_interaction_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3552,7 +3552,7 @@ base_bedrock_non_interaction_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3642,7 +3642,7 @@ base_firefox_desktop_background_tasks_background_tasks_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3686,7 +3686,7 @@ base_firefox_desktop_background_tasks_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3771,7 +3771,7 @@ base_accounts_frontend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3846,7 +3846,7 @@ base_accounts_backend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3921,7 +3921,7 @@ base_accounts_cirrus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -3996,7 +3996,7 @@ base_monitor_cirrus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4071,7 +4071,7 @@ base_debug_ping_view_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4146,7 +4146,7 @@ base_monitor_frontend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4221,7 +4221,7 @@ base_monitor_backend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4296,7 +4296,7 @@ base_relay_backend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4371,7 +4371,7 @@ base_gleanjs_docs_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4446,7 +4446,7 @@ base_thunderbird_desktop_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4521,7 +4521,7 @@ base_net_thunderbird_android_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4596,7 +4596,7 @@ base_net_thunderbird_android_beta_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4671,7 +4671,7 @@ base_net_thunderbird_android_daily_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4746,7 +4746,7 @@ base_syncstorage_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4821,7 +4821,7 @@ base_glam_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4896,7 +4896,7 @@ base_subscription_platform_backend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -4971,7 +4971,7 @@ base_subscription_platform_frontend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -5046,7 +5046,7 @@ base_experimenter_cirrus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -5121,7 +5121,7 @@ base_experimenter_backend_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -5196,7 +5196,7 @@ base_subscription_platform_backend_cirrus_events_v1 AS (
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
           -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+    UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

@@ -40,7 +40,7 @@ bigquery:
     fields:
     - sample_id
     - event_category
-    - client_id
+    - event_name
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

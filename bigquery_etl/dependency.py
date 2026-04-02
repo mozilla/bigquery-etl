@@ -82,6 +82,9 @@ def extract_table_references(sql: str) -> List[str]:
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
+    if any(str(path).endswith(s) for s in skip_dependency()):
+        return
+
     # handle both global and local stable_views for thread/process safety
     global stable_views
     local_stable_views = stable_views

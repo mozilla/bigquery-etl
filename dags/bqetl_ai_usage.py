@@ -92,8 +92,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="phlee@mozilla.com",
         email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     ai_usage_derived__claude_api_keys__v1 = GKEPodOperator(

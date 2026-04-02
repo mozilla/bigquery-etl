@@ -34,7 +34,7 @@ WITH win10_users AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 14 day)
+    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 14 DAY)
     AND `mozfun.norm.windows_version_info`(
       client_info.os,
       client_info.os_version,

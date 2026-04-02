@@ -24,7 +24,7 @@ WITH get_session_start_time AS (
     AND e.value.int_value IS NOT NULL
     AND _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
-    date,
+    `date`,
     visit_identifier,
     full_visitor_id
 ),

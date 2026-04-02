@@ -1,0 +1,38 @@
+# Android-nightly (Fenix) - 1 ping with only a build_cache_error.
+# Schema stub row (2025-01-14): filtered out by WHERE clause, ensures all fields
+# exist in the inferred schema.
+- submission_timestamp: "2025-01-14 10:00:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  client_info:
+    app_display_version: "133.0.0"
+    os: Android
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 1
+    labeled_string:
+      ads_client_client_error:
+        - key: new
+          value: stub
+      ads_client_build_cache_error:
+        - key: builder_error
+          value: stub
+      ads_client_deserialization_error:
+        - key: invalid_ad_item
+          value: stub
+      ads_client_http_cache_outcome:
+        - key: hit
+          value: stub
+- submission_timestamp: "2025-01-15 10:45:00 UTC"
+  normalized_country_code: US
+  normalized_channel: nightly
+  client_info:
+    app_display_version: "133.0.0"
+    os: Android
+  metrics:
+    labeled_string:
+      ads_client_build_cache_error:
+        - key: database_error
+          value: cache_build_failed

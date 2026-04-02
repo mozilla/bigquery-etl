@@ -290,6 +290,16 @@ def _udf_dependencies(artifact_files):
         raw_routine = RawRoutine.from_file(udf_file)
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
 
+        # Also publish any non-public test dependencies to stage.
+        for test_dependency in raw_routine.test_dependencies:
+            if (
+                test_dependency in raw_routines
+                and raw_routines[test_dependency].project != "mozfun"
+            ):
+                udfs_to_publish = accumulate_dependencies(
+                    udfs_to_publish, raw_routines, test_dependency
+                )
+
         for dependency in udfs_to_publish:
             if dependency in raw_routines:
                 file_path = Path(raw_routines[dependency].filepath)

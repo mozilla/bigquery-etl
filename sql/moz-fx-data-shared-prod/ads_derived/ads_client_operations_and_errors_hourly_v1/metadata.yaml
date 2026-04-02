@@ -1,0 +1,44 @@
+friendly_name: Ads Client Operations and Errors Hourly
+description: |-
+  Hourly aggregates tracking the performance and reliability of the ads client SDK
+  across mobile (iOS and Android) and potentially desktop platforms in the future.
+
+  Monitors SDK operation counts (new client creation, ad requests, click/impression recording,
+  ad reporting) and tracks errors encountered during these operations (client errors by operation type,
+  cache build failures, deserialization errors, HTTP cache outcomes).
+
+  This data is used to monitor SDK health, identify error patterns, and measure
+  operational volume by platform, country, app version, and channel.
+
+  Only pings containing at least one ads_client SDK metric are included.
+owners:
+  - ahanot@mozilla.com
+  - mozilla/ads_data_team
+scheduling:
+  dag_name: bqetl_ads_hourly
+  date_partition_parameter: null
+  destination_table: >-
+    ads_client_operations_and_errors_hourly_v1${{
+    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+    - >-
+      submission_date:DATE:{{
+      (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+      }}
+  query_file_path: sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - surface
+      - normalized_os
+      - normalized_country_code
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

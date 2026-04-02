@@ -6,7 +6,7 @@ WITH source AS (
     {% for glean_app_id in glean_app_ids %}
       SELECT
         DATE(submission_timestamp) AS submission_date,
-        SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+        SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL `timestamp` MILLISECOND) AS timestamp,
         category,
         name AS event,
         extra,
@@ -37,8 +37,8 @@ primary_event_types AS (
   SELECT
     category,
     event,
-    MIN(timestamp) AS first_timestamp,
-    ROW_NUMBER() OVER (ORDER BY MIN(timestamp) ASC, category ASC, event ASC) AS primary_index,
+    MIN(`timestamp`) AS first_timestamp,
+    ROW_NUMBER() OVER (ORDER BY MIN(`timestamp`) ASC, category ASC, event ASC) AS primary_index,
   FROM
     sample
   GROUP BY
@@ -49,14 +49,14 @@ event_property_indices AS (
   SELECT
     category,
     event,
-    MIN(timestamp) AS first_timestamp,
+    MIN(`timestamp`) AS first_timestamp,
     event_property.key AS event_property,
     ROW_NUMBER() OVER (
       PARTITION BY
         category,
         event
       ORDER BY
-        MIN(timestamp) ASC,
+        MIN(`timestamp`) ASC,
         event_property.key ASC
     ) AS event_property_index,
   FROM
@@ -78,7 +78,7 @@ event_property_value_indices AS (
   SELECT
     category,
     event,
-    MIN(timestamp) AS first_timestamp,
+    MIN(`timestamp`) AS first_timestamp,
     event_property.key AS event_property,
     event_property.value AS event_property_value,
     ROW_NUMBER() OVER (
@@ -87,7 +87,7 @@ event_property_value_indices AS (
         event,
         event_property.key
       ORDER BY
-        MIN(timestamp) ASC,
+        MIN(`timestamp`) ASC,
         event_property.value ASC
     ) AS event_property_value_index,
   FROM
@@ -173,7 +173,7 @@ WITH all_events AS (
     {% for glean_app_id in glean_app_ids %}
       SELECT
         DATE(submission_timestamp) AS submission_date,
-        SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+        SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL `timestamp` MILLISECOND) AS timestamp,
         category,
         name AS event,
         extra,
@@ -212,8 +212,8 @@ new_primary_event_types AS (
   SELECT
     category,
     event,
-    MIN(timestamp) AS first_timestamp,
-    ROW_NUMBER() OVER (ORDER BY MIN(timestamp) ASC, category ASC, event ASC) + (
+    MIN(`timestamp`) AS first_timestamp,
+    ROW_NUMBER() OVER (ORDER BY MIN(`timestamp`) ASC, category ASC, event ASC) + (
       SELECT
         MAX(numeric_index)
       FROM
@@ -258,7 +258,7 @@ new_event_property_indices AS (
     category,
     event,
     event_property.key AS event_property,
-    ROW_NUMBER() OVER (PARTITION BY category, event ORDER BY MIN(timestamp) ASC, event_property.key ASC) + ANY_VALUE(
+    ROW_NUMBER() OVER (PARTITION BY category, event ORDER BY MIN(`timestamp`) ASC, event_property.key ASC) + ANY_VALUE(
       max_event_property_index
     ) AS event_property_index,
     0 AS max_event_property_value_index
@@ -321,7 +321,7 @@ new_event_property_value_indices AS (
         current_events.event,
         event_property.key
       ORDER BY
-        MIN(timestamp) ASC,
+        MIN(`timestamp`) ASC,
         event_property.value ASC
     ) + ANY_VALUE(max_event_property_value_index) AS event_property_value_index,
   FROM

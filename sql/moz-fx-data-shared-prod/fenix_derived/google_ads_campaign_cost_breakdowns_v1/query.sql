@@ -1,6 +1,6 @@
 WITH campaigns_with_persisted_ids AS (
   SELECT
-    date,
+    `date`,
     campaign_name AS name,
     campaign_id AS id,
     FORMAT(
@@ -17,7 +17,7 @@ WITH campaigns_with_persisted_ids AS (
     `moz-fx-data-shared-prod`.google_ads_derived.campaign_names_map_v1
     USING (campaign_id)
   GROUP BY
-    date,
+    `date`,
     campaign_name,
     id
 ),
@@ -36,12 +36,12 @@ install_dou_metrics AS (
     adjust_network = "Google Ads ACI"
   GROUP BY
     fenix_marketing_metrics_adjust_campaign,
-    date
+    `date`
 ),
 stats AS (
   SELECT
     id,
-    date,
+    `date`,
     SUM(cost_micros) AS cost_micros,
     SUM(impressions) AS impressions,
     SUM(conversions) AS conversions,
@@ -50,7 +50,7 @@ stats AS (
     `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
   GROUP BY
     id,
-    date
+    `date`
 )
 SELECT
   campaigns_with_persisted_ids.name AS campaign_name,
@@ -104,7 +104,7 @@ FROM
   stats
 JOIN
   campaigns_with_persisted_ids
-  USING (date, id)
+  USING (`date`, id)
 JOIN
   install_dou_metrics
   ON (stats.date = install_dou_metrics.date)

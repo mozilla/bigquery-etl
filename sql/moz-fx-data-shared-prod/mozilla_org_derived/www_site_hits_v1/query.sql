@@ -1,6 +1,6 @@
 WITH hits AS (
   SELECT
-    PARSE_DATE('%Y%m%d', date) AS date,
+    PARSE_DATE('%Y%m%d', `date`) AS date,
     CONCAT(CAST(fullVisitorId AS STRING), CAST(visitId AS STRING)) AS visit_identifier,
     fullVisitorId AS full_visitor_id,
     visitStartTime AS visit_start_time,

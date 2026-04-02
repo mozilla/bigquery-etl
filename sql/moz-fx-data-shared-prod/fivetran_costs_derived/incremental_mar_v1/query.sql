@@ -11,7 +11,7 @@ WITH incremental_mar AS (
 )
 SELECT
   measured_date,
-  DATE_TRUNC(measured_date, month) AS measured_month,
+  DATE_TRUNC(measured_date, MONTH) AS measured_month,
   destination_id,
   connection_name AS connector,
   table_name,

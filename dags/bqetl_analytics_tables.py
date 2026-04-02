@@ -670,6 +670,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_clients_first_seen_v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_clients_first_seen_v3",

@@ -27,6 +27,7 @@ SELECT
   STRUCT(
     STRUCT(
       LAX_BOOL(event_extra.agreed) AS `agreed`,
+      LAX_BOOL(event_extra.auto_translate) AS `auto_translate`,
       LAX_BOOL(event_extra.changed_to) AS `changed_to`,
       LAX_BOOL(event_extra.corrupt) AS `corrupt`,
       LAX_BOOL(event_extra.did_confirm) AS `did_confirm`,
@@ -98,6 +99,7 @@ SELECT
       JSON_VALUE(event_extra.extension_source) AS `extension_source`,
       JSON_VALUE(event_extra.feature_id) AS `feature_id`,
       JSON_VALUE(event_extra.flow_type) AS `flow_type`,
+      JSON_VALUE(event_extra.from_language) AS `from_language`,
       JSON_VALUE(event_extra.groups) AS `groups`,
       JSON_VALUE(event_extra.hint_type) AS `hint_type`,
       JSON_VALUE(event_extra.identified_language) AS `identified_language`,
@@ -149,6 +151,7 @@ SELECT
       JSON_VALUE(event_extra.survey_id) AS `survey_id`,
       JSON_VALUE(event_extra.tile_type) AS `tile_type`,
       JSON_VALUE(event_extra.timeframe) AS `timeframe`,
+      JSON_VALUE(event_extra.to_language) AS `to_language`,
       JSON_VALUE(event_extra.toggle_type) AS `toggle_type`,
       JSON_VALUE(event_extra.tou_version) AS `tou_version`,
       JSON_VALUE(event_extra.translation_flow_id) AS `translation_flow_id`,

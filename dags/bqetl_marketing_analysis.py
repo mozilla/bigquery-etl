@@ -476,6 +476,19 @@ with DAG(
         )
     )
 
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     bigeye__google_ads_derived__fenix_conversion_event_categorization__v1 = bigquery_bigeye_check(
         task_id="bigeye__google_ads_derived__fenix_conversion_event_categorization__v1",
         table_id="moz-fx-data-shared-prod.google_ads_derived.fenix_conversion_event_categorization_v1",
@@ -580,6 +593,18 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__firefox_desktop_marketing_funnel__v2",
+        destination_table="firefox_desktop_marketing_funnel_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="sbedwell@mozilla.com",
+        email=["kik@mozilla.com", "sbedwell@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
@@ -788,5 +813,33 @@ with DAG(
     )
 
     telemetry_derived__firefox_desktop_marketing_funnel__v1.set_upstream(
+        wait_for_telemetry_derived__clients_first_seen_28_days_later__v3
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_checks__fail_google_ads_derived__campaigns__v2
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_checks__fail_telemetry_derived__cfs_ga4_attr__v1
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_clients_first_seen_v3
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_firefoxdotcom_derived__ga_sessions__v2
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
+        wait_for_mozilla_org_derived__ga_sessions__v3
+    )
+
+    telemetry_derived__firefox_desktop_marketing_funnel__v2.set_upstream(
         wait_for_telemetry_derived__clients_first_seen_28_days_later__v3
     )

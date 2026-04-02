@@ -264,7 +264,7 @@ class TestBackfill:
             result = runner.invoke(create, [invalid_path, "--start_date=2021-03-01"])
             assert result.exit_code == 2
             assert "Invalid" in result.output
-            assert "path" in result.output
+            assert "project.dataset.table" in result.output
 
     def test_create_backfill_with_invalid_start_date_greater_than_end_date(
         self, runner
@@ -476,6 +476,148 @@ class TestBackfill:
         )
         assert result.exit_code == 1
         assert "--query-script-date-arg" in str(result.exception)
+
+    def test_create_backfill_interactive_python_script(self, runner):
+        """query.py table should show script-specific prompts."""
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        interactive_input = "\n".join(
+            [
+                "2026-01-01",  # start date
+                "",  # end date
+                "N",  # exclude dates
+                "test@example.org",  # watcher email
+                "N",  # another
+                "Bug 12345 - reprocess data",  # reason
+                "",  # custom query path
+                "main",  # query script entrypoint
+                "submission-date",  # query script date arg
+                "",  # dry run arg
+                "Y",  # add script args
+                "--project=test",  # arg
+                "N",  # another
+                "N",  # shredder mitigation
+                "N",  # override retention
+            ]
+        )
+
+        result = runner.invoke(
+            create,
+            ["moz-fx-data-shared-prod.test.test_query_v1"],
+            input=interactive_input,
+        )
+
+        assert result.exit_code == 0
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        entry = Backfill.entries_from_file(backfill_file)[0]
+        assert entry.query_script_entrypoint == "main"
+        assert entry.query_script_date_arg == "submission-date"
+        assert entry.query_script_args == ["--project=test"]
+
+    def test_create_backfill_interactive_sql(self, runner):
+        """query.sql table should not show query.py prompts."""
+        interactive_input = "\n".join(
+            [
+                "2021-03-01",  # start date
+                "",  # end date
+                "Y",  # exclude dates
+                "2021-03-03",  # excluded date
+                "Y",  # another
+                "2021-03-05",  # excluded date
+                "N",  # another
+                "test1@mozilla.com",  # watcher email
+                "Y",  # another
+                "test2@mozilla.com",  # watcher email
+                "N",  # another
+                "Bug 12345 - reprocess data",  # reason
+                "",  # custom query path
+                # No script prompts expected for query.sql tables
+                "N",  # shredder mitigation
+                "N",  # override retention
+            ]
+        )
+
+        result = runner.invoke(
+            create,
+            ["moz-fx-data-shared-prod.test.test_query_v1"],
+            input=interactive_input,
+        )
+
+        assert result.exit_code == 0
+        assert "entrypoint" not in result.output.lower()
+
+    def test_create_backfill_non_interactive_unchanged(self, runner):
+        """No prompts should appear if required args are provided."""
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--end_date=2021-03-10",
+            ],
+        )
+
+        assert result.exit_code == 0
+        # No prompt text should appear in output
+        assert "Start date" not in result.output
+        assert "Watcher email" not in result.output
+
+    def test_interactive_prompt_covers_all_create_options(self, runner):
+        """Ensure prompt_for_options returns every CLI option used by create().
+
+        If a new option is added to 'bqetl backfill create' but not to the
+        interactive prompt, this test will fail.
+        """
+        from bigquery_etl.backfill.interactive import prompt_for_options
+
+        internal_params = {"sql_dir"}
+
+        cli_param_names = {
+            p.name for p in create.params if p.name not in internal_params
+        }
+
+        interactive_input = "\n".join(
+            [
+                "test.test_query_v1",  # table name
+                "2021-03-01",  # start date
+                "",  # end date
+                "N",  # exclude dates
+                "test1@mozilla.com",  # watcher email
+                "N",  # another
+                "Bug 12345 - reprocess data",  # reason
+                "",  # custom query path
+                "N",  # shredder mitigation
+                "N",  # override retention
+            ]
+        )
+
+        captured_options = {}
+        original_prompt = prompt_for_options
+
+        def capture_prompt(sql_dir, qualified_table_name=None):
+            result = original_prompt(sql_dir, qualified_table_name)
+            captured_options.update(result)
+            return result
+
+        with patch(
+            "bigquery_etl.cli.backfill.prompt_for_options",
+            side_effect=capture_prompt,
+        ):
+            # call with no args
+            runner.invoke(create, [], input=interactive_input)
+
+        missing = cli_param_names - set(captured_options.keys())
+        assert not missing, (
+            "prompt_for_options does not return these options: "
+            f"{missing}. Add them to bigquery_etl/backfill/interactive.py."
+        )
+
+        extra = set(captured_options.keys()) - cli_param_names
+        assert not extra, (
+            "prompt_for_options returns options not in the create command: "
+            f"{extra}. Add them to cli/backfill.py or remove from interactive.py."
+        )
 
     def test_validate_backfill(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE

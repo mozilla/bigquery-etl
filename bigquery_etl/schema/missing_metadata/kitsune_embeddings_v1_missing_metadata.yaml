@@ -181,4 +181,3 @@ missing_columns:
 
 # Summary
 # - Columns recommended for global.yaml: []
-# - Columns recommended for customer_experience_derived.yaml: [creation_date, title, content, product, topic, type, is_solved, votes, summary_generated, category_generated, language_generated, entities_generated, topics_generated, sentiment_score, embedding, recency_score, metadata]

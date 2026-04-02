@@ -24,11 +24,24 @@ stable_views = None
 @cache
 def skip_dependency():
     """Return a list of configured SQL files for which dependency parsing should be skipped."""
-    return [
-        file
-        for skip in ConfigLoader.get("dependency", "skip", fallback=[])
-        for file in glob(skip, recursive=True)
-    ]
+    root = ConfigLoader.project_dir
+    result = []
+    for pattern in ConfigLoader.get("dependency", "skip", fallback=[]):
+        if any(c in pattern for c in ("*", "?", "[")):
+            # Wildcard pattern: expand via glob relative to repo root
+            result.extend(
+                str(Path(p).relative_to(root))
+                for p in glob(str(root / pattern), recursive=True)
+            )
+        else:
+            # Exact path: validate it is specific enough to avoid broad matching
+            if "/" not in pattern:
+                raise click.ClickException(
+                    f"dependency skip pattern '{pattern}' is too broad — "
+                    "must include a directory component (e.g. 'sql/project/dataset/table/query.sql')"
+                )
+            result.append(pattern)
+    return result
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:

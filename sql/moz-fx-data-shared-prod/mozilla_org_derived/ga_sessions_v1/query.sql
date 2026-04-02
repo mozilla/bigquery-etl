@@ -71,7 +71,7 @@ daily_sessions AS (
     mozfun.ga.nullify_string(clientId) AS ga_client_id,
     -- visitId (or sessionId in GA4) is guaranteed unique only among one client, look at visitId here https://support.google.com/analytics/answer/3437719?hl=en
     CONCAT(mozfun.ga.nullify_string(clientId), CAST(visitId AS STRING)) AS ga_session_id,
-    MIN(PARSE_DATE('%Y%m%d', date)) AS session_date,
+    MIN(PARSE_DATE('%Y%m%d', `date`)) AS session_date,
     MIN(visitNumber) = 1 AS is_first_session,
     MIN(visitNumber) AS session_number,
     ARRAY_CONCAT_AGG(hits) AS hits,

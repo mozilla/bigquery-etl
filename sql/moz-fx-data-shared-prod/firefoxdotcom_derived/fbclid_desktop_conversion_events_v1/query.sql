@@ -74,9 +74,9 @@ early_conversion_events AS (
   events_stage AS (
     SELECT
       client_id,
-      MIN(submission_date) AS firefox_first_run_date,
-      MIN(IF(has_ad_click, submission_date, NULL)) AS firefox_first_ad_click_date,
-      MIN(IF(has_search, submission_date, NULL)) AS firefox_first_search_date,
+      MIN(submission_date) AS firefox_first_run,
+      MIN(IF(has_ad_click, submission_date, NULL)) AS firefox_first_ad_click,
+      MIN(IF(has_search, submission_date, NULL)) AS firefox_first_search,
       IF(
         COUNTIF(
           submission_date
@@ -94,12 +94,15 @@ early_conversion_events AS (
   unpivot_events AS (
     SELECT
       *
+    -- Make sure these events are listed and up-to-date inside the metadata file.
     FROM
-      events_stage UNPIVOT(
-        activity_date FOR conversion_name IN (
-          firefox_first_run_date,
-          firefox_first_ad_click_date,
-          firefox_first_search_date,
+      events_stage
+      UNPIVOT (
+        activity_date
+        FOR conversion_name IN (
+          firefox_first_run,
+          firefox_first_ad_click,
+          firefox_first_search,
           returned_second_day
         )
       )
@@ -145,9 +148,12 @@ activity_conversion_events AS (
   )
   SELECT
     * EXCEPT (did_conversion),
+  -- Make sure these events are listed and up-to-date inside the metadata file.
   FROM
-    events_stage UNPIVOT(
-      did_conversion FOR conversion_name IN (
+    events_stage
+    UNPIVOT (
+      did_conversion
+      FOR conversion_name IN (
         first_wk_5_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_24_active_minutes,
@@ -169,8 +175,7 @@ current_conversions AS (
     *
   FROM
     early_conversion_events
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM

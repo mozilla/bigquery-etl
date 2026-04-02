@@ -58,7 +58,8 @@ THEN
   WHEN MATCHED
 THEN
   UPDATE
-    SET T.total_users = S.total_users,
+  SET
+    T.total_users = S.total_users,
     T.histogram = S.histogram,
     T.percentiles = NULL,
     T.non_norm_histogram = S.non_norm_histogram,

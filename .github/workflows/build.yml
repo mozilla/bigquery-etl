@@ -144,7 +144,7 @@ jobs:
       - &restore-venv
         name: Restore cached virtualenv
         id: restore-venv
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -157,7 +157,7 @@ jobs:
       - name: Save cached virtualenv
         # Don't let forked PRs update the shared cache.
         if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -569,12 +569,14 @@ jobs:
       - *restore-venv
       - *download-staged-sql
       - *copy-staged-sql
+      - *auth-gcp-dryrun
       - *auth-gcp-stage
       - name: Run SQL tests
         env:
           # unique id to use as dataset suffix
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
           PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
 
@@ -939,7 +941,7 @@ jobs:
           rm ~/telemetry-airflow/dags/* -f || true
           cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - name: Cache telemetry-airflow dependencies
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
         with:
           path: ~/telemetry-airflow/.venv
           # yamllint disable-line rule:line-length

@@ -12,7 +12,7 @@
   os_family: windows
   timestamp: 2021-01-01T12:00:01+00:00
   normalized_os: Windows
-  normalized_os_version: 11.0
+  normalized_os_version: "11.0"
   position: 1
   region: OH
   normalized_channel: nightly
@@ -28,7 +28,7 @@
   is_clicked: true
   locale: en-US
   normalized_os: Windows
-  normalized_os_version: 11.0
+  normalized_os_version: "11.0"
   position: 2
   region: AK
   normalized_channel: nightly
@@ -49,7 +49,7 @@
   os_family: macos
   timestamp: 2021-01-01T12:07:00+00:00
   normalized_os: macOS
-  normalized_os_version: 10.9
+  normalized_os_version: "10.9"
   position: 7
   region: AZ
   normalized_channel: beta
@@ -68,7 +68,7 @@
   locale: en-US
   normalized_channel: release
   normalized_os: macOS
-  normalized_os_version: 15.2
+  normalized_os_version: "15.2"
   os_family: macos
   position: 11
   query: anvils
@@ -90,7 +90,7 @@
   locale: en-US
   normalized_channel: beta
   normalized_os: macOS
-  normalized_os_version: 15.0
+  normalized_os_version: "15.0"
   os_family: macos
   position: 12
   query: "best paper"
@@ -110,7 +110,7 @@
   locale: en-US
   normalized_channel: nightly
   normalized_os: Windows
-  normalized_os_version: 11.0
+  normalized_os_version: "11.0"
   position: 13
   region: OR
   reporting_url: https://example.com/duff-beer

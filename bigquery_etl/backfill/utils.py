@@ -56,7 +56,7 @@ def get_effective_retention_days(metadata: Metadata) -> int:
 
 
 def get_entries_from_qualified_table_name(
-    sql_dir, qualified_table_name, status=None
+    sql_dir, qualified_table_name, status=None, table_not_exists_ok=False
 ) -> List[Backfill]:
     """Return backfill entries from qualified table name."""
     backfills = []
@@ -65,6 +65,8 @@ def get_entries_from_qualified_table_name(
     table_path = Path(sql_dir) / project / dataset / table
 
     if not table_path.exists():
+        if table_not_exists_ok:
+            return []
         click.echo(f"{project}.{dataset}.{table} does not exist")
         sys.exit(1)
 

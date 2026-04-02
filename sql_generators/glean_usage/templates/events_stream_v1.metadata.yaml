@@ -43,4 +43,3 @@ bigquery:
     - sample_id
     - event_category
     - event_name
-    - client_id

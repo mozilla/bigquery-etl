@@ -26,4 +26,4 @@ description: |-
   - Additional data to support technical processes, such as backfills or investigations.
 owners:
 - lvargas@mozilla.com
-- mozilla/customer_experience
+- mozilla/customer_insights

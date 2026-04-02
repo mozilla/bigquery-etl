@@ -304,6 +304,10 @@ deprecation:
   retain_dataset_roles:  # the following roles are retain permissions on datasets when a dataset table is deprecated
   - roles/bigquery.dataEditor  # operational access
 
+dependency:
+  skip:
+  - sql/moz-fx-data-shared-prod/customer_experience_derived/kitsune_retrieval_index_v1/query.sql
+
 format:
   skip:
   - bigquery_etl/glam/templates/**/*.sql

@@ -3,6 +3,7 @@
 import re
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from functools import cache
 from glob import glob
 from itertools import groupby
 from pathlib import Path
@@ -18,6 +19,16 @@ from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import alter_sql_for_sqlglot, render
 
 stable_views = None
+
+
+@cache
+def skip_dependency():
+    """Return a list of configured SQL files for which dependency parsing should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get("dependency", "skip", fallback=[])
+        for file in glob(skip, recursive=True)
+    ]
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
@@ -148,6 +159,8 @@ def _process_single_file(
     path: Path, without_views: bool = False
 ) -> Tuple[Path, List[str]]:
     """Process a single SQL file to extract table references."""
+    if any(str(path).endswith(s) for s in skip_dependency()):
+        return path, []
     try:
         if without_views:
             return path, list(extract_table_references_without_views(path))

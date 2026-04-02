@@ -13,7 +13,8 @@ WITH pivoted AS (
         daily_ad_clicks
       FROM
         `moz-fx-data-shared-prod.search_derived.legacy_ad_clicks_by_state_v1`
-    ) pivot(SUM(daily_ad_clicks) FOR normalized_engine IN ('Bing', 'DuckDuckGo', 'Google'))
+    )
+    PIVOT (SUM(daily_ad_clicks) FOR normalized_engine IN ('Bing', 'DuckDuckGo', 'Google'))
   ORDER BY
     `month`,
     state

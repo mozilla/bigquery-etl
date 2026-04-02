@@ -27,8 +27,8 @@ new_downloads_stg AS (
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
-    DATE(timestamp) = (SELECT CAST(download_date AS date) FROM check_download_date)
-    AND timestamp < '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
+    DATE(`timestamp`) = (SELECT CAST(download_date AS date) FROM check_download_date)
+    AND `timestamp` < '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
   UNION ALL
   --Post GA4 launch, use client_id_ga4 as the GA4 client ID
   SELECT DISTINCT
@@ -39,8 +39,8 @@ new_downloads_stg AS (
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
-    DATE(timestamp) = (SELECT CAST(download_date AS date) FROM check_download_date)
-    AND timestamp >= '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
+    DATE(`timestamp`) = (SELECT CAST(download_date AS date) FROM check_download_date)
+    AND `timestamp` >= '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
 ),
 new_downloads AS (
   SELECT

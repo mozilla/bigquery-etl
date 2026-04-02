@@ -22,6 +22,7 @@ labels:
   owner1: plee
 scheduling:
   dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
   depends_on_past: false
 workgroup_access:
 - role: roles/bigquery.dataViewer

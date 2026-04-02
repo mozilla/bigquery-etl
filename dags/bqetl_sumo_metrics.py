@@ -64,8 +64,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="plee@mozilla.com",
         email=["phlee@mozilla.com", "plee@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     sumo_metrics_derived__kitsune_questions_base__v1 = bigquery_etl_query(
@@ -87,8 +88,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="plee@mozilla.com",
         email=["phlee@mozilla.com", "plee@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     sumo_metrics_derived__translation_daily_locale_base__v1 = bigquery_etl_query(
@@ -98,8 +100,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="plee@mozilla.com",
         email=["phlee@mozilla.com", "plee@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     sumo_metrics_derived__zendesk_tickets_base__v1 = bigquery_etl_query(

@@ -117,7 +117,7 @@ def create_event(event_data: DataFrame) -> Event:
             fbc=event_data["fbc"],
         ),
         event_id=f"{event_data['conversion_name']}-{event_data['fbc']}",
-        action_source=ActionSource.PHYSICAL_STORE,
+        action_source=ActionSource.WEBSITE,
     )
 
 

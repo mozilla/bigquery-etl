@@ -154,3 +154,12 @@ WHERE
     AND app_version_major >= 143
     AND sample_id != 0
   ) IS NOT TRUE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-10910
+  AND (
+    normalized_channel IN ('release', 'esr')
+    AND (
+      (event.category = 'media.playback' AND event.name IN ('decode_error', 'first_frame_loaded'))
+      OR (event.category = 'media' AND event.name = 'error')
+    )
+    AND app_version_major <= 149
+  ) IS NOT TRUE

@@ -3,12 +3,13 @@ WITH
 engagement_events AS (
   SELECT
     *,
-    ROW_NUMBER() OVER () AS event_id
+    CONCAT(user_pseudo_id, CAST(event_timestamp AS STRING)) AS event_id
   FROM
     `mozdata.sumo_ga.ga4_events`,
     UNNEST(event_params) AS ep
   WHERE
-    event_name = 'user_engagement'
+    event_date = FORMAT_DATE('%Y%m%d', @submission_date)
+    AND event_name = 'user_engagement'
     AND ep.key = 'content_group'
     AND ep.value.string_value IN ('kb-article', 'support-forum-question-details')
 ),
@@ -64,7 +65,6 @@ SELECT
       THEN 'kb'
     WHEN content_type = 'support-forum-question-details'
       THEN 'forum_question'
-    ELSE 'other'
   END AS content_type,
   COUNT(DISTINCT ga_session_id) AS sessions,
   COUNT(DISTINCT event_id) AS events,

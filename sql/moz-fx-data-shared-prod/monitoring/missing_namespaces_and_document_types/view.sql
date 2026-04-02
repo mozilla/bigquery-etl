@@ -12,7 +12,7 @@ WITH structured_daily_errors AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
   WHERE
-    submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 7 DAY)
+    submission_timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
     AND exception_class = 'com.mozilla.telemetry.ingestion.core.schema.SchemaNotFoundException'
   GROUP BY
     submission_date,

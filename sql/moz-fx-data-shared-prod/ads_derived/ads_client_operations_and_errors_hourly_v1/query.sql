@@ -92,14 +92,12 @@ base AS (
     *
   FROM
     ios_base
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM
     android_release_base
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM

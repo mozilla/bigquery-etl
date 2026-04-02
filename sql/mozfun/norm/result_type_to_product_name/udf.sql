@@ -108,7 +108,7 @@ RETURNS STRING AS (
         'restrict_keyword_actions'
       )
       THEN res
-    WHEN res LIKE('rust_%_opt_in')
+    WHEN res LIKE ('rust_%_opt_in')
       THEN SUBSTR(res, 6)
     WHEN res IN ('ai_chat')
       THEN 'ai_chat'

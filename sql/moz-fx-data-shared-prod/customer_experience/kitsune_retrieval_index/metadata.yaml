@@ -1,4 +1,4 @@
-friendly_name: Kitsune Embeddings
+friendly_name: Kitsune Retrieval Index
 description: |-
   AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
    to support grounded question answering over Mozilla Support (SUMO) data.

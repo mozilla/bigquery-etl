@@ -316,7 +316,7 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
-  - sql/moz-fx-data-shared-prod/customer_experience_derived/kitsune_retrieval_index_v1/query.sql
+  - sql/moz-fx-data-shared-prod/customer_experience_derived/kitsune_retrieval_index_v1/can you query.sql
   skip_qualifying_references:
   - sql/mozfun/**/examples/*.sql
   # Don't try to qualify references when Jinja expressions are being used for table/view IDs.

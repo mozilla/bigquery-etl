@@ -210,7 +210,7 @@ global_total_impressions_per_day AS (
 ),
 global_final AS (
   SELECT
-    NULL AS region,
+    CAST(NULL AS STRING) AS region,
     gs.average_ctr_top10_items,
     gs.average_ctr_top2_items,
     gip.impressions_per_item,

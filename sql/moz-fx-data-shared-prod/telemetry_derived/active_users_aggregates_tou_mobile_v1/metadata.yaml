@@ -13,8 +13,9 @@ owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
 labels:
+  level: gold
   incremental: true
-  shredder_mitigation: false
+  shredder_mitigation: true
   owner1: rbaffourawuah
   owner2: mhirose
 scheduling:

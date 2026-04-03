@@ -1,5 +1,5 @@
 - timestamp: "2021-01-01 12:00:01.456789"
-  jsonpayload:
+  jsonPayload:
     type: web.suggest.request
     fields:
       rid: rid1
@@ -11,7 +11,7 @@
       browser: firefox(96)
       os_family: windows
 - timestamp: "2021-01-01 12:07:00.223"
-  jsonpayload:
+  jsonPayload:
     type: web.suggest.request
     fields:
       rid: rid7

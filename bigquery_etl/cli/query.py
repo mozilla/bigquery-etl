@@ -30,7 +30,11 @@ from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
-from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..backfill.utils import (
+    QUALIFIED_TABLE_NAME_RE,
+    get_effective_retention_days,
+    qualified_table_name_matching,
+)
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
@@ -60,6 +64,7 @@ from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -99,7 +104,6 @@ INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
-NBR_DAYS_RETAINED = 775
 GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
@@ -735,21 +739,6 @@ def backfill(
         )
         sys.exit(1)
 
-    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
-    if (
-        not override_retention_range_limit
-        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
-    ):
-        # Exit - cannot backfill due to risk of losing data
-        click.echo(
-            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
-        )
-        sys.exit(1)
-
-    # If override retention policy is true, continue to run the backfill
-    if override_retention_range_limit:
-        click.echo("Over-riding retention limit - ensure data exists in source tables")
-
     if custom_query_path:
         query_files = paths_matching_name_pattern(
             custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
@@ -790,6 +779,20 @@ def backfill(
         raise click.ClickException(
             f"Can't run backfill without metadata for {query_file_path}."
         )
+
+    # Check retention limit using the effective retention (considers partition expiration_days)
+    retention_days = get_effective_retention_days(metadata)
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=retention_days)
+    ):
+        click.echo(
+            f"Cannot backfill more than {retention_days} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
     # If date_partition_parameter isn't set it's assumed to be submission_date:
@@ -1074,12 +1077,11 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
@@ -1510,6 +1512,7 @@ def validate(
     billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
+    validate_all_datasets = name is None
     if name is None:
         name = "*.*"
 
@@ -1541,6 +1544,17 @@ def validate(
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
+    # Also validate datasets with no query files when no name argument is passed
+    if validate_all_datasets and (
+        project_id is None or project_id == "moz-fx-data-shared-prod"
+    ):
+        for dataset_path in (Path(sql_dir) / "moz-fx-data-shared-prod").iterdir():
+            if (
+                dataset_path.is_dir()
+                and (dataset_path / DATASET_METADATA_FILE).exists()
+            ):
+                dataset_dirs.add(dataset_path)
+
     for dataset_dir in dataset_dirs:
         try:
             validate_metadata.validate_datasets(dataset_dir)
@@ -1557,6 +1571,7 @@ def validate(
 
 def _initialize_in_parallel(
     project,
+    public_project_id,
     table,
     dataset,
     query_file,
@@ -1573,7 +1588,7 @@ def _initialize_in_parallel(
                 _run_query,
                 [query_file],
                 project,
-                None,
+                public_project_id,
                 table,
                 dataset,
                 addl_templates=addl_templates,
@@ -1626,11 +1641,32 @@ def _initialize_in_parallel(
     default=False,
 )
 @click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--skip-tables-older-than",
+    "--skip_tables_older_than",
+    help="Skip initialization for tables created more than N days ago.",
+    type=int,
+    default=None,
+)
+@click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
     type=int,
     default=4,
+)
+@click.option(
+    "--file",
+    "file_name",
+    help="Only initialize tables whose SQL file matches this filename "
+    "(e.g. materialized_view.sql). Defaults to query.sql, init.sql, and materialized_view.sql.",
+    default=None,
 )
 @click.pass_context
 def initialize(
@@ -1643,7 +1679,10 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    skip_nonempty,
+    skip_tables_older_than,
     sampling_batch_size,
+    file_name,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1651,17 +1690,21 @@ def initialize(
         sys.exit(1)
 
     if Path(name).exists():
-        # allow name to be a path
         query_files = [Path(name)]
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
             r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
+        files = (
+            [file_name]
+            if file_name
+            else ["query.sql", "init.sql", "materialized_view.sql"]
+        )
         query_files = []
         for project_id in project_ids:
             query_files += paths_matching_name_pattern(
-                name, sql_dir, project_id, file_regex=file_regex
+                name, sql_dir, project_id, files=files, file_regex=file_regex
             )
 
     if not query_files:
@@ -1686,17 +1729,40 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
+            )
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(table_id_to_check)
+
                 if skip_existing:
                     # table exists; skip initialization
                     return
-                if not force and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        " Use --force to overwrite the existing destination table."
-                    )
+                if skip_tables_older_than is not None and table.created:
+                    age = datetime.datetime.now(datetime.timezone.utc) - table.created
+                    if age.days > skip_tables_older_than:
+                        return
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
             except NotFound:
                 # continue with creating the table
                 pass
@@ -1755,7 +1821,8 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=full_table_id,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1770,8 +1837,10 @@ def initialize(
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
-                        public_project_id=None,
-                        destination_table=full_table_id,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={
@@ -2785,3 +2854,72 @@ def validate_schema(
         sys.exit(1)
     else:
         click.echo("\nAll schemas are valid.")
+
+
+@schema.command(
+    name="render",
+    help="""Render `schema.yaml` files, resolving any includes.
+
+    Examples:
+
+    ./bqetl query schema render telemetry_derived.ssl_ratios_v1 --output-dir=/tmp/sql
+    """,
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help=(
+        "Output directory rendered files are written to. "
+        "If not specified, rendered files are printed to the console."
+    ),
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render_schema(
+    name: Optional[str], sql_dir: str | Path, output_dir: Optional[str | Path]
+) -> None:
+    """Render `schema.yaml` files."""
+    sql_dir = Path(sql_dir)
+    if output_dir:
+        output_dir = Path(output_dir)
+
+    schema_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=None, files=[SCHEMA_FILE]
+    )
+
+    render_count = 0
+    copy_count = 0
+
+    # We intentionally don't process `schema.yaml` files in parallel to avoid potential situations where
+    # one file is still being written to while another file tries to read its contents for an include.
+    for schema_file in schema_files:
+        if not output_dir:
+            click.echo(f"# {schema_file}")
+
+        # We only technically render `schema.yaml` files if they actually use any includes,
+        # both for performance and to avoid making superfluous YAML formatting changes.
+        schema_yaml = schema_file.read_text()
+        if "!include" in schema_yaml:
+            if output_dir:
+                click.echo(f"Rendering {schema_file}")
+            rendered_schema_yaml = Schema.from_yaml(schema_yaml, sql_dir).to_yaml()
+            render_count += 1
+        else:
+            rendered_schema_yaml = schema_yaml
+
+        if output_dir:
+            if output_dir != sql_dir or rendered_schema_yaml != schema_yaml:
+                output_file = output_dir / schema_file.relative_to(sql_dir)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file.write_text(rendered_schema_yaml)
+                if rendered_schema_yaml == schema_yaml:
+                    copy_count += 1
+        else:
+            click.echo(rendered_schema_yaml)
+
+    if output_dir:
+        click.echo(f"Rendered {render_count} `{SCHEMA_FILE}` files with includes.")
+        if copy_count > 0:
+            click.echo(f"Copied {copy_count} `{SCHEMA_FILE}` files without includes.")

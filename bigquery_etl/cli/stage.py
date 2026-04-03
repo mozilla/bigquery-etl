@@ -13,6 +13,7 @@ from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
+from ..cli.query import render_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
@@ -125,6 +126,13 @@ def deploy(
         paths = [path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths]
 
         sql_dir = new_sql_dir
+
+    # If the stage deploy process is going to remove files then any includes in `schema.yaml` files
+    # need to be resolved before that happens.
+    if remove_updated_artifacts:
+        ctx.invoke(
+            render_schema, name=str(sql_dir), sql_dir=sql_dir, output_dir=sql_dir
+        )
 
     artifact_files = set()
 
@@ -281,6 +289,16 @@ def _udf_dependencies(artifact_files):
         # all referenced UDFs need to be deployed in the same stage project due to access restrictions
         raw_routine = RawRoutine.from_file(udf_file)
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
+
+        # Also publish any non-public test dependencies to stage.
+        for test_dependency in raw_routine.test_dependencies:
+            if (
+                test_dependency in raw_routines
+                and raw_routines[test_dependency].project != "mozfun"
+            ):
+                udfs_to_publish = accumulate_dependencies(
+                    udfs_to_publish, raw_routines, test_dependency
+                )
 
         for dependency in udfs_to_publish:
             if dependency in raw_routines:

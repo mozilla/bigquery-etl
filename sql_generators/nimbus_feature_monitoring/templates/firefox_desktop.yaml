@@ -1,0 +1,98 @@
+dataset: firefox_desktop
+source_tables:
+  firefox_desktop_metrics:
+    analysis_unit_id: metrics.uuid.legacy_telemetry_profile_group_id
+    table_name: metrics
+    dimensions:
+      app_display_version:
+        field: client_info.app_display_version
+      app_version_major:
+      app_version_minor:
+      app_version_patch:
+      locale:
+        field: client_info.locale
+      normalized_channel:
+      normalized_os:
+      normalized_os_version:
+      normalized_country_code:
+        value_in: [CA, DE, FR, GB, US]
+        default_value: OTHER
+  firefox_desktop_events_stream:
+    analysis_unit_id: profile_group_id
+    table_name: events_stream
+    is_events_stream: true
+  firefox_desktop_newtab:
+    analysis_unit_id: metrics.uuid.legacy_telemetry_profile_group_id
+    table_name: newtab
+features:
+  address-autofill-feature:
+    metrics_by_source:
+      firefox_desktop_metrics:
+        boolean:
+          formautofill_availability:
+        labeled_counter:
+          login_autofill:
+            field: metrics.labeled_counter.pwmgr_form_autofill_result
+            aggregators: [sum, avg]
+            label_in: [filled, filled_username_only_form]
+        quantity:
+          formautofill_addresses_autofill_profiles_count:
+      firefox_desktop_events_stream:
+        event:
+          address:
+            detected_address_form:
+            popup_shown_address_form:
+            filled_address_form:
+            filled_on_fields_update_address_form:
+            filled_modified_address_form:
+            submitted_address_form:
+            cleared_address_form:
+            detected_address_form_ext:
+            filled_address_form_ext:
+            submitted_address_form_ext:
+          formautofill:
+            iframe_layout_detection:
+  newtabTrainhopAddon:
+    metrics_by_source:
+      firefox_desktop_newtab:
+        event:
+          newtab:
+            opened:
+  newtabSponsoredContent:
+    metrics_by_source:
+      firefox_desktop_newtab:
+        boolean:
+          pocket_is_signed_in:
+          pocket_enabled:
+          pocket_sponsored_stories_enabled:
+          topsites_enabled:
+          topsites_sponsored_enabled:
+        quantity:
+          topsites_rows:
+          topsites_sponsored_tiles_configured:
+        event:
+          pocket:
+            click:
+            impression:
+            dismiss:
+            save:
+          topsites:
+            impression:
+            click:
+            pin:
+            unpin:
+            add:
+            edit:
+            show_privacy_click:
+            dismiss:
+            pref_changed:
+  newTabSectionsExperiment:
+    metrics_by_source:
+      firefox_desktop_newtab:
+        event:
+          newtab:
+            sections_impression:
+            sections_follow_section:
+            sections_unfollow_section:
+            sections_block_section:
+            sections_unblock_section:

@@ -12,7 +12,7 @@ RETURNS STRING AS (
       THEN 'SECTION_GRID'
     WHEN app_version >= 136
       THEN 'NEW_GRID'
-    WHEN EXISTS(
+    WHEN EXISTS (
         SELECT
           1
         FROM

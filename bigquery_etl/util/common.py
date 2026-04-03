@@ -84,6 +84,26 @@ def get_bqetl_project_root() -> Path | None:
     return None
 
 
+def resolve_project_file_path(project_file_path: str | Path) -> Path:
+    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+
+    bqetl_project_root = get_bqetl_project_root()
+    if bqetl_project_root:
+        absolute_project_file_path = bqetl_project_root / relative_project_file_path
+        if absolute_project_file_path.exists():
+            return absolute_project_file_path
+
+    # Fall back to checking the main `bqetl` project if necessary.
+    if (
+        bqetl_project_root != ROOT
+        and (root_project_file_path := ROOT / relative_project_file_path).exists()
+    ):
+        return root_project_file_path
+
+    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+
+
 def render(
     sql_filename,
     template_folder=".",
@@ -188,6 +208,20 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
         f.write("\n")
 
 
+def alter_sql_for_sqlglot(sql: str) -> str:
+    """Alter the specified SQL to avoid issues SQLGlot has with some SQL syntax."""
+    # sqlglot parses UDFs with keyword names incorrectly:
+    # https://github.com/tobymao/sqlglot/issues/3332
+    sql = re.sub(
+        r"\.(true|false|null)\(",
+        r".`\1`(",
+        sql,
+        flags=re.IGNORECASE,
+    )
+
+    return sql
+
+
 def qualify_table_references_in_file(path: Path) -> str:
     """Add project id and dataset id to table/view references and persistent udfs in a given query.
 
@@ -243,10 +277,13 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
     # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
-        init_query,
+        alter_sql_for_sqlglot(init_query),
         read="bigquery",
     )
-    sql_query_statements = sqlglot.parse(sql_query, read="bigquery")
+    sql_query_statements = sqlglot.parse(
+        alter_sql_for_sqlglot(sql_query),
+        read="bigquery",
+    )
 
     # tuples of (table identifier, replacement string)
     table_replacements: Set[Tuple[str, str]] = set()

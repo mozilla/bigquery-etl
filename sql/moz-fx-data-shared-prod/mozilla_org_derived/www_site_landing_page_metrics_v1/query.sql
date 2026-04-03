@@ -1,7 +1,7 @@
 WITH sessions_table AS (
   -- Pull sessions related activity by landing page
   SELECT
-    date,
+    `date`,
     visit_identifier,
     device_category,
     operating_system,
@@ -27,9 +27,9 @@ WITH sessions_table AS (
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
   GROUP BY
-    date,
+    `date`,
     device_category,
     operating_system,
     `language`,
@@ -52,22 +52,22 @@ WITH sessions_table AS (
 pageviews_table AS (
   -- Select pageview metrics by visit identifier
   SELECT
-    date,
+    `date`,
     visit_identifier,
     COUNT(DISTINCT(page_path)) AS unique_pageviews,
     COUNT(*) AS pageviews,
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
     AND hit_type = 'PAGE'
   GROUP BY
-    date,
+    `date`,
     visit_identifier
 ),
 bounces_table AS (
   SELECT
-    date,
+    `date`,
     visit_identifier,
     SUM(IF(hit_number = first_interaction, visits, 0)) AS single_page_sessions,
     SUM(IF(hit_number = first_interaction, bounces, 0)) AS bounces,
@@ -75,9 +75,9 @@ bounces_table AS (
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
   GROUP BY
-    date,
+    `date`,
     visit_identifier
 ),
 joined_table AS (
@@ -115,19 +115,19 @@ joined_table AS (
     sessions_table
   FULL JOIN
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_downloads_v1` AS downloads_table
-    USING (date, visit_identifier)
+    USING (`date`, visit_identifier)
   FULL JOIN
     pageviews_table
-    USING (date, visit_identifier)
+    USING (`date`, visit_identifier)
   FULL JOIN
     bounces_table
-    USING (date, visit_identifier)
+    USING (`date`, visit_identifier)
   WHERE
     -- To minimize table size, filtering for sessions != 0
     sessions_table.sessions != 0
 )
 SELECT
-  date,
+  `date`,
   -- Adding a site field in case we want to append the blog traffic to this same table for YoY comparability
   'mozilla.org' AS site,
   device_category,
@@ -159,7 +159,7 @@ SELECT
 FROM
   joined_table
 GROUP BY
-  date,
+  `date`,
   site,
   device_category,
   operating_system,

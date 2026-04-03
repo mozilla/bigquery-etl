@@ -12,9 +12,9 @@
       country: US
       subdivision1: OH
   normalized_os: Windows
-  normalized_os_version: 11.0
+  normalized_os_version: "11.0"
   release_channel: nightly
-  position: "1"
+  position: 1
   reporting_url: "url1"
   scenario: "online"
   version: "94.0.2"
@@ -32,9 +32,9 @@
       country: US
       subdivision1: AK
   normalized_os: Windows
-  normalized_os_version: 11.0
+  normalized_os_version: "11.0"
   release_channel: nightly
-  position: "2"
+  position: 2
   reporting_url: "url2"
   scenario: "online"
   version: "94.0.2"
@@ -52,9 +52,9 @@
       country: US
       subdivision1: AZ
   normalized_os: macOS
-  normalized_os_version: 10.9
+  normalized_os_version: "10.9"
   release_channel: beta
-  position: "7"
+  position: 7
   reporting_url: "url7"
   scenario: "online"
   version: "94.0.2"

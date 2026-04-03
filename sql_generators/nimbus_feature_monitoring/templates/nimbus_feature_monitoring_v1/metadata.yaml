@@ -1,0 +1,22 @@
+friendly_name: Nimbus feature monitoring - {{feature.name}}
+description: >-
+  Metrics for monitoring the rollout of {{feature.name}} via nimbus
+owners:
+  - project-nimbus@mozilla.com
+labels:
+  dag: bqetl_nimbus_feature_monitoring
+  schedule: daily
+  owner1: project-nimbus@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_nimbus_feature_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - rollout_slug
+      - metric
+require_column_descriptions: false

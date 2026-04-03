@@ -19,3 +19,10 @@ bigquery:
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
+  arguments:
+  - --project
+  - moz-fx-data-shared-prod
+  - --destination_dataset
+  - telemetry_derived
+  - --destination_table
+  - newtab_merino_propensity_v1

@@ -146,6 +146,7 @@ per_region_final AS (
     per_region_total_impressions_per_day d
     USING (region)
 ),
+ -- Aggregate events globally
 aggregated_events_global AS (
   SELECT
     corpus_item_id,
@@ -167,6 +168,7 @@ per_global_ctr AS (
   WHERE
     impression_count > 2000
 ),
+-- Avg impressions per item globally (rounded)
 global_impressions_per_item AS (
   SELECT
     ROUND(AVG(impression_count)) AS impressions_per_item
@@ -196,6 +198,7 @@ daily_global_totals AS (
   GROUP BY
     submission_date
 ),
+-- Combine global stats with global impressions_per_item
 global_total_impressions_per_day AS (
   SELECT
     ROUND(AVG(COALESCE(dgt.total_impressions, 0))) AS total_impressions_per_day
@@ -207,7 +210,7 @@ global_total_impressions_per_day AS (
 ),
 global_final AS (
   SELECT
-    'GLOBAL' AS region,
+    NULL AS region,
     gs.average_ctr_top10_items,
     gs.average_ctr_top2_items,
     gip.impressions_per_item,
@@ -239,9 +242,4 @@ SELECT
 FROM
   global_final
 ORDER BY
-  CASE
-    WHEN region = 'GLOBAL'
-      THEN 1
-    ELSE 0
-  END,
-  total_impressions_per_day DESC;
+  impressions_per_item DESC;

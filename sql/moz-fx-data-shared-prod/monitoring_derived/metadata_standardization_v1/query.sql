@@ -49,7 +49,7 @@ dataset_summary AS (
     dataset_id,
     COUNT(*) AS total_columns,
     COUNTIF(
-      EXISTS(SELECT 1 FROM UNNEST(descriptions) d WHERE d != 'NULL' AND TRIM(d) != '')
+      EXISTS (SELECT 1 FROM UNNEST(descriptions) d WHERE d != 'NULL' AND TRIM(d) != '')
     ) AS columns_with_non_null_description,
     COUNTIF(
       ARRAY_LENGTH(

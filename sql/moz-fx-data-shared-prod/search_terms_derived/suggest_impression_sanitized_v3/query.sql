@@ -63,13 +63,13 @@ WITH impressions AS (
 ),
 sanitized_queries AS (
   SELECT
-    TIMESTAMP_TRUNC(timestamp, SECOND) AS timestamp,
+    TIMESTAMP_TRUNC(`timestamp`, SECOND) AS timestamp,
     LTRIM(LOWER(query)) AS query,
-    * EXCEPT (timestamp, query, region, country)
+    * EXCEPT (`timestamp`, query, region, country)
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
-    DATE(timestamp) = @submission_date
+    DATE(`timestamp`) = @submission_date
 ),
 sanitized_queries_count AS (
   SELECT

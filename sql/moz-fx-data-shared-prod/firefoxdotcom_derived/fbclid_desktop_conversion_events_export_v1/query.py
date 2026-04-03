@@ -34,7 +34,10 @@ PARTITION_FIELD = "submission_date"
 SQL_QUERY = """
 SELECT
   submission_date,
-  (activity_date).TIMESTAMP().UNIX_SECONDS() + 86399 AS activity_unix_timestamp,
+  GREATEST(
+    (activity_date).TIMESTAMP().UNIX_SECONDS(),
+    (ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS()
+  ) AS activity_unix_timestamp,
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
   CONCAT("fb.1.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_MILLIS() AS STRING), ".", fbclid) AS fbc,
   conversion_name,
@@ -126,6 +129,7 @@ def execute_request(pixel_id: int, events: List[Event]) -> Any:
     event_request = EventRequest(
         pixel_id=pixel_id,
         events=events,
+        test_event_code="TEST29052",  # TODO: remove before merging
     )
     return event_request.execute()
 
@@ -187,6 +191,12 @@ def main(
     logging.info(
         "Num of conversion events ready for export: %s" % len(conversion_events)
     )
+
+    for event in conversion_events:
+        logging.info(
+            "Event payload: event_name=%s, event_time=%s, event_id=%s, action_source=%s, fbc=%s"
+            % (event.event_name, event.event_time, event.event_id, event.action_source, event.user_data.fbc)
+        )
 
     FacebookAdsApi.init(access_token=access_token, crash_log=False)
 

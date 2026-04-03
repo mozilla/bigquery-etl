@@ -69,7 +69,6 @@ SELECT
       LAX_BOOL(event_extra.is_lang_attribute_valid) AS `is_lang_attribute_valid`,
       LAX_BOOL(event_extra.is_new_email_mask) AS `is_new_email_mask`,
       LAX_BOOL(event_extra.is_private) AS `is_private`,
-      LAX_BOOL(event_extra.is_private_default) AS `is_private_default`,
       LAX_BOOL(event_extra.is_recent_search) AS `is_recent_search`,
       LAX_BOOL(event_extra.is_remote) AS `is_remote`,
       LAX_BOOL(event_extra.is_remote_ice_lite) AS `is_remote_ice_lite`,

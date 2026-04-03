@@ -34,9 +34,9 @@ PARTITION_FIELD = "submission_date"
 SQL_QUERY = """
 SELECT
   submission_date,
-  (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
+  (activity_date).TIMESTAMP().UNIX_SECONDS() + 86399 AS activity_unix_timestamp,
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
-  CONCAT("fb.0.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS() AS STRING), ".", fbclid) AS fbc,
+  CONCAT("fb.1.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_MILLIS() AS STRING), ".", fbclid) AS fbc,
   conversion_name,
   CURRENT_TIMESTAMP() AS run_timestamp,
 FROM
@@ -117,7 +117,7 @@ def create_event(event_data: DataFrame) -> Event:
             fbc=event_data["fbc"],
         ),
         event_id=f"{event_data['conversion_name']}-{event_data['fbc']}",
-        action_source=ActionSource.WEBSITE,
+        action_source=ActionSource.PHYSICAL_STORE,
     )
 
 

@@ -13,3 +13,4 @@ fields:
   type: FLOAT
 - mode: NULLABLE
   name: total_impressions_per_day
+  type: FLOAT

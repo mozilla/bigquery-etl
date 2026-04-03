@@ -1,8 +1,10 @@
 friendly_name: Newtab Merino Priors
 description: |-
-  Analyzes clickthrough rates of uniform randomly placed items to create a propensity weight score
-  that is independent of content. These weights can be used to inform other ranking jobs. The 'any'
-  format is a average propensity by position, weighted by the prevalence of formats.
+  Analyzes clickthrough rates of the same items in different positions/formats to create a 
+  propensity weight score that is independent of content.  These weights can be used to inform other ranking jobs. The 'any'
+  format is a average propensity by position, weighted by the prevalence of formats. The weight is designed
+  to be divided into the impressions (impressions/weight). The value is normalized such that the total
+  re-weighted impressions for all live content in a typical period should be about the same as the raw impressions.
 owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com

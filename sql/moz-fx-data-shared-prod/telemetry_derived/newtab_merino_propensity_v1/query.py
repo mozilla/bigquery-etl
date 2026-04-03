@@ -3,6 +3,28 @@
 
 Uses alternating least squares to separate position/format effects from item
 quality, producing normalized weights that preserve overall CTR.
+
+This is solving a matrix factorization problem. The core idea:
+
+  Model: log(ctr) = item_effect + slot_effect
+
+  Every observed CTR for an (item, position, format) cell is modeled as the sum of two independent effects:
+  - item_effect -- how inherently clickable the item is (quality, topic, headline)
+  - slot_effect -- how much the position/format boosts or suppresses clicks (position bias)
+
+  Working in log space makes this additive; in real space it's multiplicative: ctr = item_quality × slot_multiplier.
+
+  Why ALS? You can't solve for both effects simultaneously (chicken-and-egg), so you alternate:
+
+  1. Fix slot effects, solve for item effects: For each item, average log_ctr - slot_effect across all positions that item appeared in (weighted
+  by impressions). This gives each item's intrinsic quality, after removing the position bias.
+  2. Fix item effects, solve for slot effects: For each (position, format) slot, average log_ctr - item_effect across all items that appeared
+  there (weighted by impressions). This gives each slot's position bias, after removing item quality.
+  3. Repeat. Each iteration refines both estimates. max_change tracks convergence -- when slot effects stop moving, the decomposition has
+  stabilized.
+
+  An older SQL approach estimated position bias from "fresh items" assumed to be randomly ranked, but
+  this is no longer the case with inferred personalization that pre-biases fresh items.
 """
 
 import logging
@@ -15,7 +37,7 @@ from google.cloud import bigquery
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-PER_ITEM_CUTOFF = 20
+PER_ITEM_CUTOFF = 20 # After 20, we compute format independent of position
 MAX_POSITION = 200
 MIN_SLOT_ITEMS = 200
 MIN_SLOT_CLICKS = 100

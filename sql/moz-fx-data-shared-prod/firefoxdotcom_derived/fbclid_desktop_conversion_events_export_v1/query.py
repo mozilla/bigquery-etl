@@ -34,9 +34,12 @@ PARTITION_FIELD = "submission_date"
 SQL_QUERY = """
 SELECT
   submission_date,
-  GREATEST(
-    (activity_date).TIMESTAMP().UNIX_SECONDS(),
-    (ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS()
+  LEAST(
+    GREATEST(
+      (activity_date).TIMESTAMP().UNIX_SECONDS(),
+      (ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS()
+    ),
+    UNIX_SECONDS(CURRENT_TIMESTAMP()) - 1
   ) AS activity_unix_timestamp,
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
   CONCAT("fb.1.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_MILLIS() AS STRING), ".", fbclid) AS fbc,
@@ -60,6 +63,9 @@ WHERE
     "United States",
     "Vietnam"
   )
+  AND conversion_name = "firefox_first_run"
+  AND ga_event_timestamp NOT IN (1775039826330, 1775041696694, 1775044465641, 1775048380407, 1775044237168)
+LIMIT 7
 """
 
 EXPORT_QUERY = """
@@ -120,7 +126,7 @@ def create_event(event_data: DataFrame) -> Event:
             fbc=event_data["fbc"],
         ),
         event_id=f"{event_data['conversion_name']}-{event_data['fbc']}",
-        action_source=ActionSource.PHYSICAL_STORE,
+        action_source=ActionSource.WEBSITE,
     )
 
 

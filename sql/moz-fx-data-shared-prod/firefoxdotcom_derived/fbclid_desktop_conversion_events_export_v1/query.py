@@ -34,7 +34,7 @@ PARTITION_FIELD = "submission_date"
 SQL_QUERY = """
 SELECT
   submission_date,
-  (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
+  UNIX_SECONDS(TIMESTAMP(activity_date + 1)) AS activity_unix_timestamp,
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
   CONCAT("fb.0.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS() AS STRING), ".", fbclid) AS fbc,
   conversion_name,

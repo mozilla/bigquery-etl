@@ -129,7 +129,6 @@ def execute_request(pixel_id: int, events: List[Event]) -> Any:
     event_request = EventRequest(
         pixel_id=pixel_id,
         events=events,
-        test_event_code="TEST29052",  # TODO: remove before merging
     )
     return event_request.execute()
 

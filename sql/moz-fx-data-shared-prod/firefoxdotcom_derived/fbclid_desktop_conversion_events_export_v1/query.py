@@ -63,9 +63,6 @@ WHERE
     "United States",
     "Vietnam"
   )
-  AND conversion_name = "firefox_first_run"
-  AND ga_event_timestamp NOT IN (1775039826330, 1775041696694, 1775044465641, 1775048380407, 1775044237168)
-LIMIT 7
 """
 
 EXPORT_QUERY = """

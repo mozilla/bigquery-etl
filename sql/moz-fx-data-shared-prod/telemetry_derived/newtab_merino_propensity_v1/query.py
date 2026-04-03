@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Calculate propensity weights for newtab items using lattice decomposition.
 
-Uses alternating least squares to separate position/format effects from item
+Uses Alternating Least Squares (ALS) to separate position/format effects from item
 quality, producing normalized weights that preserve overall CTR.
 
 This is solving a matrix factorization problem. The core idea:
@@ -14,7 +14,7 @@ This is solving a matrix factorization problem. The core idea:
 
   Working in log space makes this additive; in real space it's multiplicative: ctr = item_quality × slot_multiplier.
 
-  Why ALS? You can't solve for both effects simultaneously (chicken-and-egg), so you alternate:
+  Why ALS? You can't solve for both effects simultaneously, so you alternate:
 
   1. Fix slot effects, solve for item effects: For each item, average log_ctr - slot_effect across all positions that item appeared in (weighted
   by impressions). This gives each item's intrinsic quality, after removing the position bias.
@@ -23,7 +23,7 @@ This is solving a matrix factorization problem. The core idea:
   3. Repeat. Each iteration refines both estimates. max_change tracks convergence -- when slot effects stop moving, the decomposition has
   stabilized.
 
-  An older SQL approach estimated position bias from "fresh items" assumed to be randomly ranked, but
+  The previous SQL approach estimated position bias from "fresh items" assumed to be randomly ranked, but
   this is no longer the case with inferred personalization that pre-biases fresh items.
 """
 
@@ -57,7 +57,7 @@ private_pings AS (
     metrics.object.newtab_content_inferred_interests AS inferred_interests,
     CAST(metrics.quantity.newtab_content_utc_offset AS NUMERIC) AS raw_offset
   FROM `moz-fx-data-shared-prod.firefox_desktop.newtab_content_live`
-  WHERE submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 14 DAY)
+  WHERE submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 10 DAY)
     AND metrics.string.newtab_content_country IN ("US")
 ),
 
@@ -198,7 +198,9 @@ def compute_weights(hist):
     # Filter to reliable slots and bridge items
     cell_fit = cell_bridge.reset_index()
     cell_fit = cell_fit[
-        cell_fit.apply(lambda r: (r["position"], r["format"]) in reliable_slots, axis=1)
+        pd.MultiIndex.from_arrays([cell_fit["position"], cell_fit["format"]]).isin(
+            reliable_slots
+        )
     ].copy()
 
     # Log-space decomposition requires positive CTR
@@ -212,39 +214,43 @@ def compute_weights(hist):
 
     # === Phase 2: Alternating least squares in log space ===
     # Model: log(ctr) = item_effect + slot_effect
-    slot_effect = {}
-    item_effect = {}
+    # Vectorized with numpy integer indexing and bincount.
+    item_ids = pd.Categorical(cell_fit["corpus_item_id"])
+    slot_keys = list(zip(cell_fit["position"], cell_fit["format"]))
+    slot_cat = pd.Categorical(slot_keys)
+    item_idx = item_ids.codes
+    slot_idx = slot_cat.codes
+    n_items = len(item_ids.categories)
+    n_slots = len(slot_cat.categories)
+    log_ctr = cell_fit["log_ctr"].values
+    weights = cell_fit["impressions"].values.astype(float)
+
+    item_eff = np.zeros(n_items)
+    slot_eff = np.zeros(n_slots)
 
     for iteration in range(ALS_ITERATIONS):
-        # Item effects
-        cell_fit["slot_eff"] = cell_fit.apply(
-            lambda r: slot_effect.get((r["position"], r["format"]), 0), axis=1
-        )
-        item_eff = cell_fit.groupby("corpus_item_id").apply(
-            lambda g: np.average(g["log_ctr"] - g["slot_eff"], weights=g["impressions"]),
-            include_groups=False,
-        )
-        item_effect = item_eff.to_dict()
-
-        # Slot effects
-        cell_fit["item_eff"] = cell_fit["corpus_item_id"].map(item_effect)
-        new_slot = cell_fit.groupby(["position", "format"]).apply(
-            lambda g: np.average(
-                g["log_ctr"] - g["item_eff"], weights=g["impressions"]
-            ),
-            include_groups=False,
+        # Item effects: weighted mean of (log_ctr - slot_eff) per item
+        residual = (log_ctr - slot_eff[slot_idx]) * weights
+        item_eff = np.bincount(item_idx, weights=residual, minlength=n_items) / np.bincount(
+            item_idx, weights=weights, minlength=n_items
         )
 
-        max_change = max(
-            abs(new_slot.get(k, 0) - slot_effect.get(k, 0)) for k in reliable_slots
+        # Slot effects: weighted mean of (log_ctr - item_eff) per slot
+        residual = (log_ctr - item_eff[item_idx]) * weights
+        new_slot_eff = np.bincount(slot_idx, weights=residual, minlength=n_slots) / np.bincount(
+            slot_idx, weights=weights, minlength=n_slots
         )
-        slot_effect = new_slot.to_dict()
+
+        max_change = np.max(np.abs(new_slot_eff - slot_eff))
+        slot_eff = new_slot_eff
 
         if iteration < 2 or iteration == ALS_ITERATIONS - 1:
             log.info(f"  ALS iter {iteration}: max_change={max_change:.10f}")
 
-    # Convert log slot effects to multipliers
-    slot_multiplier = {k: np.exp(v) for k, v in slot_effect.items()}
+    # Convert log slot effects to multipliers, keyed by (position, format)
+    slot_multiplier = {
+        slot_cat.categories[i]: np.exp(slot_eff[i]) for i in range(n_slots)
+    }
 
     # === Phase 3: Convert to weights and handle long-tail ===
     per_pos_data = []
@@ -350,8 +356,10 @@ def compute_weights(hist):
         imp_sum = 0
         for _, r in pos_rows.iterrows():
             real_imp = actual_imp.get((int(r["position"]), r["format"]), 0)
-            weighted_sum += r["weight"] * real_imp
-            imp_sum += real_imp
+            # Fall back to output row impressions when no actual per-position data
+            imp = real_imp if real_imp > 0 else r["impressions"]
+            weighted_sum += r["weight"] * imp
+            imp_sum += imp
         if imp_sum > 0:
             any_list.append(
                 {
@@ -393,7 +401,6 @@ def main():
 
     hist = fetch_historical_impressions(client)
     result = compute_weights(hist)
-
     destination = f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     log.info(f"Writing {len(result)} rows to {destination} (WRITE_TRUNCATE)")
 

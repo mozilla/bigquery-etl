@@ -10026,6 +10026,32 @@ fields:
         e.g. "3.4.33"
 
         '
+    - name: search_default_engine_for_private_code
+      type: STRING
+      mode: NULLABLE
+      description: 'If the default private browsing search engine is pre-loaded with
+        Fenix
+
+        this value will be the search engine identifier. If it''s a custom search
+
+        engine the value will be "custom". If the private browsing default is the
+
+        same as the normal default, this will still record the correct identifier.
+
+        '
+    - name: search_default_engine_for_private_name
+      type: STRING
+      mode: NULLABLE
+      description: 'If the default private browsing search engine is pre-loaded with
+        Fenix
+
+        this value will be the search engine name. If it''s a custom search engine
+
+        the value will be "custom". If the private browsing default is the same as
+
+        the normal default, this will be "default".
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -42118,6 +42144,19 @@ fields:
         will not be set.
 
         '
+    - name: search_default_engine_for_private_search_url
+      type: STRING
+      mode: NULLABLE
+      description: 'If the default private browsing search engine is pre-loaded with
+        Fenix
+
+        this value will be the base URL we use to build the search query for the
+
+        search engine. For example: https://mysearchengine.com/?query=%s. If it''s
+
+        a custom search engine the value will not be set.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -49729,6 +49768,9 @@ fields:
     mode: NULLABLE
     fields:
     - name: search_default_engine_search_url
+      type: STRING
+      mode: NULLABLE
+    - name: search_default_engine_for_private_search_url
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

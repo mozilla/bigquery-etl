@@ -6,5 +6,11 @@ fields:
   name: average_ctr_top2_items
   type: FLOAT
 - mode: NULLABLE
+  name: average_ctr_top10_items
+  type: FLOAT
+- mode: NULLABLE
   name: impressions_per_item
+  type: FLOAT
+- mode: NULLABLE
+  name: total_impressions_per_day
   type: FLOAT

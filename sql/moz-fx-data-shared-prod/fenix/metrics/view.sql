@@ -1279,7 +1279,9 @@ SELECT
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.search_default_engine_for_private_code,
+      metrics.string.search_default_engine_for_private_name
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1843,7 +1845,10 @@ SELECT
       metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
       metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
-    STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
+    STRUCT(
+      metrics.url2.search_default_engine_search_url,
+      metrics.url2.search_default_engine_for_private_search_url
+    ) AS `url2`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
@@ -2110,7 +2115,10 @@ SELECT
       metrics.text.xpi_database_late_stack,
       metrics.text.xpi_database_sync_stack
     ) AS `text`,
-    STRUCT(metrics.url.search_default_engine_search_url) AS `url`
+    STRUCT(
+      metrics.url.search_default_engine_search_url,
+      metrics.url.search_default_engine_for_private_search_url
+    ) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -3403,7 +3411,9 @@ SELECT
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.search_default_engine_for_private_code,
+      metrics.string.search_default_engine_for_private_name
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3967,7 +3977,10 @@ SELECT
       metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
       metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
-    STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
+    STRUCT(
+      metrics.url2.search_default_engine_search_url,
+      metrics.url2.search_default_engine_for_private_search_url
+    ) AS `url2`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
@@ -4234,7 +4247,10 @@ SELECT
       metrics.text.xpi_database_late_stack,
       metrics.text.xpi_database_sync_stack
     ) AS `text`,
-    STRUCT(metrics.url.search_default_engine_search_url) AS `url`
+    STRUCT(
+      metrics.url.search_default_engine_search_url,
+      metrics.url.search_default_engine_for_private_search_url
+    ) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -5547,7 +5563,9 @@ SELECT
       metrics.string.preferences_toolbar_expanded_shortcut,
       metrics.string.preferences_toolbar_simple_shortcut,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.search_default_engine_for_private_code,
+      metrics.string.search_default_engine_for_private_name
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6111,7 +6129,10 @@ SELECT
       metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
       metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
-    STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
+    STRUCT(
+      metrics.url2.search_default_engine_search_url,
+      metrics.url2.search_default_engine_for_private_search_url
+    ) AS `url2`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
@@ -6378,7 +6399,10 @@ SELECT
       metrics.text.xpi_database_late_stack,
       metrics.text.xpi_database_sync_stack
     ) AS `text`,
-    STRUCT(metrics.url.search_default_engine_search_url) AS `url`
+    STRUCT(
+      metrics.url.search_default_engine_search_url,
+      metrics.url.search_default_engine_for_private_search_url
+    ) AS `url`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

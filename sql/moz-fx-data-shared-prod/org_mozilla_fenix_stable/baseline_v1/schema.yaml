@@ -334,6 +334,32 @@ fields:
         \ of a dedicated profiles build skipped over the old default\n    profile\
         \ and created a new profile.\n  restart-claimed-default:\n    A first run\
         \ of a dedicate"
+    - name: search_default_engine_for_private_code
+      type: STRING
+      mode: NULLABLE
+      description: 'If the default private browsing search engine is pre-loaded with
+        Fenix
+
+        this value will be the search engine identifier. If it''s a custom search
+
+        engine the value will be "custom". If the private browsing default is the
+
+        same as the normal default, this will still record the correct identifier.
+
+        '
+    - name: search_default_engine_for_private_name
+      type: STRING
+      mode: NULLABLE
+      description: 'If the default private browsing search engine is pre-loaded with
+        Fenix
+
+        this value will be the search engine name. If it''s a custom search engine
+
+        the value will be "custom". If the private browsing default is the same as
+
+        the normal default, this will be "default".
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

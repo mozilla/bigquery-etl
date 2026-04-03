@@ -6,7 +6,7 @@ WITH params AS (
 ),
 date_span AS (
   SELECT
-    day
+    DAY
   FROM
     params,
     UNNEST(GENERATE_DATE_ARRAY(start_date, end_date)) AS day

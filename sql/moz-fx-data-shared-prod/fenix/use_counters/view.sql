@@ -2834,7 +2834,9 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
-      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change,
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5692,7 +5694,9 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
-      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change,
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8550,7 +8554,9 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
-      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change,
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11408,7 +11414,9 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
-      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change,
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14266,7 +14274,9 @@ SELECT
       metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
-      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change,
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

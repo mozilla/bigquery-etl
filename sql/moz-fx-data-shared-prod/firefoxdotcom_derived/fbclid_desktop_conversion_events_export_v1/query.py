@@ -34,16 +34,35 @@ PARTITION_FIELD = "submission_date"
 SQL_QUERY = """
 SELECT
   submission_date,
-  (activity_date).TIMESTAMP().UNIX_SECONDS() AS activity_unix_timestamp,
+  LEAST(
+    GREATEST(
+      (activity_date).TIMESTAMP().UNIX_SECONDS(),
+      (ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS()
+    ),
+    UNIX_SECONDS(CURRENT_TIMESTAMP()) - 1
+  ) AS activity_unix_timestamp,
   -- Expected fbc format: 'fb.subdomain_index.creation_time.fbclid'
-  CONCAT("fb.0.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_SECONDS() AS STRING), ".", fbclid) AS fbc,
+  CONCAT("fb.1.", CAST((ga_event_timestamp).TIMESTAMP_MICROS().UNIX_MILLIS() AS STRING), ".", fbclid) AS fbc,
   conversion_name,
   CURRENT_TIMESTAMP() AS run_timestamp,
 FROM
   `moz-fx-data-shared-prod.firefoxdotcom.fbclid_desktop_conversion_events`
 WHERE
   submission_date = @submission_date
-  AND ga_country IN ("United States", "India")
+  AND ga_country IN (
+    "Argentina",
+    "Australia",
+    "Bangladesh",
+    "Canada",
+    "China",
+    "Hong Kong",
+    "India",
+    "Indonesia",
+    "Mexico",
+    "Thailand",
+    "United States",
+    "Vietnam"
+  )
 """
 
 EXPORT_QUERY = """
@@ -103,7 +122,8 @@ def create_event(event_data: DataFrame) -> Event:
         user_data=UserData(
             fbc=event_data["fbc"],
         ),
-        action_source=ActionSource.PHYSICAL_STORE,
+        event_id=f"{event_data['conversion_name']}-{event_data['fbc']}",
+        action_source=ActionSource.WEBSITE,
     )
 
 
@@ -173,6 +193,12 @@ def main(
     logging.info(
         "Num of conversion events ready for export: %s" % len(conversion_events)
     )
+
+    for event in conversion_events:
+        logging.info(
+            "Event payload: event_name=%s, event_time=%s, event_id=%s, action_source=%s, fbc=%s"
+            % (event.event_name, event.event_time, event.event_id, event.action_source, event.user_data.fbc)
+        )
 
     FacebookAdsApi.init(access_token=access_token, crash_log=False)
 

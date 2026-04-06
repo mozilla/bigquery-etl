@@ -118,7 +118,7 @@ client_info AS (
 ),
 counts AS (
   SELECT
-    date,
+    `date`,
     app_name,
     is_migrated_group AS is_migrated,
     channel_group AS channel,
@@ -171,7 +171,7 @@ counts AS (
     active_last_week
     OR active_this_week
   GROUP BY
-    date,
+    `date`,
     is_migrated,
     app_name,
     channel,
@@ -208,16 +208,16 @@ _current AS (
   FROM
     with_retention
   WHERE
-    date = @submission_date
+    `date` = @submission_date
 ),
 last_week AS (
   -- We want WoW for topline metrics, so get this data from last week
   SELECT
-    * EXCEPT (date)
+    * EXCEPT (`date`)
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
   WHERE
-    date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
+    `date` = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
 ),
 last_year AS (
   -- We want YoY change in WoW retention, calculate last year's WoW retention here

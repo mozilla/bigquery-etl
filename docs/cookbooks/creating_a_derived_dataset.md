@@ -267,6 +267,10 @@ For our example:
 1. Create a backfill schedule entry to (re)-process data in your table:
 
   ```bash
+  bqetl backfill create
+  ```
+  Then fill out the prompts. A backfill can also be created from a single command:
+  ```bash
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
   ```
 

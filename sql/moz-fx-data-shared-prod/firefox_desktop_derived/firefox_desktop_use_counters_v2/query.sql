@@ -3815,6 +3815,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_doc_create_image_bitmap_canvas_rendering_context2_d
     ) AS use_counter_deprecated_ops_doc_create_image_bitmap_canvas_rendering_context2_d,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_csscontainer_rule_single_condition
+    ) AS use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_doc_deprecated_testing_attribute
     ) AS use_counter_deprecated_ops_doc_deprecated_testing_attribute,
     SUM(
@@ -3869,6 +3872,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute
     ) AS use_counter_deprecated_ops_doc_fullscreen_attribute,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack
+    ) AS use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
     ) AS use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
     SUM(
@@ -3901,6 +3907,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_deprecated_ops_doc_lenient_this
     ) AS use_counter_deprecated_ops_doc_lenient_this,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element
+    ) AS use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
     SUM(
       metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_math_space_value2
     ) AS use_counter_deprecated_ops_doc_math_ml_deprecated_math_space_value2,
@@ -3961,6 +3970,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_deprecated_ops_doc_offscreen_canvas_to_blob
     ) AS use_counter_deprecated_ops_doc_offscreen_canvas_to_blob,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_old_zecompat_hack
+    ) AS use_counter_deprecated_ops_doc_old_zecompat_hack,
     SUM(
       metrics.counter.use_counter_deprecated_ops_doc_orientation_event
     ) AS use_counter_deprecated_ops_doc_orientation_event,
@@ -4025,6 +4037,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_page_create_image_bitmap_canvas_rendering_context2_d
     ) AS use_counter_deprecated_ops_page_create_image_bitmap_canvas_rendering_context2_d,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_page_csscontainer_rule_single_condition
+    ) AS use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_page_deprecated_testing_attribute
     ) AS use_counter_deprecated_ops_page_deprecated_testing_attribute,
     SUM(
@@ -4079,6 +4094,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS use_counter_deprecated_ops_page_fullscreen_attribute,
     SUM(
+      metrics.counter.use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack
+    ) AS use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack,
+    SUM(
       metrics.counter.use_counter_deprecated_ops_page_idbobject_store_create_index_locale
     ) AS use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
     SUM(
@@ -4111,6 +4129,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_lenient_this
     ) AS use_counter_deprecated_ops_page_lenient_this,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element
+    ) AS use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_math_space_value2
     ) AS use_counter_deprecated_ops_page_math_ml_deprecated_math_space_value2,
@@ -4171,6 +4192,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_offscreen_canvas_to_blob
     ) AS use_counter_deprecated_ops_page_offscreen_canvas_to_blob,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_old_zecompat_hack
+    ) AS use_counter_deprecated_ops_page_old_zecompat_hack,
     SUM(
       metrics.counter.use_counter_deprecated_ops_page_orientation_event
     ) AS use_counter_deprecated_ops_page_orientation_event,
@@ -4454,6 +4478,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_get_user_media_unfocused
     ) AS use_counter_doc_get_user_media_unfocused,
+    SUM(
+      metrics.counter.use_counter_doc_grid_auto_flow_initial_value_change
+    ) AS use_counter_doc_grid_auto_flow_initial_value_change,
     SUM(
       metrics.counter.use_counter_doc_htmlbuttonelement_popovertargetaction
     ) AS use_counter_doc_htmlbuttonelement_popovertargetaction,
@@ -4809,6 +4836,113 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_moz_get_user_media_insec
     ) AS use_counter_doc_moz_get_user_media_insec,
+    SUM(
+      metrics.counter.use_counter_doc_navigate_event_intercept_with_precommit_handler
+    ) AS use_counter_doc_navigate_event_intercept_with_precommit_handler,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_downloadrequest_getter
+    ) AS use_counter_doc_navigateevent_downloadrequest_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_downloadrequest_setter
+    ) AS use_counter_doc_navigateevent_downloadrequest_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_formdata_getter
+    ) AS use_counter_doc_navigateevent_formdata_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_formdata_setter
+    ) AS use_counter_doc_navigateevent_formdata_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_hasuavisualtransition_getter
+    ) AS use_counter_doc_navigateevent_hasuavisualtransition_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_hasuavisualtransition_setter
+    ) AS use_counter_doc_navigateevent_hasuavisualtransition_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_intercept
+    ) AS use_counter_doc_navigateevent_intercept,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_scroll
+    ) AS use_counter_doc_navigateevent_scroll,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_sourceelement_getter
+    ) AS use_counter_doc_navigateevent_sourceelement_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigateevent_sourceelement_setter
+    ) AS use_counter_doc_navigateevent_sourceelement_setter,
+    SUM(metrics.counter.use_counter_doc_navigation_back) AS use_counter_doc_navigation_back,
+    SUM(metrics.counter.use_counter_doc_navigation_entries) AS use_counter_doc_navigation_entries,
+    SUM(metrics.counter.use_counter_doc_navigation_forward) AS use_counter_doc_navigation_forward,
+    SUM(metrics.counter.use_counter_doc_navigation_navigate) AS use_counter_doc_navigation_navigate,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_oncurrententrychange
+    ) AS use_counter_doc_navigation_oncurrententrychange,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_onnavigate
+    ) AS use_counter_doc_navigation_onnavigate,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_onnavigateerror
+    ) AS use_counter_doc_navigation_onnavigateerror,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_onnavigatesuccess
+    ) AS use_counter_doc_navigation_onnavigatesuccess,
+    SUM(metrics.counter.use_counter_doc_navigation_reload) AS use_counter_doc_navigation_reload,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_traverseto
+    ) AS use_counter_doc_navigation_traverseto,
+    SUM(
+      metrics.counter.use_counter_doc_navigation_updatecurrententry
+    ) AS use_counter_doc_navigation_updatecurrententry,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_entry_getter
+    ) AS use_counter_doc_navigationactivation_entry_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_entry_setter
+    ) AS use_counter_doc_navigationactivation_entry_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_from_getter
+    ) AS use_counter_doc_navigationactivation_from_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_from_setter
+    ) AS use_counter_doc_navigationactivation_from_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_navigationtype_getter
+    ) AS use_counter_doc_navigationactivation_navigationtype_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationactivation_navigationtype_setter
+    ) AS use_counter_doc_navigationactivation_navigationtype_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationhistoryentry_getstate
+    ) AS use_counter_doc_navigationhistoryentry_getstate,
+    SUM(
+      metrics.counter.use_counter_doc_navigationprecommitcontroller_addhandler
+    ) AS use_counter_doc_navigationprecommitcontroller_addhandler,
+    SUM(
+      metrics.counter.use_counter_doc_navigationprecommitcontroller_redirect
+    ) AS use_counter_doc_navigationprecommitcontroller_redirect,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_committed_getter
+    ) AS use_counter_doc_navigationtransition_committed_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_committed_setter
+    ) AS use_counter_doc_navigationtransition_committed_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_finished_getter
+    ) AS use_counter_doc_navigationtransition_finished_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_finished_setter
+    ) AS use_counter_doc_navigationtransition_finished_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_from_getter
+    ) AS use_counter_doc_navigationtransition_from_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_from_setter
+    ) AS use_counter_doc_navigationtransition_from_setter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_navigationtype_getter
+    ) AS use_counter_doc_navigationtransition_navigationtype_getter,
+    SUM(
+      metrics.counter.use_counter_doc_navigationtransition_navigationtype_setter
+    ) AS use_counter_doc_navigationtransition_navigationtype_setter,
     SUM(metrics.counter.use_counter_doc_navigator_canshare) AS use_counter_doc_navigator_canshare,
     SUM(
       metrics.counter.use_counter_doc_navigator_clearappbadge
@@ -5599,6 +5733,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_page_get_user_media_unfocused
     ) AS use_counter_page_get_user_media_unfocused,
     SUM(
+      metrics.counter.use_counter_page_grid_auto_flow_initial_value_change
+    ) AS use_counter_page_grid_auto_flow_initial_value_change,
+    SUM(
       metrics.counter.use_counter_page_htmlbuttonelement_popovertargetaction
     ) AS use_counter_page_htmlbuttonelement_popovertargetaction,
     SUM(
@@ -5957,6 +6094,115 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_page_moz_get_user_media_insec
     ) AS use_counter_page_moz_get_user_media_insec,
+    SUM(
+      metrics.counter.use_counter_page_navigate_event_intercept_with_precommit_handler
+    ) AS use_counter_page_navigate_event_intercept_with_precommit_handler,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_downloadrequest_getter
+    ) AS use_counter_page_navigateevent_downloadrequest_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_downloadrequest_setter
+    ) AS use_counter_page_navigateevent_downloadrequest_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_formdata_getter
+    ) AS use_counter_page_navigateevent_formdata_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_formdata_setter
+    ) AS use_counter_page_navigateevent_formdata_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_hasuavisualtransition_getter
+    ) AS use_counter_page_navigateevent_hasuavisualtransition_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_hasuavisualtransition_setter
+    ) AS use_counter_page_navigateevent_hasuavisualtransition_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_intercept
+    ) AS use_counter_page_navigateevent_intercept,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_scroll
+    ) AS use_counter_page_navigateevent_scroll,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_sourceelement_getter
+    ) AS use_counter_page_navigateevent_sourceelement_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigateevent_sourceelement_setter
+    ) AS use_counter_page_navigateevent_sourceelement_setter,
+    SUM(metrics.counter.use_counter_page_navigation_back) AS use_counter_page_navigation_back,
+    SUM(metrics.counter.use_counter_page_navigation_entries) AS use_counter_page_navigation_entries,
+    SUM(metrics.counter.use_counter_page_navigation_forward) AS use_counter_page_navigation_forward,
+    SUM(
+      metrics.counter.use_counter_page_navigation_navigate
+    ) AS use_counter_page_navigation_navigate,
+    SUM(
+      metrics.counter.use_counter_page_navigation_oncurrententrychange
+    ) AS use_counter_page_navigation_oncurrententrychange,
+    SUM(
+      metrics.counter.use_counter_page_navigation_onnavigate
+    ) AS use_counter_page_navigation_onnavigate,
+    SUM(
+      metrics.counter.use_counter_page_navigation_onnavigateerror
+    ) AS use_counter_page_navigation_onnavigateerror,
+    SUM(
+      metrics.counter.use_counter_page_navigation_onnavigatesuccess
+    ) AS use_counter_page_navigation_onnavigatesuccess,
+    SUM(metrics.counter.use_counter_page_navigation_reload) AS use_counter_page_navigation_reload,
+    SUM(
+      metrics.counter.use_counter_page_navigation_traverseto
+    ) AS use_counter_page_navigation_traverseto,
+    SUM(
+      metrics.counter.use_counter_page_navigation_updatecurrententry
+    ) AS use_counter_page_navigation_updatecurrententry,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_entry_getter
+    ) AS use_counter_page_navigationactivation_entry_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_entry_setter
+    ) AS use_counter_page_navigationactivation_entry_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_from_getter
+    ) AS use_counter_page_navigationactivation_from_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_from_setter
+    ) AS use_counter_page_navigationactivation_from_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_navigationtype_getter
+    ) AS use_counter_page_navigationactivation_navigationtype_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationactivation_navigationtype_setter
+    ) AS use_counter_page_navigationactivation_navigationtype_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationhistoryentry_getstate
+    ) AS use_counter_page_navigationhistoryentry_getstate,
+    SUM(
+      metrics.counter.use_counter_page_navigationprecommitcontroller_addhandler
+    ) AS use_counter_page_navigationprecommitcontroller_addhandler,
+    SUM(
+      metrics.counter.use_counter_page_navigationprecommitcontroller_redirect
+    ) AS use_counter_page_navigationprecommitcontroller_redirect,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_committed_getter
+    ) AS use_counter_page_navigationtransition_committed_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_committed_setter
+    ) AS use_counter_page_navigationtransition_committed_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_finished_getter
+    ) AS use_counter_page_navigationtransition_finished_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_finished_setter
+    ) AS use_counter_page_navigationtransition_finished_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_from_getter
+    ) AS use_counter_page_navigationtransition_from_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_from_setter
+    ) AS use_counter_page_navigationtransition_from_setter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_navigationtype_getter
+    ) AS use_counter_page_navigationtransition_navigationtype_getter,
+    SUM(
+      metrics.counter.use_counter_page_navigationtransition_navigationtype_setter
+    ) AS use_counter_page_navigationtransition_navigationtype_setter,
     SUM(metrics.counter.use_counter_page_navigator_canshare) AS use_counter_page_navigator_canshare,
     SUM(
       metrics.counter.use_counter_page_navigator_clearappbadge
@@ -8585,6 +8831,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_ckeditor4_compat_hack,
         use_counter_deprecated_ops_doc_components,
         use_counter_deprecated_ops_doc_create_image_bitmap_canvas_rendering_context2_d,
+        use_counter_deprecated_ops_doc_csscontainer_rule_single_condition,
         use_counter_deprecated_ops_doc_deprecated_testing_attribute,
         use_counter_deprecated_ops_doc_deprecated_testing_interface,
         use_counter_deprecated_ops_doc_deprecated_testing_method,
@@ -8603,6 +8850,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_external_add_search_provider,
         use_counter_deprecated_ops_doc_form_submission_untrusted_event,
         use_counter_deprecated_ops_doc_fullscreen_attribute,
+        use_counter_deprecated_ops_doc_gwtrich_text_area_compat_hack,
         use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
         use_counter_deprecated_ops_doc_idbopen_dboptions_storage_type,
         use_counter_deprecated_ops_doc_image_bitmap_rendering_context_transfer_image_bitmap,
@@ -8614,6 +8862,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_is_external_ctap2_security_key_supported,
         use_counter_deprecated_ops_doc_lenient_setter,
         use_counter_deprecated_ops_doc_lenient_this,
+        use_counter_deprecated_ops_doc_math_ml_deprecated_href_link_on_non_anchor_element,
         use_counter_deprecated_ops_doc_math_ml_deprecated_math_space_value2,
         use_counter_deprecated_ops_doc_math_ml_deprecated_math_variant,
         use_counter_deprecated_ops_doc_math_ml_deprecated_mo_explicit_accent,
@@ -8634,6 +8883,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_doc_navigator_get_user_media,
         use_counter_deprecated_ops_doc_node_iterator_detach,
         use_counter_deprecated_ops_doc_offscreen_canvas_to_blob,
+        use_counter_deprecated_ops_doc_old_zecompat_hack,
         use_counter_deprecated_ops_doc_orientation_event,
         use_counter_deprecated_ops_doc_proximity_event,
         use_counter_deprecated_ops_doc_rtcpeer_connection_get_streams,
@@ -8655,6 +8905,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_ckeditor4_compat_hack,
         use_counter_deprecated_ops_page_components,
         use_counter_deprecated_ops_page_create_image_bitmap_canvas_rendering_context2_d,
+        use_counter_deprecated_ops_page_csscontainer_rule_single_condition,
         use_counter_deprecated_ops_page_deprecated_testing_attribute,
         use_counter_deprecated_ops_page_deprecated_testing_interface,
         use_counter_deprecated_ops_page_deprecated_testing_method,
@@ -8673,6 +8924,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_external_add_search_provider,
         use_counter_deprecated_ops_page_form_submission_untrusted_event,
         use_counter_deprecated_ops_page_fullscreen_attribute,
+        use_counter_deprecated_ops_page_gwtrich_text_area_compat_hack,
         use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
         use_counter_deprecated_ops_page_idbopen_dboptions_storage_type,
         use_counter_deprecated_ops_page_image_bitmap_rendering_context_transfer_image_bitmap,
@@ -8684,6 +8936,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_is_external_ctap2_security_key_supported,
         use_counter_deprecated_ops_page_lenient_setter,
         use_counter_deprecated_ops_page_lenient_this,
+        use_counter_deprecated_ops_page_math_ml_deprecated_href_link_on_non_anchor_element,
         use_counter_deprecated_ops_page_math_ml_deprecated_math_space_value2,
         use_counter_deprecated_ops_page_math_ml_deprecated_math_variant,
         use_counter_deprecated_ops_page_math_ml_deprecated_mo_explicit_accent,
@@ -8704,6 +8957,7 @@ pivoted_raw AS (
         use_counter_deprecated_ops_page_navigator_get_user_media,
         use_counter_deprecated_ops_page_node_iterator_detach,
         use_counter_deprecated_ops_page_offscreen_canvas_to_blob,
+        use_counter_deprecated_ops_page_old_zecompat_hack,
         use_counter_deprecated_ops_page_orientation_event,
         use_counter_deprecated_ops_page_proximity_event,
         use_counter_deprecated_ops_page_rtcpeer_connection_get_streams,
@@ -8833,6 +9087,7 @@ pivoted_raw AS (
         use_counter_doc_filtered_cross_origin_iframe,
         use_counter_doc_get_user_media_insec,
         use_counter_doc_get_user_media_unfocused,
+        use_counter_doc_grid_auto_flow_initial_value_change,
         use_counter_doc_htmlbuttonelement_popovertargetaction,
         use_counter_doc_htmlbuttonelement_popovertargetelement,
         use_counter_doc_htmldialogelement_show,
@@ -8966,6 +9221,45 @@ pivoted_raw AS (
         use_counter_doc_mls_statedelete,
         use_counter_doc_mls_statedeletegroup,
         use_counter_doc_moz_get_user_media_insec,
+        use_counter_doc_navigate_event_intercept_with_precommit_handler,
+        use_counter_doc_navigateevent_downloadrequest_getter,
+        use_counter_doc_navigateevent_downloadrequest_setter,
+        use_counter_doc_navigateevent_formdata_getter,
+        use_counter_doc_navigateevent_formdata_setter,
+        use_counter_doc_navigateevent_hasuavisualtransition_getter,
+        use_counter_doc_navigateevent_hasuavisualtransition_setter,
+        use_counter_doc_navigateevent_intercept,
+        use_counter_doc_navigateevent_scroll,
+        use_counter_doc_navigateevent_sourceelement_getter,
+        use_counter_doc_navigateevent_sourceelement_setter,
+        use_counter_doc_navigation_back,
+        use_counter_doc_navigation_entries,
+        use_counter_doc_navigation_forward,
+        use_counter_doc_navigation_navigate,
+        use_counter_doc_navigation_oncurrententrychange,
+        use_counter_doc_navigation_onnavigate,
+        use_counter_doc_navigation_onnavigateerror,
+        use_counter_doc_navigation_onnavigatesuccess,
+        use_counter_doc_navigation_reload,
+        use_counter_doc_navigation_traverseto,
+        use_counter_doc_navigation_updatecurrententry,
+        use_counter_doc_navigationactivation_entry_getter,
+        use_counter_doc_navigationactivation_entry_setter,
+        use_counter_doc_navigationactivation_from_getter,
+        use_counter_doc_navigationactivation_from_setter,
+        use_counter_doc_navigationactivation_navigationtype_getter,
+        use_counter_doc_navigationactivation_navigationtype_setter,
+        use_counter_doc_navigationhistoryentry_getstate,
+        use_counter_doc_navigationprecommitcontroller_addhandler,
+        use_counter_doc_navigationprecommitcontroller_redirect,
+        use_counter_doc_navigationtransition_committed_getter,
+        use_counter_doc_navigationtransition_committed_setter,
+        use_counter_doc_navigationtransition_finished_getter,
+        use_counter_doc_navigationtransition_finished_setter,
+        use_counter_doc_navigationtransition_from_getter,
+        use_counter_doc_navigationtransition_from_setter,
+        use_counter_doc_navigationtransition_navigationtype_getter,
+        use_counter_doc_navigationtransition_navigationtype_setter,
         use_counter_doc_navigator_canshare,
         use_counter_doc_navigator_clearappbadge,
         use_counter_doc_navigator_mozgetusermedia,
@@ -9303,6 +9597,7 @@ pivoted_raw AS (
         use_counter_page_filtered_cross_origin_iframe,
         use_counter_page_get_user_media_insec,
         use_counter_page_get_user_media_unfocused,
+        use_counter_page_grid_auto_flow_initial_value_change,
         use_counter_page_htmlbuttonelement_popovertargetaction,
         use_counter_page_htmlbuttonelement_popovertargetelement,
         use_counter_page_htmldialogelement_show,
@@ -9436,6 +9731,45 @@ pivoted_raw AS (
         use_counter_page_mls_statedelete,
         use_counter_page_mls_statedeletegroup,
         use_counter_page_moz_get_user_media_insec,
+        use_counter_page_navigate_event_intercept_with_precommit_handler,
+        use_counter_page_navigateevent_downloadrequest_getter,
+        use_counter_page_navigateevent_downloadrequest_setter,
+        use_counter_page_navigateevent_formdata_getter,
+        use_counter_page_navigateevent_formdata_setter,
+        use_counter_page_navigateevent_hasuavisualtransition_getter,
+        use_counter_page_navigateevent_hasuavisualtransition_setter,
+        use_counter_page_navigateevent_intercept,
+        use_counter_page_navigateevent_scroll,
+        use_counter_page_navigateevent_sourceelement_getter,
+        use_counter_page_navigateevent_sourceelement_setter,
+        use_counter_page_navigation_back,
+        use_counter_page_navigation_entries,
+        use_counter_page_navigation_forward,
+        use_counter_page_navigation_navigate,
+        use_counter_page_navigation_oncurrententrychange,
+        use_counter_page_navigation_onnavigate,
+        use_counter_page_navigation_onnavigateerror,
+        use_counter_page_navigation_onnavigatesuccess,
+        use_counter_page_navigation_reload,
+        use_counter_page_navigation_traverseto,
+        use_counter_page_navigation_updatecurrententry,
+        use_counter_page_navigationactivation_entry_getter,
+        use_counter_page_navigationactivation_entry_setter,
+        use_counter_page_navigationactivation_from_getter,
+        use_counter_page_navigationactivation_from_setter,
+        use_counter_page_navigationactivation_navigationtype_getter,
+        use_counter_page_navigationactivation_navigationtype_setter,
+        use_counter_page_navigationhistoryentry_getstate,
+        use_counter_page_navigationprecommitcontroller_addhandler,
+        use_counter_page_navigationprecommitcontroller_redirect,
+        use_counter_page_navigationtransition_committed_getter,
+        use_counter_page_navigationtransition_committed_setter,
+        use_counter_page_navigationtransition_finished_getter,
+        use_counter_page_navigationtransition_finished_setter,
+        use_counter_page_navigationtransition_from_getter,
+        use_counter_page_navigationtransition_from_setter,
+        use_counter_page_navigationtransition_navigationtype_getter,
+        use_counter_page_navigationtransition_navigationtype_setter,
         use_counter_page_navigator_canshare,
         use_counter_page_navigator_clearappbadge,
         use_counter_page_navigator_mozgetusermedia,

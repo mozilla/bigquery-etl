@@ -1017,6 +1017,11 @@ def run(
 
     target = ctx.obj.get("target") if ctx.obj else None
 
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
     if target and dataset_id:
         raise click.UsageError("--dataset-id and --target are mutually exclusive.")
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)

@@ -99,7 +99,7 @@ def cli(prog_name=None):
                 parsed_target = get_target(target)
                 ctx.obj["target"] = parsed_target
                 click.echo(
-                    f"Using target: {parsed_target.name} (project: {parsed_target.project_id})"
+                    f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")

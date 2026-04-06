@@ -18,7 +18,7 @@ import requests
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
-from jinja2 import Environment, Template
+from jinja2 import Template
 
 from ..config import ConfigLoader
 from ..deploy import deploy_table
@@ -146,9 +146,7 @@ def _get_gcloud_account() -> str:
             .get("email", "")
         )
     except Exception as e:
-        logging.warning(
-            f"Could not determine GCP account from credentials. Using empty string for account.username: {e}"
-        )
+        logging.warning(f"Could not determine GCP account from credentials: {e}")
         return ""
 
 
@@ -173,9 +171,7 @@ def get_target(target: str) -> Target:
     if not targets_file.exists():
         raise Exception(f"Targets file not found: {targets_file}")
 
-    targets_content = targets_file.read_text()
-    env = Environment(undefined=_KeepUndefined)
-    template = env.from_string(targets_content)
+    template = Template(targets_file.read_text(), undefined=_KeepUndefined)
     rendered_content = template.render(
         git=_get_git_context(),
         account=_get_account_context(),
@@ -230,6 +226,7 @@ def get_deployed_tables_in_target(
     if not target_project_dir.exists():
         return deployed
 
+    client = bigquery.Client(project=target_project)
     seen_dirs: Set[Path] = set()
     for pattern in ("query.sql", "script.sql", "part1.sql"):
         for query_file in target_project_dir.rglob(pattern):
@@ -242,6 +239,9 @@ def get_deployed_tables_in_target(
 
             table = query_file.parent.name
             dataset = query_file.parent.parent.name
+
+            if not _table_exists(client, f"{target_project}.{dataset}.{table}"):
+                continue
 
             source_project = None
             source_dataset = None
@@ -267,14 +267,7 @@ def get_deployed_tables_in_target(
                 )
             )
 
-    client = bigquery.Client(project=target_project)
-    return {
-        info
-        for info in deployed
-        if _table_exists(
-            client, f"{info.target_project}.{info.target_dataset}.{info.target_table}"
-        )
-    }
+    return deployed
 
 
 def rewrite_query_references(

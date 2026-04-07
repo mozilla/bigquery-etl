@@ -9,7 +9,7 @@ WITH addon_id_lookup AS (
     addon_id,
     TO_HEX(SHA256(addon_id)) AS hashed_addon_id
   FROM
-    `moz-fx-data-shared-prod.addons.amo_stats_dau`
+    `moz-fx-data-shared-prod.addons.dev_amo_stats_dau`
 )
 SELECT
   installs.*,

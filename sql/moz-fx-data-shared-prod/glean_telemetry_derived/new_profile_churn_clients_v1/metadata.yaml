@@ -1,0 +1,21 @@
+friendly_name: New Profile Churn Clients
+description: |-
+  Please provide a description for the query
+owners:
+- bbaird@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: bbaird
+  owner2: mhirose
+scheduling:
+  dag_name: bqetl_glean_telemetry_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+require_column_descriptions: true

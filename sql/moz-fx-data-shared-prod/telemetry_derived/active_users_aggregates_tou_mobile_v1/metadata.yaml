@@ -25,7 +25,7 @@ labels:
   incremental: true
   change_controlled: true
   shredder_mitigation: true
-  bigeye_predefined_metrics: FRESHENSS, VOLUME
+  bigeye_predefined_metrics: FRESHNESS,VOLUME, is_not_null
   owner1: rbaffourawuah
   owner2: mhirose
 scheduling:
@@ -38,3 +38,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
 require_column_descriptions: true
+monitoring:
+  enabled: true

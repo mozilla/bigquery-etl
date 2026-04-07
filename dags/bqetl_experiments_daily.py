@@ -185,6 +185,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring__experimenter_experiments__v1",
+        external_dag_id="bqetl_experimenter_experiments_import",
+        external_task_id="monitoring__experimenter_experiments__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
@@ -415,6 +427,22 @@ with DAG(
         ],
     )
 
+    monitoring__experiment_sample_ratio_mismatch__v1 = bigquery_etl_query(
+        task_id="monitoring__experiment_sample_ratio_mismatch__v1",
+        destination_table="experiment_sample_ratio_mismatch_v1",
+        dataset_id="monitoring",
+        project_id="moz-fx-data-experiments",
+        owner="mwilliams@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "mwilliams@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     monitoring__query_cost__v1 = bigquery_etl_query(
         task_id="monitoring__query_cost__v1",
         destination_table="query_cost_v1",
@@ -578,6 +606,18 @@ with DAG(
 
     firefox_ios_derived__tos_rollout_enrollments__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
+    )
+
+    monitoring__experiment_sample_ratio_mismatch__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    monitoring__experiment_sample_ratio_mismatch__v1.set_upstream(
+        telemetry_derived__experiment_enrollment_aggregates__v1
+    )
+
+    monitoring__experiment_sample_ratio_mismatch__v1.set_upstream(
+        telemetry_derived__experiments_daily_active_clients__v1
     )
 
     org_mozilla_fenix_derived__nimbus_recorded_targeting_context__v1.set_upstream(

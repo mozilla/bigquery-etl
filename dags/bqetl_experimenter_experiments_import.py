@@ -88,6 +88,12 @@ with DAG(
             external_task_id="wait_for_monitoring__experimenter_experiments__v1",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_experiments_daily__wait_for_monitoring__experimenter_experiments__v1",
+            external_dag_id="bqetl_experiments_daily",
+            external_task_id="wait_for_monitoring__experimenter_experiments__v1",
+        )
+
         monitoring__experimenter_experiments__v1_external.set_upstream(
             monitoring__experimenter_experiments__v1
         )

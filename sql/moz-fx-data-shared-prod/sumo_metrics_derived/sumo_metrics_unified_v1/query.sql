@@ -1,6 +1,6 @@
 -- Freshness Metrics (no product dimension)
 SELECT
-  event_date AS `date`,
+  event_date AS `event_date`,
   CAST(NULL AS STRING) AS product,
   CAST(NULL AS STRING) AS content_type,
   'freshness_metrics' AS source,

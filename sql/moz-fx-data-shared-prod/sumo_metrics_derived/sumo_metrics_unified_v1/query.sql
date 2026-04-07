@@ -29,7 +29,7 @@ FROM
 UNION ALL
 -- GA4 Engagement Sessions
 SELECT
-  event_date AS `date`,
+  event_date AS `event_date`,
   product,
   content_type,
   'ga4_engagement_sessions' AS source,

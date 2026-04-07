@@ -8,7 +8,7 @@ engagement_events AS (
     `mozdata.sumo_ga.ga4_events`,
     UNNEST(event_params) AS ep
   WHERE
-    event_date = FORMAT_DATE('%Y%m%d', @submission_date)
+    submission_date = @submission_date
     AND event_name = 'user_engagement'
     AND ep.key = 'content_group'
     AND ep.value.string_value IN ('kb-article', 'support-forum-question-details')

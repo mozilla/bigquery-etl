@@ -23,6 +23,7 @@ from bigquery_etl.cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
+from bigquery_etl.cli.routine import publish as publish_routines_cmd
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.deploy import (
@@ -46,11 +47,12 @@ log = logging.getLogger(__name__)
 @click.command(
     help="""Deploy BigQuery artifacts with dependency resolution.
 
-    This command deploys tables and views with automatic dependency resolution
-    and parallel execution. You must specify at least one artifact type to
-    deploy using the --tables or --views flags.
+    This command deploys tables, views, and routines with automatic dependency
+    resolution and parallel execution. You must specify at least one artifact
+    type to deploy using the --tables, --views, or --routines flags.
 
-    Table-specific options use --table-* prefix, view-specific options use --view-* prefix.
+    Table-specific options use --table-* prefix, view-specific options use
+    --view-* prefix, routine-specific options use --routine-* prefix.
 
     Coding agents aren't allowed to run this command.
 
@@ -94,6 +96,12 @@ log = logging.getLogger(__name__)
     is_flag=True,
     default=False,
     help="Deploy views (view.sql files)",
+)
+@click.option(
+    "--routines",
+    is_flag=True,
+    default=False,
+    help="Deploy routines (udf.sql, stored_procedure.sql files)",
 )
 @sql_dir_option
 @multi_project_id_option(
@@ -172,6 +180,24 @@ log = logging.getLogger(__name__)
     default=False,
     help="Only deploy views with labels: {authorized: true} in metadata.yaml",
 )
+@click.option(
+    "--routine-dependency-dir",
+    "--routine_dependency_dir",
+    default=ConfigLoader.get("routine", "dependency_dir"),
+    help="The directory JavaScript dependency files for UDFs are stored.",
+)
+@click.option(
+    "--routine-gcs-bucket",
+    "--routine_gcs_bucket",
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
+    help="The GCS bucket where dependency files are uploaded to.",
+)
+@click.option(
+    "--routine-gcs-path",
+    "--routine_gcs_path",
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
+    help="The GCS path in the bucket where dependency files are uploaded to.",
+)
 @defer_option()
 @click.pass_context
 def deploy(
@@ -179,6 +205,7 @@ def deploy(
     paths,
     tables,
     views,
+    routines,
     sql_dir,
     project_ids,
     parallelism,
@@ -194,12 +221,15 @@ def deploy(
     view_add_managed_label,
     view_skip_authorized,
     view_authorized_only,
+    routine_dependency_dir,
+    routine_gcs_bucket,
+    routine_gcs_path,
     defer_to_target,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views]):
+    if not any([tables, views, routines]):
         raise click.UsageError(
-            "Must specify at least one artifact type: --tables or --views"
+            "Must specify at least one artifact type: --tables, --views, or --routines"
         )
 
     if view_skip_authorized and view_authorized_only:
@@ -220,6 +250,20 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # publish routines first since tables/views may depend on them
+    if routines:
+        for project_id in project_ids:
+            ctx.invoke(
+                publish_routines_cmd,
+                project_id=project_id,
+                sql_dir=sql_dir,
+                dependency_dir=routine_dependency_dir,
+                gcs_bucket=routine_gcs_bucket,
+                gcs_path=routine_gcs_path,
+                dry_run=dry_run,
+                defer_to_target=defer_to_target,
+            )
 
     artifact_types = []
     if tables:

@@ -270,4 +270,7 @@ fields:
 - name: document_event_number
   type: INTEGER
   mode: NULLABLE
+- name: event_id
+  type: STRING
+  mode: NULLABLE
 

@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mozilla_mach.events_stream`
 AS
 SELECT
-  CONCAT(document_id, '-', document_event_number) AS event_id,
-  *,
+  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  * EXCEPT (event_id),
 FROM
   `moz-fx-data-shared-prod.mozilla_mach_derived.events_stream_v1`

@@ -125,6 +125,7 @@ SELECT
   ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
   from_map_event_extra(event.extra) AS event_extra,
   (event_offset + 1) AS document_event_number,
+  CONCAT(document_id, '-', (event_offset + 1)) AS event_id,
 FROM
   base
 CROSS JOIN

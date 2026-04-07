@@ -3,8 +3,8 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop_background_tasks.events_stream`
 AS
 SELECT
-  CONCAT(document_id, '-', document_event_number) AS event_id,
-  *,
+  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  * EXCEPT (event_id),
   STRUCT(
     STRUCT(LAX_BOOL(event_extra.blocked) AS `blocked`) AS `boolean`,
     STRUCT(

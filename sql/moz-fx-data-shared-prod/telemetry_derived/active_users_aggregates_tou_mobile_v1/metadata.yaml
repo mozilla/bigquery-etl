@@ -25,7 +25,7 @@ labels:
   incremental: true
   change_controlled: true
   shredder_mitigation: true
-  bigeye_predefined_metrics: FRESHNESS,VOLUME, is_not_null
+  bigeye_predefined_metrics: FRESHNESS, VOLUME, is_not_null
   owner1: rbaffourawuah
   owner2: mhirose
 scheduling:

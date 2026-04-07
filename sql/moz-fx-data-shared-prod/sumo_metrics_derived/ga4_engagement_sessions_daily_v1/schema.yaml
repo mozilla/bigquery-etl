@@ -2,7 +2,7 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
-  description: Event date (YYYYMMDD parsed to DATE)
+  description: Date (UTC) when the event occurred as reported by GA4.
 - name: product
   type: STRING
   mode: NULLABLE

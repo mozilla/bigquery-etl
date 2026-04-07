@@ -58,7 +58,7 @@ FROM
 UNION ALL
 -- Kitsune Forum Questions
 SELECT
-  creation_date AS `date`,
+  creation_date AS `event_date`,
   product,
   CAST(NULL AS STRING) AS content_type,
   'kitsune_questions' AS source,

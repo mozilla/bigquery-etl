@@ -13,9 +13,11 @@ from pathlib import Path
 import pytest
 import rich_click as click
 import yaml
+from google.cloud import bigquery
 
 from ..cli.format import format
 from ..cli.utils import (
+    defer_option,
     is_authenticated,
     is_valid_project,
     project_id_option,
@@ -26,7 +28,9 @@ from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
+from ..util import extract_from_query_path
 from ..util.common import block_coding_agents, project_dirs
+from ..util.target import ensure_dataset_exists, prepare_target_files
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -385,6 +389,7 @@ Examples:
 @block_coding_agents
 @click.argument("name", required=False)
 @project_id_option()
+@sql_dir_option
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
@@ -406,10 +411,22 @@ Examples:
 @click.option(
     "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
 )
+@defer_option()
 @click.pass_context
-def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
+def publish(
+    ctx,
+    name,
+    project_id,
+    sql_dir,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    dry_run,
+    defer_to_target,
+):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
+    target = ctx.obj.get("target") if ctx.obj else None
 
     public = False
 
@@ -417,20 +434,99 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    click.echo(f"Publish routines to {project_id}")
-    # NOTE: this will only publish to a single project
-    for target in project_dirs(project_id):
-        publish_routines.publish(
+    if target and target.project_id != project_id:
+        _publish_to_target(
             target,
             project_id,
+            sql_dir,
             dependency_dir,
             gcs_bucket,
             gcs_path,
-            public,
+            defer_to_target,
             pattern=name,
             dry_run=dry_run,
         )
+    else:
+        click.echo(f"Publish routines to {project_id}")
+        for target_dir in project_dirs(project_id):
+            publish_routines.publish(
+                target_dir,
+                project_id,
+                dependency_dir,
+                gcs_bucket,
+                gcs_path,
+                public,
+                pattern=name,
+                dry_run=dry_run,
+            )
         click.echo(f"Published routines to {project_id}")
+
+
+def _publish_to_target(
+    target,
+    source_project_id,
+    sql_dir,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    defer_to_target,
+    pattern=None,
+    dry_run=False,
+):
+    """Publish routines to a --target environment."""
+    # discover routine files under the source project
+    source_dir = Path(sql_dir) / source_project_id
+    routine_files = [
+        Path(p)
+        for p in glob(f"{source_dir}/**/*.sql", recursive=True)
+        if ROUTINE_FILE_RE.match(p)
+    ]
+
+    if pattern:
+        routine_files = [
+            f
+            for f in routine_files
+            if fnmatchcase(".".join(extract_from_query_path(f)), f"*{pattern}")
+        ]
+
+    if not routine_files:
+        click.echo("No routines found matching the specified criteria.")
+        return
+
+    target_files = prepare_target_files(
+        routine_files,
+        sql_dir,
+        source_project_id,
+        target,
+        defer_to_target=defer_to_target,
+        isolated=False,
+        auto_deploy=False,
+    )
+
+    # ensure target datasets exist
+    client = bigquery.Client(project=target.project_id)
+    seen_datasets: set = set()
+    for target_file in target_files:
+        project, dataset, _ = extract_from_query_path(target_file)
+        dataset_ref = f"{project}.{dataset}"
+        if dataset_ref not in seen_datasets:
+            seen_datasets.add(dataset_ref)
+            ensure_dataset_exists(client, dataset_ref)
+
+    # publish from the target directory
+    target_project_dir = str(Path(sql_dir) / target.project_id)
+    click.echo(f"Publish routines to {target.project_id} (target: {target.name})")
+    publish_routines.publish(
+        target_project_dir,
+        target.project_id,
+        dependency_dir,
+        gcs_bucket,
+        gcs_path,
+        public=False,
+        pattern=pattern,
+        dry_run=dry_run,
+    )
+    click.echo(f"Published routines to {target.project_id}")
 
 
 mozfun.add_command(copy.copy(publish))

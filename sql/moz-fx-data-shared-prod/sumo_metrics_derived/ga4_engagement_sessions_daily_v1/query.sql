@@ -58,7 +58,7 @@ events_with_product AS (
     ep.key = 'products'
 )
 SELECT
-  PARSE_DATE('%Y%m%d', event_date) AS `event_date`,
+  DATE(TIMESTAMP_MICROS(event_timestamp)) AS event_date,
   product,
   CASE
     WHEN content_type = 'kb-article'
@@ -73,6 +73,6 @@ SELECT
 FROM
   events_with_product
 GROUP BY
-  `event_date`,
+  event_date,
   product,
   content_type

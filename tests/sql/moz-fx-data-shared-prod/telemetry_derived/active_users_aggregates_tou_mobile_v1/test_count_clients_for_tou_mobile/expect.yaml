@@ -1,5 +1,5 @@
 ---
-- submission_date: "2026-01-15 00:00:00 UTC"
+- submission_date: 2026-01-15T00:00:00+00:00"
   mobile_app_name: fenix
   first_seen_year: 2026
   channel: release
@@ -7,14 +7,14 @@
   country: US
   locale: en-US
   os: Android
-  os_version: "13.0"
+  os_version: 13.0
   os_version_major: 13
   os_version_minor: 0
   windows_build_number: null
-  app_version: "133.0"
+  app_version: 133.0
   app_version_major: 133
   app_version_minor: 0
-  app_version_patch_revision: "0"
+  app_version_patch_revision: 0
   app_version_is_major_release: true
   is_default_browser: false
   distribution_id: null
@@ -28,7 +28,7 @@
   tou_daily_active_users: 1
   tou_weekly_active_users: 1
   tou_monthly_active_users: 1
-- submission_date: "2026-01-15 00:00:00 UTC"
+- submission_date: "2026-01-15T00:00:00+00:00"
   mobile_app_name: firefox_ios
   first_seen_year: 2026
   channel: release
@@ -36,14 +36,14 @@
   country: US
   locale: en-US
   os: iOS
-  os_version: "17.0"
+  os_version: 17.0
   os_version_major: 17
   os_version_minor: 0
   windows_build_number: null
-  app_version: "133.0"
+  app_version: 133.0
   app_version_major: 133
   app_version_minor: 0
-  app_version_patch_revision: "0"
+  app_version_patch_revision: 0
   app_version_is_major_release: true
   is_default_browser: false
   distribution_id: null

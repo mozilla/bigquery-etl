@@ -1,5 +1,5 @@
 ---
-- submission_date: "2026-01-15 00:00:00 UTC"
+- submission_date: "2026-01-15T00:00:00+00:00"
   first_seen_year: 2026
   channel: release
   app_name: Firefox
@@ -7,15 +7,15 @@
   locale: en-US
   os: Windows
   os_grouped: Windows
-  os_version: "10.0"
+  os_version: 10.0
   os_version_major: 10
   os_version_minor: 0
   os_version_build: null
   windows_build_number: 19045
-  app_version: "133.0"
+  app_version: 133.0
   app_version_major: 133
   app_version_minor: 0
-  app_version_patch_revision: "0"
+  app_version_patch_revision: 0
   app_version_is_major_release: true
   is_default_browser: false
   distribution_id: null

@@ -14,6 +14,7 @@ from google.cloud import bigquery
 from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
+    defer_option,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
@@ -36,6 +37,7 @@ from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
+from bigquery_etl.util.target import ensure_dataset_exists, prepare_target_files
 from bigquery_etl.view import View
 
 log = logging.getLogger(__name__)
@@ -170,7 +172,10 @@ log = logging.getLogger(__name__)
     default=False,
     help="Only deploy views with labels: {authorized: true} in metadata.yaml",
 )
+@defer_option()
+@click.pass_context
 def deploy(
+    ctx,
     paths,
     tables,
     views,
@@ -189,6 +194,7 @@ def deploy(
     view_add_managed_label,
     view_skip_authorized,
     view_authorized_only,
+    defer_to_target,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
     if not any([tables, views]):
@@ -199,6 +205,13 @@ def deploy(
     if view_skip_authorized and view_authorized_only:
         raise click.UsageError(
             "Cannot use both --view-skip-authorized and --view-authorized-only"
+        )
+
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and view_target_project:
+        raise click.UsageError(
+            "--view-target-project and --target are mutually exclusive."
         )
 
     if not is_authenticated():
@@ -218,6 +231,37 @@ def deploy(
     id_token = get_id_token()
 
     artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
+
+    if target and target.project_id not in project_ids:
+        new_artifacts = {}
+        for _artifact_id, (file_path, artifact_type) in artifacts.items():
+            source_project, _, _ = extract_from_query_path(file_path)
+            target_files = prepare_target_files(
+                [file_path],
+                sql_dir,
+                source_project,
+                target,
+                defer_to_target=defer_to_target,
+                isolated=False,
+                auto_deploy=False,
+            )
+            target_file = target_files[0]
+            project, dataset, name = extract_from_query_path(target_file)
+            new_artifacts[f"{project}.{dataset}.{name}"] = (
+                target_file,
+                artifact_type,
+            )
+        artifacts = new_artifacts
+
+        client = bigquery.Client(project=target.project_id)
+        seen_datasets: set = set()
+        for project, dataset, _ in (
+            extract_from_query_path(f) for f, _ in artifacts.values()
+        ):
+            dataset_ref = f"{project}.{dataset}"
+            if dataset_ref not in seen_datasets:
+                seen_datasets.add(dataset_ref)
+                ensure_dataset_exists(client, dataset_ref)
 
     # filter views based on authorized flags
     if view_skip_authorized or view_authorized_only:

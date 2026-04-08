@@ -14,6 +14,7 @@
   {"type": "STRING", "name": "app_display_version"},
   {"type": "BOOLEAN", "name": "is_default_browser"},
   {"type": "STRING", "name": "distribution_id"},
+  {"type": "INTEGER", "name": "windows_build_number"},
   {"type": "INTEGER", "name": "days_seen_bits"},
   {"type": "INTEGER", "name": "days_active_bits"},
   {"type": "STRING", "name": "app_name"},

@@ -25,11 +25,16 @@ LEFT JOIN
   -- For `labeled_*` metrics, the label is removed to match the column name, e.g.
   -- `metrics.labeled_counter.metric_name.label` is renamed to `metrics.labeled_counter.metric_name`
   -- because the label is in the `key` field and not the name of a column
-  AND `moz-fx-data-shared-prod.udf.remove_label_from_metric_path`(
-    ARRAY_TO_STRING(
-      `moz-fx-data-shared-prod.udf_js.snake_case_columns`(
-        REGEXP_EXTRACT_ALL(missing_columns.path, '`(.+?)`')
-      ),
-      "."
-    )
+  -- For `url` and `text` columns, the actual column is `metrics.url2` and `metrics.text2`.
+  AND REGEXP_REPLACE(
+    `moz-fx-data-shared-prod.udf.remove_label_from_metric_path`(
+      ARRAY_TO_STRING(
+        `moz-fx-data-shared-prod.udf_js.snake_case_columns`(
+          REGEXP_EXTRACT_ALL(missing_columns.path, '`(.+?)`')
+        ),
+        "."
+      )
+    ),
+    r'^metrics\.(url|text)\b',
+    r'metrics.\12'
   ) = existing_schema.field_path

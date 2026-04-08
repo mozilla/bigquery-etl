@@ -129,7 +129,7 @@ def _create_or_update(
     if table.created:
         if skip_existing:
             raise SkippedDeployException(f"{table} already exists.")
-        log.info(f"{table} already exists, updating.")
+        log.info(f"Updating existing table: {table}")
         try:
             client.update_table(
                 table,
@@ -144,10 +144,11 @@ def _create_or_update(
             )
         except Exception as e:
             raise FailedDeployException(f"Unable to update table {table}: {e}") from e
-        log.info(f"{table} updated.")
+        log.info(f"Updated: {table}")
     else:
+        log.info(f"Creating new table: {table}")
         try:
             client.create_table(table)
         except Exception as e:
             raise FailedDeployException(f"Unable to create table {table}: {e}") from e
-        log.info(f"{table} created.")
+        log.info(f"Created: {table}")

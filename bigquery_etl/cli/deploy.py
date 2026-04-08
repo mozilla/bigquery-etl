@@ -273,7 +273,15 @@ def deploy(
         click.echo("No artifacts found matching the specified criteria.")
         sys.exit(0)
 
-    click.echo(f"Found {len(artifacts)} artifact(s) to deploy.")
+    n_tables = sum(1 for _, t in artifacts.values() if t == "table")
+    n_views = sum(1 for _, t in artifacts.values() if t == "view")
+    parts = []
+    if n_tables:
+        parts.append(f"{n_tables} table{'s' if n_tables != 1 else ''}")
+    if n_views:
+        parts.append(f"{n_views} view{'s' if n_views != 1 else ''}")
+    action = "validate" if dry_run else "deploy"
+    click.echo(f"Found {len(artifacts)} artifact(s) to {action}: {', '.join(parts)}.")
 
     try:
         dependency_graph = _build_dependency_graph(artifacts)
@@ -300,7 +308,7 @@ def deploy(
     }
 
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
-    _report_results(results)
+    _report_results(results, dry_run=dry_run)
 
 
 def _discover_artifacts(
@@ -499,6 +507,8 @@ def _deploy_artifact_callback(
     Callback for _execute_deployment.
     """
     file_path, artifact_type = artifacts[artifact_id]
+    dry_run = options.get("dry_run", False)
+    tag = f"[{'dry-run ' if dry_run else ''}{artifact_type}]"
 
     try:
         if artifact_type == "table":
@@ -507,20 +517,21 @@ def _deploy_artifact_callback(
             _deploy_view_artifact(file_path, options)
 
         results[artifact_id] = ("success", None)
-        click.echo(f"✓ {artifact_id}")
+        action = "validated" if dry_run else "deployed"
+        log.debug(f"✓ {tag} {artifact_id} ({action})")
 
     except SkippedDeployException as e:
         results[artifact_id] = ("skipped", str(e))
-        click.echo(f"⊘ {artifact_id} (skipped: {e})")
+        click.echo(f"⊘ {tag} {artifact_id} (skipped: {e})")
     except SkippedExternalDataException as e:
         results[artifact_id] = ("skipped", str(e))
-        click.echo(f"⊘ {artifact_id} (skipped external data)")
+        click.echo(f"⊘ {tag} {artifact_id} (skipped: {e})")
     except FailedDeployException as e:
         results[artifact_id] = ("failed", str(e))
-        click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
+        click.echo(f"✗ {tag} {artifact_id} (failed: {e})", err=True)
     except Exception as e:
         results[artifact_id] = ("failed", str(e))
-        click.echo(f"✗ {artifact_id} (failed: {e})", err=True)
+        click.echo(f"✗ {tag} {artifact_id} (failed: {e})", err=True)
 
 
 def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -> bool:
@@ -565,7 +576,8 @@ def _needs_schema_update(file_path: Path, skip_existing_schemas: bool = False) -
 
 def _update_table_schema(file_path: Path, options: dict):
     """Update the schema for a table using the existing query schema update logic."""
-    log.info(f"Updating schema for {file_path}")
+    project, dataset, table = extract_from_query_path(file_path)
+    log.info(f"Updating schema: {project}.{dataset}.{table}")
 
     try:
         project_id, _, _ = extract_from_query_path(file_path)
@@ -673,15 +685,14 @@ def _deploy_view_artifact(file_path: Path, options: dict):
         raise FailedDeployException(f"View publish failed for {file_path}")
 
 
-def _report_results(results: Dict[str, Tuple[str, Optional[str]]]):
+def _report_results(results: Dict[str, Tuple[str, Optional[str]]], dry_run: bool = False):
     successes = [k for k, (s, _) in results.items() if s == "success"]
     failures = [k for k, (s, _) in results.items() if s == "failed"]
     skipped = [k for k, (s, _) in results.items() if s == "skipped"]
 
-    click.echo("Deployment Summary:")
-    click.echo(f"  ✓ Successful: {len(successes)}")
-    click.echo(f"  ✗ Failed: {len(failures)}")
-    click.echo(f"  ⊘ Skipped: {len(skipped)}")
+    verb = "Validation" if dry_run else "Deployment"
+    success_label = "Validated" if dry_run else "Deployed"
+    click.echo(f"\n{verb} summary: {len(successes)} {success_label.lower()}, {len(failures)} failed, {len(skipped)} skipped")
 
     if failures:
         click.echo("\nFailed artifacts:")
@@ -690,4 +701,4 @@ def _report_results(results: Dict[str, Tuple[str, Optional[str]]]):
             click.echo(f"  {artifact_id}: {error}", err=True)
         sys.exit(1)
 
-    click.echo("All deployments completed successfully!")
+    click.echo(f"All {verb.lower()}s completed successfully!")

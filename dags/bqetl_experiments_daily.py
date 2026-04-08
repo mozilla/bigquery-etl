@@ -608,6 +608,18 @@ with DAG(
         wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
     )
 
+    monitoring__experiment_enrollment_alert_data__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    monitoring__experiment_enrollment_alert_data__v1.set_upstream(
+        telemetry_derived__experiment_enrollment_aggregates__v1
+    )
+
+    monitoring__experiment_enrollment_alert_data__v1.set_upstream(
+        telemetry_derived__experiments_daily_active_clients__v1
+    )
+
     monitoring__experiment_sample_ratio_mismatch__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )

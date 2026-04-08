@@ -2422,18 +2422,6 @@ with DAG(
         task_group=task_group_thunderbird_crashreporter,
     )
 
-    bigeye__thunderbird_crashreporter_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__thunderbird_crashreporter_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.thunderbird_crashreporter_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_thunderbird_crashreporter,
-    )
-
     burnham_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="burnham_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -7198,20 +7186,6 @@ with DAG(
         )
     )
 
-    thunderbird_crashreporter_derived__clients_last_seen_joined__v1 = (
-        bigquery_etl_query(
-            task_id="thunderbird_crashreporter_derived__clients_last_seen_joined__v1",
-            destination_table="clients_last_seen_joined_v1",
-            dataset_id="thunderbird_crashreporter_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            date_partition_parameter="submission_date",
-            depends_on_past=True,
-            task_group=task_group_thunderbird_crashreporter,
-        )
-    )
-
     thunderbird_crashreporter_derived__events_stream__v1 = bigquery_etl_query(
         task_id="thunderbird_crashreporter_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -7240,20 +7214,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_thunderbird_crashreporter,
-    )
-
-    thunderbird_crashreporter_derived__metrics_clients_last_seen__v1 = (
-        bigquery_etl_query(
-            task_id="thunderbird_crashreporter_derived__metrics_clients_last_seen__v1",
-            destination_table="metrics_clients_last_seen_v1",
-            dataset_id="thunderbird_crashreporter_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            date_partition_parameter="submission_date",
-            depends_on_past=True,
-            task_group=task_group_thunderbird_crashreporter,
-        )
     )
 
     thunderbird_desktop_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -7617,10 +7577,6 @@ with DAG(
 
     bigeye__thunderbird_crashreporter_derived__metrics_clients_daily__v1.set_upstream(
         thunderbird_crashreporter_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__thunderbird_crashreporter_derived__metrics_clients_last_seen__v1.set_upstream(
-        thunderbird_crashreporter_derived__metrics_clients_last_seen__v1
     )
 
     burnham_derived__baseline_clients_daily__v1.set_upstream(
@@ -9075,24 +9031,12 @@ with DAG(
         bigeye__thunderbird_crashreporter_derived__baseline_clients_daily__v1
     )
 
-    thunderbird_crashreporter_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__thunderbird_crashreporter_derived__baseline_clients_last_seen__v1
-    )
-
-    thunderbird_crashreporter_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__thunderbird_crashreporter_derived__metrics_clients_last_seen__v1
-    )
-
     thunderbird_crashreporter_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     thunderbird_crashreporter_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    thunderbird_crashreporter_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__thunderbird_crashreporter_derived__metrics_clients_daily__v1
     )
 
     thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(

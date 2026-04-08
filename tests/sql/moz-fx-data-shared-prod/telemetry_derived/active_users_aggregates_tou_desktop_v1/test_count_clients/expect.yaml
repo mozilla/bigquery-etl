@@ -7,21 +7,21 @@
   locale: en-US
   os: Windows
   os_grouped: Windows
-  os_version: 10.0
+  os_version: '10.0'
   os_version_major: 10
   os_version_minor: 0
-  os_version_build: null
+  os_version_build: None
   windows_build_number: 19045
-  app_version: 133.0
-  app_version_major: 133
-  app_version_minor: 0
-  app_version_patch_revision: 0
+  app_version: '133.0'
+  app_version_major: '133'
+  app_version_minor: '0'
+  app_version_patch_revision: '0'
   app_version_is_major_release: true
   is_default_browser: false
-  distribution_id: null
+  distribution_id: None
   activity_segment: regular_users
-  attribution_medium: null
-  attribution_source: null
+  attribution_medium: None
+  attribution_source: None
   daily_users: 1
   weekly_users: 1
   monthly_users: 1

@@ -1,5 +1,5 @@
 ---
-- submission_date: 2026-01-15T00:00:00+00:00"
+- submission_date: 2026-01-15T00:00:00+00:00
   mobile_app_name: fenix
   first_seen_year: 2026
   channel: release
@@ -10,14 +10,14 @@
   os_version: 13.0
   os_version_major: 13
   os_version_minor: 0
-  windows_build_number: null
+  windows_build_number: None
   app_version: 133.0
   app_version_major: 133
   app_version_minor: 0
   app_version_patch_revision: 0
   app_version_is_major_release: true
   is_default_browser: false
-  distribution_id: null
+  distribution_id: None
   activity_segment: regular_users
   daily_users: 1
   weekly_users: 1
@@ -39,14 +39,14 @@
   os_version: 17.0
   os_version_major: 17
   os_version_minor: 0
-  windows_build_number: null
+  windows_build_number: None
   app_version: 133.0
   app_version_major: 133
   app_version_minor: 0
   app_version_patch_revision: 0
   app_version_is_major_release: true
   is_default_browser: false
-  distribution_id: null
+  distribution_id: None
   activity_segment: regular_users
   daily_users: 1
   weekly_users: 1

@@ -101,6 +101,7 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_frontend_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.syncstorage_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.thunderbird_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.thunderbird_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.treeherder_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.viu_politica_stable.INFORMATION_SCHEMA.PARTITIONS

@@ -770,7 +770,8 @@ SELECT
       JSON_VALUE(event_extra.why_local) AS `why_local`,
       JSON_VALUE(event_extra.why_remote) AS `why_remote`,
       JSON_VALUE(event_extra.width) AS `width`,
-      JSON_VALUE(event_extra.window) AS `window`
+      JSON_VALUE(event_extra.window) AS `window`,
+      JSON_VALUE(event_extra.window_mode) AS `window_mode`
     ) AS `string`
   ) AS extras
 FROM

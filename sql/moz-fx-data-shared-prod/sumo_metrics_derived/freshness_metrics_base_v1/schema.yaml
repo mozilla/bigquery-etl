@@ -1,7 +1,7 @@
 fields:
 - name: event_date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Observation date for freshness measurement (point-in-time snapshot)
 - name: total_articles
   type: INTEGER
@@ -32,7 +32,7 @@ fields:
   mode: NULLABLE
   description: Number of articles last updated more than 12 months before this date
 - name: freshness_percentage
-  type: FLOAT
+  type: NUMERIC
   mode: NULLABLE
   description: Percentage of articles updated within 6 months (0-100)
 - name: freshness_tier

@@ -37,5 +37,3 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
 require_column_descriptions: true
-monitoring:
-  enabled: true

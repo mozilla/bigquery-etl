@@ -11,3 +11,7 @@ labels:
 scheduling:
   dag_name: bqetl_experiments_daily
   arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'experiment_enrollment_aggregates_v1']
+    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'experiments_daily_active_clients_v1']
+    - ['moz-fx-data-experiments', 'monitoring', 'experimenter_experiments_v1']

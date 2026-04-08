@@ -1,5 +1,12 @@
----
-- submission_date: "2026-01-15 00:00:00 UTC"
+- submission_date: "2026-01-15"
+  client_id: client1
+  is_desktop: true
+  is_dau: true
+  is_wau: true
+  is_mau: true
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
   first_seen_year: 2026
   channel: release
   app_name: Firefox
@@ -22,12 +29,3 @@
   activity_segment: regular_users
   attribution_medium: null
   attribution_source: null
-  daily_users: 1
-  weekly_users: 1
-  monthly_users: 1
-  dau: 1
-  wau: 1
-  mau: 1
-  tou_daily_active_users: 1
-  tou_weekly_active_users: 1
-  tou_monthly_active_users: 1

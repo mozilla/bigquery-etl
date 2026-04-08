@@ -20,6 +20,12 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 from jinja2 import Template
 
+from bigquery_etl.routine.parse_routine import (
+    PERSISTENT_UDF_RE,
+    ROUTINE_FILES,
+    routine_usage_pattern,
+)
+
 from ..config import ConfigLoader
 from ..deploy import deploy_table
 from . import extract_from_query_path
@@ -207,19 +213,36 @@ def get_default_target_name() -> Optional[str]:
     return None
 
 
-def _table_exists(client: bigquery.Client, table_ref: str) -> bool:
-    """Return True if the table exists in BigQuery."""
+def _artifact_exists(
+    client: bigquery.Client,
+    target_project: str,
+    dataset: str,
+    name: str,
+    is_routine: bool,
+) -> bool:
+    """Return True if the artifact (table or routine) exists in BigQuery."""
+    ref = f"{target_project}.{dataset}.{name}"
     try:
-        client.get_table(table_ref)
+        if is_routine:
+            client.get_routine(ref)
+        else:
+            client.get_table(ref)
         return True
     except NotFound:
         return False
 
 
-def get_deployed_tables_in_target(
-    sql_dir: str, target_project: str
+def _get_deployed_artifacts_in_target(
+    sql_dir: str,
+    target_project: str,
+    file_patterns: tuple,
+    is_routine: bool = False,
 ) -> Set[DeployedTableInfo]:
-    """Find all tables deployed in the target directory."""
+    """Find artifacts deployed in the target directory.
+
+    Scans for files matching file_patterns under <sql_dir>/<target_project>/,
+    checks that the artifact exists in BigQuery, and reads the source manifest.
+    """
     deployed: Set[DeployedTableInfo] = set()
     target_project_dir = Path(sql_dir) / target_project
 
@@ -228,39 +251,51 @@ def get_deployed_tables_in_target(
 
     client = bigquery.Client(project=target_project)
     seen_dirs: Set[Path] = set()
-    for pattern in ("query.sql", "script.sql", "part1.sql"):
-        for query_file in target_project_dir.rglob(pattern):
-            if query_file.parent in seen_dirs:
+    for pattern in file_patterns:
+        for artifact_file in target_project_dir.rglob(pattern):
+            if artifact_file.parent in seen_dirs:
                 continue
-            seen_dirs.add(query_file.parent)
+            seen_dirs.add(artifact_file.parent)
 
-            if query_file.parent.parent.parent != target_project_dir:
-                continue
-
-            table = query_file.parent.name
-            dataset = query_file.parent.parent.name
-
-            if not _table_exists(client, f"{target_project}.{dataset}.{table}"):
+            if artifact_file.parent.parent.parent != target_project_dir:
                 continue
 
-            source_project = None
-            source_dataset = None
-            source_table = None
-            manifest_file = query_file.parent / MANIFEST_FILENAME
-            if manifest_file.exists():
-                try:
-                    manifest = yaml.safe_load(manifest_file.read_text())
-                    source_project = manifest.get("source_project")
-                    source_dataset = manifest.get("source_dataset")
-                    source_table = manifest.get("source_table")
-                except Exception:
-                    pass
+            name = artifact_file.parent.name
+            dataset = artifact_file.parent.parent.name
+
+            if not _artifact_exists(client, target_project, dataset, name, is_routine):
+                continue
+
+            manifest_file = artifact_file.parent / MANIFEST_FILENAME
+            if not manifest_file.exists():
+                if is_routine:
+                    continue
+                deployed.add(
+                    DeployedTableInfo(
+                        target_project=target_project,
+                        target_dataset=dataset,
+                        target_table=name,
+                    )
+                )
+                continue
+
+            try:
+                manifest = yaml.safe_load(manifest_file.read_text())
+            except Exception:
+                continue
+
+            source_project = manifest.get("source_project")
+            source_dataset = manifest.get("source_dataset")
+            source_table = manifest.get("source_table")
+
+            if is_routine and not all([source_project, source_dataset, source_table]):
+                continue
 
             deployed.add(
                 DeployedTableInfo(
                     target_project=target_project,
                     target_dataset=dataset,
-                    target_table=table,
+                    target_table=name,
                     source_project=source_project,
                     source_dataset=source_dataset,
                     source_table=source_table,
@@ -268,6 +303,24 @@ def get_deployed_tables_in_target(
             )
 
     return deployed
+
+
+def get_deployed_tables_in_target(
+    sql_dir: str, target_project: str
+) -> Set[DeployedTableInfo]:
+    """Find all tables deployed in the target directory."""
+    return _get_deployed_artifacts_in_target(
+        sql_dir, target_project, ("query.sql", "script.sql", "part1.sql")
+    )
+
+
+def get_deployed_routines_in_target(
+    sql_dir: str, target_project: str
+) -> Set[DeployedTableInfo]:
+    """Find all routines deployed in the target directory."""
+    return _get_deployed_artifacts_in_target(
+        sql_dir, target_project, ROUTINE_FILES, is_routine=True
+    )
 
 
 def rewrite_query_references(
@@ -361,6 +414,33 @@ def rewrite_query_references(
             )
             sql = re.sub(pattern, replacement, sql)
 
+        # Also rewrite references to routines deployed in the target.
+        # Routine references can be 2-part (dataset.name) or 3-part
+        # (project.dataset.name), so we use routine_usage_pattern which
+        # handles both forms (matching only before a "(" call).
+        deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
+
+        for info in deployed_routines:
+            if (
+                info.source_project is None
+                or info.source_dataset is None
+                or info.source_table is None
+            ):
+                continue
+
+            expected = expected_target_dataset(info)
+            if expected is not None and info.target_dataset != expected:
+                continue
+
+            udf_pattern = routine_usage_pattern(
+                f"{info.source_dataset}.{info.source_table}",
+                info.source_project,
+            )
+            replacement = (
+                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
+            )
+            sql = udf_pattern.sub(replacement, sql)
+
     query_file.write_text(sql)
 
 
@@ -437,6 +517,16 @@ def prepare_target_directory(
             sql,
             count=1,
             flags=re.IGNORECASE,
+        )
+        target_query_file.write_text(sql)
+
+    # for routine files, rewrite the CREATE FUNCTION/PROCEDURE self-reference
+    if target_query_file.name in ("udf.sql", "stored_procedure.sql"):
+        sql = target_query_file.read_text()
+        sql = PERSISTENT_UDF_RE.sub(
+            rf"\g<prefix>`{effective_dataset}`.`{effective_table}`",
+            sql,
+            count=1,
         )
         target_query_file.write_text(sql)
 

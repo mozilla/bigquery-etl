@@ -27,7 +27,13 @@ from ..config import ConfigLoader
 from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
-from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
+from ..routine.parse_routine import (
+    PROCEDURE_FILE,
+    UDF_FILE,
+    RawRoutine,
+    read_routine_dir,
+    routine_usage_pattern,
+)
 from ..util import extract_from_query_path
 from ..util.common import block_coding_agents, project_dirs
 from ..util.target import ensure_dataset_exists, prepare_target_files
@@ -471,27 +477,36 @@ def _publish_to_target(
     gcs_path,
     defer_to_target,
     pattern=None,
+    routine_files=None,
     dry_run=False,
 ):
     """Publish routines to a --target environment."""
-    # discover routine files under the source project
-    source_dir = Path(sql_dir) / source_project_id
-    routine_files = [
-        Path(p)
-        for p in glob(f"{source_dir}/**/*.sql", recursive=True)
-        if ROUTINE_FILE_RE.match(p)
-    ]
-
-    if pattern:
+    if routine_files is None:
+        # discover routine files under the source project
+        source_dir = Path(sql_dir) / source_project_id
         routine_files = [
-            f
-            for f in routine_files
-            if fnmatchcase(".".join(extract_from_query_path(f)), f"*{pattern}")
+            Path(p)
+            for p in glob(f"{source_dir}/**/*.sql", recursive=True)
+            if ROUTINE_FILE_RE.match(p)
         ]
 
+        if pattern:
+            routine_files = [
+                f
+                for f in routine_files
+                if fnmatchcase(".".join(extract_from_query_path(f)), f"*{pattern}")
+            ]
+
     if not routine_files:
-        click.echo("No routines found matching the specified criteria.")
+        click.echo(
+            f"No routines found matching the specified criteria in {source_project_id}."
+        )
         return
+
+    if dependency_dir and os.path.exists(dependency_dir):
+        publish_routines.push_dependencies_to_gcs(
+            gcs_bucket, gcs_path, dependency_dir, target.project_id
+        )
 
     target_files = prepare_target_files(
         routine_files,
@@ -513,20 +528,48 @@ def _publish_to_target(
             seen_datasets.add(dataset_ref)
             ensure_dataset_exists(client, dataset_ref)
 
-    # publish from the target directory
-    target_project_dir = str(Path(sql_dir) / target.project_id)
+    # qualify references to UDFs not being published so they resolve to prod
+    source_dir = str(Path(sql_dir) / source_project_id)
+    all_source_routines = read_routine_dir(source_dir)
+    target_routine_names = set()
+    for tf in target_files:
+        _, ds, nm = extract_from_query_path(tf)
+        target_routine_names.add(f"{ds}.{nm}")
+
+    for target_file in target_files:
+        sql = target_file.read_text()
+        for routine_name in all_source_routines:
+            if routine_name in target_routine_names:
+                continue
+            pattern = routine_usage_pattern(routine_name, source_project_id)
+            sql = pattern.sub(f"`{source_project_id}`.{routine_name}", sql)
+        target_file.write_text(sql)
+
+    # publish each copied routine directly
     click.echo(f"Publish routines to {target.project_id} (target: {target.name})")
-    publish_routines.publish(
-        target_project_dir,
-        target.project_id,
-        dependency_dir,
-        gcs_bucket,
-        gcs_path,
-        public=False,
-        pattern=pattern,
-        dry_run=dry_run,
-    )
+    client = bigquery.Client(project=target.project_id)
+    raw_routines = [RawRoutine.from_file(f) for f in target_files]
+    known_udfs = [r.name for r in raw_routines]
+    results = {}
+    for raw_routine in raw_routines:
+        routine_id = f"{target.project_id}.{raw_routine.name}"
+        try:
+            publish_routines.publish_routine(
+                raw_routine,
+                client,
+                target.project_id,
+                gcs_bucket,
+                gcs_path,
+                known_udfs,
+                is_public=False,
+                dry_run=dry_run,
+            )
+            results[routine_id] = ("success", None)
+        except Exception as e:
+            results[routine_id] = ("failed", str(e))
+            click.echo(f"✗ {routine_id} (failed: {e})", err=True)
     click.echo(f"Published routines to {target.project_id}")
+    return results
 
 
 mozfun.add_command(copy.copy(publish))

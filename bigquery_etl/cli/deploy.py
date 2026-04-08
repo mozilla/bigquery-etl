@@ -12,6 +12,9 @@ import click
 from google.cloud import bigquery
 
 from bigquery_etl.cli.query import _update_query_schema
+from bigquery_etl.cli.routine import ROUTINE_FILE_RE
+from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
+from bigquery_etl.cli.routine import publish as publish_routines_cmd
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     defer_option,
@@ -23,7 +26,6 @@ from bigquery_etl.cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
-from bigquery_etl.cli.routine import publish as publish_routines_cmd
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.deploy import (
@@ -34,6 +36,7 @@ from bigquery_etl.deploy import (
 )
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.routine.parse_routine import ROUTINE_FILES
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
@@ -252,18 +255,45 @@ def deploy(
         sys.exit(1)
 
     # publish routines first since tables/views may depend on them
+    routine_results = {}
     if routines:
         for project_id in project_ids:
-            ctx.invoke(
-                publish_routines_cmd,
-                project_id=project_id,
-                sql_dir=sql_dir,
-                dependency_dir=routine_dependency_dir,
-                gcs_bucket=routine_gcs_bucket,
-                gcs_path=routine_gcs_path,
-                dry_run=dry_run,
-                defer_to_target=defer_to_target,
-            )
+            if target and target.project_id not in project_ids:
+                routine_files = [
+                    f
+                    for f in paths_matching_name_pattern(
+                        paths if paths else None,
+                        sql_dir,
+                        project_id,
+                        list(ROUTINE_FILES),
+                        file_regex=ROUTINE_FILE_RE,
+                    )
+                    if f.name in ROUTINE_FILES
+                ]
+                result = _publish_routines_to_target(
+                    target,
+                    project_id,
+                    sql_dir,
+                    routine_dependency_dir,
+                    routine_gcs_bucket,
+                    routine_gcs_path,
+                    defer_to_target,
+                    routine_files=routine_files,
+                    dry_run=dry_run,
+                )
+                if result:
+                    routine_results.update(result)
+            else:
+                ctx.invoke(
+                    publish_routines_cmd,
+                    project_id=project_id,
+                    sql_dir=sql_dir,
+                    dependency_dir=routine_dependency_dir,
+                    gcs_bucket=routine_gcs_bucket,
+                    gcs_path=routine_gcs_path,
+                    dry_run=dry_run,
+                    defer_to_target=defer_to_target,
+                )
 
     artifact_types = []
     if tables:
@@ -314,8 +344,12 @@ def deploy(
         )
 
     if not artifacts:
-        click.echo("No artifacts found matching the specified criteria.")
-        sys.exit(0)
+        if routine_results:
+            _report_results(routine_results)
+        else:
+            click.echo("No artifacts found matching the specified criteria.")
+            sys.exit(0)
+        return
 
     click.echo(f"Found {len(artifacts)} artifact(s) to deploy.")
 
@@ -328,7 +362,9 @@ def deploy(
     options = {
         "dry_run": dry_run,
         "respect_dryrun_skip": respect_dryrun_skip,
-        "use_cloud_function": use_cloud_function,
+        "use_cloud_function": (
+            False if target else use_cloud_function
+        ),  # cloud function doesn't have access to target project
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
@@ -344,6 +380,7 @@ def deploy(
     }
 
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
+    results.update(routine_results)
     _report_results(results)
 
 
@@ -380,10 +417,16 @@ def _discover_artifacts(
 
             # determine artifact type from file name
             artifact_type = next(
-                atype
-                for atype, file_names in patterns.items()
-                if file_path.name in file_names
+                (
+                    atype
+                    for atype, file_names in patterns.items()
+                    if file_path.name in file_names
+                ),
+                None,
             )
+            if artifact_type is None:
+                log.debug(f"Skipping {file_path}: not a table or view artifact")
+                continue
             artifacts[artifact_id] = (file_path, artifact_type)
 
     return artifacts

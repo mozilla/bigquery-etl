@@ -239,7 +239,7 @@ def count_schema_fields(schema):
 
 def find_bigeye_checks(query_path):
     """Return True if bigeye metrics are present or detail of missing bigeye metrics or file."""
-    predefined_metrics = {"FRESHNESS", "VOLUME"}
+    predefined_metrics = {"freshness", "volume"}
     bigeye_file_path = os.path.join(query_path, BIGEYE_PREDEFINED_FILE)
     found_types = set()
 

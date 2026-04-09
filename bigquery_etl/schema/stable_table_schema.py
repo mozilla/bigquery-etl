@@ -121,10 +121,14 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                     continue
 
                 # Ignore temporary glean v2 schemas: https://mozilla-hub.atlassian.net/browse/DENG-10558
-                if schema_id in [
-                    "moz://mozilla.org/schemas/glean/ping/2",
-                    "moz://mozilla.org/schemas/glean-min/ping/2",
-                ] and version != 1:
+                if (
+                    schema_id
+                    in [
+                        "moz://mozilla.org/schemas/glean/ping/2",
+                        "moz://mozilla.org/schemas/glean-min/ping/2",
+                    ]
+                    and version != 1
+                ):
                     continue
 
                 # .bq files no longer being generated for these: https://mozilla-hub.atlassian.net/browse/DENG-4097

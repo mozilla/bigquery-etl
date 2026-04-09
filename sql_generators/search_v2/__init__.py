@@ -91,7 +91,6 @@ def generate(output_dir, target_project, use_cloud_function):
     ios_klar_template = env.get_template("ios_klar.template.sql")
     metadata_template = "mobile_search_clients_engines_sources_daily.metadata.yaml"
 
-    # :]
     firefox_android_queries = [
         android_query_template.render(
             namespace=namespace, app_name=app_name, channel=channel

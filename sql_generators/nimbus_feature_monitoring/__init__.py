@@ -214,7 +214,11 @@ def generate_queries(project, path, write_dir):
         feature_tables = []
         for feature in features:
             args = {
-                "source_tables": list(source_tables.values()),
+                "source_tables": [
+                    t
+                    for t in source_tables.values()
+                    if t.dimensions or (t.name in feature.metrics_by_source)
+                ],
                 "feature": feature,
             }
 

@@ -479,6 +479,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "sumo_ga_derived__ga4_events__v1_external",
+    ) as sumo_ga_derived__ga4_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_sumo_metrics__wait_for_sumo_ga_derived__ga4_events__v1",
+            external_dag_id="bqetl_sumo_metrics",
+            external_task_id="wait_for_sumo_ga_derived__ga4_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=32400)).isoformat() }}",
+        )
+
+        sumo_ga_derived__ga4_events__v1_external.set_upstream(
+            sumo_ga_derived__ga4_events__v1
+        )
+
     telemetry_derived__cfs_ga4_attr__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cfs_ga4_attr__v1",
         destination_table="cfs_ga4_attr_v1",

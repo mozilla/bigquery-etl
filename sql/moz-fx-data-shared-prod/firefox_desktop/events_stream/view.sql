@@ -267,6 +267,7 @@ SELECT
       LAX_INT64(event_extra.source_text_word_count) AS `source_text_word_count`,
       LAX_INT64(event_extra.step) AS `step`,
       LAX_INT64(event_extra.store_active_count) AS `store_active_count`,
+      LAX_INT64(event_extra.system_memory_mb) AS `system_memory_mb`,
       LAX_INT64(event_extra.tabs) AS `tabs`,
       LAX_INT64(event_extra.tabs_approved) AS `tabs_approved`,
       LAX_INT64(event_extra.tabs_available) AS `tabs_available`,

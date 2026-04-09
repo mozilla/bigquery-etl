@@ -57,6 +57,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_sumo_ga_derived__ga4_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_sumo_ga_derived__ga4_events__v1",
+        external_dag_id="bqetl_google_analytics_derived_ga4",
+        external_task_id="sumo_ga_derived__ga4_events__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=54000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     sumo_metrics_derived__freshness_metrics_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__freshness_metrics_base__v1",
         destination_table="freshness_metrics_base_v1",
@@ -67,6 +80,17 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    sumo_metrics_derived__ga4_engagement_sessions_daily__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__ga4_engagement_sessions_daily__v1",
+        destination_table="ga4_engagement_sessions_daily_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     sumo_metrics_derived__kitsune_questions_base__v1 = bigquery_etl_query(
@@ -114,4 +138,8 @@ with DAG(
         email=["phlee@mozilla.com", "plee@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    sumo_metrics_derived__ga4_engagement_sessions_daily__v1.set_upstream(
+        wait_for_sumo_ga_derived__ga4_events__v1
     )

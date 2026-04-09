@@ -1200,6 +1200,12 @@ fields:
         pref.
 
         '
+    - name: widget_rosetta_status
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if Rosetta translation is being used.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

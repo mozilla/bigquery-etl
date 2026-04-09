@@ -214,6 +214,27 @@ fields:
   - name: last_version
     type: STRING
     mode: NULLABLE
+  - name: has_restart_pid_parameter
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_background_task_mode
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_background_task_mode_requested
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_msix
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_restart_pid_failure
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_restart_pid_not_integer
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_restart_pid_wait_timeout
+    type: BOOLEAN
+    mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

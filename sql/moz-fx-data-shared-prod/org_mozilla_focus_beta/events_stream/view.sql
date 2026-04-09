@@ -166,6 +166,7 @@ SELECT
       LAX_INT64(event_extra.source_line) AS `source_line`,
       LAX_INT64(event_extra.source_text_code_units) AS `source_text_code_units`,
       LAX_INT64(event_extra.source_text_word_count) AS `source_text_word_count`,
+      LAX_INT64(event_extra.system_memory_mb) AS `system_memory_mb`,
       LAX_INT64(event_extra.time) AS `time`,
       LAX_INT64(event_extra.time_per_output_token) AS `time_per_output_token`,
       LAX_INT64(event_extra.time_to_first_token) AS `time_to_first_token`,

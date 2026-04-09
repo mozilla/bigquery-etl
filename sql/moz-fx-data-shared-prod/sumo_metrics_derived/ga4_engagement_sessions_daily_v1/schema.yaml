@@ -1,0 +1,36 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Date (UTC) when the event occurred as reported by GA4.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Mozilla product mapped from URL slug using sumo.map_product_slug() UDF.
+    Examples: firefox, thunderbird, mozilla-vpn, pocket, etc.
+- name: content_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Type of content engaged with:
+    - 'kb': Knowledge base article (content_group = 'kb-article')
+    - 'forum_question': Forum question detail page (content_group = 'support-forum-question-details')
+- name: sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of distinct GA4 sessions with >30 seconds engagement time
+    on this content type for this product on this date
+- name: events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of user_engagement events for these sessions
+- name: events_per_session
+  type: FLOAT
+  mode: NULLABLE
+  description: Average number of engagement events per session (events / sessions)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

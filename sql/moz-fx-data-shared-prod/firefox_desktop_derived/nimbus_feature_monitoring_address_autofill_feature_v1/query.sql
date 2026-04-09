@@ -121,16 +121,6 @@ source_table_cte_2 AS (
   GROUP BY
     analysis_unit_id
 ),
-source_table_cte_3 AS (
-  SELECT
-    metrics.uuid.legacy_telemetry_profile_group_id AS analysis_unit_id,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop.newtab`
-  WHERE
-    CAST(submission_timestamp AS DATE) = @submission_date
-  GROUP BY
-    analysis_unit_id
-),
 all_dimensions_and_metrics_cte AS (
   SELECT
     analysis_unit_id,
@@ -155,9 +145,6 @@ all_dimensions_and_metrics_cte AS (
     UNNEST(rollout_slugs) AS rollout_slug
   JOIN
     source_table_cte_2
-    USING (analysis_unit_id)
-  JOIN
-    source_table_cte_3
     USING (analysis_unit_id)
 ),
 aggregates_cte AS (

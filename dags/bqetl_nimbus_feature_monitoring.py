@@ -151,10 +151,6 @@ with DAG(
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_newtabsectionsexperiment__v1.set_upstream(
-        wait_for_firefox_desktop_derived__events_stream__v1
-    )
-
-    firefox_desktop_derived__nimbus_feature_monitoring_newtabsectionsexperiment__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )
 
@@ -163,19 +159,11 @@ with DAG(
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_newtabsponsoredcontent__v1.set_upstream(
-        wait_for_firefox_desktop_derived__events_stream__v1
-    )
-
-    firefox_desktop_derived__nimbus_feature_monitoring_newtabsponsoredcontent__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1.set_upstream(
-        wait_for_firefox_desktop_derived__events_stream__v1
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1.set_upstream(

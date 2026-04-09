@@ -29,5 +29,4 @@ references:
   - moz-fx-data-experiments.monitoring.experimenter_experiments_v1
   - moz-fx-data-shared-prod.firefox_desktop.events_stream
   - moz-fx-data-shared-prod.firefox_desktop.metrics
-  - moz-fx-data-shared-prod.firefox_desktop.newtab
 require_column_descriptions: false

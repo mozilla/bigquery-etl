@@ -93,6 +93,53 @@ class Target:
             )
 
 
+def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
+    """Render a target's dataset template into a regex pattern for matching dataset names.
+
+    Known values (e.g. branch) are rendered literally; unknown or variable parts
+    (commit, username, artifact ids) become ``[a-zA-Z0-9_]+`` regex wildcards.
+
+    Returns a regex string anchored with ``^…$`` for ``dataset`` targets or
+    ``^…`` for ``dataset_prefix`` targets.
+    """
+    template_str = target.dataset or target.dataset_prefix
+    if not template_str:
+        # No naming template — cannot determine which datasets belong to this target.
+        raise click.ClickException(
+            f"Target '{target.name}' has no dataset or dataset_prefix template. "
+            "Cannot determine which datasets belong to this target."
+        )
+
+    _WILDCARD = "XBQETLWILDX"
+    counter = [0]
+
+    def _wc() -> str:
+        counter[0] += 1
+        return f"{_WILDCARD}{counter[0]}"
+
+    git_ctx = {
+        "branch": branch if branch else _wc(),
+        "commit": _wc(),
+    }
+    account_ctx = {"username": _wc()}
+    artifact_ctx = {"project_id": _wc(), "dataset_id": _wc()}
+
+    rendered = Template(template_str).render(
+        git=git_ctx,
+        account=account_ctx,
+        artifact=artifact_ctx,
+    )
+
+    sanitized = sanitize_bq_id(rendered)
+
+    pattern = re.escape(sanitized)
+    pattern = re.sub(rf"{_WILDCARD}\d+", r"[a-zA-Z0-9_]+", pattern)
+
+    if target.dataset:
+        return f"^{pattern}$"
+    return f"^{pattern}"
+
+
 def render_artifact_template(
     template: Optional[str], project_id: str, dataset_id: str = ""
 ) -> Optional[str]:

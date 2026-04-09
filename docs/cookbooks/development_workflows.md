@@ -121,7 +121,7 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
   --role READER
 ```
 
-### 6. Clean up dev deployments _(future)_
+### 6. Clean up dev deployments
 
 ```bash
 # Clean deployments older than 7 days

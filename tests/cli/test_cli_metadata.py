@@ -437,7 +437,7 @@ class TestMetadata:
                                     "type": "PREDEFINED",
                                     "predefined_metric": "VOLUME",
                                 },
-                                "metric_name": "volume",
+                                "metric_name": "VOLUME [fail]",
                             },
                         ],
                     }
@@ -501,7 +501,7 @@ class TestMetadata:
                                         "type": "PREDEFINED",
                                         "predefined_metric": "VOLUME",
                                     },
-                                    "metric_name": "volume",
+                                    "metric_name": "VOLUME [fail]",
                                 },
                             ],
                         }

@@ -261,8 +261,8 @@ def find_bigeye_checks(query_path):
         elif isinstance(obj, list):
             stack.extend(obj)
         elif isinstance(obj, str):
-            if obj in predefined_metrics:
-                found_types.add(obj)
+            if obj.lower() in predefined_metrics:
+                found_types.add(obj.lower())
 
     missing = predefined_metrics - found_types
 

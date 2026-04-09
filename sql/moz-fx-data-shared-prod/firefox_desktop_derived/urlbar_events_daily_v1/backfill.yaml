@@ -1,0 +1,10 @@
+2026-04-09:
+  start_date: 2026-03-20
+  end_date: 2026-04-09
+  reason: backfill reverted v1 from 20-Mar (without shredder_mitigation because it last ran on 17-Mar 17) https://mozilla-hub.atlassian.net/browse/DENG-10777
+  watchers:
+  - kbammarito@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

@@ -2,7 +2,7 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
-  description: Date (UTC) when the event occurred as reported by GA4.
+  description: Submission date of the GA4 events (partition key).
 - name: product
   type: STRING
   mode: NULLABLE

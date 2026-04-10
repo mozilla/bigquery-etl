@@ -58,7 +58,7 @@ events_with_product AS (
     ep.key = 'products'
 )
 SELECT
-  DATE(TIMESTAMP_MICROS(event_timestamp)) AS event_date,
+  submission_date AS event_date,
   product,
   CASE
     WHEN content_type = 'kb-article'
@@ -73,8 +73,6 @@ SELECT
 FROM
   events_with_product
 GROUP BY
-  event_date,
+  submission_date,
   product,
   content_type
-HAVING
-  event_date = @submission_date

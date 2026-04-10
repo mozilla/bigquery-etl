@@ -76,3 +76,5 @@ GROUP BY
   event_date,
   product,
   content_type
+HAVING
+  event_date = @submission_date

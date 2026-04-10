@@ -1,0 +1,10 @@
+2026-04-09:
+  start_date: 2025-01-01
+  end_date: 2025-01-31
+  reason: One month test for https://mozilla-hub.atlassian.net/browse/DENG-10777
+  watchers:
+  - kbammarito@mozilla.com
+  status: Initiate
+  shredder_mitigation: true
+  override_retention_limit: false
+  ignore_date_partition_offset: false

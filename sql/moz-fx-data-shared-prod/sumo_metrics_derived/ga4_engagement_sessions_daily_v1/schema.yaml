@@ -2,7 +2,10 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
-  description: Submission date of the GA4 events (partition key).
+  description: |
+    Date when the event is received in our servers UTC+1. This date has a mismatch of ~3-4%
+    with the date when the event occurred, but this impact is minimal, thus we use it as the
+    official reporting date.
 - name: product
   type: STRING
   mode: NULLABLE

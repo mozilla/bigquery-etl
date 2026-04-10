@@ -85,6 +85,12 @@ class Target:
     dataset: Optional[str] = attr.ib(default=None)
     artifact_prefix: Optional[str] = attr.ib(default=None)
 
+    # raw (unrendered) templates — preserved so that pattern-matching code
+    # (e.g. target clean) can parameterize git.branch / git.commit independently.
+    raw_dataset_prefix: Optional[str] = attr.ib(default=None)
+    raw_dataset: Optional[str] = attr.ib(default=None)
+    raw_artifact_prefix: Optional[str] = attr.ib(default=None)
+
     def __attrs_post_init__(self) -> None:
         """Check attributes."""
         if self.dataset is not None and self.dataset_prefix is not None:
@@ -93,51 +99,48 @@ class Target:
             )
 
 
-def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
-    """Render a target's dataset template into a regex pattern for matching dataset names.
+def _template_to_pattern(
+    template_str: str, branch: Optional[str] = None, anchor_end: bool = False
+) -> str:
+    """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
-    Known values (e.g. branch) are rendered literally; unknown or variable parts
-    (commit, username, artifact ids) become ``[a-zA-Z0-9_]+`` regex wildcards.
+    Known values (branch, username) are rendered literally; variable parts
+    (commit, artifact ids) become ``[a-zA-Z0-9_]+`` regex wildcards.
 
-    Returns a regex string anchored with ``^…$`` for ``dataset`` targets or
-    ``^…`` for ``dataset_prefix`` targets.
+    Returns a ``^``-anchored regex string, optionally ``$``-anchored.
     """
-    template_str = target.dataset or target.dataset_prefix
+    _WILDCARD = "XBQETLWCX"
+    rendered = Template(template_str).render(
+        git={"branch": branch or _WILDCARD, "commit": _WILDCARD},
+        account=_get_account_context(),
+        artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
+    )
+
+    pattern = re.escape(sanitize_bq_id(rendered)).replace(_WILDCARD, "[a-zA-Z0-9_]+")
+
+    return f"^{pattern}$" if anchor_end else f"^{pattern}"
+
+
+def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
+    """Render a target's dataset template into a regex pattern for matching dataset names."""
+    template_str = target.raw_dataset or target.raw_dataset_prefix
     if not template_str:
-        # No naming template — cannot determine which datasets belong to this target.
         raise click.ClickException(
             f"Target '{target.name}' has no dataset or dataset_prefix template. "
             "Cannot determine which datasets belong to this target."
         )
-
-    _WILDCARD = "XBQETLWILDX"
-    counter = [0]
-
-    def _wc() -> str:
-        counter[0] += 1
-        return f"{_WILDCARD}{counter[0]}"
-
-    git_ctx = {
-        "branch": branch if branch else _wc(),
-        "commit": _wc(),
-    }
-    account_ctx = {"username": _wc()}
-    artifact_ctx = {"project_id": _wc(), "dataset_id": _wc()}
-
-    rendered = Template(template_str).render(
-        git=git_ctx,
-        account=account_ctx,
-        artifact=artifact_ctx,
+    return _template_to_pattern(
+        template_str, branch=branch, anchor_end=bool(target.raw_dataset)
     )
 
-    sanitized = sanitize_bq_id(rendered)
 
-    pattern = re.escape(sanitized)
-    pattern = re.sub(rf"{_WILDCARD}\d+", r"[a-zA-Z0-9_]+", pattern)
-
-    if target.dataset:
-        return f"^{pattern}$"
-    return f"^{pattern}"
+def render_artifact_prefix_pattern(
+    target: Target, branch: Optional[str] = None
+) -> Optional[str]:
+    """Render a target's artifact_prefix template into a regex pattern for matching table names."""
+    if not target.raw_artifact_prefix:
+        return None
+    return _template_to_pattern(target.raw_artifact_prefix, branch=branch)
 
 
 def render_artifact_template(
@@ -224,7 +227,17 @@ def get_target(target: str) -> Target:
     if not targets_file.exists():
         raise Exception(f"Targets file not found: {targets_file}")
 
-    template = Template(targets_file.read_text(), undefined=_KeepUndefined)
+    raw_content = targets_file.read_text()
+
+    # Parse raw YAML to capture unrendered templates
+    raw_targets = yaml.safe_load(raw_content)
+    if not isinstance(raw_targets, dict) or target not in raw_targets:
+        raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+
+    raw_cfg = raw_targets[target] or {}
+
+    # Render git/account variables for the resolved Target
+    template = Template(raw_content, undefined=_KeepUndefined)
     rendered_content = template.render(
         git=_get_git_context(),
         account=_get_account_context(),
@@ -232,10 +245,11 @@ def get_target(target: str) -> Target:
 
     targets = yaml.safe_load(rendered_content)
 
-    if isinstance(targets, dict) and target in targets:
-        return cattrs.structure({**targets[target], "name": target}, Target)
-
-    raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+    result = cattrs.structure({**targets[target], "name": target}, Target)
+    result.raw_dataset = raw_cfg.get("dataset")
+    result.raw_dataset_prefix = raw_cfg.get("dataset_prefix")
+    result.raw_artifact_prefix = raw_cfg.get("artifact_prefix")
+    return result
 
 
 def get_default_target_name() -> Optional[str]:

@@ -124,20 +124,33 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
 ### 6. Clean up dev deployments
 
 ```bash
-# Clean deployments older than 7 days
-./bqetl --target dev clean --older-than 7d
+# Delete tables not updated in 7 days
+./bqetl --target dev target clean --older-than 7d
 
-# Clean a specific branch
-./bqetl --target dev clean --branch feature-xyz
+# Delete artifacts for a specific branch
+./bqetl --target dev target clean --branch feature-xyz
 
-# Clean everything for this target
-./bqetl --target dev clean --all
+# Delete all datasets for this target
+./bqetl --target dev target clean --all
+
+# Combine: delete stale tables for a specific branch
+./bqetl --target dev target clean --branch feature-xyz --older-than 7d
 
 # Dry run first
-./bqetl --target dev clean --older-than 7d --dry-run
+./bqetl --target dev target clean --older-than 7d --dry-run
 ```
 
-Deletes datasets and tables in the target BigQuery project as well as local copied files.
+Cleanup granularity is determined automatically from the target config in `bqetl_targets.yaml`:
+
+- `--branch` checks where `git.branch` appears in the target templates. If it's in
+  `dataset`/`dataset_prefix`, entire matching datasets are deleted. If it's in
+  `artifact_prefix`, only matching tables within datasets are deleted.
+- `--older-than` always performs table-level cleanup based on last modified time.
+- `--all` deletes all matching datasets entirely.
+
+Empty datasets are removed automatically after table-level cleanup.
+
+Local copied files are cleaned up in both cases.
 
 ### 7. Handle branch renames _(future)_
 
@@ -158,7 +171,6 @@ This creates stubs in the target environment for all referenced artifacts.
 ## Future Enhancements
 
 - `--changed` flag to automatically run all git-modified queries
-- `./bqetl --target dev clean` for managed cleanup
 - Copy sample/limited data from prod for realistic testing
 - Automatic downstream testing with `--with-downstream`
 - Unify `stage deploy` via `--target stage`

@@ -1,3 +1,4 @@
+import re
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -12,6 +13,8 @@ from bigquery_etl.util.target import (
     get_target,
     prepare_target_directory,
     prepare_target_files,
+    render_artifact_prefix_pattern,
+    render_dataset_pattern,
 )
 
 
@@ -319,3 +322,167 @@ class TestPrepareTargetFiles:
             assert len(result) == 1
             # artifact.project_id = sanitize("moz-fx-data-shared-prod") = "moz_fx_data_shared_prod"
             assert result[0].parent.name == "moz_fx_data_shared_prod_clients_daily_v6"
+
+
+@pytest.fixture
+def mock_account(monkeypatch):
+    """Patch _get_account_context to avoid real GCP auth."""
+    monkeypatch.setattr(
+        "bigquery_etl.util.target._get_account_context",
+        lambda: {"username": "testuser"},
+    )
+
+
+@pytest.mark.usefixtures("mock_account")
+class TestRenderDatasetPattern:
+    """Tests for render_dataset_pattern used by target clean."""
+
+    def test_dataset_prefix_with_branch(self):
+        """Pattern with --branch pins branch literally, wildcards the rest."""
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset_prefix="dev_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}_",
+        )
+        pattern = render_dataset_pattern(target, branch="feature-xyz")
+        regex = re.compile(pattern)
+
+        assert regex.match("dev_feature_xyz_abc123_moz_fx_data_shared_prod_telemetry")
+        assert not regex.match(
+            "dev_other_branch_abc123_moz_fx_data_shared_prod_telemetry"
+        )
+
+    def test_dataset_prefix_without_branch(self):
+        """Pattern without --branch wildcards everything."""
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset_prefix="dev_{{ git.branch }}_{{ git.commit }}_",
+        )
+        pattern = render_dataset_pattern(target)
+        regex = re.compile(pattern)
+
+        assert regex.match("dev_feature_xyz_abc123_telemetry")
+        assert regex.match("dev_main_def456_telemetry")
+
+    def test_dataset_anchored_end(self):
+        """dataset (not dataset_prefix) produces a $-anchored pattern."""
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset="dev_{{ git.branch }}_{{ git.commit }}",
+        )
+        pattern = render_dataset_pattern(target, branch="feature-xyz")
+        regex = re.compile(pattern)
+
+        # Commit wildcard matches any alphanumeric+underscore suffix
+        assert regex.match("dev_feature_xyz_abc123")
+        assert regex.match("dev_feature_xyz_abc123_extra_stuff")
+
+    def test_username_rendered_literally(self):
+        """account.username is rendered with real value, not wildcarded."""
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset_prefix="dev_{{ account.username }}_{{ git.branch }}_",
+        )
+        pattern = render_dataset_pattern(target, branch="main")
+
+        assert "testuser" in pattern
+        assert re.compile(pattern).match("dev_testuser_main_telemetry")
+        assert not re.compile(pattern).match("dev_otheruser_main_telemetry")
+
+
+@pytest.mark.usefixtures("mock_account")
+class TestRenderArtifactPrefixPattern:
+    """Tests for render_artifact_prefix_pattern used by target clean."""
+
+    def test_with_branch(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_artifact_prefix="{{ git.branch }}_{{ git.commit }}_",
+        )
+        pattern = render_artifact_prefix_pattern(target, branch="feature-xyz")
+        regex = re.compile(pattern)
+
+        assert regex.match("feature_xyz_abc123_clients_daily_v6")
+        assert not regex.match("other_branch_abc123_clients_daily_v6")
+
+    def test_returns_none_without_artifact_prefix(self):
+        target = Target(name="dev", project_id="test-project")
+        assert render_artifact_prefix_pattern(target, branch="main") is None
+
+    def test_no_branch_in_template(self):
+        """When artifact_prefix doesn't use git.branch, branch param is ignored."""
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_artifact_prefix="{{ artifact.project_id }}_{{ account.username }}_",
+        )
+        pattern = render_artifact_prefix_pattern(target, branch="feature-xyz")
+        regex = re.compile(pattern)
+
+        assert regex.match("moz_fx_data_shared_prod_testuser_clients_daily_v6")
+        assert not regex.match("moz_fx_data_shared_prod_otheruser_clients_daily_v6")
+
+
+@pytest.fixture
+def mock_git(monkeypatch):
+    """Patch _get_git_context to avoid real git calls."""
+    monkeypatch.setattr(
+        "bigquery_etl.util.target._get_git_context",
+        lambda: {"branch": "main", "commit": "abc123de"},
+    )
+
+
+@pytest.fixture
+def mock_config_loader(monkeypatch, tmp_path):
+    """Patch ConfigLoader to use a temp directory for targets file."""
+    monkeypatch.setattr(
+        "bigquery_etl.util.target.ConfigLoader.get",
+        lambda *a, **kw: "bqetl_targets.yaml",
+    )
+    monkeypatch.setattr("bigquery_etl.util.target.ConfigLoader.project_dir", tmp_path)
+    return tmp_path
+
+
+@pytest.mark.usefixtures("mock_account", "mock_git")
+class TestGetTargetRawTemplates:
+    """Test that get_target preserves raw (unrendered) template strings."""
+
+    def test_raw_fields_preserved(self, mock_config_loader):
+        targets_file = mock_config_loader / "bqetl_targets.yaml"
+        targets_file.write_text(
+            "dev:\n"
+            "  project_id: test-project\n"
+            "  dataset: dev_{{ git.branch }}_{{ git.commit }}\n"
+            "  artifact_prefix: test_{{ artifact.project_id }}_{{ account.username }}_\n"
+        )
+
+        target = get_target("dev")
+
+        # Rendered fields have git/account vars resolved
+        assert target.dataset == "dev_main_abc123de"
+        assert "artifact.project_id" in target.artifact_prefix
+
+        # Raw fields preserve the original templates
+        assert "git.branch" in target.raw_dataset
+        assert "git.commit" in target.raw_dataset
+        assert "artifact.project_id" in target.raw_artifact_prefix
+        assert target.raw_dataset_prefix is None
+
+    def test_raw_dataset_prefix(self, mock_config_loader):
+        targets_file = mock_config_loader / "bqetl_targets.yaml"
+        targets_file.write_text(
+            "dev:\n"
+            "  project_id: test-project\n"
+            "  dataset_prefix: dev_{{ git.branch }}_{{ git.commit }}_\n"
+        )
+
+        target = get_target("dev")
+
+        assert target.dataset_prefix == "dev_main_abc123de_"
+        assert "git.branch" in target.raw_dataset_prefix
+        assert target.raw_dataset is None
+        assert target.raw_artifact_prefix is None

@@ -3,6 +3,7 @@
 import os
 from datetime import date, datetime, time
 from pathlib import Path
+import re
 from unittest.mock import call, patch
 
 import click
@@ -1941,3 +1942,176 @@ class TestGenerateQueryWithShredderMitigation:
                     backfill_date=PREVIOUS_DATE,
                 )
                 assert result[0] == self.path
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_when_last_select_is_not_grouped_by(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """Test that query is generated as expected given a set of mock dimensions and metrics."""
+
+        expected = (
+            Path("sql") / self.project_id / self.dataset / self.destination_table,
+            """-- Query generated using a template for shredder mitigation.
+                        WITH new_version AS (
+                            WITH upstream_1 AS(
+                              SELECT
+                                column_1,
+                                column_2,
+                                metric_1
+                              FROM
+                                upstream_1
+                              GROUP BY
+                                column_1,
+                                column_2
+                            )
+                            SELECT * FROM upstream_1
+                        ),
+                        new_agg AS (
+                          SELECT
+                            submission_date,
+                            IF(column_1 IS NULL OR column_1 = '??', '???????', column_1) AS column_1,
+                            SUM(metric_1) AS metric_1
+                          FROM
+                            new_version
+                          GROUP BY
+                            ALL
+                        ),
+                        previous_agg AS (
+                          SELECT
+                            submission_date,
+                            IF(column_1 IS NULL OR column_1 = '??', '???????', column_1) AS column_1,
+                            SUM(metric_1) AS metric_1
+                          FROM
+                            `moz-fx-data-shared-prod.test.test_query_v1`
+                          WHERE
+                            submission_date = @submission_date
+                          GROUP BY
+                            ALL
+                        ),
+                        shredded AS (
+                          SELECT
+                            previous_agg.submission_date,
+                            previous_agg.column_1,
+                            CAST(NULL AS STRING) AS column_2,
+                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
+                          FROM
+                            previous_agg
+                          LEFT JOIN
+                            new_agg
+                            ON previous_agg.submission_date = new_agg.submission_date
+                            AND previous_agg.column_1 = new_agg.column_1
+                          WHERE
+                            COALESCE(previous_agg.metric_1, 0) > COALESCE(new_agg.metric_1, 0)
+                        )
+                        SELECT
+                          IF(column_1 = '???????', CAST(NULL AS STRING), column_1) AS column_1,
+                          IF(column_2 = '???????', CAST(NULL AS STRING), column_2) AS column_2,
+                          metric_1
+                        FROM
+                          new_version
+                        UNION ALL
+                        SELECT
+                          IF(column_1 = '???????', CAST(NULL AS STRING), column_1) AS column_1,
+                          IF(column_2 = '???????', CAST(NULL AS STRING), column_2) AS column_2,
+                          metric_1
+                        FROM
+                          shredded""",
+        )
+
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+            with open(self.path / "query.sql", "w") as f:
+                f.write(
+                    "WITH upstream_1 AS ("
+                    " SELECT column_1, column_2, metric_1 FROM upstream_1"
+                    " GROUP BY column_1, column_2) SELECT * FROM upstream_1"
+                )
+            with open(self.path_previous / "query.sql", "w") as f:
+                f.write("WITH upstream_1 AS ("
+                        " SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1"
+                        ") SELECT * FROM upstream_1")
+
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: submission_date\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: submission_date\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [
+                    Column(
+                        "column_2",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.ADDED,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+            ):
+                assert os.path.isfile(self.path / "query.sql")
+                assert os.path.isfile(self.path_previous / "query.sql")
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
+                    backfill_date=PREVIOUS_DATE,
+                )
+                assert result[0] == expected[0]
+                assert re.sub(r"\s+", "", result[1]) == re.sub(r"\s+", "", expected[1])
+                assert os.path.isfile(
+                    expected[0] / f"{SHREDDER_MITIGATION_QUERY_NAME}.sql"
+                )

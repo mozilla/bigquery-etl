@@ -74,7 +74,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.nimbus_qa_prefs_bool_default_value,
+      metrics.boolean.nimbus_qa_prefs_bool_user_value
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -284,7 +286,11 @@ SELECT
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
       metrics.counter.fog_ipc_flush_rejections,
-      metrics.counter.ipprotection_exclusion_added
+      metrics.counter.ipprotection_exclusion_added,
+      metrics.counter.network_ssl_token_cache_early_connections,
+      metrics.counter.network_ssl_token_cache_evictions,
+      metrics.counter.network_ssl_token_cache_persistence_records_loaded,
+      metrics.counter.networking_proxy_fast_path_used
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -684,7 +690,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
       metrics.labeled_counter.pdfjs_organize_action,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
+      metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -788,7 +795,9 @@ SELECT
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.nimbus_qa_prefs_string_default_value,
+      metrics.string.nimbus_qa_prefs_string_user_value
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -852,7 +861,9 @@ SELECT
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
       metrics.quantity.system_virtual_memory,
-      metrics.quantity.data_storage_site_integrity_service_state
+      metrics.quantity.data_storage_site_integrity_service_state,
+      metrics.quantity.nimbus_qa_prefs_int_default_value,
+      metrics.quantity.nimbus_qa_prefs_int_user_value
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1584,7 +1595,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.network_ssl_token_cache_load_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1944,7 +1956,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.nimbus_qa_prefs_bool_default_value,
+      metrics.boolean.nimbus_qa_prefs_bool_user_value
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -2154,7 +2168,11 @@ SELECT
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
       metrics.counter.fog_ipc_flush_rejections,
-      metrics.counter.ipprotection_exclusion_added
+      metrics.counter.ipprotection_exclusion_added,
+      metrics.counter.network_ssl_token_cache_early_connections,
+      metrics.counter.network_ssl_token_cache_evictions,
+      metrics.counter.network_ssl_token_cache_persistence_records_loaded,
+      metrics.counter.networking_proxy_fast_path_used
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2554,7 +2572,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
       metrics.labeled_counter.pdfjs_organize_action,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
+      metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2658,7 +2677,9 @@ SELECT
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.nimbus_qa_prefs_string_default_value,
+      metrics.string.nimbus_qa_prefs_string_user_value
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -2722,7 +2743,9 @@ SELECT
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
       metrics.quantity.system_virtual_memory,
-      metrics.quantity.data_storage_site_integrity_service_state
+      metrics.quantity.data_storage_site_integrity_service_state,
+      metrics.quantity.nimbus_qa_prefs_int_default_value,
+      metrics.quantity.nimbus_qa_prefs_int_user_value
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -3454,7 +3477,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.network_ssl_token_cache_load_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3814,7 +3838,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.extensions_allow_execute_script_in_moz_extension
+      metrics.boolean.extensions_allow_execute_script_in_moz_extension,
+      metrics.boolean.nimbus_qa_prefs_bool_default_value,
+      metrics.boolean.nimbus_qa_prefs_bool_user_value
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -4024,7 +4050,11 @@ SELECT
       metrics.counter.update_blocked,
       metrics.counter.network_ssl_token_cache_expired,
       metrics.counter.fog_ipc_flush_rejections,
-      metrics.counter.ipprotection_exclusion_added
+      metrics.counter.ipprotection_exclusion_added,
+      metrics.counter.network_ssl_token_cache_early_connections,
+      metrics.counter.network_ssl_token_cache_evictions,
+      metrics.counter.network_ssl_token_cache_persistence_records_loaded,
+      metrics.counter.networking_proxy_fast_path_used
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4424,7 +4454,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exit_reason,
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
       metrics.labeled_counter.pdfjs_organize_action,
-      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
+      metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4528,7 +4559,9 @@ SELECT
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
       metrics.string.preferences_prefs_file_first_parse_error,
-      metrics.string.system_os_libstdcxx_version
+      metrics.string.system_os_libstdcxx_version,
+      metrics.string.nimbus_qa_prefs_string_default_value,
+      metrics.string.nimbus_qa_prefs_string_user_value
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -4592,7 +4625,9 @@ SELECT
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
       metrics.quantity.system_virtual_memory,
-      metrics.quantity.data_storage_site_integrity_service_state
+      metrics.quantity.data_storage_site_integrity_service_state,
+      metrics.quantity.nimbus_qa_prefs_int_default_value,
+      metrics.quantity.nimbus_qa_prefs_int_user_value
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -5324,7 +5359,8 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
-      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age
+      metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
+      metrics.timing_distribution.network_ssl_token_cache_load_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

@@ -1094,6 +1094,18 @@ fields:
       description: 'Records if the user has summarization enabled.
 
         '
+    - name: nimbus_qa_prefs_bool_default_value
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.bool-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_bool_user_value
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.bool-user" pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3190,6 +3202,35 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Recorded when a site exclusion is added.
+
+        '
+    - name: network_ssl_token_cache_early_connections
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of TLS connections (via Get()) that started before the
+        background disk load completed. Each occurrence is also logged as a warning.
+
+        '
+    - name: network_ssl_token_cache_evictions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of TLS session resumption tokens evicted because the in-memory
+        cache exceeded network.ssl_tokens_cache_capacity. Any non-zero value indicates
+        the capacity limit was reached and may need to be increased.
+
+        '
+    - name: network_ssl_token_cache_persistence_records_loaded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of TLS session resumption token records successfully loaded
+        from disk into the cache on startup.
+
+        '
+    - name: networking_proxy_fast_path_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of HTTP channels that skipped async proxy resolution
+        via the fast path (system proxy reports no proxy configured, no filters registered).
 
         '
   - name: custom_distribution
@@ -18876,6 +18917,20 @@ fields:
         during connection establishment.
 
         '
+    - name: nimbus_qa_prefs_pref_type_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Any prefs that we could not get a value -- and thus record a metric
+        value for -- due to type errors.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -19429,6 +19484,18 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of entries stored in the SiteIntegrityServiceState nsIDataStorage
+    - name: nimbus_qa_prefs_int_default_value
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.int-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_int_user_value
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.int-user" pref.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -20154,6 +20221,18 @@ fields:
         the value will be "custom". If the private browsing default is the same as
 
         the normal default, this will be "default".
+
+        '
+    - name: nimbus_qa_prefs_string_default_value
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.string-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_string_user_value
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.string-user" pref.
 
         '
   - name: string_list
@@ -40348,6 +40427,50 @@ fields:
         user. Starts when the user triggers summarization. Ends when user sees
 
         the result or an error.
+
+        '
+    - name: network_ssl_token_cache_load_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Wall-clock time from SSLTokensCache::Init() to the completion
+        of loading cached tokens from disk.
 
         '
   - name: memory_distribution

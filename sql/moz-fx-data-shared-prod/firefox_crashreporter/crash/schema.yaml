@@ -663,6 +663,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: A UUID for the crash event.
+    - name: crash_file_system_access_request_path
+      type: STRING
+      mode: NULLABLE
+      description: The anonymized path that was rejected by FileSystemSecurity due
+        to containing path traversal sequences.
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -56,7 +56,8 @@ SELECT
       metrics.string.crash_windows_file_dialog_error_code,
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
-      metrics.string.crash_id
+      metrics.string.crash_id,
+      metrics.string.crash_file_system_access_request_path
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,

@@ -344,7 +344,7 @@ class TestRenderDatasetPattern:
             project_id="test-project",
             raw_dataset_prefix="dev_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}_",
         )
-        pattern = render_dataset_pattern(target, branch="feature-xyz")
+        pattern = render_dataset_pattern(target, branch="feature/xyz")
         regex = re.compile(pattern)
 
         assert regex.match("dev_feature_xyz_abc123_moz_fx_data_shared_prod_telemetry")

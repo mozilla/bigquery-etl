@@ -11,6 +11,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..cli.utils import sql_dir_option
+from ..query_scheduling.formatters import format_timedelta
 from ..util.common import block_coding_agents
 from ..util.target import render_artifact_prefix_pattern, render_dataset_pattern
 
@@ -19,15 +20,12 @@ log = logging.getLogger(__name__)
 
 def _parse_duration(value: str) -> timedelta:
     """Parse a duration string like '7d', '24h', '2w', '30m' into a timedelta."""
-    match = re.match(r"^(\d+)([mhdw])$", value)
-    if not match:
+    result = format_timedelta(value)
+    if not isinstance(result, timedelta):
         raise click.BadParameter(
             f"Invalid duration '{value}'. Use format like '7d', '24h', '2w', '30m'."
         )
-    amount = int(match.group(1))
-    unit = match.group(2)
-    units = {"m": "minutes", "h": "hours", "d": "days", "w": "weeks"}
-    return timedelta(**{units[unit]: amount})
+    return result
 
 
 @click.group(help="Commands for managing target environments.")
@@ -169,19 +167,18 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
         click.echo(f"\nDeleted {deleted}/{total} table(s).")
         if empty:
             click.echo(f"Removed {len(empty)} empty dataset(s): " + ", ".join(empty))
-        return
+    else:
+        # Dataset-level cleanup: --branch (when branch is only in dataset) or --all
+        click.echo(f"\nFound {len(matching)} dataset(s) to delete in {project_id}:\n")
+        for ds in sorted(matching, key=lambda d: d.dataset_id):
+            click.echo(f"  {ds.dataset_id}")
+        click.echo()
 
-    # Dataset-level cleanup: --branch (when branch is only in dataset) or --all
-    click.echo(f"\nFound {len(matching)} dataset(s) to delete in {project_id}:\n")
-    for ds in sorted(matching, key=lambda d: d.dataset_id):
-        click.echo(f"  {ds.dataset_id}")
-    click.echo()
+        if not _confirm(len(matching), "dataset(s)", dry_run, yes):
+            return
 
-    if not _confirm(len(matching), "dataset(s)", dry_run, yes):
-        return
-
-    deleted = _delete_datasets(client, project_id, matching, sql_dir)
-    click.echo(f"\nDeleted {deleted}/{len(matching)} dataset(s).")
+        deleted = _delete_datasets(client, project_id, matching, sql_dir)
+        click.echo(f"\nDeleted {deleted}/{len(matching)} dataset(s).")
 
 
 def _find_matching_tables(client, project_id, datasets, artifact_re, cutoff):
@@ -240,11 +237,14 @@ def _delete_tables(client, project_id, tables_by_dataset, sql_dir):
             try:
                 client.delete_dataset(dataset_ref, not_found_ok=True)
                 empty_datasets.append(dataset_id)
-            except Exception:
-                pass
-            local_ds_dir = Path(sql_dir) / project_id / dataset_id
-            if local_ds_dir.exists():
-                shutil.rmtree(local_ds_dir)
+                local_ds_dir = Path(sql_dir) / project_id / dataset_id
+                if local_ds_dir.exists():
+                    shutil.rmtree(local_ds_dir)
+            except Exception as e:
+                click.echo(
+                    f"  Failed to remove empty dataset {dataset_id}: {e}",
+                    err=True,
+                )
 
     return deleted, empty_datasets
 

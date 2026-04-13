@@ -105,9 +105,9 @@ def _template_to_pattern(
     """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
     Known values (branch, username) are rendered literally; variable parts
-    (commit, artifact ids) become ``[a-zA-Z0-9_]+`` regex wildcards.
+    (commit, artifact ids) become [a-zA-Z0-9_]+ regex wildcards.
 
-    Returns a ``^``-anchored regex string, optionally ``$``-anchored.
+    Returns a ^-anchored regex string, optionally $-anchored.
     """
     _WILDCARD = "XBQETLWCX"
     rendered = Template(template_str).render(

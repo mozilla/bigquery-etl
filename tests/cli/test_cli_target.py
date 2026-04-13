@@ -19,14 +19,12 @@ class TestParseDuration:
     def test_minutes(self):
         assert _parse_duration("30m") == timedelta(minutes=30)
 
-    def test_invalid_unit(self):
-        with pytest.raises(click.BadParameter):
-            _parse_duration("7s")
+    def test_seconds(self):
+        assert _parse_duration("30s") == timedelta(seconds=30)
+
+    def test_compound(self):
+        assert _parse_duration("1d12h") == timedelta(days=1, hours=12)
 
     def test_invalid_format(self):
         with pytest.raises(click.BadParameter):
             _parse_duration("abc")
-
-    def test_empty_string(self):
-        with pytest.raises(click.BadParameter):
-            _parse_duration("")

@@ -393,7 +393,7 @@ def _discover_artifacts(
     """Find artifacts."""
     artifacts = {}
     patterns = {
-        "table": [QUERY_FILE, QUERY_SCRIPT],
+        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"],
         "view": [VIEW_FILE],
     }
 

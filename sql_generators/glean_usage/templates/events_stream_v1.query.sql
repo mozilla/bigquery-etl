@@ -136,6 +136,7 @@ SELECT
   ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
   from_map_event_extra(event.extra) AS event_extra,
   (event_offset + 1) AS document_event_number,
+  CONCAT(document_id, '-', (event_offset + 1)) AS event_id,
 FROM
   base
 CROSS JOIN
@@ -164,6 +165,21 @@ CROSS JOIN
         AND app_version_major >= 143
         AND sample_id != 0
       ) IS NOT TRUE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-10910
+      AND (
+        normalized_channel IN ('release', 'esr')
+        AND (
+          (
+            event.category = 'media.playback'
+            AND event.name IN ('decode_error', 'first_frame_loaded')
+          )
+          OR (
+            event.category = 'media'
+            AND event.name = 'error'
+          )
+        )
+        AND app_version_major <= 149
+      ) IS NOT TRUE
   {% elif app_name == "firefox_desktop_background_update" %}
     WHERE
       -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
@@ -179,5 +195,22 @@ CROSS JOIN
         event.category = 'nimbus_events'
         AND event.name = 'enrollment_status'
         AND app_version_major = 140
+      ) IS NOT TRUE
+  {% elif app_name == "fenix" %}
+    WHERE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-10910
+      (
+        normalized_channel = 'release'
+        AND (
+          (
+            event.category = 'media.playback'
+            AND event.name IN ('decode_error', 'first_frame_loaded')
+          )
+          OR (
+            event.category = 'media'
+            AND event.name = 'error'
+          )
+        )
+        AND app_version_major <= 149
       ) IS NOT TRUE
   {% endif %}

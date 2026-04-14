@@ -40,7 +40,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
-  CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
+  CONCAT(STRING_AGG(index, ',' ORDER BY `timestamp` ASC), ',') AS events,
   -- client info
   mozfun.stats.mode_last(ARRAY_AGG(application.build_id)) AS build_id,
   mozfun.stats.mode_last(ARRAY_AGG(environment.build.architecture)) AS build_architecture,

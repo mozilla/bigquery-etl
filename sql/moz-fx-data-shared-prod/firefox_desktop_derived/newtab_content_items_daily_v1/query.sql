@@ -10,7 +10,7 @@ WITH newtab_events_unnested AS (
       normalized_country_code
     ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     category AS event_category,
     name AS event_name,
     extra AS event_details,
@@ -108,7 +108,7 @@ newtab_content_events_unnested AS (
       normalized_country_code
     ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     category AS event_category,
     name AS event_name,
     extra AS event_details,

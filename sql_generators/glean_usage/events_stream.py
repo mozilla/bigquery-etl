@@ -29,7 +29,7 @@ class EventsStreamTable(GleanTable):
         self.per_app_enabled = True
         self.per_app_id_enabled = True
         self.across_apps_enabled = True
-        self.cross_channel_template = "cross_channel_events_stream.query.sql"
+        self.cross_channel_template = "cross_channel_events_stream.view.sql"
         self.base_table_name = "events_v1"
         self.common_render_kwargs = {}
         self.possible_query_parameters = {

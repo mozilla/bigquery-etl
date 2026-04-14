@@ -90,7 +90,7 @@ rollouts_cte AS (
         ARRAY_CONCAT(
           COALESCE(
             {% if source_table.is_events_stream %}
-              UNNEST(JSON_KEYS(experiments))
+              UNNEST(JSON_KEYS(experiments, 1))
             {% else %}
               ARRAY(
                 SELECT key

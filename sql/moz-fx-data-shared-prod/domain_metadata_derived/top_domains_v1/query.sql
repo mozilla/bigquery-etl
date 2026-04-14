@@ -6,7 +6,7 @@ WITH daily_tranco AS (
   FROM
     `tranco.daily.daily`
   WHERE
-    date IN (SELECT MAX(date) FROM `tranco.daily.daily`)
+    `date` IN (SELECT MAX(`date`) FROM `tranco.daily.daily`)
 ),
 crux_country_summary AS (
   SELECT

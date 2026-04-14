@@ -1,0 +1,33 @@
+friendly_name: Freshness Metrics Base (Daily)
+description: |
+  Daily content freshness metrics for SUMO knowledge base articles.
+
+  Single source of truth tracking:
+  - Total en-US articles (non-archived)
+  - Articles updated within 6-month freshness window
+  - Content age distribution (0-3mo, 3-6mo, 6-12mo, 12+mo)
+  - Freshness percentage and quality tiers
+
+  Grain: Daily
+
+  Used by:
+  - freshness_weekly_v1 (weekly aggregation)
+  - freshness_monthly_v1 (monthly aggregation)
+  - Content health dashboard and reporting
+
+  Freshness Definition:
+  Article is "fresh" if it has an approved revision within the last 6 months
+  from the observation date.
+
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_insights
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

@@ -2,6 +2,7 @@ default:
   project: moz-fx-data-shared-prod
   sql_dir: sql/
   sql_generators_dir: sql_generators/
+  targets: bqetl_targets.yaml
   test_project: moz-fx-data-integration-tests
   non_user_facing_dataset_suffixes:  # suffixes of datasets with non-user-facing views
   - _derived
@@ -89,6 +90,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_backend_cirrus_derived/delete_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_eng_base_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_locale_base_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_locale_base_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_metrics_derived/freshness_metrics_base_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
@@ -185,6 +190,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
+  - sql/moz-fx-data-marketing-prod/fetch/fetch_deduped/view.sql
+  - sql/moz-fx-data-marketing-prod/fetch/latest_trafficking/view.sql
+  - sql/moz-fx-data-marketing-prod/fetch/spend_alignment_by_campaign_v1/query.sql
+  - sql/moz-fx-data-marketing-prod/fetch/spend_alignment_by_month_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-shared-prod/google_play_store/reviews/view.sql
@@ -204,11 +213,14 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring/structured_missing_columns/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   - sql/moz-fx-data-shared-prod/zoom/**/*.sql
   - sql/moz-fx-data-shared-prod/taskclusteretl/person_mozilla_com/view.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/public_data_report_user_activity_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_dev_cycle_derived/firefox_major_release_dates_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -471,6 +483,7 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
+      - thunderbird_crashreporter
       - thunderbird_desktop
     clients_last_seen_joined:
       skip_apps:
@@ -485,6 +498,7 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
+      - thunderbird_crashreporter
       - thunderbird_desktop
     bigconfig:
       skip_apps:

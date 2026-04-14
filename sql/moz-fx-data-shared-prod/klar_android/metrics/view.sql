@@ -691,7 +691,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_slow_start_exited_filtered,
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
-      metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors
+      metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
+      metrics.labeled_counter.network_cookies_open_error
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

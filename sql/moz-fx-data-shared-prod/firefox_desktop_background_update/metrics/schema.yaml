@@ -8185,6 +8185,21 @@ fields:
         value for -- due to type errors.
 
         '
+    - name: network_cookies_open_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the cookie DB failed to open at startup,
+        labeled by nsresult error name. Used to diagnose cases where the cookie DB
+        may be incorrectly wiped due to transient I/O errors rather than actual corruption.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

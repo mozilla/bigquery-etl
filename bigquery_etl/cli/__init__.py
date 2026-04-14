@@ -23,6 +23,7 @@ from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.stage import stage
 from ..cli.static import static_
+from ..cli.target import target
 from ..cli.view import view
 from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
@@ -59,6 +60,7 @@ def cli(prog_name=None):
         "check": check,
         "metadata": metadata,
         "monitoring": monitoring,
+        "target": target,
     }
 
     @click.group(commands=commands)

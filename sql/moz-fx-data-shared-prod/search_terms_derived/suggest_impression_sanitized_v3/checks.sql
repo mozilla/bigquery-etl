@@ -2,7 +2,9 @@
 SELECT
   IF(
     COUNT(*) = 0,
-    ERROR("Merino sanitization job has not completed successfully for today. Will retry."),
+    ERROR(
+      "Merino sanitization job has not completed successfully for today. Wait for sanitization job to complete and re-run parent task."
+    ),
     NULL
   )
 FROM

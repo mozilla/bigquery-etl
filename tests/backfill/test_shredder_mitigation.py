@@ -1,9 +1,9 @@
 """Test cases for shredder mitigation."""
 
 import os
+import re
 from datetime import date, datetime, time
 from pathlib import Path
-import re
 from unittest.mock import call, patch
 
 import click
@@ -2043,9 +2043,11 @@ class TestGenerateQueryWithShredderMitigation:
                     " GROUP BY column_1, column_2) SELECT * FROM upstream_1"
                 )
             with open(self.path_previous / "query.sql", "w") as f:
-                f.write("WITH upstream_1 AS ("
-                        " SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1"
-                        ") SELECT * FROM upstream_1")
+                f.write(
+                    "WITH upstream_1 AS ("
+                    " SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1"
+                    ") SELECT * FROM upstream_1"
+                )
 
             with open(self.path / "schema.yaml", "w") as f:
                 f.write(yaml.safe_dump(new_schema))

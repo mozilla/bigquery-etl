@@ -191,6 +191,9 @@ SELECT
     `moz-fx-data-shared-prod.{{ dataset }}.play_store_attribution`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    -- We stopped receiving play_store_attribution via the first-session ping on 2026-04-07 including this filter
+    -- to only start using the new ping starting one day prior to this to ensure consistency.
+    AND DATE(submission_timestamp) >= "2026-04-06"
     AND client_info.client_id IS NOT NULL
 ),
 play_store_attribution_ping AS (

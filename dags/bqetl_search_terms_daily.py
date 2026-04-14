@@ -25,11 +25,6 @@ and can impact reporting to partners. If this task errors out, it could
 indicate trouble with an upstream task that runs in a restricted project
 outside of Airflow.
 
-Tables that depend on merino_log_sanitized_v3 use date_partition_offset: -1 to
-process data from 2 days ago, allowing time for the upstream Merino sanitization
-job (~16 hours) to complete. This is a temporary measure until the sanitization
-job is further optimized.
-
 #### Owner
 
 najiang@mozilla.com
@@ -65,7 +60,7 @@ tags = ["impact/tier_1", "repo/bigquery-etl"]
 with DAG(
     "bqetl_search_terms_daily",
     default_args=default_args,
-    schedule_interval="0 3 * * *",
+    schedule_interval="0 8 * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,
@@ -75,7 +70,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=25200),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -86,27 +81,48 @@ with DAG(
 
     checks__fail_search_terms_derived__adm_daily_aggregates_qa__v1 = bigquery_dq_check(
         task_id="checks__fail_search_terms_derived__adm_daily_aggregates_qa__v1",
-        source_table='adm_daily_aggregates_qa_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        source_table="adm_daily_aggregates_qa_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
+        owner="cklein@mozilla.com",
         email=[
             "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
-            "kwindau@mozilla.com",
+            "cklein@mozilla.com",
             "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__fail_search_terms_derived__suggest_impression_sanitized__v3 = bigquery_dq_check(
+        task_id="checks__fail_search_terms_derived__suggest_impression_sanitized__v3",
+        source_table="suggest_impression_sanitized_v3",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="ctroy@mozilla.com",
+        email=[
+            "ads-data-team@mozilla.com",
+            "cbeck@mozilla.com",
+            "ctroy@mozilla.com",
+            "najiang@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
     search_terms_derived__adm_daily_aggregates__v1 = bigquery_etl_query(
         task_id="search_terms_derived__adm_daily_aggregates__v1",
-        destination_table='adm_daily_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="adm_daily_aggregates_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
@@ -118,34 +134,32 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     search_terms_derived__adm_daily_aggregates_qa__v1 = bigquery_etl_query(
         task_id="search_terms_derived__adm_daily_aggregates_qa__v1",
-        destination_table='adm_daily_aggregates_qa_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="adm_daily_aggregates_qa_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
+        owner="cklein@mozilla.com",
         email=[
             "ads-data-team@mozilla.com",
             "cbeck@mozilla.com",
-            "kwindau@mozilla.com",
+            "cklein@mozilla.com",
             "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     search_terms_derived__adm_daily_dma_aggregates__v1 = bigquery_etl_query(
         task_id="search_terms_derived__adm_daily_dma_aggregates__v1",
-        destination_table='adm_daily_dma_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="adm_daily_dma_aggregates_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         owner="llisi@mozilla.com",
@@ -157,10 +171,9 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
@@ -184,7 +197,7 @@ with DAG(
 
     search_terms_derived__search_terms_daily__v1 = bigquery_etl_query(
         task_id="search_terms_derived__search_terms_daily__v1",
-        destination_table='search_terms_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="search_terms_daily_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
@@ -197,10 +210,9 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     search_terms_derived__suggest_impression_sanitized__v2 = bigquery_etl_query(
@@ -224,7 +236,7 @@ with DAG(
 
     search_terms_derived__suggest_impression_sanitized__v3 = bigquery_etl_query(
         task_id="search_terms_derived__suggest_impression_sanitized__v3",
-        destination_table='suggest_impression_sanitized_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="suggest_impression_sanitized_v3",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
@@ -236,18 +248,21 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     checks__fail_search_terms_derived__adm_daily_aggregates_qa__v1.set_upstream(
         search_terms_derived__adm_daily_aggregates_qa__v1
     )
 
-    search_terms_derived__adm_daily_aggregates__v1.set_upstream(
+    checks__fail_search_terms_derived__suggest_impression_sanitized__v3.set_upstream(
         search_terms_derived__suggest_impression_sanitized__v3
+    )
+
+    search_terms_derived__adm_daily_aggregates__v1.set_upstream(
+        checks__fail_search_terms_derived__suggest_impression_sanitized__v3
     )
 
     search_terms_derived__adm_daily_aggregates_qa__v1.set_upstream(
@@ -255,7 +270,7 @@ with DAG(
     )
 
     search_terms_derived__adm_daily_dma_aggregates__v1.set_upstream(
-        search_terms_derived__suggest_impression_sanitized__v3
+        checks__fail_search_terms_derived__suggest_impression_sanitized__v3
     )
 
     search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(

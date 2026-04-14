@@ -6,10 +6,6 @@ description: |-
 
   This table allows removal of PII and slightly longer retention than
   the underlying ping table.
-
-  Note: This table processes data from 2 days ago,allowing time for the
-  upstream Merino sanitization job (~16 hours) to complete.
-  This is a temporary measure until the sanitization job is further optimized.
 owners:
 - ctroy@mozilla.com
 labels:
@@ -20,7 +16,6 @@ scheduling:
   dag_name: bqetl_search_terms_daily
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
-  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day
@@ -36,6 +31,8 @@ workgroup_access:
   - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
   - workgroup:search-terms/sanitized-writer
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v2
   query.sql:
   - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1

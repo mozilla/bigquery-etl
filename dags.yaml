@@ -709,7 +709,7 @@ bqetl_search_terms_daily:
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
     outside of Airflow.
-  schedule_interval: 0 6 * * *
+  schedule_interval: 0 7 * * *
   tags:
     - impact/tier_1
 

@@ -34,6 +34,24 @@ github_external__bqetl_prs__v1_bqetl_github__github_token = Secret(
     secret="airflow-gke-secrets",
     key="bqetl_github__github_token",
 )
+github_external__looker_spoke_default_prs__v1_bqetl_github__github_token = Secret(
+    deploy_type="env",
+    deploy_target="GITHUB_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_github__github_token",
+)
+github_external__looker_spoke_private_prs__v1_bqetl_github__github_token = Secret(
+    deploy_type="env",
+    deploy_target="GITHUB_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_github__github_token",
+)
+github_external__lookml_generator_prs__v1_bqetl_github__github_token = Secret(
+    deploy_type="env",
+    deploy_target="GITHUB_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_github__github_token",
+)
 github_external__private_bqetl_prs__v1_bqetl_github__github_token = Secret(
     deploy_type="env",
     deploy_target="GITHUB_TOKEN",
@@ -85,6 +103,72 @@ with DAG(
         email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             github_external__bqetl_prs__v1_bqetl_github__github_token,
+        ],
+    )
+
+    github_external__looker_spoke_default_prs__v1 = GKEPodOperator(
+        task_id="github_external__looker_spoke_default_prs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/github_external/looker_spoke_default_prs_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--repo",
+            "mozilla/looker-spoke-default",
+            "--destination",
+            "moz-fx-data-shared-prod.github_external.looker_spoke_default_prs_v1",
+        ],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="gkaberere@mozilla.com",
+        email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            github_external__looker_spoke_default_prs__v1_bqetl_github__github_token,
+        ],
+    )
+
+    github_external__looker_spoke_private_prs__v1 = GKEPodOperator(
+        task_id="github_external__looker_spoke_private_prs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/github_external/looker_spoke_private_prs_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--repo",
+            "mozilla/looker-spoke-private",
+            "--destination",
+            "moz-fx-data-shared-prod.github_external.looker_spoke_private_prs_v1",
+        ],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="gkaberere@mozilla.com",
+        email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            github_external__looker_spoke_private_prs__v1_bqetl_github__github_token,
+        ],
+    )
+
+    github_external__lookml_generator_prs__v1 = GKEPodOperator(
+        task_id="github_external__lookml_generator_prs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/github_external/lookml_generator_prs_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--repo",
+            "mozilla/lookml-generator",
+            "--destination",
+            "moz-fx-data-shared-prod.github_external.lookml_generator_prs_v1",
+        ],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="gkaberere@mozilla.com",
+        email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            github_external__lookml_generator_prs__v1_bqetl_github__github_token,
         ],
     )
 

@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 TIMEDELTA_RE = re.compile(
-    r"^-?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
+    r"^-?((?P<weeks>\d+)w)?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
 )
 
 TELEMETRY_ALERTS_EMAIL = "telemetry-alerts@mozilla.com"

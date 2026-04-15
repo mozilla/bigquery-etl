@@ -45,14 +45,20 @@ WITH {{ previous_version_cte | default('previous_version') }} AS (
 ),
 backfilled_not_matching AS (
   SELECT
-    *
+    nv.*
   FROM
-    {{ new_version_cte | default('new_version') }}
+    {{ new_version_cte | default('new_version') }} AS nv
+  INNER JOIN
+    {{ previous_version_cte | default('previous_version') }} AS pv
+    USING ({{ dimension_columns | join(', ') }})
   EXCEPT DISTINCT
   SELECT
-    *
+    pv.*
   FROM
-    {{ previous_version_cte | default('previous_version') }}
+    {{ previous_version_cte | default('previous_version') }} AS pv
+  INNER JOIN
+    {{ new_version_cte | default('new_version') }} AS nv
+    USING ({{ dimension_columns | join(', ') }})
 )
 SELECT
   IF(

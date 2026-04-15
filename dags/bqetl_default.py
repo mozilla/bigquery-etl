@@ -33,7 +33,7 @@ default_args = {
     "owner": "telemetry-alerts@mozilla.com",
     "start_date": datetime.datetime(2023, 9, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com"],
+    "email": [],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -60,7 +60,6 @@ with DAG(
         dataset_id="analysis",
         project_id="moz-fx-data-shared-prod",
         owner="telemetry-alerts@mozilla.com",
-        email=["telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

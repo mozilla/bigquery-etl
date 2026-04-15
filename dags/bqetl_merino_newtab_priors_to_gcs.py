@@ -33,7 +33,11 @@ default_args = {
     "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 10, 8, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com", "gkatre@mozilla.com"],
+    "email": [
+        "cbeck@mozilla.com",
+        "gkatre@mozilla.com",
+        "telemetry-alerts@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -93,6 +97,7 @@ with DAG(
             "gkatre@mozilla.com",
             "mmiermans@mozilla.com",
             "rrando@mozilla.com",
+            "telemetry-alerts@mozilla.com",
         ],
         depends_on_past=False,
         task_concurrency=1,
@@ -111,6 +116,7 @@ with DAG(
             "gkatre@mozilla.com",
             "mmiermans@mozilla.com",
             "rrando@mozilla.com",
+            "telemetry-alerts@mozilla.com",
         ],
         depends_on_past=False,
         task_concurrency=1,
@@ -136,6 +142,7 @@ with DAG(
             "gkatre@mozilla.com",
             "mmiermans@mozilla.com",
             "rrando@mozilla.com",
+            "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
         depends_on_past=False,
@@ -163,6 +170,7 @@ with DAG(
             "gkatre@mozilla.com",
             "mmiermans@mozilla.com",
             "rrando@mozilla.com",
+            "telemetry-alerts@mozilla.com",
         ],
     )
 
@@ -187,6 +195,7 @@ with DAG(
             "gkatre@mozilla.com",
             "mmiermans@mozilla.com",
             "rrando@mozilla.com",
+            "telemetry-alerts@mozilla.com",
         ],
     )
 

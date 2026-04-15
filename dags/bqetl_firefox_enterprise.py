@@ -33,7 +33,7 @@ default_args = {
     "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2025, 8, 21, 0, 0),
     "end_date": None,
-    "email": ["kik@mozilla.com"],
+    "email": ["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -85,7 +85,7 @@ with DAG(
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="pissac@mozilla.com",
-        email=["kik@mozilla.com", "pissac@mozilla.com"],
+        email=["kik@mozilla.com", "pissac@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -96,7 +96,7 @@ with DAG(
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="pissac@mozilla.com",
-        email=["kik@mozilla.com", "pissac@mozilla.com"],
+        email=["kik@mozilla.com", "pissac@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

@@ -25,7 +25,6 @@ ascholtz@mozilla.com
 
 * impact/tier_3
 * repo/bigquery-etl
-* triage/no_triage
 """
 
 
@@ -42,7 +41,7 @@ default_args = {
     "max_active_tis_per_dag": None,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_generated_funnels",

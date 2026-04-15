@@ -33,7 +33,7 @@ default_args = {
     "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 15, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com"],
+    "email": ["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -71,7 +71,11 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="click_time",
         depends_on_past=False,
     )
@@ -92,7 +96,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_conversion__v1 = GKEPodOperator(
@@ -111,7 +115,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_delivery__v1 = GKEPodOperator(
@@ -130,7 +134,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_global_state_changes__v1 = GKEPodOperator(
@@ -149,7 +153,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_hard_bounces__v1 = GKEPodOperator(
@@ -168,7 +172,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     with TaskGroup(
@@ -201,7 +205,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_open__v1 = GKEPodOperator(
@@ -220,7 +224,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_send__v1 = GKEPodOperator(
@@ -239,7 +243,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_soft_bounce__v1 = GKEPodOperator(
@@ -258,7 +262,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_state_changes__v1 = GKEPodOperator(
@@ -277,7 +281,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_unsubscribe__v1 = GKEPodOperator(
@@ -296,7 +300,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     with TaskGroup(
@@ -329,7 +333,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_conversion__v1 = GKEPodOperator(
@@ -348,7 +352,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_delivery__v1 = GKEPodOperator(
@@ -367,7 +371,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_global_state_changes__v1 = GKEPodOperator(
@@ -386,7 +390,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_hard_bounces__v1 = GKEPodOperator(
@@ -405,7 +409,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     with TaskGroup(
@@ -438,7 +442,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_open__v1 = GKEPodOperator(
@@ -457,7 +461,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_send__v1 = GKEPodOperator(
@@ -476,7 +480,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_soft_bounce__v1 = GKEPodOperator(
@@ -495,7 +499,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_state_changes__v1 = GKEPodOperator(
@@ -514,7 +518,7 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     braze_external__braze_currents_pocket_hard_bounces__v1 = GKEPodOperator(
@@ -533,7 +537,11 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )
 
     with TaskGroup(
@@ -566,7 +574,11 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )
 
     braze_external__braze_currents_pocket_soft_bounce__v1 = GKEPodOperator(
@@ -585,7 +597,11 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )
 
     braze_external__braze_currents_pocket_unsubscribe__v1 = GKEPodOperator(
@@ -604,7 +620,11 @@ with DAG(
         ],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )
 
     with TaskGroup(
@@ -627,7 +647,11 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="open_time",
         depends_on_past=False,
     )
@@ -638,7 +662,11 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="send_time",
         depends_on_past=False,
     )

@@ -34,7 +34,7 @@ default_args = {
     "owner": "wlachance@mozilla.com",
     "start_date": datetime.datetime(2020, 11, 3, 0, 0),
     "end_date": None,
-    "email": ["wlachance@mozilla.com"],
+    "email": ["wlachance@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -73,7 +73,11 @@ with DAG(
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wlachance@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -86,7 +90,11 @@ with DAG(
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wlachance@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
@@ -97,7 +105,11 @@ with DAG(
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wlachance@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

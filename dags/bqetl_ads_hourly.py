@@ -33,7 +33,7 @@ default_args = {
     "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2025, 7, 10, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com"],
+    "email": ["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
@@ -84,7 +84,11 @@ with DAG(
         dataset_id="ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ahanot@mozilla.com",
-        email=["ahanot@mozilla.com", "cbeck@mozilla.com"],
+        email=[
+            "ahanot@mozilla.com",
+            "cbeck@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=[
@@ -99,7 +103,7 @@ with DAG(
         dataset_id="ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=[

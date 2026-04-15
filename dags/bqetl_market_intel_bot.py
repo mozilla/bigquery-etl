@@ -52,7 +52,7 @@ default_args = {
     "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2025, 9, 1, 0, 0),
     "end_date": None,
-    "email": ["lmcfall@mozilla.com"],
+    "email": ["lmcfall@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=2700),
     "email_on_failure": True,
@@ -93,7 +93,11 @@ with DAG(
         + ["--date", "{{ds}}"],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "kwindau@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         secrets=[
             external_derived__market_intel_bot__v1_bqetl_chrome_releases__open_ai_api_key,
             external_derived__market_intel_bot__v1_bqetl_market_intel_bot__github_token,

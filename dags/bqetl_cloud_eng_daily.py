@@ -33,7 +33,7 @@ default_args = {
     "owner": "wstuckey@mozilla.com",
     "start_date": datetime.datetime(2026, 3, 4, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+    "email": ["wstuckey@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -62,5 +62,5 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="wstuckey@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+        email=["wstuckey@mozilla.com"],
     )

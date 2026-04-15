@@ -33,7 +33,7 @@ default_args = {
     "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2025, 7, 3, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com"],
+    "email": ["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -71,7 +71,11 @@ with DAG(
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

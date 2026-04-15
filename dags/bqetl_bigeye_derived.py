@@ -83,7 +83,7 @@ default_args = {
     "owner": "phlee@mozilla.com",
     "start_date": datetime.datetime(2025, 7, 14, 0, 0),
     "end_date": None,
-    "email": ["phlee@mozilla.com"],
+    "email": ["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -112,7 +112,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__collection_service__v1_bqetl_bigeye_api_key,
         ],
@@ -127,7 +127,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__dashboard_service__v1_bqetl_bigeye_api_key,
         ],
@@ -142,7 +142,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__group_service__v1_bqetl_bigeye_api_key,
         ],
@@ -157,7 +157,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__issue_service__v1_bqetl_bigeye_api_key,
         ],
@@ -172,7 +172,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__metric_service__v1_bqetl_bigeye_api_key,
         ],
@@ -187,7 +187,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__user_service__v1_bqetl_bigeye_api_key,
         ],
@@ -202,7 +202,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__virtual_table_service__v1_bqetl_bigeye_api_key,
         ],
@@ -217,7 +217,7 @@ with DAG(
         + [],
         image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
             bigeye_derived__workspace_service__v1_bqetl_bigeye_api_key,
         ],

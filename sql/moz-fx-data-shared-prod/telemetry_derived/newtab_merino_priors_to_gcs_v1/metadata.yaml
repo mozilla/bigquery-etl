@@ -11,6 +11,7 @@ labels:
   owner1: cbeck
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
+  priority: 2
   arguments:
   - --source-project=moz-fx-data-shared-prod
   - --source-dataset=telemetry_derived

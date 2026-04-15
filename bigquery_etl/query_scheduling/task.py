@@ -624,7 +624,8 @@ class Task:
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
         task.depends_on_past = False
-        task.retries = 0
+        task.retries = 1
+        task.retry_delay = "5m"
         task.depends_on_fivetran = []
         task.referenced_tables = None
         task.depends_on = []

@@ -1036,7 +1036,8 @@ class TestGenerateQueryWithShredderMitigation:
                             previous_agg.submission_date,
                             previous_agg.column_1,
                             CAST(NULL AS STRING) AS column_2,
-                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
+                            IF(previous_agg.metric_1 IS NULL AND new_agg.metric_1 IS NULL, NULL, COALESCE(previous_agg.metric_1, 0) -
+                            COALESCE(new_agg.metric_1, 0)) AS metric_1
                           FROM
                             previous_agg
                           LEFT JOIN
@@ -1349,14 +1350,16 @@ class TestGenerateQueryWithShredderMitigation:
         ),
         backfilled_not_matching AS (
             SELECT
-              *
+              nv.*
             FROM
-              new_version
+              new_version AS nv
+            INNER JOIN previous AS pv USING (column_1, column_2)
             EXCEPT DISTINCT
             SELECT
-              *
+              pv.*
             FROM
-              previous
+              previous AS pv
+            INNER JOIN new_version AS nv USING (column_1, column_2)
         )
         SELECT
           IF(
@@ -1778,8 +1781,8 @@ class TestGenerateQueryWithShredderMitigation:
                                     "previous_agg.column_1",
                                     "previous_agg.column_2",
                                     "CAST(NULL AS STRING) AS column_3",
-                                    "COALESCE(previous_agg.metric_1, 0) - "
-                                    "COALESCE(new_agg.metric_1, 0) AS metric_1",
+                                    "IF(previous_agg.metric_1 IS NULL AND new_agg.metric_1 IS NULL, NULL,"
+                                    " COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0)) AS metric_1",
                                 ],
                                 from_clause="previous_agg LEFT JOIN new_agg ON "
                                 "previous_agg.column_1 = new_agg.column_1"
@@ -1994,7 +1997,8 @@ class TestGenerateQueryWithShredderMitigation:
                             previous_agg.submission_date,
                             previous_agg.column_1,
                             CAST(NULL AS STRING) AS column_2,
-                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
+                            IF(previous_agg.metric_1 IS NULL AND new_agg.metric_1 IS NULL, NULL, COALESCE(previous_agg.metric_1, 0) -
+                            COALESCE(new_agg.metric_1, 0)) AS metric_1
                           FROM
                             previous_agg
                           LEFT JOIN

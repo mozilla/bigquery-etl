@@ -172,7 +172,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     firefox_desktop_derived__desktop_retention_aggregates__v1 = bigquery_etl_query(

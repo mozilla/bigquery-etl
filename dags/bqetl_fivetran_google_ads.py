@@ -206,7 +206,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_google_ads_derived__android_app_campaign_stats__v1 = bigquery_dq_check(
@@ -220,7 +221,8 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
         + ["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_google_ads_derived__android_app_campaign_stats__v2 = bigquery_dq_check(
@@ -234,7 +236,8 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -13)}}"]
         + ["ltv_recorded_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_google_ads_derived__campaigns__v1 = bigquery_dq_check(
@@ -247,7 +250,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_google_ads_derived__campaigns__v2 = bigquery_dq_check(
@@ -260,7 +264,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -288,7 +293,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     google_ads_derived__accounts__v1 = bigquery_etl_query(

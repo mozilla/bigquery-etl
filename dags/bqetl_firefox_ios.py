@@ -190,7 +190,8 @@ with DAG(
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -222,7 +223,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -250,7 +252,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -295,7 +298,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_firefox_ios_derived__firefox_ios_clients__v1 = bigquery_dq_check(
@@ -309,7 +313,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_firefox_ios_derived__new_profile_activation__v2 = bigquery_dq_check(
@@ -326,7 +331,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     firefox_ios_derived__app_store_funnel__v1 = bigquery_etl_query(

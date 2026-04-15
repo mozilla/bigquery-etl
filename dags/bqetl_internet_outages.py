@@ -103,7 +103,8 @@ with DAG(
         email=["aplacitelli@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_internet_outages__global_outages__v2 = bigquery_dq_check(
@@ -116,7 +117,8 @@ with DAG(
         email=["aplacitelli@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     internet_outages__global_outages__v1 = bigquery_etl_query(

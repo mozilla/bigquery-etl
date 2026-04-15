@@ -149,7 +149,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     accounts_backend_derived__users_services_daily__v1.set_upstream(

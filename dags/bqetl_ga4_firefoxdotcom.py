@@ -286,7 +286,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     firefoxdotcom_derived__fbclid_desktop_conversion_events__v1 = bigquery_etl_query(

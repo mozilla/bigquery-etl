@@ -604,7 +604,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -649,7 +650,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -694,7 +696,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -739,7 +742,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -784,7 +788,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -829,7 +834,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -874,7 +880,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_firefox_desktop_derived__active_users_aggregates__v4 = bigquery_dq_check(
@@ -891,7 +898,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_firefox_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -908,7 +916,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_focus_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -925,7 +934,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_focus_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -942,7 +952,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_klar_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -959,7 +970,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -976,7 +988,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     fenix_active_users_aggregates_v3 = bigquery_etl_query(

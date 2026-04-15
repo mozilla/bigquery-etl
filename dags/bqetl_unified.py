@@ -164,7 +164,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -202,7 +203,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     telemetry_derived__unified_metrics__v1 = bigquery_etl_query(

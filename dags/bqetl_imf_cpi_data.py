@@ -63,7 +63,8 @@ with DAG(
         email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_external_derived__monthly_inflation__v1 = bigquery_dq_check(
@@ -76,7 +77,8 @@ with DAG(
         email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_external_derived__quarterly_inflation__v1 = bigquery_dq_check(
@@ -89,7 +91,8 @@ with DAG(
         email=["kbammarito@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     external_derived__gdp__v1 = GKEPodOperator(

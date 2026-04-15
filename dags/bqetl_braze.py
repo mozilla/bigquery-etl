@@ -249,7 +249,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__products__v1 = bigquery_dq_check(
@@ -262,7 +263,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__subscriptions__v1 = bigquery_dq_check(
@@ -275,7 +277,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__subscriptions_map__v1 = bigquery_dq_check(
@@ -288,7 +291,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__user_profiles__v1 = bigquery_dq_check(
@@ -301,7 +305,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__users__v1 = bigquery_dq_check(
@@ -314,7 +319,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -340,7 +346,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_external__users_previous_day_snapshot__v1 = bigquery_dq_check(
@@ -353,7 +360,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_firefox_subscriptions_sync__v1 = bigquery_dq_check(
@@ -367,7 +375,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_newsletters_sync__v1 = bigquery_dq_check(
@@ -381,7 +390,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_products_sync__v1 = bigquery_dq_check(
@@ -395,7 +405,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_users__v1 = bigquery_dq_check(
@@ -408,7 +419,8 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_users_sync__v1 = bigquery_dq_check(
@@ -422,7 +434,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__changed_waitlists_sync__v1 = bigquery_dq_check(
@@ -436,7 +449,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_braze_external__delete_users_sync__v1 = bigquery_dq_check(
@@ -450,7 +464,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     braze_derived__newsletters__v1.set_upstream(checks__fail_braze_derived__users__v1)

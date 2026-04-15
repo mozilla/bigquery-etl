@@ -157,7 +157,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
@@ -175,7 +176,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["session_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_telemetry_derived__cfs_ga4_attr__v1 = bigquery_dq_check(
@@ -188,7 +190,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -214,7 +217,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_mozilla_org_derived__ga_sessions__v2 = bigquery_dq_check(
@@ -228,7 +232,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_mozilla_org_derived__ga_sessions__v3 = bigquery_dq_check(
@@ -242,7 +247,8 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_mozilla_org_derived__www_site_hits__v2 = bigquery_dq_check(
@@ -255,7 +261,8 @@ with DAG(
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     firefox_desktop_derived__cfs_ga4_attr__v1 = bigquery_etl_query(

@@ -129,7 +129,8 @@ with DAG(
         start_date=datetime.datetime(2023, 9, 15, 0, 0),
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     with TaskGroup(
@@ -254,7 +255,8 @@ with DAG(
         start_date=datetime.datetime(2023, 9, 15, 0, 0),
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     client_probe_processes__v1 = bigquery_etl_query(

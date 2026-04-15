@@ -183,7 +183,8 @@ with DAG(
             email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
             depends_on_past=False,
             parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
+            retry_delay=datetime.timedelta(seconds=300),
+            retries=1,
         )
     )
 

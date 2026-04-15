@@ -73,7 +73,8 @@ with DAG(
         ],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     telemetry_derived__newtab_merino_extract__v3 = bigquery_etl_query(

@@ -154,7 +154,8 @@ with DAG(
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
         + ["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_google_ads_derived__glean_conversion_event_categorization__v1 = bigquery_dq_check(
@@ -168,7 +169,8 @@ with DAG(
         depends_on_past=False,
         parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
         + ["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     google_ads_derived__conversion_event_categorization__v2 = bigquery_etl_query(

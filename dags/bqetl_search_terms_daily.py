@@ -96,7 +96,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_search_terms_derived__suggest_impression_sanitized__v3 = bigquery_dq_check(
@@ -116,7 +117,8 @@ with DAG(
         ],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     search_terms_derived__adm_daily_aggregates__v1 = bigquery_etl_query(

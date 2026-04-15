@@ -72,7 +72,8 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_fivetran_costs_derived__incremental_mar__v1 = bigquery_dq_check(
@@ -85,7 +86,8 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_fivetran_costs_derived__monthly_costs__v1 = bigquery_dq_check(
@@ -98,7 +100,8 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     fivetran_costs_derived__daily_connector_costs__v1 = bigquery_etl_query(

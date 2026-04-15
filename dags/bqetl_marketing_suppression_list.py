@@ -136,7 +136,8 @@ with DAG(
         email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__warn_marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_dq_check(
@@ -149,7 +150,8 @@ with DAG(
         email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_etl_query(

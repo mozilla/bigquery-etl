@@ -101,7 +101,8 @@ with DAG(
         ],
         depends_on_past=False,
         task_concurrency=1,
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_telemetry_derived__newtab_merino_propensity__v1 = bigquery_dq_check(
@@ -128,7 +129,8 @@ with DAG(
             "--destination_table",
             "newtab_merino_propensity_v1",
         ],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     telemetry_derived__newtab_merino_priors__v1 = bigquery_etl_query(

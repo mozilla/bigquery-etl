@@ -115,7 +115,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
@@ -250,7 +249,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     checks__fail_search_terms_derived__adm_daily_aggregates_qa__v1.set_upstream(

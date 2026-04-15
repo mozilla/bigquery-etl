@@ -10,5 +10,5 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v2`
 WHERE
-  DATE(started_at) = CURRENT_DATE()
+  DATE(started_at) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
   AND status = 'SUCCESS';

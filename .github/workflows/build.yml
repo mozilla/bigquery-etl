@@ -144,7 +144,7 @@ jobs:
       - &restore-venv
         name: Restore cached virtualenv
         id: restore-venv
-        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -157,7 +157,7 @@ jobs:
       - name: Save cached virtualenv
         # Don't let forked PRs update the shared cache.
         if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
-        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: .venv
@@ -390,11 +390,11 @@ jobs:
           if [ -d /tmp/bigquery_etl_schemas ]; then
             cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
           fi
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: schema-cache
           path: /tmp/workspace/schema-cache
@@ -496,7 +496,7 @@ jobs:
           mkdir -p /tmp/workspace/staged-generated-sql
           cp -r sql/ /tmp/workspace/staged-generated-sql/sql
           cp -r tests/ /tmp/workspace/staged-generated-sql/tests
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
@@ -664,7 +664,7 @@ jobs:
           cp -r sql /tmp/debug_artifacts/sql
       - name: Upload debug artifacts
         if: failure()
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: validate-metadata-debug-artifacts
           path: /tmp/debug_artifacts
@@ -737,11 +737,11 @@ jobs:
           cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
 
           git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: private-generated-sql
           path: /tmp/workspace/private-generated-sql
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
           archive: false
@@ -857,7 +857,7 @@ jobs:
           $bqetl_script dag generate \
             --output-dir /tmp/workspace/main-generated-sql/dags
           rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: main-generated-sql
           path: /tmp/workspace/main-generated-sql
@@ -912,11 +912,11 @@ jobs:
 
           mkdir -p /tmp/workspace/private-generated-sql/dags
           mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: generated-sql-with-dags
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: private-generated-sql-with-dags
           path: /tmp/workspace/private-generated-sql
@@ -941,7 +941,7 @@ jobs:
           rm ~/telemetry-airflow/dags/* -f || true
           cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - name: Cache telemetry-airflow dependencies
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7  # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
           path: ~/telemetry-airflow/.venv
           # yamllint disable-line rule:line-length
@@ -962,7 +962,7 @@ jobs:
           source .venv/bin/activate
           python -m pytest tests/dags/test_dag_validity.py --junitxml=dag-test-results.xml
       - name: Upload test results
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           path: ~/telemetry-airflow/dag-test-results.xml
           archive: false
@@ -1013,7 +1013,7 @@ jobs:
           cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Upload diff artifact
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           path: /tmp/workspace/sql.diff
           archive: false
@@ -1261,7 +1261,7 @@ jobs:
       - name: Build distribution files
         run: python -m build --sdist --wheel
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e  # v1.13.0
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1.14.0
 
   sync-bigquery-etl-submodule:
     name: 🔃 Synchronize bigquery-etl submodule

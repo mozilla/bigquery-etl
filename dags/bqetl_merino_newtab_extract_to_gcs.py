@@ -93,6 +93,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        priority_weight=2,
     )
 
     telemetry_derived__newtab_merino_extract_to_gcs__v3 = GKEPodOperator(

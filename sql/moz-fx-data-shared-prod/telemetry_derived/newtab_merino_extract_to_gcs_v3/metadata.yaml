@@ -11,6 +11,7 @@ labels:
   owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_extract_to_gcs
+  priority: 2
   arguments:
   - --source-project=moz-fx-data-shared-prod
   - --source-dataset=telemetry_derived

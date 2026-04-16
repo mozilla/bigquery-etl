@@ -2,7 +2,6 @@
 
 import logging
 import random
-import re
 import time
 from argparse import ArgumentParser
 from datetime import datetime, timezone
@@ -176,8 +175,16 @@ def get_columns(client, table):
         WHERE fp.table_name = '{table_name}'
         ORDER BY c.ordinal_position, fp.field_path
     """
+    rows = list(client.query(query).result())
+
+    # Collect all field paths that are ARRAY types so we can detect nested ARRAYs.
+    # A leaf like `col.items.name` must be skipped if `col.items` is ARRAY<STRUCT>.
+    array_paths = {
+        row.field_path for row in rows if row.data_type.upper().startswith("ARRAY")
+    }
+
     results = []
-    for row in client.query(query).result():
+    for row in rows:
         field_path = row.field_path
         data_type = row.data_type
         column_name = row.column_name
@@ -187,6 +194,16 @@ def get_columns(client, table):
             top_level_data_type.upper().startswith("ARRAY")
             or column_name in TIER3_COLUMNS
         )
+
+        # Also catch leaves nested inside a deeper ARRAY<STRUCT> — e.g. col.items.name
+        # where col.items is ARRAY<STRUCT<...>>. top_level_data_type is STRUCT so the
+        # check above misses it; verify no ancestor path is an ARRAY.
+        if not is_tier3 and "." in field_path:
+            parts = field_path.split(".")
+            ancestors = [".".join(parts[:i]) for i in range(1, len(parts))]
+            if any(a in array_paths for a in ancestors):
+                is_tier3 = True
+
         if is_tier3:
             if field_path == column_name:
                 results.append((field_path, top_level_data_type, "undocumented"))
@@ -236,7 +253,7 @@ def build_profile_query(table, columns, partition_filter=None):
         if any(t in data_type.upper() for t in SKIP_DISTINCT_TYPES):
             col_stats.append(f"NULL AS `{alias}__distinct`")
         else:
-            col_stats.append(f"COUNT(DISTINCT {sql_ref}) AS `{alias}__distinct`")
+            col_stats.append(f"APPROX_COUNT_DISTINCT({sql_ref}) AS `{alias}__distinct`")
             col_stats.append(
                 f"APPROX_TOP_COUNT({sql_ref}, 50) AS `{alias}__top_values`"
             )
@@ -258,11 +275,29 @@ def build_profile_query(table, columns, partition_filter=None):
     return f"SELECT {select} FROM `{table}` {where}"
 
 
+def get_partition_filter(client, table):
+    """Return a WHERE clause filtering to a recent partition, or None if not partitioned.
+
+    Uses table metadata to detect the partition column rather than waiting for BQ
+    to throw a "partition filter required" error. Always applied when a partition exists,
+    even when the filter is not strictly required, to minimize bytes scanned.
+    """
+    table_ref = client.get_table(table)
+    tp = table_ref.time_partitioning
+    if tp is None:
+        return None
+    field = tp.field  # None means ingestion-time partitioning (_PARTITIONTIME)
+    if field:
+        return f"DATE(`{field}`) = DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)"
+    else:
+        return "_PARTITIONDATE = DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)"
+
+
 def check_table_has_rows(client, table):
-    """Return True if the table has at least one row, False if empty."""
+    """Return (total_rows, total_gb) if non-empty, (0, 0) if empty, (-1, 0) if not found."""
     project, dataset, table_name = table.split(".")
     query = f"""
-        SELECT total_rows
+        SELECT total_rows, total_logical_bytes
         FROM `{project}.region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
         WHERE project_id = '{project}'
         AND table_schema = '{dataset}'
@@ -271,13 +306,16 @@ def check_table_has_rows(client, table):
     rows = list(client.query(query).result())
     if not rows:
         logging.warning(f"Table not found in INFORMATION_SCHEMA: {table}")
-        return False
+        return -1, 0
     total_rows = rows[0].total_rows
+    total_gb = rows[0].total_logical_bytes / 1e9
     if total_rows == 0:
         logging.warning(f"Skipping {table} — table is empty (total_rows=0)")
-        return False
-    logging.info(f"Pre-flight check passed: {total_rows:,} rows in {table}")
-    return True
+        return 0, 0
+    logging.info(
+        f"Pre-flight check passed: {total_rows:,} rows, {total_gb:.2f} GB in {table}"
+    )
+    return total_rows, total_gb
 
 
 def profile_table(client, table):
@@ -286,44 +324,23 @@ def profile_table(client, table):
     columns = get_columns(client, table)
     logging.info(f"Found {len(columns)} columns in {table}")
 
-    # Run profile query without partition filter
-    profile_query = build_profile_query(table, columns)
-    partition_filter = None
+    # Detect partition column upfront and always apply a date filter when one exists.
+    # This limits the scan to a single recent day even when the filter is not required.
+    partition_filter = get_partition_filter(client, table)
+    if partition_filter:
+        logging.info(f"Partition filter applied: {partition_filter}")
+
+    profile_query = build_profile_query(table, columns, partition_filter)
 
     try:
         job = client.query(profile_query)
         rows = list(job.result())
-        logging.info(
-            f"Profile query processed {job.total_bytes_processed / 1e9:.2f} GB"
-        )
-    # if BQ throws "partition filter required" error, parses the partition column and retries with a 1 day window
+        bq_job_id = job.job_id
+        gb_scanned = job.total_bytes_processed / 1e9
+        logging.info(f"Profile query processed {gb_scanned:.4f} GB (job: {bq_job_id})")
     except Exception as e:
-        error_msg = str(e)
-        if "without a filter over column(s)" in error_msg:
-            match = re.search(r"filter over column\(s\) '([^']+)'", error_msg)
-            if not match:
-                logging.error(f"Could not parse partition column from error: {e}")
-                return {}
-            partition_col = match.group(1)
-            logging.info(
-                f"Partition filter required on '{partition_col}', retrying with 1-day window from 7 days ago"
-            )
-            partition_filter = (
-                f"DATE(`{partition_col}`) = DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)"
-            )
-            profile_query = build_profile_query(table, columns, partition_filter)
-            try:
-                job = client.query(profile_query)
-                rows = list(job.result())
-                logging.info(
-                    f"Profile query processed {job.total_bytes_processed / 1e9:.2f} GB"
-                )
-            except Exception as retry_e:
-                logging.error(f"Retry failed: {retry_e}")
-                return {}
-        else:
-            logging.error(f"Failed to profile {table}: {e}")
-            return {}
+        logging.error(f"Failed to profile {table}: {e}")
+        return {}, None, None
 
     row = rows[0]
     total_rows = row.total_rows
@@ -369,7 +386,7 @@ def profile_table(client, table):
                 "values": top_values[:5],
             }
 
-    return results
+    return results, bq_job_id, gb_scanned
 
 
 def build_description_prompt(table, col, stats):
@@ -522,20 +539,65 @@ def log_profile(table, profile):
             logging.info(f"    description:    {stats['pass1_description']}")
 
 
+PERF_LOG = "/tmp/gk_perf_phase1.csv"
+
+
+def write_perf_row(
+    table, bq_job_id, total_rows, table_gb, gb_scanned, column_count, elapsed_s
+):
+    """Append one row to the Phase 1 performance CSV."""
+    import csv
+    import os
+    from datetime import datetime, timezone
+
+    write_header = not os.path.exists(PERF_LOG)
+    with open(PERF_LOG, "a", newline="") as f:
+        writer = csv.writer(f)
+        if write_header:
+            writer.writerow(
+                [
+                    "timestamp_utc",
+                    "table",
+                    "bq_job_id",
+                    "total_rows",
+                    "table_gb",
+                    "gb_scanned",
+                    "column_count",
+                    "elapsed_s",
+                ]
+            )
+        writer.writerow(
+            [
+                datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                table,
+                bq_job_id or "",
+                total_rows,
+                f"{table_gb:.2f}",
+                f"{gb_scanned:.4f}" if gb_scanned is not None else "",
+                column_count,
+                f"{elapsed_s:.1f}",
+            ]
+        )
+
+
 def main():
     """Profile every column in a BigQuery table and save results to BigQuery."""
     args = parse_args()
     client = bigquery.Client(project=SOURCE_PROJECT)
-    if not check_table_has_rows(client, args.table):
+    total_rows, table_gb = check_table_has_rows(client, args.table)
+    if total_rows <= 0:
         return
     logging.info(f"Profiling {args.table}")
     start = time.time()
-    profile = profile_table(client, args.table)
+    profile, bq_job_id, gb_scanned = profile_table(client, args.table)
     profile = generate_descriptions(args.table, profile)
     elapsed = time.time() - start
     log_profile(args.table, profile)
     records = to_bq_records(args.table, profile)
     save_to_bq(records, DEST_TABLE)
+    write_perf_row(
+        args.table, bq_job_id, total_rows, table_gb, gb_scanned, len(profile), elapsed
+    )
     logging.info(f"Done in {elapsed:.1f}s")
 
 
@@ -545,9 +607,9 @@ if __name__ == "__main__":
     # --- TEST BLOCK — only used when no args are passed on the command line ---
     if len(sys.argv) == 1:
         sys.argv = [
-            "gk_field_sampler.py",
+            "field_profiler.py",
             "--table",
-            "moz-fx-data-shared-prod.firefox_desktop_derived.newtab_items_daily_v1",
+            "moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1",
         ]
     # ----------------------------------------
     main()

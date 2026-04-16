@@ -439,6 +439,23 @@ with DAG(
         )
     )
 
+    subscription_platform_backend_cirrus_derived__delete_events__v2 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_backend_cirrus_derived__delete_events__v2",
+            destination_table="delete_events_v2",
+            dataset_id="subscription_platform_backend_cirrus_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="dalvarez@mozilla.com",
+            email=[
+                "dalvarez@mozilla.com",
+                "kik@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     firefox_accounts_derived__exact_mau28__v1.set_upstream(
         firefox_accounts_derived__fxa_users_last_seen__v1
     )

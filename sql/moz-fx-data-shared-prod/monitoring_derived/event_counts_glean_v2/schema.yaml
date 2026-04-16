@@ -1,0 +1,50 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date of the aggregated events
+- mode: NULLABLE
+  name: app_id
+  type: STRING
+  description: Glean app id, e.g. "org_mozilla_firefox" for Firefox Android release channel
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: Name of the Glean application, e.g. "fenix"
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: Canonical app name defined in probe scraper, e.g. "Firefox for Android"
+- mode: NULLABLE
+  name: ping_type
+  type: STRING
+  description: The type of ping the event was sent in, e.g. "events".
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: The category of the event metric as defined in metrics.yaml
+- mode: NULLABLE
+  name: event_name
+  type: STRING
+  description: The name of the event metric as defined in metrics.yaml
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: The release channel the application
+- mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+  description: ISO 3166-1 alpha-2 country code
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: The display version of the application, e.g. "148.0.1"
+- mode: NULLABLE
+  name: event_extras_length
+  type: INTEGER
+  description: Approximation of the size of event extras in bytes of the aggregated events, taken as the length of the extras array as a JSON
+- mode: NULLABLE
+  name: total_events
+  type: INTEGER
+  description: Number of aggregated events
+

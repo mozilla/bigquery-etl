@@ -692,7 +692,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1677,7 +1678,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -2575,7 +2582,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3560,7 +3568,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -4458,7 +4472,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -5443,7 +5458,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

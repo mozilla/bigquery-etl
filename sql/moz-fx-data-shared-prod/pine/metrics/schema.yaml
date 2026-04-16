@@ -20836,6 +20836,22 @@ fields:
         may be incorrectly wiped due to transient I/O errors rather than actual corruption.
 
         '
+    - name: browser_engagement_windows_start_search_activation_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts Bing navigations on Windows that match the Windows Search
+        pattern, using the Bing base domain and `/search` path as heuristic signals.
+        This metric is intended as a proxy for Firefox activations originating from
+        Windows Start menu search.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -43382,6 +43398,42 @@ fields:
       description: 'The size of the db file during specific phases of initialization.
 
         '
+    - name: nimbus_qa_prefs_bool_default
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.bool-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_bool_user
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.bool-user" pref.
+
+        '
+    - name: nimbus_qa_prefs_int_default
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.int-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_int_user
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.int-user" pref.
+
+        '
+    - name: nimbus_qa_prefs_string_default
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.string-default" pref.
+
+        '
+    - name: nimbus_qa_prefs_string_user
+      type: JSON
+      mode: NULLABLE
+      description: 'The value of the "nimbus.qa.string-user" pref.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -45657,15 +45709,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

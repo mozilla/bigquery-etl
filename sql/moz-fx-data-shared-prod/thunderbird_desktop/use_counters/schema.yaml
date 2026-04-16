@@ -21343,6 +21343,102 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_css_doc_css_link_parameters
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property link-parameters.
+
+        '
+    - name: use_counter_css_page_css_link_parameters
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property link-parameters.
+
+        '
+    - name: use_counter_doc_serial_getports
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Serial.getPorts. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_serial_requestport
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called Serial.requestPort. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_serialport_open
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called SerialPort.open. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_serial_getports
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Serial.getPorts. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_serial_requestport
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called Serial.requestPort. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_serialport_open
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called SerialPort.open. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_serial_getports
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called Serial.getPorts. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_serialport_open
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called SerialPort.open. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_serial_getports
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called Serial.getPorts. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_serialport_open
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called SerialPort.open. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_serial_getports
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called Serial.getPorts. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_serialport_open
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called SerialPort.open. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

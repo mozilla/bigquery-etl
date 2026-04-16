@@ -129,7 +129,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_consented,
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
-      metrics.boolean.nimbus_qa_prefs_bool_user_value
+      metrics.boolean.nimbus_qa_prefs_bool_user_value,
+      metrics.boolean.browser_global_ai_control_is_blocking
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1134,7 +1135,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1878,7 +1880,8 @@ SELECT
       metrics.labeled_boolean.devtools_tool_registered,
       metrics.labeled_boolean.networking_doh_heuristic_ever_tripped,
       metrics.labeled_boolean.system_special_directory_appdata_fallback,
-      metrics.labeled_boolean.fog_subdir_err
+      metrics.labeled_boolean.fog_subdir_err,
+      metrics.labeled_boolean.genai_ai_controls_features_blocked
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1941,7 +1944,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(
       metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,
@@ -2274,7 +2283,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_consented,
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
-      metrics.boolean.nimbus_qa_prefs_bool_user_value
+      metrics.boolean.nimbus_qa_prefs_bool_user_value,
+      metrics.boolean.browser_global_ai_control_is_blocking
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3279,7 +3289,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4023,7 +4034,8 @@ SELECT
       metrics.labeled_boolean.devtools_tool_registered,
       metrics.labeled_boolean.networking_doh_heuristic_ever_tripped,
       metrics.labeled_boolean.system_special_directory_appdata_fallback,
-      metrics.labeled_boolean.fog_subdir_err
+      metrics.labeled_boolean.fog_subdir_err,
+      metrics.labeled_boolean.genai_ai_controls_features_blocked
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -4086,7 +4098,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(
       metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,
@@ -4439,7 +4457,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_consented,
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
-      metrics.boolean.nimbus_qa_prefs_bool_user_value
+      metrics.boolean.nimbus_qa_prefs_bool_user_value,
+      metrics.boolean.browser_global_ai_control_is_blocking
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5444,7 +5463,8 @@ SELECT
       metrics.labeled_counter.pdfjs_organize_action,
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
-      metrics.labeled_counter.network_cookies_open_error
+      metrics.labeled_counter.network_cookies_open_error,
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6188,7 +6208,8 @@ SELECT
       metrics.labeled_boolean.devtools_tool_registered,
       metrics.labeled_boolean.networking_doh_heuristic_ever_tripped,
       metrics.labeled_boolean.system_special_directory_appdata_fallback,
-      metrics.labeled_boolean.fog_subdir_err
+      metrics.labeled_boolean.fog_subdir_err,
+      metrics.labeled_boolean.genai_ai_controls_features_blocked
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -6251,7 +6272,13 @@ SELECT
       metrics.object.addons_manager_exception,
       metrics.object.fog_data_directory_info,
       metrics.object.glean_health_data_directory_info,
-      metrics.object.glean_database_load_sizes
+      metrics.object.glean_database_load_sizes,
+      metrics.object.nimbus_qa_prefs_bool_default,
+      metrics.object.nimbus_qa_prefs_bool_user,
+      metrics.object.nimbus_qa_prefs_int_default,
+      metrics.object.nimbus_qa_prefs_int_user,
+      metrics.object.nimbus_qa_prefs_string_default,
+      metrics.object.nimbus_qa_prefs_string_user
     ) AS `object`,
     STRUCT(
       metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie,

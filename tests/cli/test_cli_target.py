@@ -4,7 +4,7 @@ import click
 import pytest
 import yaml
 
-from bigquery_etl.cli.target import _confirm, _parse_duration, _persist_share
+from bigquery_etl.cli.target import _parse_duration, _persist_share
 from bigquery_etl.util.target import MANIFEST_FILENAME
 
 

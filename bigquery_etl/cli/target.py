@@ -45,12 +45,11 @@ def _find_matching_datasets(client, target_config, branch=None):
 
 def _parse_duration(value: str) -> timedelta:
     """Parse a duration string like '7d', '24h', '2w', '30m' into a timedelta."""
-    result = format_timedelta(value)
-    if not isinstance(result, timedelta):
+    if not value or not re.fullmatch(r"(\d+[wdhm])+", value):
         raise click.BadParameter(
             f"Invalid duration '{value}'. Use format like '7d', '24h', '2w', '30m'."
         )
-    return result
+    return format_timedelta(value)
 
 
 @click.group(help="Commands for managing target environments.")
@@ -146,7 +145,6 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
     if not matching:
         return
 
-    # build table-level filters
     cutoff = (
         datetime.now(timezone.utc) - _parse_duration(older_than) if older_than else None
     )
@@ -212,9 +210,13 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
     repeated. They can also be combined: --dataset narrows datasets, --table
     selects tables within those datasets.
 
+    --email can be repeated to grant access to multiple users in one command.
+
     Examples:
 
       ./bqetl --target dev target share --email teammate@mozilla.com
+
+      ./bqetl --target dev target share --email a@mozilla.com --email b@mozilla.com
 
       ./bqetl --target dev target share --email teammate@mozilla.com --role WRITER
 
@@ -228,7 +230,13 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
 
       ./bqetl --target dev target share --dry-run --email teammate@mozilla.com
     """)
-@click.option("--email", required=True, help="Email address of the user to share with.")
+@click.option(
+    "--email",
+    "emails",
+    required=True,
+    multiple=True,
+    help="Email address of the user to share with (repeatable).",
+)
 @click.option(
     "--role",
     type=click.Choice(["READER", "WRITER", "OWNER"], case_sensitive=False),
@@ -267,7 +275,7 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
 @block_coding_agents
 @click.pass_context
 def share(
-    ctx, email, role, branch, dataset_filters, table_names, dry_run, yes, sql_dir
+    ctx, emails, role, branch, dataset_filters, table_names, dry_run, yes, sql_dir
 ):
     """Share target artifacts with a teammate."""
     target_config = ctx.obj["target"]
@@ -286,6 +294,8 @@ def share(
             click.echo("No datasets match the given --dataset filter(s).")
             return
 
+    emails_str = ", ".join(emails)
+
     if table_names:
         tables_by_ds = _find_matching_tables(
             client, project_id, matching, names=table_names
@@ -295,7 +305,7 @@ def share(
             return
 
         total = sum(len(tbls) for tbls in tables_by_ds.values())
-        click.echo(f"\nWill grant {role} to {email} on {total} table(s):\n")
+        click.echo(f"\nWill grant {role} to {emails_str} on {total} table(s):\n")
         for ds_id in sorted(tables_by_ds):
             click.echo(f"  {ds_id}:")
             for tbl in sorted(tables_by_ds[ds_id], key=lambda t: t.table_id):
@@ -306,24 +316,33 @@ def share(
             return
 
         updated = 0
+        total_grants = total * len(emails)
         for ds_id, tables in tables_by_ds.items():
             for tbl in tables:
-                try:
-                    if _grant_table_access(client, tbl.reference, email, role):
+                for email in emails:
+                    try:
+                        if _grant_table_access(client, tbl.reference, email, role):
+                            click.echo(
+                                f"  {ds_id}.{tbl.table_id}: granted {role} to {email}"
+                            )
+                            updated += 1
+                        else:
+                            click.echo(
+                                f"  {ds_id}.{tbl.table_id}: {email} already has {role}"
+                            )
+                    except Exception as e:
                         click.echo(
-                            f"  {ds_id}.{tbl.table_id}: granted {role} to {email}"
+                            f"  {ds_id}.{tbl.table_id}: failed for {email} - {e}",
+                            err=True,
                         )
-                        updated += 1
-                    else:
-                        click.echo(
-                            f"  {ds_id}.{tbl.table_id}: {email} already has {role}"
-                        )
-                except Exception as e:
-                    click.echo(f"  {ds_id}.{tbl.table_id}: failed - {e}", err=True)
-                _persist_share(sql_dir, project_id, ds_id, tbl.table_id, email, role)
-        click.echo(f"\nUpdated {updated}/{total} table(s).")
+                    _persist_share(
+                        sql_dir, project_id, ds_id, tbl.table_id, email, role
+                    )
+        click.echo(f"\nUpdated {updated}/{total_grants} grant(s).")
     else:
-        click.echo(f"\nWill grant {role} to {email} on {len(matching)} dataset(s):\n")
+        click.echo(
+            f"\nWill grant {role} to {emails_str} on {len(matching)} dataset(s):\n"
+        )
         for ds in sorted(matching, key=lambda d: d.dataset_id):
             click.echo(f"  {ds.dataset_id}")
         click.echo()
@@ -331,7 +350,7 @@ def share(
         if not _confirm(len(matching), "dataset(s)", dry_run, yes, verb="share"):
             return
 
-        _share_datasets(client, matching, email, role)
+        _share_datasets(client, matching, emails, role)
 
 
 def _grant_dataset_access(client, dataset_ref, email, role):
@@ -374,17 +393,19 @@ def _grant_table_access(client, table_ref, email, role):
     return True
 
 
-def _share_datasets(client, datasets, email, role):
-    """Grant dataset-level access to multiple datasets."""
+def _share_datasets(client, datasets, emails, role):
+    """Grant dataset-level access to multiple datasets for multiple users."""
     updated = 0
+    total_grants = len(datasets) * len(emails)
     for ds in sorted(datasets, key=lambda d: d.dataset_id):
-        if _grant_dataset_access(client, ds.reference, email, role):
-            click.echo(f"  {ds.dataset_id}: granted {role} to {email}")
-            updated += 1
-        else:
-            click.echo(f"  {ds.dataset_id}: {email} already has {role}")
+        for email in emails:
+            if _grant_dataset_access(client, ds.reference, email, role):
+                click.echo(f"  {ds.dataset_id}: granted {role} to {email}")
+                updated += 1
+            else:
+                click.echo(f"  {ds.dataset_id}: {email} already has {role}")
 
-    click.echo(f"\nUpdated {updated}/{len(datasets)} dataset(s).")
+    click.echo(f"\nUpdated {updated}/{total_grants} grant(s).")
 
 
 def _persist_share(sql_dir, project_id, dataset_id, table_id, email, role):

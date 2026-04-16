@@ -557,12 +557,20 @@ def prepare_target_directory(
             if item.is_file():
                 shutil.copy2(item, target_dir / item.name)
 
+        # Preserve non-source keys (e.g. shared_with from `target share`) so
+        # _reapply_shared_access can re-apply them after re-deploy.
+        manifest_path = target_dir / MANIFEST_FILENAME
+        existing = {}
+        if manifest_path.exists():
+            existing = yaml.safe_load(manifest_path.read_text()) or {}
+
         manifest = {
+            **existing,
             "source_project": source_project,
             "source_dataset": source_dataset,
             "source_table": source_table,
         }
-        (target_dir / MANIFEST_FILENAME).write_text(yaml.dump(manifest))
+        manifest_path.write_text(yaml.dump(manifest))
 
         if copied_target_dirs is not None:
             copied_target_dirs.add(target_dir)

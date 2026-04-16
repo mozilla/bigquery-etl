@@ -7,6 +7,7 @@ description: |-
 
   Notes:
   - 2025-05-14: `normalized_channel` field added (backfilled up until 2023-04-08, prior to this the value will always be `null`)
+  - 2026-04-07: first-session ping no longer contains play store attribution, this now comes from play-store-attribution ping.
 owners:
 - mozilla/kpi_table_reviewers
 - kik@mozilla.com
@@ -35,6 +36,7 @@ references:
   - moz-fx-data-shared-prod.fenix.baseline_clients_first_seen
   - moz-fx-data-shared-prod.fenix.first_session
   - moz-fx-data-shared-prod.fenix.metrics
+  - moz-fx-data-shared-prod.fenix.play_store_attribution
 monitoring:
   enabled: true
   collection: Operational Checks

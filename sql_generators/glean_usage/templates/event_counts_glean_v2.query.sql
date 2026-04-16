@@ -37,7 +37,7 @@ WITH
         normalized_country_code,
         app_version
     )
-  {% if not outer_loop.last -%}
+  {% if not (outer_loop.last and loop.last) %}
     ,
   {% endif -%}
   {% endfor %}

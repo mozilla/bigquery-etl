@@ -44,8 +44,8 @@ def _find_matching_datasets(client, target_config, branch=None):
 
 
 def _parse_duration(value: str) -> timedelta:
-    """Parse a duration string like '7d', '24h', '2w', '30m' into a timedelta."""
-    if not value or not re.fullmatch(r"(\d+[wdhm])+", value):
+    """Parse a duration string like '7d', '24h', '2w', '30m', '30s' into a timedelta."""
+    if not value or not re.fullmatch(r"(\d+[wdhms])+", value):
         raise click.BadParameter(
             f"Invalid duration '{value}'. Use format like '7d', '24h', '2w', '30m'."
         )

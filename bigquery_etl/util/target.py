@@ -560,7 +560,7 @@ def prepare_target_directory(
         # Preserve non-source keys (e.g. shared_with from `target share`) so
         # _reapply_shared_access can re-apply them after re-deploy.
         manifest_path = target_dir / MANIFEST_FILENAME
-        existing = {}
+        existing: dict = {}
         if manifest_path.exists():
             existing = yaml.safe_load(manifest_path.read_text()) or {}
 

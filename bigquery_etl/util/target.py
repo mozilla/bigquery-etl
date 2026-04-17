@@ -20,6 +20,12 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 from jinja2 import Template
 
+from bigquery_etl.routine.parse_routine import (
+    PERSISTENT_UDF_RE,
+    ROUTINE_FILES,
+    routine_usage_pattern,
+)
+
 from ..config import ConfigLoader
 from ..deploy import deploy_table
 from . import extract_from_query_path
@@ -79,12 +85,62 @@ class Target:
     dataset: Optional[str] = attr.ib(default=None)
     artifact_prefix: Optional[str] = attr.ib(default=None)
 
+    # raw (unrendered) templates — preserved so that pattern-matching code
+    # (e.g. target clean) can parameterize git.branch / git.commit independently.
+    raw_dataset_prefix: Optional[str] = attr.ib(default=None)
+    raw_dataset: Optional[str] = attr.ib(default=None)
+    raw_artifact_prefix: Optional[str] = attr.ib(default=None)
+
     def __attrs_post_init__(self) -> None:
         """Check attributes."""
         if self.dataset is not None and self.dataset_prefix is not None:
             raise ValueError(
                 "Cannot specify both 'dataset' and 'dataset_prefix' in a target"
             )
+
+
+def _template_to_pattern(
+    template_str: str, branch: Optional[str] = None, anchor_end: bool = False
+) -> str:
+    """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
+
+    Known values (branch, username) are rendered literally; variable parts
+    (commit, artifact ids) become [a-zA-Z0-9_]+ regex wildcards.
+
+    Returns a ^-anchored regex string, optionally $-anchored.
+    """
+    _WILDCARD = "XBQETLWCX"
+    rendered = Template(template_str).render(
+        git={"branch": branch or _WILDCARD, "commit": _WILDCARD},
+        account=_get_account_context(),
+        artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
+    )
+
+    pattern = re.escape(sanitize_bq_id(rendered)).replace(_WILDCARD, "[a-zA-Z0-9_]+")
+
+    return f"^{pattern}$" if anchor_end else f"^{pattern}"
+
+
+def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
+    """Render a target's dataset template into a regex pattern for matching dataset names."""
+    template_str = target.raw_dataset or target.raw_dataset_prefix
+    if not template_str:
+        raise click.ClickException(
+            f"Target '{target.name}' has no dataset or dataset_prefix template. "
+            "Cannot determine which datasets belong to this target."
+        )
+    return _template_to_pattern(
+        template_str, branch=branch, anchor_end=bool(target.raw_dataset)
+    )
+
+
+def render_artifact_prefix_pattern(
+    target: Target, branch: Optional[str] = None
+) -> Optional[str]:
+    """Render a target's artifact_prefix template into a regex pattern for matching table names."""
+    if not target.raw_artifact_prefix:
+        return None
+    return _template_to_pattern(target.raw_artifact_prefix, branch=branch)
 
 
 def render_artifact_template(
@@ -171,7 +227,17 @@ def get_target(target: str) -> Target:
     if not targets_file.exists():
         raise Exception(f"Targets file not found: {targets_file}")
 
-    template = Template(targets_file.read_text(), undefined=_KeepUndefined)
+    raw_content = targets_file.read_text()
+
+    # Parse raw YAML to capture unrendered templates
+    raw_targets = yaml.safe_load(raw_content)
+    if not isinstance(raw_targets, dict) or target not in raw_targets:
+        raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+
+    raw_cfg = raw_targets[target] or {}
+
+    # Render git/account variables for the resolved Target
+    template = Template(raw_content, undefined=_KeepUndefined)
     rendered_content = template.render(
         git=_get_git_context(),
         account=_get_account_context(),
@@ -179,10 +245,11 @@ def get_target(target: str) -> Target:
 
     targets = yaml.safe_load(rendered_content)
 
-    if isinstance(targets, dict) and target in targets:
-        return cattrs.structure({**targets[target], "name": target}, Target)
-
-    raise Exception(f"Couldn't find target `{target}` in {targets_file}")
+    result = cattrs.structure({**targets[target], "name": target}, Target)
+    result.raw_dataset = raw_cfg.get("dataset")
+    result.raw_dataset_prefix = raw_cfg.get("dataset_prefix")
+    result.raw_artifact_prefix = raw_cfg.get("artifact_prefix")
+    return result
 
 
 def get_default_target_name() -> Optional[str]:
@@ -207,19 +274,36 @@ def get_default_target_name() -> Optional[str]:
     return None
 
 
-def _table_exists(client: bigquery.Client, table_ref: str) -> bool:
-    """Return True if the table exists in BigQuery."""
+def _artifact_exists(
+    client: bigquery.Client,
+    target_project: str,
+    dataset: str,
+    name: str,
+    is_routine: bool,
+) -> bool:
+    """Return True if the artifact (table or routine) exists in BigQuery."""
+    ref = f"{target_project}.{dataset}.{name}"
     try:
-        client.get_table(table_ref)
+        if is_routine:
+            client.get_routine(ref)
+        else:
+            client.get_table(ref)
         return True
     except NotFound:
         return False
 
 
-def get_deployed_tables_in_target(
-    sql_dir: str, target_project: str
+def _get_deployed_artifacts_in_target(
+    sql_dir: str,
+    target_project: str,
+    file_patterns: tuple,
+    is_routine: bool = False,
 ) -> Set[DeployedTableInfo]:
-    """Find all tables deployed in the target directory."""
+    """Find artifacts deployed in the target directory.
+
+    Scans for files matching file_patterns under <sql_dir>/<target_project>/,
+    checks that the artifact exists in BigQuery, and reads the source manifest.
+    """
     deployed: Set[DeployedTableInfo] = set()
     target_project_dir = Path(sql_dir) / target_project
 
@@ -228,39 +312,51 @@ def get_deployed_tables_in_target(
 
     client = bigquery.Client(project=target_project)
     seen_dirs: Set[Path] = set()
-    for pattern in ("query.sql", "script.sql", "part1.sql"):
-        for query_file in target_project_dir.rglob(pattern):
-            if query_file.parent in seen_dirs:
+    for pattern in file_patterns:
+        for artifact_file in target_project_dir.rglob(pattern):
+            if artifact_file.parent in seen_dirs:
                 continue
-            seen_dirs.add(query_file.parent)
+            seen_dirs.add(artifact_file.parent)
 
-            if query_file.parent.parent.parent != target_project_dir:
-                continue
-
-            table = query_file.parent.name
-            dataset = query_file.parent.parent.name
-
-            if not _table_exists(client, f"{target_project}.{dataset}.{table}"):
+            if artifact_file.parent.parent.parent != target_project_dir:
                 continue
 
-            source_project = None
-            source_dataset = None
-            source_table = None
-            manifest_file = query_file.parent / MANIFEST_FILENAME
-            if manifest_file.exists():
-                try:
-                    manifest = yaml.safe_load(manifest_file.read_text())
-                    source_project = manifest.get("source_project")
-                    source_dataset = manifest.get("source_dataset")
-                    source_table = manifest.get("source_table")
-                except Exception:
-                    pass
+            name = artifact_file.parent.name
+            dataset = artifact_file.parent.parent.name
+
+            if not _artifact_exists(client, target_project, dataset, name, is_routine):
+                continue
+
+            manifest_file = artifact_file.parent / MANIFEST_FILENAME
+            if not manifest_file.exists():
+                if is_routine:
+                    continue
+                deployed.add(
+                    DeployedTableInfo(
+                        target_project=target_project,
+                        target_dataset=dataset,
+                        target_table=name,
+                    )
+                )
+                continue
+
+            try:
+                manifest = yaml.safe_load(manifest_file.read_text())
+            except Exception:
+                continue
+
+            source_project = manifest.get("source_project")
+            source_dataset = manifest.get("source_dataset")
+            source_table = manifest.get("source_table")
+
+            if is_routine and not all([source_project, source_dataset, source_table]):
+                continue
 
             deployed.add(
                 DeployedTableInfo(
                     target_project=target_project,
                     target_dataset=dataset,
-                    target_table=table,
+                    target_table=name,
                     source_project=source_project,
                     source_dataset=source_dataset,
                     source_table=source_table,
@@ -268,6 +364,24 @@ def get_deployed_tables_in_target(
             )
 
     return deployed
+
+
+def get_deployed_tables_in_target(
+    sql_dir: str, target_project: str
+) -> Set[DeployedTableInfo]:
+    """Find all tables deployed in the target directory."""
+    return _get_deployed_artifacts_in_target(
+        sql_dir, target_project, ("query.sql", "script.sql", "part1.sql")
+    )
+
+
+def get_deployed_routines_in_target(
+    sql_dir: str, target_project: str
+) -> Set[DeployedTableInfo]:
+    """Find all routines deployed in the target directory."""
+    return _get_deployed_artifacts_in_target(
+        sql_dir, target_project, ROUTINE_FILES, is_routine=True
+    )
 
 
 def rewrite_query_references(
@@ -361,6 +475,33 @@ def rewrite_query_references(
             )
             sql = re.sub(pattern, replacement, sql)
 
+        # Also rewrite references to routines deployed in the target.
+        # Routine references can be 2-part (dataset.name) or 3-part
+        # (project.dataset.name), so we use routine_usage_pattern which
+        # handles both forms (matching only before a "(" call).
+        deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
+
+        for info in deployed_routines:
+            if (
+                info.source_project is None
+                or info.source_dataset is None
+                or info.source_table is None
+            ):
+                continue
+
+            expected = expected_target_dataset(info)
+            if expected is not None and info.target_dataset != expected:
+                continue
+
+            udf_pattern = routine_usage_pattern(
+                f"{info.source_dataset}.{info.source_table}",
+                info.source_project,
+            )
+            replacement = (
+                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
+            )
+            sql = udf_pattern.sub(replacement, sql)
+
     query_file.write_text(sql)
 
 
@@ -416,12 +557,20 @@ def prepare_target_directory(
             if item.is_file():
                 shutil.copy2(item, target_dir / item.name)
 
+        # Preserve non-source keys (e.g. shared_with from `target share`) so
+        # _reapply_shared_access can re-apply them after re-deploy.
+        manifest_path = target_dir / MANIFEST_FILENAME
+        existing: dict = {}
+        if manifest_path.exists():
+            existing = yaml.safe_load(manifest_path.read_text()) or {}
+
         manifest = {
+            **existing,
             "source_project": source_project,
             "source_dataset": source_dataset,
             "source_table": source_table,
         }
-        (target_dir / MANIFEST_FILENAME).write_text(yaml.dump(manifest))
+        manifest_path.write_text(yaml.dump(manifest))
 
         if copied_target_dirs is not None:
             copied_target_dirs.add(target_dir)
@@ -437,6 +586,16 @@ def prepare_target_directory(
             sql,
             count=1,
             flags=re.IGNORECASE,
+        )
+        target_query_file.write_text(sql)
+
+    # for routine files, rewrite the CREATE FUNCTION/PROCEDURE self-reference
+    if target_query_file.name in ("udf.sql", "stored_procedure.sql"):
+        sql = target_query_file.read_text()
+        sql = PERSISTENT_UDF_RE.sub(
+            rf"\g<prefix>`{effective_dataset}`.`{effective_table}`",
+            sql,
+            count=1,
         )
         target_query_file.write_text(sql)
 
@@ -491,6 +650,47 @@ def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
         return False
 
 
+IAM_ROLE_MAP = {
+    "READER": "roles/bigquery.dataViewer",
+    "WRITER": "roles/bigquery.dataEditor",
+    "OWNER": "roles/bigquery.dataOwner",
+}
+
+
+def _reapply_shared_access(client: bigquery.Client, table_ref: str, query_file: Path):
+    """Re-apply table-level sharing from the manifest after deploy."""
+    manifest_path = query_file.parent / MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return
+
+    manifest = yaml.safe_load(manifest_path.read_text()) or {}
+    shared_with = manifest.get("shared_with", [])
+    if not shared_with:
+        return
+
+    try:
+        table = client.get_table(table_ref)
+        policy = client.get_iam_policy(table)
+
+        for entry in shared_with:
+            iam_role = IAM_ROLE_MAP.get(entry["role"])
+            if not iam_role:
+                continue
+            member = f"user:{entry['email']}"
+
+            already = any(
+                b["role"] == iam_role and member in b.get("members", set())
+                for b in policy.bindings
+            )
+            if not already:
+                policy.bindings.append({"role": iam_role, "members": {member}})
+
+        client.set_iam_policy(table, policy)
+        click.echo(f"  Re-applied sharing for {len(shared_with)} user(s)")
+    except Exception as e:
+        logging.warning(f"Could not re-apply sharing: {e}")
+
+
 def auto_deploy_if_needed(
     query_file: Path,
     target_project: str,
@@ -510,6 +710,9 @@ def auto_deploy_if_needed(
         click.echo(f"✅ Deployed: {table_ref}")
     except Exception as e:
         click.echo(f"⚠️  Deployment failed: {e}")
+        return
+
+    _reapply_shared_access(client, table_ref, query_file)
 
 
 def prepare_target_files(

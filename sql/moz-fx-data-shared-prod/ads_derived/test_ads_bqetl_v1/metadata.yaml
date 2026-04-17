@@ -33,3 +33,4 @@ bigquery:
     fields:
     - advertiser
     - country
+deprecated: true

@@ -1,6 +1,6 @@
 SELECT
   MIN(`timestamp`) AS submission_timestamp,
-  jsonPayload.fields.nimbus_user_id AS nimbus_user_id,
+  JSON_VALUE(TO_JSON(jsonPayload.fields), '$.nimbus_user_id') AS nimbus_user_id,
 FROM
   `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
 WHERE
@@ -11,6 +11,6 @@ WHERE
   )
   AND DATE(`timestamp`) = @submission_date
   AND jsonPayload.type = 'glean.user.delete'
-  AND jsonPayload.fields.nimbus_user_id IS NOT NULL
+  AND JSON_VALUE(TO_JSON(jsonPayload.fields), '$.nimbus_user_id') IS NOT NULL
 GROUP BY
-  jsonPayload.fields.nimbus_user_id
+  nimbus_user_id

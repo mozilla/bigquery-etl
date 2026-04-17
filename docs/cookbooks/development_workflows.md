@@ -91,7 +91,7 @@ With `--defer-to-target`:
 
 Without `--defer-to-target` (default): no rewrites — all references stay pointed at prod.
 
-### 3. Deploy artifacts without running _(future)_
+### 3. Deploy artifacts without running
 
 ```bash
 # Deploy table schema only (no data)
@@ -102,7 +102,14 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
 
 # Deploy a UDF
 ./bqetl --target dev deploy --routines udf.normalize_metadata
+
+# Deploy tables and views together, rewriting references to target
+./bqetl --target dev deploy --tables --views --defer-to-target \
+  telemetry_derived.clients_daily_v6
 ```
+
+Supports `--defer-to-target` (same as `query run`) and `--dry-run` to preview
+without making changes.
 
 ### 4. Backfill testing  _(future)_
 
@@ -113,13 +120,42 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
   telemetry_derived.clients_daily_v6
 ```
 
-### 5. Share with teammates _(future)_
+### 5. Share with teammates
 
 ```bash
-./bqetl --target dev share telemetry_derived.clients_daily_v6 \
-  --email teammate@mozilla.com \
-  --role READER
+# Grant read access to all datasets for the current branch
+./bqetl --target dev target share --email teammate@mozilla.com
+
+# Grant write access
+./bqetl --target dev target share --email teammate@mozilla.com --role WRITER
+
+# Share only datasets for a specific branch
+./bqetl --target dev target share --branch feature-xyz --email teammate@mozilla.com
+
+# Narrow to datasets containing "telemetry_derived"
+./bqetl --target dev target share --dataset telemetry_derived --email teammate@mozilla.com
+
+# Share specific tables within matched datasets
+./bqetl --target dev target share --table tbl1 --table tbl2 --email teammate@mozilla.com
+
+# Combine: specific table within specific dataset
+./bqetl --target dev target share --dataset telemetry_derived --table clients_daily_v6 --email teammate@mozilla.com
+
+# Preview without sharing
+./bqetl --target dev target share --dry-run --email teammate@mozilla.com
 ```
+
+Datasets are discovered automatically from the target's naming pattern in
+`bqetl_targets.yaml` (same as `target clean`). Use `--branch` to narrow by branch,
+`--dataset` to filter by dataset name substring. Both are repeatable.
+
+Without `--table`, grants dataset-level access to matched datasets.
+With `--table`, grants table-level IAM access to specific tables within matched
+datasets (repeatable). `--dataset` and `--table` can be combined.
+Table-level sharing is persisted in the local manifest so it is re-applied
+automatically on re-deploy.
+
+Supports `READER` (default), `WRITER`, and `OWNER` roles.
 
 ### 6. Clean up dev deployments
 

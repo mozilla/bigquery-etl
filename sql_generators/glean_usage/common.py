@@ -10,6 +10,7 @@ from pathlib import Path
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
@@ -197,6 +198,44 @@ def get_glean_app_metrics(v1_name: str) -> dict[str, dict]:
     resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/metrics")
     resp.raise_for_status()
     return resp.json()
+
+
+def get_prod_datasets_with_event() -> List[str]:
+    """Get glean datasets with an events table in generated schemas."""
+    return [
+        s.bq_dataset_family
+        for s in get_stable_table_schemas()
+        if s.schema_id.startswith("moz://mozilla.org/schemas/glean/ping/")
+        and s.bq_table == "events_v1"
+    ]
+
+
+def get_tables_with_events(
+    v1_name: str, bq_dataset_name: str, skip_min_ping: bool
+) -> Set[str]:
+    """Get tables for the given app that receive event type metrics."""
+    pings = set()
+    metrics_json = get_glean_app_metrics(v1_name)
+    min_pings = set()
+    if skip_min_ping:
+        ping_json = get_glean_app_pings(v1_name)
+        min_pings = {
+            name
+            for name, info in ping_json.items()
+            if not info["history"][-1].get("include_info_sections", True)
+        }
+
+    for _, metric in metrics_json.items():
+        if metric.get("type", None) == "event":
+            latest_history = metric.get("history", [])[-1]
+            pings.update(latest_history.get("send_in_pings", []))
+
+    if bq_dataset_name in get_prod_datasets_with_event():
+        pings.add("events")
+
+    pings = pings.difference(min_pings)
+
+    return pings
 
 
 class GleanTable:

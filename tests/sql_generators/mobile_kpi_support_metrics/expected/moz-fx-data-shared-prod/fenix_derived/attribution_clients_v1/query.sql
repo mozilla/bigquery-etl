@@ -119,6 +119,66 @@ first_session_ping AS (
     sample_id,
     normalized_channel
 ),
+play_store_attribution_ping_base AS (
+  SELECT
+    client_info.client_id,
+    sample_id,
+    normalized_channel,
+    submission_timestamp,
+    ping_info.seq AS ping_seq,
+    NULLIF(metrics.string.play_store_attribution_campaign, "") AS play_store_attribution_campaign,
+    NULLIF(metrics.string.play_store_attribution_medium, "") AS play_store_attribution_medium,
+    NULLIF(metrics.string.play_store_attribution_source, "") AS play_store_attribution_source,
+    NULLIF(metrics.string.play_store_attribution_content, "") AS play_store_attribution_content,
+    NULLIF(metrics.string.play_store_attribution_term, "") AS play_store_attribution_term,
+    NULLIF(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      ""
+    ) AS play_store_attribution_install_referrer_response,
+  FROM
+    `moz-fx-data-shared-prod.fenix.play_store_attribution`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    -- We stopped receiving play_store_attribution via the first-session ping on 2026-04-07 including this filter
+    -- to only start using the new ping starting one day prior to this to ensure consistency.
+    AND DATE(submission_timestamp) >= "2026-04-06"
+    AND client_info.client_id IS NOT NULL
+),
+play_store_attribution_ping AS (
+  SELECT
+    client_id,
+    sample_id,
+    normalized_channel,
+    ARRAY_AGG(
+      IF(
+        play_store_attribution_campaign IS NOT NULL
+        OR play_store_attribution_medium IS NOT NULL
+        OR play_store_attribution_source IS NOT NULL
+        OR play_store_attribution_content IS NOT NULL
+        OR play_store_attribution_term IS NOT NULL
+        OR play_store_attribution_install_referrer_response IS NOT NULL,
+        STRUCT(
+          play_store_attribution_campaign,
+          play_store_attribution_medium,
+          play_store_attribution_source,
+          submission_timestamp AS play_store_attribution_timestamp,
+          play_store_attribution_content,
+          play_store_attribution_term,
+          play_store_attribution_install_referrer_response
+        ),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC,
+        submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS play_store_info,
+  FROM
+    play_store_attribution_ping_base
+  GROUP BY
+    ALL
+),
 metrics_ping_base AS (
   SELECT
     client_info.client_id AS client_id,
@@ -196,7 +256,10 @@ SELECT
   normalized_channel,
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
-  first_session_ping.play_store_info,
+  COALESCE(
+    play_store_attribution_ping.play_store_info,
+    first_session_ping.play_store_info
+  ) AS play_store_info,
   first_session_ping.meta_info,
   COALESCE(
     first_session_ping.distribution_id,
@@ -205,6 +268,9 @@ SELECT
   ) AS distribution_id,
 FROM
   new_profiles
+LEFT JOIN
+  play_store_attribution_ping
+  USING (client_id, sample_id, normalized_channel)
 LEFT JOIN
   first_session_ping
   USING (client_id, sample_id, normalized_channel)

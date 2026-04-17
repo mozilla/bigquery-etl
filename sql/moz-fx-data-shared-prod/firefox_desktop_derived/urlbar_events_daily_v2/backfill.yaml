@@ -1,8 +1,11 @@
 2026-04-17:
   start_date: 2025-01-01
   end_date: 2026-04-17
-  reason: Jan 2025+ discrepancy test without shredder mitigation for https://mozilla-hub.atlassian.net/browse/DENG-10777.
-`shredder_mitigation` is set to False from this backfill on, in alignment with the business requirement; "Doing YoY computations we need to be measuring the same historically".
+  reason: |
+    Jan 2025+ discrepancy test without shredder mitigation for https://mozilla-hub.atlassian.net/browse/DENG-10777.
+
+    The `shredder_mitigation` is set to False from this backfill on
+    in alignment with the business requirement; "Doing YoY computations we need to be measuring the same historically".
   watchers:
   - kbammarito@mozilla.com
   - nflorez@mozilla.com

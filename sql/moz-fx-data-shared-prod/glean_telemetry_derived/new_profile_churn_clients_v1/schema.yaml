@@ -185,7 +185,7 @@ fields:
 - name: day_0
   type: STRING
   mode: NULLABLE
-  description: Active first day - day 0
+  description: Whether the client qualified as DAU on their first seen date (Day 0).
 - name: day_1
   type: STRING
   mode: NULLABLE

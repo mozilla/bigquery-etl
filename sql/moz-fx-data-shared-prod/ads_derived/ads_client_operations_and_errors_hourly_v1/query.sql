@@ -22,7 +22,11 @@ WITH ios_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
+    {% endif %}
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2026-02-01")
@@ -53,7 +57,11 @@ android_release_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
+    {% endif %}
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2026-02-01")
@@ -84,7 +92,11 @@ android_nightly_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    {% endif %}
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= DATE("2026-02-01")

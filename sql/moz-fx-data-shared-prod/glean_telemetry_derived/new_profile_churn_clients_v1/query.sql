@@ -443,7 +443,7 @@ SELECT
   -- Clients active on day 0 or day 1 are excluded (they become churn_risk_after_7_days instead)
   -- NULL if day 4 data not yet available
   CASE
-    WHEN days_data_available < 4
+    WHEN days_data_available < 5
       THEN NULL
     WHEN day_0 IS NULL
       AND day_1 IS NULL

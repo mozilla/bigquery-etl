@@ -1,0 +1,9 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Earliest timestamp of the account deletion log entry for this nimbus_user_id on the given date
+- name: nimbus_user_id
+  type: STRING
+  mode: NULLABLE
+  description: Pre-derived Nimbus user identifier logged by payments-api at account deletion time

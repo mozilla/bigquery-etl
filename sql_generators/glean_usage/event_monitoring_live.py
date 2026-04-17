@@ -4,15 +4,13 @@ import os
 from collections import OrderedDict, namedtuple
 from datetime import datetime
 from pathlib import Path
-from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
-    get_glean_app_metrics,
-    get_glean_app_pings,
+    get_prod_datasets_with_event,
     get_table_dir,
+    get_tables_with_events,
     render,
     table_names_from_baseline,
     write_sql,
@@ -36,43 +34,6 @@ class EventMonitoringLive(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.common_render_kwargs = {}
         self.base_table_name = "events_v1"
-
-    def _get_prod_datasets_with_event(self) -> List[str]:
-        """Get glean datasets with an events table in generated schemas."""
-        return [
-            s.bq_dataset_family
-            for s in get_stable_table_schemas()
-            if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-            and s.bq_table == "events_v1"
-        ]
-
-    def _get_tables_with_events(
-        self, v1_name: str, bq_dataset_name: str, skip_min_ping: bool
-    ) -> Set[str]:
-        """Get tables for the given app that receive event type metrics."""
-        pings = set()
-        metrics_json = get_glean_app_metrics(v1_name)
-
-        min_pings = set()
-        if skip_min_ping:
-            ping_json = get_glean_app_pings(v1_name)
-            min_pings = {
-                name
-                for name, info in ping_json.items()
-                if not info["history"][-1].get("include_info_sections", True)
-            }
-
-        for _, metric in metrics_json.items():
-            if metric.get("type", None) == "event":
-                latest_history = metric.get("history", [])[-1]
-                pings.update(latest_history.get("send_in_pings", []))
-
-        if bq_dataset_name in self._get_prod_datasets_with_event():
-            pings.add("events")
-
-        pings = pings.difference(min_pings)
-
-        return pings
 
     def generate_per_app_id(
         self,
@@ -123,9 +84,7 @@ class EventMonitoringLive(GleanTable):
             events_tables = events_table_overwrites[app_name]
         else:
             v1_name = app_id_info["v1_name"]
-            events_tables = self._get_tables_with_events(
-                v1_name, dataset, skip_min_ping=True
-            )
+            events_tables = get_tables_with_events(v1_name, dataset, skip_min_ping=True)
             events_tables = [
                 f"{ping.replace('-', '_')}_v1"
                 for ping in events_tables
@@ -259,7 +218,7 @@ class EventMonitoringLive(GleanTable):
                     v1_name = app_dataset["v1_name"]
                     event_tables = [
                         f"{ping.replace('-', '_')}_v1"
-                        for ping in self._get_tables_with_events(
+                        for ping in get_tables_with_events(
                             v1_name,
                             app_dataset["bq_dataset_family"],
                             skip_min_ping=True,
@@ -281,7 +240,7 @@ class EventMonitoringLive(GleanTable):
             table=target_view_name,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
             apps=list(apps.values()),
-            prod_datasets=self._get_prod_datasets_with_event(),
+            prod_datasets=get_prod_datasets_with_event(),
             event_tables_per_dataset=event_tables_per_dataset,
             manual_refresh_apps=manual_refresh_apps,
         )

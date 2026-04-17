@@ -557,12 +557,20 @@ def prepare_target_directory(
             if item.is_file():
                 shutil.copy2(item, target_dir / item.name)
 
+        # Preserve non-source keys (e.g. shared_with from `target share`) so
+        # _reapply_shared_access can re-apply them after re-deploy.
+        manifest_path = target_dir / MANIFEST_FILENAME
+        existing: dict = {}
+        if manifest_path.exists():
+            existing = yaml.safe_load(manifest_path.read_text()) or {}
+
         manifest = {
+            **existing,
             "source_project": source_project,
             "source_dataset": source_dataset,
             "source_table": source_table,
         }
-        (target_dir / MANIFEST_FILENAME).write_text(yaml.dump(manifest))
+        manifest_path.write_text(yaml.dump(manifest))
 
         if copied_target_dirs is not None:
             copied_target_dirs.add(target_dir)
@@ -642,6 +650,47 @@ def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
         return False
 
 
+IAM_ROLE_MAP = {
+    "READER": "roles/bigquery.dataViewer",
+    "WRITER": "roles/bigquery.dataEditor",
+    "OWNER": "roles/bigquery.dataOwner",
+}
+
+
+def _reapply_shared_access(client: bigquery.Client, table_ref: str, query_file: Path):
+    """Re-apply table-level sharing from the manifest after deploy."""
+    manifest_path = query_file.parent / MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return
+
+    manifest = yaml.safe_load(manifest_path.read_text()) or {}
+    shared_with = manifest.get("shared_with", [])
+    if not shared_with:
+        return
+
+    try:
+        table = client.get_table(table_ref)
+        policy = client.get_iam_policy(table)
+
+        for entry in shared_with:
+            iam_role = IAM_ROLE_MAP.get(entry["role"])
+            if not iam_role:
+                continue
+            member = f"user:{entry['email']}"
+
+            already = any(
+                b["role"] == iam_role and member in b.get("members", set())
+                for b in policy.bindings
+            )
+            if not already:
+                policy.bindings.append({"role": iam_role, "members": {member}})
+
+        client.set_iam_policy(table, policy)
+        click.echo(f"  Re-applied sharing for {len(shared_with)} user(s)")
+    except Exception as e:
+        logging.warning(f"Could not re-apply sharing: {e}")
+
+
 def auto_deploy_if_needed(
     query_file: Path,
     target_project: str,
@@ -661,6 +710,9 @@ def auto_deploy_if_needed(
         click.echo(f"✅ Deployed: {table_ref}")
     except Exception as e:
         click.echo(f"⚠️  Deployment failed: {e}")
+        return
+
+    _reapply_shared_access(client, table_ref, query_file)
 
 
 def prepare_target_files(

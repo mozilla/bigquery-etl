@@ -90,6 +90,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_backend_cirrus_derived/delete_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_backend_cirrus_derived/delete_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_eng_base_v1/query.sql
   - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_locale_base_v1/query.sql
   - sql/moz-fx-data-shared-prod/sumo_metrics_derived/translation_daily_locale_base_v1/query.sql

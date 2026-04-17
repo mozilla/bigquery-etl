@@ -13161,7 +13161,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -18904,8 +18905,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the number of times the user performs a page organization
-        action (copy, cut, delete, move, paste), exports selected pages, or saves
-        a PDF modified through page organization.
+        action (copy, cut, delete, merge, move, paste), exports selected pages, or
+        saves a PDF modified through page organization.
 
         '
     - name: netwerk_happy_eyeballs_https_record_available

@@ -8407,8 +8407,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the number of times the user performs a page organization
-        action (copy, cut, delete, move, paste), exports selected pages, or saves
-        a PDF modified through page organization.
+        action (copy, cut, delete, merge, move, paste), exports selected pages, or
+        saves a PDF modified through page organization.
 
         '
     - name: netwerk_happy_eyeballs_https_record_available

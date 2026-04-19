@@ -364,6 +364,7 @@ bqetl_experiments_daily:
 # queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:
   schedule_interval: 0 5 * * *
+  catchup: true
   description: |
     Daily exports of query data marked as public to GCS.
 

@@ -445,12 +445,12 @@ SELECT
   CASE
     WHEN days_data_available < 5
       THEN NULL
-    WHEN day_0 IS NULL
-      AND day_1 IS NULL
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      THEN "churn_risk"
+    WHEN day_1 IS FALSE
+      AND day_2 IS FALSE
+      AND day_3 IS FALSE
+      AND day_4 IS FALSE
+      THEN TRUE
+     ELSE FALSE
   END AS churn_risk_after_5_days,
   -- Active on day 0 or day 1, then no activity on days 2-6; at risk of churning by day 7
   -- NULL if day 6 data not yet available

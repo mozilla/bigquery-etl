@@ -4,6 +4,7 @@
   reason: Need to backfill table because we had to fix a field. See https://mozilla-hub.atlassian.net/browse/DENG-10977.
   watchers:
   - kbammarito@mozilla.com
+  - rrando@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

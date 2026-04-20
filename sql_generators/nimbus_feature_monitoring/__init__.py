@@ -1,12 +1,11 @@
 """Experiment monitoring materialized view generation."""
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import click
-import yaml
+from metric_config_parser.nimbus_feature_monitoring import NimbusFeatureMonitoringSpec
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -47,7 +46,7 @@ class SourceTable:
     dimensions: list[Dimension]
     analysis_unit_id: str = "client_info.client_id"
     time_partition_field: str = "submission_timestamp"
-    is_events_stream: bool = False
+    type: str = "metrics"
 
     def __post_init__(self):
         self.last_dimensions = [d for d in self.dimensions if d.aggregator == "last"]
@@ -68,7 +67,7 @@ class Metric:
         self.is_labeled = isinstance(self, LabeledMetric)
 
     @classmethod
-    def from_(_, source_is_events_stream=False, **kwargs) -> "Metric":
+    def from_(_, source_type="metrics", **kwargs) -> "Metric":
         data_type = kwargs["data_type"]
 
         if (_key := "field") not in kwargs:
@@ -86,7 +85,7 @@ class Metric:
         if (_key := "ping_aggregator") not in kwargs:
             if data_type in ("boolean", "labeled_boolean"):
                 kwargs[_key] = "logical_or"
-            elif data_type == "event" and source_is_events_stream:
+            elif data_type == "event" and source_type == "event_stream":
                 kwargs[_key] = "countif"
             else:
                 kwargs[_key] = "sum"
@@ -129,8 +128,10 @@ class Feature:
         ]
 
 
-def generate_queries(project, path, write_dir):
+def generate_queries(project, path, write_dir, config_path=None):
     """Generate nimbus feature monitoring queries."""
+    if config_path is None:
+        config_path = path
     env = Environment(
         loader=FileSystemLoader(template_dir := path / "nimbus_feature_monitoring_v1"),
         keep_trailing_newline=True,
@@ -139,11 +140,11 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for app_config_path in path.glob("*.yaml"):
-        app_config = yaml.safe_load(app_config_path.read_text())
-        dataset = app_config["dataset"]
+    for app_config_path in config_path.glob("*.toml"):
+        app_config = NimbusFeatureMonitoringSpec.from_file(app_config_path)
+        dataset = app_config.dataset
         source_tables = {}
-        for source_name, source in app_config["source_tables"].items():
+        for source_name, source in app_config.source_tables.items():
             if source is None:
                 source = {}
             dimensions = []
@@ -165,7 +166,7 @@ def generate_queries(project, path, write_dir):
                 **source,
             )
         features = []
-        for feat_name, feat in app_config["features"].items():
+        for feat_name, feat in app_config.features.items():
             metrics_by_source = {}
             for source_name, source_metrics in feat.pop(
                 "metrics_by_source", {}
@@ -185,9 +186,9 @@ def generate_queries(project, path, write_dir):
                                         event_name=metric.pop(
                                             "event_name", metric_name
                                         ),
-                                        source_is_events_stream=source_tables[
+                                        source_type=source_tables[
                                             source_name
-                                        ].is_events_stream,
+                                        ].type,
                                         **metric,
                                     )
                                 )
@@ -260,8 +261,19 @@ def generate_queries(project, path, write_dir):
 )
 @click.option(
     "--path",
-    help="Where query directories will be searched for.",
+    help="Where query directories (SQL templates) will be searched for.",
     default="sql_generators/nimbus_feature_monitoring/templates",
+    required=False,
+    type=click.Path(file_okay=False),
+)
+@click.option(
+    "--config-path",
+    "--config_path",
+    help=(
+        "Directory containing TOML app config files (e.g. from metric-hub). "
+        "Defaults to --path if not specified."
+    ),
+    default=None,
     required=False,
     type=click.Path(file_okay=False),
 )
@@ -273,6 +285,11 @@ def generate_queries(project, path, write_dir):
     type=click.Path(file_okay=False),
 )
 @use_cloud_function_option
-def generate(target_project, path, output_dir, use_cloud_function):
+def generate(target_project, path, config_path, output_dir, use_cloud_function):
     """Generate the nimbus feature monitoring views."""
-    generate_queries(target_project, Path(path), Path(output_dir))
+    generate_queries(
+        target_project,
+        Path(path),
+        Path(output_dir),
+        config_path=Path(config_path) if config_path else None,
+    )

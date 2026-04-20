@@ -428,9 +428,9 @@ fields:
     - name: crash_stack_traces
       type: JSON
       mode: NULLABLE
-      description: Stack traces extracted from the crash minidump, if available. These
-        are sent in pings, however they are extracted and transformed into a different
-        format. The field in the extra file is meant only for client use.
+      description: Stack traces extracted from the crash minidump, if available. A
+        serialized JSON object (with a structure matching the associated Glean object
+        description).
   - name: quantity
     type: RECORD
     mode: NULLABLE

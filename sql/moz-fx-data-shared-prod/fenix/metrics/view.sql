@@ -2024,7 +2024,11 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
       metrics.labeled_timing_distribution.xpi_database_rebuilds,
-      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration,
+      metrics.labeled_timing_distribution.javascript_gc_animation,
+      metrics.labeled_timing_distribution.javascript_gc_budget_overrun,
+      metrics.labeled_timing_distribution.javascript_gc_max_pause,
+      metrics.labeled_timing_distribution.javascript_gc_total_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4178,7 +4182,11 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
       metrics.labeled_timing_distribution.xpi_database_rebuilds,
-      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration,
+      metrics.labeled_timing_distribution.javascript_gc_animation,
+      metrics.labeled_timing_distribution.javascript_gc_budget_overrun,
+      metrics.labeled_timing_distribution.javascript_gc_max_pause,
+      metrics.labeled_timing_distribution.javascript_gc_total_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6352,7 +6360,11 @@ SELECT
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
       metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
       metrics.labeled_timing_distribution.xpi_database_rebuilds,
-      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration
+      metrics.labeled_timing_distribution.dns_trr_http3_0rtt_state_duration,
+      metrics.labeled_timing_distribution.javascript_gc_animation,
+      metrics.labeled_timing_distribution.javascript_gc_budget_overrun,
+      metrics.labeled_timing_distribution.javascript_gc_max_pause,
+      metrics.labeled_timing_distribution.javascript_gc_total_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

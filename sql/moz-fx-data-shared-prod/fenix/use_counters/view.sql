@@ -2850,7 +2850,11 @@ SELECT
       metrics.counter.use_counter_worker_service_serial_getports,
       metrics.counter.use_counter_worker_service_serialport_open,
       metrics.counter.use_counter_worker_shared_serial_getports,
-      metrics.counter.use_counter_worker_shared_serialport_open
+      metrics.counter.use_counter_worker_shared_serialport_open,
+      metrics.counter.use_counter_doc_element_requestfullscreen,
+      metrics.counter.use_counter_doc_requested_keyboard_lock,
+      metrics.counter.use_counter_page_element_requestfullscreen,
+      metrics.counter.use_counter_page_requested_keyboard_lock
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5724,7 +5728,11 @@ SELECT
       metrics.counter.use_counter_worker_service_serial_getports,
       metrics.counter.use_counter_worker_service_serialport_open,
       metrics.counter.use_counter_worker_shared_serial_getports,
-      metrics.counter.use_counter_worker_shared_serialport_open
+      metrics.counter.use_counter_worker_shared_serialport_open,
+      metrics.counter.use_counter_doc_element_requestfullscreen,
+      metrics.counter.use_counter_doc_requested_keyboard_lock,
+      metrics.counter.use_counter_page_element_requestfullscreen,
+      metrics.counter.use_counter_page_requested_keyboard_lock
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8598,7 +8606,11 @@ SELECT
       metrics.counter.use_counter_worker_service_serial_getports,
       metrics.counter.use_counter_worker_service_serialport_open,
       metrics.counter.use_counter_worker_shared_serial_getports,
-      metrics.counter.use_counter_worker_shared_serialport_open
+      metrics.counter.use_counter_worker_shared_serialport_open,
+      metrics.counter.use_counter_doc_element_requestfullscreen,
+      metrics.counter.use_counter_doc_requested_keyboard_lock,
+      metrics.counter.use_counter_page_element_requestfullscreen,
+      metrics.counter.use_counter_page_requested_keyboard_lock
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11472,7 +11484,11 @@ SELECT
       metrics.counter.use_counter_worker_service_serial_getports,
       metrics.counter.use_counter_worker_service_serialport_open,
       metrics.counter.use_counter_worker_shared_serial_getports,
-      metrics.counter.use_counter_worker_shared_serialport_open
+      metrics.counter.use_counter_worker_shared_serialport_open,
+      metrics.counter.use_counter_doc_element_requestfullscreen,
+      metrics.counter.use_counter_doc_requested_keyboard_lock,
+      metrics.counter.use_counter_page_element_requestfullscreen,
+      metrics.counter.use_counter_page_requested_keyboard_lock
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14346,7 +14362,11 @@ SELECT
       metrics.counter.use_counter_worker_service_serial_getports,
       metrics.counter.use_counter_worker_service_serialport_open,
       metrics.counter.use_counter_worker_shared_serial_getports,
-      metrics.counter.use_counter_worker_shared_serialport_open
+      metrics.counter.use_counter_worker_shared_serialport_open,
+      metrics.counter.use_counter_doc_element_requestfullscreen,
+      metrics.counter.use_counter_doc_requested_keyboard_lock,
+      metrics.counter.use_counter_page_element_requestfullscreen,
+      metrics.counter.use_counter_page_requested_keyboard_lock
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

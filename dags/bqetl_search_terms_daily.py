@@ -177,25 +177,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
-        task_id="search_terms_derived__aggregated_search_terms_daily__v1",
-        destination_table="aggregated_search_terms_daily_v1",
-        dataset_id="search_terms_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="rburwei@mozilla.com",
-        email=[
-            "ads-data-team@mozilla.com",
-            "cbeck@mozilla.com",
-            "najiang@mozilla.com",
-            "rburwei@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-    )
-
     search_terms_derived__search_terms_daily__v1 = bigquery_etl_query(
         task_id="search_terms_derived__search_terms_daily__v1",
         destination_table="search_terms_daily_v1",
@@ -208,25 +189,6 @@ with DAG(
             "ctroy@mozilla.com",
             "najiang@mozilla.com",
             "rburwei@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-    )
-
-    search_terms_derived__suggest_impression_sanitized__v2 = bigquery_etl_query(
-        task_id="search_terms_derived__suggest_impression_sanitized__v2",
-        destination_table="suggest_impression_sanitized_v2",
-        dataset_id="search_terms_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ctroy@mozilla.com",
-        email=[
-            "ads-data-team@mozilla.com",
-            "cbeck@mozilla.com",
-            "ctroy@mozilla.com",
-            "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
@@ -271,10 +233,6 @@ with DAG(
 
     search_terms_derived__adm_daily_dma_aggregates__v1.set_upstream(
         checks__fail_search_terms_derived__suggest_impression_sanitized__v3
-    )
-
-    search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(
-        search_terms_derived__suggest_impression_sanitized__v2
     )
 
     search_terms_derived__suggest_impression_sanitized__v3.set_upstream(

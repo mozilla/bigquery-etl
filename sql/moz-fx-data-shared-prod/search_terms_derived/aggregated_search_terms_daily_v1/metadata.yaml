@@ -5,12 +5,7 @@ description: |-
 owners:
 - rburwei@mozilla.com
 labels:
-  dag: bqetl_search_terms_daily
   owner1: rburwei
-scheduling:
-  dag_name: bqetl_search_terms_daily
-  arguments:
-  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

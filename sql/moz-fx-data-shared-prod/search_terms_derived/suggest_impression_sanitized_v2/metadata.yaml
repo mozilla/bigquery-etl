@@ -11,12 +11,7 @@ owners:
 - ctroy@mozilla.com
 labels:
   incremental: true
-  dag: bqetl_search_terms_daily
   owner1: ctroy
-scheduling:
-  dag_name: bqetl_search_terms_daily
-  arguments:
-  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

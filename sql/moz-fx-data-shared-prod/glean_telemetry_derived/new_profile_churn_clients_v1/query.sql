@@ -3,7 +3,9 @@ WITH activity_range AS (
     client_id,
     first_seen_date,
     submission_date,
-    days_desktop_active_bits
+    days_desktop_active_bits,
+    sample_id,
+    DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
   WHERE
@@ -121,6 +123,7 @@ client_attributes AS (
       FALSE
     ) AS is_desktop,
     last_seen.policies_is_enterprise,
+    sample_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
   LEFT JOIN
@@ -128,7 +131,7 @@ client_attributes AS (
     USING (submission_date, client_id)
   LEFT JOIN
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
-    ON last_seen.client_id = first_seen.client_id
+    USING (client_id, sample_id)
   WHERE
       -- Pull attributes from each client's cohort date (first seen day) row
     last_seen.submission_date = last_seen.first_seen_date
@@ -138,256 +141,319 @@ client_attributes AS (
 client_level AS (
   SELECT
     client_id,
+    sample_id,
     first_seen_date,
     DATE_DIFF(max_date, first_seen_date, DAY) AS days_data_available,
     days_since_last_data,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 0 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 0
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 0
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_0,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 1 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 1
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 1
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_1,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 2 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 2
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 2
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_2,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 3 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 3
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 3
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_3,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 4 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 4
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 4
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_4,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 5 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 5
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 5
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_5,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 6
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 6
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_6,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 7 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 7
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 7
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_7,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 8 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 8
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 8
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_8,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 9 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 9
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 9
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_9,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 10 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 10
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 10
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_10,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 11 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 11
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 11
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_11,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 12 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 12
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 12
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_12,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 13 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 13
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 13
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_13,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 14 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 14
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 14
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_14,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 15 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 15
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 15
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_15,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 16 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 16
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 16
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_16,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 17 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 17
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 17
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_17,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 18 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 18
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 18
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_18,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 19 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 19
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 19
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_19,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 20 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 20
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 20
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_20,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 21 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 21
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 21
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_21,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 22 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 22
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 22
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_22,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 23 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 23
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 23
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_23,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 24 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 24
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 24
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_24,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 25 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 25
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 25
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_25,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 26 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 26
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 26
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_26,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 27 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 27
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 27
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_27,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 28 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 28
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 28
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_28,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 29 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 29
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 29
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_29,
     MAX(
-      IF(
-        submission_date = DATE_ADD(first_seen_date, INTERVAL 30 DAY)
-        AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0,
-        "active",
-        NULL
-      )
+      CASE
+        WHEN days_since_first_seen = 30
+          AND mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0
+          THEN TRUE
+        WHEN days_since_first_seen = 30
+          THEN FALSE
+        ELSE NULL
+      END
     ) AS day_30
   FROM
     activity_range
@@ -395,12 +461,14 @@ client_level AS (
     max_available_date
   GROUP BY
     client_id,
+    sample_id,
     first_seen_date,
     max_date,
     days_since_last_data
 )
 SELECT
-  client_level.client_id,
+  client_id,
+  sample_id,
   first_seen_date AS cohort_date,
   days_data_available,
   days_since_last_data,
@@ -450,27 +518,18 @@ SELECT
       AND day_3 IS FALSE
       AND day_4 IS FALSE
       THEN TRUE
-     ELSE FALSE
+    ELSE FALSE
   END AS churn_risk_after_5_days,
-  -- Active on day 0 or day 1, then no activity on days 2-6; at risk of churning by day 7
+  -- No activity on days 2-6; at risk of churning by day 7
   -- NULL if day 6 data not yet available
   CASE
     WHEN days_data_available < 6
       THEN NULL
-    WHEN day_0 IS NULL
-      AND day_1 IS NULL
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      AND day_5 IS NULL
-      AND day_6 IS NULL
-      THEN "churn_risk"
-    WHEN (day_0 = "active" OR day_1 = "active")
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      AND day_5 IS NULL
-      AND day_6 IS NULL
+    WHEN day_2 = FALSE
+      AND day_3 = FALSE
+      AND day_4 = FALSE
+      AND day_5 = FALSE
+      AND day_6 = FALSE
       THEN "churn_risk"
   END AS churn_risk_after_7_days,
   -- Active on day 0, then no activity for the next 28 days
@@ -478,35 +537,35 @@ SELECT
   CASE
     WHEN days_data_available < 28
       THEN NULL
-    WHEN day_0 = "active"
-      AND day_1 IS NULL
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      AND day_5 IS NULL
-      AND day_6 IS NULL
-      AND day_7 IS NULL
-      AND day_8 IS NULL
-      AND day_9 IS NULL
-      AND day_10 IS NULL
-      AND day_11 IS NULL
-      AND day_12 IS NULL
-      AND day_13 IS NULL
-      AND day_14 IS NULL
-      AND day_15 IS NULL
-      AND day_16 IS NULL
-      AND day_17 IS NULL
-      AND day_18 IS NULL
-      AND day_19 IS NULL
-      AND day_20 IS NULL
-      AND day_21 IS NULL
-      AND day_22 IS NULL
-      AND day_23 IS NULL
-      AND day_24 IS NULL
-      AND day_25 IS NULL
-      AND day_26 IS NULL
-      AND day_27 IS NULL
-      AND day_28 IS NULL
+    WHEN day_0 = TRUE
+      AND day_1 = FALSE
+      AND day_2 = FALSE
+      AND day_3 = FALSE
+      AND day_4 = FALSE
+      AND day_5 = FALSE
+      AND day_6 = FALSE
+      AND day_7 = FALSE
+      AND day_8 = FALSE
+      AND day_9 = FALSE
+      AND day_10 = FALSE
+      AND day_11 = FALSE
+      AND day_12 = FALSE
+      AND day_13 = FALSE
+      AND day_14 = FALSE
+      AND day_15 = FALSE
+      AND day_16 = FALSE
+      AND day_17 = FALSE
+      AND day_18 = FALSE
+      AND day_19 = FALSE
+      AND day_20 = FALSE
+      AND day_21 = FALSE
+      AND day_22 = FALSE
+      AND day_23 = FALSE
+      AND day_24 = FALSE
+      AND day_25 = FALSE
+      AND day_26 = FALSE
+      AND day_27 = FALSE
+      AND day_28 = FALSE
       THEN "churned"
   END AS churned_after_1_day,
   -- Active on days 0 and 1, then no activity for the next 28 days
@@ -514,75 +573,108 @@ SELECT
   CASE
     WHEN days_data_available < 29
       THEN NULL
-    WHEN day_0 = "active"
-      AND day_1 = "active"
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      AND day_5 IS NULL
-      AND day_6 IS NULL
-      AND day_7 IS NULL
-      AND day_8 IS NULL
-      AND day_9 IS NULL
-      AND day_10 IS NULL
-      AND day_11 IS NULL
-      AND day_12 IS NULL
-      AND day_13 IS NULL
-      AND day_14 IS NULL
-      AND day_15 IS NULL
-      AND day_16 IS NULL
-      AND day_17 IS NULL
-      AND day_18 IS NULL
-      AND day_19 IS NULL
-      AND day_20 IS NULL
-      AND day_21 IS NULL
-      AND day_22 IS NULL
-      AND day_23 IS NULL
-      AND day_24 IS NULL
-      AND day_25 IS NULL
-      AND day_26 IS NULL
-      AND day_27 IS NULL
-      AND day_28 IS NULL
-      AND day_29 IS NULL
+    WHEN day_0 = TRUE
+      AND day_1 = TRUE
+      AND day_2 = FALSE
+      AND day_3 = FALSE
+      AND day_4 = FALSE
+      AND day_5 = FALSE
+      AND day_6 = FALSE
+      AND day_7 = FALSE
+      AND day_8 = FALSE
+      AND day_9 = FALSE
+      AND day_10 = FALSE
+      AND day_11 = FALSE
+      AND day_12 = FALSE
+      AND day_13 = FALSE
+      AND day_14 = FALSE
+      AND day_15 = FALSE
+      AND day_16 = FALSE
+      AND day_17 = FALSE
+      AND day_18 = FALSE
+      AND day_19 = FALSE
+      AND day_20 = FALSE
+      AND day_21 = FALSE
+      AND day_22 = FALSE
+      AND day_23 = FALSE
+      AND day_24 = FALSE
+      AND day_25 = FALSE
+      AND day_26 = FALSE
+      AND day_27 = FALSE
+      AND day_28 = FALSE
+      AND day_29 = FALSE
       THEN "churned"
   END AS churned_after_2_days,
   -- Client is in the cohort but never active across the entire 30-day window
   -- NULL if day 30 data not yet available
   CASE
-    WHEN days_data_available < 30
+    WHEN days_data_available < 28
       THEN NULL
-    WHEN day_0 IS NULL
-      AND day_1 IS NULL
-      AND day_2 IS NULL
-      AND day_3 IS NULL
-      AND day_4 IS NULL
-      AND day_5 IS NULL
-      AND day_6 IS NULL
-      AND day_7 IS NULL
-      AND day_8 IS NULL
-      AND day_9 IS NULL
-      AND day_10 IS NULL
-      AND day_11 IS NULL
-      AND day_12 IS NULL
-      AND day_13 IS NULL
-      AND day_14 IS NULL
-      AND day_15 IS NULL
-      AND day_16 IS NULL
-      AND day_17 IS NULL
-      AND day_18 IS NULL
-      AND day_19 IS NULL
-      AND day_20 IS NULL
-      AND day_21 IS NULL
-      AND day_22 IS NULL
-      AND day_23 IS NULL
-      AND day_24 IS NULL
-      AND day_25 IS NULL
-      AND day_26 IS NULL
-      AND day_27 IS NULL
-      AND day_28 IS NULL
-      AND day_29 IS NULL
-      AND day_30 IS NULL
+    WHEN day_0 = FALSE
+      AND day_1 = FALSE
+      AND day_2 = FALSE
+      AND day_3 = FALSE
+      AND day_4 = FALSE
+      AND day_5 = FALSE
+      AND day_6 = FALSE
+      AND day_7 = FALSE
+      AND day_8 = FALSE
+      AND day_9 = FALSE
+      AND day_10 = FALSE
+      AND day_11 = FALSE
+      AND day_12 = FALSE
+      AND day_13 = FALSE
+      AND day_14 = FALSE
+      AND day_15 = FALSE
+      AND day_16 = FALSE
+      AND day_17 = FALSE
+      AND day_18 = FALSE
+      AND day_19 = FALSE
+      AND day_20 = FALSE
+      AND day_21 = FALSE
+      AND day_22 = FALSE
+      AND day_23 = FALSE
+      AND day_24 = FALSE
+      AND day_25 = FALSE
+      AND day_26 = FALSE
+      AND day_27 = FALSE
+      AND day_28 = FALSE
+      AND day_29 = FALSE
+      AND day_30 = FALSE
       THEN "immediately_churned"
+    WHEN day_0 = TRUE
+      OR day_1 = TRUE
+      OR day_2 = TRUE
+      OR day_3 = TRUE
+      OR day_4 = TRUE
+      OR day_5 = TRUE
+      OR day_6 = TRUE
+      OR day_7 = TRUE
+      OR day_8 = TRUE
+      OR day_9 = TRUE
+      OR day_10 = TRUE
+      OR day_11 = TRUE
+      OR day_12 = TRUE
+      OR day_13 = TRUE
+      OR day_14 = TRUE
+      OR day_15 = TRUE
+      OR day_16 = TRUE
+      OR day_17 = TRUE
+      OR day_18 = TRUE
+      OR day_19 = TRUE
+      OR day_20 = TRUE
+      OR day_21 = TRUE
+      OR day_22 = TRUE
+      OR day_23 = TRUE
+      OR day_24 = TRUE
+      OR day_25 = TRUE
+      OR day_26 = TRUE
+      OR day_27 = TRUE
+      OR day_28 = TRUE
+      OR day_29 = TRUE
+      OR day_30 = TRUE
+      THEN "not_immediately_churned"
+    ELSE NULL
   END AS immediately_churned,
   day_0,
   day_1,
@@ -619,4 +711,4 @@ FROM
   client_level
 LEFT JOIN
   client_attributes
-  ON client_level.client_id = client_attributes.client_id;
+  USING (client_id, sample_id)

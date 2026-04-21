@@ -17,5 +17,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
+    fields: [cohort_date]
 require_column_descriptions: true

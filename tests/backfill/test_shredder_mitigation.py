@@ -1350,16 +1350,14 @@ class TestGenerateQueryWithShredderMitigation:
         ),
         backfilled_not_matching AS (
             SELECT
-              nv.*
+              *
             FROM
-              new_version AS nv
-            INNER JOIN previous AS pv USING (column_1, column_2)
+              new_version
             EXCEPT DISTINCT
             SELECT
-              pv.*
+              *
             FROM
-              previous AS pv
-            INNER JOIN new_version AS nv USING (column_1, column_2)
+              previous
         )
         SELECT
           IF(

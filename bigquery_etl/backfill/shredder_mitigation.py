@@ -863,17 +863,12 @@ def generate_query_with_shredder_mitigation(
         group_by_clause="ALL",
     )
 
-    dimension_columns = [new.partitioning["field"]] + [
-        dim.name for dim in common_dimensions if dim.name != new.partitioning["field"]
-    ]
-
     checks_for_mitigation_sql = reformat(
         checks_for_mitigation_template.render(
             previous_version_cte=previous.query_cte,
             previous_version=previous_checks_query,
             new_version_cte=new.query_cte,
             new_version=new_checks_query,
-            dimension_columns=dimension_columns,
         )
     )
     write_sql(

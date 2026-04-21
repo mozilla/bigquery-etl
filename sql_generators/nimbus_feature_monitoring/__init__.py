@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import click
-from metric_config_parser.nimbus_feature_monitoring import NimbusFeatureMonitoringSpec
+from metric_config_parser.featmon import FeatmonSpec
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -141,16 +141,16 @@ def generate_queries(project, path, write_dir, config_path=None):
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
     for app_config_path in config_path.glob("*.toml"):
-        app_config = NimbusFeatureMonitoringSpec.from_file(app_config_path)
+        app_config = FeatmonSpec.from_file(app_config_path)
         dataset = app_config.dataset
         source_tables = {}
-        for source_name, source in app_config.source_tables.items():
-            if source is None:
-                source = {}
+        for source_name, source in app_config.data_sources.items():
             dimensions = []
-            for dim_name, dim in source.pop("dimensions", {}).items():
+            for dim_name, dim in source.dimensions.items():
                 if dim is None:
                     dim = {}
+                else:
+                    dim = dict(dim)
                 dimensions.append(
                     Dimension(
                         name=dim_name,
@@ -160,17 +160,17 @@ def generate_queries(project, path, write_dir, config_path=None):
                 )
             source_tables[source_name] = SourceTable(
                 name=source_name,
-                project=source.pop("project", project),
-                dataset=source.pop("dataset", dataset),
+                project=project,
+                dataset=dataset,
                 dimensions=dimensions,
-                **source,
+                table_name=source.table_name,
+                analysis_unit_id=source.analysis_unit_id,
+                type=source.type,
             )
         features = []
         for feat_name, feat in app_config.features.items():
             metrics_by_source = {}
-            for source_name, source_metrics in feat.pop(
-                "metrics_by_source", {}
-            ).items():
+            for source_name, source_metrics in feat.metrics_by_source.items():
                 metrics_by_source[source_name] = metrics = []
                 for data_type, data_type_metrics in source_metrics.items():
                     if data_type == "event":
@@ -204,11 +204,10 @@ def generate_queries(project, path, write_dir, config_path=None):
             features.append(
                 Feature(
                     name=feat_name,
-                    project=feat.pop("project", project),
-                    dataset=feat.pop("dataset", f"{dataset}_derived"),
-                    ratios=feat.pop("ratios", []),
+                    project=project,
+                    dataset=f"{dataset}_derived",
+                    ratios=[],
                     metrics_by_source=metrics_by_source,
-                    **feat,
                 )
             )
 

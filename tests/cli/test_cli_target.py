@@ -4,7 +4,11 @@ import click
 import pytest
 import yaml
 
-from bigquery_etl.cli.target import _parse_duration, _persist_share
+from bigquery_etl.cli.target import (
+    _parse_duration,
+    _persist_share,
+    _rewrite_target_references,
+)
 from bigquery_etl.util.target import MANIFEST_FILENAME
 
 
@@ -82,3 +86,44 @@ class TestPersistShare:
     def test_no_manifest_is_noop(self, tmp_path):
         _persist_share(tmp_path, "proj", "ds", "tbl", "a@b.com", "READER")
         assert not (tmp_path / "proj" / "ds" / "tbl" / MANIFEST_FILENAME).exists()
+
+
+class TestRewriteTargetReferences:
+    def _setup(self, tmp_path):
+        project_dir = tmp_path / "proj"
+        (project_dir / "ds" / "tbl").mkdir(parents=True)
+        (project_dir / "ds2" / "tbl2").mkdir(parents=True)
+        return project_dir
+
+    def test_replaces_in_sql_and_yaml(self, tmp_path):
+        project_dir = self._setup(tmp_path)
+        sql_file = project_dir / "ds" / "tbl" / "query.sql"
+        sql_file.write_text("SELECT * FROM proj.user_oldname_ds.tbl")
+        yaml_file = project_dir / "ds" / "tbl" / "metadata.yaml"
+        yaml_file.write_text("owners:\n  - user_oldname_owner\n")
+
+        _rewrite_target_references(str(tmp_path), "proj", "oldname", "newname")
+
+        assert "user_newname_ds.tbl" in sql_file.read_text()
+        assert "user_newname_owner" in yaml_file.read_text()
+
+    def test_skips_non_sql_yaml(self, tmp_path):
+        project_dir = self._setup(tmp_path)
+        txt_file = project_dir / "ds" / "tbl" / "notes.txt"
+        txt_file.write_text("oldname should stay")
+
+        _rewrite_target_references(str(tmp_path), "proj", "oldname", "newname")
+
+        assert txt_file.read_text() == "oldname should stay"
+
+    def test_short_sanitized_is_noop(self, tmp_path):
+        project_dir = self._setup(tmp_path)
+        sql_file = project_dir / "ds" / "tbl" / "query.sql"
+        sql_file.write_text("SELECT abc FROM t")
+
+        _rewrite_target_references(str(tmp_path), "proj", "abc", "xyz")
+
+        assert sql_file.read_text() == "SELECT abc FROM t"
+
+    def test_missing_project_dir_is_noop(self, tmp_path):
+        _rewrite_target_references(str(tmp_path), "nonexistent", "oldname", "newname")

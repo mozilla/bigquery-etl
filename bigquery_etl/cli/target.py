@@ -11,14 +11,18 @@ import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from bigquery_etl.cli.deploy import deploy as deploy_cmd
+
 from ..cli.utils import sql_dir_option
 from ..query_scheduling.formatters import format_timedelta
 from ..util.common import block_coding_agents
 from ..util.target import (
     IAM_ROLE_MAP,
     MANIFEST_FILENAME,
+    _reapply_shared_access,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
+    sanitize_bq_id,
 )
 
 log = logging.getLogger(__name__)
@@ -351,6 +355,315 @@ def share(
             return
 
         _share_datasets(client, matching, emails, role)
+
+
+@target.command(
+    "rename-branch",
+    help="""Rename a branch's target deployment in BigQuery.
+
+    Useful after renaming a local git branch: rewrites the sanitized branch
+    string in dataset and/or artifact names so existing artifacts match the
+    new branch without redeploying from scratch.
+
+    Tables are copied to their new location and the originals deleted.
+    Views, materialized views, and routines are skipped during the rename;
+    the deploy step prompted at the end of the command recreates them at
+    the new location from local SQL templates and cleans up the originals.
+
+    Example:
+
+      ./bqetl --target dev target rename-branch old-feature new-feature
+    """,
+)
+@click.argument("old_branch")
+@click.argument("new_branch")
+@click.option(
+    "--dry-run/--no-dry-run",
+    "--dry_run/--no_dry_run",
+    default=False,
+    help="Show the rename plan without executing.",
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    default=False,
+    help="Skip confirmation prompt.",
+)
+@sql_dir_option
+@block_coding_agents
+@click.pass_context
+def rename_branch(ctx, old_branch, new_branch, dry_run, yes, sql_dir):
+    """Rename a target deployment from old_branch to new_branch."""
+    target_config = ctx.obj["target"]
+    project_id = target_config.project_id
+
+    branch_in_dataset = any(
+        t and "git.branch" in t
+        for t in (target_config.raw_dataset, target_config.raw_dataset_prefix)
+    )
+    branch_in_artifact = bool(
+        target_config.raw_artifact_prefix
+        and "git.branch" in target_config.raw_artifact_prefix
+    )
+    if not (branch_in_dataset or branch_in_artifact):
+        raise click.UsageError(
+            f"Target '{target_config.name}' has no git.branch in its templates."
+        )
+
+    old_sanitized = sanitize_bq_id(old_branch)
+    new_sanitized = sanitize_bq_id(new_branch)
+    if old_sanitized == new_sanitized:
+        raise click.UsageError(
+            "old_branch and new_branch sanitize to the same name; nothing to rename."
+        )
+
+    client = bigquery.Client(project=project_id)
+    matching = _find_matching_datasets(client, target_config, branch=old_branch)
+    if not matching:
+        return
+
+    plan = _build_rename_plan(
+        client,
+        project_id,
+        matching,
+        old_sanitized,
+        new_sanitized,
+        branch_in_dataset,
+        branch_in_artifact,
+    )
+    if not plan:
+        click.echo("Nothing to rename.")
+        return
+
+    click.echo(f"\nRename plan for {project_id}:\n")
+    for old_ds, new_ds, renames in plan:
+        header = f"  {old_ds} -> {new_ds}" if old_ds != new_ds else f"  {old_ds}:"
+        click.echo(header)
+        for old_t, new_t, ttype in renames:
+            click.echo(f"    {old_t} -> {new_t} ({ttype})")
+    click.echo()
+
+    if not _confirm(len(plan), "dataset(s)", dry_run, yes, verb="rename"):
+        return
+
+    for old_ds, new_ds, renames in plan:
+        _rename_dataset(client, project_id, old_ds, new_ds, renames, sql_dir)
+
+    _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized)
+    _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes)
+
+
+def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
+    """Prompt the user to re-deploy renamed artifacts and invoke deploy if confirmed."""
+    renamed_paths = [
+        str(Path(sql_dir) / project_id / new_ds / new_name)
+        for _, new_ds, renames in plan
+        for _, new_name, _ in renames
+    ]
+    if not renamed_paths:
+        return
+    if not (
+        yes
+        or click.confirm(
+            "\nRenamed tables reflect BigQuery state at rename time, not local "
+            "SQL templates. Views, materialized views, and routines were skipped "
+            "and don't yet exist at the new location.\n"
+            "Run `./bqetl deploy` now to re-render everything from templates? "
+            "(skipped views/MVs/routines at the old location will be deleted "
+            "first so deploy can recreate them cleanly)",
+            default=False,
+        )
+    ):
+        return
+
+    _delete_skipped_artifacts(client, project_id, plan)
+    ctx.invoke(
+        deploy_cmd,
+        paths=tuple(renamed_paths),
+        tables=True,
+        views=True,
+        routines=True,
+    )
+
+
+def _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized):
+    """Substring-replace old_sanitized with new_sanitized in SQL/YAML files under the target project.
+
+    Catches downstream references (FROM clauses, routine calls, manifests) in
+    other artifacts in the target dir that point at the renamed names. Skipped
+    when old_sanitized is short enough that false positives are likely.
+    """
+    if len(old_sanitized) < 4:
+        click.echo(
+            f"  Skipping reference rewrite: '{old_sanitized}' is too short "
+            "to substring-replace safely."
+        )
+        return
+
+    project_dir = Path(sql_dir) / project_id
+    if not project_dir.exists():
+        return
+
+    updated = 0
+    for path in project_dir.rglob("*"):
+        if not path.is_file() or path.suffix not in (".sql", ".yaml"):
+            continue
+        try:
+            content = path.read_text()
+        except (UnicodeDecodeError, OSError):
+            continue
+        if old_sanitized not in content:
+            continue
+        path.write_text(content.replace(old_sanitized, new_sanitized))
+        updated += 1
+
+    if updated:
+        click.echo(f"  Rewrote references in {updated} local file(s)")
+
+
+def _delete_skipped_artifacts(client, project_id, plan):
+    """Delete old views/MVs/routines that rename skipped so deploy can recreate them."""
+    for old_ds, new_ds, renames in plan:
+        for old_name, _, ttype in renames:
+            ref = f"{project_id}.{old_ds}.{old_name}"
+            try:
+                if ttype == "ROUTINE":
+                    client.delete_routine(ref)
+                elif ttype in ("VIEW", "MATERIALIZED_VIEW"):
+                    client.delete_table(ref, not_found_ok=True)
+                else:
+                    continue
+                click.echo(f"  Deleted {ttype.lower()} {old_ds}.{old_name}")
+            except Exception as e:
+                click.echo(
+                    f"  Failed to delete {ttype.lower()} {old_ds}.{old_name}: {e}",
+                    err=True,
+                )
+        if old_ds != new_ds:
+            try:
+                client.delete_dataset(f"{project_id}.{old_ds}", not_found_ok=True)
+                click.echo(f"  Deleted dataset {old_ds}")
+            except Exception as e:
+                click.echo(f"  Could not delete dataset {old_ds}: {e}", err=True)
+
+
+def _build_rename_plan(
+    client,
+    project_id,
+    datasets,
+    old_sanitized,
+    new_sanitized,
+    branch_in_dataset,
+    branch_in_artifact,
+):
+    """Compute [(old_ds, new_ds, [(old_name, new_name, type), ...])] entries.
+
+    Type is the BigQuery table type (TABLE, VIEW, MATERIALIZED_VIEW, ...) or
+    "ROUTINE" for UDFs and stored procedures.
+    """
+    rename_ds = (
+        (lambda s: s.replace(old_sanitized, new_sanitized))
+        if branch_in_dataset
+        else (lambda s: s)
+    )
+    rename_art = (
+        (lambda s: s.replace(old_sanitized, new_sanitized))
+        if branch_in_artifact
+        else (lambda s: s)
+    )
+
+    plan = []
+    for ds in datasets:
+        new_ds_id = rename_ds(ds.dataset_id)
+        ds_path = f"{project_id}.{ds.dataset_id}"
+        try:
+            tables = list(client.list_tables(ds_path))
+        except NotFound:
+            continue
+        candidates = [(t.table_id, t.table_type) for t in tables]
+        candidates += [(r.routine_id, "ROUTINE") for r in client.list_routines(ds_path)]
+
+        renames = []
+        for old_id, ttype in candidates:
+            new_id = rename_art(old_id)
+            if new_ds_id == ds.dataset_id and new_id == old_id:
+                continue
+            renames.append((old_id, new_id, ttype))
+        if new_ds_id != ds.dataset_id or renames:
+            plan.append((ds.dataset_id, new_ds_id, renames))
+    return plan
+
+
+def _rename_dataset(client, project_id, old_ds, new_ds, renames, sql_dir):
+    """Copy tables in parallel, skip views/MVs/routines (handled by deploy), update local files."""
+    if old_ds != new_ds:
+        _ensure_new_dataset(client, project_id, old_ds, new_ds)
+
+    jobs = []
+    for old_name, new_name, ttype in renames:
+        if ttype in ("VIEW", "MATERIALIZED_VIEW", "ROUTINE"):
+            click.echo(
+                f"  Skipped {ttype.lower()} {old_ds}.{old_name} — deploy will recreate",
+                err=True,
+            )
+            continue
+        src = f"{project_id}.{old_ds}.{old_name}"
+        dst = f"{project_id}.{new_ds}.{new_name}"
+        jobs.append((old_name, new_name, src, client.copy_table(src, dst)))
+
+    for old_t, new_t, src, job in jobs:
+        try:
+            job.result()
+            click.echo(f"  Copied {old_ds}.{old_t} -> {new_ds}.{new_t}")
+        except Exception as e:
+            click.echo(f"  Failed to copy {old_ds}.{old_t}: {e}", err=True)
+            continue
+
+        manifest_file = Path(sql_dir) / project_id / old_ds / old_t / MANIFEST_FILENAME
+        _reapply_shared_access(client, f"{project_id}.{new_ds}.{new_t}", manifest_file)
+
+        try:
+            client.delete_table(src, not_found_ok=True)
+        except Exception as e:
+            click.echo(f"  Failed to delete {old_ds}.{old_t}: {e}", err=True)
+
+    _rename_local_files(sql_dir, project_id, old_ds, new_ds, renames)
+
+
+def _ensure_new_dataset(client, project_id, old_ds, new_ds):
+    """Create new_ds (if missing) as a metadata copy of old_ds."""
+    new_ds_ref = f"{project_id}.{new_ds}"
+    try:
+        client.get_dataset(new_ds_ref)
+        return
+    except NotFound:
+        pass
+    old = client.get_dataset(f"{project_id}.{old_ds}")
+    new = bigquery.Dataset(new_ds_ref)
+    new.location = old.location
+    new.labels = dict(old.labels) if old.labels else {}
+    new.description = old.description
+    new.access_entries = list(old.access_entries)
+    client.create_dataset(new)
+    click.echo(f"  Created dataset {new_ds}")
+
+
+def _rename_local_files(sql_dir, project_id, old_ds, new_ds, renames):
+    """Move local target dirs to match the new BigQuery names."""
+    old_dir = Path(sql_dir) / project_id / old_ds
+    if not old_dir.exists():
+        return
+    new_dir = Path(sql_dir) / project_id / new_ds
+    new_dir.mkdir(parents=True, exist_ok=True)
+    for old_t, new_t, _ in renames:
+        src = old_dir / old_t
+        dst = new_dir / new_t
+        if src == dst or not src.exists() or dst.exists():
+            continue
+        shutil.move(str(src), str(dst))
+    if old_dir != new_dir and old_dir.exists() and not any(old_dir.iterdir()):
+        old_dir.rmdir()
 
 
 def _grant_dataset_access(client, dataset_ref, email, role):

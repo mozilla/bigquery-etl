@@ -188,11 +188,28 @@ Empty datasets are removed automatically after table-level cleanup.
 
 Local copied files are cleaned up in both cases.
 
-### 7. Handle branch renames _(future)_
+### 7. Handle branch renames
 
 ```bash
-./bqetl --target dev rename-branch old-feature-name new-feature-name
+./bqetl --target dev target rename-branch old-feature-name new-feature-name
+
+# Preview first
+./bqetl --target dev target rename-branch old-feature-name new-feature-name --dry-run
 ```
+
+Replaces the sanitized old-branch string with the new-branch string in
+dataset and/or artifact names, depending on where `git.branch` appears in
+the target's templates. Tables are copied to their new location and the
+originals deleted. Views, materialized views, and routines are skipped
+during the rename; the deploy step prompted at the end of the command
+recreates them at the new location from local SQL templates and cleans up
+the originals.
+
+Renamed tables reflect the BigQuery state at time of rename, not the
+current local SQL templates. If templates have drifted since the last
+deploy, renamed tables won't pick those changes up. Accept the deploy
+prompt at the end of the command — or run `./bqetl deploy` manually on
+the renamed paths — to re-render everything from templates.
 
 ### 8. Isolated deploys (e.g. for staging) _(future)_
 

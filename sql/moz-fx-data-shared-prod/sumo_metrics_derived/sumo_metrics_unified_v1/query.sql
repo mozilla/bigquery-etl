@@ -1,6 +1,6 @@
 -- Freshness Metrics (no product dimension)
 SELECT
-  event_date AS `event_date`,
+  event_date AS `date`,
   CAST(NULL AS STRING) AS product,
   CAST(NULL AS STRING) AS content_type,
   'freshness_metrics' AS source,
@@ -29,7 +29,7 @@ FROM
 UNION ALL
 -- GA4 Engagement Sessions
 SELECT
-  event_date AS `event_date`,
+  event_date AS `date`,
   product,
   content_type,
   'ga4_engagement_sessions' AS source,
@@ -58,7 +58,7 @@ FROM
 UNION ALL
 -- Kitsune Forum Questions
 SELECT
-  creation_date AS `event_date`,
+  creation_date AS `date`,
   product,
   CAST(NULL AS STRING) AS content_type,
   'kitsune_questions' AS source,

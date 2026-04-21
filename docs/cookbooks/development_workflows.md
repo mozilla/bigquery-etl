@@ -188,28 +188,36 @@ Empty datasets are removed automatically after table-level cleanup.
 
 Local copied files are cleaned up in both cases.
 
-### 7. Handle branch renames
+### 7. Migrate a previous branch's deployment to the current branch
 
 ```bash
-./bqetl --target dev target rename-branch old-feature-name new-feature-name
+# Check out the destination branch first
+git checkout new-feature-name
+
+./bqetl --target dev target migrate-branch old-feature-name
 
 # Preview first
-./bqetl --target dev target rename-branch old-feature-name new-feature-name --dry-run
+./bqetl --target dev target migrate-branch old-feature-name --dry-run
 ```
 
-Replaces the sanitized old-branch string with the new-branch string in
-dataset and/or artifact names, depending on where `git.branch` appears in
-the target's templates. Tables are copied to their new location and the
-originals deleted. Views, materialized views, and routines are skipped
-during the rename; the deploy step prompted at the end of the command
-recreates them at the new location from local SQL templates and cleans up
-the originals.
+The destination branch is always the currently checked-out git branch —
+the deploy step that recreates views/MVs/routines renders target names
+from the current branch, so this command must be run from the branch
+you're migrating to.
 
-Renamed tables reflect the BigQuery state at time of rename, not the
+Replaces the sanitized old-branch string with the current-branch string
+in dataset and/or artifact names, depending on where `git.branch` appears
+in the target's templates. Tables are copied to their new location and
+the originals deleted. Views, materialized views, and routines are
+skipped during the migration; the deploy step prompted at the end of the
+command recreates them at the new location from local SQL templates and
+cleans up the originals.
+
+Migrated tables reflect the BigQuery state at time of migration, not the
 current local SQL templates. If templates have drifted since the last
-deploy, renamed tables won't pick those changes up. Accept the deploy
+deploy, migrated tables won't pick those changes up. Accept the deploy
 prompt at the end of the command — or run `./bqetl deploy` manually on
-the renamed paths — to re-render everything from templates.
+the migrated paths — to re-render everything from templates.
 
 ### 8. Isolated deploys (e.g. for staging) _(future)_
 

@@ -104,19 +104,27 @@ def _template_to_pattern(
 ) -> str:
     """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
-    Known values (branch, username) are rendered literally; variable parts
-    (commit, artifact ids) become [a-zA-Z0-9_]+ regex wildcards.
+    Known values (branch, username) are rendered literally; the commit slot
+    must start with 7+ hex chars (short SHA) and may have trailing chars from
+    legacy templates; other variable slots become [a-zA-Z0-9_]+. Anchoring
+    the commit slot to a hex SHA prefix prevents over-matching when the
+    literal branch is a substring of another branch's sanitized name.
 
     Returns a ^-anchored regex string, optionally $-anchored.
     """
     _WILDCARD = "XBQETLWCX"
+    _COMMIT_WILDCARD = "XBQETLCOMMITX"
     rendered = Template(template_str).render(
-        git={"branch": branch or _WILDCARD, "commit": _WILDCARD},
+        git={"branch": branch or _WILDCARD, "commit": _COMMIT_WILDCARD},
         account=_get_account_context(),
         artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
     )
 
-    pattern = re.escape(sanitize_bq_id(rendered)).replace(_WILDCARD, "[a-zA-Z0-9_]+")
+    pattern = (
+        re.escape(sanitize_bq_id(rendered))
+        .replace(_COMMIT_WILDCARD, "[a-f0-9]{7,}[a-zA-Z0-9_]*")
+        .replace(_WILDCARD, "[a-zA-Z0-9_]+")
+    )
 
     return f"^{pattern}$" if anchor_end else f"^{pattern}"
 

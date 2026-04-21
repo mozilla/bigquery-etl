@@ -19,6 +19,7 @@ from ..util.common import block_coding_agents
 from ..util.target import (
     IAM_ROLE_MAP,
     MANIFEST_FILENAME,
+    _get_git_context,
     _reapply_shared_access,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
@@ -358,30 +359,30 @@ def share(
 
 
 @target.command(
-    "rename-branch",
-    help="""Rename a branch's target deployment in BigQuery.
+    "migrate-branch",
+    help="""Migrate a previous branch's target deployment to the current branch.
 
     Useful after renaming a local git branch: rewrites the sanitized branch
     string in dataset and/or artifact names so existing artifacts match the
-    new branch without redeploying from scratch.
+    current (new) branch without redeploying from scratch. Must be run
+    while checked out on the destination branch.
 
     Tables are copied to their new location and the originals deleted.
-    Views, materialized views, and routines are skipped during the rename;
+    Views, materialized views, and routines are skipped during the migration;
     the deploy step prompted at the end of the command recreates them at
     the new location from local SQL templates and cleans up the originals.
 
     Example:
 
-      ./bqetl --target dev target rename-branch old-feature new-feature
+      ./bqetl --target dev target migrate-branch old-feature
     """,
 )
 @click.argument("old_branch")
-@click.argument("new_branch")
 @click.option(
     "--dry-run/--no-dry-run",
     "--dry_run/--no_dry_run",
     default=False,
-    help="Show the rename plan without executing.",
+    help="Show the migration plan without executing.",
 )
 @click.option(
     "--yes",
@@ -393,8 +394,8 @@ def share(
 @sql_dir_option
 @block_coding_agents
 @click.pass_context
-def rename_branch(ctx, old_branch, new_branch, dry_run, yes, sql_dir):
-    """Rename a target deployment from old_branch to new_branch."""
+def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
+    """Migrate a target deployment from old_branch to the current git branch."""
     target_config = ctx.obj["target"]
     project_id = target_config.project_id
 
@@ -411,11 +412,13 @@ def rename_branch(ctx, old_branch, new_branch, dry_run, yes, sql_dir):
             f"Target '{target_config.name}' has no git.branch in its templates."
         )
 
+    new_branch = _get_git_context().get("branch", "")
     old_sanitized = sanitize_bq_id(old_branch)
     new_sanitized = sanitize_bq_id(new_branch)
     if old_sanitized == new_sanitized:
         raise click.UsageError(
-            "old_branch and new_branch sanitize to the same name; nothing to rename."
+            f"old_branch '{old_branch}' matches the current branch '{new_branch}'; "
+            "nothing to migrate."
         )
 
     client = bigquery.Client(project=project_id)
@@ -433,10 +436,10 @@ def rename_branch(ctx, old_branch, new_branch, dry_run, yes, sql_dir):
         branch_in_artifact,
     )
     if not plan:
-        click.echo("Nothing to rename.")
+        click.echo("Nothing to migrate.")
         return
 
-    click.echo(f"\nRename plan for {project_id}:\n")
+    click.echo(f"\nMigration plan for {project_id}:\n")
     for old_ds, new_ds, renames in plan:
         header = f"  {old_ds} -> {new_ds}" if old_ds != new_ds else f"  {old_ds}:"
         click.echo(header)
@@ -444,7 +447,7 @@ def rename_branch(ctx, old_branch, new_branch, dry_run, yes, sql_dir):
             click.echo(f"    {old_t} -> {new_t} ({ttype})")
     click.echo()
 
-    if not _confirm(len(plan), "dataset(s)", dry_run, yes, verb="rename"):
+    if not _confirm(len(plan), "dataset(s)", dry_run, yes, verb="migrate"):
         return
 
     for old_ds, new_ds, renames in plan:
@@ -466,9 +469,9 @@ def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
     if not (
         yes
         or click.confirm(
-            "\nRenamed tables reflect BigQuery state at rename time, not local "
-            "SQL templates. Views, materialized views, and routines were skipped "
-            "and don't yet exist at the new location.\n"
+            "\nMigrated tables reflect BigQuery state at migration time, not "
+            "local SQL templates. Views, materialized views, and routines were "
+            "skipped and don't yet exist at the new location.\n"
             "Run `./bqetl deploy` now to re-render everything from templates? "
             "(skipped views/MVs/routines at the old location will be deleted "
             "first so deploy can recreate them cleanly)",
@@ -494,15 +497,10 @@ def _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized
     other artifacts in the target dir that point at the renamed names. Skipped
     when old_sanitized is short enough that false positives are likely.
     """
-    if len(old_sanitized) < 4:
-        click.echo(
-            f"  Skipping reference rewrite: '{old_sanitized}' is too short "
-            "to substring-replace safely."
-        )
-        return
-
     project_dir = Path(sql_dir) / project_id
     if not project_dir.exists():
+        return
+    if len(old_sanitized) < 4:
         return
 
     updated = 0

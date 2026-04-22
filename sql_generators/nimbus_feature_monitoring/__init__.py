@@ -128,10 +128,8 @@ class Feature:
         ]
 
 
-def generate_queries(project, path, write_dir, config_path=None):
+def generate_queries(project, path, write_dir, config_repo=None):
     """Generate nimbus feature monitoring queries."""
-    if config_path is None:
-        config_path = path
     env = Environment(
         loader=FileSystemLoader(template_dir := path / "nimbus_feature_monitoring_v1"),
         keep_trailing_newline=True,
@@ -140,8 +138,7 @@ def generate_queries(project, path, write_dir, config_path=None):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for app_config_path in config_path.glob("*.toml"):
-        app_config = FeatmonSpec.from_file(app_config_path)
+    for _app_name, app_config in FeatmonSpec.from_github_repo(config_repo):
         dataset = app_config.dataset
         source_tables = {}
         for source_name, source in app_config.data_sources.items():
@@ -266,15 +263,15 @@ def generate_queries(project, path, write_dir, config_path=None):
     type=click.Path(file_okay=False),
 )
 @click.option(
-    "--config-path",
-    "--config_path",
+    "--config-repo",
+    "--config_repo",
     help=(
-        "Directory containing TOML app config files (e.g. from metric-hub). "
-        "Defaults to --path if not specified."
+        "Path or URL of the metric-hub repo containing featmon/ TOML configs. "
+        "Accepts a local checkout path or a GitHub URL. "
+        "Defaults to cloning https://github.com/mozilla/metric-hub."
     ),
     default=None,
     required=False,
-    type=click.Path(file_okay=False),
 )
 @click.option(
     "--output-dir",
@@ -284,11 +281,11 @@ def generate_queries(project, path, write_dir, config_path=None):
     type=click.Path(file_okay=False),
 )
 @use_cloud_function_option
-def generate(target_project, path, config_path, output_dir, use_cloud_function):
+def generate(target_project, path, config_repo, output_dir, use_cloud_function):
     """Generate the nimbus feature monitoring views."""
     generate_queries(
         target_project,
         Path(path),
         Path(output_dir),
-        config_path=Path(config_path) if config_path else None,
+        config_repo=config_repo,
     )

@@ -1,0 +1,84 @@
+# Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/copy_deduplicate_task_markers.py
+
+from airflow import DAG
+from airflow.operators.empty import EmptyOperator
+from airflow.sensors.external_task import ExternalTaskMarker, ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
+import datetime
+
+from utils.constants import ALLOWED_STATES, FAILED_STATES
+
+docs = """
+### {{ name }}
+
+Generated DAG that propagates `copy_deduplicate` state changes to every
+downstream bqetl DAG via `ExternalTaskMarker`s.
+
+The `copy_deduplicate` DAG has a single marker per source task pointing at
+this DAG. When a source task is cleared in `copy_deduplicate`, the clear
+propagates through the markers here, propagating to every downstream
+`wait_for_{source_task_id}` sensor in the corresponding bqetl DAGs.
+
+This DAG is generated in bigquery-etl so that new bqetl DAGs appear automatically
+without requiring a change to `copy_deduplicate.py`.
+
+### Triage notes
+
+This DAG contains only task markers, so its state should match copy_deduplicate. Tasks here
+typically should not be directly cleared or marked as success/fail. Instead, the tasks in
+copy_deduplicate should be cleared with "Recursive" selected.
+"""
+
+default_args = {
+    "owner": "{{ owner }}",
+    "start_date": datetime.datetime({{ start_date_year }}, {{ start_date_month }}, {{ start_date_day }}),
+    "email": {{ email }},
+    "email_on_failure": True,
+    "email_on_retry": False,
+    "retries": 2,
+    "retry_delay": datetime.timedelta(minutes=5),
+}
+
+tags = {{ tags }}
+
+with DAG(
+    "{{ name }}",
+    default_args=default_args,
+    schedule_interval="{{ schedule_interval }}",
+    doc_md=docs,
+    tags=tags,
+    catchup=False,
+) as dag:
+    {% if not sources %}
+    EmptyOperator(task_id="noop")
+    {% endif %}
+    {% for source_task_id, consumers in sources %}
+    wait_for_{{ source_task_id }} = ExternalTaskSensor(
+        task_id="wait_for_{{ source_task_id }}",
+        external_dag_id="{{ source_dag_id }}",
+        external_task_id="{{ source_task_id }}",
+        execution_delta=datetime.timedelta(seconds=0),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    with TaskGroup("{{ source_task_id }}_task_markers") as {{ source_task_id }}_task_markers:
+        {% for consumer in consumers %}
+        ExternalTaskMarker(
+            task_id="{{ consumer.dag_name }}__wait_for_{{ source_task_id }}",
+            external_dag_id="{{ consumer.dag_name }}",
+            external_task_id="wait_for_{{ source_task_id }}",
+            {% if consumer.execution_delta_seconds != 0 -%}
+            execution_date="{% raw %}{{{% endraw %} (logical_date + datetime.timedelta(seconds={{ consumer.execution_delta_seconds }})).isoformat() {% raw %}}}{% endraw %}",
+            {%- else -%}
+            execution_date="{% raw %}{{{% endraw %} logical_date.isoformat() {% raw %}}}{% endraw %}",
+            {%- endif %}
+        )
+        {% endfor %}
+
+    wait_for_{{ source_task_id }} >> {{ source_task_id }}_task_markers
+    {% endfor %}

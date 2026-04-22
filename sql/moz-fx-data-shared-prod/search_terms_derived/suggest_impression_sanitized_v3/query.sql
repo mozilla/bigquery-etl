@@ -60,6 +60,13 @@ WITH impressions AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        metrics.string.quick_suggest_request_id
+      ORDER BY
+        submission_timestamp
+    ) = 1
 ),
 sanitized_queries AS (
   SELECT
@@ -70,6 +77,8 @@ sanitized_queries AS (
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
     DATE(`timestamp`) = @submission_date
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp`) = 1
 ),
 sanitized_queries_count AS (
   SELECT

@@ -1,8 +1,8 @@
 """Resolve upstream lineage for profiled tables and fetch probe definitions from source pings.
 
 Two output tables:
-  gkabbz_phase2_table_pings_v1  — lineage mapping: one row per derived table
-  gkabbz_phase2_ping_probes_v1  — probe definitions: one row per probe in a ping (fetched once per ping)
+  akomar_metadata_phase2_table_pings_v1  — lineage mapping: one row per derived table
+  akomar_metadata_phase2_ping_probes_v1  — probe definitions: one row per probe in a ping (fetched once per ping)
 """
 
 import json
@@ -21,9 +21,9 @@ logging.basicConfig(
 
 DATAHUB_URL = "https://mozilla.acryl.io/api/graphql"
 GLEAN_DICT_URL = "https://dictionary.telemetry.mozilla.org/data/{app}/pings/{ping}.json"
-PHASE1_TABLE = "mozdata-nonprod.analysis.gkabbz_data_profiling_test_v1"
-MAPPING_TABLE = "mozdata-nonprod.analysis.gkabbz_metadata_phase2_table_pings_v1"
-PROBE_TABLE = "mozdata-nonprod.analysis.gkabbz_metadata_phase2_ping_probes_v1"
+PHASE1_TABLE = "mozdata-nonprod.analysis.akomar_data_profiling_v1"
+MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
+PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
 DEST_PROJECT = "mozdata-nonprod"
 
 MAPPING_SCHEMA = [
@@ -110,6 +110,24 @@ PROBE_SCHEMA = [
         "STRING",
         mode="NULLABLE",
         description="Full probe definition as JSON from the source artifact.",
+    ),
+    bigquery.SchemaField(
+        "data_sensitivity",
+        "STRING",
+        mode="REPEATED",
+        description="Glean data_sensitivity labels (e.g. technical, interaction, web_activity, highly_sensitive). Empty for legacy telemetry.",
+    ),
+    bigquery.SchemaField(
+        "send_in_pings",
+        "STRING",
+        mode="REPEATED",
+        description="Glean send_in_pings list — which pings the metric is sent in. Empty for legacy telemetry.",
+    ),
+    bigquery.SchemaField(
+        "tags",
+        "STRING",
+        mode="REPEATED",
+        description="Glean metric tags from metadata.tags. Empty for legacy telemetry.",
     ),
     bigquery.SchemaField(
         "processed_at",
@@ -312,6 +330,9 @@ def fetch_glean_probes(
                 "probe_description": metric.get("description"),
                 "probe_type": metric.get("type"),
                 "probe_raw": json.dumps(metric),
+                "data_sensitivity": metric.get("data_sensitivity") or [],
+                "send_in_pings": metric.get("send_in_pings") or [],
+                "tags": (metric.get("metadata") or {}).get("tags") or [],
             }
         )
     logging.info(f"Found {len(probes)} Glean probes for {app}/{source_ping}")
@@ -332,6 +353,9 @@ def fetch_legacy_probes(
                 "probe_description": field.get("description"),
                 "probe_type": field.get("nativeDataType"),
                 "probe_raw": json.dumps(field),
+                "data_sensitivity": [],
+                "send_in_pings": [],
+                "tags": [],
             }
         )
     logging.info(f"Found {len(probes)} legacy probe fields for {source_ping}")
@@ -489,6 +513,9 @@ def fetch_probes_for_pings(bq_client):
                 "probe_description": probe["probe_description"],
                 "probe_type": probe["probe_type"],
                 "probe_raw": probe["probe_raw"],
+                "data_sensitivity": probe["data_sensitivity"],
+                "send_in_pings": probe["send_in_pings"],
+                "tags": probe["tags"],
                 "processed_at": now,
             }
             for probe in probes

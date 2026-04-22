@@ -165,7 +165,7 @@ def generate_queries(project, path, write_dir):
                 type=source.type,
             )
         features = []
-        for feat_name, feat in app_config.features.items():
+        for _feat_name, feat in app_config.features.items():
             metrics_by_source = {}
             for source_name, source_metrics in feat.metrics_by_source.items():
                 metrics_by_source[source_name] = metrics = []

@@ -174,9 +174,7 @@ class TestBuildRenamePlan:
                 }
             }
         )
-        transform = _make_transform(
-            [("feat_old", "feat_new"), ("abc1234", "def5678")]
-        )
+        transform = _make_transform([("feat_old", "feat_new"), ("abc1234", "def5678")])
 
         plan = _build_rename_plan(client, "proj", [ds], transform, transform)
 

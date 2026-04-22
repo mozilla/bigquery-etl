@@ -128,7 +128,7 @@ class Feature:
         ]
 
 
-def generate_queries(project, path, write_dir, config_repo=None):
+def generate_queries(project, path, write_dir):
     """Generate nimbus feature monitoring queries."""
     env = Environment(
         loader=FileSystemLoader(template_dir := path / "nimbus_feature_monitoring_v1"),
@@ -138,7 +138,7 @@ def generate_queries(project, path, write_dir, config_repo=None):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for _app_name, app_config in FeatmonSpec.from_github_repo(config_repo):
+    for _app_name, app_config in FeatmonSpec.from_github_repo():
         dataset = app_config.dataset
         source_tables = {}
         for source_name, source in app_config.data_sources.items():
@@ -263,17 +263,6 @@ def generate_queries(project, path, write_dir, config_repo=None):
     type=click.Path(file_okay=False),
 )
 @click.option(
-    "--config-repo",
-    "--config_repo",
-    help=(
-        "Path or URL of the metric-hub repo containing featmon/ TOML configs. "
-        "Accepts a local checkout path or a GitHub URL. "
-        "Defaults to cloning https://github.com/mozilla/metric-hub."
-    ),
-    default=None,
-    required=False,
-)
-@click.option(
     "--output-dir",
     "--output_dir",
     help="The location to write to. Defaults to sql/.",
@@ -281,11 +270,10 @@ def generate_queries(project, path, write_dir, config_repo=None):
     type=click.Path(file_okay=False),
 )
 @use_cloud_function_option
-def generate(target_project, path, config_repo, output_dir, use_cloud_function):
+def generate(target_project, path, output_dir, use_cloud_function):
     """Generate the nimbus feature monitoring views."""
     generate_queries(
         target_project,
         Path(path),
         Path(output_dir),
-        config_repo=config_repo,
     )

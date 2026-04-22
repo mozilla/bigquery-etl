@@ -189,6 +189,7 @@ SELECT
       LAX_INT64(event_extra.height) AS `height`,
       LAX_INT64(event_extra.identification_time) AS `identification_time`,
       LAX_INT64(event_extra.iframe_count) AS `iframe_count`,
+      LAX_INT64(event_extra.in_use) AS `in_use`,
       LAX_INT64(event_extra.inference_time) AS `inference_time`,
       LAX_INT64(event_extra.input_classified_size) AS `input_classified_size`,
       LAX_INT64(event_extra.input_inconclusive_size) AS `input_inconclusive_size`,

@@ -21,6 +21,7 @@ from ..util.target import (
     MANIFEST_FILENAME,
     _get_git_context,
     _reapply_shared_access,
+    extract_commit_from_dataset_name,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
     sanitize_bq_id,
@@ -412,7 +413,8 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
             f"Target '{target_config.name}' has no git.branch in its templates."
         )
 
-    new_branch = _get_git_context().get("branch", "")
+    git_context = _get_git_context()
+    new_branch = git_context.get("branch", "")
     old_sanitized = sanitize_bq_id(old_branch)
     new_sanitized = sanitize_bq_id(new_branch)
     if old_sanitized == new_sanitized:
@@ -426,15 +428,34 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
     if not matching:
         return
 
-    plan = _build_rename_plan(
-        client,
-        project_id,
-        matching,
-        old_sanitized,
-        new_sanitized,
-        branch_in_dataset,
-        branch_in_artifact,
+    before = len(matching)
+    matching, old_commit = _narrow_to_newest_commit(
+        client, project_id, target_config, matching, old_branch
     )
+    if old_commit and len(matching) < before:
+        click.echo(
+            f"Multiple commits found for branch; migrating only the most recent: "
+            f"{old_commit} ({len(matching)} dataset(s))"
+        )
+
+    new_commit = git_context.get("commit", "")
+    commit_pair = (
+        (old_commit, new_commit) if old_commit and old_commit != new_commit else None
+    )
+
+    branch_pair = (old_sanitized, new_sanitized)
+    rename_ds_id = _make_transform(
+        [branch_pair] if branch_in_dataset else [], commit_pair
+    )
+    rename_art_id = _make_transform(
+        [branch_pair] if branch_in_artifact else [], commit_pair
+    )
+    # File sweep uses a 4-char guard to avoid rewriting short substrings everywhere.
+    rewrite_content = _make_transform(
+        [branch_pair] if len(old_sanitized) >= 4 else [], commit_pair
+    )
+
+    plan = _build_rename_plan(client, project_id, matching, rename_ds_id, rename_art_id)
     if not plan:
         click.echo("Nothing to migrate.")
         return
@@ -453,8 +474,56 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
     for old_ds, new_ds, renames in plan:
         _rename_dataset(client, project_id, old_ds, new_ds, renames, sql_dir)
 
-    _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized)
+    _rewrite_target_references(sql_dir, project_id, rewrite_content)
     _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes)
+
+
+def _make_transform(branch_pairs, commit_pair):
+    """Build a str->str substring-replace transform from (old, new) pairs."""
+    replacements = list(branch_pairs)
+    if commit_pair:
+        replacements.append(commit_pair)
+
+    def transform(s):
+        for old, new in replacements:
+            s = s.replace(old, new)
+        return s
+
+    return transform
+
+
+def _dataset_modified(client, project_id, ds):
+    """Return the dataset's BQ modified timestamp, or None if it cannot be read."""
+    try:
+        return client.get_dataset(f"{project_id}.{ds.dataset_id}").modified
+    except Exception:
+        return None
+
+
+def _narrow_to_newest_commit(client, project_id, target_config, matching, old_branch):
+    """Group matching datasets by extracted commit and keep only the newest group.
+
+    Returns (narrowed_matching, old_commit). If the dataset template has no
+    git.commit slot (every extraction returns None), returns matching unchanged
+    with old_commit=None.
+    """
+    groups: dict = {}
+    for ds in matching:
+        commit = extract_commit_from_dataset_name(
+            target_config, ds.dataset_id, old_branch
+        )
+        groups.setdefault(commit, []).append(ds)
+    if list(groups) == [None]:
+        return matching, None
+
+    epoch = datetime.min.replace(tzinfo=timezone.utc)
+    newest = max(
+        (c for c in groups if c is not None),
+        key=lambda c: max(
+            _dataset_modified(client, project_id, ds) or epoch for ds in groups[c]
+        ),
+    )
+    return groups[newest], newest
 
 
 def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
@@ -490,17 +559,16 @@ def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
     )
 
 
-def _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized):
-    """Substring-replace old_sanitized with new_sanitized in SQL/YAML files under the target project.
+def _rewrite_target_references(sql_dir, project_id, transform):
+    """Apply transform to SQL/YAML files under the target project.
 
     Catches downstream references (FROM clauses, routine calls, manifests) in
-    other artifacts in the target dir that point at the renamed names. Skipped
-    when old_sanitized is short enough that false positives are likely.
+    other artifacts in the target dir that point at renamed names. The caller
+    supplies a str->str transform; this function only walks files and writes
+    back when the content changed.
     """
     project_dir = Path(sql_dir) / project_id
     if not project_dir.exists():
-        return
-    if len(old_sanitized) < 4:
         return
 
     updated = 0
@@ -511,9 +579,10 @@ def _rewrite_target_references(sql_dir, project_id, old_sanitized, new_sanitized
             content = path.read_text()
         except (UnicodeDecodeError, OSError):
             continue
-        if old_sanitized not in content:
+        new_content = transform(content)
+        if new_content == content:
             continue
-        path.write_text(content.replace(old_sanitized, new_sanitized))
+        path.write_text(new_content)
         updated += 1
 
     if updated:
@@ -546,34 +615,19 @@ def _delete_skipped_artifacts(client, project_id, plan):
                 click.echo(f"  Could not delete dataset {old_ds}: {e}", err=True)
 
 
-def _build_rename_plan(
-    client,
-    project_id,
-    datasets,
-    old_sanitized,
-    new_sanitized,
-    branch_in_dataset,
-    branch_in_artifact,
-):
+def _build_rename_plan(client, project_id, datasets, rename_ds_id, rename_art_id):
     """Compute [(old_ds, new_ds, [(old_name, new_name, type), ...])] entries.
 
     Type is the BigQuery table type (TABLE, VIEW, MATERIALIZED_VIEW, ...) or
     "ROUTINE" for UDFs and stored procedures.
-    """
-    rename_ds = (
-        (lambda s: s.replace(old_sanitized, new_sanitized))
-        if branch_in_dataset
-        else (lambda s: s)
-    )
-    rename_art = (
-        (lambda s: s.replace(old_sanitized, new_sanitized))
-        if branch_in_artifact
-        else (lambda s: s)
-    )
 
+    rename_ds_id and rename_art_id are str->str transforms applied to the
+    dataset and table/routine names respectively. The caller decides which
+    substitutions apply where (branch, commit, both, or none).
+    """
     plan = []
     for ds in datasets:
-        new_ds_id = rename_ds(ds.dataset_id)
+        new_ds_id = rename_ds_id(ds.dataset_id)
         ds_path = f"{project_id}.{ds.dataset_id}"
         try:
             tables = list(client.list_tables(ds_path))
@@ -584,7 +638,7 @@ def _build_rename_plan(
 
         renames = []
         for old_id, ttype in candidates:
-            new_id = rename_art(old_id)
+            new_id = rename_art_id(old_id)
             if new_ds_id == ds.dataset_id and new_id == old_id:
                 continue
             renames.append((old_id, new_id, ttype))

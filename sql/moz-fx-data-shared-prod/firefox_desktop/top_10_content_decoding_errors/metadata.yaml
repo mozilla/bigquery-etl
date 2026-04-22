@@ -1,4 +1,4 @@
-friendly_name: Content Decoding Errors
+friendly_name: Top 10 Content Decoding Errors
 description: |-
   Daily counts of Firefox Desktop content decoding errors by top-level site,
   covering the last 30 days. Includes per-site counts for the top 10 sites

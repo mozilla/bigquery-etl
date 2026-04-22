@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.content_decoding_errors`
+  `moz-fx-data-shared-prod.firefox_desktop.top_10_content_decoding_errors`
 AS
 WITH events AS (
   SELECT

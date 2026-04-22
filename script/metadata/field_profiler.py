@@ -26,7 +26,7 @@ TIER3_COLUMNS = {
     "metrics"
 }  # wide/repeated STRUCTs deferred to a future job. Not currently profiled.
 SOURCE_PROJECT = "moz-fx-data-shared-prod"
-DEST_TABLE = "mozdata-nonprod.analysis.gkabbz_data_profiling_test_v1"
+DEST_TABLE = "mozdata-nonprod.analysis.akomar_data_profiling_v1"
 CLAUDE_MODEL = "claude-sonnet-4-6"
 
 DEST_SCHEMA = [
@@ -539,7 +539,7 @@ def log_profile(table, profile):
             logging.info(f"    description:    {stats['pass1_description']}")
 
 
-PERF_LOG = "/tmp/gk_perf_phase1.csv"
+PERF_LOG = "/tmp/akomar_perf_phase1.csv"
 
 
 def write_perf_row(

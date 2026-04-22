@@ -200,7 +200,7 @@ def generate_queries(project, path, write_dir):
                             )
             features.append(
                 Feature(
-                    name=feat_name,
+                    name=feat.nimbus_slug(),
                     project=project,
                     dataset=f"{dataset}_derived",
                     ratios=[],

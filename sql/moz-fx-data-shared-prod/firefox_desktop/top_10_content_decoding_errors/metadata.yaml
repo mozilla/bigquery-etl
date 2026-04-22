@@ -1,0 +1,20 @@
+friendly_name: Top 10 Content Decoding Errors
+description: |-
+  Daily counts of Firefox Desktop content decoding errors by top-level site,
+  covering the last 30 days. Includes per-site counts for the top 10 sites
+  by error volume in that window, along with an all-sites total and a
+  top-10 total series. Filter by `submission_date` to restrict to a
+  specific day or sub-range within the 30-day window.
+owners:
+- ascholtz@mozilla.com
+- dsmith@mozilla.com
+labels:
+  owner1: ascholtz
+  owner2: dsmith
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.content_decoding_error

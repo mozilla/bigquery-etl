@@ -58,7 +58,7 @@ rollouts_cte AS (
             (
               SELECT {{ metric.label_aggregator }}(value)
               FROM UNNEST({{metric.field}})
-              {% if metric.filter_labels %}
+              {% if metric.label_in %}
                 WHERE key IN (
                   {% for label in metric.label_in %}
                     "{{ label }}"{{ "," if not loop.last }}
@@ -198,7 +198,7 @@ FROM
 UNPIVOT (
   value FOR metric IN
   (
-    {% for numerator, denominator in ratios %}
+    {% for numerator, denominator in feature.ratios %}
       ratio_{{numerator}}_to_{{denominator}},
     {% endfor %}
     {% for metric, aggregator in feature.all_metrics() %}

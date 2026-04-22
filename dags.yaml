@@ -2077,7 +2077,6 @@ bqetl_marketing_analysis:
     email:
       - kik@mozilla.com
       - shong@mozilla.com
-      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-02-01"

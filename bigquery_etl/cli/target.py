@@ -368,10 +368,17 @@ def share(
     current (new) branch without redeploying from scratch. Must be run
     while checked out on the destination branch.
 
+    If the target template includes git.commit, only the newest commit's
+    datasets are migrated (older commit deployments are left behind) and
+    the commit hash is rewritten to current HEAD so the next deploy lands
+    at the matching location.
+
     Tables are copied to their new location and the originals deleted.
     Views, materialized views, and routines are skipped during the migration;
     the deploy step prompted at the end of the command recreates them at
     the new location from local SQL templates and cleans up the originals.
+    References (FROM clauses, routine calls, manifests) in local SQL/YAML
+    files under the target dir are also rewritten to the new names.
 
     Example:
 
@@ -443,17 +450,15 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
         (old_commit, new_commit) if old_commit and old_commit != new_commit else None
     )
 
-    branch_pair = (old_sanitized, new_sanitized)
+    branch_pairs = [(old_sanitized, new_sanitized)]
+    commit_pairs = [commit_pair] if commit_pair else []
     rename_ds_id = _make_transform(
-        [branch_pair] if branch_in_dataset else [], commit_pair
+        (branch_pairs if branch_in_dataset else []) + commit_pairs
     )
     rename_art_id = _make_transform(
-        [branch_pair] if branch_in_artifact else [], commit_pair
+        (branch_pairs if branch_in_artifact else []) + commit_pairs
     )
-    # File sweep uses a 4-char guard to avoid rewriting short substrings everywhere.
-    rewrite_content = _make_transform(
-        [branch_pair] if len(old_sanitized) >= 4 else [], commit_pair
-    )
+    rewrite_content = _make_transform(branch_pairs + commit_pairs)
 
     plan = _build_rename_plan(client, project_id, matching, rename_ds_id, rename_art_id)
     if not plan:
@@ -478,14 +483,11 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
     _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes)
 
 
-def _make_transform(branch_pairs, commit_pair):
+def _make_transform(pairs):
     """Build a str->str substring-replace transform from (old, new) pairs."""
-    replacements = list(branch_pairs)
-    if commit_pair:
-        replacements.append(commit_pair)
 
     def transform(s):
-        for old, new in replacements:
+        for old, new in pairs:
             s = s.replace(old, new)
         return s
 
@@ -549,7 +551,7 @@ def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
     ):
         return
 
-    _delete_skipped_artifacts(client, project_id, plan)
+    _cleanup_old_location(client, project_id, plan)
     ctx.invoke(
         deploy_cmd,
         paths=tuple(renamed_paths),
@@ -589,8 +591,8 @@ def _rewrite_target_references(sql_dir, project_id, transform):
         click.echo(f"  Rewrote references in {updated} local file(s)")
 
 
-def _delete_skipped_artifacts(client, project_id, plan):
-    """Delete old views/MVs/routines that rename skipped so deploy can recreate them."""
+def _cleanup_old_location(client, project_id, plan):
+    """Delete old views/MVs/routines (so deploy can recreate them) and the old dataset if renamed."""
     for old_ds, new_ds, renames in plan:
         for old_name, _, ttype in renames:
             ref = f"{project_id}.{old_ds}.{old_name}"

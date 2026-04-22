@@ -213,6 +213,18 @@ skipped during the migration; the deploy step prompted at the end of the
 command recreates them at the new location from local SQL templates and
 cleans up the originals.
 
+References (FROM clauses, routine calls, manifests) in local SQL/YAML
+files under the target dir are also rewritten to the new names, so
+downstream queries generated under the target path keep pointing at the
+migrated artifacts.
+
+If the target template includes `git.commit`, only the most recently
+modified commit's datasets are migrated — older commit deployments are
+left behind (clean those up with `./bqetl target clean` if no longer
+needed). The commit hash in dataset and artifact names is rewritten to
+the current `HEAD`, so the next deploy lands at the matching location
+instead of creating a parallel set of artifacts.
+
 Migrated tables reflect the BigQuery state at time of migration, not the
 current local SQL templates. If templates have drifted since the last
 deploy, migrated tables won't pick those changes up. Accept the deploy

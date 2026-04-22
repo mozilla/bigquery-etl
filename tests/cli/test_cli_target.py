@@ -107,7 +107,7 @@ class TestRewriteTargetReferences:
         yaml_file.write_text("owners:\n  - user_oldname_owner\n")
 
         _rewrite_target_references(
-            str(tmp_path), "proj", _make_transform([("oldname", "newname")], None)
+            str(tmp_path), "proj", _make_transform([("oldname", "newname")])
         )
 
         assert "user_newname_ds.tbl" in sql_file.read_text()
@@ -119,7 +119,7 @@ class TestRewriteTargetReferences:
         txt_file.write_text("oldname should stay")
 
         _rewrite_target_references(
-            str(tmp_path), "proj", _make_transform([("oldname", "newname")], None)
+            str(tmp_path), "proj", _make_transform([("oldname", "newname")])
         )
 
         assert txt_file.read_text() == "oldname should stay"
@@ -128,7 +128,7 @@ class TestRewriteTargetReferences:
         _rewrite_target_references(
             str(tmp_path),
             "nonexistent",
-            _make_transform([("oldname", "newname")], None),
+            _make_transform([("oldname", "newname")]),
         )
 
 
@@ -174,7 +174,9 @@ class TestBuildRenamePlan:
                 }
             }
         )
-        transform = _make_transform([("feat_old", "feat_new")], ("abc1234", "def5678"))
+        transform = _make_transform(
+            [("feat_old", "feat_new"), ("abc1234", "def5678")]
+        )
 
         plan = _build_rename_plan(client, "proj", [ds], transform, transform)
 
@@ -196,7 +198,7 @@ class TestBuildRenamePlan:
                 }
             }
         )
-        identity = _make_transform([], None)
+        identity = _make_transform([])
 
         plan = _build_rename_plan(client, "proj", [ds], identity, identity)
 
@@ -209,8 +211,8 @@ class TestBuildRenamePlan:
         client = _mock_client(
             {f"proj.{old_ds}": {"tables": [("tbl", "TABLE")], "routines": []}}
         )
-        rename_ds = _make_transform([("old", "new")], None)
-        identity = _make_transform([], None)
+        rename_ds = _make_transform([("old", "new")])
+        identity = _make_transform([])
 
         plan = _build_rename_plan(client, "proj", [ds], rename_ds, identity)
 

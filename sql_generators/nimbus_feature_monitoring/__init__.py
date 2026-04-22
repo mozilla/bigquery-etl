@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import click
-from metric_config_parser.featmon import FeatmonSpec
+from metric_config_parser.config import ConfigCollection
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -138,7 +138,7 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for _app_name, app_config in FeatmonSpec.from_github_repo():
+    for _app_name, app_config in ConfigCollection.from_github_repo().featmon_configs.items():
         dataset = app_config.dataset
         source_tables = {}
         for source_name, source in app_config.data_sources.items():

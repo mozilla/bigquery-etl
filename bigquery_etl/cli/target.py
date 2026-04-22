@@ -543,9 +543,7 @@ def _prompt_and_deploy(ctx, client, project_id, plan, sql_dir, yes):
             "\nMigrated tables reflect BigQuery state at migration time, not "
             "local SQL templates. Views, materialized views, and routines were "
             "skipped and don't yet exist at the new location.\n"
-            "Run `./bqetl deploy` now to re-render everything from templates? "
-            "(skipped views/MVs/routines at the old location will be deleted "
-            "first so deploy can recreate them cleanly)",
+            "Run `./bqetl deploy` to re-deploy these artifacts",
             default=False,
         )
     ):

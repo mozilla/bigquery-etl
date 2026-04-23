@@ -1,0 +1,36 @@
+friendly_name: GitHub PR Embeddings
+description: |-
+  Vector embeddings of GitHub PR descriptions generated daily via Vertex AI
+  text-embedding-004 model. Each row corresponds to one merged PR. Embeddings enable
+  semantic search across all tracked repositories. Partitioned by merged_date.
+owners:
+- gkaberere@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: merged_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - repo_name
+scheduling:
+  dag_name: bqetl_github
+  arguments:
+  - --date
+  - "{{ds}}"
+  - --source
+  - moz-fx-data-shared-prod.github_external.github_prs
+  - --destination
+  - moz-fx-data-shared-prod.github_derived.pr_embeddings_v1
+  - --vertex-project
+  - mozdata.nonprod # should switch to moz-fx-data-shared-prod once vertex AI enabled
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'github_external', 'bqetl_prs_v1']
+  - ['moz-fx-data-shared-prod', 'github_external', 'private_bqetl_prs_v1']
+# Once PR-9091 merged, add looker tables as dependencies by uncommenting below
+#  - ['moz-fx-data-shared-prod', 'github_external', 'lookml_generator_prs_v1']
+#  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_default_prs_v1']
+#  - ['moz-fx-data-shared-prod', 'github_external', 'looker_spoke_private_prs_v1']

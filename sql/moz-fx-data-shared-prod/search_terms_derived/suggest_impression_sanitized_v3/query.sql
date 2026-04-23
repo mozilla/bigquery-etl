@@ -38,7 +38,7 @@ WITH impressions AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,
-    NULL AS telemetry_query,
+    CAST(NULL AS STRING) AS telemetry_query,
     metrics.string.quick_suggest_advertiser AS advertiser,
     SAFE_CAST(metrics.string.quick_suggest_block_id AS INT64) AS block_id,
     metrics.uuid.quick_suggest_context_id AS context_id,
@@ -52,7 +52,7 @@ WITH impressions AS (
     normalized_channel,
     metrics.quantity.quick_suggest_position AS position,
     metrics.url2.quick_suggest_reporting_url AS reporting_url,
-    NULL AS scenario,
+    CAST(NULL AS STRING) AS scenario,
     -- Truncate to just Firefox major version
     SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
   FROM
@@ -68,6 +68,17 @@ WITH impressions AS (
         submission_timestamp
     ) = 1
 ),
+-- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
+-- the same request_id appears in both quicksuggest_impression_v1 (legacy) and
+-- quick_suggest_v1 (Glean). Prefer the legacy row when it carries a search query.
+deduped_impressions AS (
+  SELECT
+    *
+  FROM
+    impressions
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp) = 1
+),
 sanitized_queries AS (
   SELECT
     TIMESTAMP_TRUNC(`timestamp`, SECOND) AS timestamp,
@@ -78,7 +89,7 @@ sanitized_queries AS (
   WHERE
     DATE(`timestamp`) = @submission_date
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp`) = 1
+    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY `timestamp` DESC) = 1
 ),
 sanitized_queries_count AS (
   SELECT
@@ -111,7 +122,7 @@ validated_queries AS (
 SELECT
   *
 FROM
-  impressions
+  deduped_impressions
 LEFT JOIN
   validated_queries
   USING (request_id)

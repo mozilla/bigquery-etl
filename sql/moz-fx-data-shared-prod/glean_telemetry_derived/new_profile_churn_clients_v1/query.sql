@@ -641,9 +641,6 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND day_28 = FALSE
-      AND day_29 = FALSE
-      AND day_30 = FALSE
       THEN TRUE
       ELSE FALSE
     

@@ -138,10 +138,10 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for _app_name, app_config in ConfigCollection.from_github_repo().featmon_configs.items():
-        dataset = app_config.dataset
+    for app_config in ConfigCollection.from_github_repo().featmon_configs:
+        dataset = app_config.spec.dataset
         source_tables = {}
-        for source_name, source in app_config.data_sources.items():
+        for source_name, source in app_config.spec.data_sources.items():
             dimensions = []
             for dim_name, dim in source.dimensions.items():
                 if dim is None:
@@ -165,7 +165,7 @@ def generate_queries(project, path, write_dir):
                 type=source.type,
             )
         features = []
-        for _feat_name, feat in app_config.features.items():
+        for _feat_name, feat in app_config.spec.features.items():
             metrics_by_source = {}
             for source_name, source_metrics in feat.metrics_by_source.items():
                 metrics_by_source[source_name] = metrics = []

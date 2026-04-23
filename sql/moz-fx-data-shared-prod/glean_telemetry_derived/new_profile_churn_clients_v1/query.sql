@@ -531,7 +531,7 @@ SELECT
       AND day_5 = FALSE
       AND day_6 = FALSE
       THEN TRUE
-      ELSE FALSE
+    ELSE FALSE
   END AS churn_risk_after_7_days,
   -- Active on day 0, then no activity for the next 28 days
   -- NULL if day 28 data not yet available
@@ -568,15 +568,14 @@ SELECT
       AND day_27 = FALSE
       AND day_28 = FALSE
       THEN TRUE
-      ELSE FALSE
+    ELSE FALSE
   END AS churned_after_1_day,
   -- Active on days 0 and/or 1, then no activity for the next 28 days
   -- NULL if day 29 data not yet available
   CASE
     WHEN days_data_available < 30
       THEN NULL
-    WHEN (day_0 = TRUE
-      OR day_1 = TRUE)
+    WHEN (day_0 = TRUE OR day_1 = TRUE)
       AND day_2 = FALSE
       AND day_3 = FALSE
       AND day_4 = FALSE
@@ -606,7 +605,7 @@ SELECT
       AND day_28 = FALSE
       AND day_29 = FALSE
       THEN TRUE
-      ELSE FALSE
+    ELSE FALSE
   END AS churned_after_2_days,
   -- Client is in the cohort but never active across the entire 30-day window
   -- NULL if day 30 data not yet available
@@ -642,8 +641,7 @@ SELECT
       AND day_26 = FALSE
       AND day_27 = FALSE
       THEN TRUE
-      ELSE FALSE
-    
+    ELSE FALSE
   END AS immediately_churned,
   day_0,
   day_1,

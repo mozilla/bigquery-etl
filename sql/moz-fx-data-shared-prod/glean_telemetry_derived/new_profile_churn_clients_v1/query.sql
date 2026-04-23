@@ -646,39 +646,7 @@ SELECT
       AND day_30 = FALSE
       THEN TRUE
       ELSE FALSE
-    WHEN day_0 = TRUE
-      OR day_1 = TRUE
-      OR day_2 = TRUE
-      OR day_3 = TRUE
-      OR day_4 = TRUE
-      OR day_5 = TRUE
-      OR day_6 = TRUE
-      OR day_7 = TRUE
-      OR day_8 = TRUE
-      OR day_9 = TRUE
-      OR day_10 = TRUE
-      OR day_11 = TRUE
-      OR day_12 = TRUE
-      OR day_13 = TRUE
-      OR day_14 = TRUE
-      OR day_15 = TRUE
-      OR day_16 = TRUE
-      OR day_17 = TRUE
-      OR day_18 = TRUE
-      OR day_19 = TRUE
-      OR day_20 = TRUE
-      OR day_21 = TRUE
-      OR day_22 = TRUE
-      OR day_23 = TRUE
-      OR day_24 = TRUE
-      OR day_25 = TRUE
-      OR day_26 = TRUE
-      OR day_27 = TRUE
-      OR day_28 = TRUE
-      OR day_29 = TRUE
-      OR day_30 = TRUE
-      THEN "not_immediately_churned"
-    ELSE NULL
+    
   END AS immediately_churned,
   day_0,
   day_1,

@@ -147,10 +147,10 @@
   submission_timestamp: "2021-01-01T13:20:30+00:00"
   timestamp: "2021-01-01T13:21:00+00:00"
   version: "94"
-- advertiser: widget co
-  block_id: 130
+- advertiser: widget co 2
+  block_id: 131
   browser: firefox(134)
-  context_id: cid_glean_dup
+  context_id: cid_glean_dup_2
   country: US
   form_factor: desktop
   is_clicked: false
@@ -162,11 +162,11 @@
   position: 30
   query: "best widget"
   region: NV
-  reporting_url: url_glean_dup
+  reporting_url: url_glean_dup_2
   request_id: rid_glean_dup
   sequence_no: 33
   session_id: sid_glean_dup
-  submission_timestamp: "2021-01-01T13:30:00+00:00"
+  submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
   version: "134"
 - advertiser: norm store

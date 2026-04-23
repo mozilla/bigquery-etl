@@ -257,7 +257,7 @@ def generate_queries(project, path, write_dir):
 )
 @click.option(
     "--path",
-    help="Where query directories (SQL templates) will be searched for.",
+    help="Where query directories will be searched for.",
     default="sql_generators/nimbus_feature_monitoring/templates",
     required=False,
     type=click.Path(file_okay=False),
@@ -272,8 +272,4 @@ def generate_queries(project, path, write_dir):
 @use_cloud_function_option
 def generate(target_project, path, output_dir, use_cloud_function):
     """Generate the nimbus feature monitoring views."""
-    generate_queries(
-        target_project,
-        Path(path),
-        Path(output_dir),
-    )
+    generate_queries(target_project, Path(path), Path(output_dir))

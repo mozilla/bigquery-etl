@@ -34,6 +34,7 @@ WITH temp_unnested AS (
     END AS ohttp_enabled,
     sap,
     'placeholder' AS window_mode, -- this placeholder will be removed once the underlying table has the field
+    event_name,
     IF(res.result_type LIKE '%\\_adaptive%', TRUE, FALSE) AS is_adaptive,
     IF(res.result_type LIKE '%\\_semantic%', TRUE, FALSE) AS is_semantic,
     IF(res.result_type LIKE '%\\_serp%', TRUE, FALSE) AS is_serp,
@@ -109,6 +110,7 @@ temp_session AS (
     ANY_VALUE(ohttp_enabled) AS ohttp_enabled,
     ANY_VALUE(sap) AS sap,
     ANY_VALUE(window_mode) AS window_mode,
+    ANY_VALUE(event_name) AS event_name,
     LOGICAL_OR(is_adaptive) AS is_adaptive,
     LOGICAL_OR(is_semantic) AS is_semantic,
     LOGICAL_OR(is_serp) AS is_serp,

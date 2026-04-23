@@ -181,7 +181,7 @@ fields:
 - name: immediately_churned
   type: STRING
   mode: NULLABLE
-  description: User was not active in the 30 days since first seen. Immediately churned
+  description: User was not active in any of the the 28 days from the day they are first seen (i.e., qualified as "churned" immediately).
 - name: day_0
   type: STRING
   mode: NULLABLE

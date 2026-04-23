@@ -169,7 +169,7 @@ fields:
 - name: churn_risk_after_7_days
   type: STRING
   mode: NULLABLE
-  description: User has not been active in the first seven days. Potential churn risk
+  description: Is the user a high risk of already churning, based on their inactivity levels in the seven days after they are first seen?
 - name: churned_after_1_day
   type: STRING
   mode: NULLABLE

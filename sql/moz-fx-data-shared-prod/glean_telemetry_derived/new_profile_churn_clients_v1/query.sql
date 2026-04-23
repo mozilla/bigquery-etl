@@ -644,7 +644,8 @@ SELECT
       AND day_28 = FALSE
       AND day_29 = FALSE
       AND day_30 = FALSE
-      THEN "immediately_churned"
+      THEN TRUE
+      ELSE FALSE
     WHEN day_0 = TRUE
       OR day_1 = TRUE
       OR day_2 = TRUE

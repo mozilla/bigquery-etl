@@ -530,7 +530,8 @@ SELECT
       AND day_4 = FALSE
       AND day_5 = FALSE
       AND day_6 = FALSE
-      THEN "churn_risk"
+      THEN TRUE
+      ELSE FALSE
   END AS churn_risk_after_7_days,
   -- Active on day 0, then no activity for the next 28 days
   -- NULL if day 28 data not yet available

@@ -33,7 +33,7 @@ WITH temp_unnested AS (
       ELSE FALSE
     END AS ohttp_enabled,
     sap,
-    window_mode,
+    'placeholder' AS window_mode, -- this placeholder will be removed once the underlying table has the field
     IF(res.result_type LIKE '%\\_adaptive%', TRUE, FALSE) AS is_adaptive,
     IF(res.result_type LIKE '%\\_semantic%', TRUE, FALSE) AS is_semantic,
     IF(res.result_type LIKE '%\\_serp%', TRUE, FALSE) AS is_serp,

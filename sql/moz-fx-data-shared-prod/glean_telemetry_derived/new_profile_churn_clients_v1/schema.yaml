@@ -163,9 +163,9 @@ fields:
   description: Attempt to determine if the user is an enterprise user based on various
     signals.
 - name: churn_risk_after_5_days
-  type: STRING
+  type: BOOLEAN
   mode: NULLABLE
-  description: Is the user a high risk of already churning, based on their inactivity levels in the five days after they are first seen? 
+  description: Is the user a high risk of already churning, based on their inactivity levels in the five days after they are first seen?
 - name: churn_risk_after_7_days
   type: STRING
   mode: NULLABLE
@@ -177,7 +177,7 @@ fields:
 - name: churned_after_2_days
   type: STRING
   mode: NULLABLE
-  description: Shows if the client was active at some point within the 48 hours after they are first seen, but then immediately churned with no DAU activity for the following 28 days.
+  description: Shows if client was active in the first 48 hours after first seen, then then immediately churned no DAU activity for the following 28 days.
 - name: immediately_churned
   type: STRING
   mode: NULLABLE

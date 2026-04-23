@@ -165,7 +165,7 @@ fields:
 - name: churn_risk_after_5_days
   type: STRING
   mode: NULLABLE
-  description: User has not been active in the first five days. Potential churn risk
+  description: Is the user a high risk of already churning, based on their inactivity levels in the five days after they are first seen? 
 - name: churn_risk_after_7_days
   type: STRING
   mode: NULLABLE

@@ -605,7 +605,8 @@ SELECT
       AND day_27 = FALSE
       AND day_28 = FALSE
       AND day_29 = FALSE
-      THEN "churned"
+      THEN TRUE
+      ELSE FALSE
   END AS churned_after_2_days,
   -- Client is in the cohort but never active across the entire 30-day window
   -- NULL if day 30 data not yet available

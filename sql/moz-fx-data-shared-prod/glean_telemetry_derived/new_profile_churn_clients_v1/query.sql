@@ -536,7 +536,7 @@ SELECT
   -- Active on day 0, then no activity for the next 28 days
   -- NULL if day 28 data not yet available
   CASE
-    WHEN days_data_available < 28
+    WHEN days_data_available < 29
       THEN NULL
     WHEN day_0 = TRUE
       AND day_1 = FALSE

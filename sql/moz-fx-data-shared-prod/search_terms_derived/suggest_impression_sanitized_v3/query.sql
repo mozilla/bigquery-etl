@@ -70,7 +70,7 @@ WITH impressions AS (
 ),
 -- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
 -- the same request_id appears in both quicksuggest_impression_v1 (legacy) and
--- quick_suggest_v1 (Glean). Prefer the legacy row when it carries a search query.
+-- quick_suggest_v1 (Glean).
 deduped_impressions AS (
   SELECT
     *

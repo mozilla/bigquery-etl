@@ -341,6 +341,9 @@ def delete_from_partition(
         dry_run=dry_run,
         priority=priority,
         reservation=reservation_override,
+        labels={
+            "type": "shredder",
+        },
     )
     # The event_id backfill logic in this function is just temporary for https://mozilla-hub.atlassian.net/browse/DENG-9800.
     event_id_backfill = target.table_id == "events_stream_v1" and target.dataset_id in (

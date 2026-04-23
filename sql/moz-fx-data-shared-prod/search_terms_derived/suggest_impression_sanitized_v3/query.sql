@@ -89,7 +89,7 @@ sanitized_queries AS (
   WHERE
     DATE(`timestamp`) = @submission_date
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY `timestamp` DESC) = 1
+    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY sequence_no DESC, `timestamp` DESC) = 1
 ),
 sanitized_queries_count AS (
   SELECT

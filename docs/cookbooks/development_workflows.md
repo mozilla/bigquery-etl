@@ -231,6 +231,18 @@ deploy, migrated tables won't pick those changes up. Accept the deploy
 prompt at the end of the command — or run `./bqetl deploy` manually on
 the migrated paths — to re-render everything from templates.
 
+**Caveat: substring replacement.** Renames and local reference rewrites
+are implemented as plain substring replacement of the sanitized branch
+(and commit) string. A very short or generic branch name (e.g. `dev`,
+`test`, `a`) can incorrectly match unrelated substrings inside identifiers
+or SQL/YAML content, producing bad names or content edits. In practice
+ticket-prefixed branch names (`DENG-1234-*`, `feature-xyz`) are unique
+enough that this doesn't bite, and the rewrite is scoped to the target
+project's dev directory — but if you use generic branch names, preview
+with `--dry-run` and spot-check the migration plan before accepting.
+A more robust implementation would match qualified table IDs via regex
+rather than using raw substring replace.
+
 ### 8. Isolated deploys (e.g. for staging) _(future)_
 
 Use `--isolated` to rewrite **all** references to the target environment, ensuring complete isolation:

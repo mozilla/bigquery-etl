@@ -567,7 +567,8 @@ SELECT
       AND day_26 = FALSE
       AND day_27 = FALSE
       AND day_28 = FALSE
-      THEN "churned"
+      THEN TRUE
+      ELSE FALSE
   END AS churned_after_1_day,
   -- Active on days 0 and 1, then no activity for the next 28 days
   -- NULL if day 29 data not yet available

@@ -66,7 +66,8 @@ SELECT
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,
-  metrics AS details
+  metrics AS details,
+  metadata.geo.country AS country
 FROM
   live_reports
 WHERE

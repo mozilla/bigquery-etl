@@ -643,9 +643,11 @@ def list_partitions(
                         SELECT
                           partition_id
                         FROM
-                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
+                          `{table.project}.{table.dataset_id}.INFORMATION_SCHEMA.PARTITIONS`
+                        WHERE
+                          table_name = '{table.table_id}'
+                          AND partition_id IS NOT NULL
                         """).strip(),
-                    bigquery.QueryJobConfig(use_legacy_sql=True),
                 ).result()
             ]
             if table.num_bytes > max_single_dml_bytes and partition_expr is not None

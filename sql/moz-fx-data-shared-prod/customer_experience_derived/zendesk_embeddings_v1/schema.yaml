@@ -1,0 +1,117 @@
+fields:
+- name: creation_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Creation date reported by the source system.
+- name: header
+  type: STRING
+  mode: NULLABLE
+  description: Header line that contains a summary or header for the content.
+   Equivalent to the subject in Zendesk and the title in Kitsume.
+- name: content
+  type: STRING
+  mode: NULLABLE
+  description: Long text associated with the entry to provide further details.
+    E.g. SUMO forum entry's details or Zendesk question's description.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: Product name, as reported by zendesk.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+    Derieved from the platform or operating system reported by the source.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Categorization of content in zendesk, currently incident, problem and question.
+- name: category
+  description: A classification of content by types, such as question, incident, problem, forum.
+    The value is stored as reported by zendesk.
+  type: STRING
+  mode: NULLABLE
+- name: summary_generated
+  type: STRING
+  mode: NULLABLE
+  description: LLM-generated summary based on input fields.
+- name: category_generated
+  type: STRING
+  mode: NULLABLE
+  description: LLM-generated categories based on input fields.
+    header and content.
+- name: language_generated
+  type: STRING
+  mode: NULLABLE
+  description: LLM-generated language code based on input fields.
+- name: entities_generated
+  type: STRING
+  mode: REPEATED
+  description: LLM-generated entities, based on input fields.
+- name: topics_generated
+  type: STRING
+  mode: REPEATED
+  description: LLM-generated topics, based on input fields.
+- name: sentiment_score
+  type: FLOAT
+  mode: NULLABLE
+  description: LLM-generated score indicating the emotional polarity of the text.
+    The range goes form -1 is negative, o is neutral and 1 is positive.
+- name: embedding
+  type: FLOAT
+  mode: REPEATED
+  description: LLM-generated vector representation of the input fields,
+    capturing its semantic meaning for similarity search, clustering, and retrieval tasks.
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: Structured technical details about the generation process and stored data.
+  fields:
+  - name: input_fields
+    type: STRING
+    mode: REPEATED
+    description: Fields used as input text for the LLM that generates dimensions,
+      sentiment_score and embedding.
+  - name: input_char_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Count of characters in the input text.
+  - name: input_quality_score
+    type: FLOAT
+    mode: NULLABLE
+    description: LLM-generated quality score to determine the quality of the input text
+      based on readability, consistency, correct grammatics.
+  - name: model_output_quality_score
+    type: FLOAT
+    mode: NULLABLE
+    description: LLM-evaluated score of output quality (accuracy, clarity, relevance to prompt).
+  - name: model_output_confidence_score
+    type: FLOAT
+    mode: NULLABLE
+    description: Model-estimated confidence in its output correctness and reliability.
+  - name: model_version
+    type: STRING
+    mode: NULLABLE
+    description: Identifier of the LLM version used to generate the output.
+  - name: embedding_version
+    type: STRING
+    mode: NULLABLE
+    description: Identifier of the embedding model/version used for vector generation.
+  - name: prompt_version
+    type: STRING
+    mode: NULLABLE
+    description: Version or hash of the prompt template used for generation.
+  - name: analysis_timestamp
+    type: STRING
+    mode: NULLABLE
+    description: ISO 8601 timestamp when scoring/generation was performed.
+  - name: status
+    type: STRING
+    mode: NULLABLE
+    description: Processing result — SUCCESS if all fields populated; FAILED if incomplete
+      and requires reprocessing.

@@ -1,0 +1,44 @@
+friendly_name: Zendesk Embeddings
+description: |-
+  Derived data structured from the unstructured content in Zendesk.
+  
+  Dimensions:
+  - creation_date
+  - country
+  - product	
+  - os
+  - type
+  - category
+  
+  Generated:
+  - summary_generated
+  - category_generated
+  - language_generated	
+  - entities_generated
+  - topics_generated
+  - embedding based on [title, description]
+  - sentiment_score based on [title, description]
+  
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_insights
+labels:
+  incremental: true
+  owner1: example
+  level: bronze
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - product
+      - country
+      - os
+require_column_descriptions: true

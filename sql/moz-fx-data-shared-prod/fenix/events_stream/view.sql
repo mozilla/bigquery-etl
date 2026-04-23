@@ -270,6 +270,7 @@ SELECT
       JSON_VALUE(event_extra.active) AS `active`,
       JSON_VALUE(event_extra.add_on_id) AS `add_on_id`,
       JSON_VALUE(event_extra.additional_name) AS `additional_name`,
+      JSON_VALUE(event_extra.addon_download_url) AS `addon_download_url`,
       JSON_VALUE(event_extra.addon_id) AS `addon_id`,
       JSON_VALUE(event_extra.addon_type) AS `addon_type`,
       JSON_VALUE(event_extra.addon_version) AS `addon_version`,

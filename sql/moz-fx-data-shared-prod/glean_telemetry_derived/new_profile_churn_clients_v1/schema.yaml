@@ -177,7 +177,7 @@ fields:
 - name: churned_after_2_days
   type: STRING
   mode: NULLABLE
-  description: User churned after two days
+  description: Shows if the client was active at some point within the 48 hours after they are first seen, but then immediately churned with no DAU activity for the following 28 days.
 - name: immediately_churned
   type: STRING
   mode: NULLABLE

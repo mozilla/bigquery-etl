@@ -65,7 +65,7 @@ WITH impressions AS (
       PARTITION BY
         metrics.string.quick_suggest_request_id
       ORDER BY
-        submission_timestamp
+        submission_timestamp DESC
     ) = 1
 ),
 -- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
@@ -77,7 +77,7 @@ deduped_impressions AS (
   FROM
     impressions
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
 ),
 sanitized_queries AS (
   SELECT

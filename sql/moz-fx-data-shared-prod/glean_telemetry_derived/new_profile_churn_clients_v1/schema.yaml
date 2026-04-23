@@ -173,7 +173,7 @@ fields:
 - name: churned_after_1_day
   type: STRING
   mode: NULLABLE
-  description: User churned after one day
+  description: Shows if the client was active on their first seen date, but then immediately churned with no DAU activity for the following 28 days.
 - name: churned_after_2_days
   type: STRING
   mode: NULLABLE

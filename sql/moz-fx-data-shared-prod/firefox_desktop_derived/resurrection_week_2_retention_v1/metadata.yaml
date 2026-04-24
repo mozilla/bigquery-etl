@@ -11,6 +11,7 @@ description: |-
 owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
+- mozilla/kpi_table_reviewers
 labels:
   incremental: true
   level: gold

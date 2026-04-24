@@ -33,6 +33,10 @@ bigquery:
     fields:
       - normalized_channel
       - sample_id
+schema:
+  derived_from:
+  - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'baseline_clients_last_seen_v1']
+  - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'metrics_clients_last_seen_v1']
 {%- if deprecated_app %}
 deprecated: true
 {%- endif -%}

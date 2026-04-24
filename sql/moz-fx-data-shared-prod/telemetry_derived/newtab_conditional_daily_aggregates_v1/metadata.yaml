@@ -3,6 +3,7 @@ description: |-
   Conditional computations for daily aggregation for newtab.
 owners:
 - gkatre@mozilla.com
+app_schema: app_newtab
 labels:
   application: firefox
   incremental: true

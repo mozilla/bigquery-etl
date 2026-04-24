@@ -1,6 +1,7 @@
 friendly_name: Newtab Interactions Daily Aggregates
 description: |-
   A daily aggregation of newtab interactions, partitioned by day.
+app_schema: app_newtab
 owners:
 - gkatre@mozilla.com
 labels:

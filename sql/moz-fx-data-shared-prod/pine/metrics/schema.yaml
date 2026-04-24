@@ -929,6 +929,13 @@ fields:
       description: 'The value of the "nimbus.qa.bool-user" pref.
 
         '
+    - name: distribution_mozillaonline_ignored
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Recorded when Firefox detects a mozillaonline distribution and
+        ignores it, applying no distribution customizations.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -2817,6 +2824,14 @@ fields:
       mode: NULLABLE
       description: 'The number of HTTP channels that skipped async proxy resolution
         via the fast path (system proxy reports no proxy configured, no filters registered).
+
+        '
+    - name: rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of RTCPeerConnections created with rtcpMuxPolicy set
+        to "negotiate". This value was removed from the spec, and we would like to
+        track usage before removing it.
 
         '
   - name: custom_distribution

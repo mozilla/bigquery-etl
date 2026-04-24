@@ -3239,6 +3239,14 @@ fields:
         via the fast path (system proxy reports no proxy configured, no filters registered).
 
         '
+    - name: rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of RTCPeerConnections created with rtcpMuxPolicy set
+        to "negotiate". This value was removed from the spec, and we would like to
+        track usage before removing it.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

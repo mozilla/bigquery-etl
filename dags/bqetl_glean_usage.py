@@ -119,6 +119,8 @@ with DAG(
 
     task_group_mdn_fred = TaskGroup("mdn_fred")
 
+    task_group_mdn_mcp = TaskGroup("mdn_mcp")
+
     task_group_mdn_yari = TaskGroup("mdn_yari")
 
     task_group_monitor_backend = TaskGroup("monitor_backend")
@@ -4607,6 +4609,24 @@ with DAG(
         task_group=task_group_mdn_fred,
     )
 
+    mdn_mcp_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="mdn_mcp_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="mdn_mcp_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_mdn_mcp,
+    )
+
     mdn_yari_derived__events_stream__v1 = bigquery_etl_query(
         task_id="mdn_yari_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -8207,6 +8227,8 @@ with DAG(
     )
 
     mdn_fred_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    mdn_mcp_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     mdn_yari_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 

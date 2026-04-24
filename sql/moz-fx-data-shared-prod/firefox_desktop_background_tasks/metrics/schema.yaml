@@ -443,6 +443,13 @@ fields:
         When true, enhancements are blocked.
 
         '
+    - name: distribution_mozillaonline_ignored
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Recorded when Firefox detects a mozillaonline distribution and
+        ignores it, applying no distribution customizations.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

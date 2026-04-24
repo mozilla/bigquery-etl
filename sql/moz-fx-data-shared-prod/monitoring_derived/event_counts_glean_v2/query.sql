@@ -3218,6 +3218,41 @@ subscription_platform_backend_cirrus_events_v1 AS (
     normalized_channel,
     normalized_country_code,
     app_version
+),
+mdn_mcp_events_v1 AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    "mdn_mcp" AS app_id,
+    "mdn_mcp" AS app_name,
+    "MDN MCP" AS normalized_app_name,
+    "events" AS ping_type,
+    event.category AS event_category,
+    event.name AS event_name,
+    normalized_channel,
+    normalized_country_code,
+    client_info.app_display_version AS app_version,
+    SUM(LENGTH(TO_JSON_STRING(event.extra))) * 10 AS event_extras_length,
+    COUNT(*) * 10 AS total_events,
+  FROM
+    `moz-fx-data-shared-prod.mdn_mcp_stable.events_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN 0
+    AND 9
+  GROUP BY
+    submission_date,
+    app_id,
+    app_name,
+    normalized_app_name,
+    ping_type,
+    event_category,
+    event_name,
+    normalized_channel,
+    normalized_country_code,
+    app_version
 )
 SELECT
   *
@@ -3678,3 +3713,8 @@ SELECT
   *
 FROM
   subscription_platform_backend_cirrus_events_v1
+UNION ALL
+SELECT
+  *
+FROM
+  mdn_mcp_events_v1

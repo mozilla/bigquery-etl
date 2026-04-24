@@ -1,0 +1,9 @@
+friendly_name: mdn-mcp
+description: |-
+  User-facing views related to document namespace mdn-mcp; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mdn-mcp
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

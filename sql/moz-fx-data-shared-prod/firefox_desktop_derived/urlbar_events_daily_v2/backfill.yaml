@@ -1,3 +1,15 @@
+2026-04-24:
+  start_date: 2026-04-17
+  end_date: 2026-04-17
+  reason: |
+    Need to fill in 17 April for https://mozilla-hub.atlassian.net/browse/DENG-10777.
+  watchers:
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false
 2026-04-17:
   start_date: 2025-01-01
   end_date: 2026-04-17
@@ -7,8 +19,8 @@
     The `shredder_mitigation` is set to False from this backfill on
     in alignment with the business requirement; "Doing YoY computations we need to be measuring the same historically".
   watchers:
-  - kbammarito@mozilla.com
-  - nflorez@mozilla.com
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false

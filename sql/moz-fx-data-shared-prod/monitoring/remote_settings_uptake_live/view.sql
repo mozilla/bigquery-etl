@@ -19,7 +19,7 @@ SELECT
   mozfun.map.get_key(e.extra, 'source') AS extra_source,
   mozfun.map.get_key(e.extra, 'errorName') AS extra_errorname,
   mozfun.map.get_key(e.extra, 'timestamp') AS extra_timestamp,
-  SAFE_CAST(mozfun.map.get_key(e.extra, 'age') AS INT64) AS extra_age,
+  SAFE_CAST(mozfun.map.get_key(e.extra, 'age') AS DECIMAL) AS extra_age,
   SAFE_CAST(mozfun.map.get_key(e.extra, 'duration') AS INT64) AS extra_duration,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`

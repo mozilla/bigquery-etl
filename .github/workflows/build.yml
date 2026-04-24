@@ -354,6 +354,11 @@ jobs:
             GENERATED_SQL_CHANGED=true
           fi
 
+          if [[ $(git diff --no-index --name-only bqetl_project.yaml ~/remote-bigquery-etl-main/bqetl_project.yaml) ]]; then
+            echo "bqetl_project.yaml changed; re-generate SQL"
+            GENERATED_SQL_CHANGED=true
+          fi
+
           mkdir -p /tmp/workspace/generated-sql
           cp bqetl_project.yaml /tmp/workspace/generated-sql/
 

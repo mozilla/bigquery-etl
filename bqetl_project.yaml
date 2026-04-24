@@ -421,6 +421,7 @@ generate:
     - regrets_reporter
     - tiktokreporter_android
     - tiktokreporter_ios
+    - thunderbird_crashreporter  # https://mozilla-hub.atlassian.net/browse/DENG-10934
     events_stream:
       skip_apps:
       - bergamot
@@ -483,7 +484,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     clients_last_seen_joined:
       skip_apps:
@@ -498,7 +498,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     bigconfig:
       skip_apps:

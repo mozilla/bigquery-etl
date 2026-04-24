@@ -9,6 +9,10 @@ import yaml
 
 from ..cli.utils import is_valid_dir, is_valid_file, sql_dir_option
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..query_scheduling.copy_deduplicate_task_markers import (
+    TASK_MARKERS_DAG_NAME,
+    write_task_markers_dag,
+)
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
@@ -239,7 +243,13 @@ def create(
 def generate(name, dags_config, sql_dir, output_dir):
     """CLI command for generating Airflow DAGs."""
     dags = get_dags(None, dags_config, sql_dir)
-    if name:
+    if name == TASK_MARKERS_DAG_NAME:
+        # copy_deduplicate task markers need to resolve every task's upstream dependencies
+        for _dag in dags.dags:
+            _dag.with_upstream_dependencies(dags)
+        output_file = write_task_markers_dag(dags, output_dir)
+        click.echo(f"Generated {output_file}")
+    elif name:
         # only generate specific DAG
         dag = dags.dag_by_name(name)
 

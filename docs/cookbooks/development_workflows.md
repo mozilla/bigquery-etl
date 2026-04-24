@@ -188,11 +188,60 @@ Empty datasets are removed automatically after table-level cleanup.
 
 Local copied files are cleaned up in both cases.
 
-### 7. Handle branch renames _(future)_
+### 7. Migrate a previous branch's deployment to the current branch
 
 ```bash
-./bqetl --target dev rename-branch old-feature-name new-feature-name
+# Check out the destination branch first
+git checkout new-feature-name
+
+./bqetl --target dev target migrate-branch old-feature-name
+
+# Preview first
+./bqetl --target dev target migrate-branch old-feature-name --dry-run
 ```
+
+The destination branch is always the currently checked-out git branch —
+the deploy step that recreates views/MVs/routines renders target names
+from the current branch, so this command must be run from the branch
+you're migrating to.
+
+Replaces the sanitized old-branch string with the current-branch string
+in dataset and/or artifact names, depending on where `git.branch` appears
+in the target's templates. Tables are copied to their new location and
+the originals deleted. Views, materialized views, and routines are
+skipped during the migration; the deploy step prompted at the end of the
+command recreates them at the new location from local SQL templates and
+cleans up the originals.
+
+References (FROM clauses, routine calls, manifests) in local SQL/YAML
+files under the target dir are also rewritten to the new names, so
+downstream queries generated under the target path keep pointing at the
+migrated artifacts.
+
+If the target template includes `git.commit`, only the most recently
+modified commit's datasets are migrated — older commit deployments are
+left behind (clean those up with `./bqetl target clean` if no longer
+needed). The commit hash in dataset and artifact names is rewritten to
+the current `HEAD`, so the next deploy lands at the matching location
+instead of creating a parallel set of artifacts.
+
+Migrated tables reflect the BigQuery state at time of migration, not the
+current local SQL templates. If templates have drifted since the last
+deploy, migrated tables won't pick those changes up. Accept the deploy
+prompt at the end of the command — or run `./bqetl deploy` manually on
+the migrated paths — to re-render everything from templates.
+
+**Caveat: substring replacement.** Renames and local reference rewrites
+are implemented as plain substring replacement of the sanitized branch
+(and commit) string. A very short or generic branch name (e.g. `dev`,
+`test`, `a`) can incorrectly match unrelated substrings inside identifiers
+or SQL/YAML content, producing bad names or content edits. In practice
+ticket-prefixed branch names (`DENG-1234-*`, `feature-xyz`) are unique
+enough that this doesn't bite, and the rewrite is scoped to the target
+project's dev directory — but if you use generic branch names, preview
+with `--dry-run` and spot-check the migration plan before accepting.
+A more robust implementation would match qualified table IDs via regex
+rather than using raw substring replace.
 
 ### 8. Isolated deploys (e.g. for staging) _(future)_
 

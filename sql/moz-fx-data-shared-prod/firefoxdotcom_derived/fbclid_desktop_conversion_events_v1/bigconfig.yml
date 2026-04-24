@@ -3,7 +3,7 @@ tag_deployments:
 - collection:
     name: Marketing Metrics
     notification_channels:
-    - slack: '#ds-de-marketing'
+    - slack: '#marketing-data-alerts'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_v1.submission_date

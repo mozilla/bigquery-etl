@@ -2,153 +2,242 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: country_code
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: browser_version
   type: STRING
   mode: NULLABLE
+  description: The version string of the browser (e.g. "120.0.1").
 - name: browser_name
   type: STRING
   mode: NULLABLE
+  description: The name of the browser (e.g. "Firefox").
 - name: search_engine
   type: STRING
   mode: NULLABLE
+  description: The search engine used for searches initiated from the newtab page.
 - name: search_access_point
   type: STRING
   mode: NULLABLE
+  description: The access point on the newtab page from which the search was initiated
+    (e.g. "urlbar", "searchbar", "newtab").
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
+  description: The default search engine configured by the user for normal browsing
+    sessions.
 - name: default_private_search_engine
   type: STRING
   mode: NULLABLE
+  description: The default search engine configured by the user for private browsing
+    sessions.
 - name: pocket_story_position
   type: INTEGER
   mode: NULLABLE
+  description: The 0-indexed position of the Pocket story in the newtab content grid.
 - name: newtab_open_source
   type: STRING
   mode: NULLABLE
+  description: The source that triggered the newtab page to open (e.g. "about:newtab",
+    "about:home", "about:privatebrowsing").
 - name: pocket_is_signed_in
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the user is signed in to their Pocket account at the time of
+    the newtab visit.
 - name: pocket_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the Pocket section is enabled and visible on the newtab page.
 - name: pocket_sponsored_stories_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether sponsored Pocket stories are enabled on the newtab page.
 - name: topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the Top Sites section is enabled and visible on the newtab page.
 - name: newtab_homepage_category
   type: STRING
   mode: NULLABLE
+  description: The category classification of the homepage (e.g. "enabled", "disabled",
+    "custom").
 - name: newtab_newtab_category
   type: STRING
   mode: NULLABLE
+  description: The category classification of the newtab page (e.g. "enabled", "disabled",
+    "custom").
 - name: topsites_rows
   type: INTEGER
   mode: NULLABLE
+  description: The number of rows of Top Sites tiles configured and visible on the
+    newtab page.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the client has a new profile that was created recently.
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: client_count
   type: INTEGER
   mode: NULLABLE
+  description: The count of distinct clients (by client_id) contributing to this aggregate
+    bucket.
 - name: legacy_telemetry_client_count
   type: INTEGER
   mode: NULLABLE
+  description: The count of distinct legacy telemetry clients (by legacy_telemetry_client_id)
+    contributing to this aggregate bucket.
 - name: newtab_interactions_visits
   type: INTEGER
   mode: NULLABLE
+  description: The count of distinct newtab visits (by newtab_visit_id) contributing
+    to this aggregate bucket.
 - name: topsite_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Top Site tile clicks across all visits in this
+    aggregate bucket.
 - name: sponsored_topsite_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Top Site tile clicks across all visits
+    in this aggregate bucket.
 - name: organic_topsite_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Top Site tile clicks across
+    all visits in this aggregate bucket.
 - name: topsite_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Top Site tile impressions across all visits in
+    this aggregate bucket.
 - name: sponsored_topsite_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Top Site tile impressions across all
+    visits in this aggregate bucket.
 - name: organic_topsite_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Top Site tile impressions
+    across all visits in this aggregate bucket.
 - name: topsite_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Top Site tile dismissals across all visits in this
+    aggregate bucket.
 - name: sponsored_topsite_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Top Site tile dismissals across all visits
+    in this aggregate bucket.
 - name: organic_topsite_dismissals
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Top Site tile dismissals
+    across all visits in this aggregate bucket.
 - name: searches
   type: INTEGER
   mode: NULLABLE
+  description: The total number of searches initiated from the newtab page across
+    all visits in this aggregate bucket.
 - name: tagged_search_ad_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad clicks on tagged search result pages initiated
+    from the newtab page.
 - name: tagged_search_ad_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad impressions on tagged search result pages initiated
+    from the newtab page.
 - name: follow_on_search_ad_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad clicks on follow-on search result pages, where
+    the search originated from the newtab page.
 - name: follow_on_search_ad_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad impressions on follow-on search result pages,
+    where the search originated from the newtab page.
 - name: tagged_follow_on_search_ad_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad clicks on tagged follow-on search result pages,
+    where the search originated from the newtab page.
 - name: tagged_follow_on_search_ad_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of ad impressions on tagged follow-on search result
+    pages, where the search originated from the newtab page.
 - name: pocket_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Pocket story impressions across all visits in this
+    aggregate bucket.
 - name: sponsored_pocket_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Pocket story impressions across all visits
+    in this aggregate bucket.
 - name: organic_pocket_impressions
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Pocket story impressions
+    across all visits in this aggregate bucket.
 - name: pocket_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Pocket story clicks across all visits in this aggregate
+    bucket.
 - name: sponsored_pocket_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Pocket story clicks across all visits
+    in this aggregate bucket.
 - name: organic_pocket_clicks
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Pocket story clicks across
+    all visits in this aggregate bucket.
 - name: pocket_saves
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Pocket story saves across all visits in this aggregate
+    bucket.
 - name: sponsored_pocket_saves
   type: INTEGER
   mode: NULLABLE
+  description: The total number of sponsored Pocket story saves across all visits
+    in this aggregate bucket.
 - name: organic_pocket_saves
   type: INTEGER
   mode: NULLABLE
+  description: The total number of organic (non-sponsored) Pocket story saves across
+    all visits in this aggregate bucket.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: Version of the operating system running at the client (e.g. "100.9.11").
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the search bar is enabled and visible on the newtab page.

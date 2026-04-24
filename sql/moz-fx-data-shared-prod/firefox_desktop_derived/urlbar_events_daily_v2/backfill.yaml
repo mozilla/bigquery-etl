@@ -1,3 +1,14 @@
+2026-05-04:
+  start_date: 2025-01-01
+  end_date: 2026-05-04
+  reason: Backfill for https://mozilla-hub.atlassian.net/browse/DENG-10722
+  watchers:
+  - kbammarito@mozilla.com
+  - nflorez@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false
 2026-04-24:
   start_date: 2026-04-17
   end_date: 2026-04-17

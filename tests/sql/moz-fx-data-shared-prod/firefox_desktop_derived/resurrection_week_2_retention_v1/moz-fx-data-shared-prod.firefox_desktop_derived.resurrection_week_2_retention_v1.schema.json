@@ -1,0 +1,11 @@
+[
+  {"type": "DATE", "name": "metric_date"},
+  {"type": "DATE", "name": "submission_date"},
+  {"type": "STRING", "name": "os"},
+  {"type": "STRING", "name": "normalized_os_version"},
+  {"type": "STRING", "name": "country"},
+  {"type": "STRING", "name": "num_days_since_last_seen"},
+  {"type": "INTEGER", "name": "dau"},
+  {"type": "INTEGER", "name": "resurrections"},
+  {"type": "INTEGER", "name": "resurrections_retained_wk2"}
+]

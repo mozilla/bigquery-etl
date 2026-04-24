@@ -95,14 +95,17 @@ class TestCopyDeduplicateTaskMarkers:
         assert "datetime.timedelta(seconds=3600)" in source
         assert "datetime.timedelta(seconds=11700)" in source
 
-        # Sensors are emitted per source task
-        assert 'task_id="wait_for_copy_deduplicate_all"' in source
-        assert 'task_id="wait_for_copy_deduplicate_main_ping"' in source
+        # EmptyOperators are emitted per source task.
+        assert 'task_id="copy_deduplicate_all_marker"' in source
+        assert 'task_id="copy_deduplicate_main_ping_marker"' in source
 
         # Markers are emitted per (source, consumer) pair.
-        assert 'task_id="bqetl_a__wait_for_copy_deduplicate_all"' in source
-        assert 'task_id="bqetl_b__wait_for_copy_deduplicate_all"' in source
-        assert 'task_id="bqetl_a__wait_for_copy_deduplicate_main_ping"' in source
+        assert 'task_id="bqetl_a__copy_deduplicate_all"' in source
+        assert 'task_id="bqetl_b__copy_deduplicate_all"' in source
+        assert 'task_id="bqetl_a__copy_deduplicate_main_ping"' in source
+        # Each ExternalTaskMarker still targets the wait_for_* sensor in the downstream DAG.
+        assert 'external_task_id="wait_for_copy_deduplicate_all"' in source
+        assert 'external_task_id="wait_for_copy_deduplicate_main_ping"' in source
 
         # bqetl_c does depend on copy_deduplicate so it shouldn't appear
         assert "bqetl_c" not in source

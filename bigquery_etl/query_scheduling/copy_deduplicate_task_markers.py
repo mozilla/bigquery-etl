@@ -1,8 +1,8 @@
 """Generate the copy_deduplicate_task_markers DAG.
 
 Generate an intermediate DAG between copy_deduplicate in the telemetry-airflow repo and
-its dependent DAGs.  This DAG contains `ExternalTaskMarker`s for the downstream tasks/DAGs so
-that setting state on the upstream copy_deduplicate tasks will propagate to downstream tasks.
+its dependent DAGs. This DAG contains `ExternalTaskMarker`s for the downstream tasks/DAGs so
+that clearing tasks in the upstream copy_deduplicate tasks will propagate to downstream tasks.
 This allows the task markers to stay updated without needing to change the code in telemetry-airflow.
 """
 
@@ -61,7 +61,11 @@ def build_markers_context(dag_collection) -> dict:
         for task in dag.tasks:
             deps = (task.upstream_dependencies or []) + (task.depends_on or [])
             for dep in deps:
+                # not copy_deduplicate
                 if dep.dag_name != SOURCE_DAG_NAME:
+                    continue
+                # already looked at task + dag
+                if dag.name in consumers_by_source[dep.task_id]:
                     continue
                 source_schedule = source_schedules.get(dep.task_id)
                 if source_schedule is None:
@@ -77,7 +81,7 @@ def build_markers_context(dag_collection) -> dict:
                         f"{dag.name} ({downstream_schedule!r})."
                     )
                 delta_seconds = _execution_delta_seconds(delta_string)
-                consumers_by_source[dep.task_id].setdefault(dag.name, delta_seconds)
+                consumers_by_source[dep.task_id][dag.name] = delta_seconds
 
     sources: List[tuple] = []
     for source_task_id in sorted(consumers_by_source):
@@ -98,9 +102,6 @@ def build_markers_context(dag_collection) -> dict:
         "schedule_interval": markers_schedule,
         "owner": TELEMETRY_ALERTS_EMAIL,
         "email": [TELEMETRY_ALERTS_EMAIL],
-        "start_date_year": 2019,
-        "start_date_month": 7,
-        "start_date_day": 25,
         "tags": [
             "impact/tier_1",
             "repo/bigquery-etl",

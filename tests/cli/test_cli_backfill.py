@@ -497,7 +497,6 @@ class TestBackfill:
                 "Y",  # add script args
                 "--project=test",  # arg
                 "N",  # another
-                "N",  # shredder mitigation
                 "N",  # override retention
             ]
         )
@@ -533,7 +532,6 @@ class TestBackfill:
                 "Bug 12345 - reprocess data",  # reason
                 "",  # custom query path
                 # No script prompts expected for query.sql tables
-                "N",  # shredder mitigation
                 "N",  # override retention
             ]
         )
@@ -546,6 +544,43 @@ class TestBackfill:
 
         assert result.exit_code == 0
         assert "entrypoint" not in result.output.lower()
+
+    def test_create_backfill_interactive_shredder_mitigation(self, runner):
+        """Shredder mitigation value should be derived from metadata and not prompt custom_query."""
+        metadata_with_label = {
+            **TABLE_METADATA_CONF,
+            "labels": {"shredder_mitigation": True},
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata_with_label))
+
+        interactive_input = "\n".join(
+            [
+                "2021-03-01",  # start date
+                "",  # end date
+                "N",  # exclude dates
+                "test1@mozilla.com",  # watcher email
+                "N",  # another
+                "Bug 12345 - reprocess data",  # reason
+                # No custom query path prompt when shredder mitigation is on
+                "N",  # override retention
+            ]
+        )
+
+        result = runner.invoke(
+            create,
+            ["moz-fx-data-shared-prod.test.test_query_v1"],
+            input=interactive_input,
+        )
+
+        assert result.exit_code == 0
+        assert "Custom query path" not in result.output
+        assert "shredder_mitigation" in result.output
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        entry = Backfill.entries_from_file(backfill_file)[0]
+        assert entry.shredder_mitigation is True
+        assert entry.custom_query_path is None
 
     def test_create_backfill_non_interactive_unchanged(self, runner):
         """No prompts should appear if required args are provided."""
@@ -587,7 +622,6 @@ class TestBackfill:
                 "N",  # another
                 "Bug 12345 - reprocess data",  # reason
                 "",  # custom query path
-                "N",  # shredder mitigation
                 "N",  # override retention
             ]
         )

@@ -100,23 +100,39 @@ class Target:
 
 
 def _template_to_pattern(
-    template_str: str, branch: Optional[str] = None, anchor_end: bool = False
+    template_str: str,
+    branch: Optional[str] = None,
+    anchor_end: bool = False,
+    capture_commit: bool = False,
 ) -> str:
     """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
-    Known values (branch, username) are rendered literally; variable parts
-    (commit, artifact ids) become [a-zA-Z0-9_]+ regex wildcards.
+    Known values (branch, username) are rendered literally; the commit slot
+    must start with 7+ hex chars (short SHA) and may have trailing chars from
+    legacy templates; other variable slots become [a-zA-Z0-9_]+. Anchoring
+    the commit slot to a hex SHA prefix prevents over-matching when the
+    literal branch is a substring of another branch's sanitized name.
+
+    If capture_commit is True, the first commit slot is wrapped in a
+    (non-greedy) capture group so the commit can be extracted from a name
+    that matches the pattern.
 
     Returns a ^-anchored regex string, optionally $-anchored.
     """
     _WILDCARD = "XBQETLWCX"
+    _COMMIT_WILDCARD = "XBQETLCOMMITX"
     rendered = Template(template_str).render(
-        git={"branch": branch or _WILDCARD, "commit": _WILDCARD},
+        git={"branch": branch or _WILDCARD, "commit": _COMMIT_WILDCARD},
         account=_get_account_context(),
         artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
     )
 
-    pattern = re.escape(sanitize_bq_id(rendered)).replace(_WILDCARD, "[a-zA-Z0-9_]+")
+    escaped = re.escape(sanitize_bq_id(rendered))
+    if capture_commit:
+        escaped = escaped.replace(_COMMIT_WILDCARD, "([a-f0-9]{7,}[a-zA-Z0-9_]*?)", 1)
+    pattern = escaped.replace(_COMMIT_WILDCARD, "[a-f0-9]{7,}[a-zA-Z0-9_]*").replace(
+        _WILDCARD, "[a-zA-Z0-9_]+"
+    )
 
     return f"^{pattern}$" if anchor_end else f"^{pattern}"
 
@@ -141,6 +157,27 @@ def render_artifact_prefix_pattern(
     if not target.raw_artifact_prefix:
         return None
     return _template_to_pattern(target.raw_artifact_prefix, branch=branch)
+
+
+def extract_commit_from_dataset_name(
+    target: Target, dataset_id: str, branch: str
+) -> Optional[str]:
+    """Extract the git.commit value from a dataset name using the target's template.
+
+    Returns None if the template has no git.commit slot or the name does not
+    match the expected pattern.
+    """
+    template_str = target.raw_dataset or target.raw_dataset_prefix
+    if not template_str or "git.commit" not in template_str:
+        return None
+    pattern = _template_to_pattern(
+        template_str,
+        branch=branch,
+        anchor_end=bool(target.raw_dataset),
+        capture_commit=True,
+    )
+    m = re.match(pattern, dataset_id)
+    return m.group(1) if m else None
 
 
 def render_artifact_template(

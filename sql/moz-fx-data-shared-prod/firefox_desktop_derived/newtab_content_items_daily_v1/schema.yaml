@@ -2,19 +2,26 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Date when client action took place
+  description: The date when the telemetry ping is received on the server side.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
+  description: The surface identifier for the newtab content ping.
 - name: corpus_item_id
   type: STRING
   mode: NULLABLE
+  description: A content identifier. For organic Newtab recommendations it is an opaque
+    id produced by Newtab's recommendation systems that corresponds uniquely to the
+    URL. This is the replacement for tile_id and scheduled_corpus_item_id.
 - name: position
   type: INTEGER
   mode: NULLABLE
@@ -30,14 +37,12 @@ fields:
 - name: matches_selected_topic
   type: STRING
   mode: NULLABLE
-  description: >
-    Returns value based on if a the topic of the pocket recommendation
-    matches one of the user-selected topic categories
+  description: Returns value based on whether the topic of the pocket recommendation
+    matches one of the user-selected topic categories.
 - name: received_rank
   type: INTEGER
   mode: NULLABLE
-  description: >
-    The rank or order of the recommendation at the time it was sent to
+  description: The rank or order of the recommendation at the time it was sent to
     the client.
 - name: section
   type: STRING
@@ -46,7 +51,7 @@ fields:
 - name: section_position
   type: INTEGER
   mode: NULLABLE
-  description: If click belongs in a section, the numberic position of the section
+  description: If click belongs in a section, the numeric position of the section.
 - name: topic
   type: STRING
   mode: NULLABLE
@@ -54,10 +59,14 @@ fields:
 - name: content_redacted
   type: STRING
   mode: NULLABLE
-  description: Are content details sent separately in the newtab_content ping
+  description: Indicates whether content details were redacted and sent separately
+    via the newtab_content ping. Value is 'false' for events included in this table.
 - name: newtab_content_ping_version
   type: INTEGER
   mode: NULLABLE
+  description: The version of the newtab_content ping schema used to send the event.
+    Used to distinguish events originating from the dedicated Newtab Content ping
+    versus the legacy newtab ping.
 - name: impression_count
   type: INTEGER
   mode: NULLABLE
@@ -73,3 +82,4 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.

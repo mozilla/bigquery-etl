@@ -281,8 +281,8 @@ join_counts_sessions AS (
     is_from_device,
     is_top_pick,
     is_ai,
-    window_mode,
     is_search,
+    window_mode,
     urlbar_abandonments
   FROM
     daily_counts

@@ -113,3 +113,16 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Flag for when result type is associated with an "ai" result
+- name: is_search
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag for when result type is associated with a search engine result, or leading to a SERP
+- name: window_mode
+  type: STRING
+  mode: NULLABLE
+  description: |
+  The window mode: classic, private, or smartwindow.
+- name: urlbar_abandonments
+  type: INTEGER
+  mode: NULLABLE
+  description: URL Bar Abandonments

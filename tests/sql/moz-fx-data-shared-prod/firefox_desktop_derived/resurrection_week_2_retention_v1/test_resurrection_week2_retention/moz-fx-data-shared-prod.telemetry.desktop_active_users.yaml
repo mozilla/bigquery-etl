@@ -22,8 +22,9 @@
   days_seen_bits: 0
   days_active_bits: 0
 # Row 3: @submission_date row for active_users CTE
-# bits: bit 13 (metric_date) + bit 7 (2026-01-07, week 1 activity) → active_in_week_1 = TRUE
-# 2^13 + 2^7 = 8192 + 128 = 8320
+# active_in_week_1 = bits28.active_in_range(bits, -6, 7) → checks bits 0-6 (submission_date back 6 days)
+# bit 13 = 2026-01-01 (metric_date, resurrection day), bit 3 = 2026-01-11 (in week 1 range 0-6)
+# 2^13 + 2^3 = 8192 + 8 = 8200
 - client_id: "client_resurrection_retained"
   submission_date: "2026-01-14"
   first_seen_date: "2024-01-01"
@@ -32,8 +33,8 @@
   country: "US"
   is_dau: true
   is_desktop: true
-  days_seen_bits: 8320
-  days_active_bits: 8320
+  days_seen_bits: 8200
+  days_active_bits: 8200
 # client_resurrection_not_retained — resurrected but NOT retained in week 2
 # Row 1: previous active date (for LAG)
 - client_id: "client_resurrection_not_retained"
@@ -58,7 +59,7 @@
   days_seen_bits: 0
   days_active_bits: 0
 # Row 3: @submission_date row for active_users CTE
-# bits: only bit 13 (metric_date), no bits 6-12 → active_in_week_1 = FALSE
+# bits: only bit 13 (metric_date), no bits 0-6 → active_in_week_1 = FALSE
 # 2^13 = 8192
 - client_id: "client_resurrection_not_retained"
   submission_date: "2026-01-14"

@@ -1144,7 +1144,6 @@ bqetl_generated_funnels:
   schedule_interval: 0 5 * * *
   tags:
     - impact/tier_3
-    - triage/no_triage
 
 bqetl_serp:
   default_args:

@@ -341,6 +341,9 @@ def delete_from_partition(
         dry_run=dry_run,
         priority=priority,
         reservation=reservation_override,
+        labels={
+            "type": "shredder",
+        },
     )
     # The event_id backfill logic in this function is just temporary for https://mozilla-hub.atlassian.net/browse/DENG-9800.
     event_id_backfill = target.table_id == "events_stream_v1" and target.dataset_id in (
@@ -643,9 +646,11 @@ def list_partitions(
                         SELECT
                           partition_id
                         FROM
-                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
+                          `{table.project}.{table.dataset_id}.INFORMATION_SCHEMA.PARTITIONS`
+                        WHERE
+                          table_name = '{table.table_id}'
+                          AND partition_id IS NOT NULL
                         """).strip(),
-                    bigquery.QueryJobConfig(use_legacy_sql=True),
                 ).result()
             ]
             if table.num_bytes > max_single_dml_bytes and partition_expr is not None

@@ -7,6 +7,8 @@ TIMEDELTA_RE = re.compile(
     r"^-?((?P<weeks>\d+)w)?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
 )
 
+TELEMETRY_ALERTS_EMAIL = "telemetry-alerts@mozilla.com"
+
 
 def is_timedelta_string(s):
     """
@@ -55,6 +57,15 @@ def is_github_identity(s):
 def is_email_or_github_identity(s):
     """Check if the given string is either an email or a Github identity."""
     return is_email(s) or is_github_identity(s)
+
+
+def ensure_telemetry_alerts_email(emails: list[str], no_triage: bool) -> list[str]:
+    """Ensure the telemetry alerts email is included or excluded depending on the `no_triage` setting."""
+    if TELEMETRY_ALERTS_EMAIL not in emails and not no_triage:
+        return emails + [TELEMETRY_ALERTS_EMAIL]
+    elif TELEMETRY_ALERTS_EMAIL in emails and no_triage:
+        return [email for email in emails if email != TELEMETRY_ALERTS_EMAIL]
+    return emails
 
 
 DAG_NAME_RE = re.compile("^(private_)?bqetl_.+$")

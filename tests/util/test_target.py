@@ -9,6 +9,7 @@ import yaml
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     Target,
+    extract_commit_from_dataset_name,
     get_deployed_tables_in_target,
     get_target,
     prepare_target_directory,
@@ -347,9 +348,9 @@ class TestRenderDatasetPattern:
         pattern = render_dataset_pattern(target, branch="feature/xyz")
         regex = re.compile(pattern)
 
-        assert regex.match("dev_feature_xyz_abc123_moz_fx_data_shared_prod_telemetry")
+        assert regex.match("dev_feature_xyz_abc1234_moz_fx_data_shared_prod_telemetry")
         assert not regex.match(
-            "dev_other_branch_abc123_moz_fx_data_shared_prod_telemetry"
+            "dev_other_branch_abc1234_moz_fx_data_shared_prod_telemetry"
         )
 
     def test_dataset_prefix_without_branch(self):
@@ -362,8 +363,8 @@ class TestRenderDatasetPattern:
         pattern = render_dataset_pattern(target)
         regex = re.compile(pattern)
 
-        assert regex.match("dev_feature_xyz_abc123_telemetry")
-        assert regex.match("dev_main_def456_telemetry")
+        assert regex.match("dev_feature_xyz_abc1234_telemetry")
+        assert regex.match("dev_main_def4567_telemetry")
 
     def test_dataset_anchored_end(self):
         """dataset (not dataset_prefix) produces a $-anchored pattern."""
@@ -375,9 +376,13 @@ class TestRenderDatasetPattern:
         pattern = render_dataset_pattern(target, branch="feature-xyz")
         regex = re.compile(pattern)
 
-        # Commit wildcard matches any alphanumeric+underscore suffix
-        assert regex.match("dev_feature_xyz_abc123")
-        assert regex.match("dev_feature_xyz_abc123_extra_stuff")
+        # Commit starts with a short-SHA-length hex prefix; trailing alphanumeric
+        # segments from legacy template variants are tolerated.
+        assert regex.match("dev_feature_xyz_abc1234")
+        assert regex.match("dev_feature_xyz_abc1234_extra_stuff")
+        assert regex.match("dev_feature_xyz_f379269e_json")
+        # Substring branch must not over-match a longer branch's dataset
+        assert not regex.match("dev_feature_xyz_branch_rename_abc1234")
 
     def test_username_rendered_literally(self):
         """account.username is rendered with real value, not wildcarded."""
@@ -406,8 +411,8 @@ class TestRenderArtifactPrefixPattern:
         pattern = render_artifact_prefix_pattern(target, branch="feature-xyz")
         regex = re.compile(pattern)
 
-        assert regex.match("feature_xyz_abc123_clients_daily_v6")
-        assert not regex.match("other_branch_abc123_clients_daily_v6")
+        assert regex.match("feature_xyz_abc1234_clients_daily_v6")
+        assert not regex.match("other_branch_abc1234_clients_daily_v6")
 
     def test_returns_none_without_artifact_prefix(self):
         target = Target(name="dev", project_id="test-project")
@@ -425,6 +430,74 @@ class TestRenderArtifactPrefixPattern:
 
         assert regex.match("moz_fx_data_shared_prod_testuser_clients_daily_v6")
         assert not regex.match("moz_fx_data_shared_prod_otheruser_clients_daily_v6")
+
+
+@pytest.mark.usefixtures("mock_account")
+class TestExtractCommitFromDatasetName:
+    """Tests for extract_commit_from_dataset_name used by target migrate-branch."""
+
+    def test_extracts_from_dataset_prefix(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset_prefix="dev_{{ git.branch }}_{{ git.commit }}_{{ artifact.project_id }}_",
+        )
+        commit = extract_commit_from_dataset_name(
+            target,
+            "dev_feature_xyz_abc1234_moz_fx_data_shared_prod_telemetry",
+            branch="feature-xyz",
+        )
+        assert commit == "abc1234"
+
+    def test_extracts_full_sha(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset="dev_{{ git.branch }}_{{ git.commit }}",
+        )
+        commit = extract_commit_from_dataset_name(
+            target,
+            "dev_feature_xyz_235bf9cf0ac1ef0fa3a127cdc5f0061a588dd819",
+            branch="feature-xyz",
+        )
+        assert commit == "235bf9cf0ac1ef0fa3a127cdc5f0061a588dd819"
+
+    def test_extracts_legacy_trailing_segment(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset="dev_{{ git.branch }}_{{ git.commit }}",
+        )
+        commit = extract_commit_from_dataset_name(
+            target, "dev_feature_xyz_f379269e_json", branch="feature-xyz"
+        )
+        assert commit == "f379269e_json"
+
+    def test_returns_none_without_commit_in_template(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset_prefix="dev_{{ git.branch }}_",
+        )
+        assert (
+            extract_commit_from_dataset_name(
+                target, "dev_feature_xyz_telemetry", branch="feature-xyz"
+            )
+            is None
+        )
+
+    def test_returns_none_when_name_does_not_match(self):
+        target = Target(
+            name="dev",
+            project_id="test-project",
+            raw_dataset="dev_{{ git.branch }}_{{ git.commit }}",
+        )
+        assert (
+            extract_commit_from_dataset_name(
+                target, "completely_unrelated", branch="feature-xyz"
+            )
+            is None
+        )
 
 
 @pytest.fixture

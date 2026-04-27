@@ -1,46 +1,70 @@
-WITH base AS (
+CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
+  STRUCT(
+    m.submission_timestamp,
+    m.client_info.client_id,
+    m.sample_id,
+    m.metrics.string_list.addons_enabled_addons,
+    m.normalized_country_code,
+    m.client_info.locale,
+    m.normalized_os,
+    m.normalized_channel
+  )
+);
+
+WITH unioned AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    sample_id,
-    normalized_channel,
-    normalized_country_code,
-    client_info.locale,
-    normalized_os,
-    -- merging active_addons and addons_theme into a single addons object
-    ARRAY_CONCAT(
-      -- COALESCE to make sure array concat returns results if active_addons is empty and addons_theme is not
-      COALESCE(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$'), []),
-      [
-        JSON_QUERY(metrics.object.addons_theme, '$')
-      ] -- wrapping the json object in array to enable array concat
-    ) AS active_addons,
-    -- Accepts formats: 80.0 80.0.0 80.0.0a1 80.0.0b1
-    IF(
-      REGEXP_CONTAINS(client_info.app_display_version, r'^(\d+\.\d+(\.\d+)?([ab]\d+)?)$'),
-      client_info.app_display_version,
-      NULL
-    ) AS app_version,
+    get_fields(release).*,
+    client_info.app_display_version AS app_version,
   FROM
-    `moz-fx-data-shared-prod.fenix.addons`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
-    AND (
-      (
-        metrics.object.addons_active_addons IS NOT NULL
-        AND ARRAY_LENGTH(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$')) > 0
-      )
-      OR metrics.object.addons_theme IS NOT NULL
+    `moz-fx-data-shared-prod.org_mozilla_firefox.metrics` AS release
+  UNION ALL
+  SELECT
+    get_fields(beta).*,
+    -- Bug 1669516 We choose to show beta versions as 80.0.0b1, etc.
+    REPLACE(client_info.app_display_version, '-beta.', 'b') AS app_version,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics` AS beta
+  UNION ALL
+  SELECT
+    get_fields(nightly).*,
+    -- Bug 1669516 Nightly versions have app_display_version like "Nightly <timestamp>",
+    -- so we take the geckoview version instead.
+    client_info.app_display_version AS app_version,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS nightly
+  UNION ALL
+  SELECT
+    get_fields(preview_nightly).*,
+    client_info.app_display_version AS app_version,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS preview_nightly
+  UNION ALL
+  SELECT
+    get_fields(old_fenix_nightly).*,
+    client_info.app_display_version AS app_version,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS old_fenix_nightly
+),
+cleaned AS (
+  SELECT
+    * REPLACE (
+      IF(
+        -- Accepts formats: 80.0 80.0.0 80.0.0a1 80.0.0b1
+        REGEXP_CONTAINS(app_version, r'^(\d+\.\d+(\.\d+)?([ab]\d+)?)$'),
+        app_version,
+        NULL
+      ) AS app_version
     )
+  FROM
+    unioned
 ),
 per_client AS (
   SELECT
-    submission_date,
+    DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
-    normalized_channel,
-    ARRAY_CONCAT_AGG(active_addons) AS active_addons,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_channel)) AS normalized_channel,
+    ARRAY_CONCAT_AGG(addons_enabled_addons ORDER BY submission_timestamp) AS addons,
     -- We always want to take the most recent seen version per
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
     ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(app_version, "minor") DESC)[
@@ -50,27 +74,26 @@ per_client AS (
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_os)) AS app_os,
   FROM
-    base
+    cleaned
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND client_id IS NOT NULL
   GROUP BY
     ALL
 )
 SELECT
-  * EXCEPT (active_addons),
+  * EXCEPT (addons),
   ARRAY(
     SELECT AS STRUCT
-      JSON_VALUE(addon, "$.id") AS id,
-      -- Same methodology as for app_version above.
-      ARRAY_AGG(
-        JSON_VALUE(addon, "$.version")
-        ORDER BY
-          mozfun.norm.truncate_version(JSON_VALUE(addon, "$.version"), "minor") DESC
-      )[SAFE_OFFSET(0)] AS `version`,
+      TRIM(addon) AS `id`,
+      -- As of 2020-07-01, the metrics ping from Fenix contains no data about
+      -- the version of installed addons, so we inject null and replace with
+      -- an appropriate placeholder value when we get to the app-facing view.
+      CAST(NULL AS STRING) AS `version`,
     FROM
-      UNNEST(active_addons) AS addon
-    WHERE
-      addon IS NOT NULL
+      UNNEST(addons) AS addon
     GROUP BY
-      id
+      TRIM(addon)
   ) AS addons
 FROM
   per_client

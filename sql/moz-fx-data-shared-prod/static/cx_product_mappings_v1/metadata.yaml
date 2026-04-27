@@ -3,4 +3,4 @@ description: |
   Lookup table mapping raw product identifiers to normalized product names
   across CX data sources (GA4, Zendesk, Kitsune).
 owners:
-  - mozilla/customer_insights
+  - mozilla/customer_experience

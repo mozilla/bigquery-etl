@@ -767,6 +767,14 @@ fields:
       description: 'The value of the "nimbus.qa.bool-user" pref.
 
         '
+    - name: network_apple_fast_datapath_used
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the Apple fast datapath (sendmsg_x/recvmsg_x) is being
+        used for UDP I/O. This requires the APIs to be available and the probe to
+        succeed. Only recorded on Apple platforms.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

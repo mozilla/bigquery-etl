@@ -130,7 +130,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
-      metrics.boolean.browser_global_ai_control_is_blocking
+      metrics.boolean.browser_global_ai_control_is_blocking,
+      metrics.boolean.network_apple_fast_datapath_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1137,7 +1138,8 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
-      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
+      metrics.labeled_counter.metrics_tab_group_creation_mode
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2289,7 +2291,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
-      metrics.boolean.browser_global_ai_control_is_blocking
+      metrics.boolean.browser_global_ai_control_is_blocking,
+      metrics.boolean.network_apple_fast_datapath_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3296,7 +3299,8 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
-      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
+      metrics.labeled_counter.metrics_tab_group_creation_mode
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4468,7 +4472,8 @@ SELECT
       metrics.boolean.user_ai_summarize_summarization_enabled,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
       metrics.boolean.nimbus_qa_prefs_bool_user_value,
-      metrics.boolean.browser_global_ai_control_is_blocking
+      metrics.boolean.browser_global_ai_control_is_blocking,
+      metrics.boolean.network_apple_fast_datapath_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5475,7 +5480,8 @@ SELECT
       metrics.labeled_counter.netwerk_happy_eyeballs_https_record_available,
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
-      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count
+      metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
+      metrics.labeled_counter.metrics_tab_group_creation_mode
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

@@ -27,11 +27,23 @@ SELECT
       metrics.string.play_store_attribution_medium,
       metrics.string.play_store_attribution_response_code,
       metrics.string.play_store_attribution_source,
-      metrics.string.play_store_attribution_term
+      metrics.string.play_store_attribution_term,
+      metrics.string.meta_attribution_app,
+      metrics.string.meta_attribution_nonce,
+      metrics.string.meta_attribution_t
     ) AS `string`,
-    STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      metrics.text2.meta_attribution_data
+    ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
+    STRUCT(
+      metrics.timing_distribution.play_store_attribution_attribution_time
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.text.play_store_attribution_install_referrer_response,
+      metrics.text.meta_attribution_data
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -72,11 +84,23 @@ SELECT
       metrics.string.play_store_attribution_medium,
       metrics.string.play_store_attribution_response_code,
       metrics.string.play_store_attribution_source,
-      metrics.string.play_store_attribution_term
+      metrics.string.play_store_attribution_term,
+      metrics.string.meta_attribution_app,
+      metrics.string.meta_attribution_nonce,
+      metrics.string.meta_attribution_t
     ) AS `string`,
-    STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      metrics.text2.meta_attribution_data
+    ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
+    STRUCT(
+      metrics.timing_distribution.play_store_attribution_attribution_time
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.text.play_store_attribution_install_referrer_response,
+      metrics.text.meta_attribution_data
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -117,11 +141,23 @@ SELECT
       metrics.string.play_store_attribution_medium,
       metrics.string.play_store_attribution_response_code,
       metrics.string.play_store_attribution_source,
-      metrics.string.play_store_attribution_term
+      metrics.string.play_store_attribution_term,
+      metrics.string.meta_attribution_app,
+      metrics.string.meta_attribution_nonce,
+      metrics.string.meta_attribution_t
     ) AS `string`,
-    STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      metrics.text2.meta_attribution_data
+    ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
+    STRUCT(
+      metrics.timing_distribution.play_store_attribution_attribution_time
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.text.play_store_attribution_install_referrer_response,
+      metrics.text.meta_attribution_data
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -162,11 +198,23 @@ SELECT
       metrics.string.play_store_attribution_medium,
       metrics.string.play_store_attribution_response_code,
       metrics.string.play_store_attribution_source,
-      metrics.string.play_store_attribution_term
+      metrics.string.play_store_attribution_term,
+      metrics.string.meta_attribution_app,
+      metrics.string.meta_attribution_nonce,
+      metrics.string.meta_attribution_t
     ) AS `string`,
-    STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      metrics.text2.meta_attribution_data
+    ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
+    STRUCT(
+      metrics.timing_distribution.play_store_attribution_attribution_time
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.text.play_store_attribution_install_referrer_response,
+      metrics.text.meta_attribution_data
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -207,11 +255,23 @@ SELECT
       metrics.string.play_store_attribution_medium,
       metrics.string.play_store_attribution_response_code,
       metrics.string.play_store_attribution_source,
-      metrics.string.play_store_attribution_term
+      metrics.string.play_store_attribution_term,
+      metrics.string.meta_attribution_app,
+      metrics.string.meta_attribution_nonce,
+      metrics.string.meta_attribution_t
     ) AS `string`,
-    STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      metrics.text2.meta_attribution_data
+    ) AS `text2`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
+    STRUCT(
+      metrics.timing_distribution.play_store_attribution_attribution_time
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.text.play_store_attribution_install_referrer_response,
+      metrics.text.meta_attribution_data
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -1112,6 +1112,14 @@ fields:
       description: 'Records if the user has the global AI control set to blocked.
 
         '
+    - name: network_apple_fast_datapath_used
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the Apple fast datapath (sendmsg_x/recvmsg_x) is being
+        used for UDP I/O. This requires the APIs to be available and the probe to
+        succeed. Only recorded on Apple platforms.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -9424,6 +9432,19 @@ fields:
         pattern, using the Bing base domain and `/search` path as heuristic signals.
         This metric is intended as a proxy for Firefox activations originating from
         Windows Start menu search.
+
+        '
+    - name: metrics_tab_group_creation_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Tracks how users initiated group creation
 
         '
   - name: string

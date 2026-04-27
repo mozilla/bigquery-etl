@@ -76,7 +76,8 @@ SELECT
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
       metrics.boolean.extensions_allow_execute_script_in_moz_extension,
       metrics.boolean.nimbus_qa_prefs_bool_default_value,
-      metrics.boolean.nimbus_qa_prefs_bool_user_value
+      metrics.boolean.nimbus_qa_prefs_bool_user_value,
+      metrics.boolean.network_apple_fast_datapath_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

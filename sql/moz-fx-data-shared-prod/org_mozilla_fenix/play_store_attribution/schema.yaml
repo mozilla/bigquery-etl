@@ -386,6 +386,24 @@ fields:
       description: 'The name of the utm_term that is responsible for this installation.
 
         '
+    - name: meta_attribution_app
+      type: STRING
+      mode: NULLABLE
+      description: 'The mobile application ID in Meta''s attribution.
+
+        '
+    - name: meta_attribution_nonce
+      type: STRING
+      mode: NULLABLE
+      description: 'Nonce used to decrypt the encrypted Meta attribution data.
+
+        '
+    - name: meta_attribution_t
+      type: STRING
+      mode: NULLABLE
+      description: 'Value tracking user interaction with Meta attribution.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE
@@ -394,6 +412,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'The full install referrer response.
+
+        '
+    - name: meta_attribution_data
+      type: STRING
+      mode: NULLABLE
+      description: 'The Meta attribution data in encrypted format.
 
         '
   - name: string_list
@@ -412,11 +436,62 @@ fields:
         This metric is only attached to a ping if it already contains other data.
 
         '
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: play_store_attribution_attribution_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time that it takes to derive the attribution parameters by
+        the Google Play Install Referrer library.
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE
     fields:
     - name: play_store_attribution_install_referrer_response
+      type: STRING
+      mode: NULLABLE
+    - name: meta_attribution_data
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

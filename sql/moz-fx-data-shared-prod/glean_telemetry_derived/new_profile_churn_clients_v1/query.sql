@@ -571,12 +571,12 @@ SELECT
       THEN TRUE
     ELSE FALSE
   END AS churned_after_1_day,
-  -- Active on days 0 and/or 1, then no activity for the next 28 days
+  -- Active on Day 1, then no activity for the next 28 days
   -- NULL if day 29 data not yet available
   CASE
     WHEN days_data_available < 30
       THEN NULL
-    WHEN (day_0 = TRUE OR day_1 = TRUE)
+    WHEN (day_1 = TRUE)
       AND day_2 = FALSE
       AND day_3 = FALSE
       AND day_4 = FALSE

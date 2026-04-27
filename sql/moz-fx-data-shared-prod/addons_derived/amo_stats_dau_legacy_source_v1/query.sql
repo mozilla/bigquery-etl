@@ -18,7 +18,7 @@ WITH unioned AS (
     mozfun.norm.truncate_version(app_version, "major") < 148
   UNION ALL
   SELECT
-    *,
+    * EXCEPT (normalized_channel),
     'Fenix' AS app
   FROM
     `moz-fx-data-shared-prod.addons_derived.fenix_addons_by_client_v1`

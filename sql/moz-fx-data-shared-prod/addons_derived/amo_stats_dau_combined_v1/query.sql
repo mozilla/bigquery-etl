@@ -27,7 +27,7 @@ WITH unioned AS (
     mozfun.norm.truncate_version(app_version, "major") >= 148
   UNION ALL BY NAME
   SELECT
-    *,
+    * EXCEPT (normalized_channel),
     'Fenix' AS app,
     CAST(NULL AS STRING) AS legacy_telemetry_client_id,
   FROM

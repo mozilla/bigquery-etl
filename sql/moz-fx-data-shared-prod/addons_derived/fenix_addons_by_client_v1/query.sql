@@ -6,7 +6,8 @@ CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
     m.metrics.string_list.addons_enabled_addons,
     m.normalized_country_code,
     m.client_info.locale,
-    m.normalized_os
+    m.normalized_os,
+    m.normalized_channel
   )
 );
 
@@ -62,6 +63,7 @@ per_client AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_channel)) AS normalized_channel,
     ARRAY_CONCAT_AGG(addons_enabled_addons ORDER BY submission_timestamp) AS addons,
     -- We always want to take the most recent seen version per
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
@@ -83,7 +85,7 @@ SELECT
   * EXCEPT (addons),
   ARRAY(
     SELECT AS STRUCT
-      TRIM(addon) AS addon,
+      TRIM(addon) AS `id`,
       -- As of 2020-07-01, the metrics ping from Fenix contains no data about
       -- the version of installed addons, so we inject null and replace with
       -- an appropriate placeholder value when we get to the app-facing view.

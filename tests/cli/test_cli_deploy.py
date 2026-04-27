@@ -40,6 +40,26 @@ class TestArtifactDiscovery:
         assert "test-project.test_dataset.test_view" in artifacts
         assert artifacts["test-project.test_dataset.test_view"][1] == "view"
 
+    def test_discover_prefers_query_sql_over_script_sql(self, tmp_path):
+        """query.sql should take priority over query.py and script.sql."""
+        table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1")
+        (table_dir / "query.py").write_text("")
+        (table_dir / "script.sql").write_text("CALL BQ.REFRESH_MATERIALIZED_VIEW('')")
+
+        artifacts = _discover_artifacts(
+            paths=(str(table_dir),),
+            sql_dir=str(tmp_path / "sql"),
+            project_ids=["test-project"],
+            artifact_types=["table"],
+        )
+
+        assert len(artifacts) == 1
+        artifact_id = "test-project.test_dataset.test_table_v1"
+        assert artifacts[artifact_id][0].name == "query.sql"
+        assert artifacts[artifact_id][1] == "table"
+
     def test_discover_mixed_artifacts(self, tmp_path):
         table_dir = tmp_path / "sql/test-project/test_dataset/test_table_v1"
         table_dir.mkdir(parents=True)

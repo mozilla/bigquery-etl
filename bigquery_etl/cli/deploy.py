@@ -397,6 +397,10 @@ def _discover_artifacts(
         "view": [VIEW_FILE],
     }
 
+    # Prefer query files when a directory contains multiple definition files (e.g. stage deploys
+    # for query.sql manually refreshed materialized views will have a query.sql and script.sql)
+    table_priority = {QUERY_FILE: 0, QUERY_SCRIPT: 1, "script.sql": 2}
+
     file_patterns = [
         pattern
         for artifact_type in artifact_types
@@ -427,6 +431,19 @@ def _discover_artifacts(
             if artifact_type is None:
                 log.debug(f"Skipping {file_path}: not a table or view artifact")
                 continue
+
+            # don't add if higher priority file is already associated with the path
+            existing = artifacts.get(artifact_id)
+            if (
+                existing is not None
+                and existing[1] == "table"
+                and artifact_type == "table"
+            ):
+                if table_priority.get(file_path.name, 10) >= table_priority.get(
+                    existing[0].name, 10
+                ):
+                    continue
+
             artifacts[artifact_id] = (file_path, artifact_type)
 
     return artifacts

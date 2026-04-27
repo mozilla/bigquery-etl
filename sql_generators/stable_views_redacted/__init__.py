@@ -190,13 +190,17 @@ def _write_redacted_view(
         r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
     )
 
-    # Only glean-min/ping/1 schemas are currently supported. For glean/ping/1,
+    # Only glean-min/ping schemas are currently supported. For glean/ping,
     # the stable_views generator applies complex metrics transformations
     # (text2->text aliasing, datetime parsing, etc.) that we can't easily merge
     # with the redaction logic. Use a manual view.sql override for those.
-    if schema_file.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+    if schema_file.schema_id in (
+        "moz://mozilla.org/schemas/glean/ping/1",
+        "moz://mozilla.org/schemas/glean/ping/2",
+    ):
         raise NotImplementedError(
-            f"Redacted view generation for glean/ping/1 schemas is not yet supported "
+            f"Redacted view generation for glean/ping/1 and glean/ping/2 schemas "
+            f"is not yet supported "
             f"({schema_file.bq_dataset_family}.{ping_name}). "
             f"Use a manual view.sql override instead."
         )

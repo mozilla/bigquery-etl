@@ -77,7 +77,11 @@ def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1")
     prod_baseline_tables = [
         s.stable_table
         for s in get_stable_table_schemas()
-        if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
+        if s.schema_id
+        in (
+            "moz://mozilla.org/schemas/glean/ping/1",
+            "moz://mozilla.org/schemas/glean/ping/2",
+        )
         and s.bq_table == table_name
     ]
     prod_datasets_with_baseline = [t.split(".")[0] for t in prod_baseline_tables]

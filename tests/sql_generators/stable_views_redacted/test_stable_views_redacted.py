@@ -279,3 +279,25 @@ class TestWriteRedactedView:
                 ],
                 metrics_struct_types={"text": ["x"]},
             )
+
+    def test_glean_ping_2_raises(self, tmp_path):
+        """glean/ping/2 schemas are not supported and should raise."""
+        schema_file = SchemaFile(
+            schema=[],
+            schema_id="moz://mozilla.org/schemas/glean/ping/2",
+            bq_dataset_family="firefox_desktop",
+            bq_table="baseline_v1",
+            document_namespace="firefox-desktop",
+            document_type="baseline",
+            document_version=1,
+        )
+        with pytest.raises(NotImplementedError, match="glean/ping/2"):
+            _write_redacted_view(
+                target_project="moz-fx-data-shared-prod",
+                sql_dir=tmp_path,
+                schema_file=schema_file,
+                sensitive_metrics=[
+                    {"metric_key": "x", "bq_column_name": "x", "metric_type": "text"}
+                ],
+                metrics_struct_types={"text": ["x"]},
+            )

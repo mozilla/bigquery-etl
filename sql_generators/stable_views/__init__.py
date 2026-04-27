@@ -190,7 +190,10 @@ def write_view_if_not_exists(
     full_view_id = f"{target_project}.{schema.user_facing_view}"
     replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
     key_value_metrics_removed = False
-    if schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+    if schema.schema_id in (
+        "moz://mozilla.org/schemas/glean/ping/1",
+        "moz://mozilla.org/schemas/glean/ping/2",
+    ):
         replacements += ["mozfun.norm.glean_ping_info(ping_info) AS ping_info"]
         if schema.bq_table == "baseline_v1":
             client_info_field = (
@@ -339,7 +342,10 @@ def write_view_if_not_exists(
             trailing_newline=True,
         )
     # If it's a glean stable view, include the app version parsing columns
-    elif schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+    elif schema.schema_id in (
+        "moz://mozilla.org/schemas/glean/ping/1",
+        "moz://mozilla.org/schemas/glean/ping/2",
+    ):
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE.format(
                 target=full_source_id,

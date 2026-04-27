@@ -149,7 +149,12 @@ def paths_matching_checks_pattern(
 
 
 def paths_matching_name_pattern(
-    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+    pattern,
+    sql_path,
+    project_id,
+    files=["*.sql"],
+    file_regex=QUERY_FILE_RE,
+    silent=False,
 ) -> List[Path]:
     """Return paths to queries matching the name pattern."""
     matching_files: List[Path] = []
@@ -161,7 +166,7 @@ def paths_matching_name_pattern(
     if isinstance(pattern, tuple) or isinstance(pattern, list):
         for p in pattern:
             matching_files += paths_matching_name_pattern(
-                str(p), sql_path, project_id, files, file_regex
+                str(p), sql_path, project_id, files, file_regex, silent
             )
     elif os.path.isdir(pattern):
         for root, _, _ in os.walk(pattern, followlinks=True):
@@ -194,7 +199,7 @@ def paths_matching_name_pattern(
                 elif project_id and fnmatchcase(query_name, f"{project_id}.{pattern}"):
                     matching_files.append(query_file)
 
-    if len(matching_files) == 0:
+    if len(matching_files) == 0 and not silent:
         print(f"No files matching: {pattern}, {files}")
 
     return list(set(matching_files))
@@ -316,6 +321,25 @@ def temp_dataset_option(
         type=TempDatasetReference.from_string,
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
+    )
+
+
+def defer_option():
+    """Generate a --defer-to-target option for smart reference rewriting.
+
+    Only rewrites references to artifacts that exist in the target directory;
+    everything else stays pointing at prod.
+    """
+    return click.option(
+        "--defer-to-target",
+        "--defer_to_target",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite references to artifacts that exist in the target directory. "
+            "Other references remain pointing to prod. "
+            "Used for development workflows."
+        ),
     )
 
 

@@ -1,0 +1,18 @@
+---
+friendly_name: Subscription Platform Backend Cirrus Delete Events
+description: Deletion events for subscription platform backend cirrus, derived
+  from payments-api GKE logs containing pre-derived nimbus_user_id
+owners:
+  - dalvarez@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false
+  require_column_description: true

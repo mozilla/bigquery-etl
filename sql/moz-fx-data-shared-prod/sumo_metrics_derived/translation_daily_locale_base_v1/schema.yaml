@@ -1,11 +1,11 @@
 fields:
 - name: event_date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Date of English article review or translation activity
 - name: locale
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
   description: |
     Translation locale code. One of: fr (French), es (Spanish), de (German),
     it (Italian), zh-CN (Chinese Simplified)

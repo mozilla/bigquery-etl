@@ -12,8 +12,12 @@ import click
 from google.cloud import bigquery
 
 from bigquery_etl.cli.query import _update_query_schema
+from bigquery_etl.cli.routine import ROUTINE_FILE_RE
+from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
+from bigquery_etl.cli.routine import publish as publish_routines_cmd
 from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
+    defer_option,
     is_authenticated,
     multi_project_id_option,
     parallelism_option,
@@ -32,10 +36,12 @@ from bigquery_etl.deploy import (
 )
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.routine.parse_routine import ROUTINE_FILES
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
+from bigquery_etl.util.target import ensure_dataset_exists, prepare_target_files
 from bigquery_etl.view import View
 
 log = logging.getLogger(__name__)
@@ -44,11 +50,12 @@ log = logging.getLogger(__name__)
 @click.command(
     help="""Deploy BigQuery artifacts with dependency resolution.
 
-    This command deploys tables and views with automatic dependency resolution
-    and parallel execution. You must specify at least one artifact type to
-    deploy using the --tables or --views flags.
+    This command deploys tables, views, and routines with automatic dependency
+    resolution and parallel execution. You must specify at least one artifact
+    type to deploy using the --tables, --views, or --routines flags.
 
-    Table-specific options use --table-* prefix, view-specific options use --view-* prefix.
+    Table-specific options use --table-* prefix, view-specific options use
+    --view-* prefix, routine-specific options use --routine-* prefix.
 
     Coding agents aren't allowed to run this command.
 
@@ -92,6 +99,12 @@ log = logging.getLogger(__name__)
     is_flag=True,
     default=False,
     help="Deploy views (view.sql files)",
+)
+@click.option(
+    "--routines",
+    is_flag=True,
+    default=False,
+    help="Deploy routines (udf.sql, stored_procedure.sql files)",
 )
 @sql_dir_option
 @multi_project_id_option(
@@ -170,10 +183,32 @@ log = logging.getLogger(__name__)
     default=False,
     help="Only deploy views with labels: {authorized: true} in metadata.yaml",
 )
+@click.option(
+    "--routine-dependency-dir",
+    "--routine_dependency_dir",
+    default=ConfigLoader.get("routine", "dependency_dir"),
+    help="The directory JavaScript dependency files for UDFs are stored.",
+)
+@click.option(
+    "--routine-gcs-bucket",
+    "--routine_gcs_bucket",
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
+    help="The GCS bucket where dependency files are uploaded to.",
+)
+@click.option(
+    "--routine-gcs-path",
+    "--routine_gcs_path",
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
+    help="The GCS path in the bucket where dependency files are uploaded to.",
+)
+@defer_option()
+@click.pass_context
 def deploy(
+    ctx,
     paths,
     tables,
     views,
+    routines,
     sql_dir,
     project_ids,
     parallelism,
@@ -189,16 +224,27 @@ def deploy(
     view_add_managed_label,
     view_skip_authorized,
     view_authorized_only,
+    routine_dependency_dir,
+    routine_gcs_bucket,
+    routine_gcs_path,
+    defer_to_target,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views]):
+    if not any([tables, views, routines]):
         raise click.UsageError(
-            "Must specify at least one artifact type: --tables or --views"
+            "Must specify at least one artifact type: --tables, --views, or --routines"
         )
 
     if view_skip_authorized and view_authorized_only:
         raise click.UsageError(
             "Cannot use both --view-skip-authorized and --view-authorized-only"
+        )
+
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and view_target_project:
+        raise click.UsageError(
+            "--view-target-project and --target are mutually exclusive."
         )
 
     if not is_authenticated():
@@ -207,6 +253,47 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # publish routines first since tables/views may depend on them
+    routine_results = {}
+    if routines:
+        for project_id in project_ids:
+            if target and target.project_id not in project_ids:
+                routine_files = [
+                    f
+                    for f in paths_matching_name_pattern(
+                        paths if paths else None,
+                        sql_dir,
+                        project_id,
+                        list(ROUTINE_FILES),
+                        file_regex=ROUTINE_FILE_RE,
+                    )
+                    if f.name in ROUTINE_FILES
+                ]
+                result = _publish_routines_to_target(
+                    target,
+                    project_id,
+                    sql_dir,
+                    routine_dependency_dir,
+                    routine_gcs_bucket,
+                    routine_gcs_path,
+                    defer_to_target,
+                    routine_files=routine_files,
+                    dry_run=dry_run,
+                )
+                if result:
+                    routine_results.update(result)
+            else:
+                ctx.invoke(
+                    publish_routines_cmd,
+                    project_id=project_id,
+                    sql_dir=sql_dir,
+                    dependency_dir=routine_dependency_dir,
+                    gcs_bucket=routine_gcs_bucket,
+                    gcs_path=routine_gcs_path,
+                    dry_run=dry_run,
+                    defer_to_target=defer_to_target,
+                )
 
     artifact_types = []
     if tables:
@@ -219,6 +306,37 @@ def deploy(
 
     artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
 
+    if target and target.project_id not in project_ids:
+        new_artifacts = {}
+        for _artifact_id, (file_path, artifact_type) in artifacts.items():
+            source_project, _, _ = extract_from_query_path(file_path)
+            target_files = prepare_target_files(
+                [file_path],
+                sql_dir,
+                source_project,
+                target,
+                defer_to_target=defer_to_target,
+                isolated=False,
+                auto_deploy=False,
+            )
+            target_file = target_files[0]
+            project, dataset, name = extract_from_query_path(target_file)
+            new_artifacts[f"{project}.{dataset}.{name}"] = (
+                target_file,
+                artifact_type,
+            )
+        artifacts = new_artifacts
+
+        client = bigquery.Client(project=target.project_id)
+        seen_datasets: set = set()
+        for project, dataset, _ in (
+            extract_from_query_path(f) for f, _ in artifacts.values()
+        ):
+            dataset_ref = f"{project}.{dataset}"
+            if dataset_ref not in seen_datasets:
+                seen_datasets.add(dataset_ref)
+                ensure_dataset_exists(client, dataset_ref)
+
     # filter views based on authorized flags
     if view_skip_authorized or view_authorized_only:
         artifacts = _filter_views_by_authorization(
@@ -226,8 +344,12 @@ def deploy(
         )
 
     if not artifacts:
-        click.echo("No artifacts found matching the specified criteria.")
-        sys.exit(0)
+        if routine_results:
+            _report_results(routine_results)
+        else:
+            click.echo("No artifacts found matching the specified criteria.")
+            sys.exit(0)
+        return
 
     click.echo(f"Found {len(artifacts)} artifact(s) to deploy.")
 
@@ -240,7 +362,9 @@ def deploy(
     options = {
         "dry_run": dry_run,
         "respect_dryrun_skip": respect_dryrun_skip,
-        "use_cloud_function": use_cloud_function,
+        "use_cloud_function": (
+            False if target else use_cloud_function
+        ),  # cloud function doesn't have access to target project
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
@@ -256,6 +380,7 @@ def deploy(
     }
 
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
+    results.update(routine_results)
     _report_results(results)
 
 
@@ -268,7 +393,7 @@ def _discover_artifacts(
     """Find artifacts."""
     artifacts = {}
     patterns = {
-        "table": [QUERY_FILE, QUERY_SCRIPT],
+        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"],
         "view": [VIEW_FILE],
     }
 
@@ -292,10 +417,16 @@ def _discover_artifacts(
 
             # determine artifact type from file name
             artifact_type = next(
-                atype
-                for atype, file_names in patterns.items()
-                if file_path.name in file_names
+                (
+                    atype
+                    for atype, file_names in patterns.items()
+                    if file_path.name in file_names
+                ),
+                None,
             )
+            if artifact_type is None:
+                log.debug(f"Skipping {file_path}: not a table or view artifact")
+                continue
             artifacts[artifact_id] = (file_path, artifact_type)
 
     return artifacts

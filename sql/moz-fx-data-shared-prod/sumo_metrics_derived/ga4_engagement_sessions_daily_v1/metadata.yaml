@@ -1,0 +1,31 @@
+friendly_name: GA4 Engagement Sessions (Daily)
+description: |
+  Daily Google Analytics 4 (GA4) engagement session metrics for Mozilla Support (SUMO) content.
+
+  Grain: Daily x Product x Content Type
+
+  Single source of truth consolidating:
+  - KB article sessions (content_group = 'kb-article')
+  - Forum question sessions (content_group = 'support-forum-question-details')
+
+  This table supports the same use cases of the following manual queries:
+  - daily-sssr-by-product.sql: Daily Self-Service Success Rate (SSSR) by product, combining Zendesk tickets, forum questions, and GA4 KB/forum sessions
+  - daily-sssr-excl-app-reviews.sql: Daily SSSR overall (no product breakdown), excluding app store reviews from Zendesk ticket counts
+
+  Engagement Threshold: >30 seconds engagement time
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: true
+  application: sumo
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false

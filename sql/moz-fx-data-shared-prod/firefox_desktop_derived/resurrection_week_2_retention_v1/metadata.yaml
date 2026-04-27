@@ -11,8 +11,11 @@ description: |-
 owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
+- mozilla/kpi_table_reviewers
 labels:
   incremental: true
+  level: gold
+  change_controlled: true
   owner1: rbaffourawuah
   owner2: mhirose
   dag: bqetl_desktop_retention_model

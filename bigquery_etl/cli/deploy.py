@@ -391,7 +391,7 @@ def _discover_artifacts(
     artifact_types: List[str],
 ) -> Dict[str, Tuple[Path, str]]:
     """Find artifacts."""
-    artifacts = {}
+    artifacts: Dict[str, Tuple[Path, str]] = {}
     patterns = {
         "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"],
         "view": [VIEW_FILE],

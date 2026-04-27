@@ -1257,8 +1257,8 @@ more-itertools==10.4.0 \
     --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
     --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via jaraco-classes
-mozilla-metric-config-parser==2026.4.2 \
-    --hash=sha256:2d514d68782093fb2217ad5ddaea1c5d7e90c107001d4e2fe19b414c9e61ed95
+mozilla-metric-config-parser==2026.4.3 \
+    --hash=sha256:8288e487832e5cf47032bcbdc16960a4d9403a4c60e96219b5ed65f9ccd23884
     # via -r requirements.in
 mozilla-nimbus-schemas==2024.9.3 \
     --hash=sha256:5e1196637308fb0241a209eee027a436e986fc6220ad416eebb06b7162e226bc \

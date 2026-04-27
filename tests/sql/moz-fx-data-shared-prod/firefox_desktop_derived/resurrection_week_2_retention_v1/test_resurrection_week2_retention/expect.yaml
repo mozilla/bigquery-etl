@@ -1,0 +1,13 @@
+# Both clients share same dimensions → grouped into one row
+# metric_date = DATE_SUB(2026-01-14, INTERVAL 13 DAY) = 2026-01-01
+# num_days_since_last_seen = DATE_DIFF(2026-01-01, 2025-12-01, DAY) = 31 → ' 29-36'
+# dau = 2, resurrections = 2, resurrections_retained_wk2 = 1 (only retained client)
+- metric_date: "2026-01-01"
+  submission_date: "2026-01-14"
+  os: "Windows"
+  normalized_os_version: "10"
+  country: "US"
+  num_days_since_last_seen: " 29-36"
+  dau: 2
+  resurrections: 2
+  resurrections_retained_wk2: 1

@@ -62,7 +62,7 @@ with DAG(
             external_dag_id="{{ consumer.dag_name }}",
             external_task_id="wait_for_{{ source_task_id }}",
             {% if consumer.execution_delta_seconds != 0 -%}
-            execution_date="{% raw %}{{{% endraw %} (logical_date + datetime.timedelta(seconds={{ consumer.execution_delta_seconds }})).isoformat() {% raw %}}}{% endraw %}",
+            execution_date="{% raw %}{{{% endraw %} (logical_date + macros.timedelta(seconds={{ consumer.execution_delta_seconds }})).isoformat() {% raw %}}}{% endraw %}",
             {%- endif %}
         )
         {% endfor %}

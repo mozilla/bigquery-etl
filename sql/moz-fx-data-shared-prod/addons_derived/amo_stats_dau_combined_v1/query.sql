@@ -19,15 +19,6 @@ WITH unioned AS (
     mozfun.norm.truncate_version(app_version, "major") < 148
   UNION ALL BY NAME
   SELECT
-    *,
-    'Fenix' AS app,
-    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
-  FROM
-    `moz-fx-data-shared-prod.addons_derived.fenix_addons_by_client_legacy_source_v1`
-  WHERE
-    mozfun.norm.truncate_version(app_version, "major") < 148
-  UNION ALL BY NAME
-  SELECT
     * EXCEPT (normalized_channel),
     'Desktop' AS app,
   FROM
@@ -36,14 +27,11 @@ WITH unioned AS (
     mozfun.norm.truncate_version(app_version, "major") >= 148
   UNION ALL BY NAME
   SELECT
-    * EXCEPT (normalized_channel),
+    *,
     'Fenix' AS app,
-    -- legacy_telemetry_client_id only exists on desktop, making sure the selection order and column number matches for the union.
     CAST(NULL AS STRING) AS legacy_telemetry_client_id,
   FROM
     `moz-fx-data-shared-prod.addons_derived.fenix_addons_by_client_v1`
-  WHERE
-    mozfun.norm.truncate_version(app_version, "major") >= 148
 ),
 unnested AS (
   SELECT

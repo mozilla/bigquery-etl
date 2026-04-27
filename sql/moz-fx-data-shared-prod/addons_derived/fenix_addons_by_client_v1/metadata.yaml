@@ -1,9 +1,11 @@
 ---
-friendly_name: Fenix addons by client
+friendly_name: Fenix Addons by Client
 description: >-
   Clients_daily-like table on top of the various Firefox for Android channels
   that records only the dimensions and addon info necessary to power the daily
-  addons_derived.stats_dau_v1 query.
+  Fenix addon queries.
+
+  NOTE: This tables has been moved from `amo_prod.fenix_addons_by_client_v1`.
 owners:
   - kik@mozilla.com
 labels:

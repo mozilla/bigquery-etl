@@ -43,3 +43,9 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:mozilla-confidential/data-viewers
+monitoring:
+  enabled: true
+  collection: Ads Client
+  freshness:
+    blocking: false
+  volume: null

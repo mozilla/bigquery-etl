@@ -5044,6 +5044,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_doc_sectioning_h1_with_no_font_size_or_margins
     ) AS use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+    SUM(metrics.counter.use_counter_doc_serial_getports) AS use_counter_doc_serial_getports,
+    SUM(metrics.counter.use_counter_doc_serial_requestport) AS use_counter_doc_serial_requestport,
+    SUM(metrics.counter.use_counter_doc_serialport_open) AS use_counter_doc_serialport_open,
     SUM(
       metrics.counter.use_counter_doc_shadowroot_pictureinpictureelement
     ) AS use_counter_doc_shadowroot_pictureinpictureelement,
@@ -6304,6 +6307,9 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_page_sectioning_h1_with_no_font_size_or_margins
     ) AS use_counter_page_sectioning_h1_with_no_font_size_or_margins,
+    SUM(metrics.counter.use_counter_page_serial_getports) AS use_counter_page_serial_getports,
+    SUM(metrics.counter.use_counter_page_serial_requestport) AS use_counter_page_serial_requestport,
+    SUM(metrics.counter.use_counter_page_serialport_open) AS use_counter_page_serialport_open,
     SUM(
       metrics.counter.use_counter_page_shadowroot_pictureinpictureelement
     ) AS use_counter_page_shadowroot_pictureinpictureelement,
@@ -6956,6 +6962,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_dedicated_scheduler_posttask
     ) AS use_counter_worker_dedicated_scheduler_posttask,
     SUM(
+      metrics.counter.use_counter_worker_dedicated_serial_getports
+    ) AS use_counter_worker_dedicated_serial_getports,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_serialport_open
+    ) AS use_counter_worker_dedicated_serialport_open,
+    SUM(
       metrics.counter.use_counter_worker_dedicated_videodecoder_constructor
     ) AS use_counter_worker_dedicated_videodecoder_constructor,
     SUM(
@@ -7149,6 +7161,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_service_scheduler_posttask
     ) AS use_counter_worker_service_scheduler_posttask,
     SUM(
+      metrics.counter.use_counter_worker_service_serial_getports
+    ) AS use_counter_worker_service_serial_getports,
+    SUM(
+      metrics.counter.use_counter_worker_service_serialport_open
+    ) AS use_counter_worker_service_serialport_open,
+    SUM(
       metrics.counter.use_counter_worker_service_videodecoder_constructor
     ) AS use_counter_worker_service_videodecoder_constructor,
     SUM(
@@ -7341,6 +7359,12 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_worker_shared_scheduler_posttask
     ) AS use_counter_worker_shared_scheduler_posttask,
+    SUM(
+      metrics.counter.use_counter_worker_shared_serial_getports
+    ) AS use_counter_worker_shared_serial_getports,
+    SUM(
+      metrics.counter.use_counter_worker_shared_serialport_open
+    ) AS use_counter_worker_shared_serialport_open,
     SUM(
       metrics.counter.use_counter_worker_shared_videodecoder_constructor
     ) AS use_counter_worker_shared_videodecoder_constructor,
@@ -9301,6 +9325,9 @@ pivoted_raw AS (
         use_counter_doc_sanitizer_sanitize,
         use_counter_doc_scheduler_posttask,
         use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+        use_counter_doc_serial_getports,
+        use_counter_doc_serial_requestport,
+        use_counter_doc_serialport_open,
         use_counter_doc_shadowroot_pictureinpictureelement,
         use_counter_doc_svgsvgelement_currentscale_getter,
         use_counter_doc_svgsvgelement_currentscale_setter,
@@ -9811,6 +9838,9 @@ pivoted_raw AS (
         use_counter_page_sanitizer_sanitize,
         use_counter_page_scheduler_posttask,
         use_counter_page_sectioning_h1_with_no_font_size_or_margins,
+        use_counter_page_serial_getports,
+        use_counter_page_serial_requestport,
+        use_counter_page_serialport_open,
         use_counter_page_shadowroot_pictureinpictureelement,
         use_counter_page_svgsvgelement_currentscale_getter,
         use_counter_page_svgsvgelement_currentscale_setter,
@@ -10054,6 +10084,8 @@ pivoted_raw AS (
         use_counter_worker_dedicated_pushsubscription_unsubscribe,
         use_counter_worker_dedicated_reportingobserver_constructor,
         use_counter_worker_dedicated_scheduler_posttask,
+        use_counter_worker_dedicated_serial_getports,
+        use_counter_worker_dedicated_serialport_open,
         use_counter_worker_dedicated_videodecoder_constructor,
         use_counter_worker_dedicated_videoencoder_constructor,
         use_counter_worker_dedicated_webgpu_request_adapter,
@@ -10119,6 +10151,8 @@ pivoted_raw AS (
         use_counter_worker_service_pushsubscription_unsubscribe,
         use_counter_worker_service_reportingobserver_constructor,
         use_counter_worker_service_scheduler_posttask,
+        use_counter_worker_service_serial_getports,
+        use_counter_worker_service_serialport_open,
         use_counter_worker_service_videodecoder_constructor,
         use_counter_worker_service_videoencoder_constructor,
         use_counter_worker_service_webgpu_request_adapter,
@@ -10184,6 +10218,8 @@ pivoted_raw AS (
         use_counter_worker_shared_pushsubscription_unsubscribe,
         use_counter_worker_shared_reportingobserver_constructor,
         use_counter_worker_shared_scheduler_posttask,
+        use_counter_worker_shared_serial_getports,
+        use_counter_worker_shared_serialport_open,
         use_counter_worker_shared_videodecoder_constructor,
         use_counter_worker_shared_videoencoder_constructor,
         use_counter_worker_shared_webgpu_request_adapter

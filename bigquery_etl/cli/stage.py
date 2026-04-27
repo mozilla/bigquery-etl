@@ -555,9 +555,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             orig_project, orig_dataset, orig_table = derived_from.table
             derived_from.table = [
                 project_id,
-                _rewrite_dataset_for_stage(
-                    orig_project, orig_dataset, dataset_suffix
-                ),
+                _rewrite_dataset_for_stage(orig_project, orig_dataset, dataset_suffix),
                 orig_table,
             ]
             changed = True

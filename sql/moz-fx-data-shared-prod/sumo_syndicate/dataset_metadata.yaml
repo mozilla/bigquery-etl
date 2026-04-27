@@ -10,6 +10,7 @@ syndication:
     syndicated_dataset: sumo
   syndicated_tables:
     - kitsune_questions
+    - kitsune_questions_plus
     - kitsune_wiki_document
     - kitsune_wiki_revision
   administer_views: false

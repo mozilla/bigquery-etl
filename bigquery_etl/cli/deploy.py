@@ -15,10 +15,16 @@ from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.routine import ROUTINE_FILE_RE
 from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
 from bigquery_etl.cli.routine import publish as publish_routines_cmd
-from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
+from bigquery_etl.cli.stage import (
+    QUERY_FILE,
+    QUERY_SCRIPT,
+    VIEW_FILE,
+    collect_artifact_dependencies,
+)
 from bigquery_etl.cli.utils import (
     defer_option,
     is_authenticated,
+    isolated_option,
     multi_project_id_option,
     parallelism_option,
     paths_matching_name_pattern,
@@ -202,6 +208,7 @@ log = logging.getLogger(__name__)
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 @defer_option()
+@isolated_option()
 @click.pass_context
 def deploy(
     ctx,
@@ -228,6 +235,7 @@ def deploy(
     routine_gcs_bucket,
     routine_gcs_path,
     defer_to_target,
+    isolated,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
     if not any([tables, views, routines]):
@@ -238,6 +246,11 @@ def deploy(
     if view_skip_authorized and view_authorized_only:
         raise click.UsageError(
             "Cannot use both --view-skip-authorized and --view-authorized-only"
+        )
+
+    if defer_to_target and isolated:
+        raise click.UsageError(
+            "--defer-to-target and --isolated are mutually exclusive."
         )
 
     target = ctx.obj.get("target") if ctx.obj else None
@@ -278,6 +291,7 @@ def deploy(
                     routine_gcs_bucket,
                     routine_gcs_path,
                     defer_to_target,
+                    isolated,
                     routine_files=routine_files,
                     dry_run=dry_run,
                 )
@@ -293,6 +307,7 @@ def deploy(
                     gcs_path=routine_gcs_path,
                     dry_run=dry_run,
                     defer_to_target=defer_to_target,
+                    isolated=isolated,
                 )
 
     artifact_types = []
@@ -308,15 +323,28 @@ def deploy(
 
     if target and target.project_id not in project_ids:
         new_artifacts = {}
+
+        if isolated:
+            existing_paths = {fp for fp, _ in artifacts.values()}
+            for dep_path in collect_artifact_dependencies(existing_paths, sql_dir):
+                # Stage's helper may return routine files when views reference UDFs.
+                # Routines are deployed via --routines, so skip them here.
+                if dep_path.name not in (QUERY_FILE, QUERY_SCRIPT, VIEW_FILE):
+                    continue
+                project, dataset, name = extract_from_query_path(dep_path)
+                artifact_type = "view" if dep_path.name == VIEW_FILE else "table"
+                artifacts[f"{project}.{dataset}.{name}"] = (dep_path, artifact_type)
+
         for _artifact_id, (file_path, artifact_type) in artifacts.items():
             source_project, _, _ = extract_from_query_path(file_path)
+
             target_files = prepare_target_files(
                 [file_path],
                 sql_dir,
                 source_project,
                 target,
                 defer_to_target=defer_to_target,
-                isolated=False,
+                isolated=isolated,
                 auto_deploy=False,
             )
             target_file = target_files[0]

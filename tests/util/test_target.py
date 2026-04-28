@@ -9,6 +9,7 @@ import yaml
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     Target,
+    _target_ref_for_source,
     extract_commit_from_dataset_name,
     get_deployed_tables_in_target,
     get_target,
@@ -310,7 +311,7 @@ class TestPrepareTargetFiles:
                 dataset="anna_dev",
                 artifact_prefix="{{ artifact.project_id }}_",
             )
-            result = prepare_target_files(
+            target_files = prepare_target_files(
                 query_files=[query_file],
                 sql_dir=str(sql_dir),
                 project_id="moz-fx-data-shared-prod",
@@ -320,9 +321,12 @@ class TestPrepareTargetFiles:
                 auto_deploy=False,
             )
 
-            assert len(result) == 1
+            assert len(target_files) == 1
             # artifact.project_id = sanitize("moz-fx-data-shared-prod") = "moz_fx_data_shared_prod"
-            assert result[0].parent.name == "moz_fx_data_shared_prod_clients_daily_v6"
+            assert (
+                target_files[0].parent.name
+                == "moz_fx_data_shared_prod_clients_daily_v6"
+            )
 
 
 @pytest.fixture
@@ -559,3 +563,44 @@ class TestGetTargetRawTemplates:
         assert "git.branch" in target.raw_dataset_prefix
         assert target.raw_dataset is None
         assert target.raw_artifact_prefix is None
+
+
+class TestTargetRefForSource:
+    def test_dataset_prefix_template(self):
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset_prefix="user_main_{{ artifact.project_id }}_",
+        )
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert proj == "dev-proj"
+        assert ds == "user_main_moz_fx_data_shared_prod_telemetry_derived"
+        assert tbl == "tbl_v1"
+
+    def test_dataset_field(self):
+        target = Target(name="dev", project_id="dev-proj", dataset="anna_dev")
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert (proj, ds, tbl) == ("dev-proj", "anna_dev", "tbl_v1")
+
+    def test_artifact_prefix_applied(self):
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="anna_dev",
+            artifact_prefix="branch_{{ artifact.dataset_id }}_",
+        )
+        _, _, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert tbl == "branch_telemetry_derived_tbl_v1"
+
+    def test_no_dataset_or_prefix_passthrough(self):
+        target = Target(name="dev", project_id="dev-proj")
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert (proj, ds, tbl) == ("dev-proj", "telemetry_derived", "tbl_v1")

@@ -48,6 +48,9 @@ def stage():
     Deploy artifacts to the configured stage project. The order of deployment is:
     UDFs, views, tables.
 
+    DEPRECATED: prefer `./bqetl --target stage deploy` (see the `stage` target in
+    `bqetl_targets.yaml` and `docs/cookbooks/development_workflows.md`).
+
     Coding agents aren't allowed to run this command.
 
     Examples:
@@ -115,6 +118,15 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
+    click.echo(
+        click.style(
+            "DEPRECATED: `bqetl stage deploy` is deprecated. Prefer "
+            "`./bqetl --target stage deploy` (see the `stage` target in "
+            "`bqetl_targets.yaml`).",
+            fg="yellow",
+        ),
+        err=True,
+    )
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -153,7 +165,7 @@ def deploy(
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment
     artifact_files.update(_udf_dependencies(artifact_files))
-    artifact_files.update(_collect_artifact_dependencies(artifact_files, sql_dir))
+    artifact_files.update(collect_artifact_dependencies(artifact_files, sql_dir))
 
     # update references of all deployed artifacts
     # references needs to be set to the stage project and the new dataset identifier
@@ -308,7 +320,7 @@ def _udf_dependencies(artifact_files):
     return udf_dependencies
 
 
-def _collect_artifact_dependencies(artifact_files, sql_dir):
+def collect_artifact_dependencies(artifact_files, sql_dir):
     """Determine view and table dependencies.
 
     Extracts dependencies from artifacts to ensure all referenced artifacts

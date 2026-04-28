@@ -20,6 +20,7 @@ from ..cli.utils import (
     defer_option,
     is_authenticated,
     is_valid_project,
+    isolated_option,
     project_id_option,
     sql_dir_option,
 )
@@ -418,6 +419,7 @@ Examples:
     "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
 )
 @defer_option()
+@isolated_option()
 @click.pass_context
 def publish(
     ctx,
@@ -429,12 +431,18 @@ def publish(
     gcs_path,
     dry_run,
     defer_to_target,
+    isolated,
 ):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
     target = ctx.obj.get("target") if ctx.obj else None
 
     public = False
+
+    if defer_to_target and isolated:
+        raise click.UsageError(
+            "--defer-to-target and --isolated are mutually exclusive."
+        )
 
     if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
@@ -449,6 +457,7 @@ def publish(
             gcs_bucket,
             gcs_path,
             defer_to_target,
+            isolated,
             pattern=name,
             dry_run=dry_run,
         )
@@ -476,6 +485,7 @@ def _publish_to_target(
     gcs_bucket,
     gcs_path,
     defer_to_target,
+    isolated=False,
     pattern=None,
     routine_files=None,
     dry_run=False,
@@ -514,7 +524,7 @@ def _publish_to_target(
         source_project_id,
         target,
         defer_to_target=defer_to_target,
-        isolated=False,
+        isolated=isolated,
         auto_deploy=False,
     )
 

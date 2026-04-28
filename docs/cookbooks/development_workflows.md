@@ -243,15 +243,33 @@ with `--dry-run` and spot-check the migration plan before accepting.
 A more robust implementation would match qualified table IDs via regex
 rather than using raw substring replace.
 
-### 8. Isolated deploys (e.g. for staging) _(future)_
+### 8. Isolated deploys (e.g. for staging)
 
-Use `--isolated` to rewrite **all** references to the target environment, ensuring complete isolation:
+Use `--isolated` to rewrite **all** 3-part references in an artifact to point
+at the target project — no `prod` references survive in the rewritten SQL —
+and to deploy a self-contained set of dependencies into the target:
 
 ```bash
-./bqetl --target stage query run --isolated telemetry_derived.clients_daily_v6
+./bqetl --target stage deploy --tables --isolated telemetry_derived.clients_daily_v6
 ```
 
-This creates stubs in the target environment for all referenced artifacts.
+What happens:
+
+1. Dependencies are walked recursively. Local artifacts (under `sql/`) referenced
+   by the input are added to the deploy as full artifacts. External references
+   become stubs (a placeholder file plus `schema.yaml` fetched from the source
+   via dry run) so the deploy is self-contained.
+2. Each artifact is rewritten so every `project.dataset.table` reference points
+   at the target project, with dataset and artifact names rendered through the
+   target's templates (same logic as `--defer-to-target`, but applied to *all*
+   references, not only the ones already deployed).
+
+`--isolated` is mutually exclusive with `--defer-to-target`. It works with
+`deploy --tables/--views` and `routine publish` — useful for staging or
+sandboxed deploys that must not touch prod tables.
+
+If your artifact depends on routines, publish them to the target first
+(e.g. `./bqetl --target stage routine publish udf.foo`).
 
 ## Future Enhancements
 

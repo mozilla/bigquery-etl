@@ -6,7 +6,7 @@ import re
 import shutil
 from functools import cache
 from pathlib import Path
-from typing import List, NamedTuple, Optional, Set
+from typing import List, NamedTuple, Optional, Set, Tuple
 
 import attr
 import cattrs
@@ -421,6 +421,35 @@ def get_deployed_routines_in_target(
     )
 
 
+def _target_ref_for_source(
+    target: "Target",
+    target_project: str,
+    src_project: str,
+    src_dataset: str,
+    src_table: str,
+) -> Tuple[str, str, str]:
+    """Compute the target-environment 3-part location for a source reference.
+
+    Mirrors the dataset/artifact rendering done in prepare_target_directory but
+    for an arbitrary source ref encountered during rewriting/stubbing.
+    """
+    rendered_artifact_prefix = sanitize_bq_id(
+        render_artifact_template(target.artifact_prefix, src_project, src_dataset) or ""
+    )
+    if target.dataset:
+        rendered = render_artifact_template(target.dataset, src_project, src_dataset)
+        target_ds = sanitize_bq_id(rendered) if rendered else src_dataset
+    elif target.dataset_prefix:
+        rendered = render_artifact_template(
+            target.dataset_prefix, src_project, src_dataset
+        )
+        prefix = sanitize_bq_id(rendered) if rendered else ""
+        target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
+    else:
+        target_ds = src_dataset
+    return target_project, target_ds, f"{rendered_artifact_prefix}{src_table}"
+
+
 def rewrite_query_references(
     query_file: Path,
     sql_dir: str,
@@ -441,27 +470,10 @@ def rewrite_query_references(
         )
 
         def replace_all(m: re.Match) -> str:
-            src_project, src_dataset, src_table = m.group(1), m.group(2), m.group(3)
-            rendered_artifact_prefix = sanitize_bq_id(
-                render_artifact_template(
-                    target.artifact_prefix, src_project, src_dataset
-                )
-                or ""
+            p, d, t = _target_ref_for_source(
+                target, target_project, m.group(1), m.group(2), m.group(3)
             )
-            if target.dataset:
-                rendered = render_artifact_template(
-                    target.dataset, src_project, src_dataset
-                )
-                target_ds = sanitize_bq_id(rendered) if rendered else src_dataset
-            elif target.dataset_prefix:
-                rendered = render_artifact_template(
-                    target.dataset_prefix, src_project, src_dataset
-                )
-                prefix = sanitize_bq_id(rendered) if rendered else ""
-                target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
-            else:
-                target_ds = src_dataset
-            return f"`{target_project}`.`{target_ds}`.`{rendered_artifact_prefix}{src_table}`"
+            return f"`{p}`.`{d}`.`{t}`"
 
         sql = re.sub(gcp_project_pattern, replace_all, sql)
     else:

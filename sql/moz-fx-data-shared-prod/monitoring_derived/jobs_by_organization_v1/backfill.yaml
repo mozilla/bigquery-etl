@@ -1,0 +1,16 @@
+2026-04-28:
+  start_date: 2026-04-01
+  end_date: 2026-04-27
+  reason: Include Ingestion Sink load jobs.
+  watchers:
+  - srose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false
+  query_script_entrypoint: main
+  query_script_date_arg: date
+  query_script_args:
+  - --destination_project=moz-fx-data-shared-prod
+  - --destination_dataset=backfills_staging_derived
+  - --destination_table=monitoring_derived__jobs_by_organization_v1_2026_04_28

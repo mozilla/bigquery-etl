@@ -30,6 +30,8 @@ SELECT
   CURRENT_TIMESTAMP() AS generated_time
 FROM
   deduped
+WHERE
+  date_utc >= '2026-01-01'
 GROUP BY
   `creation_date`,
   product

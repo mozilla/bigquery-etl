@@ -34,3 +34,4 @@ bigeye_credentials.ini
 # Ignore personal preferences files
 CLAUDE.local.md
 .claude/settings.local.json
+.venv/

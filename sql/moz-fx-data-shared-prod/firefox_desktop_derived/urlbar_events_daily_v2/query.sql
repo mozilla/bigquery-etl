@@ -33,6 +33,8 @@ WITH temp_unnested AS (
       ELSE FALSE
     END AS ohttp_enabled,
     sap,
+    'placeholder' AS window_mode, -- this placeholder will be removed once the underlying table has the field
+    event_name,
     IF(res.result_type LIKE '%\\_adaptive%', TRUE, FALSE) AS is_adaptive,
     IF(res.result_type LIKE '%\\_semantic%', TRUE, FALSE) AS is_semantic,
     IF(res.result_type LIKE '%\\_serp%', TRUE, FALSE) AS is_serp,
@@ -66,13 +68,25 @@ WITH temp_unnested AS (
       FALSE
     ) AS is_from_device,
     IF(res.result_group = 'top_pick', TRUE, FALSE) AS is_top_pick,
-    IF(res.result_type LIKE '%ai\\_%', TRUE, FALSE) AS is_ai
+    IF(res.result_type LIKE '%ai\\_%', TRUE, FALSE) AS is_ai,
+    IF(
+      res.result_type IN (
+        'search_engine',
+        'search_suggest',
+        'search_sugget_rich',
+        'trending_search',
+        'trending_search_rich'
+      ),
+      TRUE,
+      FALSE
+    ) AS is_search
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_v2`
   CROSS JOIN
     UNNEST(results) AS res
   WHERE
     submission_date = @submission_date
+    AND event_name IN ('abandonment', 'engagement')
 ),
 temp_session AS (
   SELECT
@@ -95,6 +109,8 @@ temp_session AS (
     ANY_VALUE(pref_ohttp_enabled) AS pref_ohttp_enabled,
     ANY_VALUE(ohttp_enabled) AS ohttp_enabled,
     ANY_VALUE(sap) AS sap,
+    ANY_VALUE(window_mode) AS window_mode,
+    ANY_VALUE(event_name) AS event_name,
     LOGICAL_OR(is_adaptive) AS is_adaptive,
     LOGICAL_OR(is_semantic) AS is_semantic,
     LOGICAL_OR(is_serp) AS is_serp,
@@ -104,7 +120,8 @@ temp_session AS (
     LOGICAL_OR(is_geo_local) AS is_geo_local,
     LOGICAL_OR(is_from_device) AS is_from_device,
     LOGICAL_OR(is_top_pick) AS is_top_pick,
-    LOGICAL_OR(is_ai) AS is_ai
+    LOGICAL_OR(is_ai) AS is_ai,
+    LOGICAL_OR(is_search) AS is_search
   FROM
     temp_unnested
   GROUP BY
@@ -128,6 +145,7 @@ total_urlbar_sessions AS (
     pref_ohttp_enabled,
     ohttp_enabled,
     sap,
+    window_mode,
     is_adaptive,
     is_semantic,
     is_serp,
@@ -138,6 +156,7 @@ total_urlbar_sessions AS (
     is_from_device,
     is_top_pick,
     is_ai,
+    is_search,
     COUNT(DISTINCT event_id) AS urlbar_sessions
   FROM
     temp_session
@@ -157,6 +176,7 @@ total_urlbar_sessions AS (
     pref_ohttp_enabled,
     ohttp_enabled,
     sap,
+    window_mode,
     is_adaptive,
     is_semantic,
     is_serp,
@@ -166,7 +186,8 @@ total_urlbar_sessions AS (
     is_geo_local,
     is_from_device,
     is_top_pick,
-    is_ai
+    is_ai,
+    is_search
 ),
 daily_counts AS (
   SELECT
@@ -184,6 +205,7 @@ daily_counts AS (
     pref_ohttp_enabled,
     ohttp_enabled,
     sap,
+    window_mode,
     is_adaptive,
     is_semantic,
     is_serp,
@@ -194,9 +216,11 @@ daily_counts AS (
     is_from_device,
     is_top_pick,
     is_ai,
+    is_search,
     COUNTIF(is_impression) AS urlbar_impressions,
     COUNTIF(is_clicked) AS urlbar_clicks,
     COUNTIF(is_annoyed) AS urlbar_annoyances,
+    COUNTIF(event_name = 'abandonment') AS urlbar_abandonments
   FROM
     temp_session
   GROUP BY
@@ -214,6 +238,7 @@ daily_counts AS (
     pref_ohttp_enabled,
     ohttp_enabled,
     sap,
+    window_mode,
     is_adaptive,
     is_semantic,
     is_serp,
@@ -223,7 +248,8 @@ daily_counts AS (
     is_geo_local,
     is_from_device,
     is_top_pick,
-    is_ai
+    is_ai,
+    is_search
 ),
 join_counts_sessions AS (
   SELECT
@@ -254,7 +280,10 @@ join_counts_sessions AS (
     is_geo_local,
     is_from_device,
     is_top_pick,
-    is_ai
+    is_ai,
+    is_search,
+    window_mode,
+    urlbar_abandonments
   FROM
     daily_counts
   LEFT JOIN
@@ -273,6 +302,7 @@ join_counts_sessions AS (
       pref_ohttp_enabled,
       ohttp_enabled,
       sap,
+      window_mode,
       is_adaptive,
       is_semantic,
       is_serp,
@@ -282,7 +312,8 @@ join_counts_sessions AS (
       is_geo_local,
       is_from_device,
       is_top_pick,
-      is_ai
+      is_ai,
+      is_search
     )
 ),
 final AS (

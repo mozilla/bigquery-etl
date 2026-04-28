@@ -1,0 +1,2418 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../incremental/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Recommended practices - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#recommended-practices" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Recommended practices
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mozfun/about/" class="md-tabs__link">
+          
+  
+  
+  UDFs
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
+          
+  
+  
+  Cookbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../bqetl/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UDFs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UDFs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mozfun
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mozfun
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mozfun
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/addons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Addons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/assert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bits28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bits28
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bytes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bytes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/event_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    event_analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ga/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ga
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    glean
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_search_console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_search_console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/hist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/iap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    iap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ltv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ltv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/marketing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/mobile_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mobile search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/newtab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Newtab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/serp_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    serp_events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/sumo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sumo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    vpn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moz fx data shared prod
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Moz fx data shared prod
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cookbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a derived dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bqetl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bqetl CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bqetl Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommended practices
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommended practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Queries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#querying-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Querying Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Schemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Views
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UDFs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#large-backfills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Large Backfills
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incremental/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schema_includes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema includes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../public_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Public data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../airflow_tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bigconfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bigConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stage-deploys-continuous-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage Deploy & CI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Queries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#querying-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Querying Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Schemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Views
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UDFs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#large-backfills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Large Backfills
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="recommended-practices">Recommended practices</h1>
+<h2 id="queries">Queries</h2>
+<ul>
+<li>Should be defined in files named as <code>sql/&lt;project&gt;/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/query.sql</code> e.g.<ul>
+<li><code>&lt;project&gt;</code> defines both where the destination table resides and in which project the query job runs
+  <code>sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v7/query.sql</code></li>
+<li>Queries that populate tables should always be named with a version suffix;
+  we assume that future optimizations to the data representation may require
+  schema-incompatible changes such as dropping columns</li>
+</ul>
+</li>
+<li>May be generated using a python script that prints the query to stdout<ul>
+<li>Should save output as <code>sql/&lt;project&gt;/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/query.sql</code> as above</li>
+<li>Should be named as <code>sql/&lt;project&gt;/query_type.sql.py</code> e.g. <code>sql/moz-fx-data-shared-prod/clients_daily.sql.py</code></li>
+<li>May use options to generate queries for different destination tables e.g.
+  using <code>--source telemetry_core_parquet_v3</code> to generate
+  <code>sql/moz-fx-data-shared-prod/telemetry/core_clients_daily_v1/query.sql</code> and using <code>--source main_summary_v4</code> to
+  generate <code>sql/moz-fx-data-shared-prod/telemetry/clients_daily_v7/query.sql</code></li>
+<li>Should output a header indicating options used e.g.
+  <div class="highlight"><pre><span></span><code><span class="c1">-- Query generated by: sql/moz-fx-data-shared-prod/clients_daily.sql.py --source telemetry_core_parquet</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>For tables in <code>moz-fx-data-shared-prod</code> the project prefix should be omitted to simplify testing. (Other projects do need the project prefix)</li>
+<li>Should be <a href="../incremental/">incremental</a></li>
+<li>Should filter input tables on partition and clustering columns</li>
+<li>Should use <code>_</code> prefix in generated column names not meant for output</li>
+<li>Should use <code>_bits</code> suffix for any integer column that represents a bit pattern</li>
+<li>Should not use <code>DATETIME</code> type, due to incompatibility with
+  <a href="https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5">spark-bigquery-connector</a></li>
+<li>Should read from <code>*_stable</code> tables instead of including custom deduplication<ul>
+<li>Should use the earliest row for each <code>document_id</code> by <code>submission_timestamp</code>
+  where filtering duplicates is necessary</li>
+</ul>
+</li>
+<li>Should not refer to views in the <code>mozdata</code> project which are duplicates of views in another project
+  (commonly <code>moz-fx-data-shared-prod</code>). Refer to the original view instead.</li>
+<li>Should escape identifiers that match keywords, even if they aren't <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords">reserved keywords</a></li>
+<li>Queries are interpreted as <a href="https://jinja.palletsprojects.com/en/3.1.x/">Jinja</a> templates, so it is possible to use Jinja statements and expressions</li>
+</ul>
+<h3 id="querying-metrics">Querying Metrics</h3>
+<ul>
+<li>Queries, views and UDFs can reference metrics and data sources that have been defined in <a href="https://mozilla.github.io/metric-hub/">metric-hub</a><ul>
+<li>To reference metrics use <code>{{ metrics.calculate() }}</code>:
+  <div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="err">{{</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;days_of_use&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;active_hours&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="n">platform</span><span class="o">=</span><span class="s1">&#39;firefox_desktop&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">group_by</span><span class="o">=</span><span class="err">{</span><span class="s1">&#39;sample_id&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;sample_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;channel&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;application.channel&#39;</span><span class="err">}</span><span class="p">,</span>
+<span class="w">    </span><span class="k">where</span><span class="o">=</span><span class="s1">&#39;submission_date = &quot;2023-01-01&quot;&#39;</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="c1">-- this translates to</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="p">(</span>
+<span class="w">    </span><span class="k">WITH</span><span class="w"> </span><span class="n">clients_daily</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">client_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">        </span><span class="n">submission_date</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">active_hours_sum</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">active_hours</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="n">submission_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">days_of_use</span><span class="p">,</span>
+<span class="w">      </span><span class="k">FROM</span>
+<span class="w">        </span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">clients_daily</span>
+<span class="w">      </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">        </span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">        </span><span class="n">submission_date</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">      </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">      </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">      </span><span class="n">active_hours</span><span class="p">,</span>
+<span class="w">      </span><span class="n">days_of_use</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FROM</span>
+<span class="w">      </span><span class="n">clients_daily</span>
+<span class="w">  </span><span class="p">)</span>
+</code></pre></div><ul>
+<li><code>metrics</code>: unique reference(s) to metric definition, all <a href="https://mozilla.github.io/metric-hub/metrics/firefox_desktop/">metric definitions</a> are aggregations (e.g. SUM, AVG, ...)</li>
+<li><code>platform</code>: platform to compute metrics for (e.g. <code>firefox_desktop</code>, <code>firefox_ios</code>, <code>fenix</code>, ...)</li>
+<li><code>group_by</code>: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; <code>GROUP BY</code> always includes the configured <code>client_id</code> and <code>submission_date</code> fields</li>
+<li><code>where</code>: SQL filter clause</li>
+<li><code>group_by_client_id</code>: Whether the field configured as <code>client_id</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default</li>
+<li><code>group_by_submission_date</code>: Whether the field configured as <code>submission_date</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default</li>
+</ul>
+</li>
+<li>To reference data source definitions use <code>{{ metrics.data_source() }}</code>:
+  <div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="err">{{</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">data_source</span><span class="p">(</span>
+<span class="w">    </span><span class="n">data_source</span><span class="o">=</span><span class="s1">&#39;main&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">platform</span><span class="o">=</span><span class="s1">&#39;firefox_desktop&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">where</span><span class="o">=</span><span class="s1">&#39;submission_date = &quot;2023-01-01&quot;&#39;</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="c1">-- this translates to</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">main</span><span class="o">`</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">submission_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;2023-01-01&quot;</span>
+<span class="w">  </span><span class="p">)</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>To render queries that use Jinja expressions or statements use <code>./bqetl query render path/to/query.sql</code></li>
+<li>The <code>generated-sql</code> branch has rendered queries/views/UDFs</li>
+<li><code>./bqetl query run</code> does support running Jinja queries</li>
+</ul>
+<h2 id="query-metadata">Query Metadata</h2>
+<ul>
+<li>For each query, a <code>metadata.yaml</code> file should be created in the same directory</li>
+<li>This file contains a description, owners and labels. As an example:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SSL Ratios</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">  </span><span class="no">Percentages of page loads Firefox users have performed that were</span>
+<span class="w">  </span><span class="no">conducted over SSL broken down by country.</span>
+<span class="nt">owners</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example@mozilla.com</span>
+<span class="nt">labels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">firefox</span>
+<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># incremental queries add data to existing tables</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span><span class="w"> </span><span class="c1"># scheduled in Airflow to run daily</span>
+<span class="w">  </span><span class="nt">public_json</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">public_bigquery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">review_bugs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1414839</span><span class="w"> </span><span class="c1"># Bugzilla bug ID of data review</span>
+<span class="w">  </span><span class="nt">incremental_export</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># non-incremental JSON export writes all data to a single location</span>
+</code></pre></div>
+<ul>
+<li>only labels where value types are eithers integers or strings are published, all other values types are being skipped</li>
+</ul>
+<h3 id="dynamic-schemas">Dynamic Schemas</h3>
+<p>For tables whose schemas may evolve over time (e.g., tables that use <code>--schema_update_option=ALLOW_FIELD_ADDITION</code>), you can indicate this in the metadata to ensure schema updates are not skipped:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">schema</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">allow_field_addition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>This setting ensures that when running <code>./bqetl query schema update --skip-existing</code>, the schema for this query will still be updated even if a <code>schema.yaml</code> file already exists. This is particularly useful for:</p>
+<ul>
+<li>Tables that receive new fields dynamically</li>
+<li>Tables using BigQuery's schema auto-detection</li>
+<li>Tables that use <code>ALLOW_FIELD_ADDITION</code> schema update option</li>
+</ul>
+<p>Without this flag, <code>--skip-existing</code> will skip schema updates for queries that already have a <code>schema.yaml</code> file.</p>
+<h2 id="views">Views</h2>
+<ul>
+<li>Should be defined in files named as <code>sql/&lt;project&gt;/&lt;dataset&gt;/&lt;table&gt;/view.sql</code> e.g.
+  <code>sql/moz-fx-data-shared-prod/telemetry/core/view.sql</code><ul>
+<li>Views should generally <em>not</em> be named with a version suffix; a view represents a
+  stable interface for users and whenever possible should maintain compatibility
+  with existing queries; if the view logic cannot be adapted to changes in underlying
+  tables, breaking changes must be communicated to <code>fx-data-dev@mozilla.org</code></li>
+</ul>
+</li>
+<li>Must specify project and dataset in all table names<ul>
+<li>Should default to using the <code>moz-fx-data-shared-prod</code> project;
+  the <code>scripts/publish_views</code> tooling can handle parsing the definitions to publish
+  to other projects such as <code>derived-datasets</code></li>
+</ul>
+</li>
+<li>Should not refer to views in the <code>mozdata</code> project which are duplicates of views in another project
+  (commonly <code>moz-fx-data-shared-prod</code>). Refer to the original view instead.</li>
+<li>Views are interpreted as <a href="https://jinja.palletsprojects.com/en/3.1.x/">Jinja</a> templates, so it is possible to use Jinja statements and expressions</li>
+</ul>
+<h2 id="udfs">UDFs</h2>
+<ul>
+<li>Should limit the number of <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/expression_subqueries">expression subqueries</a> to avoid: <code>BigQuery error in query operation: Resources exceeded during query execution: Not enough resources for query planning - too many subqueries or query is too complex.</code></li>
+<li>Should be used to avoid code duplication</li>
+<li>Must be named in files with lower snake case names ending in <code>.sql</code>
+  e.g. <code>mode_last.sql</code><ul>
+<li>Each file must only define effectively private helper functions and one
+  public function which must be defined last<ul>
+<li>Helper functions must not conflict with function names in other files</li>
+</ul>
+</li>
+<li>SQL UDFs must be defined in the <code>udf/</code> directory and JS UDFs must be defined
+  in the <code>udf_js</code> directory<ul>
+<li>The <code>udf_legacy/</code> directory is an exception which must only contain
+  compatibility functions for queries migrated from Athena/Presto.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Functions must be defined as <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/user-defined-functions#temporary-udf-syntax">persistent UDFs</a>
+  using <code>CREATE OR REPLACE FUNCTION</code> syntax<ul>
+<li>Function names must be prefixed with a dataset of <code>&lt;dir_name&gt;.</code> so, for example,
+  all functions in <code>udf/*.sql</code> are part of the <code>udf</code> dataset<ul>
+<li>The final syntax for creating a function in a file will look like
+  <code>CREATE OR REPLACE FUNCTION &lt;dir_name&gt;.&lt;file_name&gt;</code></li>
+</ul>
+</li>
+<li>We provide tooling in <code>scripts/publish_persistent_udfs</code> for
+  publishing these UDFs to BigQuery<ul>
+<li>Changes made to UDFs need to be published manually in order for the
+  dry run CI task to pass</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>In order to run UDFs in <code>private-bigquery-etl</code> in the BigQuery Console, you will
+  need to not only write the UDF but also a dummy/stub file in <code>bigquery-etl</code>.<ul>
+<li><a href="https://github.com/mozilla/private-bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql">Actual UDF</a> in
+  <code>private-bigquery-etl</code>:
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">     </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="s1">&#39;non-distribution&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">distribution_model</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">      </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">equals</span><span class="p">(</span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">(),</span><span class="w"> </span><span class="s1">&#39;non-distribution&#39;</span><span class="p">);</span>
+</code></pre></div></li>
+<li><a href="https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql">Stub file</a> in <code>bigquery-etl</code>:
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="s1">&#39;helloworld&#39;</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">      </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">equals</span><span class="p">(</span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">(),</span><span class="w"> </span><span class="s1">&#39;helloworld&#39;</span><span class="p">);</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li>Should use <code>SQL</code> over <code>js</code> for performance</li>
+<li>UDFs are interpreted as <a href="https://jinja.palletsprojects.com/en/3.1.x/">Jinja</a> templates, so it is possible to use Jinja statements and expressions</li>
+</ul>
+<h2 id="large-backfills">Large Backfills</h2>
+<ul>
+<li>Should be documented and reviewed by a peer using a
+  <a href="https://bugzilla.mozilla.org/enter_bug.cgi">new bug</a> that describes
+  the context that required the backfill and the command or script used.</li>
+<li>Frequent backfills should be avoided<ul>
+<li>Backfills may increase storage costs for a table for 90 days by moving
+  data from long-term storage to short-term storage and requiring a production snapshot.</li>
+<li>Should combine multiple backfills happening around the same time</li>
+<li>Should delay column deletes until the next other backfill<ul>
+<li>Should use <code>NULL</code> for new data and <code>EXCEPT</code> to exclude from views until
+  dropped</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>After running the backfill, it is important to validate that the job(s) ran without errors
+  and the execution times and bytes processed are as expected.
+  Here is a query you may use for this purpose:
+  <div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="n">job_type</span><span class="p">,</span>
+<span class="w">  </span><span class="k">state</span><span class="p">,</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_dataset_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_table_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">total_terabytes_billed</span><span class="p">,</span>
+<span class="w">  </span><span class="n">total_slot_ms</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_location</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_reason</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_message</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="p">.</span><span class="n">monitoring</span><span class="p">.</span><span class="n">bigquery_usage</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">destination_dataset_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%backfills_staging_derived%&quot;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">destination_table_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%{{ your table name }}%&quot;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="k">DESC</span>
+</code></pre></div></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

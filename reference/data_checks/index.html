@@ -1,0 +1,2740 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      
+        <link rel="prev" href="../airflow_tags/">
+      
+      
+        <link rel="next" href="../bigconfig/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Data Checks - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bqetl-data-checks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Checks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mozfun/about/" class="md-tabs__link">
+          
+  
+  
+  UDFs
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
+          
+  
+  
+  Cookbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../bqetl/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UDFs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UDFs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mozfun
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mozfun
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mozfun
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/addons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Addons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/assert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bits28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bits28
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bytes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bytes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/event_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    event_analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ga/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ga
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    glean
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_search_console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_search_console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/hist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/iap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    iap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ltv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ltv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/marketing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/mobile_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mobile search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/newtab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Newtab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/serp_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    serp_events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/sumo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sumo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    vpn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moz fx data shared prod
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Moz fx data shared prod
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cookbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a derived dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bqetl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bqetl CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bqetl Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommended_practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommended practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incremental/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schema_includes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema includes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../public_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Public data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../airflow_tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Checks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bqetl-data-checks-to-the-rescue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bqetl Data Checks to the Rescue
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="bqetl Data Checks to the Rescue">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-categories-of-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two categories of checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-data-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding Data Checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Adding Data Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-checks-available-with-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Checks Available with Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Checks Available with Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accepted_values-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        accepted_values (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in_range-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        in_range (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_unique-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_unique (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_row_countsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        min_row_count(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_null-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        not_null (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#row_count_within_past_partitions_avgsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        row_count_within_past_partitions_avg(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value_lengthsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value_length(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matches_patternsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        matches_pattern(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-checks-locally-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running checks locally / Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running checks locally / Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bigconfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bigConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stage-deploys-continuous-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage Deploy & CI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bqetl-data-checks-to-the-rescue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bqetl Data Checks to the Rescue
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="bqetl Data Checks to the Rescue">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-categories-of-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two categories of checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-data-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding Data Checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Adding Data Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-checkssql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example checks.sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-checks-available-with-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Checks Available with Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Checks Available with Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accepted_values-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        accepted_values (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in_range-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        in_range (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_unique-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_unique (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_row_countsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        min_row_count(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_null-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        not_null (source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#row_count_within_past_partitions_avgsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        row_count_within_past_partitions_avg(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value_lengthsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value_length(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matches_patternsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        matches_pattern(source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-checks-locally-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running checks locally / Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running checks locally / Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="bqetl-data-checks">bqetl Data Checks</h1>
+<blockquote>
+<p>Instructions on how to add data checks can be found in the <a href="#adding-data-checks">Adding data checks</a> section below.</p>
+</blockquote>
+<h2 id="background">Background</h2>
+<p>To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain assumptions determined by the dataset owner. These assumptions need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.</p>
+<h2 id="bqetl-data-checks-to-the-rescue">bqetl Data Checks to the Rescue</h2>
+<p>bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.</p>
+<p>This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found <a href="../../tests/checks/">here</a> and are available as jinja macros inside the <code>checks.sql</code> files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Check templates will get rendered as raw SQL expressions. Take a look at the examples below for practical examples.</p>
+<p>It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.</p>
+<h3 id="two-categories-of-checks">Two categories of checks</h3>
+<p>Each check needs to be categorised with a marker, currently following markers are available:</p>
+<ul>
+<li><code>#fail</code> indicates that the ETL pipeline should stop if this check fails (circuit-breaker pattern) and a notification is sent out. <em>This marker should be used for checks that indicate a serious data issue.</em></li>
+</ul>
+<ul>
+<li><code>#warn</code> indicates that the ETL pipeline should continue even if this check fails. These type of checks can be used to indicate <em>potential</em> issues that might require more manual investigation.</li>
+</ul>
+<p>Checks can be marked by including one of the markers on the line preceeding the check definition, see <em>Example checks.sql</em> section for an example.</p>
+<h2 id="adding-data-checks">Adding Data Checks</h2>
+<h3 id="create-checkssql">Create checks.sql</h3>
+<p>Inside the query directory, which usually contains <code>query.sql</code> or <code>query.py</code>, <code>metadata.yaml</code> and <code>schema.yaml</code>, create a new file called <code>checks.sql</code> (unless already exists).</p>
+<blockquote>
+<p>Please make sure each check you add contains a marker (see: the <em>Two categories of checks</em> section above).</p>
+</blockquote>
+<p>Once checks have been added, we need to <code>regenerate the DAG</code> responsible for scheduling the query.</p>
+<h3 id="update-checkssql">Update checks.sql</h3>
+<p>If <code>checks.sql</code> already exists for the query, you can always add additional checks to the file by appending it to the list of already defined checks.</p>
+<p>When adding additional checks there should be no need to have to regenerate the DAG responsible for scheduling the query as all checks are executed using a single Airflow task.</p>
+<h3 id="removing-checkssql">Removing checks.sql</h3>
+<p>All checks can be removed by deleting the <code>checks.sql</code> file and regenerating the DAG responsible for scheduling the query.</p>
+<p>Alternatively, specific checks can be removed by deleting them from the <code>checks.sql</code> file.</p>
+<h3 id="example-checkssql">Example checks.sql</h3>
+<p>Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in <a href="https://github.com/mozilla/bigquery-etl/tree/main/tests/checks"><code>tests/checks</code></a> which may take different parameters used to generate the SQL check expression.</p>
+<p>Example of what a <code>checks.sql</code> may look like:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- raw SQL checks</span>
+<span class="o">#</span><span class="n">fail</span>
+<span class="n">ASSERT</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">COUNTIF</span><span class="p">(</span><span class="k">ISNULL</span><span class="p">(</span><span class="n">country</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">telemetry</span><span class="p">.</span><span class="n">table_v1</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">submission_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">submission_date</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span>
+<span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">&quot;More than 20% of clients have country set to NULL&quot;</span><span class="p">;</span>
+
+<span class="c1">-- macro checks</span>
+<span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h2 id="data-checks-available-with-examples">Data Checks Available with Examples</h2>
+<h3 id="accepted_values-source">accepted_values (<a href="../../tests/accepted_values.jinja">source</a>)</h3>
+<p>Usage:
+<div class="highlight"><pre><span></span><code>Arguments:
+
+column: str - name of the column to check
+values: List[str] - list of accepted values
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div></p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">accepted_values</span><span class="p">(</span><span class="ss">&quot;column_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">&quot;value_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;value_2&quot;</span><span class="p">],</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h3 id="in_range-source">in_range (<a href="../../tests/checks/in_range.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - A list of columns which we want to check the values of.
+min: Optional[int] - Minimum value we should observe in the specified columns.
+max: Optional[int] - Maximum value we should observe in the specified columns.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h3 id="is_unique-source">is_unique (<a href="../../tests/checks/is_unique.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - A list of columns which should produce a unique record.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+</code></pre></div>
+<h3 id="min_row_countsource">min_row_count(<a href="../../tests/checks/min_row_count.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+threshold: Optional[int] - What is the minimum number of rows we expect (default: 1)
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h3 id="not_null-source">not_null (<a href="../../tests/checks/not_null.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - A list of columns which should not contain a null value.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<p>Please keep in mind the below checks can be combined and specified in the same <code>checks.sql</code> file. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">fail</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">fail</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">warn</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h3 id="row_count_within_past_partitions_avgsource">row_count_within_past_partitions_avg(<a href="../../tests/checks/row_count_within_past_partitions_avg.jinja">source</a>)</h3>
+<p>Compares the row count of the current partition to the average of <code>number_of_days</code> past partitions and checks if the row count is within the average +- <code>threshold_percentage</code> %</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+number_of_days: int - Number of days we are comparing the row count to
+threshold_percentage: int - How many percent above or below the average row count is ok.
+partition_field: Optional[str] - What column is the partition_field (default = &quot;submission_date&quot;)
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">row_count_within_past_partitions_avg</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div></p>
+<h3 id="value_lengthsource">value_length(<a href="../../tests/checks/value_length.jinja">source</a>)</h3>
+<p>Checks that the column has values of specific character length.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+column: str - Column which will be checked against the `expected_length`.
+expected_length: int - Describes the expected character length of the value inside the specified columns.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">value_length</span><span class="p">(</span><span class="k">column</span><span class="o">=</span><span class="ss">&quot;country&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">expected_length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="o">=</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div></p>
+<h3 id="matches_patternsource">matches_pattern(<a href="../../tests/checks/matches_pattern.jinja">source</a>)</h3>
+<p>Checks that the column values adhere to a pattern based on a regex expression.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+column: str - Column which values will be checked against the regex.
+pattern: str - Regex pattern specifying the expected shape / pattern of the values inside the column.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+threshold_fail_percentage: Optional[int] - Percentage of how many rows can fail the check before causing it to fail.
+message: Optional[str]: Custom error message.
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">matches_pattern</span><span class="p">(</span><span class="k">column</span><span class="o">=</span><span class="ss">&quot;country&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="o">=</span><span class="ss">&quot;^[A-Z]{2}$&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="o">=</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">threshold_fail_percentage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="o">=</span><span class="ss">&quot;Oops&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div></p>
+<h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>
+<p>To list all available commands in the bqetl data checks CLI:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check
+
+Usage:<span class="w"> </span>bqetl<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w">  </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>and<span class="w"> </span>running<span class="w"> </span>bqetl<span class="w"> </span>data<span class="w"> </span>checks.
+
+<span class="w">  </span>––––––––––––––––––––––––––––––––––––––––––––––
+
+<span class="w">  </span>IN<span class="w"> </span>ACTIVE<span class="w"> </span>DEVELOPMENT
+
+<span class="w">  </span>The<span class="w"> </span>current<span class="w"> </span>progress<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>found<span class="w"> </span>under:
+
+<span class="w">          </span>https://mozilla-hub.atlassian.net/browse/DENG-919
+
+<span class="w">  </span>––––––––––––––––––––––––––––––––––––––––––––––
+
+Options:
+<span class="w">  </span>--help<span class="w">  </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w">  </span>render<span class="w">  </span>Renders<span class="w"> </span>data<span class="w"> </span>check<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>parameters<span class="w"> </span>provided<span class="w"> </span><span class="o">(</span>OPTIONAL<span class="o">)</span>.
+<span class="w">  </span>run<span class="w">     </span>Runs<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>defined<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span><span class="o">(</span>checks.sql<span class="o">)</span>.
+</code></pre></div>
+<p>To see see how to use a specific command use:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span>--help
+</code></pre></div>
+<hr />
+<p><code>render</code></p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>render<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DATASET<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>
+
+Renders<span class="w"> </span>data<span class="w"> </span>check<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>parameters<span class="w"> </span>provided<span class="w"> </span><span class="o">(</span>OPTIONAL<span class="o">)</span>.<span class="w"> </span>The<span class="w"> </span>result
+is<span class="w"> </span>what<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>check<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>that<span class="w"> </span>the<span class="w"> </span>specified<span class="w"> </span>dataset
+adheres<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>assumptions<span class="w"> </span>defined<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>corresponding<span class="w"> </span>checks.sql<span class="w"> </span>file
+
+Options:
+<span class="w">  </span>--project-id,<span class="w"> </span>--project_id<span class="w"> </span>TEXT
+<span class="w">                                  </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+<span class="w">  </span>--sql_dir,<span class="w"> </span>--sql-dir<span class="w"> </span>DIRECTORY<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+<span class="w">  </span>--help<span class="w">                          </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+</code></pre></div>
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>check<span class="w"> </span>render<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
+</code></pre></div>
+<hr />
+<p><code>run</code></p>
+<h3 id="usage_1">Usage</h3>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DATASET
+
+Runs<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>defined<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span><span class="o">(</span>checks.sql<span class="o">)</span>.
+
+Checks<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>validated<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--dry_run<span class="sb">`</span><span class="w"> </span>flag<span class="w"> </span>without<span class="w"> </span>executing<span class="w"> </span>them:
+
+Options:
+<span class="w">  </span>--project-id,<span class="w"> </span>--project_id<span class="w"> </span>TEXT
+<span class="w">                                  </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+<span class="w">  </span>--sql_dir,<span class="w"> </span>--sql-dir<span class="w"> </span>DIRECTORY<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+<span class="w">  </span>--dry_run,<span class="w"> </span>--dry-run<span class="w">            </span>To<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>make<span class="w"> </span>sure<span class="w"> </span>it<span class="w"> </span>is
+<span class="w">                                  </span>valid
+<span class="w">  </span>--marker<span class="w"> </span>TEXT<span class="w">                   </span>Marker<span class="w"> </span>to<span class="w"> </span>filter<span class="w"> </span>checks.
+<span class="w">  </span>--help<span class="w">                          </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+</code></pre></div>
+<h3 id="examples">Examples</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># to run checks for a specific dataset</span>
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01<span class="w"> </span>--marker<span class="o">=</span>fail<span class="w"> </span>--marker<span class="o">=</span>warn
+
+<span class="c1"># to only dry_run the checks</span>
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>--dry_run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01<span class="w"> </span>--marker<span class="o">=</span>fail
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

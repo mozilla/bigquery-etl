@@ -1,0 +1,4145 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      
+        <link rel="prev" href="../newtab/">
+      
+      
+        <link rel="next" href="../serp_events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>norm - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#norm" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              norm
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../about/" class="md-tabs__link">
+          
+  
+  
+  UDFs
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
+          
+  
+  
+  Cookbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../bqetl/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UDFs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UDFs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mozfun
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mozfun
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mozfun
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Addons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../assert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bits28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bits28
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bytes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bytes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    event_analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ga/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ga
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    glean
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../google_ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google ads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../google_search_console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_search_console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    iap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    json
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ltv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ltv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../marketing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marketing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mobile_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mobile search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../newtab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Newtab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    norm
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#app_channel-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_channel (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="app_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        browser_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="browser_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff_months-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        diff_months (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="diff_months (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_version-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_version (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_version (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fenix_app_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fenix_app_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_datetime-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fenix_build_to_datetime (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fenix_build_to_datetime (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firefox_android_package_name_to_channel-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        firefox_android_package_name_to_channel (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="firefox_android_package_name_to_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_earliest_value-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_earliest_value (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_earliest_value (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_windows_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_windows_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_windows_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-names-versions-and-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Names, Versions, and Builds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows Names, Versions, and Builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#status-as-of-november-2022" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status as of November 2022
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-number-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build number conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_baseline_client_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_baseline_client_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_client_info_attribution-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_client_info_attribution (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_client_info_attribution (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_ping_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_ping_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_ping_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_windows_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_windows_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_windows_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        metadata (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="metadata (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#os-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        os (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="os (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partnership-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        partnership (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="partnership (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        product_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="product_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#result_type_to_product_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        result_type_to_product_name (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="result_type_to_product_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subplat_attribution_channel_group-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subplat_attribution_channel_group (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="subplat_attribution_channel_group (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        truncate_version (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="truncate_version (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vpn_attribution (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="vpn_attribution (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#windows_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        windows_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="windows_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serp_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    serp_events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sumo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sumo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    vpn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moz fx data shared prod
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Moz fx data shared prod
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Udf js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cookbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a derived dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bqetl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bqetl CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bqetl Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/recommended_practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommended practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/incremental/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incremental queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/scheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/schema_includes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema includes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/public_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Public data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/airflow_tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow Tags
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/data_checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/bigconfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bigConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/stage-deploys-continuous-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage Deploy & CI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#app_channel-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_channel (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="app_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        browser_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="browser_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff_months-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        diff_months (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="diff_months (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_version-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_version (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_version (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fenix_app_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fenix_app_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_datetime-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fenix_build_to_datetime (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fenix_build_to_datetime (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firefox_android_package_name_to_channel-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        firefox_android_package_name_to_channel (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="firefox_android_package_name_to_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_earliest_value-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_earliest_value (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_earliest_value (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_windows_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_windows_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_windows_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-names-versions-and-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Names, Versions, and Builds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows Names, Versions, and Builds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#status-as-of-november-2022" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status as of November 2022
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-number-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build number conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_baseline_client_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_baseline_client_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_client_info_attribution-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_client_info_attribution (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_client_info_attribution (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_ping_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_ping_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_ping_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_windows_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        glean_windows_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="glean_windows_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        metadata (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="metadata (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#os-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        os (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="os (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partnership-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        partnership (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="partnership (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        product_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="product_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#result_type_to_product_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        result_type_to_product_name (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="result_type_to_product_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subplat_attribution_channel_group-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subplat_attribution_channel_group (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="subplat_attribution_channel_group (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        truncate_version (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="truncate_version (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vpn_attribution (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="vpn_attribution (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#windows_version_info-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        windows_version_info (UDF)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="windows_version_info (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="norm">norm</h1>
+<p>Functions for normalizing data.</p>
+<h2 id="app_channel-udf">app_channel (UDF)</h2>
+<p>Normalize app channel name, returning "Other" for unrecognized values.</p>
+<p>Normalize app channel name, returning "Other" for unrecognized values.</p>
+<p>Based on the logic used in ingestion:
+https://github.com/mozilla/gcp-ingestion/blob/fb7e9ed9e891e3e2320d85e05d7c1a1aedb57780/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L34</p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>channel_name STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/app_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/app_channel/metadata.yaml">Edit</a></p>
+<h2 id="browser_version_info-udf">browser_version_info (UDF)</h2>
+<p>Adds metadata related to the browser version in a struct.</p>
+<p>This is a temporary solution that allows browser version analysis.
+It should eventually be replaced with one or more browser version tables
+that serves as a source of truth for version releases.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>version_string STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;version STRING, major_version NUMERIC, minor_version NUMERIC, patch_revision NUMERIC, is_major_release BOOLEAN&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/browser_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/browser_version_info/metadata.yaml">Edit</a></p>
+<h2 id="diff_months-udf">diff_months (UDF)</h2>
+<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
+For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME, grace_period INTERVAL, inclusive BOOLEAN
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
+<h2 id="extract_version-udf">extract_version (UDF)</h2>
+<p>Extracts numeric version data from a version string like
+<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
+<p>Note: Non-zero minor and patch versions will be floating point <code>Numeric</code>.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span>
+</code></pre></div>
+<p>Example using <code>"96.05.01"</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 96</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 5</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span><span class="w">  </span><span class="c1">-- 1</span>
+</code></pre></div>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>version_string STRING, extraction_level STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>NUMERIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/extract_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/extract_version/metadata.yaml">Edit</a></p>
+<h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
+<p>Returns canonical, human-understandable identification info for Fenix sources.</p>
+<p>The Glean telemetry library for Android by design routes pings based
+on the Play Store appId value of the published application.
+As of August 2020, there have been 5 separate Play Store appId
+ values associated with different builds of Fenix,
+ each corresponding to different datasets in BigQuery,
+and the mapping of appId to logical app names
+(Firefox vs. Firefox Preview) and channel names
+ (nightly, beta, or release) has changed over time; see the
+<a href="https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0">spreadsheet of naming history for Mozilla's mobile browsers</a>.</p>
+<p>This function is intended as the source of truth for how to map a
+specific ping in BigQuery to a logical app names and channel.
+It should be expected that the output of this function may evolve
+over time. If we rename a product or channel, we may choose to
+update the values here so that analyses consistently get the new name.</p>
+<p>The first argument (<code>app_id</code>) can be fairly fuzzy; it is tolerant
+of actual Google Play Store appId values like 'org.mozilla.firefox_beta'
+(mix of periods and underscores) as well as BigQuery dataset names
+with suffixes like 'org_mozilla_firefox_beta_stable'.</p>
+<p>The second argument (<code>app_build_id</code>) should be the value
+in client_info.app_build.</p>
+<p>The function returns a <code>STRUCT</code> that contains the logical <code>app_name</code>
+and <code>channel</code> as well as the Play Store <code>app_id</code> in the canonical
+form which would appear in Play Store URLs.</p>
+<p>Note that the naming of Fenix applications changed on 2020-07-03,
+so to get a continuous view of the pings associated with a logical
+app channel, you may need to union together tables from multiple
+BigQuery datasets. To see data for all Fenix channels together, it
+is necessary to union together tables from all 5 datasets.
+For basic usage information, consider using
+<code>telemetry.fenix_clients_last_seen</code> which already handles the
+union. Otherwise, see the example below as a template for how
+construct a custom union.</p>
+<p>Mapping of channels to datasets:</p>
+<ul>
+<li>release: <code>org_mozilla_firefox</code></li>
+<li>beta: <code>org_mozilla_firefox_beta</code> (current) and <code>org_mozilla_fenix</code></li>
+<li>nightly: <code>org_mozilla_fenix</code> (current), <code>org_mozilla_fennec_aurora</code>,
+and <code>org_mozilla_fenix_nightly</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Example of a query over all Fenix builds advertised as &quot;Firefox Beta&quot;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="n">TEMP</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">extract_fields</span><span class="p">(</span><span class="n">app_id</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="k">ANY</span><span class="w"> </span><span class="k">TYPE</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">STRUCT</span>
+<span class="w">      </span><span class="n">m</span><span class="p">.</span><span class="n">submission_timestamp</span><span class="p">,</span>
+<span class="w">      </span><span class="n">m</span><span class="p">.</span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">geckoview_version</span><span class="p">,</span>
+<span class="w">      </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">fenix_app_info</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">client_info</span><span class="p">.</span><span class="n">app_build</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">WITH</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_firefox_beta&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="k">FROM</span>
+<span class="w">    </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">org_mozilla_firefox_beta</span><span class="p">.</span><span class="n">metrics</span><span class="o">`</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="w">  </span><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_fenix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="k">FROM</span>
+<span class="w">    </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">org_mozilla_fenix</span><span class="p">.</span><span class="n">metrics</span><span class="o">`</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">geckoview_version</span><span class="p">,</span>
+<span class="w">  </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="n">base</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Fenix&#39;</span><span class="w">  </span><span class="c1">-- excludes &#39;Firefox Preview&#39;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;beta&#39;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;2020-08-01&#39;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">geckoview_version</span>
+</code></pre></div>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>app_id STRING, app_build_id STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;app_name STRING, channel STRING, app_id STRING&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
+<h2 id="fenix_build_to_datetime-udf">fenix_build_to_datetime (UDF)</h2>
+<p>Convert the Fenix client_info.app_build-format string to
+a DATETIME. May return NULL on failure.</p>
+<p>Fenix originally used an
+<a href="https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16">8-digit app_build format</a></p>
+<p>In short it is <code>yDDDHHmm</code>:</p>
+<ul>
+<li>y is years since 2018</li>
+<li>DDD is day of year, 0-padded, 001-366</li>
+<li>HH is hour of day, 00-23</li>
+<li>mm is minute of hour, 00-59</li>
+</ul>
+<p>The last date seen with an 8-digit build ID is 2020-08-10.</p>
+<p>Newer builds use a
+<a href="https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112">10-digit format</a>
+where the integer represents a pattern consisting of 32 bits.
+The 17 bits starting 13 bits from the left represent a number of hours since
+UTC midnight beginning 2014-12-28.</p>
+<p>This function tolerates both formats.</p>
+<p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
+grouping by build date.</p>
+<h3 id="parameters_5">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>app_build STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INT64
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_build_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_build_to_datetime/metadata.yaml">Edit</a></p>
+<h2 id="firefox_android_package_name_to_channel-udf">firefox_android_package_name_to_channel (UDF)</h2>
+<p>Map Fenix package name to the channel name</p>
+<h3 id="parameters_6">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>package_name STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/firefox_android_package_name_to_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/firefox_android_package_name_to_channel/metadata.yaml">Edit</a></p>
+<h2 id="get_earliest_value-udf">get_earliest_value (UDF)</h2>
+<p>This UDF returns the earliest not-null value pair and datetime
+from a list of values and their corresponding timestamp.</p>
+<p>The function will return the first value pair in the input array,
+that is not null and has the earliest timestamp.</p>
+<p>Because there may be more than one value on the same date e.g. more
+than one value reported by different pings on the same date, the dates
+must be given as TIMESTAMPS and the values as STRING.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">   </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">get_earliest_value</span><span class="p">(</span><span class="nb">ARRAY</span><span class="o">&lt;</span><span class="n">STRUCT</span><span class="o">&lt;</span><span class="n">value</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_source</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_date</span><span class="w"> </span><span class="n">DATETIME</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">&lt;</span><span class="k">alias</span><span class="o">&gt;</span>
+</code></pre></div>
+<h3 id="parameters_7">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>value_set ARRAY&lt;STRUCT&lt;value STRING, value_source STRING, value_date DATETIME&gt;&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;earliest_value STRING, earliest_value_source STRING, earliest_date DATETIME&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/get_earliest_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/get_earliest_value/metadata.yaml">Edit</a></p>
+<h2 id="get_windows_info-udf">get_windows_info (UDF)</h2>
+<p>Exract the name, the version name, the version number, and the build number
+corresponding to a Microsoft Windows operating system version string in the
+form of <number>.<number>.<number> or <number>.<number>.<number>.<number>
+for most release versions of Windows after 2007.</p>
+<h3 id="windows-names-versions-and-builds">Windows Names, Versions, and Builds</h3>
+<h4 id="summary">Summary</h4>
+<p>This function is primarily designed to parse the field <code>os_version</code> in table <code>mozdata.default_browser_agent.default_browser</code>. Given a Microsoft Windows OS version string, the function returns the name of the operating system, the version name, the version number, and the build number corresponding to the operating system. As of November 2022, the parser can handle 99.89% of the <code>os_version</code> values collected in table <code>mozdata.default_browser_agent.default_browser</code>.</p>
+<h5 id="status-as-of-november-2022">Status as of November 2022</h5>
+<p>As of November 2022, the expected valid values of <code>os_version</code> are either <code>x.y.z</code> or <code>w.x.y.z</code> where <code>w</code>, <code>x</code>, <code>y</code>, and <code>z</code> are integers.</p>
+<p>As of November 2022, the return values for Windows 10 and Windows 11 are based on <a href="https://learn.microsoft.com/en-us/windows/release-health/release-information">Windows 10 release information</a> and <a href="https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information">Windows 11 release information</a>. For 3-number version strings, the parser assumes the valid values of <code>z</code> in <code>x.y.z</code> are at most 5 digits in length. For 4-number version strings, the parser assumes the valid values of <code>z</code> in <code>w.x.y.z</code> are at most 6 digits in length. The function makes an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but does not guarantee the return values are absolutely accurate. The function assumes the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The function does not handle other versions of Windows.</p>
+<p>As of November 2022, the parser currently handles just over 99.89% of data in the field <code>os_version</code> in table <code>mozdata.default_browser_agent.default_browser</code>.</p>
+<h5 id="build-number-conventions">Build number conventions</h5>
+<p>Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers, such as build number <code>22621.900</code> for version <code>22621</code>. The first number repeats the version number and the second number uniquely identifies the build within the version. To simplify data processing and data analysis, this function returns the second unique identifier as an integer instead of returning the full build number as a string.</p>
+<h4 id="example-usage">Example usage</h4>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="o">`</span><span class="n">os_version</span><span class="o">`</span><span class="p">,</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">get_windows_info</span><span class="p">(</span><span class="o">`</span><span class="n">os_version</span><span class="o">`</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">windows_info</span>
+<span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">default_browser_agent</span><span class="p">.</span><span class="n">default_browser</span><span class="o">`</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="o">`</span><span class="n">submission_timestamp</span><span class="o">`</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">CURRENT_TIMESTAMP</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="k">DAY</span><span class="p">)</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">LEFT</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;00&#39;</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">1000</span>
+</code></pre></div>
+<h4 id="mapping">Mapping</h4>
+<table>
+<thead>
+<tr>
+<th>os_version</th>
+<th>windows_name</th>
+<th>windows_version_name</th>
+<th>windows_version_number</th>
+<th>windows_build_number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6.0.z</td>
+<td>Windows Vista</td>
+<td>6.0</td>
+<td>6.0</td>
+<td>z</td>
+</tr>
+<tr>
+<td>6.1.z</td>
+<td>Windows 7</td>
+<td>7.0</td>
+<td>6.1</td>
+<td>z</td>
+</tr>
+<tr>
+<td>6.2.z</td>
+<td>Windows 8</td>
+<td>8.0</td>
+<td>6.2</td>
+<td>z</td>
+</tr>
+<tr>
+<td>6.3.z</td>
+<td>Windows 8.1</td>
+<td>8.1</td>
+<td>6.3</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.10240.z</td>
+<td>Windows 10</td>
+<td>1507</td>
+<td>10240</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.10586.z</td>
+<td>Windows 10</td>
+<td>1511</td>
+<td>10586</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.14393.z</td>
+<td>Windows 10</td>
+<td>1607</td>
+<td>14393</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.15063.z</td>
+<td>Windows 10</td>
+<td>1703</td>
+<td>15063</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.16299.z</td>
+<td>Windows 10</td>
+<td>1709</td>
+<td>16299</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.17134.z</td>
+<td>Windows 10</td>
+<td>1803</td>
+<td>17134</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.17763.z</td>
+<td>Windows 10</td>
+<td>1809</td>
+<td>17763</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.18362.z</td>
+<td>Windows 10</td>
+<td>1903</td>
+<td>18362</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.18363.z</td>
+<td>Windows 10</td>
+<td>1909</td>
+<td>18363</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.19041.z</td>
+<td>Windows 10</td>
+<td>2004</td>
+<td>19041</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.19042.z</td>
+<td>Windows 10</td>
+<td>20H2</td>
+<td>19042</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.19043.z</td>
+<td>Windows 10</td>
+<td>21H1</td>
+<td>19043</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.19044.z</td>
+<td>Windows 10</td>
+<td>21H2</td>
+<td>19044</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.19045.z</td>
+<td>Windows 10</td>
+<td>22H2</td>
+<td>19045</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.y.z</td>
+<td>Windows 10</td>
+<td>UNKNOWN</td>
+<td>y</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.22000.z</td>
+<td>Windows 11</td>
+<td>21H2</td>
+<td>22000</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.22621.z</td>
+<td>Windows 11</td>
+<td>22H2</td>
+<td>22621</td>
+<td>z</td>
+</tr>
+<tr>
+<td>10.0.y.z</td>
+<td>Windows 11</td>
+<td>UNKNOWN</td>
+<td>y</td>
+<td>z</td>
+</tr>
+<tr>
+<td>all other values</td>
+<td>(null)</td>
+<td>(null)</td>
+<td>(null)</td>
+<td>(null)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="parameters_8">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os_version STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;name STRING, version_name STRING, version_number DECIMAL, build_number INT64&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/get_windows_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/get_windows_info/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h3 id="parameters_9">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>client_info ANY TYPE, metrics ANY TYPE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>string
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
+<h2 id="glean_client_info_attribution-udf">glean_client_info_attribution (UDF)</h2>
+<p>Add application-defined attribution and distribution metrics to client_info struct.
+See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1930762">https://bugzilla.mozilla.org/show_bug.cgi?id=1930762</a> and the linked doc for details.</p>
+<p>Add application-defined attribution and distribution metrics to client_info struct.
+See https://bugzilla.mozilla.org/show_bug.cgi?id=1930762 and the linked doc for details.</p>
+<h3 id="parameters_10">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>client_info ANY TYPE, attribution_ext JSON, distribution_ext JSON
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>attribution, STRUCT(&quot;n&quot;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_client_info_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_client_info_attribution/metadata.yaml">Edit</a></p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h3 id="parameters_11">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ping_info ANY TYPE
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<h2 id="glean_windows_version_info-udf">glean_windows_version_info (UDF)</h2>
+<p>Given an unnormalized set of Windows identifiers, return a friendly version
+of the operating system name.</p>
+<p>Requires os, os_version and windows_build_number.</p>
+<p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
+<p>To be used with Glean datasets, helps normalize Windows version information.</p>
+<h3 id="parameters_12">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os STRING, os_version STRING, windows_build_number INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_windows_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_windows_version_info/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<h3 id="parameters_13">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>metadata ANY TYPE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>`date`, CAST(NULL
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<h2 id="os-udf">os (UDF)</h2>
+<p>Normalize an operating system string to one of the three major desktop
+platforms, one of the two major mobile platforms, or "Other".</p>
+<p>This is a reimplementation of
+<a href="https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>
+  to populate <code>normalized_os</code>.</p>
+<h3 id="parameters_14">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
+<h2 id="partnership-udf">partnership (UDF)</h2>
+<p>Normalizes partnership based on distribution ID as input</p>
+<p>The UDF identifies partnership info based on the distribution ID.</p>
+<h3 id="parameters_15">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>distribution_id STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/partnership">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/partnership/metadata.yaml">Edit</a></p>
+<h2 id="product_info-udf">product_info (UDF)</h2>
+<p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
+for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
+Thus, this function serves as a bridge to get from legacy application
+identifiers to the consistent identifiers we are using for reporting in 2021.</p>
+<p>As of 2021, most Mozilla products are sending telemetry via the Glean SDK,
+with Glean telemetry in active development for desktop Firefox as well. The
+<code>probeinfo</code> API is the single source of truth for metadata about applications
+sending Glean telemetry; the values for <code>app_name</code> and
+<code>canonical_app_name</code> returned here correspond to the "end-to-end identifier"
+values documented in
+<a href="https://mozilla.github.io/probe-scraper/#operation/getAppListings">the v2 Glean app listings endpoint
+</a>.
+For non-Glean telemetry, we provide values in the same style to provide
+continuity as we continue the migration to Glean.</p>
+<p>For legacy telemetry pings like <code>main</code> ping for desktop and <code>core</code> ping for
+mobile products, the <code>legacy_app_name</code> given as input to this function
+should come from the submission URI (stored as
+<code>metadata.uri.app_name</code> in BigQuery ping tables).
+For Glean pings, we have invented <code>product</code> values that can be passed
+in to this function as the <code>legacy_app_name</code> parameter.</p>
+<p>The returned <code>app_name</code> values are intended to be
+readable and unambiguous, but short and easy to type.
+They are suitable for use as a key in derived tables.
+<code>product</code> is a deprecated field that was similar in intent.</p>
+<p>The returned <code>canonical_app_name</code> is more verbose and is suited for displaying
+in visualizations. <code>canonical_name</code> is a synonym that we provide for
+historical compatibility with previous versions of this function.</p>
+<p>The returned struct also contains boolean <code>contributes_to_2021_kpi</code> as the
+canonical reference for whether the given application is included in KPI
+reporting. Additional fields may be added for future years.</p>
+<p>The <code>normalized_os</code> value that's passed in should be the top-level
+<code>normalized_os</code> value present in any ping table or you may want
+to wrap a raw value in <code>mozfun.norm.os</code>
+like <code>mozfun.norm.product_info(app_name, mozfun.norm.os(os))</code>.</p>
+<p>This function also tolerates passing in a <code>product</code> value as
+<code>legacy_app_name</code> so that this function is still useful for derived tables
+which have thrown away the raw <code>app_name</code> value from legacy pings.</p>
+<p>The mappings are as follows:</p>
+<table>
+<thead>
+<tr>
+<th>legacy_app_name</th>
+<th>normalized_os</th>
+<th>app_name</th>
+<th>product</th>
+<th>canonical_app_name</th>
+<th>2019</th>
+<th>2020</th>
+<th>2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Firefox</td>
+<td>*</td>
+<td>firefox_desktop</td>
+<td>Firefox</td>
+<td>Firefox for Desktop</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fenix</td>
+<td>Android</td>
+<td>fenix</td>
+<td>Fenix</td>
+<td>Firefox for Android (Fenix)</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fennec</td>
+<td>Android</td>
+<td>fennec</td>
+<td>Fennec</td>
+<td>Firefox for Android (Fennec)</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Firefox Preview</td>
+<td>Android</td>
+<td>firefox_preview</td>
+<td>Firefox Preview</td>
+<td>Firefox Preview for Android</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fennec</td>
+<td>iOS</td>
+<td>firefox_ios</td>
+<td>Firefox iOS</td>
+<td>Firefox for iOS</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>FirefoxForFireTV</td>
+<td>Android</td>
+<td>firefox_fire_tv</td>
+<td>Firefox Fire TV</td>
+<td>Firefox for Fire TV</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>FirefoxConnect</td>
+<td>Android</td>
+<td>firefox_connect</td>
+<td>Firefox Echo</td>
+<td>Firefox for Echo Show</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Zerda</td>
+<td>Android</td>
+<td>firefox_lite</td>
+<td>Firefox Lite</td>
+<td>Firefox Lite</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Zerda_cn</td>
+<td>Android</td>
+<td>firefox_lite_cn</td>
+<td>Firefox Lite CN</td>
+<td>Firefox Lite (China)</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>Android</td>
+<td>focus_android</td>
+<td>Focus Android</td>
+<td>Firefox Focus for Android</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>iOS</td>
+<td>focus_ios</td>
+<td>Focus iOS</td>
+<td>Firefox Focus for iOS</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Klar</td>
+<td>Android</td>
+<td>klar_android</td>
+<td>Klar Android</td>
+<td>Firefox Klar for Android</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Klar</td>
+<td>iOS</td>
+<td>klar_ios</td>
+<td>Klar iOS</td>
+<td>Firefox Klar for iOS</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Lockbox</td>
+<td>Android</td>
+<td>lockwise_android</td>
+<td>Lockwise Android</td>
+<td>Lockwise for Android</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Lockbox</td>
+<td>iOS</td>
+<td>lockwise_ios</td>
+<td>Lockwise iOS</td>
+<td>Lockwise for iOS</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+</tr>
+<tr>
+<td>FirefoxReality*</td>
+<td>Android</td>
+<td>firefox_reality</td>
+<td>Firefox Reality</td>
+<td>Firefox Reality</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h3 id="parameters_16">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>legacy_app_name STRING, normalized_os STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;app_name STRING, product STRING, canonical_app_name STRING, canonical_name STRING, contributes_to_2019_kpi BOOLEAN, contributes_to_2020_kpi BOOLEAN, contributes_to_2021_kpi BOOLEAN&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/product_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/product_info/metadata.yaml">Edit</a></p>
+<h2 id="result_type_to_product_name-udf">result_type_to_product_name (UDF)</h2>
+<p>Convert urlbar result types into product-friendly names</p>
+<p>This UDF converts result types from urlbar events (<a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement">engagement</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_impression">impression</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment">abandonment</a>) into <a href="https://docs.google.com/document/d/1kmlAykJR7r7VcWe-mfk5R4MvhMvfUao7VrZP_M2t6nY/edit#heading=h.ksu5pbt3aa6k">product-friendly names</a>.</p>
+<h3 id="parameters_17">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>res STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/result_type_to_product_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/result_type_to_product_name/metadata.yaml">Edit</a></p>
+<h2 id="subplat_attribution_channel_group-udf">subplat_attribution_channel_group (UDF)</h2>
+<p>Maps UTM source parameters to predefined channel groups for attribution analysis.</p>
+<p>This function categorizes UTM sources into channel groups:
+- Marketing Owned: Mozilla-owned marketing channels (newsletters, blogs, social)
+- Product Owned: In-product referrals (newtab, Firefox features, Pocket)
+- Marketing Paid: Paid advertising channels (Google, Facebook, Display)
+- Direct: Direct traffic from Mozilla properties
+- Miscellaneous: Other or unmapped sources</p>
+<p>The function uses pattern matching on utm_source values to assign appropriate
+channel classifications for marketing attribution and analytics.</p>
+<p>Data source:
+- Marketing UTM Parameters: <a href="https://docs.google.com/spreadsheets/d/1YSQriUKwq9sz4WLBKRAfupb9OWSOJabm7Qo3RrIf7kI/edit?gid=1059980294#gid=1059980294">https://docs.google.com/spreadsheets/d/1YSQriUKwq9sz4WLBKRAfupb9OWSOJabm7Qo3RrIf7kI/edit?gid=1059980294#gid=1059980294</a>
+- UTM Source mapping: Building an MRR Dataset Script Code Block 30: <a href="https://drive.google.com/drive/folders/1xBG2zgmIMgrX6Rvrw3y1ZAJbn8ffA3Af">https://drive.google.com/drive/folders/1xBG2zgmIMgrX6Rvrw3y1ZAJbn8ffA3Af</a></p>
+<h3 id="parameters_18">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>utm_source STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/subplat_attribution_channel_group">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/subplat_attribution_channel_group/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<h3 id="parameters_19">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os_version STRING, truncation_level STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>NUMERIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
+<h3 id="parameters_20">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;normalized_acquisition_channel STRING, normalized_campaign STRING, normalized_content STRING, normalized_medium STRING, normalized_source STRING, website_channel_group STRING&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
+<h2 id="windows_version_info-udf">windows_version_info (UDF)</h2>
+<p>Given an unnormalized set off Windows identifiers, return a friendly version
+of the operating system name.</p>
+<p>Requires os, os_version and windows_build_number.</p>
+<p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
+<h3 id="parameters_21">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os STRING, os_version STRING, windows_build_number INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/windows_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/windows_version_info/metadata.yaml">Edit</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

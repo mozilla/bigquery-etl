@@ -193,4 +193,4 @@ fields:
     type: STRING
     mode: NULLABLE
     description: |
-      The window mode: classic, private, or smartwindow.
+      The standard display of the browser: classic, private, or smartwindow.

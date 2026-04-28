@@ -1,0 +1,322 @@
+fields:
+- name: addon_version
+  type: STRING
+  mode: NULLABLE
+  description: The version of the Firefox Messaging System add-on associated with this
+    ping (aliased from metrics.string.messaging_system_addon_version).
+- name: event
+  type: STRING
+  mode: NULLABLE
+  description: The name of the CFR or onboarding messaging system event that was triggered
+    (e.g. "IMPRESSION", "CLICK", "DISMISS"), mapped from metrics.string.messaging_system_event.
+- name: ga4_ad_crosschannel_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Cross-channel campaign name associated with the matched GA4 session,
+    as reported by Google's cross-channel attribution model.
+- name: ga4_ad_crosschannel_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Cross-channel campaign ID associated with the matched GA4 session, as
+    reported by Google's cross-channel attribution model.
+- name: ga4_ad_crosschannel_default_channel_group
+  type: STRING
+  mode: NULLABLE
+  description: Default channel group classification associated with the matched GA4
+    session, as reported by Google's cross-channel attribution model.
+- name: ga4_ad_crosschannel_medium
+  type: STRING
+  mode: NULLABLE
+  description: Cross-channel traffic medium associated with the matched GA4 session,
+    as reported by Google's cross-channel attribution model.
+- name: ga4_ad_crosschannel_primary_channel_group
+  type: STRING
+  mode: NULLABLE
+  description: Primary channel group classification (e.g. Paid Search, Organic Social)
+    associated with the matched GA4 session, as reported by Google's cross-channel attribution
+    model.
+- name: ga4_ad_crosschannel_source
+  type: STRING
+  mode: NULLABLE
+  description: Cross-channel traffic source associated with the matched GA4 session,
+    as reported by Google's cross-channel attribution model.
+- name: ga4_ad_crosschannel_source_platform
+  type: STRING
+  mode: NULLABLE
+  description: Cross-channel source platform (e.g. Google Ads, SA360) associated with
+    the matched GA4 session, as reported by Google's cross-channel attribution model.
+- name: ga4_ad_google_account
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads account name associated with the matched GA4 session.
+- name: ga4_ad_google_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads campaign name associated with the matched GA4 session.
+- name: ga4_ad_google_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads campaign ID associated with the matched GA4 session.
+- name: ga4_ad_google_group
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads ad group name associated with the matched GA4 session.
+- name: ga4_ad_google_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads ad group ID associated with the matched GA4 session.
+- name: ga4_all_reported_install_targets
+  type: STRING
+  mode: REPEATED
+  description: All reported install targets from the matched GA4 session.
+- name: ga4_browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser name used by the user as reported by the matched GA4 session.
+- name: ga4_browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser version used by the user as reported by the matched GA4 session.
+- name: ga4_city
+  type: STRING
+  mode: NULLABLE
+  description: City of the user as reported by the matched GA4 session.
+- name: ga4_country
+  type: STRING
+  mode: NULLABLE
+  description: Country of the user as reported by the matched GA4 session.
+- name: ga4_device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device category (e.g. desktop, mobile, tablet) of the user's device as
+    reported by the matched GA4 session.
+- name: ga4_distinct_campaigns_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null campaign values extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_distinct_contents_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null content values extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_distinct_experiment_branches_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null experiment branch values extracted from GA4 event
+    parameters for the matched session.
+- name: ga4_distinct_experiment_ids_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null experiment IDs extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_distinct_gad_campaignid_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All non-null reported gad_campaignid values from event_params for the
+    matched GA4 session.
+- name: ga4_distinct_mediums_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null traffic medium values extracted from GA4 event
+    parameters for the matched session.
+- name: ga4_distinct_sources_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null traffic source values extracted from GA4 event
+    parameters for the matched session.
+- name: ga4_distinct_terms_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All distinct non-null search term values extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_firefox_desktop_downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Total count of Firefox Desktop download events in the matched GA4 session.
+- name: ga4_first_campaign_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null campaign value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_content_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null content value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_experiment_branch_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null experiment branch value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_experiment_id_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null experiment ID extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_gad_campaignid_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null reported gad_campaignid from event_params for the
+    matched GA4 session.
+- name: ga4_first_medium_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null traffic medium value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_source_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null traffic source value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_first_term_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null search term value extracted from GA4 event parameters
+    for the matched session.
+- name: ga4_ga_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Analytics Client Identifier from the matched GA4 session, using
+    a cookie on mozilla.org or firefox.com.
+- name: ga4_gclid
+  type: STRING
+  mode: NULLABLE
+  description: Google Click Identifier (gclid) from the matched GA4 session, used for
+    linking Google Ads clicks to GA4 sessions.
+- name: ga4_gclid_array
+  type: STRING
+  mode: REPEATED
+  description: All Google Click Identifiers (gclids) associated with the matched GA4
+    session.
+- name: ga4_had_download_event
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the matched GA4 session included a Firefox download event.
+- name: ga4_landing_screen
+  type: STRING
+  mode: NULLABLE
+  description: The landing page or screen URL the user visited during the matched GA4
+    session that led to the Firefox download.
+- name: ga4_language
+  type: STRING
+  mode: NULLABLE
+  description: Browser language setting of the user as reported by the matched GA4 session.
+- name: ga4_last_reported_install_target
+  type: STRING
+  mode: NULLABLE
+  description: The last reported install target (e.g. installer type or platform) from
+    the matched GA4 session.
+- name: ga4_manual_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign ID from the matched GA4 session, set via manual UTM parameters
+    on the landing URL.
+- name: ga4_manual_campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign name from the matched GA4 session, set via manual UTM
+    parameters on the landing URL.
+- name: ga4_manual_content
+  type: STRING
+  mode: NULLABLE
+  description: Manual content value from the matched GA4 session, set via the utm_content
+    UTM parameter on the landing URL.
+- name: ga4_manual_medium
+  type: STRING
+  mode: NULLABLE
+  description: Manual traffic medium from the matched GA4 session, set via the utm_medium
+    UTM parameter on the landing URL.
+- name: ga4_manual_source
+  type: STRING
+  mode: NULLABLE
+  description: Manual traffic source from the matched GA4 session, set via the utm_source
+    UTM parameter on the landing URL.
+- name: ga4_manual_term
+  type: STRING
+  mode: NULLABLE
+  description: Manual search term from the matched GA4 session, set via the utm_term
+    UTM parameter on the landing URL.
+- name: ga4_mobile_device_model
+  type: STRING
+  mode: NULLABLE
+  description: Mobile device model identifier as reported by the matched GA4 session.
+- name: ga4_mobile_device_string
+  type: STRING
+  mode: NULLABLE
+  description: Full mobile device string as reported by the matched GA4 session.
+- name: ga4_operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating system of the user's device as reported by the matched GA4
+    session.
+- name: ga4_operating_system_version
+  type: STRING
+  mode: NULLABLE
+  description: Operating system version of the user's device as reported by the matched
+    GA4 session.
+- name: ga4_region
+  type: STRING
+  mode: NULLABLE
+  description: Geographic region of the user as reported by the matched GA4 session.
+- name: ga4_session_date
+  type: DATE
+  mode: NULLABLE
+  description: The date the matched Google Analytics GA4 session started.
+- name: ga4_session_start_timestamp
+  type: DATETIME
+  mode: NULLABLE
+  description: The timestamp of the session_start event for the matched GA4 session.
+    If no session_start event exists, the minimum event timestamp for that session.
+- name: ga4_stub_session_id
+  type: STRING
+  mode: NULLABLE
+  description: Stub session ID from the matched GA4 session, used to join GA4 sessions
+    to stub attribution logs.
+- name: ga4_website
+  type: STRING
+  mode: NULLABLE
+  description: Indicates which website the matched GA4 session is from, e.g. FIREFOX.COM
+    or MOZILLA.ORG.
+- name: message_id
+  type: STRING
+  mode: NULLABLE
+  description: The identifier of the CFR or about:welcome/onboarding messaging system
+    message shown to the user, used to link events back to specific messaging campaigns.
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: The release channel of the Firefox application as reported by the client
+    (e.g. release, beta, nightly, esr), derived from client_info.app_channel on Glean
+    messaging_system pings.
+- name: stub_attr_logs_dl_token
+  type: STRING
+  mode: NULLABLE
+  description: A download token from the stub attribution service logs, associated with
+    a single Firefox binary generated by the stub attribution service.
+- name: stub_attr_logs_download_source
+  type: STRING
+  mode: NULLABLE
+  description: A flag indicating which website the Firefox download came from (e.g.
+    fxdotcom or mozorg), as recorded in the stub attribution service logs.
+- name: stub_attr_logs_first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: The first date the download token, GA client ID, and stub session ID
+    triplet was seen in the stub attribution service logs.
+- name: stub_attr_logs_ga_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Analytics Client Identifier from the stub attribution service
+    logs, uniquely identifying a GA client using a cookie on the website the download
+    came from.
+- name: stub_attr_logs_stub_session_id
+  type: STRING
+  mode: NULLABLE
+  description: An ID identifying a single stub attribution session from the stub attribution
+    service logs, found in GA logs in the Stub Session ID Event.
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Combo of os, os_version, and windows_build_number, normalized to a human-readable
+    Windows version string. NULL if not Windows.

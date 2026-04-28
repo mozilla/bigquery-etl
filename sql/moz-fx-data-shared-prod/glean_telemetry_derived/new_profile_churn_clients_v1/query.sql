@@ -1,22 +1,26 @@
 WITH activity_range AS (
   SELECT
-    client_id,
-    first_seen_date,
-    submission_date,
-    days_desktop_active_bits,
-    sample_id,
-    DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen
+    last_seen.client_id,
+    first_seen.first_seen_date,
+    last_seen.submission_date,
+    last_seen.days_desktop_active_bits,
+    last_seen.sample_id,
+    DATE_DIFF(last_seen.submission_date, first_seen.first_seen_date, DAY) AS days_since_first_seen
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
+  INNER JOIN
+    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
+    ON last_seen.client_id = first_seen.client_id
+    AND last_seen.sample_id = first_seen.sample_id
   WHERE
       -- Only include activity within each client's 30-day post-cohort window,
       -- up to the as_of_date
-    submission_date
-    BETWEEN first_seen_date
-    AND DATE_ADD(first_seen_date, INTERVAL 30 DAY)
-    AND submission_date >= "2025-12-01"
-    AND submission_date <= "2026-02-01"
-    AND first_seen_date >= "2025-12-01"
+    last_seen.submission_date
+    BETWEEN first_seen.first_seen_date
+    AND DATE_ADD(first_seen.first_seen_date, INTERVAL 30 DAY)
+    AND last_seen.submission_date >= "2025-12-01"
+    AND last_seen.submission_date <= "2026-02-01"
+    AND first_seen.first_seen_date >= "2025-12-01"
 ),
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (

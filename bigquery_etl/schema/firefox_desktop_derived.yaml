@@ -1,0 +1,28 @@
+fields:
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: The download source attribute from the Firefox installer attribution data,
+    identifying where the installer was downloaded from (e.g. "mozorg", "addons.mozilla.org").
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: The user agent string captured at the time of the Firefox download attribution,
+    used to identify the browser and platform from which the installer was downloaded.
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client qualifies as a daily active user on the given
+    submission_date, based on the activity criteria defined for the desktop DAU metric.
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: The Windows OS build number reported by the client, used to identify
+    the specific Windows release or update version (e.g. 19041 for Windows 10 2004,
+    22621 for Windows 11 22H2).
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: The human-readable Windows version string derived from the build number
+    (e.g. "Windows 10", "Windows 11"), providing a simplified label for the client's
+    Windows release.

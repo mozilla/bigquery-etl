@@ -1,0 +1,93 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Event/observation date
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Mozilla product. NULL for rows from freshness_metrics source.
+    Examples: firefox, thunderbird, mozilla-vpn, pocket, etc.
+- name: content_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Type of content engaged with. Populated only for ga4_engagement_sessions rows.
+    - 'kb': Knowledge base article
+    - 'forum_question': Forum question detail page
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Identifies the base table this row originates from:
+    - 'freshness_metrics': freshness_metrics_base_v1
+    - 'ga4_engagement_sessions': ga4_engagement_sessions_daily_v1
+    - 'kitsune_questions': kitsune_questions_base_v1
+    - 'zendesk_tickets': zendesk_tickets_base_v1
+- name: total_articles
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Total number of non-archived en-US articles on this date"
+- name: articles_updated_within_6_months
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles with approved revisions in the prior 6 months"
+- name: outdated_articles
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles NOT updated within 6 months"
+- name: articles_0_3_months
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles last updated 0-3 months before this date"
+- name: articles_3_6_months
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles last updated 3-6 months before this date"
+- name: articles_6_12_months
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles last updated 6-12 months before this date"
+- name: articles_12_plus_months
+  type: INTEGER
+  mode: NULLABLE
+  description: "Freshness only. Number of articles last updated more than 12 months before this date"
+- name: freshness_percentage
+  type: FLOAT
+  mode: NULLABLE
+  description: "Freshness only. Percentage of articles updated within 6 months (0-100)"
+- name: freshness_tier
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Freshness only. Content health tier based on freshness percentage:
+    excellent (>=80%), good (>=60%), fair (>=40%), poor (<40%)
+- name: meets_75pct_target
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "Freshness only. True if freshness percentage meets or exceeds 75% target"
+- name: meets_90pct_stretch_goal
+  type: BOOLEAN
+  mode: NULLABLE
+  description: "Freshness only. True if freshness percentage meets or exceeds 90% stretch goal"
+- name: sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: "GA4 only. Number of distinct GA4 sessions with >30 seconds engagement time"
+- name: events
+  type: INTEGER
+  mode: NULLABLE
+  description: "GA4 only. Number of user_engagement events for these sessions"
+- name: events_per_session
+  type: FLOAT
+  mode: NULLABLE
+  description: "GA4 only. Average number of engagement events per session"
+- name: forum_questions_posted
+  type: INTEGER
+  mode: NULLABLE
+  description: "Kitsune only. Number of forum questions posted on this date for this product"
+- name: zendesk_tickets_created
+  type: INTEGER
+  mode: NULLABLE
+  description: "Zendesk only. Number of support tickets created on this date for this product"

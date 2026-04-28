@@ -1,0 +1,27 @@
+friendly_name: SUMO Metrics Unified (Daily)
+description: |
+  Single source of truth consolidating all SUMO daily base metric tables.
+
+  Grain: Daily x Source x Product (x Content Type for GA4)
+
+  Unions the following base tables:
+  - freshness_metrics_base_v1: KB article freshness and age distribution (no product dimension)
+  - ga4_engagement_sessions_daily_v1: GA4 engagement sessions by product and content type
+  - kitsune_questions_base_v1: Forum questions posted by product
+  - zendesk_tickets_base_v1: Zendesk support tickets created by product
+
+  The `source` column identifies which base table each row originates from.
+  Columns not applicable to a given source are NULL.
+
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_insights
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

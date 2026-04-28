@@ -67,7 +67,7 @@ rollouts_cte AS (
               {% endif %}
             )
           {% elif metric.data_type == "event" %}
-            {% if source_table.type == "event_stream" %}
+            {% if source_table.type == "events_stream" %}
               event_category = "{{ metric.category }}"
               AND event_name = "{{ metric.event_name }}"
             {% else %}
@@ -89,7 +89,7 @@ rollouts_cte AS (
       , UNNEST(
         ARRAY_CONCAT(
           COALESCE(
-            {% if source_table.type == "event_stream" %}
+            {% if source_table.type == "events_stream" %}
               UNNEST(JSON_KEYS(experiments, 1))
             {% else %}
               ARRAY(

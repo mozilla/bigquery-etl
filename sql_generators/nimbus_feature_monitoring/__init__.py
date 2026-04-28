@@ -85,7 +85,7 @@ class Metric:
         if (_key := "ping_aggregator") not in kwargs:
             if data_type in ("boolean", "labeled_boolean"):
                 kwargs[_key] = "logical_or"
-            elif data_type == "event" and source_type == "event_stream":
+            elif data_type == "event" and source_type == "events_stream":
                 kwargs[_key] = "countif"
             else:
                 kwargs[_key] = "sum"
@@ -203,7 +203,7 @@ def generate_queries(project, path, write_dir):
                     name=feat.nimbus_slug(),
                     project=project,
                     dataset=f"{dataset}_derived",
-                    ratios=[],
+                    ratios=feat.ratios,
                     metrics_by_source=metrics_by_source,
                 )
             )

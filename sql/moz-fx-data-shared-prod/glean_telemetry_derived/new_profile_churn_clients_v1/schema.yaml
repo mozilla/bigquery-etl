@@ -1,0 +1,308 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: cohort_date
+  type: DATE
+  mode: NULLABLE
+  description: Cohort Date - First Seen Date
+- name: days_data_available
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of days since first_seen_date
+- name: days_since_last_data
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of days since the last data pull
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: City
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the browser.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: app_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: The major version of the user visible app version string for the browser,
+    e.g. "142.1.3", has major version 142.
+- name: app_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: The minor version of the user visible app version string for the browser,
+    e.g. "142.1.3" has minor version 1.
+- name: app_version_patch_revision
+  type: STRING
+  mode: NULLABLE
+  description: Application Version Patch Revision number
+- name: app_version_is_major_release
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is app_version a major release or not
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
+- name: distribution_id_source
+  type: STRING
+  mode: NULLABLE
+  description: Distribution Id - Legacy or Glean
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: os_grouped
+  type: STRING
+  mode: NULLABLE
+  description: OS grouping
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The normalized version of the operating system running at the client. E.g. "100.9.11".
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
+  description: OS Version Build
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
+- name: activity_segment
+  type: STRING
+  mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description: Year of first seen date
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: The attribution campaign (e.g. 'mozilla-org').
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: The attribution content (e.g. 'firefoxview').
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The attribution medium (e.g. 'organic' for a search engine).
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The attribution source (e.g. 'google-play').
+- name: attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: The attribution term (e.g. 'browser with developer tools for android').
+- name: distribution_name
+  type: STRING
+  mode: NULLABLE
+  description: The distribution name (e.g. 'MozillaOnline').
+- name: first_seen_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: The attribution campaign at first seen (e.g. 'mozilla-org').
+- name: first_seen_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: The attribution content at first seen (e.g. 'firefoxview').
+- name: first_seen_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The attribution medium at first seen (e.g. 'organic' for a search engine).
+- name: first_seen_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The attribution source at first seen (e.g. 'google-play').
+- name: first_seen_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: The attribution term at first seen (e.g. 'browser with developer tools for android').
+- name: first_seen_distribution_name
+  type: STRING
+  mode: NULLABLE
+  description: The distribution name at first seen (e.g. 'MozillaOnline').
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI.
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Attempt to determine if the user is an enterprise user based on various
+    signals.
+- name: churn_risk_after_5_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is the user a high risk of already churning, based on their inactivity levels in the five days after they are first seen?
+- name: churn_risk_after_7_days
+  type: STRING
+  mode: NULLABLE
+  description: Is the user a high risk of already churning, based on their inactivity levels in the seven days after they are first seen?
+- name: churned_after_1_day
+  type: STRING
+  mode: NULLABLE
+  description: Shows if the client was active on their first seen date, but then immediately churned with no DAU activity for the following 28 days.
+- name: churned_after_2_days
+  type: STRING
+  mode: NULLABLE
+  description: Shows if client was active in the first 48 hours after first seen, then then immediately churned no DAU activity for the following 28 days.
+- name: immediately_churned
+  type: STRING
+  mode: NULLABLE
+  description: User was not active in any of the the 28 days from the day they are first seen (i.e., qualified as "churned" immediately).
+- name: day_0
+  type: STRING
+  mode: NULLABLE
+  description: Whether the client qualified as DAU on their first seen date (Day 0).
+- name: day_1
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 1 since first seen
+- name: day_2
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 2 since first seen
+- name: day_3
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 3 since first seen
+- name: day_4
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 4 since first seen
+- name: day_5
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 5 since first seen
+- name: day_6
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 6 since first seen
+- name: day_7
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 7 since first seen
+- name: day_8
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 8 since first seen
+- name: day_9
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 9 since first seen
+- name: day_10
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 10 since first seen
+- name: day_11
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 11 since first seen
+- name: day_12
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 12 since first seen
+- name: day_13
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 13 since first seen
+- name: day_14
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 14 since first seen
+- name: day_15
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 15 since first seen
+- name: day_16
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 16 since first seen
+- name: day_17
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 17 since first seen
+- name: day_18
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 18 since first seen
+- name: day_19
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 19 since first seen
+- name: day_20
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 20 since first seen
+- name: day_21
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 21 since first seen
+- name: day_22
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 22 since first seen
+- name: day_23
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 23 since first seen
+- name: day_24
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 24 since first seen
+- name: day_25
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 25 since first seen
+- name: day_26
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 26 since first seen
+- name: day_27
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 27 since first seen
+- name: day_28
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 28 since first seen
+- name: day_29
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 29 since first seen
+- name: day_30
+  type: STRING
+  mode: NULLABLE
+  description: Active on day 30 since first seen

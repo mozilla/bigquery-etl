@@ -1,0 +1,14 @@
+friendly_name: litellm_llm_proxy
+dataset_base_acl: syndicate
+description: litellm_spend_logs from litellm_proxy syndicate views
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-llm-proxy-prod-b0b8"
+    syndicated_dataset: "litellm_llm_proxy"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

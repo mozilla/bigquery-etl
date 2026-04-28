@@ -3,6 +3,7 @@
 import re
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from functools import cache
 from glob import glob
 from itertools import groupby
 from pathlib import Path
@@ -18,6 +19,29 @@ from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import alter_sql_for_sqlglot, render
 
 stable_views = None
+
+
+@cache
+def skip_dependency():
+    """Return a list of configured SQL files for which dependency parsing should be skipped."""
+    root = ConfigLoader.project_dir
+    result = []
+    for pattern in ConfigLoader.get("dependency", "skip", fallback=[]):
+        if any(c in pattern for c in ("*", "?", "[")):
+            # Wildcard pattern: expand via glob relative to repo root
+            result.extend(
+                str(Path(p).relative_to(root))
+                for p in glob(str(root / pattern), recursive=True)
+            )
+        else:
+            # Exact path: validate it is specific enough to avoid broad matching
+            if "/" not in pattern:
+                raise click.ClickException(
+                    f"dependency skip pattern '{pattern}' is too broad — "
+                    "must include a directory component (e.g. 'sql/project/dataset/table/query.sql')"
+                )
+            result.append(pattern)
+    return result
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
@@ -71,6 +95,9 @@ def extract_table_references(sql: str) -> List[str]:
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
+    if any(str(path).endswith(s) for s in skip_dependency()):
+        return
+
     # handle both global and local stable_views for thread/process safety
     global stable_views
     local_stable_views = stable_views
@@ -148,6 +175,8 @@ def _process_single_file(
     path: Path, without_views: bool = False
 ) -> Tuple[Path, List[str]]:
     """Process a single SQL file to extract table references."""
+    if any(str(path).endswith(s) for s in skip_dependency()):
+        return path, []
     try:
         if without_views:
             return path, list(extract_table_references_without_views(path))

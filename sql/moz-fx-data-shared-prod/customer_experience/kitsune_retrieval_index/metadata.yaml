@@ -1,0 +1,29 @@
+friendly_name: Kitsune Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
+   to support grounded question answering over Mozilla Support (SUMO) data.
+
+  Dimensions:
+  - creation_date
+  - locale
+  - product
+  - topic
+  - is_solved
+
+  Metrics
+  - votes
+
+  Generated:
+  - summary_generated
+  - category_generated
+  - language_generated
+  - entities_generated
+  - embedding based on [title, content]
+  - sentiment_score based on [title, content]
+  - recency, assuming 7 days as the time when content begins to lose relevance.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_insights

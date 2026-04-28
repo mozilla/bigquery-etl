@@ -71,3 +71,22 @@ with DAG(
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql",
     )
+
+    bigeye__ads_derived__ads_client_operations_and_errors_hourly__v1 = bigquery_bigeye_check(
+        task_id="bigeye__ads_derived__ads_client_operations_and_errors_hourly__v1",
+        table_id="moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1",
+        warehouse_id="1939",
+        owner="ahanot@mozilla.com",
+        email=[
+            "ahanot@mozilla.com",
+            "cbeck@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
+    bigeye__ads_derived__ads_client_operations_and_errors_hourly__v1.set_upstream(
+        ads_derived__ads_client_operations_and_errors_hourly__v1
+    )

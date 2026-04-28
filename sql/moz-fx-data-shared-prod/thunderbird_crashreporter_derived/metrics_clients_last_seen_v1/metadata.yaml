@@ -17,7 +17,7 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   depends_on_past: true
-  task_group: mach
+  task_group: thunderbird_crashreporter
 bigquery:
   time_partitioning:
     type: day
@@ -32,7 +32,7 @@ schema:
   derived_from:
   - table:
     - moz-fx-data-shared-prod
-    - mach_derived
+    - thunderbird_crashreporter_derived
     - metrics_clients_daily_v1
 workgroup_access:
 - role: roles/bigquery.dataViewer
@@ -40,7 +40,7 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - moz-fx-data-shared-prod.mach.metrics_clients_daily
-  - moz-fx-data-shared-prod.mach_derived.metrics_clients_last_seen_v1
+  - moz-fx-data-shared-prod.thunderbird_crashreporter.metrics_clients_daily
+  - moz-fx-data-shared-prod.thunderbird_crashreporter_derived.metrics_clients_last_seen_v1
 monitoring:
-  enabled: false
+  enabled: true

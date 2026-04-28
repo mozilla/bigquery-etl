@@ -32,7 +32,7 @@ schema:
   derived_from:
   - table:
     - moz-fx-data-shared-prod
-    - fenix
+    - fenix_derived
     - metrics_clients_daily_v1
 workgroup_access:
 - role: roles/bigquery.dataViewer

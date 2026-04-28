@@ -32,7 +32,7 @@ schema:
   derived_from:
   - table:
     - moz-fx-data-shared-prod
-    - firefox_desktop_background_update
+    - firefox_desktop_background_update_derived
     - metrics_clients_daily_v1
 workgroup_access:
 - role: roles/bigquery.dataViewer

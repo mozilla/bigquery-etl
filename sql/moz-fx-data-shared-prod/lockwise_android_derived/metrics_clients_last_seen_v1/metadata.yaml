@@ -32,7 +32,7 @@ schema:
   derived_from:
   - table:
     - moz-fx-data-shared-prod
-    - lockwise_android
+    - lockwise_android_derived
     - metrics_clients_daily_v1
 workgroup_access:
 - role: roles/bigquery.dataViewer

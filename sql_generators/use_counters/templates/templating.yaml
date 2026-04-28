@@ -1936,6 +1936,9 @@ use_counters:
 - name: use_counter_doc_sanitizer_sanitize
 - name: use_counter_doc_scheduler_posttask
 - name: use_counter_doc_sectioning_h1_with_no_font_size_or_margins
+- name: use_counter_doc_serial_getports
+- name: use_counter_doc_serial_requestport
+- name: use_counter_doc_serialport_open
 - name: use_counter_doc_shadowroot_pictureinpictureelement
 - name: use_counter_doc_svgsvgelement_currentscale_getter
 - name: use_counter_doc_svgsvgelement_currentscale_setter
@@ -2446,6 +2449,9 @@ use_counters:
 - name: use_counter_page_sanitizer_sanitize
 - name: use_counter_page_scheduler_posttask
 - name: use_counter_page_sectioning_h1_with_no_font_size_or_margins
+- name: use_counter_page_serial_getports
+- name: use_counter_page_serial_requestport
+- name: use_counter_page_serialport_open
 - name: use_counter_page_shadowroot_pictureinpictureelement
 - name: use_counter_page_svgsvgelement_currentscale_getter
 - name: use_counter_page_svgsvgelement_currentscale_setter
@@ -2689,6 +2695,8 @@ use_counters:
 - name: use_counter_worker_dedicated_pushsubscription_unsubscribe
 - name: use_counter_worker_dedicated_reportingobserver_constructor
 - name: use_counter_worker_dedicated_scheduler_posttask
+- name: use_counter_worker_dedicated_serial_getports
+- name: use_counter_worker_dedicated_serialport_open
 - name: use_counter_worker_dedicated_videodecoder_constructor
 - name: use_counter_worker_dedicated_videoencoder_constructor
 - name: use_counter_worker_dedicated_webgpu_request_adapter
@@ -2754,6 +2762,8 @@ use_counters:
 - name: use_counter_worker_service_pushsubscription_unsubscribe
 - name: use_counter_worker_service_reportingobserver_constructor
 - name: use_counter_worker_service_scheduler_posttask
+- name: use_counter_worker_service_serial_getports
+- name: use_counter_worker_service_serialport_open
 - name: use_counter_worker_service_videodecoder_constructor
 - name: use_counter_worker_service_videoencoder_constructor
 - name: use_counter_worker_service_webgpu_request_adapter
@@ -2819,6 +2829,8 @@ use_counters:
 - name: use_counter_worker_shared_pushsubscription_unsubscribe
 - name: use_counter_worker_shared_reportingobserver_constructor
 - name: use_counter_worker_shared_scheduler_posttask
+- name: use_counter_worker_shared_serial_getports
+- name: use_counter_worker_shared_serialport_open
 - name: use_counter_worker_shared_videodecoder_constructor
 - name: use_counter_worker_shared_videoencoder_constructor
 - name: use_counter_worker_shared_webgpu_request_adapter

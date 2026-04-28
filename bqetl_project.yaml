@@ -483,7 +483,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     clients_last_seen_joined:
       skip_apps:
@@ -498,7 +497,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     bigconfig:
       skip_apps:

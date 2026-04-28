@@ -58,7 +58,7 @@ rollouts_cte AS (
             (
               SELECT {{ metric.label_aggregator }}(value)
               FROM UNNEST({{metric.field}})
-              {% if metric.filter_labels %}
+              {% if metric.label_in %}
                 WHERE key IN (
                   {% for label in metric.label_in %}
                     "{{ label }}"{{ "," if not loop.last }}
@@ -67,7 +67,7 @@ rollouts_cte AS (
               {% endif %}
             )
           {% elif metric.data_type == "event" %}
-            {% if source_table.is_events_stream %}
+            {% if source_table.type == "events_stream" %}
               event_category = "{{ metric.category }}"
               AND event_name = "{{ metric.event_name }}"
             {% else %}
@@ -89,7 +89,7 @@ rollouts_cte AS (
       , UNNEST(
         ARRAY_CONCAT(
           COALESCE(
-            {% if source_table.is_events_stream %}
+            {% if source_table.type == "events_stream" %}
               UNNEST(JSON_KEYS(experiments, 1))
             {% else %}
               ARRAY(
@@ -198,7 +198,7 @@ FROM
 UNPIVOT (
   value FOR metric IN
   (
-    {% for numerator, denominator in ratios %}
+    {% for numerator, denominator in feature.ratios %}
       ratio_{{numerator}}_to_{{denominator}},
     {% endfor %}
     {% for metric, aggregator in feature.all_metrics() %}

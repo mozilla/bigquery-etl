@@ -320,7 +320,7 @@ def _udf_dependencies(artifact_files):
     return udf_dependencies
 
 
-def collect_artifact_dependencies(artifact_files, sql_dir):
+def collect_artifact_dependencies(artifact_files, sql_dir, stub_root=None):
     """Determine view and table dependencies.
 
     Extracts dependencies from artifacts to ensure all referenced artifacts
@@ -332,6 +332,11 @@ def collect_artifact_dependencies(artifact_files, sql_dir):
     For query files (tables): Only extracts references if there's no schema.yaml.
     With schema.yaml: We deploy the schema structure (not run the query), so
     we don't need the query's dependencies.
+
+    Stubs (placeholder query.py + fetched schema.yaml) for unmanaged dependency
+    tables are written under `stub_root` if provided, otherwise under `sql_dir`.
+    The new `--target … --isolated` path passes a temp dir to avoid mutating
+    the source tree; legacy `stage deploy` leaves it None to preserve behavior.
     """
     artifact_dependencies = set()
     dependency_files = [
@@ -398,15 +403,11 @@ def collect_artifact_dependencies(artifact_files, sql_dir):
                         file_exists_for_dependency = True
                         break
 
-                path = Path(sql_dir) / project / dataset / name
+                stub_base = Path(stub_root) if stub_root else Path(sql_dir)
+                path = stub_base / project / dataset / name
                 if "*" in name:
                     # deploy stub for wildcard tables
-                    path = (
-                        Path(sql_dir)
-                        / project
-                        / dataset
-                        / name.replace("*", "wildcard")
-                    )
+                    path = stub_base / project / dataset / name.replace("*", "wildcard")
                 if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
                     # don't create schema for wildcard and metadata tables

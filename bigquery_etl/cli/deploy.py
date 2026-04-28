@@ -2,7 +2,9 @@
 
 import logging
 import multiprocessing
+import re
 import sys
+import tempfile
 from collections.abc import MutableMapping
 from functools import partial
 from pathlib import Path
@@ -16,6 +18,7 @@ from bigquery_etl.cli.routine import ROUTINE_FILE_RE
 from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
 from bigquery_etl.cli.routine import publish as publish_routines_cmd
 from bigquery_etl.cli.stage import (
+    MATERIALIZED_VIEW,
     QUERY_FILE,
     QUERY_SCRIPT,
     VIEW_FILE,
@@ -255,6 +258,16 @@ def deploy(
 
     target = ctx.obj.get("target") if ctx.obj else None
 
+    # `--isolated` deploys a self-contained mirror into the target project, which
+    # cannot reach prod tables/UDFs. Refreshing schema by dry-running the query
+    # would fail on missing dependencies, so use the existing schema.yaml as
+    # authoritative — same defaults the legacy `stage deploy` path uses.
+    if isolated:
+        table_force = True
+        table_skip_external_data = True
+        table_skip_existing_schemas = True
+        view_force = True
+
     if target and view_target_project:
         raise click.UsageError(
             "--view-target-project and --target are mutually exclusive."
@@ -324,19 +337,40 @@ def deploy(
     if target and target.project_id not in project_ids:
         new_artifacts = {}
 
+        # Stubs for unmanaged dependency tables (e.g. live/stable tables not in
+        # this repo) need to live somewhere readable by prepare_target_files.
+        # Route them through a temp dir so we don't pollute sql/. The dir is
+        # cleaned up after prepare_target_files copies the stubs into the
+        # target tree below.
+        stub_dir_ctx = (
+            tempfile.TemporaryDirectory(prefix="bqetl-isolated-stubs-")
+            if isolated
+            else None
+        )
+        stub_root = stub_dir_ctx.name if stub_dir_ctx else None
+
         if isolated:
             existing_paths = {fp for fp, _ in artifacts.values()}
-            for dep_path in collect_artifact_dependencies(existing_paths, sql_dir):
+            for dep_path in collect_artifact_dependencies(
+                existing_paths, sql_dir, stub_root=stub_root
+            ):
                 # Stage's helper may return routine files when views reference UDFs.
                 # Routines are deployed via --routines, so skip them here.
-                if dep_path.name not in (QUERY_FILE, QUERY_SCRIPT, VIEW_FILE):
+                if dep_path.name not in (
+                    QUERY_FILE,
+                    QUERY_SCRIPT,
+                    VIEW_FILE,
+                    MATERIALIZED_VIEW,
+                ):
                     continue
                 project, dataset, name = extract_from_query_path(dep_path)
                 artifact_type = "view" if dep_path.name == VIEW_FILE else "table"
                 artifacts[f"{project}.{dataset}.{name}"] = (dep_path, artifact_type)
 
         for _artifact_id, (file_path, artifact_type) in artifacts.items():
-            source_project, _, _ = extract_from_query_path(file_path)
+            source_project, source_dataset, source_table = extract_from_query_path(
+                file_path
+            )
 
             target_files = prepare_target_files(
                 [file_path],
@@ -348,12 +382,62 @@ def deploy(
                 auto_deploy=False,
             )
             target_file = target_files[0]
+
+            # Materialized views can't be recreated in target without source data.
+            # Strip `CREATE MATERIALIZED VIEW ... AS` and rename to query.sql so it
+            # deploys as a regular table from schema.yaml — same as legacy stage.
+            if target_file.name == MATERIALIZED_VIEW:
+                sql_content = target_file.read_text()
+                sql_content = re.sub(
+                    r"CREATE\s+MATERIALIZED\s+VIEW.*?AS",
+                    "",
+                    sql_content,
+                    flags=re.DOTALL | re.IGNORECASE,
+                )
+                new_query_file = target_file.parent / QUERY_FILE
+                new_query_file.write_text(sql_content)
+                target_file.unlink()
+                target_file = new_query_file
+
+            # For isolated table deploys, ensure schema.yaml exists in the target
+            # dir. Without it, the deploy refreshes schema by dry-running the
+            # query, but rewritten UDF refs in --isolated mode point at the
+            # target project where those UDFs aren't deployed. Fetch the schema
+            # directly from the source table via get_table (avoids the dry-run
+            # SELECT * that Schema.for_table uses, which fails on tables with
+            # required partition filters).
+            if (
+                isolated
+                and artifact_type == "table"
+                and target_file.name in (QUERY_FILE, QUERY_SCRIPT)
+            ):
+                target_schema = target_file.parent / SCHEMA_FILE
+                if not target_schema.exists():
+                    try:
+                        source_client = bigquery.Client(project=source_project)
+                        bq_table = source_client.get_table(
+                            f"{source_project}.{source_dataset}.{source_table}"
+                        )
+                        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(
+                            target_schema
+                        )
+                    except Exception as e:
+                        log.warning(
+                            f"Could not fetch schema from "
+                            f"{source_project}.{source_dataset}.{source_table}: {e}"
+                        )
+
             project, dataset, name = extract_from_query_path(target_file)
             new_artifacts[f"{project}.{dataset}.{name}"] = (
                 target_file,
                 artifact_type,
             )
         artifacts = new_artifacts
+
+        # Stubs have been copied into target dirs by prepare_target_files;
+        # safe to clean up the temp dir.
+        if stub_dir_ctx is not None:
+            stub_dir_ctx.cleanup()
 
         client = bigquery.Client(project=target.project_id)
         seen_datasets: set = set()
@@ -396,6 +480,7 @@ def deploy(
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
+        "isolated": isolated,
         # Table options
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
@@ -421,13 +506,18 @@ def _discover_artifacts(
     """Find artifacts."""
     artifacts: Dict[str, Tuple[Path, str]] = {}
     patterns = {
-        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"],
+        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql", MATERIALIZED_VIEW],
         "view": [VIEW_FILE],
     }
 
     # Prefer query files when a directory contains multiple definition files (e.g. stage deploys
     # for query.sql manually refreshed materialized views will have a query.sql and script.sql)
-    table_priority = {QUERY_FILE: 0, QUERY_SCRIPT: 1, "script.sql": 2}
+    table_priority = {
+        QUERY_FILE: 0,
+        QUERY_SCRIPT: 1,
+        "script.sql": 2,
+        MATERIALIZED_VIEW: 3,
+    }
 
     file_patterns = [
         pattern
@@ -724,10 +814,17 @@ def _update_table_schema(file_path: Path, options: dict):
 
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
-    # Check if schema update is needed before deployment
-    if not options["dry_run"] and _needs_schema_update(
-        file_path,
-        skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+    # Check if schema update is needed before deployment.
+    # Skip entirely for --isolated: schema update dry-runs the query, but
+    # rewritten refs in the isolated mirror point at deps that aren't deployed.
+    # The schema.yaml in the target dir is authoritative.
+    if (
+        not options["dry_run"]
+        and not options.get("isolated", False)
+        and _needs_schema_update(
+            file_path,
+            skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+        )
     ):
         _update_table_schema(file_path, options)
 

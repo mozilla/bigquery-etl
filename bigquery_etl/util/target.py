@@ -28,6 +28,7 @@ from bigquery_etl.routine.parse_routine import (
 
 from ..config import ConfigLoader
 from ..deploy import deploy_table
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from . import extract_from_query_path
 from .common import get_bqetl_project_root
 from .common import render as render_template
@@ -470,6 +471,11 @@ def rewrite_query_references(
         )
 
         def replace_all(m: re.Match) -> str:
+            # Skip refs already pointing at target_project (e.g. the CREATE OR REPLACE
+            # VIEW self-reference rewritten earlier in prepare_target_directory).
+            # Re-rendering them would re-apply artifact_prefix, double-prefixing the name.
+            if m.group(1) == target_project:
+                return m.group(0)
             p, d, t = _target_ref_for_source(
                 target, target_project, m.group(1), m.group(2), m.group(3)
             )
@@ -605,6 +611,19 @@ def prepare_target_directory(
         for item in source_dir.iterdir():
             if item.is_file():
                 shutil.copy2(item, target_dir / item.name)
+
+        # external_data sources (e.g. Google Sheets) can't be recreated in the
+        # target project. Clear it so the table deploys from schema.yaml only,
+        # matching legacy `stage deploy` behavior.
+        target_metadata_file = target_dir / METADATA_FILE
+        if target_metadata_file.exists():
+            try:
+                target_metadata = Metadata.from_file(target_metadata_file)
+                if target_metadata.external_data:
+                    target_metadata.external_data = None
+                    target_metadata.write(target_metadata_file)
+            except Exception:
+                pass
 
         # Preserve non-source keys (e.g. shared_with from `target share`) so
         # _reapply_shared_access can re-apply them after re-deploy.

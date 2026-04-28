@@ -37,6 +37,7 @@ SELECT
   engaged_result_type,
   product_engaged_result_type,
   annoyance_signal_type,
-  profile_group_id
+  profile_group_id,
+  window_mode
 FROM
   `{{ project_id }}.{{ app_name }}_derived.urlbar_events_v2`

@@ -87,14 +87,15 @@ WITH events_unnested AS (
     client_info.app_display_version as app_display_version,
     metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
     metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
-    mozfun.map.get_key(extra, "sap") AS sap
+    mozfun.map.get_key(extra, "sap") AS sap,
+    mozfun.map.get_key(extra, "window_mode") AS window_mode
   FROM
     `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event.category = 'urlbar'
-    AND event.name IN ('engagement', 'abandonment')
+    AND event.name IN ('abandonment', 'bounce', 'disable', 'engagement')
 ),
 add_conditionals AS (
   SELECT
@@ -144,7 +145,8 @@ add_conditionals AS (
     app_display_version,
     pref_ohttp_available,
     pref_ohttp_enabled,
-    sap
+    sap,
+    window_mode
   FROM
     events_unnested
 ),

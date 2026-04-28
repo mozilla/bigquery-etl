@@ -14,6 +14,8 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-bq-data-science",
     "moz-fx-glam-prod",
     "moz-fx-glam-nonprod",
+    "moz-fx-data-ingesti-prod-d59c",  # TODO: remove this after backfill is complete
+    "moz-fx-ingestion-sink-prod",
     "moz-fx-sumo-prod",
     "moz-fx-sumo-nonprod",
     "moz-fx-mozsocial-dw-prod",

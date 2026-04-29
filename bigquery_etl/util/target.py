@@ -23,6 +23,7 @@ from jinja2 import Template
 from bigquery_etl.routine.parse_routine import (
     PERSISTENT_UDF_RE,
     ROUTINE_FILES,
+    read_routine_dir,
     routine_usage_pattern,
 )
 
@@ -451,113 +452,182 @@ def _target_ref_for_source(
     return target_project, target_ds, f"{rendered_artifact_prefix}{src_table}"
 
 
+_GCP_3PART_REF = re.compile(
+    r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
+)
+
+
+def _read_source_project_from_manifest(query_file: Path) -> Optional[str]:
+    """Recover the artifact's original source project from its target manifest."""
+    manifest_path = query_file.parent / MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return None
+    try:
+        return (yaml.safe_load(manifest_path.read_text()) or {}).get("source_project")
+    except Exception:
+        return None
+
+
+def rewrite_for_isolated(
+    query_file: Path,
+    sql_dir: str,
+    target_project: str,
+    target: "Target",
+) -> None:
+    """Rewrite ALL references in `query_file` to point at the target.
+
+    Used by --isolated deploys: every project.dataset.table in the SQL is
+    re-rendered through the target's templates, plus 2-part UDF calls
+    (e.g. `json.extract_int_map`) that the 3-part regex doesn't see.
+    """
+    sql = render_template(
+        query_file.name, template_folder=str(query_file.parent), format=False
+    )
+
+    # Only rewrite refs whose first segment is a real source project (a
+    # top-level subdir of sql_dir). Without this filter the 3-part regex
+    # matches struct field paths like `metadata.header.date` and corrupts
+    # them into bogus table refs.
+    try:
+        known_projects = {p.name for p in Path(sql_dir).iterdir() if p.is_dir()}
+    except Exception:
+        known_projects = set()
+
+    def replace_3part(m: re.Match) -> str:
+        # Skip refs already pointing at target_project (e.g. CREATE OR REPLACE
+        # VIEW self-reference rewritten earlier in prepare_target_directory).
+        if m.group(1) == target_project:
+            return m.group(0)
+        if known_projects and m.group(1) not in known_projects:
+            # likely a struct field path, not a project ref
+            return m.group(0)
+        p, d, t = _target_ref_for_source(
+            target, target_project, m.group(1), m.group(2), m.group(3)
+        )
+        return f"`{p}`.`{d}`.`{t}`"
+
+    sql = _GCP_3PART_REF.sub(replace_3part, sql)
+
+    # 2-part UDF refs (e.g. `json.extract_int_map` inside a `mozfun.json.extract`
+    # UDF body) aren't matched by the 3-part pattern. Walk known routines that
+    # share the file's source project and rewrite their 2-part usages too.
+    file_source_project = _read_source_project_from_manifest(query_file)
+    if file_source_project:
+        raw_routines = read_routine_dir()
+        for routine_name, routine in raw_routines.items():
+            if routine.project != file_source_project:
+                continue
+            src_dataset, src_name = routine_name.split(".")
+            two_part = re.compile(
+                rf"(?<![\w\.`])`?{re.escape(src_dataset)}`?"
+                rf"\.`?{re.escape(src_name)}`?(?=\()"
+            )
+            p, d, t = _target_ref_for_source(
+                target, target_project, routine.project, src_dataset, src_name
+            )
+            sql = two_part.sub(f"`{p}`.`{d}`.`{t}`", sql)
+
+    query_file.write_text(sql)
+
+
+def rewrite_for_defer(
+    query_file: Path,
+    sql_dir: str,
+    target_project: str,
+    target: "Target",
+) -> None:
+    """Smart-rewrite refs that are already deployed in target; leave others alone.
+
+    Used by --defer-to-target: prod refs that haven't been deployed to target
+    pass through unchanged so the deploy still picks up production data.
+    """
+    sql = render_template(
+        query_file.name, template_folder=str(query_file.parent), format=False
+    )
+
+    def expected_target_dataset(info: DeployedTableInfo) -> Optional[str]:
+        """Render the target dataset for a specific deployed artifact."""
+        assert info.source_project is not None
+        assert info.source_dataset is not None
+        if target.dataset:
+            rendered = render_artifact_template(
+                target.dataset, info.source_project, info.source_dataset
+            )
+            return sanitize_bq_id(rendered) if rendered else None
+        if target.dataset_prefix:
+            rendered = render_artifact_template(
+                target.dataset_prefix, info.source_project, info.source_dataset
+            )
+            prefix = sanitize_bq_id(rendered) if rendered else ""
+            return sanitize_bq_id(f"{prefix}{info.source_dataset}")
+        return info.source_dataset
+
+    deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
+    for info in deployed_tables:
+        if (
+            info.source_project is None
+            or info.source_dataset is None
+            or info.source_table is None
+        ):
+            continue
+        # Skip artifacts whose target dataset doesn't match what the current
+        # target config would produce — guards against rewriting to stale
+        # deployments from a different branch/config.
+        expected = expected_target_dataset(info)
+        if expected is not None and info.target_dataset != expected:
+            continue
+
+        pattern = (
+            rf"`?{re.escape(info.source_project)}`?"
+            rf"\.`?{re.escape(info.source_dataset)}`?"
+            rf"\.`?{re.escape(info.source_table)}\b`?"
+        )
+        replacement = (
+            f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
+        )
+        sql = re.sub(pattern, replacement, sql)
+
+    # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
+    # routine_usage_pattern handles both, gated on a `(` call site.
+    deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
+    for info in deployed_routines:
+        if (
+            info.source_project is None
+            or info.source_dataset is None
+            or info.source_table is None
+        ):
+            continue
+        expected = expected_target_dataset(info)
+        if expected is not None and info.target_dataset != expected:
+            continue
+
+        udf_pattern = routine_usage_pattern(
+            f"{info.source_dataset}.{info.source_table}", info.source_project
+        )
+        replacement = (
+            f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
+        )
+        sql = udf_pattern.sub(replacement, sql)
+
+    query_file.write_text(sql)
+
+
 def rewrite_query_references(
     query_file: Path,
     sql_dir: str,
     target_project: str,
     target: "Target",
     rewrite_all: bool = False,
-):
-    """Rewrite references in a query file to point to target environment."""
-    sql = render_template(
-        query_file.name, template_folder=str(query_file.parent), format=False
-    )
+) -> None:
+    """Dispatch to the appropriate rewrite based on deploy mode.
 
+    Kept as a thin shim for callers that don't want to know about the
+    --isolated vs --defer-to-target distinction.
+    """
     if rewrite_all:
-        # rewrite ALL references to target, rendering target properties per matched
-        # reference using its own source project/dataset
-        gcp_project_pattern = (
-            r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
-        )
-
-        def replace_all(m: re.Match) -> str:
-            # Skip refs already pointing at target_project (e.g. the CREATE OR REPLACE
-            # VIEW self-reference rewritten earlier in prepare_target_directory).
-            # Re-rendering them would re-apply artifact_prefix, double-prefixing the name.
-            if m.group(1) == target_project:
-                return m.group(0)
-            p, d, t = _target_ref_for_source(
-                target, target_project, m.group(1), m.group(2), m.group(3)
-            )
-            return f"`{p}`.`{d}`.`{t}`"
-
-        sql = re.sub(gcp_project_pattern, replace_all, sql)
+        rewrite_for_isolated(query_file, sql_dir, target_project, target)
     else:
-        # smart rewriting: only rewrite references to tables that exist in target
-        deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
-
-        def expected_target_dataset(info: DeployedTableInfo) -> Optional[str]:
-            """Render the target dataset for a specific deployed artifact."""
-            # source_project/source_dataset are guaranteed non-None by the caller
-            assert info.source_project is not None
-            assert info.source_dataset is not None
-            if target.dataset:
-                rendered = render_artifact_template(
-                    target.dataset, info.source_project, info.source_dataset
-                )
-                return sanitize_bq_id(rendered) if rendered else None
-            if target.dataset_prefix:
-                rendered = render_artifact_template(
-                    target.dataset_prefix, info.source_project, info.source_dataset
-                )
-                prefix = sanitize_bq_id(rendered) if rendered else ""
-                return sanitize_bq_id(f"{prefix}{info.source_dataset}")
-            # no dataset or dataset_prefix — target dataset equals source dataset
-            return info.source_dataset
-
-        for info in deployed_tables:
-            if (
-                info.source_project is None
-                or info.source_dataset is None
-                or info.source_table is None
-            ):
-                continue
-
-            # Skip artifacts whose target dataset doesn't match what the current
-            # target config would produce for that artifact's source — guards against
-            # rewriting to stale deployments from a different branch/config.
-            expected = expected_target_dataset(info)
-            if expected is not None and info.target_dataset != expected:
-                continue
-
-            pattern = (
-                rf"`?{re.escape(info.source_project)}`?"
-                rf"\.`?{re.escape(info.source_dataset)}`?"
-                rf"\.`?{re.escape(info.source_table)}\b`?"
-            )
-            replacement = (
-                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
-            )
-            sql = re.sub(pattern, replacement, sql)
-
-        # Also rewrite references to routines deployed in the target.
-        # Routine references can be 2-part (dataset.name) or 3-part
-        # (project.dataset.name), so we use routine_usage_pattern which
-        # handles both forms (matching only before a "(" call).
-        deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
-
-        for info in deployed_routines:
-            if (
-                info.source_project is None
-                or info.source_dataset is None
-                or info.source_table is None
-            ):
-                continue
-
-            expected = expected_target_dataset(info)
-            if expected is not None and info.target_dataset != expected:
-                continue
-
-            udf_pattern = routine_usage_pattern(
-                f"{info.source_dataset}.{info.source_table}",
-                info.source_project,
-            )
-            replacement = (
-                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
-            )
-            sql = udf_pattern.sub(replacement, sql)
-
-    query_file.write_text(sql)
+        rewrite_for_defer(query_file, sql_dir, target_project, target)
 
 
 def prepare_target_directory(

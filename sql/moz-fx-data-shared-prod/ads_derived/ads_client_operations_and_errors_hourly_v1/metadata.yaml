@@ -55,3 +55,4 @@ monitoring:
   enabled: true
   collection: Ads Client
   volume: null
+  workspace: 508

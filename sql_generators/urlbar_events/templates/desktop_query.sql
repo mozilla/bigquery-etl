@@ -153,8 +153,8 @@ add_conditionals AS (
     CASE
       WHEN event_name IN (
         'abandonment',
-        'bounced',
-        'disabled'
+        'bounce',
+        'disable'
         )
         THEN event_name
       ELSE NULL

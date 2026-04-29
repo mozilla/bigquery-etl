@@ -23,29 +23,36 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING)
     WHEN event_name = 'engagement'
       AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
       THEN "annoyance"
+    WHEN event_name = 'bounce'
+      THEN 'bounced'
+    WHEN event_name = 'disable'
+      THEN 'disabled'
     ELSE NULL
   END
 );
 
-CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STRING) AS (
+CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STRING, event_name STRING) AS (
   --events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
-  COALESCE(
-    NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
-    AND NOT (
-      selected_result = 'tip_dismissal_acknowledgement'
-      AND engagement_type IN ('click', 'enter')
-    )
-    AND NOT (
-      engagement_type IN (
-        'dismiss',
-        'inaccurate_location',
-        'not_interested',
-        'not_relevant',
-        'show_less_frequently'
+  CASE
+    WHEN event_name IN ('bounce', 'disable', 'abandonment') THEN TRUE
+    ELSE COALESCE(
+      NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
+      AND NOT (
+        selected_result = 'tip_dismissal_acknowledgement'
+        AND engagement_type IN ('click', 'enter')
       )
-    ),
-    TRUE
-  )
+      AND NOT (
+        engagement_type IN (
+          'dismiss',
+          'inaccurate_location',
+          'not_interested',
+          'not_relevant',
+          'show_less_frequently'
+        )
+      ),
+      TRUE
+    )
+  END
 );
 
 WITH events_unnested AS (
@@ -123,7 +130,7 @@ add_conditionals AS (
     results,
     `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
     get_event_action(event_name, engagement_type) AS event_action,
-    get_is_terminal(selected_result, engagement_type) AS is_terminal,
+    get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
       WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
         THEN selected_result
@@ -146,7 +153,12 @@ add_conditionals AS (
     pref_ohttp_available,
     pref_ohttp_enabled,
     sap,
-    window_mode
+    window_mode,
+    CASE
+      WHEN get_event_action(event_name, engagement_type) IN ('bounced', 'disabled')
+        THEN engagement_type
+      ELSE NULL
+    END AS exit_type
   FROM
     events_unnested
 ),

@@ -84,13 +84,9 @@ def _resolve_workspace(metadata: Metadata, default_workspace: int) -> int:
     return workspace_id
 
 
-def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int, _cache: dict = {}):
-    """Return a cached datawatch client for the given Bigeye workspace."""
-    if workspace_id not in _cache:
-        _cache[workspace_id] = datawatch_client_factory(
-            api_auth, workspace_id=workspace_id
-        )
-    return _cache[workspace_id]
+def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int):
+    """Build a datawatch client for the given Bigeye workspace."""
+    return datawatch_client_factory(api_auth, workspace_id=workspace_id)
 
 
 @click.group(help="""
@@ -138,7 +134,7 @@ def deploy(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
-    workspace: str,
+    workspace: int,
     base_url: str,
     dry_run: bool,
 ) -> None:
@@ -313,37 +309,23 @@ def deploy_custom_rules(
     warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
     url = "/api/v1/custom-rules"
 
-    # Per-workspace caches; populated lazily on first encounter of a metadata
-    # file declaring that workspace.
-    workspace_state: dict = {}
-
-    def _state_for(workspace_id: int):
-        if workspace_id not in workspace_state:
-            client = _client_for_workspace(api_auth, workspace_id)
-            existing = client.get_rules_for_source(warehouse_id=warehouse_id)
-            workspace_state[workspace_id] = {
-                "client": client,
-                "collections": client.get_collections(),
-                "existing_rules_sql": [
-                    rule.custom_rule.sql for rule in existing.custom_rules
-                ],
-                "existing_schedules": {
-                    schedule.name: schedule.id
-                    for schedule in client.get_named_schedule().named_schedules
-                },
-            }
-        return workspace_state[workspace_id]
-
     for custom_rule_file in list(set(custom_rules_files)):
         project, dataset, table = extract_from_query_path(custom_rule_file)
         try:
             metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
             if metadata.monitoring and metadata.monitoring.enabled:
-                state = _state_for(_resolve_workspace(metadata, workspace))
-                client = state["client"]
-                collections = state["collections"]
-                existing_rules_sql = state["existing_rules_sql"]
-                existing_schedules = state["existing_schedules"]
+                client = _client_for_workspace(
+                    api_auth, _resolve_workspace(metadata, workspace)
+                )
+                collections = client.get_collections()
+                existing_rules = client.get_rules_for_source(warehouse_id=warehouse_id)
+                existing_rules_sql = [
+                    rule.custom_rule.sql for rule in existing_rules.custom_rules
+                ]
+                existing_schedules = {
+                    schedule.name: schedule.id
+                    for schedule in client.get_named_schedule().named_schedules
+                }
                 # Convert all the Airflow params to jinja usable dict.
                 for select_statement in _sql_rules_from_file(
                     custom_rule_file, project, dataset, table
@@ -809,22 +791,6 @@ def delete(
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
     warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
 
-    workspace_state: dict = {}
-
-    def _state_for(workspace_id: int):
-        if workspace_id not in workspace_state:
-            client = _client_for_workspace(api_auth, workspace_id)
-            workspace_state[workspace_id] = {
-                "client": client,
-                "existing_rules": {
-                    rule.custom_rule.sql: rule.id
-                    for rule in client.get_rules_for_source(
-                        warehouse_id=warehouse_id
-                    ).custom_rules
-                },
-            }
-        return workspace_state[workspace_id]
-
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
         try:
@@ -832,9 +798,15 @@ def delete(
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
             continue
-        state = _state_for(_resolve_workspace(metadata, workspace))
-        client = state["client"]
-        existing_rules = state["existing_rules"]
+        client = _client_for_workspace(
+            api_auth, _resolve_workspace(metadata, workspace)
+        )
+        existing_rules = {
+            rule.custom_rule.sql: rule.id
+            for rule in client.get_rules_for_source(
+                warehouse_id=warehouse_id
+            ).custom_rules
+        }
 
         if metrics:
             deployed_metrics = client.get_metric_info_batch_post(
@@ -900,26 +872,6 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
     warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
 
-    workspace_state: dict = {}
-
-    def _state_for(workspace_id: int):
-        if workspace_id not in workspace_state:
-            client = _client_for_workspace(api_auth, workspace_id)
-            workspace_state[workspace_id] = {
-                "client": client,
-                "existing_rules": {
-                    rule.custom_rule.sql: {
-                        "id": rule.id,
-                        "name": rule.custom_rule.name,
-                    }
-                    for rule in client.get_rules_for_source(
-                        warehouse_id=warehouse_id
-                    ).custom_rules
-                    if rule.custom_rule.name.endswith(marker or "")
-                },
-            }
-        return workspace_state[workspace_id]
-
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
@@ -932,9 +884,17 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
             metadata = Metadata.from_file(metadata_file)
             if metadata.monitoring and metadata.monitoring.enabled:
                 table_workspace = _resolve_workspace(metadata, workspace)
-                state = _state_for(table_workspace)
-                client = state["client"]
-                existing_rules = state["existing_rules"]
+                client = _client_for_workspace(api_auth, table_workspace)
+                existing_rules = {
+                    rule.custom_rule.sql: {
+                        "id": rule.id,
+                        "name": rule.custom_rule.name,
+                    }
+                    for rule in client.get_rules_for_source(
+                        warehouse_id=warehouse_id
+                    ).custom_rules
+                    if rule.custom_rule.name.endswith(marker or "")
+                }
                 metrics = client.get_metric_info_batch_post(
                     table_name=table,
                     schema_name=f"{project}.{dataset}",
@@ -966,7 +926,10 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                             f"Error running check {metric_info.metric_configuration.id}: {metric_info.active_issue.display_name}"
                         )
                         click.echo(
-                            f"Check {base_url}/w/{table_workspace}/catalog/data-sources/metric/{metric_info.metric_configuration.id}/chart for more information."
+                            f"Check {base_url}/w/{table_workspace}/catalog/"
+                            f"data-sources/metric/"
+                            f"{metric_info.metric_configuration.id}/chart "
+                            "for more information."
                         )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():

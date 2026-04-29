@@ -20,8 +20,8 @@ fields:
   - name: event_name
     type: STRING
     mode: NULLABLE
-    description: Name of the 'urlbar' event represented by this row- 'engagement' or
-      'abandonment'
+    description: |
+      Name of the 'urlbar' event represented by this row- 'engagement', 'abandonment', 'bounce', or 'disable'
   - name: event_timestamp
     type: INTEGER
     mode: NULLABLE
@@ -140,8 +140,8 @@ fields:
   - name: event_action
     type: STRING
     mode: NULLABLE
-    description: Action taken by the user which generated the event- 'engaged',
-      'abandoned', or 'annoyance'.
+    description: |
+      Action taken by the user which generated the event—'engaged', 'abandoned', 'annoyance', 'bounced', or 'disabled'.
   - name: is_terminal
     type: BOOLEAN
     mode: NULLABLE
@@ -194,3 +194,9 @@ fields:
     mode: NULLABLE
     description: |
       The standard display of the browser: classic, private, or smartwindow.
+  - name: exit_type
+    type: STRING
+    mode: NULLABLE
+    description: How the user exited the urlbar session for bounce or disable events.
+      This uses the value of 'engagement_type' when 'event_action' is 'bounced' or
+      'disabled'. Eg. 'click', 'enter'.

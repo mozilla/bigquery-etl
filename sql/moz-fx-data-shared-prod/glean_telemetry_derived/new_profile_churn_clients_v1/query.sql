@@ -18,9 +18,7 @@ WITH activity_range AS (
     last_seen.submission_date
     BETWEEN first_seen.first_seen_date
     AND DATE_ADD(first_seen.first_seen_date, INTERVAL 30 DAY)
-    AND last_seen.submission_date >= "2025-12-01"
-    AND last_seen.submission_date <= "2026-02-01"
-    AND first_seen.first_seen_date >= "2025-12-01"
+    AND last_seen.submission_date = @submission_date
 ),
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (
@@ -140,8 +138,8 @@ client_attributes AS (
   WHERE
       -- Pull attributes from each client's cohort date (first seen day) row
     last_seen.submission_date = last_seen.first_seen_date
-    AND last_seen.submission_date >= "2025-12-01"
-    AND last_seen.submission_date <= "2026-02-01"
+    AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND last_seen.submission_date <= @submission_date
 ),
 client_level AS (
   SELECT
@@ -472,6 +470,7 @@ client_level AS (
     days_since_last_data
 )
 SELECT
+  @submission_date AS submission_date,
   client_id,
   sample_id,
   first_seen_date AS cohort_date,

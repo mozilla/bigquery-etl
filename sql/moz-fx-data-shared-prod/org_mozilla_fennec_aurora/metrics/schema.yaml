@@ -13177,7 +13177,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -29042,8 +29043,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent on blocking main thread by startup cookie database
-        read (in milliseconds), only for blocking case
+      description: 'Time spent blocking the main thread on startup cookie database
+        read and connection initialization (in milliseconds), only for blocking cases.
 
         '
     - name: networking_sqlite_cookies_time_to_block_main_thread
@@ -29086,8 +29087,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'How long (in milliseconds) after we finished reading the cookie
-        db until the first cookie request came in (0 implies we blocked the main thread)
+      description: 'How long (in milliseconds) after the cookie database connection
+        was initialized until the first cookie request came in (0 implies we blocked
+        the main thread).
 
         '
     - name: network_cache_read_time

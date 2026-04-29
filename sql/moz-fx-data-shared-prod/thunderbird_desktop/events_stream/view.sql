@@ -476,6 +476,7 @@ SELECT
       JSON_VALUE(event_extra.version) AS `version`,
       JSON_VALUE(event_extra.video_codec) AS `video_codec`,
       JSON_VALUE(event_extra.view_name) AS `view_name`,
+      JSON_VALUE(event_extra.where) AS `where`,
       JSON_VALUE(event_extra.width) AS `width`
     ) AS `string`
   ) AS extras

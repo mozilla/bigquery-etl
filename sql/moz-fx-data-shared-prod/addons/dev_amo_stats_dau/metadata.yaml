@@ -1,10 +1,18 @@
-friendly_name: Dev Amo Stats Dau
+friendly_name: AMO Stats DAU (dev)
 description: |-
-  Please provide a description for the query
-owners: []
+  A dev subset of daily user statistics to power addons.mozilla.org stats pages.
+owners:
+- kik@mozilla.com
+- lgreco@mozilla.com
+labels:
+  application: amo
+  authorized: true
+  owner1: kik
+  owner2: lgreco
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:amo/nonprod
   - workgroup:amo/prod
   - workgroup:mozilla-confidential/data-viewers
 references:

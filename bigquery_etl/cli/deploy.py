@@ -3,6 +3,7 @@
 import logging
 import multiprocessing
 import re
+import shutil
 import sys
 import tempfile
 from collections.abc import MutableMapping
@@ -512,75 +513,43 @@ def _rewrite_tests_for_target(
     source_to_target_paths: Dict[Path, Path],
     test_dir: Path,
 ) -> None:
-    """Copy SQL tests from source paths to target paths, renaming as needed.
+    """Copy and rename SQL tests so they target the deployed artifacts.
 
-    For each (source_artifact_dir → target_artifact_dir) pair:
-    - Copy `test_dir/<src_project>/<src_dataset>/<src_table>/` into
-      `test_dir/<tgt_project>/<tgt_dataset>/<tgt_table>/`.
-    - Rename test files whose basenames encode the source artifact identity
-      (e.g. `proj.dataset.table.expected.yaml`) to use the target identity.
-
+    For each (source, target) artifact pair, copies
+    `tests/sql/<src_project>/<src_dataset>/<src_table>/` into
+    `tests/sql/<tgt_project>/<tgt_dataset>/<tgt_table>/`, then renames any
+    files in the new tree whose basenames encode the source identity (e.g.
+    `proj.dataset.table.expected.yaml`) to use the target identity.
     Mirrors legacy `bqetl stage deploy` so CI can pytest staged artifacts.
     """
-    import shutil
-    from glob import glob
-
     if not test_dir.exists():
         return
 
     for source_path, target_path in source_to_target_paths.items():
-        src_project, src_dataset, src_table = (
-            source_path.parent.parent.parent.name,
-            source_path.parent.parent.name,
-            source_path.parent.name,
-        )
-        tgt_project, tgt_dataset, tgt_table = (
-            target_path.parent.parent.parent.name,
-            target_path.parent.parent.name,
-            target_path.parent.name,
-        )
-
-        src_test_dir = test_dir / src_project / src_dataset / src_table
+        src = extract_from_query_path(source_path)
+        tgt = extract_from_query_path(target_path)
+        src_test_dir = test_dir.joinpath(*src)
         if not src_test_dir.exists():
             continue
-        tgt_test_dir = test_dir / tgt_project / tgt_dataset / tgt_table
+        tgt_test_dir = test_dir.joinpath(*tgt)
         shutil.copytree(src_test_dir, tgt_test_dir, dirs_exist_ok=True)
 
-    # Rename test files whose basenames encode the original artifact identity.
-    for source_path, target_path in source_to_target_paths.items():
-        src_project, src_dataset, src_table = (
-            source_path.parent.parent.parent.name,
-            source_path.parent.parent.name,
-            source_path.parent.name,
-        )
-        tgt_project, tgt_dataset, tgt_table = (
-            target_path.parent.parent.parent.name,
-            target_path.parent.parent.name,
-            target_path.parent.name,
-        )
-        for test_file_path in map(Path, glob(f"{test_dir}/**/*", recursive=True)):
-            if not test_file_path.is_file():
+        src_id = ".".join(src)
+        src_short = f"{src[1]}.{src[2]}"
+        tgt_id = ".".join(tgt)
+        for test_file in tgt_test_dir.rglob("*"):
+            if not test_file.is_file():
                 continue
-            suffix = test_file_path.suffix
-            qualified = (
-                f"{src_project}.{src_dataset}.{src_table}{suffix}",
-                f"{src_project}.{src_dataset}.{src_table}.schema{suffix}",
-            )
-            short = (
-                f"{src_dataset}.{src_table}{suffix}",
-                f"{src_dataset}.{src_table}.schema{suffix}",
-            )
-            if test_file_path.name in qualified or (
-                test_file_path.name in short
-                and src_project in test_file_path.parent.parts
-            ):
-                new_name = f"{tgt_project}.{tgt_dataset}.{tgt_table}"
-                if test_file_path.name.endswith(f".schema{suffix}"):
-                    new_name += ".schema"
-                new_name += suffix
-                new_path = test_file_path.parent / new_name
+            suffix = test_file.suffix
+            stem = test_file.name[: -len(suffix)] if suffix else test_file.name
+            schema_part = ""
+            if stem.endswith(".schema"):
+                stem = stem[: -len(".schema")]
+                schema_part = ".schema"
+            if stem in (src_id, src_short):
+                new_path = test_file.parent / f"{tgt_id}{schema_part}{suffix}"
                 if not new_path.exists():
-                    test_file_path.rename(new_path)
+                    test_file.rename(new_path)
 
 
 def _strip_materialized_view(target_file: Path) -> Path:

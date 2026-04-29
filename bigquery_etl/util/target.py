@@ -812,9 +812,7 @@ def ensure_dataset_exists(
         # datasets to GC — same shape legacy stage uses.
         dataset.default_table_expiration_ms = expiration_hours * 60 * 60 * 1000
         expires_on = int(
-            (
-                datetime.utcnow() - datetime(1970, 1, 1)
-            ).total_seconds() * 1000
+            (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000
             + expiration_hours * 60 * 60 * 1000
         )
         dataset.labels = {**(dataset.labels or {}), "expires_on": str(expires_on)}

@@ -1,0 +1,14 @@
+friendly_name: AMO Stats Installs (dev)
+description: |-
+  Subset of daily install statistics to power addons.mozilla.org stats pages.
+
+owners:
+- kik@mozilla.com
+- lgreco@mozilla.com
+labels:
+  application: amo
+
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/nonprod

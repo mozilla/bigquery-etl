@@ -50,11 +50,7 @@ from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
-from bigquery_etl.util.target import (
-    Target,
-    ensure_dataset_exists,
-    prepare_target_files,
-)
+from bigquery_etl.util.target import Target, ensure_dataset_exists, prepare_target_files
 from bigquery_etl.view import View
 
 log = logging.getLogger(__name__)

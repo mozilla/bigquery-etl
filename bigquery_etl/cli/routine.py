@@ -32,6 +32,7 @@ from ..routine.parse_routine import (
     PROCEDURE_FILE,
     UDF_FILE,
     RawRoutine,
+    accumulate_dependencies,
     read_routine_dir,
     routine_usage_pattern,
 )
@@ -560,6 +561,20 @@ def _publish_to_target(
     client = bigquery.Client(project=target.project_id)
     raw_routines = [RawRoutine.from_file(f) for f in target_files]
     known_udfs = [r.name for r in raw_routines]
+
+    # Topologically sort so dependencies are published before dependents.
+    # Without this, e.g. `browser_version_info` (which calls `truncate_version`)
+    # can publish first and fail with "Function not found".
+    raw_routines_by_name = {r.name: r for r in raw_routines}
+    ordered_names: list = []
+    for r in raw_routines:
+        ordered_names = accumulate_dependencies(
+            ordered_names, raw_routines_by_name, r.name
+        )
+    raw_routines = [
+        raw_routines_by_name[n] for n in ordered_names if n in raw_routines_by_name
+    ]
+
     results = {}
     for raw_routine in raw_routines:
         routine_id = f"{target.project_id}.{raw_routine.name}"

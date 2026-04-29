@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import shutil
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 from typing import List, NamedTuple, Optional, Set, Tuple
@@ -749,8 +750,19 @@ def prepare_target_directory(
     return target_query_file
 
 
-def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
-    """Create a dataset if it doesn't exist, with user-only access permissions."""
+def ensure_dataset_exists(
+    client: bigquery.Client,
+    dataset_ref: str,
+    expiration_hours: Optional[int] = None,
+) -> bool:
+    """Create a dataset if it doesn't exist, with user-only access permissions.
+
+    When expiration_hours is set, table default-expiration and an `expires_on`
+    label are applied — used by stage-style ephemeral deploys so a sweeper can
+    GC datasets that outlived their CI run. Dry-run service accounts (from
+    `dry_run.function_accounts` config) get READER access automatically so the
+    cloud-function dry-run can read staged datasets.
+    """
     try:
         client.get_dataset(dataset_ref)
         return True
@@ -760,24 +772,52 @@ def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
     dataset = bigquery.Dataset(dataset_ref)
     dataset.location = "US"
 
+    access_entries = []
     try:
         user_email = _get_gcloud_account()
-
         # Explicitly grant ownership to the user. When running as yourself this
         # is redundant (BigQuery auto-grants dataOwner to the creator), but with
         # service account impersonation the SA would become the owner instead.
         if user_email and "@" in user_email:
-            dataset.access_entries = [
+            access_entries.append(
                 bigquery.AccessEntry(
                     role="OWNER",
                     entity_type="userByEmail",
                     entity_id=user_email,
                 )
-            ]
+            )
         else:
             click.echo("⚠️  Could not determine user email, using default permissions")
     except Exception as e:
         click.echo(f"⚠️  Could not set dataset permissions: {e}")
+
+    # Grant READER to dry-run cloud function accounts so schema dry-runs can
+    # read staged datasets. Mirrors legacy stage deploy.
+    for dry_run_account in ConfigLoader.get(
+        "dry_run", "function_accounts", fallback=[]
+    ):
+        access_entries.append(
+            bigquery.AccessEntry(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id=dry_run_account,
+            )
+        )
+
+    if access_entries:
+        dataset.access_entries = access_entries
+
+    if expiration_hours is not None:
+        # Both per-table default expiration and a label so a sweeper can find
+        # datasets to GC — same shape legacy stage uses.
+        dataset.default_table_expiration_ms = expiration_hours * 60 * 60 * 1000
+        expires_on = int(
+            (
+                datetime.utcnow() - datetime(1970, 1, 1)
+            ).total_seconds() * 1000
+            + expiration_hours * 60 * 60 * 1000
+        )
+        dataset.labels = {**(dataset.labels or {}), "expires_on": str(expires_on)}
 
     try:
         client.create_dataset(dataset, exists_ok=True)

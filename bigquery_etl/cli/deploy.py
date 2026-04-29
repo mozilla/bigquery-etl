@@ -210,6 +210,30 @@ log = logging.getLogger(__name__)
     default=ConfigLoader.get("routine", "publish", "gcs_path"),
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
+@click.option(
+    "--rewrite-tests",
+    "--rewrite_tests",
+    is_flag=True,
+    default=False,
+    help="For --target deploys, copy and rename SQL tests under tests/sql/ to "
+    "match the target paths. Use for CI parity with legacy stage deploy.",
+)
+@click.option(
+    "--expire-after-hours",
+    "--expire_after_hours",
+    type=int,
+    default=None,
+    help="Set a default table expiration (in hours) on target datasets and "
+    "label them with `expires_on`. Use for ephemeral CI deploys; leave unset "
+    "for personal dev targets.",
+)
+@click.option(
+    "--test-dir",
+    "--test_dir",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
+    default=None,
+    help="Test directory for --rewrite-tests (defaults to tests/sql at repo root).",
+)
 @defer_option()
 @isolated_option()
 @click.pass_context
@@ -237,11 +261,14 @@ def deploy(
     routine_dependency_dir,
     routine_gcs_bucket,
     routine_gcs_path,
+    rewrite_tests,
+    expire_after_hours,
+    test_dir,
     defer_to_target,
     isolated,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views, routines]):
+    if not any([tables, views, routines, isolated]):
         raise click.UsageError(
             "Must specify at least one artifact type: --tables, --views, or --routines"
         )
@@ -262,11 +289,14 @@ def deploy(
     # cannot reach prod tables/UDFs. Refreshing schema by dry-running the query
     # would fail on missing dependencies, so use the existing schema.yaml as
     # authoritative — same defaults the legacy `stage deploy` path uses.
+    # Routines are auto-enabled because the schema resolver dry-runs against
+    # the target project, which needs the local UDF set published first.
     if isolated:
         table_force = True
         table_skip_external_data = True
         table_skip_existing_schemas = True
         view_force = True
+        routines = True
 
     if target and view_target_project:
         raise click.UsageError(
@@ -391,9 +421,29 @@ def deploy(
                     routine_results.update(result)
 
     if target and target.project_id not in project_ids:
+        # Map source artifact path → target artifact path so test rewriting can
+        # find tests under tests/sql/<source_project>/... and mirror them.
+        source_to_target_paths: Dict[Path, Path] = {
+            file_path: file_path for file_path, _ in artifacts.values()
+        }
         artifacts = _prepare_target_artifacts(
             artifacts, target, sql_dir, defer_to_target, isolated
         )
+        # rebuild source→target map from the new artifacts dict
+        source_to_target_paths = {
+            src: tgt
+            for src, (tgt, _) in zip(
+                source_to_target_paths.keys(),
+                artifacts.values(),
+            )
+        }
+
+        if rewrite_tests:
+            _rewrite_tests_for_target(
+                source_to_target_paths,
+                test_dir or Path("tests/sql"),
+            )
+
         # Stubs have been copied into target dirs; safe to clean up.
         if stub_dir_ctx is not None:
             stub_dir_ctx.cleanup()
@@ -406,7 +456,9 @@ def deploy(
             dataset_ref = f"{project}.{dataset}"
             if dataset_ref not in seen_datasets:
                 seen_datasets.add(dataset_ref)
-                ensure_dataset_exists(client, dataset_ref)
+                ensure_dataset_exists(
+                    client, dataset_ref, expiration_hours=expire_after_hours
+                )
 
     # filter views based on authorized flags
     if view_skip_authorized or view_authorized_only:
@@ -454,6 +506,81 @@ def deploy(
     results = _execute_deployment(artifacts, dependency_graph, options, parallelism)
     results.update(routine_results)
     _report_results(results)
+
+
+def _rewrite_tests_for_target(
+    source_to_target_paths: Dict[Path, Path],
+    test_dir: Path,
+) -> None:
+    """Copy SQL tests from source paths to target paths, renaming as needed.
+
+    For each (source_artifact_dir → target_artifact_dir) pair:
+    - Copy `test_dir/<src_project>/<src_dataset>/<src_table>/` into
+      `test_dir/<tgt_project>/<tgt_dataset>/<tgt_table>/`.
+    - Rename test files whose basenames encode the source artifact identity
+      (e.g. `proj.dataset.table.expected.yaml`) to use the target identity.
+
+    Mirrors legacy `bqetl stage deploy` so CI can pytest staged artifacts.
+    """
+    import shutil
+    from glob import glob
+
+    if not test_dir.exists():
+        return
+
+    for source_path, target_path in source_to_target_paths.items():
+        src_project, src_dataset, src_table = (
+            source_path.parent.parent.parent.name,
+            source_path.parent.parent.name,
+            source_path.parent.name,
+        )
+        tgt_project, tgt_dataset, tgt_table = (
+            target_path.parent.parent.parent.name,
+            target_path.parent.parent.name,
+            target_path.parent.name,
+        )
+
+        src_test_dir = test_dir / src_project / src_dataset / src_table
+        if not src_test_dir.exists():
+            continue
+        tgt_test_dir = test_dir / tgt_project / tgt_dataset / tgt_table
+        shutil.copytree(src_test_dir, tgt_test_dir, dirs_exist_ok=True)
+
+    # Rename test files whose basenames encode the original artifact identity.
+    for source_path, target_path in source_to_target_paths.items():
+        src_project, src_dataset, src_table = (
+            source_path.parent.parent.parent.name,
+            source_path.parent.parent.name,
+            source_path.parent.name,
+        )
+        tgt_project, tgt_dataset, tgt_table = (
+            target_path.parent.parent.parent.name,
+            target_path.parent.parent.name,
+            target_path.parent.name,
+        )
+        for test_file_path in map(Path, glob(f"{test_dir}/**/*", recursive=True)):
+            if not test_file_path.is_file():
+                continue
+            suffix = test_file_path.suffix
+            qualified = (
+                f"{src_project}.{src_dataset}.{src_table}{suffix}",
+                f"{src_project}.{src_dataset}.{src_table}.schema{suffix}",
+            )
+            short = (
+                f"{src_dataset}.{src_table}{suffix}",
+                f"{src_dataset}.{src_table}.schema{suffix}",
+            )
+            if test_file_path.name in qualified or (
+                test_file_path.name in short
+                and src_project in test_file_path.parent.parts
+            ):
+                new_name = f"{tgt_project}.{tgt_dataset}.{tgt_table}"
+                if test_file_path.name.endswith(f".schema{suffix}"):
+                    new_name += ".schema"
+                new_name += suffix
+                new_path = test_file_path.parent / new_name
+                if not new_path.exists():
+                    test_file_path.rename(new_path)
 
 
 def _strip_materialized_view(target_file: Path) -> Path:
@@ -526,6 +653,14 @@ def _prepare_target_artifacts(
             file_path
         )
 
+        # Skip INFORMATION_SCHEMA artifacts — they're metadata views provided
+        # by BigQuery, not deployable artifacts.
+        if (
+            source_dataset == "INFORMATION_SCHEMA"
+            or "INFORMATION_SCHEMA" in source_table
+        ):
+            continue
+
         target_files = prepare_target_files(
             [file_path],
             sql_dir,
@@ -551,6 +686,7 @@ def _prepare_target_artifacts(
                 source_project=source_project,
                 source_dataset=source_dataset,
                 source_table=source_table,
+                sql_dir=sql_dir,
             )
 
         project, dataset, name = extract_from_query_path(target_file)
@@ -564,6 +700,7 @@ def _resolve_isolated_schema(
     source_project: str,
     source_dataset: str,
     source_table: str,
+    sql_dir: str,
 ) -> None:
     """Ensure target_file's schema.yaml exists for an --isolated table deploy.
 
@@ -595,8 +732,12 @@ def _resolve_isolated_schema(
         except Exception:
             pass
 
-    # 1. existing schema.yaml is authoritative unless allow_field_addition
+    # 1. existing schema.yaml is authoritative unless allow_field_addition.
+    # Flatten any `!include` directives so the target schema is self-contained.
     if target_schema.exists() and not refresh_for_field_addition:
+        text = target_schema.read_text()
+        if "!include" in text:
+            Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
         return
 
     # 2. fetch from source project's deployed table (no dry-run, fastest)

@@ -4,4 +4,4 @@ AS
 SELECT
   *,
 FROM
-  `moz-fx-data-shared-prod.addons.dev_amo_stats_dau_v1`
+  `moz-fx-data-shared-prod.addons_derived.dev_amo_stats_dau_v1`

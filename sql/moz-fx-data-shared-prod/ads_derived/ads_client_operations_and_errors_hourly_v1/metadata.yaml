@@ -45,6 +45,7 @@ workgroup_access:
       - workgroup:mozilla-confidential/data-viewers
 monitoring:
   enabled: true
+  workspace: 508
   collection: Ads Client
   freshness:
     blocking: false

@@ -8,7 +8,7 @@ from glob import glob
 from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import rich_click as click
 import sqlglot
@@ -58,8 +58,10 @@ def _raw_table_name(table: sqlglot.exp.Table) -> str:
     return removed_pivots
 
 
-def extract_table_references(sql: str) -> List[str]:
+def extract_table_references(sql: str, path: Optional[Path] = None) -> List[str]:
     """Return a list of tables referenced in the given SQL."""
+    if path is not None and any(str(path).endswith(s) for s in skip_dependency()):
+        return []
     # sqlglot cannot handle scripts with variables and control statements
     if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
         return []
@@ -95,9 +97,6 @@ def extract_table_references(sql: str) -> List[str]:
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
-    if any(str(path).endswith(s) for s in skip_dependency()):
-        return
-
     # handle both global and local stable_views for thread/process safety
     global stable_views
     local_stable_views = stable_views
@@ -119,7 +118,7 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
         return local_stable_views
 
     sql = render(path.name, template_folder=path.parent)
-    for table in extract_table_references(sql):
+    for table in extract_table_references(sql, path):
         ref_base = path.parent
         parts = tuple(table.split("."))
         for _ in parts:
@@ -175,14 +174,12 @@ def _process_single_file(
     path: Path, without_views: bool = False
 ) -> Tuple[Path, List[str]]:
     """Process a single SQL file to extract table references."""
-    if any(str(path).endswith(s) for s in skip_dependency()):
-        return path, []
     try:
         if without_views:
             return path, list(extract_table_references_without_views(path))
         else:
             sql = render(path.name, template_folder=path.parent)
-            return path, extract_table_references(sql)
+            return path, extract_table_references(sql, path)
     except (CalledProcessError, ImportError, ValueError) as e:
         return path, [f"ERROR: {e}"]
 
@@ -249,7 +246,7 @@ def _get_references(
                     yield path, list(extract_table_references_without_views(path))
                 else:
                     sql = render(path.name, template_folder=path.parent)
-                    yield path, extract_table_references(sql)
+                    yield path, extract_table_references(sql, path)
             except CalledProcessError as e:
                 raise click.ClickException(f"failed to import jnius: {e}")
             except ImportError as e:

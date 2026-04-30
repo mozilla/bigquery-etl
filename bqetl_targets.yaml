@@ -5,4 +5,8 @@
 stage:
   project_id: moz-fx-data-integration-tests
   dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.branch }}_{{ git.commit }}"
+  # Stage is shared / CI: dry-run service accounts need read access, datasets
+  # are ephemeral, and pytest runs against staged artifacts.
   grant_dryrun_access: true
+  expire_after_hours: 12
+  rewrite_tests: true

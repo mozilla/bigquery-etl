@@ -5,6 +5,7 @@ import multiprocessing
 import re
 import shutil
 import sys
+from collections import defaultdict
 from collections.abc import MutableMapping
 from functools import partial
 from pathlib import Path
@@ -213,21 +214,20 @@ log = logging.getLogger(__name__)
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 @click.option(
-    "--rewrite-tests",
-    "--rewrite_tests",
-    is_flag=True,
-    default=False,
+    "--rewrite-tests/--no-rewrite-tests",
+    "rewrite_tests",
+    default=None,
     help="For --target deploys, copy and rename SQL tests under tests/sql/ to "
-    "match the target paths. Use for CI parity with legacy stage deploy.",
+    "match the target paths. Defaults to the target's `rewrite_tests` setting "
+    "in bqetl_targets.yaml; use this to override per run.",
 )
 @click.option(
     "--expire-after-hours",
     "--expire_after_hours",
     type=int,
     default=None,
-    help="Set a default table expiration (in hours) on target datasets and "
-    "label them with `expires_on`. Use for ephemeral CI deploys; leave unset "
-    "for personal dev targets.",
+    help="Override the target's default table expiration (in hours). Defaults "
+    "to the target's `expire_after_hours` setting in bqetl_targets.yaml.",
 )
 @click.option(
     "--test-dir",
@@ -287,8 +287,20 @@ def deploy(
 
     target = ctx.obj.get("target") if ctx.obj else None
 
-    # `--isolated` deploys a self-contained mirror into the target project, which
-    # cannot reach prod tables/UDFs
+    # CLI flags override per-run; otherwise fall back to the target's config.
+    if target is not None:
+        if rewrite_tests is None:
+            rewrite_tests = target.rewrite_tests
+        if expire_after_hours is None:
+            expire_after_hours = target.expire_after_hours
+    if rewrite_tests is None:
+        rewrite_tests = False
+
+    # The `--isolated` profile: a self-contained mirror into the target
+    # project. Force these flags together because target can't reach prod
+    # tables/UDFs, so dry-runs and external-data fetches won't work and the
+    # schema in target_dir is authoritative. Routines are auto-on so the
+    # schema resolver dry-run sees auto-discovered UDF deps.
     if isolated:
         table_force = True
         table_skip_external_data = True
@@ -344,7 +356,7 @@ def deploy(
         # is called once per source project so its qualify-non-published-refs
         # logic stays correct — refs to unpublished UDFs need to be qualified
         # with the *source* project they belong to.
-        routines_by_source: Dict[str, Set[Path]] = {}
+        routines_by_source: Dict[str, Set[Path]] = defaultdict(set)
         if routines:
             for f in paths_matching_name_pattern(
                 paths if paths else None,
@@ -354,11 +366,9 @@ def deploy(
                 file_regex=ROUTINE_FILE_RE,
             ):
                 if f.name in ROUTINE_FILES:
-                    routines_by_source.setdefault(
-                        f.parent.parent.parent.name, set()
-                    ).add(f)
+                    routines_by_source[f.parent.parent.parent.name].add(f)
         for p in isolated_routine_deps:
-            routines_by_source.setdefault(p.parent.parent.parent.name, set()).add(p)
+            routines_by_source[p.parent.parent.parent.name].add(p)
 
         for source_project, files in routines_by_source.items():
             result = _publish_routines_to_target(
@@ -390,27 +400,14 @@ def deploy(
             )
 
     if target and target.project_id not in project_ids:
-        # Map source artifact path → target artifact path so test rewriting can
-        # find tests under tests/sql/<source_project>/... and mirror them.
-        source_to_target_paths: Dict[Path, Path] = {
-            file_path: file_path for file_path, _ in artifacts.values()
-        }
-        artifacts = _prepare_target_artifacts(
+        artifacts, source_to_target_paths = _prepare_target_artifacts(
             artifacts, target, sql_dir, defer_to_target, isolated
         )
-        # rebuild source→target map from the new artifacts dict
-        source_to_target_paths = {
-            src: tgt
-            for src, (tgt, _) in zip(
-                source_to_target_paths.keys(),
-                artifacts.values(),
-            )
-        }
 
         if rewrite_tests:
             _rewrite_tests_for_target(
                 source_to_target_paths,
-                test_dir or Path("tests/sql"),
+                test_dir or ConfigLoader.project_dir / "tests" / "sql",
             )
 
         client = bigquery.Client(project=target.project_id)
@@ -575,14 +572,19 @@ def _prepare_target_artifacts(
     sql_dir: str,
     defer_to_target: bool,
     isolated: bool,
-) -> Dict[str, Tuple[Path, str]]:
+) -> Tuple[Dict[str, Tuple[Path, str]], Dict[Path, Path]]:
     """Copy each artifact into the target tree.
 
     Per artifact: prepare_target_files (rewrite refs), strip materialized-view
-    syntax, and resolve schema.yaml for isolated table deploys. Returns the
-    artifacts dict re-keyed by their target identity.
+    syntax, and resolve schema.yaml for isolated table deploys.
+
+    Returns a tuple of:
+    - artifacts dict re-keyed by target identity
+    - source-path → target-path mapping (used by --rewrite-tests; restricted
+      to artifacts that survived the INFORMATION_SCHEMA filter)
     """
     new_artifacts: Dict[str, Tuple[Path, str]] = {}
+    source_to_target: Dict[Path, Path] = {}
     for _artifact_id, (file_path, artifact_type) in artifacts.items():
         source_project, source_dataset, source_table = extract_from_query_path(
             file_path
@@ -632,7 +634,8 @@ def _prepare_target_artifacts(
 
         project, dataset, name = extract_from_query_path(target_file)
         new_artifacts[f"{project}.{dataset}.{name}"] = (target_file, artifact_type)
-    return new_artifacts
+        source_to_target[file_path] = target_file
+    return new_artifacts, source_to_target
 
 
 def _resolve_isolated_schema(

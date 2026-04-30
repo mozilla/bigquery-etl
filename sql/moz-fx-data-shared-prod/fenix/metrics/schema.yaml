@@ -224,7 +224,7 @@ fields:
     - name: x_foxsec_ip_reputation
       type: STRING
       mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
     - name: x_lb_tags
       type: STRING
       mode: NULLABLE
@@ -13185,8 +13185,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted

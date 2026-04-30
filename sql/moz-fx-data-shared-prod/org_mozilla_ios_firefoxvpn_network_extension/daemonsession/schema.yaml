@@ -204,7 +204,7 @@ fields:
     - name: x_foxsec_ip_reputation
       type: STRING
       mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
+      description: X-Foxsec-IP-Reputation header (deprecated, https://mozilla-hub.atlassian.net/browse/DENG-10434)
     - name: x_lb_tags
       type: STRING
       mode: NULLABLE

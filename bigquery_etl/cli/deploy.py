@@ -17,12 +17,6 @@ from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.routine import ROUTINE_FILE_RE
 from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
 from bigquery_etl.cli.routine import publish as publish_routines_cmd
-from bigquery_etl.cli.stage import (
-    MATERIALIZED_VIEW,
-    QUERY_FILE,
-    QUERY_SCRIPT,
-    VIEW_FILE,
-)
 from bigquery_etl.cli.utils import (
     defer_option,
     is_authenticated,
@@ -50,6 +44,10 @@ from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.util.target import (
+    MATERIALIZED_VIEW,
+    QUERY_FILE,
+    QUERY_SCRIPT,
+    VIEW_FILE,
     Target,
     collect_target_dependencies,
     ensure_dataset_exists,

@@ -563,8 +563,6 @@ def _publish_to_target(
     known_udfs = [r.name for r in raw_routines]
 
     # Topologically sort so dependencies are published before dependents.
-    # Without this, e.g. `browser_version_info` (which calls `truncate_version`)
-    # can publish first and fail with "Function not found".
     raw_routines_by_name = {r.name: r for r in raw_routines}
     ordered_names: list = []
     for r in raw_routines:

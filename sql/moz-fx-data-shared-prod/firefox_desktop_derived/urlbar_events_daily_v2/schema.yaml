@@ -112,7 +112,7 @@ fields:
 - name: is_ai
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag for when result type is associated with an "ai" result
+  description: Flag for when result type is associated with an AI or LLM generated result.
 - name: is_search
   type: BOOLEAN
   mode: NULLABLE

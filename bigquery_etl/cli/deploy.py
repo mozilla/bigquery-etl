@@ -334,88 +334,56 @@ def deploy(
 
     # publish routines first since tables/views may depend on them
     routine_results = {}
-    if routines or isolated_routine_deps:
-        for project_id in project_ids:
-            if target and target.project_id not in project_ids:
-                user_routine_files = (
-                    [
-                        f
-                        for f in paths_matching_name_pattern(
-                            paths if paths else None,
-                            sql_dir,
-                            project_id,
-                            list(ROUTINE_FILES),
-                            file_regex=ROUTINE_FILE_RE,
-                        )
-                        if f.name in ROUTINE_FILES
-                    ]
-                    if routines
-                    else []
-                )
-                # Auto-discovered isolated UDF deps that live under this
-                # source project (e.g. moz-fx-data-shared-prod/udf/...).
-                auto_routine_files = [
-                    p
-                    for p in isolated_routine_deps
-                    if p.parent.parent.parent.name == project_id
-                ]
-                routine_files = user_routine_files + auto_routine_files
-                if routine_files:
-                    result = _publish_routines_to_target(
-                        target,
-                        project_id,
-                        sql_dir,
-                        routine_dependency_dir,
-                        routine_gcs_bucket,
-                        routine_gcs_path,
-                        defer_to_target,
-                        isolated,
-                        routine_files=routine_files,
-                        dry_run=dry_run,
-                    )
-                    if result:
-                        routine_results.update(result)
-            elif routines:
-                ctx.invoke(
-                    publish_routines_cmd,
-                    project_id=project_id,
-                    sql_dir=sql_dir,
-                    dependency_dir=routine_dependency_dir,
-                    gcs_bucket=routine_gcs_bucket,
-                    gcs_path=routine_gcs_path,
-                    dry_run=dry_run,
-                    defer_to_target=defer_to_target,
-                    isolated=isolated,
-                )
+    cross_project_target = target and target.project_id not in project_ids
+    if cross_project_target and (routines or isolated_routine_deps):
+        # Group all routine paths by their source project. `_publish_to_target`
+        # is called once per source project so its qualify-non-published-refs
+        # logic stays correct — refs to unpublished UDFs need to be qualified
+        # with the *source* project they belong to.
+        routines_by_source: Dict[str, Set[Path]] = {}
+        if routines:
+            for f in paths_matching_name_pattern(
+                paths if paths else None,
+                sql_dir,
+                None,
+                list(ROUTINE_FILES),
+                file_regex=ROUTINE_FILE_RE,
+            ):
+                if f.name in ROUTINE_FILES:
+                    routines_by_source.setdefault(
+                        f.parent.parent.parent.name, set()
+                    ).add(f)
+        for p in isolated_routine_deps:
+            routines_by_source.setdefault(p.parent.parent.parent.name, set()).add(p)
 
-        # Auto-discovered UDF deps from source projects that aren't in
-        # project_ids (e.g. mozfun) — publish them to target as well.
-        if target and target.project_id not in project_ids:
-            extra_source_projects = {
-                p.parent.parent.parent.name
-                for p in isolated_routine_deps
-                if p.parent.parent.parent.name not in project_ids
-            }
-            for source_project in extra_source_projects:
-                source_routines = [
-                    p
-                    for p in isolated_routine_deps
-                    if p.parent.parent.parent.name == source_project
-                ]
-                result = _publish_routines_to_target(
-                    target,
-                    source_project,
-                    sql_dir,
-                    routine_dependency_dir,
-                    routine_gcs_bucket,
-                    routine_gcs_path,
-                    defer_to_target,
-                    isolated,
-                    routine_files=source_routines,
-                    dry_run=dry_run,
-                )
-                if result:
-                    routine_results.update(result)
+        for source_project, files in routines_by_source.items():
+            result = _publish_routines_to_target(
+                target,
+                source_project,
+                sql_dir,
+                routine_dependency_dir,
+                routine_gcs_bucket,
+                routine_gcs_path,
+                defer_to_target,
+                isolated,
+                routine_files=sorted(files),
+                dry_run=dry_run,
+            )
+            if result:
+                routine_results.update(result)
+    elif routines:
+        for project_id in project_ids:
+            ctx.invoke(
+                publish_routines_cmd,
+                project_id=project_id,
+                sql_dir=sql_dir,
+                dependency_dir=routine_dependency_dir,
+                gcs_bucket=routine_gcs_bucket,
+                gcs_path=routine_gcs_path,
+                dry_run=dry_run,
+                defer_to_target=defer_to_target,
+                isolated=isolated,
+            )
 
     if target and target.project_id not in project_ids:
         # Map source artifact path → target artifact path so test rewriting can

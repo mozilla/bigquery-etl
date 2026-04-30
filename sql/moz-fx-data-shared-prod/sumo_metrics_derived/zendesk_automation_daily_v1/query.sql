@@ -1,5 +1,6 @@
--- Temp version of query.sql with date partitioning removed for ad-hoc testing.
--- Expands each ticket into created/resolved events so both dates are counted correctly.
+-- Classify tickets as 'Appbot - Non-English' to exclude auto-closed non-English app review tickets.
+-- See zen_desk_volume.sql for context: these are auto-closed under a fake account (SUMOJr)
+-- and are never seen by agents.
 WITH appbot_class AS (
   SELECT
     ticket_id,

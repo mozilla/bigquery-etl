@@ -126,3 +126,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of times that a user clicked into the browser address bar and left it without clicking a result or performing a search.
+- name: urlbar_bounces
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times a urlbar session ended because the user moved keyboard focus away from the urlbar.
+- name: urlbar_disables
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times a urlbar session ended because the urlbar was disabled.

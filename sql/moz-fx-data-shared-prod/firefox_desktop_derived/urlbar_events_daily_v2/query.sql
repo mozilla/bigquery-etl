@@ -251,6 +251,52 @@ daily_counts AS (
     is_ai,
     is_search
 ),
+bounce_disable_counts AS (
+  SELECT
+    submission_date,
+    normalized_country_code,
+    normalized_channel,
+    pref_fx_suggestions AS firefox_suggest_enabled,
+    pref_sponsored_suggestions AS sponsored_suggestions_enabled,
+    normalized_os,
+    os_version,
+    normalized_engine,
+    app_display_version,
+    pref_ohttp_available,
+    pref_ohttp_enabled,
+    CASE
+      WHEN pref_ohttp_available IS NULL
+        THEN NULL
+      WHEN pref_ohttp_available IS TRUE
+        AND pref_ohttp_enabled IS TRUE
+        THEN TRUE
+      ELSE FALSE
+    END AS ohttp_enabled,
+    sap,
+    'placeholder' AS window_mode, -- this placeholder will be removed once the underlying table has the field
+    COUNTIF(event_name = 'bounce') AS urlbar_bounces,
+    COUNTIF(event_name = 'disable') AS urlbar_disables
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_v2`
+  WHERE
+    submission_date = @submission_date
+    AND event_name IN ('bounce', 'disable')
+  GROUP BY
+    submission_date,
+    normalized_country_code,
+    normalized_channel,
+    firefox_suggest_enabled,
+    sponsored_suggestions_enabled,
+    normalized_os,
+    os_version,
+    normalized_engine,
+    app_display_version,
+    pref_ohttp_available,
+    pref_ohttp_enabled,
+    ohttp_enabled,
+    sap,
+    window_mode
+),
 join_counts_sessions AS (
   SELECT
     submission_date,
@@ -283,7 +329,9 @@ join_counts_sessions AS (
     is_ai,
     is_search,
     window_mode,
-    urlbar_abandonments
+    urlbar_abandonments,
+    urlbar_bounces,
+    urlbar_disables
   FROM
     daily_counts
   LEFT JOIN
@@ -314,6 +362,24 @@ join_counts_sessions AS (
       is_top_pick,
       is_ai,
       is_search
+    )
+  LEFT JOIN
+    bounce_disable_counts
+    USING (
+      submission_date,
+      normalized_country_code,
+      normalized_channel,
+      firefox_suggest_enabled,
+      sponsored_suggestions_enabled,
+      normalized_os,
+      os_version,
+      normalized_engine,
+      app_display_version,
+      pref_ohttp_available,
+      pref_ohttp_enabled,
+      ohttp_enabled,
+      sap,
+      window_mode
     )
 ),
 final AS (

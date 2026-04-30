@@ -26,14 +26,23 @@ from bigquery_etl.routine.parse_routine import (
     ROUTINE_FILES,
     read_routine_dir,
     routine_usage_pattern,
+    routine_usages_in_text,
 )
 
 from ..config import ConfigLoader
+from ..dependency import extract_table_references
 from ..deploy import deploy_table
+from ..dryrun import get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..schema import SCHEMA_FILE, Schema
 from . import extract_from_query_path
 from .common import get_bqetl_project_root
 from .common import render as render_template
+
+VIEW_FILE = "view.sql"
+QUERY_FILE = "query.sql"
+QUERY_SCRIPT = "query.py"
+MATERIALIZED_VIEW = "materialized_view.sql"
 
 ROOT = Path(__file__).parent.parent.parent
 
@@ -422,6 +431,173 @@ def get_deployed_routines_in_target(
     return _get_deployed_artifacts_in_target(
         sql_dir, target_project, ROUTINE_FILES, is_routine=True
     )
+
+
+def collect_target_dependencies(
+    artifact_files: Set[Path],
+    sql_dir: str,
+    target: Target,
+) -> Set[Path]:
+    """Walk dependencies of `artifact_files` for an --isolated target deploy.
+
+    Behavior parallels `bigquery_etl.cli.stage.collect_artifact_dependencies`,
+    but stubs for unmanaged tables (live/stable, syndicated, etc. — anything
+    referenced by deployed artifacts but not present under sql/) are written
+    *directly* into the target tree at
+    `sql/<target_project>/<target_dataset>/<target_artifact>/`, computed via
+    the target's templates. Source-managed deps are returned as their
+    sql/<source>/... paths and the regular deploy flow rewrites them into the
+    target via prepare_target_files.
+
+    Returns the set of dep paths to deploy (mix of source paths and target
+    paths). Callers detect already-target paths to skip prepare_target_files.
+    """
+    # local import to avoid circular deps with bigquery_etl.view
+    from bigquery_etl.view import View
+
+    artifact_dependencies: Set[Path] = set()
+    dependency_files = [
+        f
+        for f in artifact_files
+        if f.name in [VIEW_FILE, QUERY_FILE, MATERIALIZED_VIEW]
+    ]
+    id_token = get_id_token()
+
+    for dep_file in dependency_files:
+        if dep_file not in artifact_files:
+            artifact_dependencies.add(dep_file)
+
+        # extract table refs by artifact type
+        if dep_file.name == VIEW_FILE:
+            view = View.from_file(dep_file, id_token=id_token)
+            table_references = view.table_references
+        elif dep_file.name in [QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
+            schema_file = dep_file.parent / SCHEMA_FILE
+            if not schema_file.exists():
+                try:
+                    sql_content = render_template(
+                        dep_file.name, template_folder=dep_file.parent
+                    )
+                    table_references = extract_table_references(sql_content)
+                except Exception as e:
+                    print(f"Warning: Could not extract references from {dep_file}: {e}")
+                    table_references = []
+            else:
+                table_references = []
+        else:
+            table_references = []
+
+        if table_references:
+            artifact_project = dep_file.parent.parent.parent.name
+            for dependency in table_references:
+                components = dependency.split(".")
+                if components[1:2] == ["INFORMATION_SCHEMA"]:
+                    components.insert(0, artifact_project)
+                if components[2:3] == ["INFORMATION_SCHEMA"]:
+                    components = components[:2] + [".".join(components[2:])]
+                if len(components) != 3:
+                    raise ValueError(
+                        f"Invalid table reference {dependency} in {dep_file}. "
+                        "Expected format: project.dataset.table."
+                    )
+                project, dataset, name = components
+
+                # If the source repo has a managed artifact for this dep, add
+                # its source path and let prepare_target_files handle it.
+                source_dir = Path(sql_dir) / project / dataset / name
+                file_exists_for_dependency = False
+                for fn in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
+                    if (source_dir / fn).is_file():
+                        if (source_dir / fn) not in artifact_files:
+                            dependency_files.append(source_dir / fn)
+                        file_exists_for_dependency = True
+                        break
+
+                if file_exists_for_dependency:
+                    continue
+                if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
+                    continue
+
+                # Unmanaged dep — write a stub directly at the target path.
+                tgt_project, tgt_dataset, tgt_table = _target_ref_for_source(
+                    target,
+                    target.project_id,
+                    project,
+                    dataset,
+                    name.replace("*", "wildcard") if "*" in name else name,
+                )
+                stub_path = Path(sql_dir) / tgt_project / tgt_dataset / tgt_table
+                stub_path.mkdir(parents=True, exist_ok=True)
+
+                # Fetch schema from the source BQ table; fall back to
+                # Schema.for_table dry-run for unusual cases (table missing in
+                # source, etc.).
+                if "*" not in name:
+                    try:
+                        bq_table = bigquery.Client(project=project).get_table(
+                            f"{project}.{dataset}.{name}"
+                        )
+                        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(
+                            stub_path / SCHEMA_FILE
+                        )
+                    except Exception as e:
+                        partitioned_by = (
+                            "submission_timestamp"
+                            if any(dataset.endswith(s) for s in ("_live", "_stable"))
+                            else None
+                        )
+                        try:
+                            Schema.for_table(
+                                project=project,
+                                dataset=dataset,
+                                table=name,
+                                id_token=id_token,
+                                partitioned_by=partitioned_by,
+                            ).to_yaml_file(stub_path / SCHEMA_FILE)
+                        except Exception:
+                            print(
+                                f"Warning: Could not fetch schema for "
+                                f"{project}.{dataset}.{name}: {e}"
+                            )
+
+                (stub_path / QUERY_SCRIPT).write_text(
+                    "# Table stub generated by --target deploy"
+                )
+                artifact_dependencies.add(stub_path / QUERY_SCRIPT)
+
+        # UDF refs from views/queries/MVs — same logic regardless of stub
+        # placement, paths come from sql/<source>/... directly.
+        udf_names: List[str] = []
+        if dep_file.name == VIEW_FILE:
+            udf_names = view.udf_references
+        elif dep_file.name in [QUERY_FILE, MATERIALIZED_VIEW]:
+            try:
+                sql_content = render_template(
+                    dep_file.name, template_folder=dep_file.parent, format=False
+                )
+                udf_names = routine_usages_in_text(
+                    sql_content, dep_file.parent.parent.parent.name
+                )
+            except Exception as e:
+                print(f"Warning: Could not extract UDF refs from {dep_file}: {e}")
+
+        if udf_names:
+            raw_routines = read_routine_dir()
+            udf_paths = {
+                Path(raw_routines[u].filepath) for u in udf_names if u in raw_routines
+            }
+            # walk transitive UDF deps
+            from bigquery_etl.routine.parse_routine import accumulate_dependencies
+
+            transitive = set()
+            for u in udf_names:
+                if u in raw_routines:
+                    for t in accumulate_dependencies([], raw_routines, u):
+                        if t in raw_routines:
+                            transitive.add(Path(raw_routines[t].filepath))
+            artifact_dependencies.update(udf_paths | transitive)
+
+    return artifact_dependencies
 
 
 def _target_ref_for_source(

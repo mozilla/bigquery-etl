@@ -5,7 +5,6 @@ import multiprocessing
 import re
 import shutil
 import sys
-import tempfile
 from collections.abc import MutableMapping
 from functools import partial
 from pathlib import Path
@@ -23,7 +22,6 @@ from bigquery_etl.cli.stage import (
     QUERY_FILE,
     QUERY_SCRIPT,
     VIEW_FILE,
-    collect_artifact_dependencies,
 )
 from bigquery_etl.cli.utils import (
     defer_option,
@@ -51,7 +49,12 @@ from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
-from bigquery_etl.util.target import Target, ensure_dataset_exists, prepare_target_files
+from bigquery_etl.util.target import (
+    Target,
+    collect_target_dependencies,
+    ensure_dataset_exists,
+    prepare_target_files,
+)
 from bigquery_etl.view import View
 
 log = logging.getLogger(__name__)
@@ -287,11 +290,7 @@ def deploy(
     target = ctx.obj.get("target") if ctx.obj else None
 
     # `--isolated` deploys a self-contained mirror into the target project, which
-    # cannot reach prod tables/UDFs. Refreshing schema by dry-running the query
-    # would fail on missing dependencies, so use the existing schema.yaml as
-    # authoritative — same defaults the legacy `stage deploy` path uses.
-    # Routines are auto-enabled because the schema resolver dry-runs against
-    # the target project, which needs the local UDF set published first.
+    # cannot reach prod tables/UDFs
     if isolated:
         table_force = True
         table_skip_external_data = True
@@ -324,16 +323,13 @@ def deploy(
 
     # For --isolated, collect dependencies up front so we can feed any
     # discovered UDFs into the routine publish step below (otherwise the
-    # schema-resolver dry-run sees a stale or missing target UDF).
-    stub_dir_ctx: Optional[tempfile.TemporaryDirectory] = None
+    # schema-resolver dry-run sees a stale or missing target UDF). Stubs for
+    # unmanaged dep tables land directly under sql/<target_project>/...,
+    # alongside the regular target artifacts produced by prepare_target_files.
     isolated_routine_deps: List[Path] = []
     if isolated and target and target.project_id not in project_ids:
-        # Stubs for unmanaged dependency tables (live/stable tables, etc.) are
-        # written here so we don't pollute sql/. The dir is cleaned up after
-        # _prepare_target_artifacts copies stubs into the target tree.
-        stub_dir_ctx = tempfile.TemporaryDirectory(prefix="bqetl-isolated-stubs-")
         isolated_routine_deps = _collect_isolated_dependencies(
-            artifacts, sql_dir, stub_dir_ctx.name
+            artifacts, sql_dir, target
         )
 
     # publish routines first since tables/views may depend on them
@@ -444,10 +440,6 @@ def deploy(
                 source_to_target_paths,
                 test_dir or Path("tests/sql"),
             )
-
-        # Stubs have been copied into target dirs; safe to clean up.
-        if stub_dir_ctx is not None:
-            stub_dir_ctx.cleanup()
 
         client = bigquery.Client(project=target.project_id)
         seen_datasets: set = set()
@@ -575,20 +567,19 @@ def _strip_materialized_view(target_file: Path) -> Path:
 def _collect_isolated_dependencies(
     artifacts: Dict[str, Tuple[Path, str]],
     sql_dir: str,
-    stub_root: str,
+    target: Target,
 ) -> List[Path]:
     """Walk dependencies of `artifacts` for an --isolated deploy.
 
-    Mutates `artifacts` to include discovered table/view/MV paths.
+    Mutates `artifacts` to include discovered table/view/MV paths. Stubs for
+    unmanaged dep tables are written directly into the target tree
+    (sql/<target_project>/...) by `collect_target_dependencies`.
     Returns the list of UDF paths discovered (callers feed these to the
     routine publish step so the schema resolver can dry-run against target).
-    Stubs for unmanaged dependency tables are written under `stub_root`.
     """
     routine_deps: List[Path] = []
     existing_paths = {fp for fp, _ in artifacts.values()}
-    for dep_path in collect_artifact_dependencies(
-        existing_paths, sql_dir, stub_root=stub_root
-    ):
+    for dep_path in collect_target_dependencies(existing_paths, sql_dir, target):
         if dep_path.name in (
             QUERY_FILE,
             QUERY_SCRIPT,
@@ -630,16 +621,22 @@ def _prepare_target_artifacts(
         ):
             continue
 
-        target_files = prepare_target_files(
-            [file_path],
-            sql_dir,
-            source_project,
-            target,
-            defer_to_target=defer_to_target,
-            isolated=isolated,
-            auto_deploy=False,
-        )
-        target_file = target_files[0]
+        # Stubs from collect_target_dependencies live directly under
+        # sql/<target_project>/... — they're already at their final target
+        # path so prepare_target_files would needlessly re-render them.
+        if source_project == target.project_id:
+            target_file = file_path
+        else:
+            target_files = prepare_target_files(
+                [file_path],
+                sql_dir,
+                source_project,
+                target,
+                defer_to_target=defer_to_target,
+                isolated=isolated,
+                auto_deploy=False,
+            )
+            target_file = target_files[0]
 
         if target_file.name == MATERIALIZED_VIEW:
             target_file = _strip_materialized_view(target_file)

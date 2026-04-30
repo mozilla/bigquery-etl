@@ -96,6 +96,11 @@ class Target:
     dataset_prefix: Optional[str] = attr.ib(default=None)
     dataset: Optional[str] = attr.ib(default=None)
     artifact_prefix: Optional[str] = attr.ib(default=None)
+    # When True, datasets created by this target's deploys grant READER to
+    # `dry_run.function_accounts`. Use for shared/CI environments (e.g. stage)
+    # where the cloud-function dry-run needs to read staged data. Leave off
+    # for personal dev targets — your dev datasets stay private to you.
+    grant_dryrun_access: bool = attr.ib(default=False)
 
     # raw (unrendered) templates — preserved so that pattern-matching code
     # (e.g. target clean) can parameterize git.branch / git.commit independently.
@@ -890,14 +895,18 @@ def ensure_dataset_exists(
     client: bigquery.Client,
     dataset_ref: str,
     expiration_hours: Optional[int] = None,
+    grant_dryrun_access: bool = False,
 ) -> bool:
     """Create a dataset if it doesn't exist, with user-only access permissions.
 
-    When expiration_hours is set, table default-expiration and an `expires_on`
-    label are applied — used by stage-style ephemeral deploys so a sweeper can
-    GC datasets that outlived their CI run. Dry-run service accounts (from
-    `dry_run.function_accounts` config) get READER access automatically so the
-    cloud-function dry-run can read staged datasets.
+    `expiration_hours`: when set, applies default table-expiration and an
+    `expires_on` label so a sweeper can GC datasets — used by ephemeral CI
+    deploys.
+
+    `grant_dryrun_access`: when True, dry-run service accounts (from
+    `dry_run.function_accounts` config) get READER access. Off by default so
+    personal dev datasets stay private; opt in for stage / shared CI targets
+    by setting `grant_dryrun_access: true` on the target in `bqetl_targets.yaml`.
     """
     try:
         client.get_dataset(dataset_ref)
@@ -928,17 +937,19 @@ def ensure_dataset_exists(
         click.echo(f"⚠️  Could not set dataset permissions: {e}")
 
     # Grant READER to dry-run cloud function accounts so schema dry-runs can
-    # read staged datasets. Mirrors legacy stage deploy.
-    for dry_run_account in ConfigLoader.get(
-        "dry_run", "function_accounts", fallback=[]
-    ):
-        access_entries.append(
-            bigquery.AccessEntry(
-                role="READER",
-                entity_type="userByEmail",
-                entity_id=dry_run_account,
+    # read staged datasets. Opt-in per-target — leave off for personal dev so
+    # the cloud-function service account doesn't get access to your data.
+    if grant_dryrun_access:
+        for dry_run_account in ConfigLoader.get(
+            "dry_run", "function_accounts", fallback=[]
+        ):
+            access_entries.append(
+                bigquery.AccessEntry(
+                    role="READER",
+                    entity_type="userByEmail",
+                    entity_id=dry_run_account,
+                )
             )
-        )
 
     if access_entries:
         dataset.access_entries = access_entries

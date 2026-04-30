@@ -317,7 +317,13 @@ def deploy(
     credentials = None
     id_token = get_id_token()
 
-    artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
+    artifacts = _discover_artifacts(
+        paths,
+        sql_dir,
+        project_ids,
+        artifact_types,
+        include_materialized_views=isolated,
+    )
 
     # For --isolated, collect dependencies up front so we can feed any
     # discovered UDFs into the routine publish step below (otherwise the
@@ -416,7 +422,10 @@ def deploy(
             if dataset_ref not in seen_datasets:
                 seen_datasets.add(dataset_ref)
                 ensure_dataset_exists(
-                    client, dataset_ref, expiration_hours=expire_after_hours
+                    client,
+                    dataset_ref,
+                    expiration_hours=expire_after_hours,
+                    grant_dryrun_access=target.grant_dryrun_access,
                 )
 
     # filter views based on authorized flags
@@ -703,11 +712,18 @@ def _discover_artifacts(
     sql_dir: str,
     project_ids: List[str],
     artifact_types: List[str],
+    include_materialized_views: bool = False,
 ) -> Dict[str, Tuple[Path, str]]:
-    """Find artifacts."""
+    """Find artifacts.
+
+    `include_materialized_views` is opt-in because only the --isolated path
+    knows how to strip `CREATE MATERIALIZED VIEW` and deploy MVs as schema-
+    only tables. Regular deploys skip MV files (matches pre-target behavior).
+    """
     artifacts: Dict[str, Tuple[Path, str]] = {}
     patterns = {
-        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql", MATERIALIZED_VIEW],
+        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"]
+        + ([MATERIALIZED_VIEW] if include_materialized_views else []),
         "view": [VIEW_FILE],
     }
 

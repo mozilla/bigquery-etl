@@ -25,7 +25,6 @@ from ..routine.parse_routine import (
     RawRoutine,
     accumulate_dependencies,
     read_routine_dir,
-    routine_usages_in_text,
 )
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents, render
@@ -48,9 +47,6 @@ def stage():
 @stage.command(help="""
     Deploy artifacts to the configured stage project. The order of deployment is:
     UDFs, views, tables.
-
-    DEPRECATED: prefer `./bqetl --target stage deploy` (see the `stage` target in
-    `bqetl_targets.yaml` and `docs/cookbooks/development_workflows.md`).
 
     Coding agents aren't allowed to run this command.
 
@@ -119,15 +115,6 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
-    click.echo(
-        click.style(
-            "DEPRECATED: `bqetl stage deploy` is deprecated. Prefer "
-            "`./bqetl --target stage deploy` (see the `stage` target in "
-            "`bqetl_targets.yaml`).",
-            fg="yellow",
-        ),
-        err=True,
-    )
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -166,7 +153,7 @@ def deploy(
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment
     artifact_files.update(_udf_dependencies(artifact_files))
-    artifact_files.update(collect_artifact_dependencies(artifact_files, sql_dir))
+    artifact_files.update(_collect_artifact_dependencies(artifact_files, sql_dir))
 
     # update references of all deployed artifacts
     # references needs to be set to the stage project and the new dataset identifier
@@ -321,7 +308,7 @@ def _udf_dependencies(artifact_files):
     return udf_dependencies
 
 
-def collect_artifact_dependencies(artifact_files, sql_dir):
+def _collect_artifact_dependencies(artifact_files, sql_dir):
     """Determine view and table dependencies.
 
     Extracts dependencies from artifacts to ensure all referenced artifacts
@@ -333,11 +320,6 @@ def collect_artifact_dependencies(artifact_files, sql_dir):
     For query files (tables): Only extracts references if there's no schema.yaml.
     With schema.yaml: We deploy the schema structure (not run the query), so
     we don't need the query's dependencies.
-
-    Stubs (placeholder query.py + fetched schema.yaml) for unmanaged dependency
-    tables are written under `sql_dir`. This is intentionally legacy-stage
-    behavior — the new `--target … --isolated` path uses a target-aware
-    `collect_target_dependencies` in util/target.py instead.
     """
     artifact_dependencies = set()
     dependency_files = [
@@ -404,85 +386,53 @@ def collect_artifact_dependencies(artifact_files, sql_dir):
                         file_exists_for_dependency = True
                         break
 
-                # Only stub when the source repo has no managed artifact for
-                # this dependency. Otherwise we'd needlessly fetch schemas for
-                # tables that already live under sql/<project>/...
-                if not file_exists_for_dependency:
-                    path = Path(sql_dir) / project / dataset / name
-                    if "*" in name:
-                        # deploy stub for wildcard tables
-                        path = (
-                            Path(sql_dir)
-                            / project
-                            / dataset
-                            / name.replace("*", "wildcard")
-                        )
+                path = Path(sql_dir) / project / dataset / name
+                if "*" in name:
+                    # deploy stub for wildcard tables
+                    path = (
+                        Path(sql_dir)
+                        / project
+                        / dataset
+                        / name.replace("*", "wildcard")
+                    )
+                if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
-                    # don't create schema for wildcard and metadata tables.
-                    # The target project doesn't have access to source tables,
-                    # so we fetch the schema here and deploy it as a stub.
-                    if name != "INFORMATION_SCHEMA" and "*" not in name:
-                        try:
-                            client = bigquery.Client(project=project)
-                            bq_table = client.get_table(f"{project}.{dataset}.{name}")
-                            Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(
-                                path / SCHEMA_FILE
-                            )
-                        except Exception as e:
-                            # Fall back to dry-run-based fetch (legacy behavior)
-                            # for cases where get_table doesn't apply (e.g.
-                            # tables that don't yet exist).
-                            partitioned_by = None
-                            if any(
-                                dataset.endswith(suffix)
-                                for suffix in ("_live", "_stable")
-                            ):
-                                partitioned_by = "submission_timestamp"
-                            try:
-                                Schema.for_table(
-                                    project=project,
-                                    dataset=dataset,
-                                    table=name,
-                                    id_token=id_token,
-                                    partitioned_by=partitioned_by,
-                                ).to_yaml_file(path / SCHEMA_FILE)
-                            except Exception:
-                                print(
-                                    f"Warning: Could not fetch schema for "
-                                    f"{project}.{dataset}.{name}: {e}"
-                                )
+                    # don't create schema for wildcard and metadata tables
+                    # Create schemas for syndicated tables, stable, live tables and other
+                    # tables not managed by bigquery-etl by doing a dryrun.
+                    # The stage project doesn't have access to prod tables (e.g when referenced)
+                    # so we need to create the schema here and deploy it.
+                    if name != "INFORMATION_SCHEMA":
+                        partitioned_by = None
 
+                        if any(
+                            dataset.endswith(suffix) for suffix in ("_live", "_stable")
+                        ):
+                            partitioned_by = "submission_timestamp"
+
+                        schema = Schema.for_table(
+                            project=project,
+                            dataset=dataset,
+                            table=name,
+                            id_token=id_token,
+                            partitioned_by=partitioned_by,
+                        )
+                        schema.to_yaml_file(path / SCHEMA_FILE)
+
+                if not file_exists_for_dependency:
                     (path / QUERY_SCRIPT).write_text(
                         "# Table stub generated by stage deploy"
                     )
                     artifact_dependencies.add(path / QUERY_SCRIPT)
 
-        # Extract UDF dependencies from views, queries, and materialized views.
-        # Including query files matters for `--target … --isolated`: the schema
-        # resolver dry-runs the rewritten query against the target project, so
-        # any UDF the query references must be published to target first.
-        # Without this, a deploy that changes both a UDF and a query referencing
-        # it sees the stale (or missing) target UDF during the dry-run.
-        udf_names = []
-        if dep_file.name == VIEW_FILE:
-            udf_names = view.udf_references
-        elif dep_file.name in [QUERY_FILE, MATERIALIZED_VIEW]:
-            try:
-                sql_content = render(
-                    dep_file.name, template_folder=dep_file.parent, format=False
-                )
-                udf_names = routine_usages_in_text(
-                    sql_content, dep_file.parent.parent.parent.name
-                )
-            except Exception as e:
-                print(f"Warning: Could not extract UDF refs from {dep_file}: {e}")
-
-        if udf_names:
+        # Extract UDF dependencies only for views (not for query files)
+        if dep_file.name == VIEW_FILE and table_references:
             raw_routines = read_routine_dir()
             udf_dependencies = set()
-            for udf_name in udf_names:
-                if udf_name in raw_routines:
-                    udf_dependencies.add(Path(raw_routines[udf_name].filepath))
+
+            for udf_dependency in view.udf_references:
+                routine = raw_routines[udf_dependency]
+                udf_dependencies.add(Path(routine.filepath))
 
             # determine UDF dependencies recursively
             artifact_dependencies.update(_udf_dependencies(udf_dependencies))

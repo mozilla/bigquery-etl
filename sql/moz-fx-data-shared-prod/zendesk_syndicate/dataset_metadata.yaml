@@ -9,7 +9,10 @@ syndication:
     syndicated_project: moz-fx-sumo-prod
     syndicated_dataset: zendesk
   syndicated_tables:
+    - group
     - ticket
+    - ticket_field_history
+    - ticket_tag
   administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer

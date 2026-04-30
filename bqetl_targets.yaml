@@ -2,11 +2,7 @@
 #   project_id: moz-fx-data-shared-dev # or personal sandbox
 #   dataset_prefix: dev_{{ account.username }}_{{ git.branch }}_{{ git.commit}}_ # optional prefix; git.branch, git.commit, artifact.project_id, and account.username are available
 
-dev_shared:
-  project_id: moz-fx-data-shared-dev
-  dataset_prefix: dev_{{ git.branch }}_{{ git.commit}}_{{ artifact.project_id }}_
-
 stage:
   project_id: moz-fx-data-integration-tests
-  dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.commit }}"
+  dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.branch }}_{{ git.commit }}"
   grant_dryrun_access: true

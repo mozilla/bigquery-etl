@@ -267,7 +267,24 @@ unioned_pings AS (
     client_info,
     document_id,
     events,
-    metadata,
+    STRUCT(
+      metadata.geo,
+      STRUCT(
+        metadata.header.date,
+        metadata.header.dnt,
+        metadata.header.x_debug_id,
+        metadata.header.x_foxsec_ip_reputation,
+        metadata.header.x_lb_tags,
+        metadata.header.x_pingsender_version,
+        metadata.header.x_source_tags,
+        metadata.header.x_telemetry_agent,
+        metadata.header.parsed_date,
+        metadata.header.parsed_x_source_tags,
+        metadata.header.parsed_x_lb_tags
+      ) AS `header`,
+      metadata.isp,
+      metadata.user_agent
+    ) AS `metadata`,
     STRUCT(
       metrics.labeled_counter,
       STRUCT(
@@ -350,7 +367,24 @@ unioned_pings AS (
     client_info,
     document_id,
     events,
-    metadata,
+    STRUCT(
+      metadata.geo,
+      STRUCT(
+        metadata.header.date,
+        metadata.header.dnt,
+        metadata.header.x_debug_id,
+        metadata.header.x_foxsec_ip_reputation,
+        metadata.header.x_lb_tags,
+        metadata.header.x_pingsender_version,
+        metadata.header.x_source_tags,
+        metadata.header.x_telemetry_agent,
+        metadata.header.parsed_date,
+        metadata.header.parsed_x_source_tags,
+        metadata.header.parsed_x_lb_tags
+      ) AS `header`,
+      metadata.isp,
+      metadata.user_agent
+    ) AS `metadata`,
     STRUCT(
       metrics.labeled_counter,
       STRUCT(
@@ -433,7 +467,24 @@ unioned_pings AS (
     client_info,
     document_id,
     events,
-    metadata,
+    STRUCT(
+      metadata.geo,
+      STRUCT(
+        metadata.header.date,
+        metadata.header.dnt,
+        metadata.header.x_debug_id,
+        metadata.header.x_foxsec_ip_reputation,
+        metadata.header.x_lb_tags,
+        metadata.header.x_pingsender_version,
+        metadata.header.x_source_tags,
+        metadata.header.x_telemetry_agent,
+        metadata.header.parsed_date,
+        metadata.header.parsed_x_source_tags,
+        metadata.header.parsed_x_lb_tags
+      ) AS `header`,
+      metadata.isp,
+      metadata.user_agent
+    ) AS `metadata`,
     STRUCT(
       metrics.labeled_counter,
       STRUCT(

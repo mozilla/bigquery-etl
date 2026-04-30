@@ -125,4 +125,4 @@ fields:
 - name: urlbar_abandonments
   type: INTEGER
   mode: NULLABLE
-  description: URL Bar Abandonments
+  description: Number of times that a user clicked into the browser address bar and left it without clicking a result or performing a search.

@@ -30,15 +30,11 @@ owners:
   - plee@mozilla.com
   - mozilla/customer_insights
 labels:
-  incremental: true
+  incremental: false
   application: sumo
   type: base_metrics
   schedule: daily
-bigquery:
-  time_partitioning:
-    type: day
-    field: date
-    require_partition_filter: false
 scheduling:
   dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
   depends_on_past: false

@@ -1,6 +1,5 @@
--- Classify tickets as 'Appbot - Non-English' to exclude auto-closed non-English app review tickets.
--- See zen_desk_volume.sql for context: these are auto-closed under a fake account (SUMOJr)
--- and are never seen by agents.
+-- Temp version of query.sql with date partitioning removed for ad-hoc testing.
+-- Expands each ticket into created/resolved events so both dates are counted correctly.
 WITH appbot_class AS (
   SELECT
     ticket_id,
@@ -18,7 +17,6 @@ WITH appbot_class AS (
   GROUP BY
     ticket_id
 ),
--- A reopened automated ticket was touched by a human, so it should be reclassified.
 reopens AS (
   SELECT
     ticket_id,
@@ -145,20 +143,42 @@ tickets AS (
     AND t.status != 'deleted'
     AND tt.ticket_id IS NULL
     AND COALESCE(g.name, '') NOT IN ('Sumo Test', 'VPN QA')
-    AND (
-      DATE(TIMESTAMP(t.created_at), "UTC") = @submission_date
-      OR DATE(COALESCE(sd.solved_at, sd.closed_at)) = @submission_date
-    )
+),
+events AS (
+  SELECT
+    created_date AS `date`,
+    product,
+    automation_category,
+    'created' AS event_type
+  FROM
+    tickets
+  WHERE
+    created_date IS NOT NULL
+  UNION ALL
+  SELECT
+    resolved_date AS `date`,
+    product,
+    automation_category,
+    'resolved' AS event_type
+  FROM
+    tickets
+  WHERE
+    resolved_date IS NOT NULL
 )
 SELECT
-  @submission_date AS `date`,
+  `date`,
   product,
   automation_category,
-  COUNTIF(created_date = @submission_date) AS tickets_created,
-  COUNTIF(resolved_date = @submission_date) AS tickets_resolved,
+  COUNTIF(event_type = 'created') AS tickets_created,
+  COUNTIF(event_type = 'resolved') AS tickets_resolved,
   CURRENT_TIMESTAMP() AS etl_timestamp
 FROM
-  tickets
+  events
 GROUP BY
+  `date`,
+  product,
+  automation_category
+ORDER BY
+  `date`,
   product,
   automation_category

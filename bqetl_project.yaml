@@ -453,7 +453,6 @@ generate:
       skip_pings:
       - topsites-impression  # access denied
       - serp-categorization  # access denied
-      - background-update  # table doesn't exist
       events_tables:  # overwrite event tables
         pine:  # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
@@ -484,7 +483,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     clients_last_seen_joined:
       skip_apps:
@@ -499,7 +497,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     bigconfig:
       skip_apps:

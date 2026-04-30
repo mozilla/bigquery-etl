@@ -1,6 +1,8 @@
 # target_name:
 #   project_id: moz-fx-data-shared-dev # or personal sandbox
-#   dataset_prefix: dev_{{ account.username }}_{{ git.branch }}_{{ git.commit}}_ # optional prefix; git.branch, git.commit, artifact.project_id, and account.username are available
+#
+#   optional prefix; git.branch, git.commit, artifact.project_id, account.username available
+#   dataset_prefix: {{ account.username }}_{{ git.branch }}_{{ git.commit}}_
 
 stage:
   project_id: moz-fx-data-integration-tests

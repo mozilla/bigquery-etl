@@ -527,8 +527,11 @@ def _create_target_stub(
     target: Target,
     id_token: str,
 ) -> Path:
-    """Write a stub query.py + (best-effort) schema.yaml directly at the
-    target path for an unmanaged dependency table."""
+    """Write a stub for an unmanaged dependency table.
+
+    Drops a placeholder ``query.py`` and a best-effort ``schema.yaml`` at
+    the target path so the regular deploy flow can pick it up.
+    """
     is_wildcard = "*" in name
     stub_name = name.replace("*", "wildcard") if is_wildcard else name
     tgt_project, tgt_dataset, tgt_table = _target_ref_for_source(
@@ -795,12 +798,18 @@ def rewrite_for_defer(
         query_file.name, template_folder=str(query_file.parent), format=False
     )
 
-    def is_current_target_artifact(info: DeployedTableInfo) -> bool:
-        """True iff the deployed artifact matches what the current target config
-        would produce for this source — guards against stale deployments from
-        a different branch/config."""
+    def _validated_source(
+        info: DeployedTableInfo,
+    ) -> Optional[Tuple[str, str, str]]:
+        """Return the source 3-part ref if `info` is current and complete.
+
+        Returns None when the deployed artifact is missing source fields, or
+        when its target dataset doesn't match what the current target config
+        would produce — guards against stale deployments from a different
+        branch/config.
+        """
         if not (info.source_project and info.source_dataset and info.source_table):
-            return False
+            return None
         _, expected_ds, _ = _target_ref_for_source(
             target,
             target_project,
@@ -808,25 +817,28 @@ def rewrite_for_defer(
             info.source_dataset,
             info.source_table,
         )
-        return info.target_dataset == expected_ds
+        if info.target_dataset != expected_ds:
+            return None
+        return info.source_project, info.source_dataset, info.source_table
 
     for info in get_deployed_tables_in_target(sql_dir, target_project):
-        if not is_current_target_artifact(info):
+        src = _validated_source(info)
+        if src is None:
             continue
         sql = _substitute_3part_ref(
             sql,
-            (info.source_project, info.source_dataset, info.source_table),
+            src,
             (target_project, info.target_dataset, info.target_table),
         )
 
     # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
     # routine_usage_pattern handles both, gated on a `(` call site.
     for info in get_deployed_routines_in_target(sql_dir, target_project):
-        if not is_current_target_artifact(info):
+        src = _validated_source(info)
+        if src is None:
             continue
-        udf_pattern = routine_usage_pattern(
-            f"{info.source_dataset}.{info.source_table}", info.source_project
-        )
+        src_project, src_dataset, src_table = src
+        udf_pattern = routine_usage_pattern(f"{src_dataset}.{src_table}", src_project)
         sql = udf_pattern.sub(
             f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`",
             sql,

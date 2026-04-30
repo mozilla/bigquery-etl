@@ -24,7 +24,7 @@ generated-sql/
 sql/*-sandbox/
 sql/*-sandbox-[0-9]*/
 sql/moz-fx-data-shared-dev/
-bqetl_targets.yaml
+# bqetl_targets.yaml
 
 # ignore Bigeye artifacts
 moz-fx-data-shared-prod_APPLY.yml

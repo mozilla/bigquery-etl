@@ -99,17 +99,14 @@ class Target:
     artifact_prefix: Optional[str] = attr.ib(default=None)
     # When True, datasets created by this target's deploys grant READER to
     # `dry_run.function_accounts`. Use for shared/CI environments (e.g. stage)
-    # where the cloud-function dry-run needs to read staged data. Leave off
-    # for personal dev targets — your dev datasets stay private to you.
+    # where the cloud-function dry-run needs to read staged data.
     grant_dryrun_access: bool = attr.ib(default=False)
     # Default table expiration (in hours) on datasets this target creates.
     # When set, the dataset is also labeled `expires_on=<unix-millis>` so a
-    # sweeper can GC datasets. Use for ephemeral CI deploys; leave unset for
-    # personal dev so your dev artifacts persist across iterations.
+    # sweeper can GC datasets.
     expire_after_hours: Optional[int] = attr.ib(default=None)
     # When True, --target deploys copy and rename SQL tests under tests/sql/
     # to match target paths so pytest can run against staged artifacts.
-    # CLI --rewrite-tests overrides this per-run.
     rewrite_tests: bool = attr.ib(default=False)
 
     # raw (unrendered) templates — preserved so that pattern-matching code

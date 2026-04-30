@@ -297,10 +297,7 @@ def deploy(
         rewrite_tests = False
 
     # The `--isolated` profile: a self-contained mirror into the target
-    # project. Force these flags together because target can't reach prod
-    # tables/UDFs, so dry-runs and external-data fetches won't work and the
-    # schema in target_dir is authoritative. Routines are auto-on so the
-    # schema resolver dry-run sees auto-discovered UDF deps.
+    # project
     if isolated:
         table_force = True
         table_skip_external_data = True

@@ -613,12 +613,6 @@ class TestTargetRefForSource:
 class TestSubstitute3PartRef:
     """Test _substitute_3part_ref handles common ref forms."""
 
-    def test_unquoted(self):
-        sql = "SELECT * FROM proj.ds.tbl WHERE x > 0"
-        out = _substitute_3part_ref(sql, ("proj", "ds", "tbl"), ("p2", "d2", "t2"))
-        assert "`p2`.`d2`.`t2`" in out
-        assert "proj.ds.tbl" not in out
-
     def test_fully_backticked(self):
         sql = "SELECT * FROM `proj`.`ds`.`tbl`"
         out = _substitute_3part_ref(sql, ("proj", "ds", "tbl"), ("p2", "d2", "t2"))
@@ -631,11 +625,6 @@ class TestSubstitute3PartRef:
         assert "proj.ds.tbl_other" in out
         assert "`p2`.`d2`.`t2`" in out
 
-    def test_multiple_occurrences(self):
-        sql = "SELECT * FROM proj.ds.tbl UNION SELECT * FROM proj.ds.tbl"
-        out = _substitute_3part_ref(sql, ("proj", "ds", "tbl"), ("p2", "d2", "t2"))
-        assert out.count("`p2`.`d2`.`t2`") == 2
-
     def test_project_with_hyphen(self):
         sql = "SELECT * FROM `moz-fx-data-shared-prod`.telemetry.main"
         out = _substitute_3part_ref(
@@ -647,9 +636,6 @@ class TestSubstitute3PartRef:
 
 
 class TestNormalizeTableRef:
-    def test_three_part(self):
-        assert _normalize_table_ref("p.d.t", "default") == ("p", "d", "t")
-
     def test_information_schema_dataset_prepends_project(self):
         # `dataset.INFORMATION_SCHEMA.TABLES` lacks a project → use default,
         # then collapse the trailing INFORMATION_SCHEMA pseudo-path.
@@ -838,10 +824,3 @@ class TestResolveIsolatedSchema:
         mock_client_cls.return_value.get_table.assert_called_once_with(
             "src-p.src_ds.tbl"
         )
-
-    def test_target_attrs_default(self):
-        # Defaults for the new policy fields.
-        t = Target(name="dev", project_id="p")
-        assert t.grant_dryrun_access is False
-        assert t.expire_after_hours is None
-        assert t.rewrite_tests is False

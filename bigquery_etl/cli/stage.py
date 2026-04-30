@@ -441,6 +441,16 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
     return artifact_dependencies
 
 
+def _rewrite_dataset_for_stage(original_project, original_dataset, dataset_suffix):
+    """Apply the stage dataset rename rule used when copying artifacts."""
+    if original_dataset in ("INFORMATION_SCHEMA", "region-eu", "region-us"):
+        return original_dataset
+    deployed_dataset = f"{original_dataset}_{original_project.replace('-', '_')}"
+    if dataset_suffix:
+        deployed_dataset += f"_{dataset_suffix}"
+    return deployed_dataset
+
+
 def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     replace_references = []
     replace_partial_references = []
@@ -450,16 +460,9 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         original_dataset = artifact_file.parent.parent.name
         original_project = artifact_file.parent.parent.parent.name
 
-        deployed_dataset = original_dataset
-
-        if original_dataset not in (
-            "INFORMATION_SCHEMA",
-            "region-eu",
-            "region-us",
-        ):
-            deployed_dataset += f"_{original_project.replace('-', '_')}"
-            if dataset_suffix:
-                deployed_dataset += f"_{dataset_suffix}"
+        deployed_dataset = _rewrite_dataset_for_stage(
+            original_project, original_dataset, dataset_suffix
+        )
 
         deployed_project = project_id
 
@@ -532,6 +535,33 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                     sql = re.sub(ref[0], ref[1], sql)
 
             path.write_text(sql)
+
+    # Rewrite derived_from references in metadata.yaml so parent tables can be found
+    for artifact_file in artifact_files:
+        metadata_path = artifact_file.parent / METADATA_FILE
+        if not metadata_path.is_file():
+            continue
+        try:
+            metadata = Metadata.from_file(metadata_path)
+        except Exception:
+            continue
+        if not (metadata.schema and metadata.schema.derived_from):
+            continue
+
+        changed = False
+        for derived_from in metadata.schema.derived_from:
+            if len(derived_from.table) != 3:
+                continue
+            orig_project, orig_dataset, orig_table = derived_from.table
+            derived_from.table = [
+                project_id,
+                _rewrite_dataset_for_stage(orig_project, orig_dataset, dataset_suffix),
+                orig_table,
+            ]
+            changed = True
+
+        if changed:
+            metadata.write(metadata_path)
 
 
 def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):

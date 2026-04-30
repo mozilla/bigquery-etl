@@ -197,5 +197,4 @@ fields:
   - name: exit_type
     type: STRING
     mode: NULLABLE
-    description: How the user exited the urlbar session for bounce or disable events.
-      This uses the value of 'event_name' when 'event_name' is 'bounce', 'disable' or 'abandonment'.
+    description: How the user exited the urlbar session ('bounce', 'disable' or 'abandonment').

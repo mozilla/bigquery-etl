@@ -5,9 +5,9 @@ WITH deactivation_filter AS (
     a.answer_id,
     IF(u.is_active IS FALSE, TRUE, FALSE) AS is_deactivated
   FROM
-    `moz-fx-sumo-prod.sumo.kitsune_answers_raw` a
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` a
   LEFT JOIN
-    `moz-fx-sumo-prod.sumo.kitsune_auth_user` u
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user` u
     ON a.creator_username = u.username
   GROUP BY
     a.answer_id,
@@ -27,9 +27,9 @@ time_to_first_reply AS (
         fr.created_date AS reply_date,
         ROW_NUMBER() OVER (PARTITION BY fr.question_id ORDER BY fr.created_date) AS rn
       FROM
-        `moz-fx-sumo-prod.sumo.kitsune_questions_plus` q
+        `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
       JOIN
-        `moz-fx-sumo-prod.sumo.kitsune_answers_raw` fr
+        `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` fr
         ON q.question_id = fr.question_id
       LEFT JOIN
         deactivation_filter df
@@ -50,9 +50,9 @@ helpful_votes AS (
     SUM(a.num_helpful_votes) AS total_helpful_votes,
     SUM(a.num_unhelpful_votes) AS total_unhelpful_votes
   FROM
-    `moz-fx-sumo-prod.sumo.kitsune_answers_raw` a
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` a
   LEFT JOIN
-    `moz-fx-sumo-prod.sumo.kitsune_questions_plus` q
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
     ON a.question_id = q.question_id
   LEFT JOIN
     deactivation_filter df
@@ -84,7 +84,7 @@ questions AS (
     COALESCE(hv.total_helpful_votes, 0) AS total_helpful_votes,
     COALESCE(hv.total_unhelpful_votes, 0) AS total_unhelpful_votes
   FROM
-    `moz-fx-sumo-prod.sumo.kitsune_questions_plus` q
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
   LEFT JOIN
     time_to_first_reply ttfr
     ON q.question_id = ttfr.question_id

@@ -674,9 +674,12 @@ SELECT
   day_25,
   day_26,
   day_27,
-  day_28,
-  day_29,
-  day_30
+  -- bits28 tracks 28 days (bits 0-27); clients inactive for 28+ days fall out of
+  -- baseline_clients_last_seen entirely, producing NULL instead of FALSE. Coerce to
+  -- FALSE when days_data_available confirms the date is in the past.
+  IF(days_data_available >= 28 AND day_28 IS NULL, FALSE, day_28) AS day_28,
+  IF(days_data_available >= 29 AND day_29 IS NULL, FALSE, day_29) AS day_29,
+  IF(days_data_available >= 30 AND day_30 IS NULL, FALSE, day_30) AS day_30
 FROM
   client_level
 LEFT JOIN

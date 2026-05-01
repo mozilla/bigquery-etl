@@ -157,7 +157,7 @@ client_level AS (
     client_id,
     sample_id,
     first_seen_date,
-    DATE_DIFF(max_date, first_seen_date, DAY) AS days_data_available,
+    DATE_DIFF(max_date, first_seen_date, DAY) + 1 AS days_data_available,
     days_since_last_data,
     MAX(
       CASE
@@ -538,7 +538,7 @@ SELECT
   -- No activity on days 2-6; at risk of churning by day 7
   -- NULL if day 6 data not yet available
   CASE
-    WHEN days_data_available < 6
+    WHEN days_data_available < 7
       THEN NULL
     WHEN day_2 = FALSE
       AND day_3 = FALSE
@@ -581,7 +581,7 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND day_28 = FALSE
+      AND IFNULL(day_28, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS churned_after_1_day,
@@ -617,15 +617,15 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND day_28 = FALSE
-      AND day_29 = FALSE
+      AND IFNULL(day_28, FALSE) = FALSE
+      AND IFNULL(day_29, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS churned_after_2_days,
   -- Client is in the cohort but never active across the entire 30-day window
   -- NULL if day 30 data not yet available
   CASE
-    WHEN days_data_available < 28
+    WHEN days_data_available < 31
       THEN NULL
     WHEN day_0 = FALSE
       AND day_1 = FALSE
@@ -655,6 +655,9 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
+      AND IFNULL(day_28, FALSE) = FALSE
+      AND IFNULL(day_29, FALSE) = FALSE
+      AND IFNULL(day_30, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS immediately_churned,
@@ -689,9 +692,9 @@ SELECT
   -- bits28 tracks 28 days (bits 0-27); clients inactive for 28+ days fall out of
   -- baseline_clients_last_seen entirely, producing NULL instead of FALSE. Coerce to
   -- FALSE when days_data_available confirms the date is in the past.
-  IF(days_data_available >= 28 AND day_28 IS NULL, FALSE, day_28) AS day_28,
-  IF(days_data_available >= 29 AND day_29 IS NULL, FALSE, day_29) AS day_29,
-  IF(days_data_available >= 30 AND day_30 IS NULL, FALSE, day_30) AS day_30
+  IF(days_data_available >= 29 AND day_28 IS NULL, FALSE, day_28) AS day_28,
+  IF(days_data_available >= 30 AND day_29 IS NULL, FALSE, day_29) AS day_29,
+  IF(days_data_available >= 31 AND day_30 IS NULL, FALSE, day_30) AS day_30
 FROM
   client_level
 LEFT JOIN

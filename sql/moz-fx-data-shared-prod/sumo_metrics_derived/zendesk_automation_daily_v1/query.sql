@@ -14,7 +14,7 @@ WITH appbot_class AS (
       ELSE 'All Other Tickets'
     END AS ticket_group
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag`
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag`
   GROUP BY
     ticket_id
 ),
@@ -30,7 +30,7 @@ reopens AS (
         value AS status,
         LAG(value, 1, 'new') OVER (PARTITION BY ticket_id ORDER BY updated) AS prev_status
       FROM
-        `moz-fx-sumo-prod.zendesk.ticket_field_history`
+        `moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history`
       WHERE
         field_name = 'status'
     )
@@ -70,7 +70,7 @@ automation_tags AS (
       END
     ) AS is_automated
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag`
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag`
   GROUP BY
     ticket_id
 ),
@@ -97,7 +97,7 @@ solve_dates AS (
     MAX(CASE WHEN value = 'solved' THEN updated END) AS solved_at,
     MAX(CASE WHEN value = 'closed' THEN updated END) AS closed_at
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_field_history`
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history`
   WHERE
     field_name = 'status'
   GROUP BY
@@ -107,7 +107,7 @@ test_tickets AS (
   SELECT DISTINCT
     ticket_id
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag`
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag`
   WHERE
     tag LIKE '%test%'
 ),
@@ -137,7 +137,7 @@ tickets AS (
     test_tickets tt
     ON t.id = tt.ticket_id
   LEFT JOIN
-    `moz-fx-sumo-prod.zendesk.group` g
+    `moz-fx-data-shared-prod.zendesk_syndicate.group` g
     ON t.group_id = g.id
   WHERE
     COALESCE(ab.ticket_group, 'All Other Tickets') != 'Appbot - Non-English'

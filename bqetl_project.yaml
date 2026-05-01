@@ -27,6 +27,15 @@ monitoring:
   - 463
   - 508
   - 509
+  # Per-workspace BigQuery warehouse IDs. Required for tables whose
+  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
+  # single workspace, so an API call to one workspace's warehouse ID won't
+  # see metrics in another workspace. Falls back to bigeye_warehouse_id
+  # when a workspace isn't listed here (preserves single-workspace behavior).
+  bigeye_warehouses:
+    463: 1939
+    508: 2014
+    509: 1977
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:

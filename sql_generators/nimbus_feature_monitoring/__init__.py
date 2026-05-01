@@ -6,6 +6,7 @@ from typing import Any
 
 import click
 from metric_config_parser.config import ConfigCollection
+from metric_config_parser.featmon import SourceTableSpec
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -38,21 +39,39 @@ class Dimension:
 
 
 @dataclass
-class SourceTable:
-    name: str
+class SourceTableConfiguration:
+    """Wraps a SourceTableSpec with rendering context needed to generate SQL."""
+
+    spec: SourceTableSpec
     project: str
     dataset: str
-    table_name: str
     dimensions: list[Dimension]
-    analysis_unit_id: str = "client_info.client_id"
-    time_partition_field: str = "submission_timestamp"
-    type: str = "metrics"
 
     def __post_init__(self):
         self.last_dimensions = [d for d in self.dimensions if d.aggregator == "last"]
         self.non_last_dimensions = [
             d for d in self.dimensions if d.aggregator != "last"
         ]
+
+    @property
+    def name(self) -> str:
+        return self.spec.name
+
+    @property
+    def table_name(self) -> str:
+        return self.spec.table_name
+
+    @property
+    def analysis_unit_id(self) -> str:
+        return self.spec.analysis_unit_id
+
+    @property
+    def type(self) -> str:
+        return self.spec.type
+
+    @property
+    def time_partition_field(self) -> str:
+        return "submission_timestamp"
 
 
 @dataclass
@@ -117,7 +136,7 @@ class Feature:
     project: str
     dataset: str
     metrics_by_source: dict[str, list[Metric]]
-    ratios: list[list[str, str]]
+    ratios: list[list[str]]
 
     def all_metrics(self):
         return [
@@ -155,14 +174,11 @@ def generate_queries(project, path, write_dir):
                         **dim,
                     )
                 )
-            source_tables[source_name] = SourceTable(
-                name=source_name,
+            source_tables[source_name] = SourceTableConfiguration(
+                spec=source,
                 project=project,
                 dataset=dataset,
                 dimensions=dimensions,
-                table_name=source.table_name,
-                analysis_unit_id=source.analysis_unit_id,
-                type=source.type,
             )
         features = []
         for _feat_name, feat in app_config.spec.features.items():

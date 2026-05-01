@@ -9,6 +9,7 @@ BASE_DIR = Path(os.path.dirname(__file__)).parent
 
 def make_source_table_spec(name, table_name, source_type="metrics", dimensions=None):
     spec = MagicMock()
+    spec.name = name
     spec.table_name = table_name
     spec.type = source_type
     spec.analysis_unit_id = "client_info.client_id"

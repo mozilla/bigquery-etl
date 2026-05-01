@@ -384,7 +384,7 @@ fields:
         This is simply a string with the name of the browser binned to a fixed set
         of known browsers.
 
-        Possible values currently include the following (from [DefaultBrowser.cpp](https://searchfox.org/mozilla-central/source/toolkit/mozapps/defaultagent/DefaultBrowser.cpp)):
+        Possible values currently include the following (from [DefaultBrowser.cpp](https://searchfox.org/firefox-main/source/toolkit/mozapps/defaultagent/DefaultBrowser.cpp)):
         * "error" * "" (unknown) * "firefox" * "chrome" * "edge" * "edge-chrome" *
         "ie" * "opera" * "brave" * "yandex" * "qq-browser" * "360-browser" * "sogou"
         * "duckduckgo"
@@ -414,7 +414,7 @@ fields:
         This is simply a string with the name of the handler binned to a fixed set
         of known handlers.
 
-        Possible values currently include the following (from [DefaultPDF.cpp](https://searchfox.org/mozilla-central/source/toolkit/mozapps/defaultagent/DefaultPDF.cpp)):
+        Possible values currently include the following (from [DefaultPDF.cpp](https://searchfox.org/firefox-main/source/toolkit/mozapps/defaultagent/DefaultPDF.cpp)):
         * "Error" * "" (unknown) * "Firefox" * "Microsoft Edge" * "Google Chrome"
         * "Adobe Acrobat" * "WPS" * "Nitro" * "Foxit" * "PDF-XChange" * "Avast" *
         "Sumatra"

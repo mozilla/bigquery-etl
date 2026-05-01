@@ -613,7 +613,7 @@ SELECT
   -- Client is in the cohort but never active across the entire 30-day window
   -- NULL if day 30 data not yet available
   CASE
-    WHEN days_data_available < 31
+    WHEN days_data_available < 28
       THEN NULL
     WHEN day_0 = FALSE
       AND day_1 = FALSE

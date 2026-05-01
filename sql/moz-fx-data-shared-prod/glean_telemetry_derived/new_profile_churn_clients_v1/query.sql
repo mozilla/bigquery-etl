@@ -22,7 +22,7 @@ WITH activity_range AS (
 max_available_date AS (
   SELECT
     MAX(submission_date) AS max_date,
-    DATE_DIFF(CURRENT_DATE(), MAX(submission_date), DAY) AS days_since_last_data
+    DATE_DIFF(@submission_date, MAX(submission_date), DAY) AS days_since_last_data
   FROM
     activity_range
 ),

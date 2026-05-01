@@ -1,4 +1,12 @@
-WITH activity_range AS (
+WITH cohort_cutoff AS (
+  -- Start from the day after the most recent complete cohort; fall back to 30 days ago
+  -- to cover gaps if the complete table ETL has fallen behind.
+  SELECT
+    COALESCE(MAX(cohort_date) + 1, DATE_SUB(@submission_date, INTERVAL 30 DAY)) AS min_cohort_date
+  FROM
+    `moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v1`
+),
+activity_range AS (
   SELECT
     last_seen.client_id,
     last_seen.sample_id,
@@ -12,17 +20,22 @@ WITH activity_range AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
     ON last_seen.client_id = first_seen.client_id
     AND last_seen.sample_id = first_seen.sample_id
+  CROSS JOIN
+    cohort_cutoff
   WHERE
-    first_seen.first_seen_date = @submission_date
+    first_seen.first_seen_date >= cohort_cutoff.min_cohort_date
+    AND first_seen.first_seen_date <= @submission_date
+    AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND last_seen.submission_date <= @submission_date
     AND last_seen.submission_date
-    BETWEEN @submission_date
-    AND DATE_ADD(@submission_date, INTERVAL 30 DAY)
+    BETWEEN first_seen.first_seen_date
+    AND DATE_ADD(first_seen.first_seen_date, INTERVAL 30 DAY)
 ),
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (
   SELECT
     MAX(submission_date) AS max_date,
-    DATE_DIFF(CURRENT_DATE(), MAX(submission_date), DAY) AS days_since_last_data
+    DATE_DIFF(@submission_date, MAX(submission_date), DAY) AS days_since_last_data
   FROM
     activity_range
 ),
@@ -136,9 +149,8 @@ client_attributes AS (
   WHERE
       -- Pull attributes from each client's cohort date (first seen day) row
     last_seen.submission_date = last_seen.first_seen_date
-    AND last_seen.submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND @submission_date
+    AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND last_seen.submission_date <= @submission_date
 ),
 client_level AS (
   SELECT
@@ -469,7 +481,7 @@ client_level AS (
     days_since_last_data
 )
 SELECT
-  @submission_date AS submission_date,
+  first_seen_date AS submission_date,
   client_id,
   sample_id,
   first_seen_date AS cohort_date,

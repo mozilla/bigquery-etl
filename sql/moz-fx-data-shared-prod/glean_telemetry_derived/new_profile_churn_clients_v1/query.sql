@@ -643,9 +643,6 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND IFNULL(day_28, FALSE) = FALSE
-      AND IFNULL(day_29, FALSE) = FALSE
-      AND IFNULL(day_30, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS immediately_churned,

@@ -1,10 +1,9 @@
-import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-BASE_DIR = Path(os.path.dirname(__file__)).parent
+BASE_DIR = Path(__file__).parents[3] / "sql_generators" / "nimbus_feature_monitoring"
 
 
 def make_source_table_spec(name, table_name, source_type="metrics", dimensions=None):

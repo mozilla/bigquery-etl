@@ -42,7 +42,7 @@ class Dimension:
 class SourceTableConfiguration:
     """Wraps a SourceTableSpec with rendering context needed to generate SQL."""
 
-    spec: SourceTableSpec
+    source_table_spec: SourceTableSpec
     project: str
     dataset: str
     dimensions: list[Dimension]
@@ -55,19 +55,19 @@ class SourceTableConfiguration:
 
     @property
     def name(self) -> str:
-        return self.spec.name
+        return self.source_table_spec.name
 
     @property
     def table_name(self) -> str:
-        return self.spec.table_name
+        return self.source_table_spec.table_name
 
     @property
     def analysis_unit_id(self) -> str:
-        return self.spec.analysis_unit_id
+        return self.source_table_spec.analysis_unit_id
 
     @property
     def type(self) -> str:
-        return self.spec.type
+        return self.source_table_spec.type
 
     @property
     def time_partition_field(self) -> str:
@@ -175,7 +175,7 @@ def generate_queries(project, path, write_dir):
                     )
                 )
             source_tables[source_name] = SourceTableConfiguration(
-                spec=source,
+                source_table_spec=source,
                 project=project,
                 dataset=dataset,
                 dimensions=dimensions,

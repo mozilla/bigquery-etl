@@ -2,20 +2,22 @@ DECLARE datasets ARRAY<STRING>;
 
 DECLARE i INT64 DEFAULT 0;
 
-SET datasets = (
-  SELECT
-    ARRAY_AGG(schema_name)
-  FROM
-    `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
-  WHERE
-    schema_name LIKE r'%\_stable%'
-);
+SET
+  datasets = (
+    SELECT
+      ARRAY_AGG(schema_name)
+    FROM
+      `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
+    WHERE
+      schema_name LIKE r'%\_stable%'
+  );
 
 CREATE TEMP TABLE
   columns(dataset STRING, table_name STRING, total_columns INT64);
 
 LOOP
-  SET i = i + 1;
+  SET
+    i = i + 1;
 
   IF
     i > ARRAY_LENGTH(datasets)
@@ -23,21 +25,22 @@ LOOP
     LEAVE;
   END IF;
 
-  EXECUTE IMMEDIATE '''
+  EXECUTE IMMEDIATE
+    '''
     INSERT columns
     SELECT "''' || datasets[
-    ORDINAL(i)
-  ] || '''" AS dataset, 
-      table_name, 
-      COUNT(DISTINCT(field_path)) AS total_columns 
+      ORDINAL(i)
+    ] || '''" AS dataset,
+      table_name,
+      COUNT(DISTINCT(field_path)) AS total_columns
     FROM `moz-fx-data-shared-prod`.''' || datasets[
-    ORDINAL(i)
-  ] || '''.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+      ORDINAL(i)
+    ] || '''.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
     WHERE
       data_type NOT LIKE "STRUCT<%"
       AND data_type NOT LIKE "ARRAY<STRUCT<%"
     GROUP BY
-      table_name  
+      table_name
     ''';
 END LOOP;
 

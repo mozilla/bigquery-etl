@@ -1,0 +1,30 @@
+friendly_name: GitHub Pull Requests - bigquery-etl
+description: |-
+  Merged pull requests ingested daily from the GitHub API for mozilla/bigquery-etl.
+  Each partition contains PRs merged on that date.
+owners:
+- gkaberere@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: merged_at
+    require_partition_filter: false
+  clustering:
+    fields:
+    - repo_name
+    - author
+scheduling:
+  dag_name: bqetl_github
+  arguments:
+  - --date
+  - "{{ds}}"
+  - --repo
+  - mozilla/bigquery-etl
+  - --destination
+  - moz-fx-data-shared-prod.github_external.bqetl_prs_v1
+  secrets:
+  - deploy_target: GITHUB_TOKEN
+    key: bqetl_github__github_token

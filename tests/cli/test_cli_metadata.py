@@ -371,7 +371,7 @@ class TestMetadata:
                                             "type": "PREDEFINED",
                                             "predefined_metric": "FRESHNESS",
                                         },
-                                        "metric_name": "FRESHNESS",
+                                        "metric_name": "freshness",
                                     },
                                 ],
                             }
@@ -383,7 +383,7 @@ class TestMetadata:
                 yaml.safe_dump(data, f)
             assert find_bigeye_checks(self.test_path) is False
             captured = capfd.readouterr()
-            assert "ERROR: Missing Bigeye metrics: {'VOLUME'}." in captured.out
+            assert "ERROR: Missing Bigeye metrics: {'volume'}." in captured.out
 
     def test_find_bigeye_checks_missing_freshness_check(self, runner, capfd):
         with runner.isolated_filesystem():
@@ -403,7 +403,7 @@ class TestMetadata:
                                             "type": "PREDEFINED",
                                             "predefined_metric": "VOLUME",
                                         },
-                                        "metric_name": "VOLUME",
+                                        "metric_name": "volume",
                                     },
                                 ],
                             }
@@ -415,7 +415,7 @@ class TestMetadata:
                 yaml.safe_dump(data, f)
             assert find_bigeye_checks(self.test_path) is False
             captured = capfd.readouterr()
-            assert "ERROR: Missing Bigeye metrics: {'FRESHNESS'}." in captured.out
+            assert "ERROR: Missing Bigeye metrics: {'freshness'}." in captured.out
 
     def test_find_bigeye_checks_ok(self, runner):
         with runner.isolated_filesystem():
@@ -430,7 +430,7 @@ class TestMetadata:
                                     "type": "PREDEFINED",
                                     "predefined_metric": "FRESHNESS",
                                 },
-                                "metric_name": "FRESHNESS",
+                                "metric_name": "freshness",
                             },
                             {
                                 "metric_type": {
@@ -494,7 +494,7 @@ class TestMetadata:
                                         "type": "PREDEFINED",
                                         "predefined_metric": "FRESHNESS",
                                     },
-                                    "metric_name": "FRESHNESS",
+                                    "metric_name": "freshness",
                                 },
                                 {
                                     "metric_type": {

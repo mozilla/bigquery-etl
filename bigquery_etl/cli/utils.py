@@ -15,6 +15,7 @@ from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.query_scheduling.utils import is_email
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
@@ -26,6 +27,50 @@ CHECKS_FILE_RE = re.compile(
     r"(?:checks\.sql)$"
 )
 GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+
+
+class QualifiedTableNameType(click.ParamType):
+    """Click parameter type for qualified table names.
+
+    Accepts project.dataset.table (with_project=True) or dataset.table (with_project=False).
+    """
+
+    name = "table_name"
+
+    def __init__(self, with_project=True):
+        """Create QualifiedTableNameType with or without project qualification."""
+        self.with_project = with_project
+
+    def convert(self, value, param, ctx):
+        """Validate and return the qualified table name string."""
+        if isinstance(value, str):
+            parts = value.split(".")
+            expected = 3 if self.with_project else 2
+            fmt = "project.dataset.table" if self.with_project else "dataset.table"
+            if len(parts) != expected:
+                self.fail(f"Expected format {fmt}, got '{value}'.", param, ctx)
+            segment_re = re.compile(r"^[a-zA-Z0-9_-]+$")
+            for part in parts:
+                if not segment_re.match(part):
+                    self.fail(
+                        f"Invalid segment '{part}' in '{value}'. "
+                        "Only alphanumeric characters, underscores, and hyphens are allowed.",
+                        param,
+                        ctx,
+                    )
+        return value
+
+
+class EmailType(click.ParamType):
+    """Click parameter type that validates email addresses."""
+
+    name = "email"
+
+    def convert(self, value, param, ctx):
+        """Validate that the value is an email address."""
+        if not is_email(value):
+            self.fail(f"'{value}' is not a valid email address.", param, ctx)
+        return value
 
 
 def is_valid_dir(ctx, param, value):
@@ -104,7 +149,12 @@ def paths_matching_checks_pattern(
 
 
 def paths_matching_name_pattern(
-    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+    pattern,
+    sql_path,
+    project_id,
+    files=["*.sql"],
+    file_regex=QUERY_FILE_RE,
+    silent=False,
 ) -> List[Path]:
     """Return paths to queries matching the name pattern."""
     matching_files: List[Path] = []
@@ -116,7 +166,7 @@ def paths_matching_name_pattern(
     if isinstance(pattern, tuple) or isinstance(pattern, list):
         for p in pattern:
             matching_files += paths_matching_name_pattern(
-                str(p), sql_path, project_id, files, file_regex
+                str(p), sql_path, project_id, files, file_regex, silent
             )
     elif os.path.isdir(pattern):
         for root, _, _ in os.walk(pattern, followlinks=True):
@@ -149,7 +199,7 @@ def paths_matching_name_pattern(
                 elif project_id and fnmatchcase(query_name, f"{project_id}.{pattern}"):
                     matching_files.append(query_file)
 
-    if len(matching_files) == 0:
+    if len(matching_files) == 0 and not silent:
         print(f"No files matching: {pattern}, {files}")
 
     return list(set(matching_files))
@@ -271,6 +321,25 @@ def temp_dataset_option(
         type=TempDatasetReference.from_string,
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
+    )
+
+
+def defer_option():
+    """Generate a --defer-to-target option for smart reference rewriting.
+
+    Only rewrites references to artifacts that exist in the target directory;
+    everything else stays pointing at prod.
+    """
+    return click.option(
+        "--defer-to-target",
+        "--defer_to_target",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite references to artifacts that exist in the target directory. "
+            "Other references remain pointing to prod. "
+            "Used for development workflows."
+        ),
     )
 
 

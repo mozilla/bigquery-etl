@@ -1,0 +1,29 @@
+friendly_name: Recent New Profile Churn Clients - Desktop Glean
+description: |-
+  Recent client-level churn metrics for new Firefox Desktop profiles, covering cohorts
+  not yet present in new_profile_churn_clients_v1 (i.e. cohorts within the last 30 days
+  whose data is still filling in). Structure is identical to new_profile_churn_clients_v1;
+  day columns are partially populated with NULLs for days not yet available. The entire
+  table is overwritten on each daily run. Intended to be unioned with
+  new_profile_churn_clients_v1 for a complete view of all cohorts.
+
+  Jira: https://mozilla-hub.atlassian.net/browse/DENG-10676
+owners:
+- bbaird@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: false
+  owner1: bbaird
+  owner2: mhirose
+scheduling:
+  dag_name: bqetl_cohort_daily_churn
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'cohort_date'
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields: [cohort_date, sample_id]
+require_column_descriptions: true

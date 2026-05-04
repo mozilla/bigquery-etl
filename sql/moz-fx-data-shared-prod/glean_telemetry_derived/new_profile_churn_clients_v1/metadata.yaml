@@ -28,7 +28,6 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - cohort_date
     - sample_id
 workgroup_access:
 - role: roles/bigquery.dataViewer

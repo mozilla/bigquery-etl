@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>, _groups ARRAY<STRIN
 
 CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING) AS (
   CASE
-    WHEN event_name IN ('engagement', 'bounce', 'disable')
+    WHEN event_name IN ('engagement', 'bounce')
       AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))
       THEN 'engaged'
     WHEN event_name = 'abandonment'
@@ -23,6 +23,8 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING)
     WHEN event_name = 'engagement'
       AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
       THEN "annoyance"
+    WHEN event_name = 'disable'
+      THEN "disabled"
     ELSE NULL
   END
 );

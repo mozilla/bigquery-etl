@@ -44,9 +44,10 @@ BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
 class AttributionPings(Enum):
     """An enumerator containing a list of pings that could be the source of attribution information."""
 
-    metrics: str = "metrics"
-    first_session: str = "first_session"
-    baseline: str = "baseline"
+    metrics = "metrics"
+    first_session = "first_session"
+    baseline = "baseline"
+    play_store_attribution = "play_store_attribution"
 
 
 @dataclass
@@ -106,7 +107,10 @@ class AttributionFields:
     )
     play_store = AttributionFieldGroup(
         name="play_store",
-        source_pings=[AttributionPings.first_session],
+        source_pings=[
+            AttributionPings.first_session,
+            AttributionPings.play_store_attribution,
+        ],
         fields=[
             {
                 "name": "play_store_attribution_campaign",
@@ -295,7 +299,7 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
     The parent folders will be created if not existing and existing files will be overwritten.
     """
     env = Environment(loader=FileSystemLoader(str(GENERATOR_ROOT / "templates")))
-    output_dir = Path(output_dir) / target_project
+    project_output_dir = Path(str(output_dir)) / target_project
 
     default_template_args = {
         "header": HEADER,
@@ -357,7 +361,7 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
             )
 
             write_sql(
-                output_dir=output_dir,
+                output_dir=project_output_dir,
                 full_table_id=full_table_id,
                 basename=f"{target_filename}.{target_extension}",
                 sql=rendered_sql,
@@ -386,7 +390,7 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
                 )
 
                 write_sql(
-                    output_dir=output_dir,
+                    output_dir=project_output_dir,
                     full_table_id=full_table_id,
                     basename=query_support_config,
                     sql=(
@@ -443,7 +447,7 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
         )
 
         write_sql(
-            output_dir=output_dir,
+            output_dir=project_output_dir,
             full_table_id=f"{target_project}.{target_dataset}.{union_target_name}",
             basename=f"{target_filename}.{target_extension}",
             sql=(reformat(union_sql_rendered)),

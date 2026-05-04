@@ -2,7 +2,7 @@ WITH mozilla_space_emails AS (
   SELECT
     send.id AS send_id,
     TIMESTAMP_SECONDS(send.time) AS send_time,
-    send.* EXCEPT (id, time, send_id),
+    send.* EXCEPT (id, `time`, send_id),
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_send_v1` AS send
   WHERE
@@ -12,7 +12,7 @@ firefox_space_emails AS (
   SELECT
     send.id AS send_id,
     TIMESTAMP_SECONDS(send.time) AS send_time,
-    send.* EXCEPT (id, time, send_id),
+    send.* EXCEPT (id, `time`, send_id),
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_send_v1` AS send
   WHERE

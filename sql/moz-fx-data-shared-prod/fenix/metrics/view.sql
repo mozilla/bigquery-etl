@@ -2053,7 +2053,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_task_start_delay,
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
-      metrics.labeled_timing_distribution.javascript_gc_time_between_slices
+      metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
+      metrics.labeled_timing_distribution.dom_gc_in_progress
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -2122,7 +2123,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_js_gc_heap,
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
-      metrics.labeled_memory_distribution.memory_unique
+      metrics.labeled_memory_distribution.memory_unique,
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -4236,7 +4238,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_task_start_delay,
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
-      metrics.labeled_timing_distribution.javascript_gc_time_between_slices
+      metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
+      metrics.labeled_timing_distribution.dom_gc_in_progress
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4305,7 +4308,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_js_gc_heap,
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
-      metrics.labeled_memory_distribution.memory_unique
+      metrics.labeled_memory_distribution.memory_unique,
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -6439,7 +6443,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_task_start_delay,
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
-      metrics.labeled_timing_distribution.javascript_gc_time_between_slices
+      metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
+      metrics.labeled_timing_distribution.dom_gc_in_progress
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6508,7 +6513,8 @@ SELECT
       metrics.labeled_memory_distribution.memory_js_gc_heap,
       metrics.labeled_memory_distribution.memory_resident_fast,
       metrics.labeled_memory_distribution.memory_resident_peak,
-      metrics.labeled_memory_distribution.memory_unique
+      metrics.labeled_memory_distribution.memory_unique,
+      metrics.labeled_memory_distribution.javascript_gc_nursery_bytes
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,

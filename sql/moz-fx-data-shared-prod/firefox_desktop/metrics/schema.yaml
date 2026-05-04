@@ -12820,6 +12820,34 @@ fields:
         preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
 
         '
+    - name: browser_ui_interaction_preferences_pane_about
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the items interacted with in the About Firefox section
+        of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+        '
+    - name: browser_ui_interaction_preferences_pane_permissions_data
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the items interacted with in the Permissions and data
+        section of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -13202,7 +13230,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Size of the GC nursery in bytes.
+      description: 'Size of the GC nursery in bytes, labeled by process type.
 
         '
     - name: memory_phc_slop
@@ -19887,8 +19915,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent in the compact phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the compact phase, labeled by process type.
+        (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_mark_roots_time
@@ -19931,8 +19959,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent marking GC roots. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent marking GC roots, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_mark_time
@@ -19975,8 +20003,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent in the mark phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the mark phase, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_minor_time
@@ -20019,8 +20047,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time taked by a minor (nursery) collection. (Migrated from
-        the geckoview metric of the same name.)
+      description: 'The time taked by a minor (nursery) collection, labeled by process
+        type. (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_prepare_time
@@ -20063,8 +20091,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent in the preparation phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the preparation phase, labeled by process type.
+        (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_slice_time
@@ -20107,8 +20135,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent running a GC slice. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent running a GC slice, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_sweep_time
@@ -20151,8 +20179,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The time spent in the sweep phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the sweep phase, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_total_time
@@ -23158,7 +23186,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Requested GC slice budget.
+      description: 'Requested GC slice budget, labeled by process type.
 
         '
     - name: javascript_gc_budget_overrun
@@ -23244,7 +23272,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent marking gray GC objects.
+      description: 'Time spent marking gray GC objects, labeled by process type.
 
         '
     - name: javascript_gc_mark_weak
@@ -23287,7 +23315,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent marking GC objects held live through weakmaps.
+      description: 'Time spent marking GC objects held live through weakmaps, labeled
+        by process type.
 
         '
     - name: javascript_gc_max_pause
@@ -23373,7 +23402,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Delay between queuing a GC task and the task starting.
+      description: 'Delay between queuing a GC task and the task starting, labeled
+        by process type.
 
         '
     - name: javascript_gc_time_between
@@ -23416,7 +23446,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent in between garbage collections for the main runtime.
+      description: 'Time spent in between garbage collections for the main runtime,
+        labeled by process type.
 
         '
     - name: javascript_gc_time_between_slices
@@ -23459,7 +23490,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent in between garbage collections for the main runtime.
+      description: 'Time spent in between GC slices for the main runtime, labeled
+        by process type.
 
         '
     - name: fingerprinting_protection_canvas_noise_calculate_time_ns
@@ -23588,10 +23620,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent on one asynchronous SnowWhite freeing (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_ASYNC_SNOW_WHITE_FREEING.
+      description: 'Time spent on one asynchronous SnowWhite freeing (ms), labeled
+        by process type.
 
         '
     - name: cycle_collector_deferred_finalize_async
@@ -23634,10 +23664,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Pause time for asynchronous deferred finalization (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DEFERRED_FINALIZE_ASYNC.
+      description: 'Pause time for asynchronous deferred finalization (ms), labeled
+        by process type.
 
         '
     - name: cycle_collector_full
@@ -23681,10 +23709,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Full pause time for one cycle collection, including preparation
-        (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_FULL.
+        (ms), labeled by process type.
 
         '
     - name: cycle_collector_max_pause
@@ -23728,10 +23753,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Longest pause for an individual slice of one cycle collection,
-        including preparation (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_MAX_PAUSE.
+        including preparation (ms), labeled by process type.
 
         '
     - name: cycle_collector_time
@@ -23774,10 +23796,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent on one cycle collection (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR.
+      description: 'Time spent on one cycle collection (ms), labeled by process type.
 
         '
     - name: cycle_collector_time_between
@@ -23820,10 +23839,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent in between cycle collections (seconds)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_TIME_BETWEEN.
+      description: 'Time spent in between cycle collections (seconds), labeled by
+        process type.
 
         '
     - name: cycle_collector_worker_time
@@ -23866,10 +23883,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Time spent on one cycle collection in a worker (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_WORKER.
+      description: 'Time spent on one cycle collection in a worker (ms), labeled by
+        process type.
 
         '
     - name: dom_contentprocess_launch_mainthread
@@ -34740,10 +34755,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Max time spent on one forget skippable (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FORGET_SKIPPABLE_MAX.
+      description: 'Max time spent on one forget skippable (ms), labeled by process
+        type.
 
         '
     - name: dom_fullscreen_transition_black
@@ -34833,7 +34846,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time from the beginning of the first slice to the end of the last
-        slice (ms)
+        slice (ms), labeled by process type.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram GC_IN_PROGRESS_MS.
@@ -35736,7 +35749,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time between minor garbage collections (nursery collections) for
-        all runtimes.
+        all runtimes, labeled by process type.
 
         '
     - name: places_semantic_history_chunk_calculate_time
@@ -51561,15 +51574,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time
@@ -53331,10 +53340,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent on one asynchronous SnowWhite freeing (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_ASYNC_SNOW_WHITE_FREEING.
+      description: 'Time spent on one asynchronous SnowWhite freeing (ms), labeled
+        by process type.
 
         '
     - name: cycle_collector_deferred_finalize_async
@@ -53384,10 +53391,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Pause time for asynchronous deferred finalization (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DEFERRED_FINALIZE_ASYNC.
+      description: 'Pause time for asynchronous deferred finalization (ms), labeled
+        by process type.
 
         '
     - name: cycle_collector_forget_skippable_max
@@ -53437,10 +53442,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Max time spent on one forget skippable (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FORGET_SKIPPABLE_MAX.
+      description: 'Max time spent on one forget skippable (ms), labeled by process
+        type.
 
         '
     - name: cycle_collector_full
@@ -53491,10 +53494,7 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Full pause time for one cycle collection, including preparation
-        (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_FULL.
+        (ms), labeled by process type.
 
         '
     - name: cycle_collector_max_pause
@@ -53545,10 +53545,7 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Longest pause for an individual slice of one cycle collection,
-        including preparation (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_MAX_PAUSE.
+        including preparation (ms), labeled by process type.
 
         '
     - name: cycle_collector_time
@@ -53598,10 +53595,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent on one cycle collection (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR.
+      description: 'Time spent on one cycle collection (ms), labeled by process type.
 
         '
     - name: cycle_collector_time_between
@@ -53651,10 +53645,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent in between cycle collections (seconds)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_TIME_BETWEEN.
+      description: 'Time spent in between cycle collections (seconds), labeled by
+        process type.
 
         '
     - name: cycle_collector_worker_time
@@ -53704,10 +53696,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent on one cycle collection in a worker (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram CYCLE_COLLECTOR_WORKER.
+      description: 'Time spent on one cycle collection in a worker (ms), labeled by
+        process type.
 
         '
     - name: javascript_gc_budget
@@ -53757,7 +53747,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Requested GC slice budget.
+      description: 'Requested GC slice budget, labeled by process type.
 
         '
     - name: javascript_gc_compact_time
@@ -53807,8 +53797,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent in the compact phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the compact phase, labeled by process type.
+        (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_mark_gray
@@ -53858,7 +53848,7 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent marking gray GC objects.
+      description: 'Time spent marking gray GC objects, labeled by process type.
 
         '
     - name: javascript_gc_mark_roots_time
@@ -53908,8 +53898,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent marking GC roots. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent marking GC roots, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_mark_time
@@ -53959,8 +53949,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent in the mark phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the mark phase, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_mark_weak
@@ -54010,7 +54000,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent marking GC objects held live through weakmaps.
+      description: 'Time spent marking GC objects held live through weakmaps, labeled
+        by process type.
 
         '
     - name: javascript_gc_minor_time
@@ -54060,8 +54051,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time taked by a minor (nursery) collection. (Migrated from
-        the geckoview metric of the same name.)
+      description: 'The time taked by a minor (nursery) collection, labeled by process
+        type. (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_prepare_time
@@ -54111,8 +54102,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent in the preparation phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the preparation phase, labeled by process type.
+        (Migrated from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_slice_time
@@ -54162,8 +54153,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent running a GC slice. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent running a GC slice, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_sweep_time
@@ -54213,8 +54204,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'The time spent in the sweep phase. (Migrated from the geckoview
-        metric of the same name.)
+      description: 'The time spent in the sweep phase, labeled by process type. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_task_start_delay
@@ -54264,7 +54255,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Delay between queuing a GC task and the task starting.
+      description: 'Delay between queuing a GC task and the task starting, labeled
+        by process type.
 
         '
     - name: javascript_gc_time_between
@@ -54314,7 +54306,8 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent in between garbage collections for the main runtime.
+      description: 'Time spent in between garbage collections for the main runtime,
+        labeled by process type.
 
         '
     - name: javascript_gc_time_between_minor
@@ -54365,7 +54358,7 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Time between minor garbage collections (nursery collections) for
-        all runtimes.
+        all runtimes, labeled by process type.
 
         '
     - name: javascript_gc_time_between_slices
@@ -54415,7 +54408,62 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
-      description: 'Time spent in between garbage collections for the main runtime.
+      description: 'Time spent in between GC slices for the main runtime, labeled
+        by process type.
+
+        '
+    - name: dom_gc_in_progress
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time from the beginning of the first slice to the end of the last
+        slice (ms), labeled by process type.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram GC_IN_PROGRESS_MS.
 
         '
   - name: labeled_custom_distribution
@@ -57091,6 +57139,38 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_UNIQUE.
+
+        '
+    - name: javascript_gc_nursery_bytes
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Size of the GC nursery in bytes, labeled by process type.
 
         '
   - name: dual_labeled_counter

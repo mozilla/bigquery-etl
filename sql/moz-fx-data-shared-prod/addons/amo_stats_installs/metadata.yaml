@@ -1,7 +1,13 @@
-friendly_name: Amo Stats Installs
+friendly_name: AMO Stats Installs
 description: |-
-  Please provide a description for the query
-owners: []
+  Daily install statistics to power addons.mozilla.org stats pages.
+owners:
+- kik@mozilla.com
+- lgreco@mozilla.com
+labels:
+  application: amo
+  owner1: kik
+  owner2: lgreco
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

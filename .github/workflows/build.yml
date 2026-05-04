@@ -1374,7 +1374,8 @@ jobs:
           cd telemetry-airflow-dags
           git submodule update --init --depth 1 private-bigquery-etl
           cd private-bigquery-etl
-          git reset --hard origin/private-generated-dags
+          git fetch --depth=1 origin private-generated-dags
+          git reset --hard FETCH_HEAD
           cd ..
           git add private-bigquery-etl
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"

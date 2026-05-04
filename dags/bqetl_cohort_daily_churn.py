@@ -342,7 +342,7 @@ with DAG(
 
     glean_telemetry_derived__new_profile_churn_clients__v1 = bigquery_etl_query(
         task_id="glean_telemetry_derived__new_profile_churn_clients__v1",
-        destination_table="new_profile_churn_clients_v1",
+        destination_table='new_profile_churn_clients_v1${{ macros.ds_format(macros.ds_add(ds, -30), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="glean_telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bbaird@mozilla.com",
@@ -351,8 +351,25 @@ with DAG(
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -30)}}"],
+    )
+
+    glean_telemetry_derived__recent_new_profile_churn_clients__v1 = bigquery_etl_query(
+        task_id="glean_telemetry_derived__recent_new_profile_churn_clients__v1",
+        destination_table="recent_new_profile_churn_clients_v1",
+        dataset_id="glean_telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bbaird@mozilla.com",
+        email=[
+            "bbaird@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
     )
 
     telemetry_derived__cohort_daily_churn__v1 = bigquery_etl_query(
@@ -442,6 +459,22 @@ with DAG(
 
     glean_telemetry_derived__new_profile_churn_clients__v1.set_upstream(
         wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    glean_telemetry_derived__recent_new_profile_churn_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    glean_telemetry_derived__recent_new_profile_churn_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__recent_new_profile_churn_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    glean_telemetry_derived__recent_new_profile_churn_clients__v1.set_upstream(
+        glean_telemetry_derived__new_profile_churn_clients__v1
     )
 
     telemetry_derived__cohort_daily_churn__v1.set_upstream(

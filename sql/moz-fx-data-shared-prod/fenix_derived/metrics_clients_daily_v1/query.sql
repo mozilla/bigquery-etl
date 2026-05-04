@@ -10,6 +10,9 @@ SELECT
   1 AS days_sent_metrics_ping_bits,
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
+  LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.metrics` AS m
 WHERE
@@ -32,6 +35,9 @@ SELECT
   1 AS days_sent_metrics_ping_bits,
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
+  LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics` AS m
 WHERE
@@ -54,6 +60,9 @@ SELECT
   1 AS days_sent_metrics_ping_bits,
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
+  LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS m
 WHERE
@@ -76,6 +85,9 @@ SELECT
   1 AS days_sent_metrics_ping_bits,
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
+  LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS m
 WHERE
@@ -98,6 +110,9 @@ SELECT
   1 AS days_sent_metrics_ping_bits,
   SUM(metrics.counter.events_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.metrics_default_browser) AS is_default_browser,
+  LOGICAL_OR(metrics.boolean.metrics_is_large_device) AS is_large_device,
+  ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)) AS isp_name,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS m
 WHERE

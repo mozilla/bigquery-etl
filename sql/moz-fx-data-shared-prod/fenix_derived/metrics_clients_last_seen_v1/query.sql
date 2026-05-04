@@ -27,6 +27,9 @@ SELECT
   ) AS days_sent_metrics_ping_bits,
   COALESCE(_current.uri_count, _previous.uri_count) AS uri_count,
   COALESCE(_current.is_default_browser, _previous.is_default_browser) AS is_default_browser,
+  COALESCE(_current.is_large_device, _previous.is_large_device) AS is_large_device,
+  COALESCE(_current.device_manufacturer, _previous.device_manufacturer) AS device_manufacturer,
+  COALESCE(_current.isp_name, _previous.isp_name) AS isp_name,
 FROM
   _previous
 FULL JOIN

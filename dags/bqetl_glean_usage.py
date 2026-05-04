@@ -833,6 +833,13 @@ with DAG(
         parent_group=task_group_firefox_desktop,
     ) as bigeye__firefox_desktop_derived__metrics_clients_daily__v1_external:
         ExternalTaskMarker(
+            task_id="private_bqetl_marketing__wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
+            external_dag_id="private_bqetl_marketing",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_ga4_firefoxdotcom__wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
             external_dag_id="bqetl_ga4_firefoxdotcom",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
@@ -3798,6 +3805,13 @@ with DAG(
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_firefox_desktop_derived__baseline_active_users__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="private_bqetl_marketing__wait_for_firefox_desktop_derived__baseline_active_users__v1",
+            external_dag_id="private_bqetl_marketing",
+            external_task_id="wait_for_firefox_desktop_derived__baseline_active_users__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
         )
 
         ExternalTaskMarker(

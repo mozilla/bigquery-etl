@@ -45,7 +45,14 @@ source_table_cte_1 AS (
     )[OFFSET(0)] AS dimensions,
     LOGICAL_OR(metrics.boolean.formautofill_availability) AS formautofill_availability,
     SUM(
-      (SELECT SUM(value) FROM UNNEST(metrics.labeled_counter.pwmgr_form_autofill_result))
+      (
+        SELECT
+          SUM(value)
+        FROM
+          UNNEST(metrics.labeled_counter.pwmgr_form_autofill_result)
+        WHERE
+          key IN ("filled", "filled_username_only_form")
+      )
     ) AS login_autofill,
     SUM(
       metrics.quantity.formautofill_addresses_autofill_profiles_count

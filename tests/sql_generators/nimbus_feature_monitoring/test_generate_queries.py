@@ -1,8 +1,6 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 BASE_DIR = Path(__file__).parents[3] / "sql_generators" / "nimbus_feature_monitoring"
 
 
@@ -46,7 +44,9 @@ class TestGenerateQueries:
             "sql_generators.nimbus_feature_monitoring.ConfigCollection.from_github_repo",
             return_value=collection,
         ):
-            generate_queries("moz-fx-data-shared-prod", BASE_DIR / "templates", tmp_path)
+            generate_queries(
+                "moz-fx-data-shared-prod", BASE_DIR / "templates", tmp_path
+            )
 
     def test_generates_query_for_metrics_source(self, tmp_path):
         app = make_app_config(
@@ -58,9 +58,7 @@ class TestGenerateQueries:
                 "my_feature": make_feature_spec(
                     "my_feature",
                     slug="my-feature",
-                    metrics_by_source={
-                        "metrics": {"boolean": {"pref_enabled": None}}
-                    },
+                    metrics_by_source={"metrics": {"boolean": {"pref_enabled": None}}},
                 )
             },
         )
@@ -89,9 +87,7 @@ class TestGenerateQueries:
                 "my_feature": make_feature_spec(
                     "my_feature",
                     metrics_by_source={
-                        "events_stream": {
-                            "event": {"my_category": {"my_event": None}}
-                        }
+                        "events_stream": {"event": {"my_category": {"my_event": None}}}
                     },
                 )
             },
@@ -110,9 +106,7 @@ class TestGenerateQueries:
         assert "my_category_my_event" in sql
 
     def test_generates_view_over_all_features(self, tmp_path):
-        features = {
-            f"feature_{i}": make_feature_spec(f"feature_{i}") for i in range(3)
-        }
+        features = {f"feature_{i}": make_feature_spec(f"feature_{i}") for i in range(3)}
         data_sources = {
             "metrics": make_source_table_spec("metrics", "metrics", "metrics"),
         }
@@ -144,7 +138,9 @@ class TestGenerateQueries:
                 "my_feature": make_feature_spec(
                     "my_feature",
                     metrics_by_source={
-                        "metrics": {"quantity": {"numerator": None, "denominator": None}}
+                        "metrics": {
+                            "quantity": {"numerator": None, "denominator": None}
+                        }
                     },
                     ratios=[["numerator_avg", "denominator_avg"]],
                 )

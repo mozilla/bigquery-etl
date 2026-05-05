@@ -1400,9 +1400,11 @@ jobs:
         run: |
           git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
           cd telemetry-airflow-dags
-          # Manually clone bigquery-etl submodule to avoid initializing private repos
-          rm -rf bigquery-etl
-          git clone --branch generated-dags --depth 1 https://github.com/mozilla/bigquery-etl.git bigquery-etl
+          git submodule update --init --depth 1 bigquery-etl
+          cd bigquery-etl
+          git fetch --depth=1 origin generated-dags
+          git reset --hard FETCH_HEAD
+          cd ..
           git add bigquery-etl
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
           git push origin main

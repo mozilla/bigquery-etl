@@ -8,6 +8,6 @@ RETURNS STRING AS (
 
     --
 SELECT
-  assert.equals("test", udf_js.extract_string_from_bytes(FROM_BASE64("e3Rlc3R9"))),
-  assert.equals("", udf_js.extract_string_from_bytes(FROM_BASE64("e30="))),
-  assert.null(udf_js.extract_string_from_bytes(FROM_BASE64(NULL)))
+  mozfun.assert.equals("test", udf_js.extract_string_from_bytes(FROM_BASE64("e3Rlc3R9"))),
+  mozfun.assert.equals("", udf_js.extract_string_from_bytes(FROM_BASE64("e30="))),
+  mozfun.assert.null(udf_js.extract_string_from_bytes(FROM_BASE64(NULL)))

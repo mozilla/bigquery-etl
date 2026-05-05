@@ -1,0 +1,24 @@
+friendly_name: Desktop Retention - Client Level
+description: |-
+  Desktop Retention data at the client level, including attribution information
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose
+  table_type: client_level
+  dag: bqetl_desktop_retention_model
+scheduling:
+  dag_name: bqetl_desktop_retention_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - normalized_os
+require_column_descriptions: false

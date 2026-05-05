@@ -19,18 +19,28 @@ PROJECT=${PROJECT:-"glam-fenix-dev"}
 # different from PROJECT. One example would be for running desktop SQL into a
 # dataset that's not moz-fx-data-shared-prod.
 DST_PROJECT=${DST_PROJECT:-$PROJECT}
+# Make sure FULLY_QUALIFIED_DATASET is used in --dataset_id when this is
+# used
+#
+# Use this when the project used for billing is different than the project
+# that stores the tables and/or project_id folder that contains the queries.
+BILLING_PROJECT=${BILLING_PROJECT:-$DST_PROJECT}
 PROD_DATASET=${PROD_DATASET:-"glam_etl"}
 DATASET=${DATASET:-"glam_etl_dev"}
+# Disambiguates the project id and allows --project_id to be used for
+# billing exclusively.
+FULLY_QUALIFIED_DATASET=$DST_PROJECT:$DATASET
 SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 
 
-# Replace PROD_DATASET with DATASET in order to run the entire pipeline within a
+# Replace PROD_DATASET with FULLY_QUALIFIED_DATASET in order to run the entire pipeline within a
 # separate dataset. This is effectively a hack for what should be generated
 # queries in the correct location. However, this provides a mechanism for
 # changing the dataset location for testing.
 function replace_dataset {
     local sql_path=$1
-    sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
+    local fully_qualified_dataset_bq=$(echo "$FULLY_QUALIFIED_DATASET" | sed 's/:/./g')
+    sed "s/\($DST_PROJECT.\)\?$PROD_DATASET/$fully_qualified_dataset_bq/g" < "$sql_path"
 }
 
 
@@ -42,6 +52,7 @@ function run_query {
     local query_location=${5:-$destination_table}
     local additional_arguments="${6:---replace}"
     local sample_size=${7:-10}
+    local use_slots=${8:-true}
     local query="sql/$PROJECT/$PROD_DATASET/$query_location/query.sql"
 
     # add an option to write to a time-partitioned table
@@ -56,14 +67,15 @@ function run_query {
         --max_rows=0 \
         --use_legacy_sql=false \
         $additional_arguments \
-        --project_id="$DST_PROJECT" \
-        --dataset_id="$DATASET" \
+        --project_id="$BILLING_PROJECT" \
+        --dataset_id="$FULLY_QUALIFIED_DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
         --parameter="min_sample_id:INT64:$min_sample_id" \
         --parameter="max_sample_id:INT64:$max_sample_id" \
         --parameter="sample_size:INT64:$sample_size" \
-        "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
+        $(if $time_partition; then echo --time_partitioning_type="DAY"; fi) \
+        $(if $use_slots; then echo --reservation_id=moz-fx-bigquery-reserv-global:US.glam; fi) \
         < "$tmp"
 }
 
@@ -160,7 +172,6 @@ function run_desktop_sql {
         run_init "clients_scalar_aggregates_v1"
         run_query "clients_scalar_aggregates_v1"
         run_query "clients_scalar_probe_counts_v1"
-        run_query "scalar_percentiles_v1"
     fi
 
     # Run the rest of the clients histogram pipeline
@@ -174,8 +185,6 @@ function run_desktop_sql {
     run_partitioned_query "clients_histogram_bucket_counts_v1" 10 false
     run_query "clients_histogram_probe_counts_v1"
 
-    run_query "histogram_percentiles_v1"
-    run_query "glam_user_counts_v1"
     run_query "glam_sample_counts_v1"
 }
 
@@ -212,13 +221,15 @@ function run_glean_sql {
     fi
     if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
+            # Set additional arguments for these queries (can be modified to change clustering)
+            local additional_args="--replace --clustering_fields=channel"
             pids=()
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
-                run_query "$(basename "$directory")" true &
+                run_query "$(basename "$directory")" true 0 99 "$(basename "$directory")" "$additional_args" &
                 pids+=($!)
             done
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
-                run_query "$(basename "$directory")" true &
+                run_query "$(basename "$directory")" true 0 99 "$(basename "$directory")" "$additional_args" &
                 pids+=($!)
             done
             wait_pids "${pids[@]}"
@@ -271,12 +282,6 @@ function run_glean_sql {
             pids+=($!)
             wait_pids "${pids[@]}"
 
-            pids=()
-            run_query "${product}__scalar_percentiles_v1" &
-            pids+=($!)
-            run_query "${product}__histogram_percentiles_v1" &
-            pids+=($!)
-            wait_pids "${pids[@]}"
         fi
         pids=()
         run_view "${product}__view_probe_counts_v1" &

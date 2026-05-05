@@ -1,0 +1,37 @@
+fields:
+- name: clientId
+  type: STRING
+  mode: NULLABLE
+  description: clientId in hexadecimal format.
+- name: userId
+  type: STRING
+  mode: NULLABLE
+  description: userId in hexadecimal format.
+- name: scope
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: authAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: amr
+  type: STRING
+  mode: NULLABLE
+- name: aal
+  type: INTEGER
+  mode: NULLABLE
+- name: offline
+  type: BOOLEAN
+  mode: NULLABLE
+- name: codeChallengeMethod
+  type: STRING
+  mode: NULLABLE
+- name: profileChangedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: sessionTokenId
+  type: STRING
+  mode: NULLABLE
+  description: sessionTokenId in hexadecimal format.

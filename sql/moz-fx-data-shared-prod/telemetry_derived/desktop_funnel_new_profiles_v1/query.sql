@@ -11,13 +11,13 @@ WITH pop AS (
     COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
     DATE(submission_timestamp) AS date
   FROM
-    telemetry.new_profile
+    `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 )
 SELECT
-  date,
+  `date`,
   channel,
   build_id,
   os,
@@ -30,12 +30,11 @@ FROM
   pop
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
-ON
-  (country_codes.code = country_code)
+  ON (country_codes.code = country_code)
 WHERE
   rn = 1
 GROUP BY
-  date,
+  `date`,
   country_name,
   channel,
   build_id,

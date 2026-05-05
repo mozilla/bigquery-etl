@@ -97,10 +97,10 @@ WITH actual AS (
     ) AS engine_searches
 )
 SELECT
-  assert.array_equals(GENERATE_ARRAY(24, 46, 2), searches.value.total_searches),
-  assert.array_equals(GENERATE_ARRAY(26, 48, 2), searches.value.tagged_searches),
-  assert.array_equals(GENERATE_ARRAY(28, 50, 2), searches.value.search_with_ads),
-  assert.array_equals(GENERATE_ARRAY(30, 52, 2), searches.value.ad_click),
+  mozfun.assert.array_equals(GENERATE_ARRAY(24, 46, 2), searches.value.total_searches),
+  mozfun.assert.array_equals(GENERATE_ARRAY(26, 48, 2), searches.value.tagged_searches),
+  mozfun.assert.array_equals(GENERATE_ARRAY(28, 50, 2), searches.value.search_with_ads),
+  mozfun.assert.array_equals(GENERATE_ARRAY(30, 52, 2), searches.value.ad_click),
 FROM
   actual
 CROSS JOIN
@@ -109,10 +109,10 @@ WHERE
   searches.key IS NULL
 UNION ALL
 SELECT
-  assert.array_equals(GENERATE_ARRAY(6, 28, 2), searches.value.total_searches),
-  assert.array_equals(GENERATE_ARRAY(8, 30, 2), searches.value.tagged_searches),
-  assert.array_equals(GENERATE_ARRAY(10, 32, 2), searches.value.search_with_ads),
-  assert.array_equals(GENERATE_ARRAY(12, 34, 2), searches.value.ad_click),
+  mozfun.assert.array_equals(GENERATE_ARRAY(6, 28, 2), searches.value.total_searches),
+  mozfun.assert.array_equals(GENERATE_ARRAY(8, 30, 2), searches.value.tagged_searches),
+  mozfun.assert.array_equals(GENERATE_ARRAY(10, 32, 2), searches.value.search_with_ads),
+  mozfun.assert.array_equals(GENERATE_ARRAY(12, 34, 2), searches.value.ad_click),
 FROM
   actual
 CROSS JOIN

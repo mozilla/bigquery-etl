@@ -1,0 +1,7 @@
+friendly_name: Looker Usage Models
+description: |-
+  Usage of Looker models via henry.
+
+  This is run via docker-etl.
+owners:
+- ascholtz@mozilla.com

@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Resolution
+description: |-
+  Jira resolution for Service Desk synced via Fivetran.

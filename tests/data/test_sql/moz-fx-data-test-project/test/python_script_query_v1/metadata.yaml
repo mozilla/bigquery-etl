@@ -10,3 +10,5 @@ scheduling:
   dag_name: "bqetl_core"
   depends_on_past: true
   arguments: ["--date", "{{ds}}"]
+monitoring:
+  enabled: true

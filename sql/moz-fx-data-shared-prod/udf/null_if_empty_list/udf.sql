@@ -11,4 +11,4 @@ CREATE OR REPLACE FUNCTION udf.null_if_empty_list(list ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert.null(udf.null_if_empty_list([]));
+  mozfun.assert.null(udf.null_if_empty_list([]));

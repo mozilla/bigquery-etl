@@ -19,11 +19,8 @@ SELECT
   client_agg_type,
   MAX(total_users) AS total_users,
   MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
-  MAX(
-    IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
-  ) AS percentiles,
 FROM
-  `glam_etl.firefox_desktop_glam_nightly__view_probe_counts_v1`
+  `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__view_probe_counts_v1`
 WHERE
   total_users > 10
 GROUP BY

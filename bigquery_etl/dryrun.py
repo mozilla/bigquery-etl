@@ -4,7 +4,7 @@ Dry run query files.
 Passes all queries to a Cloud Function that will run the
 queries with the dry_run option enabled.
 
-We could provision BigQuery credentials to the CircleCI job to allow it to run
+We could provision BigQuery credentials to the CI job to allow it to run
 the queries directly, but there is no way to restrict permissions such that
 only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
@@ -12,16 +12,27 @@ proxy the queries through the dry run service endpoint.
 """
 
 import glob
+import hashlib
 import json
+import os
+import pickle
+import random
 import re
+import shutil
+import sys
+import tempfile
+import time
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
-from typing import Set
+from typing import Optional, Set
 from urllib.request import Request, urlopen
 
 import click
+import google.auth
+from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
@@ -32,6 +43,48 @@ try:
 except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
+
+QUERY_PARAMETER_TYPE_VALUES = {
+    "DATE": "2019-01-01",
+    "DATETIME": "2019-01-01 00:00:00",
+    "TIMESTAMP": "2019-01-01 00:00:00",
+    "STRING": "foo",
+    "BOOL": True,
+    "FLOAT64": 1,
+    "FLOAT": 1,
+    "INT64": 1,
+    "INTEGER": 1,
+    "NUMERIC": 1,
+    "BIGNUMERIC": 1,
+}
+
+
+def get_credentials(auth_req: Optional[GoogleAuthRequest] = None):
+    """Get GCP credentials."""
+    auth_req = auth_req or GoogleAuthRequest()
+    credentials, _ = google.auth.default(
+        scopes=["https://www.googleapis.com/auth/cloud-platform"]
+    )
+    credentials.refresh(auth_req)
+    return credentials
+
+
+def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credentials=None):
+    """Get token to authenticate against Cloud Function."""
+    # look for token created by the GitHub Actions workflow
+    id_token = os.environ.get("GOOGLE_GHA_ID_TOKEN")
+
+    if not id_token:
+        auth_req = GoogleAuthRequest()
+        credentials = credentials or get_credentials(auth_req)
+        if hasattr(credentials, "id_token"):
+            # Get token from default credentials for the current environment created via Cloud SDK run
+            id_token = credentials.id_token
+        else:
+            # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
+            # then ID token is acquired using this service account credentials.
+            id_token = fetch_id_token(auth_req, dry_run_url)
+    return id_token
 
 
 class Errors(Enum):
@@ -49,32 +102,82 @@ class DryRun:
         self,
         sqlfile,
         content=None,
+        query_parameters=None,
         strip_dml=False,
         use_cloud_function=True,
         client=None,
         respect_skip=True,
+        sql_dir=ConfigLoader.get("default", "sql_dir"),
+        id_token=None,
+        credentials=None,
+        project=None,
+        dataset=None,
+        table=None,
+        billing_project=None,
+        use_cache=True,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
+        self.use_cache = use_cache
+        self.query_parameters = query_parameters
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
-        self.client = client if use_cloud_function or client else bigquery.Client()
+        self.bq_client = client
         self.respect_skip = respect_skip
         self.dry_run_url = ConfigLoader.get("dry_run", "function")
+        self.sql_dir = sql_dir
+        self.id_token = (
+            id_token
+            if not use_cloud_function or id_token
+            else get_id_token(self.dry_run_url)
+        )
+        self.credentials = credentials
+        self.project = project
+        self.dataset = dataset
+        self.table = table
+        # if using cloud function and billing project isn't set, randomly select project to use
+        self.billing_project = (
+            billing_project
+            if billing_project or not use_cloud_function
+            else random.choice(
+                ConfigLoader.get("dry_run", "default_projects", fallback=[None])
+            )
+        )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
+        self.dry_run_duration = None
+
+        from bigquery_etl.cli.utils import is_authenticated
+
+        if not is_authenticated():
+            print(
+                "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
+                "and check that the project is set correctly."
+            )
+            sys.exit(1)
+
+    @cached_property
+    def client(self):
+        """Get BigQuery client instance."""
+        if self.use_cloud_function:
+            return None
+        return self.bq_client or bigquery.Client(credentials=self.credentials)
 
     @staticmethod
-    def skipped_files() -> Set[str]:
+    def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
         """Return files skipped by dry run."""
+        default_sql_dir = Path(ConfigLoader.get("default", "sql_dir"))
+        sql_dir = Path(sql_dir)
+        file_pattern_re = re.compile(rf"^{re.escape(str(default_sql_dir))}/")
+
         skip_files = {
             file
             for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
             for file in glob.glob(
-                skip,
+                file_pattern_re.sub(f"{str(sql_dir)}/", skip),
                 recursive=True,
             )
         }
@@ -82,12 +185,16 @@ class DryRun:
         # update skip list to include renamed queries in stage.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+
         skip_files.update(
             [
                 file
                 for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
                 for file in glob.glob(
-                    file_pattern_re.sub(f"sql/{test_project}/\\2*\\3", skip),
+                    file_pattern_re.sub(
+                        lambda x: f"sql/{test_project}/{x.group(2)}_{x.group(1).replace('-', '_')}*{x.group(3)}",
+                        skip,
+                    ),
                     recursive=True,
                 )
             ]
@@ -95,9 +202,22 @@ class DryRun:
 
         return skip_files
 
+    @staticmethod
+    def clear_cache():
+        """Clear dry run cache directory."""
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        if cache_dir.exists():
+            try:
+                shutil.rmtree(cache_dir)
+                print(f"Cleared dry run cache at {cache_dir}")
+            except OSError as e:
+                print(f"Warning: Failed to clear dry run cache: {e}")
+
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in self.skipped_files()
+        return self.respect_skip and self.sqlfile in self.skipped_files(
+            sql_dir=self.sql_dir
+        )
 
     def get_sql(self):
         """Get SQL content."""
@@ -117,8 +237,116 @@ class DryRun:
                 sql,
                 flags=re.DOTALL,
             )
+            sql = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
+                "",
+                sql,
+                flags=re.DOTALL,
+            )
 
         return sql
+
+    def _get_cache_key(self, sql):
+        """Generate cache key based on SQL content and other parameters."""
+        cache_input = f"{sql}|{self.project}|{self.dataset}|{self.table}"
+        return hashlib.sha256(cache_input.encode()).hexdigest()
+
+    @staticmethod
+    def _get_cache_dir():
+        """Get the cache directory path."""
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
+
+    def _read_cache_file(self, cache_file, ttl_seconds):
+        """Read and return cached data from a pickle file with TTL check."""
+        try:
+            if not cache_file.exists():
+                return None
+
+            # check if cache is expired
+            file_age = time.time() - cache_file.stat().st_mtime
+            if file_age > ttl_seconds:
+                try:
+                    cache_file.unlink()
+                except OSError:
+                    pass
+                return None
+
+            cached_data = pickle.loads(cache_file.read_bytes())
+            return cached_data
+        except (pickle.PickleError, EOFError, OSError, FileNotFoundError) as e:
+            print(f"[CACHE] Failed to load {cache_file}: {e}")
+            try:
+                if cache_file.exists():
+                    cache_file.unlink()
+            except OSError:
+                pass
+            return None
+
+    @staticmethod
+    def _write_cache_file(cache_file, data):
+        """Write data to a cache file using atomic write."""
+        try:
+            # write to temporary file first, then atomically rename
+            # this prevents race conditions where readers get partial files
+            # include random bytes to handle thread pool scenarios where threads share same PID
+            temp_file = Path(
+                str(cache_file) + f".tmp.{os.getpid()}.{os.urandom(4).hex()}"
+            )
+            with open(temp_file, "wb") as f:
+                pickle.dump(data, f)
+                f.flush()
+                os.fsync(f.fileno())  # Ensure data is written to disk
+
+            temp_file.replace(cache_file)
+        except (pickle.PickleError, OSError) as e:
+            print(f"[CACHE] Failed to save {cache_file}: {e}")
+            try:
+                if "temp_file" in locals() and temp_file.exists():
+                    temp_file.unlink()
+            except (OSError, NameError):
+                pass
+
+    def _get_cached_result(self, cache_key, ttl_seconds=None):
+        """Load cached dry run result from disk."""
+        if ttl_seconds is None:
+            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
+
+        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        return self._read_cache_file(cache_file, ttl_seconds)
+
+    def _save_cached_result(self, cache_key, result):
+        """Save dry run result to disk cache using atomic write."""
+        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        self._write_cache_file(cache_file, result)
+
+        # save table metadata separately if present
+        if (
+            result
+            and "tableMetadata" in result
+            and self.project
+            and self.dataset
+            and self.table
+        ):
+            table_identifier = f"{self.project}.{self.dataset}.{self.table}"
+            self._save_cached_table_metadata(table_identifier, result["tableMetadata"])
+
+    def _get_cached_table_metadata(self, table_identifier, ttl_seconds=None):
+        """Load cached table metadata from disk based on table identifier."""
+        if ttl_seconds is None:
+            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
+
+        # table identifier as cache key
+        table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
+        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        return self._read_cache_file(cache_file, ttl_seconds)
+
+    def _save_cached_table_metadata(self, table_identifier, metadata):
+        """Save table metadata to disk cache using atomic write."""
+        table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
+        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        self._write_cache_file(cache_file, metadata)
 
     @cached_property
     def dry_run_result(self):
@@ -127,57 +355,90 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-        if self.metadata:
-            # use metadata to rewrite date-type query params as submission_date
-            date_params = [
-                query_param
-                for query_param in (
-                    self.metadata.scheduling.get("date_partition_parameter"),
-                    *(
-                        param.split(":", 1)[0]
-                        for param in self.metadata.scheduling.get("parameters", [])
-                        if re.fullmatch(r"[^:]+:DATE:{{.*ds.*}}", param)
-                    ),
+
+        # check cache first (if caching is enabled)
+        if sql is not None and self.use_cache:
+            cache_key = self._get_cache_key(sql)
+            cached_result = self._get_cached_result(cache_key)
+            if cached_result is not None:
+                self.dry_run_duration = 0  # Cached result, no actual dry run
+                return cached_result
+
+        query_parameters = []
+        if self.query_parameters:
+            for parameter_name, parameter_type in self.query_parameters.items():
+                parameter_type = parameter_type.upper()
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        parameter_name,
+                        parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
+                    )
                 )
-                if query_param and query_param != "submission_date"
-            ]
-            if date_params:
-                pattern = re.compile(
-                    "@("
-                    + "|".join(date_params)
-                    # match whole query parameter names
-                    + ")(?![a-zA-Z0-9_])"
+        else:
+            scheduling_metadata = self.metadata.scheduling if self.metadata else {}
+            if date_partition_parameter := scheduling_metadata.get(
+                "date_partition_parameter", "submission_date"
+            ):
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        date_partition_parameter,
+                        "DATE",
+                        QUERY_PARAMETER_TYPE_VALUES["DATE"],
+                    )
                 )
-                sql = pattern.sub("@submission_date", sql)
+            for parameter in scheduling_metadata.get("parameters", []):
+                parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+                parameter_type = parameter_type.upper() or "STRING"
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(
+                        parameter_name,
+                        parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
+                    )
+                )
+
+        project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
+            start_time = time.time()
             if self.use_cloud_function:
+                json_data = {
+                    "project": self.project or project,
+                    "dataset": self.dataset or dataset,
+                    "query": sql,
+                    "query_parameters": [
+                        query_parameter.to_api_repr()
+                        for query_parameter in query_parameters
+                    ],
+                    "billing_project": self.billing_project,
+                }
+
+                if self.table:
+                    json_data["table"] = self.table
+
                 r = urlopen(
                     Request(
                         self.dry_run_url,
-                        headers={"Content-Type": "application/json"},
-                        data=json.dumps(
-                            {
-                                "dataset": dataset,
-                                "query": sql,
-                            }
-                        ).encode("utf8"),
+                        headers={
+                            "Content-Type": "application/json",
+                            "Authorization": f"Bearer {self.id_token}",
+                        },
+                        data=json.dumps(json_data).encode("utf8"),
                         method="POST",
                     )
                 )
-                return json.load(r)
+                result = json.load(r)
             else:
-                project = basename(dirname(dirname(dirname(self.sqlfile))))
-                self.client.project = project
+                # Prefer billing project if provided, otherwise use the project from the SQL file
+                self.client.project = (
+                    self.billing_project if self.billing_project else project
+                )
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
-                    query_parameters=[
-                        bigquery.ScalarQueryParameter(
-                            "submission_date", "DATE", "2019-01-01"
-                        )
-                    ],
+                    query_parameters=query_parameters,
                 )
                 job = self.client.query(sql, job_config=job_config)
                 try:
@@ -192,7 +453,7 @@ class DryRun:
                     else:
                         raise e
 
-                return {
+                result = {
                     "valid": True,
                     "referencedTables": [
                         ref.to_api_repr() for ref in job.referenced_tables
@@ -204,6 +465,31 @@ class DryRun:
                     ),
                     "datasetLabels": dataset_labels,
                 }
+                if (
+                    self.project is not None
+                    and self.table is not None
+                    and self.dataset is not None
+                ):
+                    table = self.client.get_table(
+                        f"{self.project}.{self.dataset}.{self.table}"
+                    )
+                    result["tableMetadata"] = {
+                        "tableType": table.table_type,
+                        "friendlyName": table.friendly_name,
+                        "schema": {
+                            "fields": [field.to_api_repr() for field in table.schema]
+                        },
+                    }
+
+            self.dry_run_duration = time.time() - start_time
+
+            # Save to cache (if caching is enabled and result is valid)
+            # Don't cache errors to allow retries
+            if self.use_cache and result.get("valid"):
+                self._save_cached_result(cache_key, result)
+
+            return result
+
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
             return None
@@ -246,7 +532,12 @@ class DryRun:
                     f"{self.get_sql()}WHERE {date_filter} > current_date()"
                 )
                 if (
-                    DryRun(self.sqlfile, filtered_content).get_error()
+                    DryRun(
+                        self.sqlfile,
+                        filtered_content,
+                        client=self.client,
+                        id_token=self.id_token,
+                    ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
                     # If the date filter (e.g. WHERE crash_date > current_date())
@@ -262,14 +553,24 @@ class DryRun:
                     f"{self.get_sql()}WHERE {date_filter} > current_timestamp()"
                 )
                 if (
-                    DryRun(sqlfile=self.sqlfile, content=filtered_content).get_error()
+                    DryRun(
+                        sqlfile=self.sqlfile,
+                        content=filtered_content,
+                        client=self.client,
+                        id_token=self.id_token,
+                    ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
                     filtered_content = (
                         f"{self.get_sql()}AND {date_filter} > current_timestamp()"
                     )
 
-            stripped_dml_result = DryRun(sqlfile=self.sqlfile, content=filtered_content)
+            stripped_dml_result = DryRun(
+                sqlfile=self.sqlfile,
+                content=filtered_content,
+                client=self.client,
+                id_token=self.id_token,
+            )
             if (
                 stripped_dml_result.get_error() is None
                 and "referencedTables" in stripped_dml_result.dry_run_result
@@ -296,6 +597,31 @@ class DryRun:
 
         return {}
 
+    def get_table_schema(self):
+        """Return the schema of the provided table."""
+        if not self.skip() and not self.is_valid():
+            raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if self.skip():
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return {}
+
+        if (
+            self.dry_run_result
+            and self.dry_run_result["valid"]
+            and "tableMetadata" in self.dry_run_result
+        ):
+            return self.dry_run_result["tableMetadata"]["schema"]
+
+        # Check if table metadata is cached (if caching is enabled)
+        if self.use_cache and self.project and self.dataset and self.table:
+            table_identifier = f"{self.project}.{self.dataset}.{self.table}"
+            cached_metadata = self._get_cached_table_metadata(table_identifier)
+            if cached_metadata:
+                return cached_metadata["schema"]
+
+        return []
+
     def get_dataset_labels(self):
         """Return the labels on the default dataset by dry running the SQL file."""
         if not self.skip() and not self.is_valid():
@@ -320,12 +646,12 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run
@@ -344,29 +670,30 @@ class DryRun:
             return []
         return self.dry_run_result.get("errors", [])
 
-    def get_error(self):
+    def get_error(self) -> Optional[Errors]:
         """Get specific errors for edge case handling."""
-        errors = self.dry_run_result.get("errors", None)
-        if errors and len(errors) == 1:
-            error = errors[0]
-        else:
-            error = None
-        if error and error.get("code", None) in [400, 403]:
+        errors = self.errors()
+        if len(errors) != 1:
+            return None
+
+        error = errors[0]
+        if error and error.get("code") in [400, 403]:
+            error_message = error.get("message", "")
             if (
                 "does not have bigquery.tables.create permission for dataset"
-                in error.get("message", "")
-                or "Permission bigquery.tables.create denied"
-                in error.get("message", "")
+                in error_message
+                or "Permission bigquery.tables.create denied" in error_message
+                or "Permission bigquery.datasets.update denied" in error_message
             ):
                 return Errors.READ_ONLY
-            if "without a filter over column(s)" in error.get("message", ""):
+            if "without a filter over column(s)" in error_message:
                 return Errors.DATE_FILTER_NEEDED
             if (
                 "Syntax error: Expected end of input but got keyword WHERE"
-                in error.get("message", "")
+                in error_message
             ):
                 return Errors.DATE_FILTER_NEEDED_AND_SYNTAX
-        return error
+        return None
 
     def validate_schema(self):
         """Check whether schema is valid."""
@@ -382,6 +709,13 @@ class DryRun:
             return True
 
         query_file_path = Path(self.sqlfile)
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        self.project = project_name
+        self.dataset = dataset_name
+        self.table = table_name
+
         query_schema = Schema.from_json(self.get_schema())
         if self.errors():
             # ignore file when there are errors that self.get_schema() did not raise
@@ -393,21 +727,7 @@ class DryRun:
             click.echo(f"No schema file defined for {query_file_path}", err=True)
             return True
 
-        table_name = query_file_path.parent.name
-        dataset_name = query_file_path.parent.parent.name
-        project_name = query_file_path.parent.parent.parent.name
-
-        partitioned_by = None
-        if (
-            self.metadata
-            and self.metadata.bigquery
-            and self.metadata.bigquery.time_partitioning
-        ):
-            partitioned_by = self.metadata.bigquery.time_partitioning.field
-
-        table_schema = Schema.for_table(
-            project_name, dataset_name, table_name, partitioned_by
-        )
+        table_schema = Schema.from_json(self.get_table_schema())
 
         # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):
@@ -428,7 +748,7 @@ class DryRun:
             if not existing_schema.equal(query_schema):
                 click.echo(
                     click.style(
-                        f"Schema defined in {existing_schema_path} "
+                        f"ERROR: Schema defined in {existing_schema_path} "
                         f"incompatible with query {query_file_path}",
                         fg="red",
                     ),

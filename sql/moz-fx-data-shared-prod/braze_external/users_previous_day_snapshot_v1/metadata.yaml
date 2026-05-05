@@ -1,0 +1,22 @@
+friendly_name: Braze Users Previous Day Snapshot
+description: |-
+  This is a snapshot of the users table at the state it was in before
+  the most recent DAG run. Since the user profiles table updates three times a day at
+  0500, 1300, & 2100 UTC, we can update this snapshot looking 1 hour back (to capture the state
+  prior to this run).
+
+  This snapshot allows us to compare changed values in order to generate the
+  JSON payloads for Braze's cloud data ingestion tool.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null

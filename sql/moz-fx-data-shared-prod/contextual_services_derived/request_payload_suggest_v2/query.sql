@@ -1,7 +1,9 @@
 WITH parsed AS (
   SELECT
     submission_timestamp,
-    udf_js.parse_sponsored_interaction(udf_js.extract_string_from_bytes(payload)) AS si
+    `moz-fx-data-shared-prod.udf_js.parse_sponsored_interaction`(
+      `moz-fx-data-shared-prod.udf_js.extract_string_from_bytes`(payload)
+    ) AS si
   FROM
     `moz-fx-data-shared-prod.payload_bytes_error.contextual_services`
   WHERE
@@ -9,6 +11,28 @@ WITH parsed AS (
     AND error_type = 'SendRequest'
 ),
 ping_data AS (
+  SELECT DISTINCT
+    metrics.uuid.quick_suggest_context_id AS context_id,
+    IF(
+      metrics.string.quick_suggest_ping_type = "quicksuggest-click",
+      "click",
+      "impression"
+    ) AS interaction_type,
+    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
+    -- receives geo information from the client rather than from Glean ingestion's
+    -- IP geolocation. We no longer send subdivision, only country.
+    COALESCE(metadata.geo.country, metrics.string.quick_suggest_country) AS country_code,
+    metadata.geo.subdivision1 AS region_code,
+    metadata.user_agent.os AS os_family,
+    metadata.user_agent.version AS product_version,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.quick_suggest`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND metrics.string.quick_suggest_advertiser != "wikipedia"
+    AND metrics.url.quick_suggest_reporting_url IS NOT NULL
+    AND metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
+  UNION ALL
   SELECT DISTINCT
     context_id,
     "impression" AS interaction_type,
@@ -22,6 +46,9 @@ ping_data AS (
     DATE(submission_timestamp) = @submission_date
     AND advertiser != "wikipedia"
     AND reporting_url IS NOT NULL
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    AND SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT DISTINCT
     context_id,
@@ -36,6 +63,9 @@ ping_data AS (
     DATE(submission_timestamp) = @submission_date
     AND advertiser != "wikipedia"
     AND reporting_url IS NOT NULL
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    AND SAFE_CAST(metadata.user_agent.version AS INT64) < 116
 ),
 quicksuggest AS (
   SELECT
@@ -65,6 +95,5 @@ FROM
   quicksuggest qs
 LEFT JOIN
   ping_data pings
-ON
-  qs.context_id = pings.context_id
+  ON qs.context_id = pings.context_id
   AND qs.interaction_type = pings.interaction_type

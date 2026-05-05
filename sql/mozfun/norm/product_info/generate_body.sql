@@ -13,7 +13,7 @@ lines AS (
     UNNEST(SPLIT(input, '\n')) AS line
   WHERE
     line NOT LIKE '%-----%'
-    AND line NOT LIKE '%canonical_app_name%'
+    AND line NOT LIKE r'%canonical\_app\_name%'
 ),
 structured AS (
   SELECT AS STRUCT

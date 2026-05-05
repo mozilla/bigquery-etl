@@ -1,3 +1,12 @@
+/*
+This query is deprecated and no longer scheduled. The underlying tables
+on the FxA side have been removed and the relevant events are now included
+in the fxa_gcp_stdout_events_v1 ETL instead.
+
+We keep this query here basically just to document the fact that this table
+still exists and is referenced in views. If we need to backfill downstream
+ETL, the historical data in this table is still relevant.
+*/
 SELECT
   * REPLACE (
     (

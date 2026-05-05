@@ -1,0 +1,33 @@
+friendly_name: Vitals - Lmk Rate (Low Memory Kill)
+description: |-
+  Contains daily report of lmk rate metrics for the following apps:
+  - org.mozilla.firefox
+  - org.mozilla.firefox_beta
+  - org.mozilla.fenix
+  - org.mozilla.klar
+  - org.mozilla.firefox.vpn
+  - org.mozilla.focus
+
+  Docs: https://developers.google.com/play/developer/reporting/reference/rest/v1beta1/vitals.lmkrate
+owners:
+- kik@mozilla.com
+labels:
+  level: bronze
+  incremental: true
+  owner1: kik
+scheduling:
+  dag_name: bqetl_google_play_store
+  arguments:
+  - --date={{macros.ds_add(ds, -1)}}
+  date_partition_offset: -1
+  secrets:
+  - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO
+    key: bqetl_google_play_store_developer_reporting_api_data_boxwood
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+require_column_descriptions: true

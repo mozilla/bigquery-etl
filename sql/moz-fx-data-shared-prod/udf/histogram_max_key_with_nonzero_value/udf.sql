@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION udf.histogram_max_key_with_nonzero_value(histogram ST
 
 -- Tests
 SELECT
-  assert.equals(1, udf.histogram_max_key_with_nonzero_value('{"values":{"0":3,"1":2}}')),
-  assert.null(udf.histogram_max_key_with_nonzero_value('{}')),
-  assert.null(udf.histogram_max_key_with_nonzero_value('{"values":{"0":0}}')),
-  assert.equals(5, udf.histogram_max_key_with_nonzero_value('{"values":{"5":1}}'))
+  mozfun.assert.equals(1, udf.histogram_max_key_with_nonzero_value('{"values":{"0":3,"1":2}}')),
+  mozfun.assert.null(udf.histogram_max_key_with_nonzero_value('{}')),
+  mozfun.assert.null(udf.histogram_max_key_with_nonzero_value('{"values":{"0":0}}')),
+  mozfun.assert.equals(5, udf.histogram_max_key_with_nonzero_value('{"values":{"5":1}}'))

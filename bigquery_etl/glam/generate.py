@@ -1,4 +1,5 @@
 """Generate templated views."""
+
 from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass
 from functools import partial
@@ -74,6 +75,7 @@ def main():
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     parser.add_argument("--daily-view-only", action="store_true", default=False)
+    parser.add_argument("--use-sample-id", action="store_true", default=False)
     args = parser.parse_args()
 
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
@@ -188,21 +190,21 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 10,
-            "minimum_client_count": 100,
+            "minimum_client_count": 50,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 100,
-            "minimum_client_count": 1000,
+            "minimum_client_count": 1500,
         },
         "firefox_desktop_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 100,
-            "minimum_client_count": 100000,
+            "minimum_client_count": 450000,
         },
     }
 
@@ -225,11 +227,25 @@ def main():
             **dict(app_id_channel=(f"'{channel_prefixes[args.prefix]}'")),
         ),
         init(
+            "clients_scalar_aggregates_new_v1",
+            **models.clients_scalar_aggregates_new(
+                destination_table=(
+                    f"glam_etl.{args.prefix}__clients_scalar_aggregates_new_v1"
+                ),
+            ),
+        ),
+        table(
+            "clients_scalar_aggregates_new_v1",
+            **models.clients_scalar_aggregates_new(
+                destination_table=(
+                    f"glam_etl.{args.prefix}__clients_scalar_aggregates_new_v1"
+                ),
+                **config[args.prefix],
+            ),
+        ),
+        init(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=(
-                    f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
-                ),
                 destination_table=(
                     f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
                 ),
@@ -238,9 +254,6 @@ def main():
         table(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=(
-                    f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
-                ),
                 destination_table=(
                     f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
                 ),
@@ -248,13 +261,28 @@ def main():
             ),
         ),
         init(
+            "clients_histogram_aggregates_new_v1",
+            **models.clients_histogram_aggregates_new(parameterize=True),
+        ),
+        table(
+            "clients_histogram_aggregates_new_v1",
+            **models.clients_histogram_aggregates_new(
+                parameterize=True, **config[args.prefix]
+            ),
+        ),
+        init(
             "clients_histogram_aggregates_v1",
-            **models.clients_histogram_aggregates(parameterize=True),
+            **models.clients_histogram_aggregates(
+                parameterize=True,
+                channel=channel_prefixes[args.prefix],
+            ),
         ),
         table(
             "clients_histogram_aggregates_v1",
             **models.clients_histogram_aggregates(
-                parameterize=True, **config[args.prefix]
+                parameterize=True,
+                **config[args.prefix],
+                channel=channel_prefixes[args.prefix],
             ),
         ),
         table(
@@ -263,6 +291,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1",
                 **config[args.prefix],
             ),
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "histogram_bucket_counts_v1",
@@ -270,6 +299,8 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1",
                 **config[args.prefix],
             ),
+            channel=channel_prefixes[args.prefix],
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "probe_counts_v1",
@@ -278,6 +309,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__scalar_bucket_counts_v1",
                 is_scalar=True,
             ),
+            channel=channel_prefixes[args.prefix],
         ),
         table(
             "probe_counts_v1",
@@ -286,17 +318,15 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__histogram_bucket_counts_v1",
                 is_scalar=False,
             ),
+            channel=channel_prefixes[args.prefix],
         ),
-        table(
-            "scalar_percentiles_v1",
-            **models.scalar_percentiles(
-                source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
-            ),
-        ),
-        table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
-        view("view_sample_counts_v1", **models.sample_counts()),
+        view(
+            "view_sample_counts_v1",
+            **models.sample_counts(),
+            channel=channel_prefixes[args.prefix],
+        ),
         table("extract_user_counts_v1", **config[args.prefix]),
         table("extract_probe_counts_v1", **config[args.prefix]),
     ]

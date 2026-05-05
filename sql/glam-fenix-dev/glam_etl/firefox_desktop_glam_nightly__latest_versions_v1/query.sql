@@ -5,7 +5,7 @@ WITH extracted AS (
     channel,
     app_version
   FROM
-    glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1`
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 28 DAY)

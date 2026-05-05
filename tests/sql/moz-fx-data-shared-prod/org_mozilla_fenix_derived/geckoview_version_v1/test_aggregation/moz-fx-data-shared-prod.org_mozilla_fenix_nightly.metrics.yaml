@@ -1,0 +1,313 @@
+---
+- &id001
+  client_info:
+    app_build: '0000377664'
+  metrics:
+    string:
+      gecko_version: 92.0.0
+  submission_timestamp: '2020-05-17T00:00:00'
+- &id002
+  client_info:
+    app_build: 0000377856
+  metrics:
+    string:
+      gecko_version: 93.0.0
+  submission_timestamp: '2020-05-18T00:00:00'
+- &id003
+  client_info:
+    app_build: 0000378048
+  metrics:
+    string:
+      gecko_version: 94.0.0
+  submission_timestamp: '2020-05-19T00:00:00'
+- &id004
+  client_info:
+    app_build: 0000378240
+  metrics:
+    string:
+      gecko_version: 95.0.0
+  submission_timestamp: '2020-05-20T00:00:00'
+- &id005
+  client_info:
+    app_build: 0000378432
+  metrics:
+    string:
+      gecko_version: 96.0.0
+  submission_timestamp: '2020-05-21T00:00:00'
+- &id006
+  client_info:
+    app_build: 0000378624
+  metrics:
+    string:
+      gecko_version: 97.0.0
+  submission_timestamp: '2020-05-22T00:00:00'
+- &id007
+  client_info:
+    app_build: 0000378816
+  metrics:
+    string:
+      gecko_version: 98.0.0
+  submission_timestamp: '2020-05-23T00:00:00'
+- &id008
+  client_info:
+    app_build: 0000379008
+  metrics:
+    string:
+      gecko_version: 99.0.0
+  submission_timestamp: '2020-05-24T00:00:00'
+- &id009
+  client_info:
+    app_build: 0000379200
+  metrics:
+    string:
+      gecko_version: 100.0.0
+  submission_timestamp: '2020-05-25T00:00:00'
+- &id010
+  client_info:
+    app_build: 0000379392
+  metrics:
+    string:
+      gecko_version: 101.0.0
+  submission_timestamp: '2020-05-26T00:00:00'
+- &id011
+  client_info:
+    app_build: 0000379584
+  metrics:
+    string:
+      gecko_version: 102.0.0
+  submission_timestamp: '2020-05-27T00:00:00'
+- &id012
+  client_info:
+    app_build: 0000379776
+  metrics:
+    string:
+      gecko_version: 103.0.0
+  submission_timestamp: '2020-05-28T00:00:00'
+- &id013
+  client_info:
+    app_build: 0000379968
+  metrics:
+    string:
+      gecko_version: 104.0.0
+  submission_timestamp: '2020-05-29T00:00:00'
+- &id014
+  client_info:
+    app_build: 0000380160
+  metrics:
+    string:
+      gecko_version: 105.0.0
+  submission_timestamp: '2020-05-30T00:00:00'
+- &id015
+  client_info:
+    app_build: 0000380352
+  metrics:
+    string:
+      gecko_version: 106.0.0
+  submission_timestamp: '2020-05-31T00:00:00'
+- &id016
+  client_info:
+    app_build: 0000380544
+  metrics:
+    string:
+      gecko_version: 107.0.0
+  submission_timestamp: '2020-06-01T00:00:00'
+- &id017
+  client_info:
+    app_build: 0000380736
+  metrics:
+    string:
+      gecko_version: 108.0.0
+  submission_timestamp: '2020-06-02T00:00:00'
+- &id018
+  client_info:
+    app_build: 0000380928
+  metrics:
+    string:
+      gecko_version: 109.0.0
+  submission_timestamp: '2020-06-03T00:00:00'
+- &id019
+  client_info:
+    app_build: 0000381120
+  metrics:
+    string:
+      gecko_version: 110.0.0
+  submission_timestamp: '2020-06-04T00:00:00'
+- &id020
+  client_info:
+    app_build: 0000381312
+  metrics:
+    string:
+      gecko_version: 111.0.0
+  submission_timestamp: '2020-06-05T00:00:00'
+- &id021
+  client_info:
+    app_build: 0000381504
+  metrics:
+    string:
+      gecko_version: 112.0.0
+  submission_timestamp: '2020-06-06T00:00:00'
+- &id022
+  client_info:
+    app_build: 0000381696
+  metrics:
+    string:
+      gecko_version: 113.0.0
+  submission_timestamp: '2020-06-07T00:00:00'
+- &id023
+  client_info:
+    app_build: 0000381888
+  metrics:
+    string:
+      gecko_version: 114.0.0
+  submission_timestamp: '2020-06-08T00:00:00'
+- &id024
+  client_info:
+    app_build: 0000382080
+  metrics:
+    string:
+      gecko_version: 115.0.0
+  submission_timestamp: '2020-06-09T00:00:00'
+- &id025
+  client_info:
+    app_build: 0000382272
+  metrics:
+    string:
+      gecko_version: 116.0.0
+  submission_timestamp: '2020-06-10T00:00:00'
+- &id026
+  client_info:
+    app_build: 0000382464
+  metrics:
+    string:
+      gecko_version: 117.0.0
+  submission_timestamp: '2020-06-11T00:00:00'
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026

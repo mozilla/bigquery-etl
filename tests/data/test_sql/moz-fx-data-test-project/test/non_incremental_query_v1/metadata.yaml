@@ -18,4 +18,5 @@ scheduling:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:dataops-managed/taar
+      - workgroup:dataplatform/test
+deprecated: true

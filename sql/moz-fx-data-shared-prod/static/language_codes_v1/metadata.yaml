@@ -1,0 +1,6 @@
+friendly_name: Language Codes V1
+description: |
+  Mapping of ISO 639 alpha-3 and alpha-2 language codes to language names.
+
+  Language codes are unique, but language names are not unique.
+  All records have alpha-3 codes, but not all records have alpha-2 codes.

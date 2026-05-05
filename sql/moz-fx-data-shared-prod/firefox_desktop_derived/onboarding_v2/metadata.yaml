@@ -2,10 +2,12 @@ friendly_name: Onboarding
 description: |-
   Contains CFR specific data extracted from messaging_system_v1
 owners:
-- gleonard@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: gleonard
+  owner1: kwindau
+  table_type: client_level
+  dag: bqetl_messaging_system
 scheduling:
   dag_name: bqetl_messaging_system
 bigquery:
@@ -13,9 +15,10 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
-references: {}
+require_column_descriptions: false

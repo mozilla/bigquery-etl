@@ -34,7 +34,7 @@ fields:
 - description:
   mode: NULLABLE
   name: job_id
-  type: TIMESTAMP
+  type: INTEGER
 - description:
   mode: NULLABLE
   name: executor_config

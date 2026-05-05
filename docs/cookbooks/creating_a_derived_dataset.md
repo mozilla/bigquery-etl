@@ -161,7 +161,7 @@ Use bqetl to set up the schema that will be used to create the table.
 Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.
 
 ```bash
-./bqetl query schema update <dataset>.<table>`
+./bqetl query schema update <dataset>.<table>
 ```
 
 For our example:
@@ -183,6 +183,11 @@ For our example, the starting date is `2020-06-01` and we use a schedule interva
 
 The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
+When creating a new DAG, while it is still under active development and assumed to fail during this phase, the DAG can be tagged as `--tag triage/no_triage`. That way it will be ignored by the person on Airflow Triage.
+Once the active development is done, the `triage/no_triage` tag can be removed and problems will be addressed during the Airflow Triage process.
+
+**NOTE** - New DAGs will not be enabled automatically. You must enable them manually in the Airflow UI. DAGs can be located in Airflow at `https://workflow.telemetry.mozilla.org/dags/{YOUR_DAG_NAME}/grid`. To enable the DAG, toggle the switch next to your DAG name in the upper left corner.
+
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3
 ```
@@ -203,21 +208,6 @@ Here is the command for our example. Notice the name of the table as created wit
 ```
 
 Note that we are scheduling the generation of the underlying _table_ which is `org_mozilla_mozregression_derived.mozregression_aggregates_v1` rather than the view.
-
-## Updating the Airflow DAGs
-
-With the query schedule setup, you will want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:
-
-```bash
-./bqetl dag generate <dag_name>
-```
-
-For this example:
-```bash
-./bqetl dag generate bqetl_internal_tooling
-```
-
-This may take a while, as it currently does a dry run through every query defined in bigquery-etl.
 
 ## Get Data Review
 
@@ -268,23 +258,100 @@ For our example:
 ./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 
-## Backfilling the dataset
+## Backfilling a table
 
-It is recommended to use the [bqetl backfill command](https://mozilla.github.io/bigquery-etl/bqetl/#backfill) in order to load the data in your new table, and set specific dates for large sets of data, as well as following the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills).
+**Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
+### Initiating the backfill:
+
+1. Create a backfill schedule entry to (re)-process data in your table:
+
+  ```bash
+  bqetl backfill create
+  ```
+  Then fill out the prompts. A backfill can also be created from a single command:
+  ```bash
+  bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
+  ```
+
+  - If the table's metadata has the label `shredder_mitigation: true`, use the process to run a [backfill with shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation):
+    For new tables:
+      - Set `shredder_mitigation: false` since there is no data yet to safeguard.
+      - Backfill and validate your data.
+      - Set `shredder_mitigation: true` to protect the validated data. 
+    For existing tables:
+      - Bump the version of the query.
+      - Make the necessary updates to the new version of the query and schema.
+      - Create the managed backfill for the new version of the query, including the parameter `--shredder_mitigation`.
+          ```bash
+          bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
+          ```
+
+2. Fill out the missing details:
+  - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.
+    - Note that the email name should match the username listed here: https://mozilla.slack.com/account/settings#username.
+      If it doesn't, put the username with `@mozilla.com` instead (an email won't be sent there).
+      e.g. if your username is `abcdef`, set the watcher to `abcdef@mozilla.com`
+  - Reason: Why are you backfilling this table?
+
+3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
+
+4. Watchers need to join the #dataops-alerts Slack channel. They will be notified via Slack when processing is complete, and you can validate your backfill data.
+
+### Backfilling with a Python script:
+
+Tables that use a `query.py` file instead of `query.sql` are also supported with backfills, but have additional considerations.
+
+**Importantly, backfills for scripts will not automatically configure the backfill staging table and dry run.**
+The query.py must support destination table and dry run arguments, and the backfill must be configured to use them
+if you would like to use them. If a destination table is not provided, the backfill will use the script's
+default values, likely writing to the production table.
+
+In order to use the backfill complete step, the script must write to the correct table in the backfill staging
+dataset: `{dataset}__{table_name}_{backfill_date}`. e.g. setting
+`--query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"`
+Otherwise, the backfill complete will do nothing.
+
+Required parameters:
+- `query_script_entrypoint`: The name of the main function inside the python script.
+- `query_script_date_arg`: The name of the CLI argument that the entrypoint accepts for the backfill date, formatted as `YYYY-MM-DD`
+(e.g. `submission_date`). The backfill will pass each backfilled date to the script via this argument.
+
+Optional parameters for Python scripts:
+- `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
+Use this to set the backfill staging table if needed, e.g. `--destination-table=dataset__table_v1_YYYY_MM_DD`.
+- `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+The script must implement support for this argument itself.
+
+Example:
 ```bash
-bqetl query backfill <dataset>.<table> --project_id=moz-fx-data-shared-prod -s <YYYY-MM-DD> -e <YYYY-MM-DD> -n 0
+bqetl backfill create moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1 \
+    --start-date 2026-02-24 \
+    --end-date 2026-02-26 \
+    --exclude 2026-02-25 \
+    --watcher nobody@mozilla.com \
+    --query-script-entrypoint main \
+    --query-script-date-arg date \
+    --query-script-dry-run-arg "--dry-run" \
+    --query-script-arg "--destination_dataset=backfills_staging_derived" \
+    --query-script-arg "--destination_table=monitoring_derived__stable_and_derived_table_sizes_v1_2026_03_02"
 ```
 
-For our example:
-```bash
-./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --s 2020-04-01 --e 2021-02-01
-```
+### Completing the backfill:
 
-**Note**. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.
+1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
+   - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
+
+2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
+
+3. You will be notified when swapping is complete.
+
+
+**Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.
 
 ## Completing the Pull Request
 
 At this point, the table exists in Bigquery so you are able to:
-- [Find and re-run the CI](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) of your PR and make sure that all tests pass
+- [Find and re-run the CI](https://github.com/mozilla/bigquery-etl/actions/workflows/build.yml) of your PR and make sure that all tests pass
 - Merge your PR.

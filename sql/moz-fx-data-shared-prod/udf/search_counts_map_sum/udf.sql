@@ -16,11 +16,11 @@ CREATE OR REPLACE FUNCTION udf.search_counts_map_sum(
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[],
     udf.search_counts_map_sum(ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[])
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[
       ('engine1', 'urlbar', 3),
       ('engine1', 'contextmenu', 7),

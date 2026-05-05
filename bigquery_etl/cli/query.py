@@ -1,7 +1,10 @@
 """bigquery-etl CLI query command."""
 
+import concurrent.futures
 import copy
 import datetime
+import importlib.util
+import json
 import logging
 import multiprocessing
 import os
@@ -10,25 +13,36 @@ import string
 import subprocess
 import sys
 import tempfile
-import typing
+from concurrent import futures
 from datetime import date, timedelta
-from functools import partial
+from functools import cache, partial
+from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from traceback import print_exc
+from typing import Callable, Iterable, Optional
 
-import click
+import rich_click as click
+import sqlparse
 import yaml
-from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..backfill import backfill_options
+from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.utils import (
+    QUALIFIED_TABLE_NAME_RE,
+    get_effective_retention_days,
+    qualified_table_name_matching,
+)
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
+    billing_project_option,
+    defer_option,
     is_authenticated,
     is_valid_project,
+    multi_project_id_option,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
@@ -40,16 +54,22 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
-from ..dryrun import DryRun
+from ..deploy import (
+    FailedDeployException,
+    SkippedDeployException,
+    SkippedExternalDataException,
+    deploy_table,
+)
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
     DatasetMetadata,
-    ExternalDataFormat,
     Metadata,
     PartitionMetadata,
     PartitionType,
@@ -59,16 +79,34 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.common import random_str
+from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
+from ..util.target import prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
+
+
+@cache
+def skip_schema_deploy():
+    """Return a list of files for which schema deploy should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+        for file in glob(skip, recursive=True)
+    ]
+
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
+DEFAULT_INIT_PARALLELISM = 3
+INIT_SAMPLE_ID_PARALLELISM = 2
+DEFAULT_CHECKS_FILE_NAME = "checks.sql"
+VIEW_FILE = "view.sql"
+MATERIALIZED_VIEW = "materialized_view.sql"
+GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
 @click.group(help="Commands for managing queries.")
@@ -112,13 +150,6 @@ def query(ctx):
     default="example@mozilla.com",
 )
 @click.option(
-    "--init",
-    "-i",
-    help="Create an init.sql file to initialize the table",
-    default=False,
-    is_flag=True,
-)
-@click.option(
     "--dag",
     "-d",
     help=(
@@ -142,7 +173,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -167,12 +198,14 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
     path = Path(sql_dir)
 
     if dataset.endswith("_derived"):
-        # create a directory for the corresponding view
+        # create directory for this table
         derived_path = path / project_id / dataset / (name + version)
         derived_path.mkdir(parents=True)
 
+        # create a directory for the corresponding view
         view_path = path / project_id / dataset.replace("_derived", "") / name
-        view_path.mkdir(parents=True)
+        # new versions of existing tables may already have a view
+        view_path.mkdir(parents=True, exist_ok=True)
     else:
         # check if there is a corresponding derived dataset
         if (path / project_id / (dataset + "_derived")).exists():
@@ -190,31 +223,33 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
 
     click.echo(f"Created query in {derived_path}")
 
-    if view_path:
+    if view_path and not (view_file := view_path / "view.sql").exists():
+        # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
-        view_file = view_path / "view.sql"
         view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
-            reformat(
-                f"""CREATE OR REPLACE VIEW
+        view_file.write_text(reformat(f"""CREATE OR REPLACE VIEW
                   `{project_id}.{view_dataset}.{name}`
                 AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
-            )
-            + "\n"
+                  `{project_id}.{dataset}.{name}{version}`""") + "\n")
+
+        safe_owner = owner.lower().split("@")[0]
+
+        view_metadata_file = view_path / "metadata.yaml"
+        view_metadata = Metadata(
+            friendly_name=string.capwords(name.replace("_", " ")),
+            description="Please provide a description for the query",
+            owners=[owner],
+            labels={"owner": safe_owner},
         )
+
+        view_metadata.write(view_metadata_file)
 
     # create query.sql file
     query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
+    query_file.write_text(reformat(f"""-- Query for {dataset}.{name}{version}
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
-        )
-        + "\n"
-    )
+            SELECT * FROM table WHERE submission_date = @submission_date""") + "\n")
 
     # create default metadata.yaml
     metadata_file = derived_path / "metadata.yaml"
@@ -224,25 +259,14 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+            time_partitioning=PartitionMetadata(
+                field="", type=PartitionType.DAY, require_partition_filter=True
+            ),
             clustering=ClusteringMetadata(fields=[]),
         ),
+        require_column_descriptions=True,
     )
     metadata.write(metadata_file)
-
-    # optionally create init.sql
-    if init:
-        init_file = derived_path / "init.sql"
-        init_file.write_text(
-            reformat(
-                f"""
-                -- SQL for initializing the query destination table.
-                CREATE OR REPLACE TABLE
-                  `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
-                AS SELECT * FROM table"""
-            )
-            + "\n"
-        )
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():
@@ -338,8 +362,6 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     dags = DagCollection.from_file(sql_dir.parent / "dags.yaml")
 
-    dags_to_be_generated = set()
-
     for query_file in query_files:
         try:
             metadata = Metadata.of_query_file(query_file)
@@ -379,22 +401,12 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
             )
 
             # update dags since new task has been added
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
-            dags_to_be_generated.add(dag)
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
         else:
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)
-            else:
-                dags_to_be_generated.add(metadata.scheduling["dag_name"])
-
-    # re-run DAG generation for the affected DAG
-    for d in dags_to_be_generated:
-        existing_dag = dags.dag_by_name(d)
-        logging.info(f"Running DAG generation for {existing_dag.name}")
-        output_dir = sql_dir.parent / "dags"
-        dags.dag_to_airflow(output_dir, existing_dag)
 
 
 @query.command(
@@ -415,14 +427,8 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()
-@click.option("--cost", help="Include information about query costs", is_flag=True)
-@click.option(
-    "--last_updated",
-    help="Include timestamps when destination tables were last updated",
-    is_flag=True,
-)
 @click.pass_context
-def info(ctx, name, sql_dir, project_id, cost, last_updated):
+def info(ctx, name, sql_dir, project_id):
     """Return information about all or specific queries."""
     if name is None:
         name = "*.*"
@@ -436,6 +442,8 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -463,120 +471,148 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
                 click.echo("scheduling:")
                 click.echo(f"  dag_name: {metadata.scheduling['dag_name']}")
 
-        if cost or last_updated:
-            if not is_authenticated():
-                click.echo(
-                    "Authentication to GCP required for "
-                    "accessing cost and last_updated."
-                )
-            else:
-                client = bigquery.Client()
-                end_date = date.today().strftime("%Y-%m-%d")
-                start_date = (date.today() - timedelta(7)).strftime("%Y-%m-%d")
-                result = client.query(
-                    f"""
-                    SELECT
-                        SUM(cost_usd) AS cost,
-                        MAX(creation_time) AS last_updated
-                    FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
-                    WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
-                        AND dataset = '{dataset}'
-                        AND table = '{table}'
-                """  # noqa E501
-                ).result()
+        # TODO: Add costs and last_updated info
 
-                if result.total_rows == 0:
-                    if last_updated:
-                        click.echo("last_updated: never")
-                    if cost:
-                        click.echo("Cost over the last 7 days: none")
-
-                for row in result:
-                    if last_updated:
-                        click.echo(f"  last_updated: {row.last_updated}")
-                    if cost:
-                        click.echo(
-                            f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
-                        )
         click.echo("")
+
+
+def _parse_parameter(parameter: str, param_date: str) -> str:
+    # TODO: Parse more complex parameters such as macro_ds_add
+    param_name, param_type, param_value = parameter.split(":", 2)
+    if param_type == "DATE" and param_value != "{{ds}}":
+        raise ValueError(f"Unable to parse parameter {parameter}")
+
+    return f"--parameter={parameter.replace('{{ds}}', param_date)}"
 
 
 def _backfill_query(
     query_file_path,
     project_id,
     date_partition_parameter,
-    exclude,
+    date_partition_offset,
     max_rows,
     dry_run,
-    no_partition,
+    scheduling_parameters,
     args,
     partitioning_type,
     backfill_date,
     destination_table,
+    run_checks,
+    checks_file_name,
+    billing_project,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
+    if destination_table is None:
+        destination_table = f"{project}.{dataset}.{table}"
 
-    match partitioning_type:
-        case PartitionType.DAY:
-            partition = backfill_date.strftime("%Y%m%d")
-        case PartitionType.MONTH:
-            partition = backfill_date.strftime("%Y%m")
-        case _:
-            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
-
-    backfill_date = backfill_date.strftime("%Y-%m-%d")
-    if backfill_date not in exclude:
-        if destination_table is None:
-            destination_table = f"{project}.{dataset}.{table}"
-
-        if not no_partition:
+    # For partitioned tables, get the partition to write to the correct destination:
+    if partitioning_type is not None:
+        if (
+            partition := get_backfill_partition(
+                backfill_date,
+                date_partition_parameter,
+                date_partition_offset,
+                partitioning_type,
+            )
+        ) is not None:
             destination_table = f"{destination_table}${partition}"
 
-        if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
-            click.echo(
-                "Destination table must be named like:" + " <project>.<dataset>.<table>"
-            )
-            sys.exit(1)
+    if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
+        click.echo("Destination table must be named like: <project>.<dataset>.<table>")
+        sys.exit(1)
 
-        click.echo(
-            f"Run backfill for {destination_table} "
-            f"with @{date_partition_parameter}={backfill_date}"
+    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
+    query_parameters = [
+        _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
+    ]
+
+    if date_partition_parameter is not None:
+        offset_param = backfill_date + timedelta(days=date_partition_offset)
+        query_parameters.append(
+            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
         )
 
-        arguments = [
+    arguments = (
+        [
             "query",
-            f"--parameter={date_partition_parameter}:DATE:{backfill_date}",
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
             f"--project_id={project_id}",
             "--format=none",
-        ] + args
-        if dry_run:
-            arguments += ["--dry_run"]
+        ]
+        + args
+        + query_parameters
+    )
+    if dry_run:
+        arguments += ["--dry_run"]
 
-        _run_query(
-            [query_file_path],
+    click.echo(
+        f"Backfill run: {backfill_date_str} "
+        f"Destination_table: {destination_table} "
+        f"Scheduling Parameters: {query_parameters}"
+    )
+
+    _run_query(
+        [query_file_path],
+        project_id=project_id,
+        dataset_id=dataset,
+        destination_table=destination_table,
+        public_project_id=ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        ),
+        query_arguments=arguments,
+        billing_project=billing_project,
+        ignore_public_dataset=True,
+        is_backfill=True,
+    )
+    # Run checks on the query
+    checks_file = query_file_path.parent / checks_file_name
+    if run_checks and checks_file.exists():
+        table_name = checks_file.parent.name
+        # query_args have things like format, which we don't want to push
+        # to the check; so we just take the query parameters
+        check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+        check._run_check(
+            checks_file=checks_file,
             project_id=project_id,
             dataset_id=dataset,
-            destination_table=destination_table,
-            public_project_id=ConfigLoader.get(
-                "default", "public_project", fallback="mozilla-public-data"
-            ),
-            query_arguments=arguments,
-        )
-
-    else:
-        click.echo(
-            f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
+            table=table_name,
+            query_arguments=check_args,
+            dry_run=dry_run,
         )
 
     return True
 
 
+def _backfill_script(
+    backfill_date: date,
+    entrypoint_command: Callable,
+    query_script_date_arg: str,
+    query_script_args: Iterable[str],
+):
+    script_args = [
+        f"--{query_script_date_arg}",
+        backfill_date.isoformat(),
+        *query_script_args,
+    ]
+    print(f"Backfilling script for {backfill_date} with {' '.join(script_args)}")
+    if isinstance(entrypoint_command, click.Command):
+        entrypoint_command(script_args, standalone_mode=False)
+    else:
+        original_argv = sys.argv.copy()
+        try:
+            sys.argv = ["query.py"] + script_args
+            entrypoint_command()
+        finally:
+            sys.argv = original_argv
+
+
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
 
@@ -584,50 +620,46 @@ def _backfill_query(
     # Backfill for specific date range
     # second comment line
     ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \\
+      --project-id moz-fx-data-shared-prod \\
       --start_date=2021-03-01 \\
       --end_date=2021-03-31
 
     \b
     # Dryrun backfill for specific date range and exclude date
     ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \\
+      --project-id moz-fx-data-shared-prod
       --start_date=2021-03-01 \\
       --end_date=2021-03-31 \\
       --exclude=2021-03-03 \\
       --dry_run
+
+
+    # Backfill a query with a query.py
+    ./bqetl query backfill monitoring_derived.stable_and_derived_table_sizes_v1 \\
+      --start_date=2021-03-01 \\
+      --end_date=2021-03-31 \\
+      --query-script-entrypoint main \\
+      --query-script-date-arg date \\
+      --query-script-arg "--dry-run" \\
+      --query-script-arg "--project=moz-fx-data-shared-prod"
     """,
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
 @project_id_option(required=True)
+@billing_project_option()
+@backfill_options.start_date()
+@backfill_options.end_date()
+@backfill_options.exclude()
 @click.option(
-    "--start_date",
-    "--start-date",
-    "-s",
-    help="First date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-)
-@click.option(
-    "--end_date",
-    "--end-date",
-    "-e",
-    help="Last date to be backfilled",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=str(date.today()),
-)
-@click.option(
-    "--exclude",
-    "-x",
-    multiple=True,
-    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
-    default=[],
-)
-@click.option(
-    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run the backfill"
+    "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
+    help="Dry run the backfill.  Cannot be used with query.py backfills.",
 )
 @click.option(
     "--max_rows",
@@ -644,13 +676,6 @@ def _backfill_query(
     help="How many threads to run backfill in parallel",
 )
 @click.option(
-    "--no_partition",
-    "--no-partition",
-    is_flag=True,
-    default=False,
-    help="Disable writing results to a partition. Overwrites entire destination table.",
-)
-@click.option(
     "--destination_table",
     "--destination-table",
     required=False,
@@ -658,32 +683,78 @@ def _backfill_query(
         "Destination table name results are written to. "
         + "If not set, determines destination table based on query."
     ),
+    metavar="PROJECT.DATASET.TABLE",
 )
+@click.option(
+    "--checks/--no-checks", help="Whether to run checks during backfill", default=False
+)
+@backfill_options.custom_query_path()
+@click.option(
+    "--checks_file_name",
+    "--checks-file-name",
+    help="Name of a custom data checks file to run after each partition backfill. E.g. custom_checks.sql. Optional.",
+    default=None,
+)
+@click.option(
+    "--scheduling_overrides",
+    "--scheduling-overrides",
+    required=False,
+    type=str,
+    default="{}",
+    help=(
+        "Pass overrides as a JSON string for scheduling sections: "
+        "parameters and/or date_partition_parameter as needed."
+    ),
+)
+@backfill_options.override_retention()
+@backfill_options.query_script_entrypoint()
+@backfill_options.query_script_date_arg()
+@backfill_options.query_script_arg()
 @click.pass_context
 def backfill(
     ctx,
     name,
     sql_dir,
     project_id,
+    billing_project,
     start_date,
     end_date,
     exclude,
     dry_run,
     max_rows,
     parallelism,
-    no_partition,
     destination_table,
+    checks,
+    checks_file_name,
+    custom_query_path,
+    scheduling_overrides,
+    override_retention_range_limit,
+    query_script_entrypoint,
+    query_script_date_arg,
+    query_script_arg,
 ):
     """Run a backfill."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if custom_query_path:
+        query_files = paths_matching_name_pattern(
+            custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
+        )
+    else:
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, files=["query.sql", "query.py"]
+        )
+
     if query_files == []:
+        if custom_query_path:
+            click.echo(f"Custom query file '{custom_query_path}' not found in {name}")
+            sys.exit(1)
+
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -691,98 +762,157 @@ def backfill(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
+    if len(query_files) > 1:
+        raise click.ClickException(
+            f"Found multiple query source files to backfill: {query_files}"
+        )
 
-    for query_file in query_files:
-        query_file_path = Path(query_file)
+    query_file = query_files[0]
+    query_file_path = Path(query_file)
 
-        depends_on_past = False
-        date_partition_parameter = "submission_date"
+    is_python_script = query_file_path.suffix == ".py"
 
-        try:
-            metadata = Metadata.of_query_file(str(query_file_path))
-            depends_on_past = metadata.scheduling.get(
-                "depends_on_past", depends_on_past
+    try:
+        metadata = Metadata.of_query_file(str(query_file_path))
+    except FileNotFoundError:
+        raise click.ClickException(
+            f"Can't run backfill without metadata for {query_file_path}."
+        )
+
+    # Check retention limit using the effective retention (considers partition expiration_days)
+    retention_days = get_effective_retention_days(metadata)
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=retention_days)
+    ):
+        click.echo(
+            f"Cannot backfill more than {retention_days} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
+
+    depends_on_past = metadata.scheduling.get("depends_on_past", False)
+    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+
+    partitioning_type = None
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        partitioning_type = metadata.bigquery.time_partitioning.type
+
+    date_range = BackfillDateRange(
+        start_date.date(),
+        end_date.date(),
+        excludes=[x.date() for x in exclude],
+        range_type=partitioning_type or PartitionType.DAY,
+    )
+
+    if depends_on_past and exclude:
+        click.echo(
+            f"Warning: depends_on_past = True for {query_file_path} but the"
+            f"following dates will be excluded from the backfill: {exclude}"
+        )
+
+    if is_python_script:
+        if query_script_entrypoint is None or query_script_date_arg is None:
+            raise click.ClickException(
+                "Backfill for query scripts require --query-script-entrypoint and "
+                f"--query-script-date-arg arguments: {query_file_path}"
             )
-            date_partition_parameter = metadata.scheduling.get(
-                "date_partition_parameter", date_partition_parameter
+
+        if dry_run:
+            raise click.ClickException(
+                "--dry-run argument is not compatible with query scripts. Dry run must be "
+                "implemented in the script and controlled via an argument, "
+                "e.g. --query-script-arg '--dry-run'"
             )
 
-            # For backwards compatibility assume partitioning type is day
-            # in case metadata is missing
-            if metadata.bigquery:
-                partitioning_type = metadata.bigquery.time_partitioning.type
-            else:
-                partitioning_type = PartitionType.DAY
-                click.echo(
-                    "Bigquery partitioning type not set. Using PartitionType.DAY"
-                )
+        # attempt to import the query script using the file path
+        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
+        query_module = importlib.util.module_from_spec(query_spec)
+        query_spec.loader.exec_module(query_module)
+        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
 
-            match partitioning_type:
-                case PartitionType.DAY:
-                    dates = [
-                        start_date + timedelta(i)
-                        for i in range((end_date - start_date).days + 1)
-                    ]
-                case PartitionType.MONTH:
-                    dates = list(
-                        rrule(
-                            freq=MONTHLY,
-                            dtstart=start_date.replace(day=1),
-                            until=end_date,
-                        )
-                    )
-                    # Dates in excluded must be the first day of the month to match `dates`
-                    exclude = [
-                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
-                        for day in exclude
-                    ]
-                case _:
-                    raise ValueError(
-                        f"Unsupported partitioning type: {partitioning_type}"
-                    )
-
-        except FileNotFoundError:
-            click.echo(f"No metadata defined for {query_file_path}")
-
-        if depends_on_past and exclude != []:
-            click.echo(
-                f"Warning: depends_on_past = True for {query_file_path} but the"
-                f"following dates will be excluded from the backfill: {exclude}"
+        if not isinstance(entrypoint_command, Callable):
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
             )
+
+        backfill_query = partial(
+            _backfill_script,
+            entrypoint_command=entrypoint_command,
+            query_script_date_arg=query_script_date_arg,
+            query_script_args=query_script_arg,
+        )
+    else:
+        # adding copy logic for cleaner handling of overrides
+        scheduling_metadata = metadata.scheduling.copy()
+        scheduling_metadata.update(json.loads(scheduling_overrides))
+        date_partition_parameter = scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
+        )
+        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
         client = bigquery.Client(project=project_id)
+        project, dataset, table = extract_from_query_path(query_file_path)
         try:
-            project, dataset, table = extract_from_query_path(query_file_path)
             client.get_table(f"{project}.{dataset}.{table}")
         except NotFound:
-            ctx.invoke(initialize, name=query_file, dry_run=dry_run)
+            ctx.invoke(
+                initialize,
+                name=query_file,
+                dry_run=dry_run,
+                billing_project=billing_project,
+            )
 
         backfill_query = partial(
             _backfill_query,
             query_file_path,
             project_id,
             date_partition_parameter,
-            exclude,
+            date_partition_offset,
             max_rows,
             dry_run,
-            no_partition,
+            scheduling_parameters,
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
+            run_checks=checks,
+            checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
+            billing_project=billing_project,
         )
 
-        if not depends_on_past:
-            # run backfill for dates in parallel if depends_on_past is false
-            with Pool(parallelism) as p:
-                result = p.map(backfill_query, dates, chunksize=1)
-            if not all(result):
-                sys.exit(1)
-        else:
-            # if data depends on previous runs, then execute backfill sequentially
-            for backfill_date in dates:
-                backfill_query(backfill_date)
+    if not depends_on_past and parallelism > 1:
+        # run backfill for dates in parallel if depends_on_past is false
+        failed_backfills = []
+        with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+            future_to_date = {
+                executor.submit(backfill_query, backfill_date): backfill_date
+                for backfill_date in date_range
+            }
+            for future in futures.as_completed(future_to_date):
+                backfill_date = future_to_date[future]
+                try:
+                    future.result()
+                except Exception as e:  # TODO: More specific exception(s)
+                    click.echo(f"Encountered exception {e}: {backfill_date}.")
+                    failed_backfills.append(backfill_date)
+                else:
+                    click.echo(f"Completed processing: {backfill_date}.")
+        if failed_backfills:
+            raise RuntimeError(
+                f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+            )
+    else:
+        # if data depends on previous runs, then execute backfill sequentially
+        for backfill_date in date_range:
+            click.echo(f"Running backfill for {backfill_date}")
+            backfill_query(backfill_date)
 
 
 @query.command(
@@ -793,6 +923,8 @@ def backfill(
     This generation process will take some time and run dryrun calls against BigQuery but this is expected. <br />
     Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
     Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
 
@@ -816,9 +948,11 @@ def backfill(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@billing_project_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -845,25 +979,53 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@defer_option()
+@click.option(
+    "--write",
+    is_flag=True,
+    default=False,
+    help=(
+        "Write query results to destination table. "
+        "When used with --target, automatically infers destination table from target configuration."
+    ),
+)
 @click.pass_context
 def run(
     ctx,
     name,
     sql_dir,
     project_id,
+    billing_project,
     public_project_id,
     destination_table,
     dataset_id,
+    defer_to_target,
+    write,
 ):
     """Run a query."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
 
+    if destination_table and write:
+        raise click.UsageError(
+            "--destination_table and --write are mutually exclusive."
+        )
+
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
+    if target and dataset_id:
+        raise click.UsageError("--dataset-id and --target are mutually exclusive.")
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -872,14 +1034,43 @@ def run(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
+
+    # prepare target directories if using --target
+    if target and target.project_id != project_id:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=write,
+        )
+
+    # apply destination project and dataset
+    effective_project = (target.project_id if target else None) or project_id
+    effective_dataset = dataset_id
+
+    # auto-infer destination_table when --write is used; query_files[0] is already
+    # the target file with project/dataset/prefix applied by prepare_target_files
+    effective_destination_table = destination_table
+    if write and not destination_table:
+        query_project, query_dataset, query_table = extract_from_query_path(
+            query_files[0]
+        )
+        effective_destination_table = f"{query_project}.{query_dataset}.{query_table}"
+        click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
 
     _run_query(
         query_files,
-        project_id,
+        effective_project,
         public_project_id,
-        destination_table,
-        dataset_id,
+        effective_destination_table,
+        effective_dataset,
         ctx.args,
+        billing_project=billing_project,
     )
 
 
@@ -890,15 +1081,24 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
-    addl_templates: typing.Optional[dict] = None,
+    addl_templates: Optional[dict] = None,
+    billing_project: Optional[str] = None,
+    ignore_public_dataset: bool = False,
+    is_backfill: bool = False,
 ):
-    """Run a query."""
-    if dataset_id is not None:
-        # dataset ID was parsed by argparse but needs to be passed as parameter
-        # when running the query
-        query_arguments.append("--dataset_id={}".format(dataset_id))
+    """Run a query.
 
-    if project_id is not None:
+    project_id is the default project to use with table/view/udf references in the query that
+    do not have a project id qualifier.
+    billing_project is the project to run the query in for the purposes of billing and
+    slot reservation selection.  This is project_id if billing_project is not set
+    ignore_public_dataset is a flag to ignore public dataset metadata checks and
+    destination table overrides. This is useful when running backfills where you want to
+    write to the standard (non-public) destination table.
+    """
+    if billing_project is not None:
+        query_arguments.append(f"--project_id={billing_project}")
+    elif project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
 
     if addl_templates is None:
@@ -908,9 +1108,11 @@ def _run_query(
         use_public_table = False
 
         query_file = Path(query_file)
+        default_project, default_dataset, _ = extract_from_query_path(query_file)
+
         try:
             metadata = Metadata.of_query_file(query_file)
-            if metadata.is_public_bigquery():
+            if not ignore_public_dataset and metadata.is_public_bigquery():
                 if not validate_metadata.validate_public_data(metadata, query_file):
                     sys.exit(1)
 
@@ -930,19 +1132,22 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            logging.warning("No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for %s", query_file)
 
-        if not use_public_table and destination_table is not None:
+        if (
+            not use_public_table
+            and destination_table is not None
+            and query_file.name != "script.sql"
+        ):
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
 
@@ -951,37 +1156,189 @@ def _run_query(
                     destination_table
                 )
                 destination_table = "{}:{}.{}".format(project, dataset, table)
+            elif billing_project is not None:
+                # add project and dataset to destination table if it isn't qualified
+                if project_id is None or dataset_id is None:
+                    raise ValueError(
+                        "Cannot determine destination table without project_id and dataset_id"
+                    )
+                destination_table = "{}:{}.{}".format(
+                    project_id, dataset_id, destination_table
+                )
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
-            # need to do this as parameters are not supported with legacy sql
-            query_arguments.append("--use_legacy_sql=False")
+            # default to WRITE_TRUNCATE so re-runs overwrite existing data.
+            # callers that need different semantics pass --append_table or --noreplace explicitly.
+            if not any(
+                flag in query_arguments
+                for flag in ("--replace", "--append_table", "--noreplace")
+            ):
+                query_arguments.append("--replace")
+
+        query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
         if "query" not in query_arguments:
             query_arguments = ["query"] + query_arguments
 
+        query_text = render_template(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            templates_dir="",
+            format=False,
+            **addl_templates,
+        )
+
+        # create a session, setting default project and dataset for the query
+        # this is needed if the project the query is run in (billing_project) doesn't match the
+        # project directory the query is in
+        if billing_project is not None and billing_project != project_id:
+            session_id = create_query_session(
+                session_project=billing_project,
+                default_project=project_id or default_project,
+                default_dataset=dataset_id or default_dataset,
+            )
+            query_arguments.append(f"--session_id={session_id}")
+
+            # temp udfs cannot be used in a session when destination table is set
+            if destination_table is not None and query_file.name != "script.sql":
+                query_text = extract_and_run_temp_udfs(
+                    query_text=query_text,
+                    project_id=billing_project,
+                    session_id=session_id,
+                )
+
+        # if billing_project is set, default dataset is set with the @@dataset_id variable instead
+        elif dataset_id is not None:
+            # dataset ID was parsed by argparse but needs to be passed as parameter
+            # when running the query
+            query_arguments.append(f"--dataset_id={dataset_id}")
+
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-            query_stream.write(
-                render_template(
-                    query_file.name,
-                    template_folder=str(query_file.parent),
-                    templates_dir="",
-                    format=False,
-                    **addl_templates,
-                )
-            )
+            query_stream.write(query_text)
             query_stream.seek(0)
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
+        # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
+        schema_file = query_file.parent / SCHEMA_FILE
+        if (
+            destination_table
+            and "$" not in destination_table
+            and "--dry_run" not in query_arguments
+            and "--append_table" not in query_arguments
+            and "--noreplace" not in query_arguments
+            and not is_backfill
+            and schema_file.exists()
+        ):
+            schema = Schema.from_schema_file(schema_file)
+            if any("description" in field for field in schema.schema["fields"]):
+                if ":" in destination_table:
+                    schema_destination_table = destination_table.replace(":", ".")
+                elif dataset_id and ":" in dataset_id:
+                    schema_destination_table = ".".join(
+                        (dataset_id.replace(":", "."), destination_table)
+                    )
+                else:
+                    schema_destination_table = ".".join(
+                        (
+                            (project_id or default_project),
+                            (dataset_id or default_dataset),
+                            destination_table,
+                        )
+                    )
+                click.echo(
+                    f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
+                )
+                try:
+                    client = bigquery.Client()
+                    client.update_table(
+                        bigquery.Table(
+                            schema_destination_table, schema=schema.to_bigquery_schema()
+                        ),
+                        fields=["schema"],
+                    )
+                except Exception as e:
+                    click.echo(
+                        f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
+                        err=True,
+                    )
+
+
+def create_query_session(
+    session_project: str,
+    default_project: Optional[str] = None,
+    default_dataset: Optional[str] = None,
+):
+    """Create a bigquery session and return the session id.
+
+    Optionally set the system variables @@dataset_project_id and @@dataset_id
+    if project_id and dataset_id are given. This sets the default project_id or dataset_id
+    for table/view/udf references that do not have a project or dataset qualifier.
+
+    :param session_project: Project to create the session in
+    :param default_project: Optional project to use in queries for object
+        that do not have a project qualifier.
+    :param default_dataset: Optional dataset to use in queries for object
+        that do not have a project qualifier.
+    """
+    query_parts = []
+    if default_project is not None:
+        query_parts.append(f"SET @@dataset_project_id = '{default_project}'")
+    if default_dataset is not None:
+        query_parts.append(f"SET @@dataset_id = '{default_dataset}'")
+
+    if len(query_parts) == 0:  # need to run a non-empty query
+        session_query = "SELECT 1"
+    else:
+        session_query = ";\n".join(query_parts)
+
+    client = bigquery.Client(project=session_project)
+
+    job_config = bigquery.QueryJobConfig(
+        create_session=True,
+        use_legacy_sql=False,
+    )
+    job = client.query(session_query, job_config)
+    job.result()
+
+    if job.session_info is None:
+        raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
+
+    return job.session_info.session_id
+
+
+def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str) -> str:
+    """Create temp udfs in the session and return the query without udf definitions.
+
+    Does not support dry run because the query will fail dry run if udfs aren't defined.
+    """
+    sql_statements = sqlparse.split(query_text)
+
+    if len(sql_statements) == 1:
+        return query_text
+
+    client = bigquery.Client(project=project_id)
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
+        connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
+    )
+
+    # assume query files only have temp udfs as additional statements
+    udf_def_statement = "\n".join(sql_statements[:-1])
+    client.query_and_wait(udf_def_statement, job_config=job_config)
+
+    return sql_statements[-1]
+
 
 @query.command(
     help="""Run a multipart query.
+
+    Coding agents aren't allowed to run this command.
 
     Examples:
 
@@ -994,6 +1351,7 @@ def _run_query(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument(
     "query_dir",
     type=click.Path(file_okay=False),
@@ -1203,7 +1561,9 @@ def _run_part(
 )
 @respect_dryrun_skip_option(default=False)
 @no_dryrun_option(default=False)
+@click.option("--skip_format_sql", "--skip-format-sql", is_flag=True, default=False)
 @click.pass_context
+@billing_project_option()
 def validate(
     ctx,
     name,
@@ -1213,15 +1573,21 @@ def validate(
     validate_schemas,
     respect_dryrun_skip,
     no_dryrun,
+    skip_format_sql,
+    billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
+    validate_all_datasets = name is None
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dataset_dirs = set()
+    errors = []
     for query in query_files:
-        ctx.invoke(format, paths=[str(query)])
+        click.echo(f"Validating metadata for {query}")
+        if not skip_format_sql:
+            ctx.invoke(format, paths=[str(query)])
 
         if not no_dryrun:
             ctx.invoke(
@@ -1231,46 +1597,180 @@ def validate(
                 project=project_id,
                 validate_schemas=validate_schemas,
                 respect_skip=respect_dryrun_skip,
+                billing_project=billing_project,
             )
 
-        validate_metadata.validate(query.parent)
+        try:
+            validate_metadata.validate(query.parent)
+        except validate_metadata.MetadataValidationError as e:
+            errors.append(str(e))
         dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
+    # Also validate datasets with no query files when no name argument is passed
+    if validate_all_datasets and (
+        project_id is None or project_id == "moz-fx-data-shared-prod"
+    ):
+        for dataset_path in (Path(sql_dir) / "moz-fx-data-shared-prod").iterdir():
+            if (
+                dataset_path.is_dir()
+                and (dataset_path / DATASET_METADATA_FILE).exists()
+            ):
+                dataset_dirs.add(dataset_path)
+
     for dataset_dir in dataset_dirs:
-        validate_metadata.validate_datasets(dataset_dir)
+        try:
+            validate_metadata.validate_datasets(dataset_dir)
+        except validate_metadata.MetadataValidationError as e:
+            errors.append(str(e))
+
+    if len(errors) > 0:
+        click.echo(
+            f"Failed to validate {len(errors)} metadata files (see above for error messages):"
+        )
+        click.echo("\n".join(errors))
+        sys.exit(1)
+
+
+def _initialize_in_parallel(
+    project,
+    public_project_id,
+    table,
+    dataset,
+    query_file,
+    arguments,
+    parallelism,
+    sample_ids,
+    addl_templates,
+    billing_project,
+):
+    with ThreadPool(parallelism) as pool:
+        # Process all sample_ids in parallel.
+        pool.map(
+            partial(
+                _run_query,
+                [query_file],
+                project,
+                public_project_id,
+                table,
+                dataset,
+                addl_templates=addl_templates,
+                billing_project=billing_project,
+            ),
+            [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
+        )
 
 
 @query.command(
-    help="""Create and initialize the destination table for the query.
-    Only for queries that have an `init.sql` file.
+    help="""Run a full backfill on the destination table for the query.
+       Using this command will:
+        - Create the table if it doesn't exist and run a full backfill.
+        - Run a full backfill if the table exists and is empty.
+        - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
+       It supports `query.sql` files that use the is_init() pattern.
+       To run in parallel per sample_id, include a @sample_id parameter in the query.
 
-    Examples:
+       Coding agents aren't allowed to run this command.
 
-    ./bqetl query initialize telemetry_derived.ssl_ratios_v1
-    """,
+       Examples:
+       - For init.sql files: ./bqetl query initialize telemetry_derived.ssl_ratios_v1
+       - For query.sql files and parallel run: ./bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
+       """,
 )
+@block_coding_agents
 @click.argument("name")
 @sql_dir_option
-@project_id_option()
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
+)
+@billing_project_option(default="moz-fx-data-backfill-slots")
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
-def initialize(name, sql_dir, project_id, dry_run):
+@parallelism_option(default=DEFAULT_INIT_PARALLELISM)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip initialization for existing artifacts, "
+    "otherwise initialization is run for empty tables.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--force/--noforce",
+    help="Run the initialization even if the destination table contains data.",
+    default=False,
+)
+@click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--skip-tables-older-than",
+    "--skip_tables_older_than",
+    help="Skip initialization for tables created more than N days ago.",
+    type=int,
+    default=None,
+)
+@click.option(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
+    type=int,
+    default=4,
+)
+@click.option(
+    "--file",
+    "file_name",
+    help="Only initialize tables whose SQL file matches this filename "
+    "(e.g. materialized_view.sql). Defaults to query.sql, init.sql, and materialized_view.sql.",
+    default=None,
+)
+@click.pass_context
+def initialize(
+    ctx,
+    name,
+    sql_dir,
+    project_ids,
+    billing_project,
+    dry_run,
+    parallelism,
+    skip_existing,
+    force,
+    skip_nonempty,
+    skip_tables_older_than,
+    sampling_batch_size,
+    file_name,
+):
     """Create the destination table for the provided query."""
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
 
     if Path(name).exists():
-        # allow name to be a path
         query_files = [Path(name)]
     else:
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+        file_regex = re.compile(
+            r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+            r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
+        )
+        files = (
+            [file_name]
+            if file_name
+            else ["query.sql", "init.sql", "materialized_view.sql"]
+        )
+        query_files = []
+        for project_id in project_ids:
+            query_files += paths_matching_name_pattern(
+                name, sql_dir, project_id, files=files, file_regex=file_regex
+            )
 
     if not query_files:
         click.echo(
@@ -1279,67 +1779,206 @@ def initialize(name, sql_dir, project_id, dry_run):
         )
         sys.exit(1)
 
-    for query_file in query_files:
+    def _initialize(query_file):
+        project, dataset, destination_table = extract_from_query_path(query_file)
+        client = bigquery.Client(project=project)
+        full_table_id = f"{project}.{dataset}.{destination_table}"
+        table = None
+
         sql_content = query_file.read_text()
+        materialized_views = list(
+            map(
+                Path,
+                glob(f"{query_file.parent}/**/materialized_view.sql", recursive=True),
+            )
+        )
 
-        # Enable init from query.sql files
-        # First deploys the schema, then runs the init
-        # This does not currently verify the accuracy of the schema
+        # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
-            project = query_file.parent.parent.parent.name
-            dataset = query_file.parent.parent.name
-            destination_table = query_file.parent.name
-            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
-                f"{project}.{dataset}.{destination_table}"
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
             )
-            arguments = [
-                "query",
-                "--use_legacy_sql=false",
-                "--replace",
-                "--format=none",
-            ]
-            _run_query(
-                query_files=[query_file],
-                project_id=project,
-                public_project_id=None,
-                destination_table=destination_table,
-                dataset_id=dataset,
-                query_arguments=arguments,
-                addl_templates={
-                    "is_init": lambda: True,
-                },
-            )
-        else:
-            init_files = Path(query_file.parent).rglob("init.sql")
-            client = bigquery.Client()
+            try:
+                table = client.get_table(table_id_to_check)
 
-            for init_file in init_files:
-                project = init_file.parent.parent.parent.name
+                if skip_existing:
+                    # table exists; skip initialization
+                    return
+                if skip_tables_older_than is not None and table.created:
+                    age = datetime.datetime.now(datetime.timezone.utc) - table.created
+                    if age.days > skip_tables_older_than:
+                        return
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
+            except NotFound:
+                # continue with creating the table
+                pass
+        elif len(materialized_views) == 0:
+            return
 
-                with open(init_file) as init_file_stream:
-                    init_sql = init_file_stream.read()
-                    dataset = Path(init_file).parent.parent.name
-                    destination_table = query_file.parent.name
-                    job_config = bigquery.QueryJobConfig(
-                        dry_run=dry_run,
-                        default_dataset=f"{project}.{dataset}",
-                        destination=f"{project}.{dataset}.{destination_table}",
+        try:
+            # Enable initialization from query.sql files
+            # Create the table by deploying the schema and metadata, then run the init.
+            # This does not currently verify the accuracy of the schema or that it
+            # matches the query.
+            if "is_init()" in sql_content:
+                if not table:
+                    ctx.invoke(
+                        update,
+                        name=full_table_id,
+                        sql_dir=sql_dir,
+                        project_ids=[project],
+                        update_downstream=False,
+                        is_init=True,
                     )
 
-                    if "CREATE MATERIALIZED VIEW" in init_sql:
-                        click.echo(f"Create materialized view for {init_file}")
-                        # existing materialized view have to be deleted before re-creation
-                        view_name = query_file.parent.name
-                        client.delete_table(
-                            f"{project}.{dataset}.{view_name}", not_found_ok=True
+                    ctx.invoke(
+                        deploy,
+                        name=full_table_id,
+                        sql_dir=sql_dir,
+                        project_ids=[project],
+                        force=True,
+                        respect_dryrun_skip=False,
+                    )
+
+                arguments = [
+                    "query",
+                    "--use_legacy_sql=false",
+                    "--format=none",
+                    "--append_table",
+                    "--noreplace",
+                ]
+                if dry_run:
+                    arguments += ["--dry_run"]
+
+                if "@sample_id" in sql_content:
+                    sample_ids = list(range(0, 100))
+
+                    # To support batch initialization, include the following clause in your query:
+                    # AND sample_id >= @sample_id
+                    # AND sample_id < @sample_id + @sampling_batch_size
+                    #
+                    # This limits each run to a range of sample IDs equal to the specified batch size
+                    # (e.g., if @sample_id=0 and @sampling_batch_size=4, the query processes sample IDs 0–3).
+                    if "@sampling_batch_size" in sql_content:
+                        sample_ids = [i for i in range(0, 100, sampling_batch_size)]
+                        arguments += [
+                            f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
+                        ]
+
+                    _initialize_in_parallel(
+                        project=project,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
+                        dataset=dataset,
+                        query_file=query_file,
+                        arguments=arguments,
+                        parallelism=INIT_SAMPLE_ID_PARALLELISM,
+                        sample_ids=sample_ids,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
+                        billing_project=billing_project,
+                    )
+                else:
+                    _run_query(
+                        query_files=[query_file],
+                        project_id=project,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
+                        dataset_id=dataset,
+                        query_arguments=arguments,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
+                        billing_project=billing_project,
+                    )
+            else:
+                for file in materialized_views:
+                    with open(file) as init_file_stream:
+                        init_sql = init_file_stream.read()
+                        job_config = bigquery.QueryJobConfig(
+                            dry_run=dry_run,
+                            default_dataset=f"{project}.{dataset}",
                         )
-                    else:
-                        click.echo(f"Create destination table for {init_file}")
 
-                    job = client.query(init_sql, job_config=job_config)
+                        # only deploy materialized view if it doesn't exist
+                        # TODO: https://github.com/mozilla/bigquery-etl/issues/5804
+                        try:
+                            materialized_view_table = client.get_table(full_table_id)
 
-                    if not dry_run:
-                        job.result()
+                            # Best-effort check, don't fail if there's an error
+                            try:
+                                has_changes = materialized_view_has_changes(
+                                    materialized_view_table.mview_query, init_sql
+                                )
+                            except Exception as e:
+                                change_str = f"failed to compare changes: {e}"
+                            else:
+                                change_str = (
+                                    "sql changed" if has_changes else "sql not changed"
+                                )
+                            click.echo(
+                                f"Skipping materialized view {full_table_id}, already exists, {change_str}"
+                            )
+                        except NotFound:
+                            job = client.query(init_sql, job_config=job_config)
+
+                            if not dry_run:
+                                job.result()
+        except Exception:
+            print_exc()
+            return query_file
+
+    with ThreadPool(parallelism) as pool:
+        failed_initializations = [r for r in pool.map(_initialize, query_files) if r]
+
+    if len(failed_initializations) > 0:
+        click.echo("The following tables could not be deployed:", err=True)
+        for failed_deploy in failed_initializations:
+            click.echo(failed_deploy, err=True)
+        sys.exit(1)
+
+
+def materialized_view_has_changes(deployed_sql: str, file_sql: str) -> bool:
+    """Return true if the sql in the materialized view file doesn't match the deployed sql."""
+    file_sql_formatted = sqlparse.format(
+        re.sub(
+            r"CREATE+(?:\s+OR\s+REPLACE)?\s+MATERIALIZED\s+VIEW.*?AS",
+            "",
+            file_sql,
+            flags=re.DOTALL,
+        ),
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+
+    deployed_sql_formatted = sqlparse.format(
+        deployed_sql,
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+    return file_sql_formatted != deployed_sql_formatted
 
 
 @query.command(
@@ -1365,49 +2004,51 @@ def initialize(name, sql_dir, project_id, dry_run):
     type=click.Path(file_okay=False),
     required=False,
 )
-def render(name, sql_dir, output_dir):
+@parallelism_option()
+def render(name, sql_dir, output_dir, parallelism):
     """Render a query Jinja template."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
-    for query_file in query_files:
-        table_name = query_file.parent.name
-        dataset_id = query_file.parent.parent.name
-        project_id = query_file.parent.parent.parent.name
 
-        jinja_params = {
-            **{
-                "project_id": project_id,
-                "dataset_id": dataset_id,
-                "table_name": table_name,
-            },
-        }
+    with Pool(parallelism) as p:
+        p.map(partial(_render_query, output_dir, resolved_sql_dir), query_files)
 
-        rendered_sql = (
-            render_template(
-                query_file.name,
-                template_folder=query_file.parent,
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-            + "\n"
+
+def _render_query(output_dir, resolved_sql_dir, query_file):
+    table_name = query_file.parent.name
+    dataset_id = query_file.parent.parent.name
+    project_id = query_file.parent.parent.parent.name
+
+    jinja_params = {
+        "project_id": project_id,
+        "dataset_id": dataset_id,
+        "table_name": table_name,
+    }
+
+    rendered_sql = (
+        render_template(
+            query_file.name,
+            template_folder=query_file.parent,
+            templates_dir="",
+            format=False,
+            **jinja_params,
         )
+        + "\n"
+    )
 
-        if not any(s in str(query_file) for s in skip_format()):
-            rendered_sql = reformat(rendered_sql, trailing_newline=True)
+    if not any(s in str(query_file) for s in skip_format()):
+        rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
-        if output_dir:
-            output_file = output_dir / query_file.resolve().relative_to(
-                resolved_sql_dir
-            )
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            output_file.write_text(rendered_sql)
-        else:
-            click.echo(query_file)
-            click.echo(rendered_sql)
+    if output_dir:
+        output_file = output_dir / query_file.resolve().relative_to(resolved_sql_dir)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(rendered_sql)
+    else:
+        click.echo(query_file)
+        click.echo(rendered_sql)
 
 
 def _parse_partition_setting(partition_date):
@@ -1461,16 +2102,16 @@ def schema():
 
     # Update schema including downstream dependencies (requires GCP)
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+
+    # Skip updating schemas for queries that already have schema.yaml files
+    # (except those with schema.allow_field_addition=true in metadata.yaml)
+    ./bqetl query schema update '*' --skip-existing
     """,
 )
-@click.argument("name")
+@click.argument("name", nargs=-1)
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
-    callback=is_valid_project,
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @click.option(
     "--update-downstream",
@@ -1487,27 +2128,99 @@ def schema():
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
-@parallelism_option
+@parallelism_option()
+@click.option(
+    "--is-init",
+    "--is_init",
+    help="Indicates whether the `is_init()` condition should be set to true of false.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
+    "--use_dataset_schema",
+    "--use-dataset-schema",
+    help="Use dataset schema to update column descriptions and recommend column names. "
+    "This option requires file <dataset_name>.yaml present in bigquery_etl/schema.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
+    "--use_global_schema",
+    "--use-global-schema",
+    help="Use global schema to update column descriptions and recommend column names. "
+    "This option uses file global.yaml in bigquery_etl/schema.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
+    "--skip_existing",
+    "--skip-existing",
+    help="Skip updating schemas for existing schema files. "
+    "Queries with schema.allow_field_addition=true in metadata.yaml will still be updated.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
-    project_id,
+    project_ids,
     update_downstream,
     tmp_dataset,
     use_cloud_function,
     respect_dryrun_skip,
     parallelism,
+    is_init,
+    use_dataset_schema,
+    use_global_schema,
+    skip_existing,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    query_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, files=["query.sql"]
-    )
+
+    query_files = []
+    for project_id in project_ids:
+        query_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, files=["query.sql"]
+        )
+
+    # Check if query metadata has allow_field_addition flag or ALLOW_FIELD_ADDITION argument
+    def has_allow_field_addition(query_file):
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            # Check schema metadata field
+            if metadata.schema and metadata.schema.allow_field_addition:
+                return True
+            # Check scheduling arguments
+            if metadata.scheduling:
+                arguments = metadata.scheduling.get("arguments", [])
+                return any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                )
+        except Exception:
+            pass
+        return False
+
+    # skip updating schemas that are not to be deployed
+    query_files = [
+        query_file
+        for query_file in query_files
+        if str(query_file) not in skip_schema_deploy()
+        and (
+            not skip_existing
+            or (query_file.parent / SCHEMA_FILE).exists() is False
+            or has_allow_field_addition(query_file)
+        )
+    ]
+
+    if len(query_files) == 0:
+        return
+
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     manager = multiprocessing.Manager()
     tmp_tables = manager.dict({})
@@ -1516,6 +2229,8 @@ def update(
     query_file_graph = {}
     for query_file in query_files:
         query_file_graph[query_file] = []
+        project_id = extract_from_query_path(query_file)[0]
+
         try:
             metadata = Metadata.of_query_file(str(query_file))
             if metadata and metadata.schema and metadata.schema.derived_from:
@@ -1533,6 +2248,9 @@ def update(
         except FileNotFoundError:
             query_file_graph[query_file] = []
 
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
+
     ts = ParallelTopologicalSorter(
         query_file_graph, parallelism=parallelism, with_follow_up=update_downstream
     )
@@ -1540,13 +2258,17 @@ def update(
         partial(
             _update_query_schema_with_downstream,
             sql_dir,
-            project_id,
             tmp_dataset,
             dependency_graph,
             tmp_tables,
             use_cloud_function,
             respect_dryrun_skip,
             update_downstream,
+            is_init=is_init,
+            credentials=credentials,
+            id_token=id_token,
+            use_dataset_schema=use_dataset_schema,
+            use_global_schema=use_global_schema,
         )
     )
 
@@ -1557,9 +2279,103 @@ def update(
             client.delete_table(table, not_found_ok=True)
 
 
+def _update_query_schema_with_base_schemas(
+    query_schema: Schema,
+    dataset_name: str,
+    use_dataset_schema: bool,
+    use_global_schema: bool,
+) -> Schema:
+    """
+    Update column descriptions and recommend column names.
+
+    Base dataset schema is used as primary source and global schema as secondary.
+    Returns the updated schema if changes were applied or the original schema otherwise.
+    """
+    dataset_schema_name = f"{dataset_name}.yaml"
+    modified_fields = []
+    alias_recommendations = []
+    missing_desc_columns = []
+    base_schemas_dir = ConfigLoader.get("schema", "base_schemas_dir")
+
+    dataset_path = Path(base_schemas_dir) / dataset_schema_name
+    if use_dataset_schema and (not dataset_path.exists() or not dataset_path.is_file()):
+        click.echo(
+            f"WARNING: Option --use_dataset_schema was not applied due to missing required schema '{dataset_path}'."
+        )
+        return query_schema
+
+    global_path = Path(base_schemas_dir) / GLOBAL_SCHEMA_NAME
+    if use_global_schema and (not global_path.exists() or not global_path.is_file()):
+        click.echo(
+            f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'."
+        )
+        return query_schema
+
+    def get_field_from_schema(field_name: str, base_schema: Schema):
+        for field in base_schema.schema.get("fields", []):
+            if field_name == field.get("name"):
+                return field, "name"
+            if field_name in field.get("aliases", []):
+                return field, "alias"
+        return None, None
+
+    for field in query_schema.schema.get("fields", []):
+        field_name = field["name"]
+        field_desc = field.get("description")
+        found_field = None
+        match_type = None
+
+        if use_dataset_schema:
+            dataset_schema = Schema.from_schema_file(dataset_path)
+            found_field, match_type = get_field_from_schema(field_name, dataset_schema)
+            source = dataset_schema_name
+
+        if not found_field and use_global_schema:
+            global_schema = Schema.from_schema_file(global_path)
+            found_field, match_type = get_field_from_schema(field_name, global_schema)
+            source = GLOBAL_SCHEMA_NAME
+
+        if found_field:
+            base_name = found_field["name"]
+            base_desc = found_field.get("description", "")
+
+            if match_type == "alias":
+                alias_recommendations.append((field_name, base_name))
+            if field_desc != base_desc:
+                modified_fields.append((field_name, source))
+
+            field["description"] = base_desc
+        else:
+            if not field_desc:
+                missing_desc_columns.append(field_name)
+
+    if modified_fields:
+        click.echo(
+            "\n[WARNING] The following column descriptions were overwritten using the base schemas:"
+        )
+        for name, source in modified_fields:
+            click.echo(f"  - '{name}' (source: {source})")
+
+    if missing_desc_columns:
+        click.echo("\n[INFO] The following columns are missing descriptions:")
+        for col in missing_desc_columns:
+            click.echo(f"  - {col}")
+
+    if alias_recommendations:
+        click.echo(
+            "\n[INFO] The following columns matched the base schemas by alias. Consider using the column name in the base schema:"
+        )
+        for alias, base in alias_recommendations:
+            click.echo(f"  - '{alias}' → '{base}'")
+
+    if not modified_fields and not alias_recommendations and not missing_desc_columns:
+        click.echo("No changes applied to the schema.")
+
+    return query_schema
+
+
 def _update_query_schema_with_downstream(
     sql_dir,
-    project_id,
     tmp_dataset,
     dependency_graph,
     tmp_tables={},
@@ -1568,16 +2384,28 @@ def _update_query_schema_with_downstream(
     update_downstream=False,
     query_file=None,
     follow_up_queue=None,
+    is_init=False,
+    credentials=None,
+    id_token=None,
+    use_dataset_schema=False,
+    use_global_schema=False,
 ):
     try:
+        project, dataset, table = extract_from_query_path(query_file)
+
         changed = _update_query_schema(
             query_file,
             sql_dir,
-            project_id,
+            project,
             tmp_dataset,
             tmp_tables,
             use_cloud_function,
             respect_dryrun_skip,
+            is_init,
+            credentials,
+            id_token,
+            use_dataset_schema,
+            use_global_schema,
         )
 
         if update_downstream:
@@ -1586,12 +2414,11 @@ def _update_query_schema_with_downstream(
                 if not is_authenticated():
                     click.echo(
                         "Cannot update downstream dependencies."
-                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
                         "and check that the project is set correctly."
                     )
                     sys.exit(1)
 
-                project, dataset, table = extract_from_query_path(query_file)
                 identifier = f"{project}.{dataset}.{table}"
                 tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
 
@@ -1606,7 +2433,7 @@ def _update_query_schema_with_downstream(
                     p
                     for k, refs in dependency_graph.items()
                     for p in paths_matching_name_pattern(
-                        k, sql_dir, project_id, files=("query.sql",)
+                        k, sql_dir, project, files=("query.sql",)
                     )
                     if identifier in refs
                 ]
@@ -1627,6 +2454,11 @@ def _update_query_schema(
     tmp_tables={},
     use_cloud_function=True,
     respect_dryrun_skip=True,
+    is_init=False,
+    credentials=None,
+    id_token=None,
+    use_dataset_schema=False,
+    use_global_schema=False,
 ):
     """
     Update the schema of a specific query file.
@@ -1692,9 +2524,9 @@ def _update_query_schema(
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
                 existing_schema.deploy(tmp_identifier)
-                tmp_tables[
-                    f"{project_name}.{dataset_name}.{table_name}"
-                ] = tmp_identifier
+                tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
+                    tmp_identifier
+                )
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
@@ -1703,6 +2535,7 @@ def _update_query_schema(
         template_folder=str(query_file_path.parent),
         templates_dir="",
         format=False,
+        **{"is_init": lambda: is_init},
     )
 
     for orig_table, tmp_table in tmp_tables.items():
@@ -1719,6 +2552,9 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
+            credentials=credentials,
+            id_token=id_token,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1734,7 +2570,7 @@ def _update_query_schema(
 
     # update bigquery metadata
     try:
-        client = bigquery.Client()
+        client = bigquery.Client(credentials=credentials)
         table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
         metadata_file_path = query_file_path.parent / METADATA_FILE
 
@@ -1749,9 +2585,11 @@ def _update_query_schema(
                 field=table.time_partitioning.field,
                 partition_type=table.time_partitioning.type_.lower(),
                 required=table.time_partitioning.require_partition_filter,
-                expiration_days=table.time_partitioning.expiration_ms / 86400000.0
-                if table.time_partitioning.expiration_ms
-                else None,
+                expiration_days=(
+                    table.time_partitioning.expiration_ms / 86400000.0
+                    if table.time_partitioning.expiration_ms
+                    else None
+                ),
             )
             click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
@@ -1791,9 +2629,11 @@ def _update_query_schema(
         project_name,
         dataset_name,
         table_name,
-        partitioned_by,
+        partitioned_by=partitioned_by,
         use_cloud_function=use_cloud_function,
         respect_skip=respect_dryrun_skip,
+        credentials=credentials,
+        id_token=id_token,
     )
 
     changed = True
@@ -1812,6 +2652,15 @@ def _update_query_schema(
         query_schema.merge(table_schema)
         query_schema.to_yaml_file(existing_schema_path)
 
+    if use_dataset_schema or use_global_schema:
+        # Use standard schemas to update column descriptions, if requested.
+        updated_schema = _update_query_schema_with_base_schemas(
+            existing_schema, dataset_name, use_dataset_schema, use_global_schema
+        )
+
+        if updated_schema:
+            updated_schema.to_yaml_file(existing_schema_path)
+
     click.echo(f"Schema {existing_schema_path} updated.")
     return changed
 
@@ -1819,19 +2668,18 @@ def _update_query_schema(
 @schema.command(
     help="""Deploy the query schema.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
-@click.argument("name")
+@block_coding_agents
+@click.argument("name", nargs=-1)
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
-    callback=is_valid_project,
+@multi_project_id_option(
+    default=[ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")]
 )
 @click.option(
     "--force/--noforce",
@@ -1865,13 +2713,13 @@ def _update_query_schema(
         + "Must be fully qualified (project.dataset.table)."
     ),
 )
-@parallelism_option
+@parallelism_option()
 @click.pass_context
 def deploy(
     ctx,
     name,
     sql_dir,
-    project_id,
+    project_ids,
     force,
     use_cloud_function,
     respect_dryrun_skip,
@@ -1883,237 +2731,116 @@ def deploy(
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
-    if not query_files:
+    query_files = []
+    metadata_files = []
+    for project_id in project_ids:
+        query_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, ["query.*", "script.sql"]
+        )
+
+        metadata_files += paths_matching_name_pattern(
+            name, sql_dir, project_id, ["metadata.yaml"]
+        )
+
+    if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
             output_dir=ctx.obj["TMP_DIR"],
             ignore=["derived_view_schemas", "stable_views"],
         )
-        query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+
+        query_files = []
+        metadata_files = []
+        for project_id in project_ids:
+            query_files = paths_matching_name_pattern(
+                name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
+            )
+            metadata_files = paths_matching_name_pattern(
+                name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
+            )
+        if not query_files and not metadata_files:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
+
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
+
+    query_file_paths = [query_file.parent for query_file in query_files]
+    metadata_files_without_query_file = [
+        metadata_file
+        for metadata_file in metadata_files
+        if metadata_file.parent not in query_file_paths
+        and not any(
+            file.suffix == ".sql" or file.name == "query.py"
+            for file in metadata_file.parent.iterdir()
+            if file.is_file()
         )
+    ]
 
-    def _deploy(query_file):
-        if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
-            click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-            return
+    _deploy = partial(
+        deploy_table,
+        destination_table=destination_table,
+        force=force,
+        use_cloud_function=use_cloud_function,
+        skip_existing=skip_existing,
+        skip_external_data=skip_external_data,
+        respect_dryrun_skip=respect_dryrun_skip,
+        sql_dir=sql_dir,
+        credentials=credentials,
+        id_token=id_token,
+    )
 
-        query_file_path = Path(query_file)
-        existing_schema_path = query_file_path.parent / SCHEMA_FILE
-
-        if not existing_schema_path.is_file():
-            click.echo(f"No schema file found for {query_file}")
-            return
-
-        try:
-            table_name = query_file_path.parent.name
-            dataset_name = query_file_path.parent.parent.name
-            project_name = query_file_path.parent.parent.parent.name
-
-            if destination_table:
-                full_table_id = destination_table
-            else:
-                full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-
-            if not force and str(query_file_path).endswith("query.sql"):
-                query_schema = Schema.from_query_file(
-                    query_file_path,
-                    use_cloud_function=use_cloud_function,
-                    respect_skip=respect_dryrun_skip,
-                )
-                if not existing_schema.equal(query_schema):
-                    click.echo(
-                        f"Query {query_file_path} does not match "
-                        f"schema in {existing_schema_path}. "
-                        f"To update the local schema file, "
-                        f"run `./bqetl query schema update "
-                        f"{dataset_name}.{table_name}`",
-                        err=True,
-                    )
-                    sys.exit(1)
-
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+    failed_deploys, skipped_deploys, external_deploys = [], [], []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+        future_to_query = {
+            executor.submit(_deploy, artifact_file): artifact_file
+            for artifact_file in query_files + metadata_files_without_query_file
+            if str(artifact_file) not in skip_schema_deploy()
+        }
+        for future in futures.as_completed(future_to_query):
+            artifact_file = future_to_query[future]
             try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
+                future.result()
+            except SkippedDeployException as e:
+                print(f"Skipped deploy for {artifact_file}: ({e})")
+                skipped_deploys.append(artifact_file)
+            except FailedDeployException as e:
+                print(f"Failed deploy for {artifact_file}: ({e})")
+                failed_deploys.append(artifact_file)
+            except SkippedExternalDataException as e:
+                print(f"Skipping deploy for external data table {artifact_file}: ({e})")
+                external_deploys.append(artifact_file)
+            else:
+                print(f"{artifact_file} successfully deployed!")
 
-            table.schema = bigquery_schema
-            _attach_metadata(query_file_path, table)
+    if skipped_deploys:
+        click.echo("The following deploys were skipped:")
+        for skipped_deploy in skipped_deploys:
+            click.echo(skipped_deploy)
 
-            if not table.created:
-                client.create_table(table)
-                click.echo(f"Destination table {full_table_id} created.")
-            elif not skip_existing:
-                client.update_table(
-                    table,
-                    [
-                        "schema",
-                        "friendly_name",
-                        "description",
-                        "time_partitioning",
-                        "clustering_fields",
-                        "labels",
-                    ],
-                )
-                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-        except Exception:
-            print_exc()
-            return query_file
+    if external_deploys:
+        click.echo("The following deploys of external data tables were skipped:")
+        for external_deploy in external_deploys:
+            click.echo(external_deploy)
 
-    with ThreadPool(parallelism) as pool:
-        failed_deploys = [r for r in pool.map(_deploy, query_files) if r]
-
-    if not skip_external_data:
-        failed_external_deploys = _deploy_external_data(
-            name, sql_dir, project_id, skip_existing
-        )
-        failed_deploys += failed_external_deploys
-
-    if len(failed_deploys) > 0:
+    if failed_deploys:
         click.echo("The following tables could not be deployed:")
         for failed_deploy in failed_deploys:
             click.echo(failed_deploy)
         sys.exit(1)
 
-    click.echo("All tables have been deployed.")
-
-
-def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
-    """Add metadata from query file's metadata.yaml to table object."""
-    try:
-        metadata = Metadata.of_query_file(query_file_path)
-    except FileNotFoundError:
-        return
-
-    table.description = metadata.description
-    table.friendly_name = metadata.friendly_name
-
-    if metadata.bigquery and metadata.bigquery.time_partitioning:
-        table.time_partitioning = bigquery.TimePartitioning(
-            metadata.bigquery.time_partitioning.type.bigquery_type,
-            field=metadata.bigquery.time_partitioning.field,
-            require_partition_filter=(
-                metadata.bigquery.time_partitioning.require_partition_filter
-            ),
-            expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
-        )
-
-    if metadata.bigquery and metadata.bigquery.clustering:
-        table.clustering_fields = metadata.bigquery.clustering.fields
-
-    # BigQuery only allows for string type labels with specific requirements to be published:
-    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
-    if metadata.labels:
-        table.labels = {
-            key: value
-            for key, value in metadata.labels.items()
-            if isinstance(value, str)
-        }
-
-
-def _deploy_external_data(
-    name,
-    sql_dir,
-    project_id,
-    skip_existing,
-) -> list:
-    """Publish external data tables."""
-    # whether a table should be created from external data is defined in the metadata
-    metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, ["metadata.yaml"]
-    )
-    client = bigquery.Client()
-    failed_deploys = []
-    for metadata_file_path in metadata_files:
-        metadata = Metadata.from_file(metadata_file_path)
-        if not metadata.external_data:
-            # skip all tables that are not created from external data
-            continue
-
-        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
-
-        if not existing_schema_path.is_file():
-            # tables created from external data must specify a schema
-            click.echo(f"No schema file found for {metadata_file_path}")
-            continue
-
-        try:
-            table_name = metadata_file_path.parent.name
-            dataset_name = metadata_file_path.parent.parent.name
-            project_name = metadata_file_path.parent.parent.parent.name
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-
-            try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
-            table.schema = bigquery_schema
-            _attach_metadata(metadata_file_path, table)
-
-            if not table.created:
-                if metadata.external_data.format in (
-                    ExternalDataFormat.GOOGLE_SHEETS,
-                    ExternalDataFormat.CSV,
-                ):
-                    external_config = bigquery.ExternalConfig(
-                        metadata.external_data.format.value.upper()
-                    )
-                    external_config.source_uris = metadata.external_data.source_uris
-                    external_config.ignore_unknown_values = True
-                    external_config.autodetect = False
-
-                    for key, v in metadata.external_data.options.items():
-                        setattr(external_config.options, key, v)
-
-                    table.external_data_configuration = external_config
-                    table = client.create_table(table)
-                    click.echo(f"Destination table {full_table_id} created.")
-
-                else:
-                    click.echo(
-                        f"External data format {metadata.external_data.format} unsupported."
-                    )
-            elif not skip_existing:
-                client.update_table(
-                    table,
-                    [
-                        "schema",
-                        "friendly_name",
-                        "description",
-                        "labels",
-                    ],
-                )
-                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-        except Exception:
-            print_exc()
-            failed_deploys.append(metadata_file_path)
-
-    return failed_deploys
-
 
 def _validate_schema_from_path(
-    query_file_path, use_cloud_function=True, respect_dryrun_skip=True
+    query_file_path,
+    use_cloud_function=True,
+    respect_dryrun_skip=True,
+    credentials=None,
+    id_token=None,
 ):
     """Dry Runs and validates a query schema from its path."""
     return (
@@ -2121,6 +2848,8 @@ def _validate_schema_from_path(
             query_file_path,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            credentials=credentials,
+            id_token=id_token,
         ).validate_schema(),
         query_file_path,
     )
@@ -2160,11 +2889,18 @@ def validate_schema(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
+
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
     _validate_schema = partial(
         _validate_schema_from_path,
         use_cloud_function=use_cloud_function,
         respect_dryrun_skip=respect_dryrun_skip,
+        credentials=credentials,
+        id_token=id_token,
     )
 
     with Pool(8) as p:
@@ -2183,3 +2919,72 @@ def validate_schema(
         sys.exit(1)
     else:
         click.echo("\nAll schemas are valid.")
+
+
+@schema.command(
+    name="render",
+    help="""Render `schema.yaml` files, resolving any includes.
+
+    Examples:
+
+    ./bqetl query schema render telemetry_derived.ssl_ratios_v1 --output-dir=/tmp/sql
+    """,
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help=(
+        "Output directory rendered files are written to. "
+        "If not specified, rendered files are printed to the console."
+    ),
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render_schema(
+    name: Optional[str], sql_dir: str | Path, output_dir: Optional[str | Path]
+) -> None:
+    """Render `schema.yaml` files."""
+    sql_dir = Path(sql_dir)
+    if output_dir:
+        output_dir = Path(output_dir)
+
+    schema_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=None, files=[SCHEMA_FILE]
+    )
+
+    render_count = 0
+    copy_count = 0
+
+    # We intentionally don't process `schema.yaml` files in parallel to avoid potential situations where
+    # one file is still being written to while another file tries to read its contents for an include.
+    for schema_file in schema_files:
+        if not output_dir:
+            click.echo(f"# {schema_file}")
+
+        # We only technically render `schema.yaml` files if they actually use any includes,
+        # both for performance and to avoid making superfluous YAML formatting changes.
+        schema_yaml = schema_file.read_text()
+        if "!include" in schema_yaml:
+            if output_dir:
+                click.echo(f"Rendering {schema_file}")
+            rendered_schema_yaml = Schema.from_yaml(schema_yaml, sql_dir).to_yaml()
+            render_count += 1
+        else:
+            rendered_schema_yaml = schema_yaml
+
+        if output_dir:
+            if output_dir != sql_dir or rendered_schema_yaml != schema_yaml:
+                output_file = output_dir / schema_file.relative_to(sql_dir)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file.write_text(rendered_schema_yaml)
+                if rendered_schema_yaml == schema_yaml:
+                    copy_count += 1
+        else:
+            click.echo(rendered_schema_yaml)
+
+    if output_dir:
+        click.echo(f"Rendered {render_count} `{SCHEMA_FILE}` files with includes.")
+        if copy_count > 0:
+            click.echo(f"Copied {copy_count} `{SCHEMA_FILE}` files without includes.")

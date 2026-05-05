@@ -20,7 +20,7 @@ validation_data_file = "tests/validation/data/hmac_sha256_validation.json"
 
 def udfs():
     """Get all udfs and assertions."""
-    return read_routine_dir("tests/assert", "udf", "udf_js")
+    return read_routine_dir("sql/mozfun/assert", "udf", "udf_js")
 
 
 def load_data():

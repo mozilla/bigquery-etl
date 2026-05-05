@@ -6,7 +6,7 @@ WITH daily_tranco AS (
   FROM
     `tranco.daily.daily`
   WHERE
-    date IN (SELECT MAX(date) FROM `tranco.daily.daily`)
+    `date` IN (SELECT MAX(`date`) FROM `tranco.daily.daily`)
 ),
 crux_country_summary AS (
   SELECT
@@ -37,8 +37,7 @@ host_join AS (
     crux_country_summary c
   LEFT JOIN
     daily_tranco
-  USING
-    (host)
+    USING (host)
 ),
 domain_join AS (
   SELECT
@@ -53,8 +52,7 @@ domain_join AS (
     (SELECT * FROM host_join WHERE host_rank IS NULL) h
   LEFT JOIN
     daily_tranco t
-  USING
-    (domain)
+    USING (domain)
 ),
 combined AS (
   SELECT

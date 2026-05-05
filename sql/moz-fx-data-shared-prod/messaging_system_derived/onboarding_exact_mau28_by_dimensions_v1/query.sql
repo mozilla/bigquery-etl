@@ -9,11 +9,10 @@ SELECT
   COUNTIF(days_since_seen < 7) AS wau,
   COUNTIF(days_since_seen < 1) AS dau,
 FROM
-  messaging_system.onboarding_users_last_seen AS ouls
+  `moz-fx-data-shared-prod.messaging_system.onboarding_users_last_seen` AS ouls
 LEFT JOIN
-  static.country_codes_v1 AS cc
-ON
-  (ouls.country = cc.code)
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
+  ON (ouls.country = cc.code)
 WHERE
   client_id IS NOT NULL
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

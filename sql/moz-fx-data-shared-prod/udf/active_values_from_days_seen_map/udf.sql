@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION udf.active_values_from_days_seen_map(
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ['a', 'b'],
     udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 1 AS value), STRUCT('b' AS key, 3 AS value)],
@@ -31,7 +31,7 @@ SELECT
       1
     )
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ['a'],
     udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 2048 AS value), STRUCT('b' AS key, 3 AS value)],
@@ -39,7 +39,7 @@ SELECT
       7
     )
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ['b'],
     udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 2048 AS value), STRUCT('b' AS key, 3 AS value)],
@@ -47,7 +47,7 @@ SELECT
       7
     )
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     ['a', 'b'],
     udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 1 AS value), STRUCT('b' AS key, 3 AS value)],

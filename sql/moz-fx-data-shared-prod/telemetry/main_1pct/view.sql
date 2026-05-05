@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry.main_remainder_1pct`
+  `moz-fx-data-shared-prod.telemetry_derived.main_remainder_1pct_v1`

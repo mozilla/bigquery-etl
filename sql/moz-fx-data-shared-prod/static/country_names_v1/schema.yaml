@@ -1,0 +1,10 @@
+fields:
+- name: name
+  description: An alias for a country's name (including misspellings and alternate
+    encodings).
+  type: STRING
+  mode: REQUIRED
+- name: code
+  description: ISO 3166 alpha-2 country code
+  type: STRING
+  mode: REQUIRED

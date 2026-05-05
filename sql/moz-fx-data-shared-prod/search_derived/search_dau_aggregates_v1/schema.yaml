@@ -1,0 +1,49 @@
+fields:
+  - mode: NULLABLE
+    name: partner
+    type: STRING
+    description: Partner
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
+    description: Submission Date
+  - mode: NULLABLE
+    name: device
+    type: STRING
+    description: Device
+  - mode: NULLABLE
+    name: country
+    type: STRING
+    description: Country
+  - mode: NULLABLE
+    name: normalized_channel
+    type: STRING
+    description: Normalized Channel
+  - mode: NULLABLE
+    name: distribution_id
+    type: STRING
+    description: Distribution ID
+  - mode: NULLABLE
+    name: normalized_default_search_engine
+    type: STRING
+    description: Normalized Default Search Engine
+  - mode: NULLABLE
+    name: normalized_engine
+    type: STRING
+    description: Normalized Search Engine
+  - mode: NULLABLE
+    name: sap_category
+    type: INTEGER
+    description: SAP Category
+  - mode: NULLABLE
+    name: ad_click_category
+    type: INTEGER
+    description: Ad Click Category
+  - mode: NULLABLE
+    name: dau_w_engine_as_default
+    type: INTEGER
+    description: DAU with Engine as Default
+  - mode: NULLABLE
+    name: dau_engaged_w_sap
+    type: INTEGER
+    description: DAU Engaged with SAP

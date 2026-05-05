@@ -18,7 +18,7 @@ WITH new_device_entries AS (
     ua_version,
     ua_browser,
   FROM
-    firefox_accounts_derived.fxa_users_services_devices_daily_v1
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1`
   WHERE
     DATE(`timestamp`) = @submission_date
 ),
@@ -26,7 +26,7 @@ existing_devices AS (
   SELECT DISTINCT
     CONCAT(user_id, service, device_id) AS existing_entry
   FROM
-    firefox_accounts_derived.fxa_users_services_devices_first_seen_v1
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_first_seen_v1`
   -- in case we backfill we want to exclude entries newer than submission_date
   -- so that we can recalculate those partitions
   WHERE

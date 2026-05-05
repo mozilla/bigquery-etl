@@ -28,8 +28,7 @@ CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(
         UNNEST(prev) AS prev
       LEFT JOIN
         UNNEST(curr) AS curr
-      USING
-        (key)
+        USING (key)
       WHERE
         udf.combine_adjacent_days_28_bits(prev.value, curr.value) > 0
     ),
@@ -42,8 +41,7 @@ CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(
         UNNEST(curr) AS curr
       LEFT JOIN
         UNNEST(prev) AS prev
-      USING
-        (key)
+        USING (key)
       WHERE
         prev IS NULL
     )
@@ -52,7 +50,7 @@ CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     [
       STRUCT("key1" AS key, 3 AS value),
       STRUCT("key2" AS key, 6 AS value),

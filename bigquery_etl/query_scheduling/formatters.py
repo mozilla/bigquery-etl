@@ -1,9 +1,9 @@
 """This file contains custom filters for formatting data types in Jinja templates."""
 
-import re
 from datetime import datetime, timedelta
 
 from bigquery_etl import query_scheduling
+from bigquery_etl.query_scheduling.utils import TIMEDELTA_RE
 
 
 def format_schedule_interval(interval):
@@ -19,10 +19,16 @@ def format_schedule_interval(interval):
 def format_attr(d, attribute, formatter_name):
     """Apply a formatter to a dict attribute."""
     for name in dir(query_scheduling.formatters):
+        if name != formatter_name:
+            continue
+
         formatter_func = getattr(query_scheduling.formatters, name)
-        if callable(formatter_func) and name == formatter_name:
-            if attribute in d:
-                d[attribute] = formatter_func(d[attribute])
+
+        if callable(formatter_func) is None:
+            continue
+
+        if attribute in d:
+            d[attribute] = formatter_func(d[attribute])
 
     return d
 
@@ -31,25 +37,24 @@ def format_date(date_string):
     """Format a date string to a datetime object."""
     if date_string is None:
         return None
+
     return datetime.strptime(date_string, "%Y-%m-%d")
 
 
 # based on https://stackoverflow.com/questions/4628122/how-to-construct-a
 # -timedelta-object-from-a-simple-string
-def format_timedelta(timdelta_string):
+def format_timedelta(timedelta_string):
     """Format a timedelta object."""
-    timedelta_regex = re.compile(
-        r"^((?P<hours>-?\d+?)h)?((?P<minutes>-?\d+?)m)?((?P<seconds>-?\d+?)s)?$"
-    )
-    parts = timedelta_regex.match(timdelta_string)
+    parts = TIMEDELTA_RE.match(timedelta_string)
     if not parts:
-        return timdelta_string
+        return timedelta_string
 
     parts = parts.groupdict()
+    is_negative = timedelta_string.startswith("-")
     time_params = {}
     for name, param in parts.items():
         if param:
-            time_params[name] = int(param)
+            time_params[name] = int(param) * (-1 if is_negative else 1)
 
     return timedelta(**time_params)
 

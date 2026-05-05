@@ -1,5 +1,8 @@
+#fail
 {{ is_unique(columns=["destination_id", "measured_month"]) }}
 
+#fail
 {{ not_null(columns=["destination_id", "measured_month"]) }}
 
-{{ min_rows(1) }}
+#fail
+{{ min_row_count(1) }}

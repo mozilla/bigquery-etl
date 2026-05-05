@@ -1,0 +1,116 @@
+fields:
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    The Country code of the client.
+
+- mode: NULLABLE
+  name: city
+  type: STRING
+  description: |
+    The City name (only for cities with a population >= 15000, 'unknown' otherwise).
+
+- mode: NULLABLE
+  name: geo_subdivision1
+  type: STRING
+  description: |
+    Country subdivision (1st level) corresponds, for example, to US states, Canadian provinces,
+    French regions, Spanish autonomous communities, and Japanese prefectures. Geo charts do not support FIPS or NUTS codes.
+
+- mode: NULLABLE
+  name: geo_subdivision2
+  type: STRING
+  description: |
+    Country subdivision (2nd level) corresponds, for example, to US counties, French departments, and Italian and Spanish provinces.
+
+- mode: NULLABLE
+  name: datetime
+  type: TIMESTAMP
+  description: |
+    The date and the time (truncated to hour) the data was submitted by the client.
+
+- mode: NULLABLE
+  name: proportion_undefined
+  type: FLOAT
+  description: |
+    The proportion of users who failed to send telemetry for a reason that was not listed in the other cases.
+
+# yamllint disable rule:line-length
+- mode: NULLABLE
+  name: proportion_timeout
+  type: FLOAT
+  description: |
+    The proportion of users that had their connection timeout while uploading telemetry
+    ([after 90s, in Firefox Desktop](https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81)).
+# yamllint enable rule:line-length
+
+- mode: NULLABLE
+  name: proportion_abort
+  type: FLOAT
+  description: |
+    The proportion of users that had their connection terminated by the client
+    (for example, terminating open connections before shutting down).
+
+- mode: NULLABLE
+  name: proportion_unreachable
+  type: FLOAT
+  description: |
+    The proportion of users that failed to upload telemetry because the server was not reachable
+    (e.g. because the host was not reachable, proxy problems or OS waking up after a suspension).
+
+- mode: NULLABLE
+  name: proportion_terminated
+  type: FLOAT
+  description: |
+    The proportion of users that had their connection terminated internally by the networking code.
+
+- mode: NULLABLE
+  name: proportion_channel_open
+  type: FLOAT
+  description: |
+    The proportion of users for which the upload request was terminated immediately,
+    by the client,because of a Necko internal error.
+
+- mode: NULLABLE
+  name: avg_dns_success_time
+  type: FLOAT
+  description: |
+    The average time it takes for a successful DNS resolution, in milliseconds.
+
+- mode: NULLABLE
+  name: missing_dns_success
+  type: FLOAT
+  description: |
+
+    Counts how many sessions did not report the `DNS_LOOKUP_TIME` histogram.
+
+- mode: NULLABLE
+  name: avg_dns_failure_time
+  type: FLOAT
+  description: |
+    The average time it takes for an unsuccessful DNS resolution, in milliseconds.
+
+- mode: NULLABLE
+  name: missing_dns_failure
+  type: FLOAT
+  description: |
+    Counts how many sessions did not report the `DNS_FAILED_LOOKUP_TIME` histogram.
+
+- mode: NULLABLE
+  name: count_dns_failure
+  type: FLOAT
+  description: |
+    The average count of unsuccessful DNS resolutions reported.
+
+- mode: NULLABLE
+  name: ssl_error_prop
+  type: FLOAT
+  description: |
+    The proportion of users that reported an error through the `SSL_CERT_VERIFICATION_ERRORS` histogram.
+
+- mode: NULLABLE
+  name: avg_tls_handshake_time
+  type: FLOAT
+  description: |
+    The average time after the TCP SYN to ready for HTTP, in milliseconds.

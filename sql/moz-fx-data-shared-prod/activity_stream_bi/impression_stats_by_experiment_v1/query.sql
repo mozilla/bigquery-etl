@@ -11,8 +11,12 @@ SELECT
   tile_id,
   user_prefs,
 FROM
-  activity_stream_bi.impression_stats_flat_v1
+  `moz-fx-data-shared-prod.activity_stream_bi.impression_stats_flat_v1`
 CROSS JOIN
   UNNEST(experiments) AS experiment
 WHERE
-  DATE(submission_timestamp) = @submission_date
+  {% if is_init() %}
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
+  {% else %}
+    DATE(submission_timestamp) = @submission_date
+  {% endif %}

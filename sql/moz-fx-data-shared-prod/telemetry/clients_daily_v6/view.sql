@@ -187,5 +187,11 @@ SELECT
       0
     )
   ) AS total_uri_count_private_mode,
+  (
+    SELECT
+      LOGICAL_OR(mozfun.addons.is_adblocker(addon_id))
+    FROM
+      UNNEST(active_addons)
+  ) AS has_adblocker_enabled,
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`

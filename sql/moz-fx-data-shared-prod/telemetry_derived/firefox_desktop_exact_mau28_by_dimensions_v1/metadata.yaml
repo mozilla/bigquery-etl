@@ -3,11 +3,13 @@ description: >
   Monthly active users with desktop clients aggregated across
   unique sets of dimensions.
 owners:
-- dthorn@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: desktop
   schedule: daily
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_main_summary
   task_name: firefox_desktop_exact_mau28_by_dimensions
@@ -17,3 +19,5 @@ bigquery:
     field: submission_date
     require_partition_filter: false
   clustering: null
+deprecated: true
+deletion_date: 2025-12-12

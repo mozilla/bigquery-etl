@@ -3,7 +3,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     client_info,
     metadata,
     normalized_os,
@@ -20,12 +20,22 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
+    AND name IN (
+      'closed',
+      'opened',
+      'impression',
+      'issued',
+      'click',
+      'save',
+      'topic_click',
+      'dismiss'
+    )
 ),
 categorized_events AS (
   SELECT
         -- Unique Identifiers
     client_info.client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
         -- Metrics
         -- Search
@@ -71,6 +81,14 @@ categorized_events AS (
     event_category = 'topsites'
     AND event_name = 'click'
     AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_click,
+    event_category = 'topsites'
+    AND event_name = 'dismiss' AS is_topsite_dismiss,
+    event_category = 'topsites'
+    AND event_name = 'dismiss'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_topsite_dismiss,
+    event_category = 'topsites'
+    AND event_name = 'dismiss'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_dismiss,
         -- Pocket
     event_category = 'pocket'
     AND event_name = 'click' AS is_pocket_click,
@@ -152,6 +170,7 @@ aggregated_newtab_activity AS (
         -- topsite_advertiser_id,
         -- topsite_position,
     legacy_telemetry_client_id,
+    ANY_VALUE(profile_group_id) AS profile_group_id,
     ANY_VALUE(experiments) AS experiments,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(default_search_engine) AS default_search_engine,
@@ -179,6 +198,9 @@ aggregated_newtab_activity AS (
     COUNTIF(is_topsite_impression) AS topsite_impressions,
     COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
     COUNTIF(is_organic_topsite_impression) AS organic_topsite_impressions,
+    COUNTIF(is_topsite_dismiss) AS topsite_dismissals,
+    COUNTIF(is_sponsored_topsite_dismiss) AS sponsored_topsite_dismissals,
+    COUNTIF(is_organic_topsite_dismiss) AS organic_topsite_dismissals,
           -- Search
     COUNTIF(is_search_issued) AS searches,
     COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
@@ -221,14 +243,12 @@ aggregated_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    ANY_VALUE(is_new_profile) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    first_seen_date = @submission_date AS is_new_profile,
+    activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 ),
 -- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
 side_filled AS (
@@ -260,6 +280,7 @@ side_filled AS (
       OR follow_on_search_ad_impressions > 0
       OR topsite_impressions > 0
       OR topsite_clicks > 0
+      OR topsite_dismissals > 0
       OR pocket_impressions > 0
       OR pocket_clicks > 0
       OR pocket_saves > 0
@@ -271,8 +292,7 @@ side_filled AS (
     aggregated_newtab_activity
   LEFT JOIN
     client_profile_info
-  USING
-    (legacy_telemetry_client_id)
+    USING (legacy_telemetry_client_id)
 )
 SELECT
   * EXCEPT (visit_had_any_interaction)

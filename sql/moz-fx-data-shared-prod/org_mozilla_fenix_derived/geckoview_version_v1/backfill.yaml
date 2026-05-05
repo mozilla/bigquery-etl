@@ -1,0 +1,8 @@
+2024-06-04:
+  start_date: 2024-02-01
+  end_date: 2024-06-03
+  reason: Fix erroneous geckoview_major_version values since Feb 2024
+    (https://github.com/mozilla/glam/issues/2843#issuecomment-2148079303)
+  watchers:
+  - efilho@mozilla.com
+  status: Complete

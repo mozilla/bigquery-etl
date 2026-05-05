@@ -12,19 +12,19 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
-scheduling:
-  dag_name: bqetl_analytics_aggregations
-  task_name: active_users_aggregates_v1
+  deprecated: true
+  owner1: lvargas
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - country
     - app_name
     - attribution_medium
     - channel
-references: {}
+require_column_descriptions: false

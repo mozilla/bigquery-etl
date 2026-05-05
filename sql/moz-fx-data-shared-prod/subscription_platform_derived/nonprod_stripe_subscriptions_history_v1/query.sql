@@ -16,8 +16,11 @@ WITH base_subscriptions_history AS (
     JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
     ended_at,
     status,
-    TIMESTAMP_SECONDS(
-      CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64)
+    -- SubPlat ran a test script for PAY-3440 which accidentally set `plan_change_date` using milliseconds for some records.
+    IF(
+      LENGTH(JSON_VALUE(metadata, "$.plan_change_date")) > 12,
+      TIMESTAMP_MILLIS(CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64)),
+      TIMESTAMP_SECONDS(CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64))
     ) AS plan_change_date,
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
   FROM
@@ -135,8 +138,7 @@ subscriptions_history_with_plan_ids AS (
     subscriptions_history_with_previous_plan_ids AS subscriptions_history
   JOIN
     subscription_items
-  USING
-    (subscription_id)
+    USING (subscription_id)
 ),
 product_capabilities AS (
   SELECT
@@ -145,9 +147,8 @@ product_capabilities AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.nonprod_product_v1 AS products
   JOIN
-    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
-  ON
-    metadata_items.key LIKE 'capabilities%'
+    UNNEST(mozfun.json.extract_string_map(metadata)) AS metadata_items
+    ON metadata_items.key LIKE 'capabilities%'
   JOIN
     UNNEST(SPLIT(metadata_items.value, ",")) AS capability
   WHERE
@@ -162,9 +163,8 @@ plan_capabilities AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.nonprod_plan_v1 AS plans
   JOIN
-    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
-  ON
-    metadata_items.key LIKE 'capabilities%'
+    UNNEST(mozfun.json.extract_string_map(metadata)) AS metadata_items
+    ON metadata_items.key LIKE 'capabilities%'
   JOIN
     UNNEST(SPLIT(metadata_items.value, ",")) AS capability
   WHERE
@@ -189,16 +189,13 @@ plans AS (
     `moz-fx-data-shared-prod`.stripe_external.nonprod_plan_v1 AS plans
   LEFT JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_product_v1 AS products
-  ON
-    plans.product_id = products.id
+    ON plans.product_id = products.id
   LEFT JOIN
     plan_capabilities
-  ON
-    plans.id = plan_capabilities.plan_id
+    ON plans.id = plan_capabilities.plan_id
   LEFT JOIN
     product_capabilities
-  USING
-    (product_id)
+    USING (product_id)
 ),
 customers AS (
   SELECT
@@ -216,8 +213,7 @@ charges AS (
     `moz-fx-data-shared-prod`.stripe_external.nonprod_charge_v1 AS charges
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_card_v1 AS cards
-  ON
-    charges.card_id = cards.id
+    ON charges.card_id = cards.id
   WHERE
     charges.status = "succeeded"
 ),
@@ -235,12 +231,10 @@ invoices_provider_country AS (
     `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
   LEFT JOIN
     customers
-  USING
-    (customer_id)
+    USING (customer_id)
   LEFT JOIN
     charges
-  USING
-    (charge_id)
+    USING (charge_id)
   WHERE
     invoices.status = "paid"
 ),
@@ -264,8 +258,7 @@ subscriptions_history_provider_country AS (
     subscriptions_history
   JOIN
     invoices_provider_country
-  ON
-    subscriptions_history.subscription_id = invoices_provider_country.subscription_id
+    ON subscriptions_history.subscription_id = invoices_provider_country.subscription_id
     AND (
       invoices_provider_country.created < subscriptions_history.valid_to
       OR subscriptions_history.valid_to IS NULL
@@ -289,24 +282,20 @@ subscriptions_history_promotions AS (
     subscriptions_history
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
-  ON
-    subscriptions_history.subscription_id = invoices.subscription_id
+    ON subscriptions_history.subscription_id = invoices.subscription_id
     AND (
       invoices.created < subscriptions_history.valid_to
       OR subscriptions_history.valid_to IS NULL
     )
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v1 AS invoice_discounts
-  ON
-    invoices.id = invoice_discounts.invoice_id
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v2 AS invoice_discounts
+    ON invoices.id = invoice_discounts.invoice_id
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_code_v1 AS promotion_codes
-  ON
-    invoice_discounts.promotion_code = promotion_codes.id
+    ON invoice_discounts.promotion_code = promotion_codes.id
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_coupon_v1 AS coupons
-  ON
-    promotion_codes.coupon_id = coupons.id
+    ON promotion_codes.coupon_id = coupons.id
   WHERE
     invoices.status = "paid"
   GROUP BY
@@ -353,17 +342,13 @@ FROM
   subscriptions_history_with_plan_ids AS subscriptions_history
 LEFT JOIN
   plans
-USING
-  (plan_id)
+  USING (plan_id)
 LEFT JOIN
   customers
-USING
-  (customer_id)
+  USING (customer_id)
 LEFT JOIN
   subscriptions_history_provider_country
-USING
-  (subscription_id, valid_from)
+  USING (subscription_id, valid_from)
 LEFT JOIN
   subscriptions_history_promotions
-USING
-  (subscription_id, valid_from)
+  USING (subscription_id, valid_from)

@@ -30,6 +30,7 @@ const columns = [
   'ua',
   'variation',
 ];
+try { 
 return decodeURIComponent(decodeURIComponent(attribution))
   .split('&')
   .map((kv) => kv.split(/=(.*)/s))
@@ -40,13 +41,16 @@ return decodeURIComponent(decodeURIComponent(attribution))
     }
     return acc;
   }, {});
-
+} 
+catch {
+  return {};
+}
 """;
 
 -- Tests
 -- complete string
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT(
       'whatsnew',
       '(not set)',
@@ -65,7 +69,7 @@ SELECT
 
 -- missing fields, need to include schema whenever using NULL
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT<
       campaign STRING,
       content STRING,
@@ -94,7 +98,7 @@ SELECT
 
 -- extra fields, need to include schema whenever using NULL
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT(
       'whatsnew',
       '(not set)',
@@ -113,7 +117,7 @@ SELECT
 
 -- NULL, need to include schema whenever using NULL
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT<
       campaign STRING,
       content STRING,
@@ -130,7 +134,7 @@ SELECT
 
 -- empty string, need to include schema whenever using NULL
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT<
       campaign STRING,
       content STRING,
@@ -147,7 +151,7 @@ SELECT
 
 -- not encoded
 SELECT
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     STRUCT(
       'whatsnew',
       '(not set)',

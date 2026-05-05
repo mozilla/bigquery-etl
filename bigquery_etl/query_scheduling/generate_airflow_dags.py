@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.query_scheduling.task import Task, TaskRef, UnscheduledTask
+from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
@@ -18,6 +18,7 @@ SCRIPT_FILE = "script.sql"
 PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
 CHECKS_FILE = "checks.sql"
+BIGEYE_FILE = "bigconfig.yml"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -49,14 +50,14 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def get_dags(project_id, dags_config):
+def get_dags(project_id, dags_config, sql_dir=None):
     """Return all configured DAGs including associated tasks."""
     tasks = []
     dag_collection = DagCollection.from_file(dags_config)
-    for project_dir in project_dirs(project_id):
+    for project_dir in project_dirs(project_id, sql_dir=sql_dir):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
-            for root, dirs, files in os.walk(project_dir):
+            for root, dirs, files in os.walk(project_dir, followlinks=True):
                 try:
                     if QUERY_FILE in files:
                         query_file = os.path.join(root, QUERY_FILE)
@@ -93,28 +94,51 @@ def get_dags(project_id, dags_config):
                     logging.error(f"Error processing task for query {query_file}")
                     raise e
                 else:
+                    if BIGEYE_FILE in files:
+                        bigeye_file = os.path.join(root, BIGEYE_FILE)
+                        bigeye_task = copy.deepcopy(
+                            Task.of_bigeye_check(
+                                bigeye_file,
+                                dag_collection=dag_collection,
+                            )
+                        )
+
+                        if bigeye_task.monitoring_enabled:
+                            tasks.append(bigeye_task)
+
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
-                        checks_task = copy.deepcopy(
-                            Task.of_dq_check(checks_file, dag_collection=dag_collection)
-                        )
-                        tasks.append(checks_task)
-                        task_ref = TaskRef(
-                            dag_name=task.dag_name,
-                            task_id=task.task_name,
-                        )
-                        checks_task.upstream_dependencies.append(task_ref)
-                    tasks.append(task)
+                        # todo: validate checks file
 
+                        with open(checks_file, "r") as file:
+                            file_contents = file.read()
+
+                            if "#fail" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=True,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                tasks.append(checks_task)
+
+                            if "#warn" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=False,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                tasks.append(checks_task)
+
+                    tasks.append(task)
         else:
-            logging.error(
-                """
+            logging.error("""
                 Invalid project_dir: {}, project_dir must be a directory with
                 structure <sql>/<project>/<dataset>/<table>/metadata.yaml.
-                """.format(
-                    project_dir
-                )
-            )
+                """.format(project_dir))
 
     return dag_collection.with_tasks(tasks)
 

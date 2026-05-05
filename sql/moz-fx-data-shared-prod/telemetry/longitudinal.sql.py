@@ -82,9 +82,9 @@ def generate_sql(opts):
                 opts["from"] or six_months_before(opts["to"]), "'%Y-%m-%d'"
             ),
             "to": datetime.datetime.strftime(opts["to"], "'%Y-%m-%d'"),
-            "where": "\n{}AND {}".format(" " * 10, opts["where"])
-            if opts["where"]
-            else "",
+            "where": (
+                "\n{}AND {}".format(" " * 10, opts["where"]) if opts["where"] else ""
+            ),
             "ordering_columns": ", ".join(
                 opts["ordering_columns"] or [opts["submission_date_col"]]
             ),

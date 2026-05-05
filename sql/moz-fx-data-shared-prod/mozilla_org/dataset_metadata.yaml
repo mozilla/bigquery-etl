@@ -1,0 +1,13 @@
+friendly_name: Mozilla.org
+description: |-
+  Mozilla.org data, usually derived from Google Analytics (GA).
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc

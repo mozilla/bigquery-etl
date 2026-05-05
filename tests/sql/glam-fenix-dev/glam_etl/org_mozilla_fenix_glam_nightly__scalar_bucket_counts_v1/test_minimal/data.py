@@ -1,4 +1,5 @@
 """Testing data for query."""
+
 from itertools import product
 from pathlib import Path
 from uuid import uuid4

@@ -18,6 +18,6 @@ CREATE OR REPLACE FUNCTION udf.array_slice(arr ANY TYPE, start_index INT64, end_
 
 -- Test
 SELECT
-  assert.array_equals([1, 2, 3], udf.array_slice([1, 2, 3], 0, 2)),
-  assert.array_equals([1, 2], udf.array_slice([1, 2, 3], 0, 1)),
-  assert.array_equals(['2'], udf.array_slice(['1', '2', '3'], 1, 1)),
+  mozfun.assert.array_equals([1, 2, 3], udf.array_slice([1, 2, 3], 0, 2)),
+  mozfun.assert.array_equals([1, 2], udf.array_slice([1, 2, 3], 0, 1)),
+  mozfun.assert.array_equals(['2'], udf.array_slice(['1', '2', '3'], 1, 1)),

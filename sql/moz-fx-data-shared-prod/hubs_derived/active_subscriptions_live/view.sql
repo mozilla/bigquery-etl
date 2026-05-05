@@ -29,8 +29,7 @@ FROM
   subscriptions
 JOIN
   `moz-fx-data-shared-prod`.hubs.active_subscription_ids
-USING
-  (subscription_id)
+  USING (subscription_id)
 GROUP BY
   active_date,
   plan_id,

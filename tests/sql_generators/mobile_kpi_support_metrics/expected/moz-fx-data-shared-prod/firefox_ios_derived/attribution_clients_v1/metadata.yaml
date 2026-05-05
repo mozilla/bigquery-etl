@@ -1,0 +1,29 @@
+friendly_name: Profile / Client Attribution - Firefox iOS
+description: |-
+  Profile attribution (Firefox iOS)
+
+  Table grain: client_id, normalized_channel
+  Table population: all clients
+
+  Notes:
+  - 2025-05-14: `normalized_channel` field added (backfilled up until 2023-04-08, prior to this the value will always be `null`)
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+monitoring:
+  enabled: true
+  collection: Operational Checks

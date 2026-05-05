@@ -1,0 +1,17 @@
+friendly_name: Telemetry Health Sequence Holes
+description: |
+  Measures the percentage of clients with sequence number gaps in their telemetry pings per day.
+  Combines data from Firefox Desktop, Firefox Android, and Firefox iOS.
+owners:
+  - tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

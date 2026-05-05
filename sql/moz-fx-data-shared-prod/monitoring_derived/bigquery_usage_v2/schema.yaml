@@ -41,6 +41,11 @@ fields:
   description: The type of query statement
 
 - mode: NULLABLE
+  name: query_id
+  type: STRING
+  description: The id of the query
+
+- mode: NULLABLE
   name: reference_project_id
   type: STRING
   description: The ID of the project referenced by the job
@@ -74,6 +79,11 @@ fields:
   name: user_email
   type: STRING
   description: Email address or service account of the user who ran the job
+
+- mode: NULLABLE
+  name: username
+  type: STRING
+  description: The name of the user who ran the job
 
 - mode: NULLABLE
   name: task_duration
@@ -114,3 +124,51 @@ fields:
   name: resource_warning
   type: STRING
   description: The warning message that appears if the resource usage is above the internal threshold of the system
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date Airflow DAG is executed, and partition date
+
+- mode: REPEATED
+  name: labels
+  type: RECORD
+  description: Array of labels applied to the job as key-value pairs.
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+    description: Label key.
+  - mode: NULLABLE
+    name: value
+    type: STRING
+    description: Label value.
+
+- mode: NULLABLE
+  name: is_materialized_view_refresh
+  type: BOOLEAN
+  description: Whether or not the query is a materialized view refresh, based on the query string.
+
+- mode: NULLABLE
+  name: bi_engine_mode
+  type: STRING
+  description: High-level BI Engine status for the job (e.g., ENABLED, DISABLED, PARTIAL).
+
+- mode: NULLABLE
+  name: acceleration_mode
+  type: STRING
+  description: How BI Engine was used when acceleration occurred (e.g., FULL_QUERY, FULL_INPUT, PARTIAL_INPUT).
+
+- mode: REPEATED
+  name: bi_engine_reasons
+  type: RECORD
+  description: Reasons explaining why BI Engine was PARTIAL or DISABLED for this job.
+  fields:
+  - mode: NULLABLE
+    name: code
+    type: STRING
+    description: Machine-readable reason code.
+  - mode: NULLABLE
+    name: message
+    type: STRING
+    description: Human-readable explanation of the reason.

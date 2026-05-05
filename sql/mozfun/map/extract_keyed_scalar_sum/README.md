@@ -1,4 +1,4 @@
-# Extract Keyed Scalar Sum
+### Extract Keyed Scalar Sum
 
 Takes a keyed scalar and returns a single number:
 the sum of all values it contains. The expected input

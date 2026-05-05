@@ -1,0 +1,13 @@
+fields:
+- name: addon_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique identifier for the add-on.
+- name: addon_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the add-on.
+- name: occurrences
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of occurrences of the add-on.

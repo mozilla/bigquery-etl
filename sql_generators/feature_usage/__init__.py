@@ -1,4 +1,5 @@
 """Feature usage table generation."""
+
 import os
 import shutil
 from pathlib import Path

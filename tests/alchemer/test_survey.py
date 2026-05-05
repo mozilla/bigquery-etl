@@ -5,6 +5,7 @@ import pytest
 import requests
 from click.testing import CliRunner
 from google.cloud import bigquery
+from requests import HTTPError
 
 from bigquery_etl.alchemer.survey import (
     construct_data,
@@ -146,8 +147,10 @@ SUBMISSION_DATE = "2021-01-05"
 
 EXAMPLE_RESPONSE_FORMATTED_0 = {
     "submission_date": SUBMISSION_DATE,
+    "date_started": "2018-09-27 10:42:16 -04:00",
     "id": "1",
     "status": "Complete",
+    "language": "English",
     "session_id": "1538059336_5bacec4869caa2.27680217",
     "response_time": 10,
     "survey_data": [
@@ -178,14 +181,17 @@ EXAMPLE_RESPONSE_FORMATTED_0 = {
             "shown": True,
         },
     ],
+    "url_variables": [],
 }
 
 EXAMPLE_RESPONSE_FORMATTED = [
     EXAMPLE_RESPONSE_FORMATTED_0,
     {
         "submission_date": SUBMISSION_DATE,
+        "date_started": "2018-09-27 10:43:01 -04:00",
         "id": "2",
         "status": "Complete",
+        "language": "English",
         "session_id": "1538059381_5bacec751e41f4.51482165",
         "response_time": 10,
         "survey_data": [
@@ -216,6 +222,7 @@ EXAMPLE_RESPONSE_FORMATTED = [
                 "shown": True,
             },
         ],
+        "url_variables": [],
     },
 ]
 
@@ -243,20 +250,40 @@ def testing_table_id(testing_dataset):
     yield table_id
 
 
+class MockResponse:
+    @staticmethod
+    def raise_for_status():
+        pass
+
+    @staticmethod
+    def json():
+        return EXAMPLE_RESPONSE
+
+    @property
+    def text(self):
+        return str(EXAMPLE_RESPONSE)
+
+
+class MockErrorResponse(MockResponse):
+    @staticmethod
+    def raise_for_status():
+        raise HTTPError()
+
+
 @pytest.fixture()
 def patch_api_requests(monkeypatch):
     # Note: this does not test iterating over multiple pages
-    class MockResponse:
-        @staticmethod
-        def raise_for_status():
-            pass
-
-        @staticmethod
-        def json():
-            return EXAMPLE_RESPONSE
-
     def mock_get(*args, **kwargs):
         return MockResponse()
+
+    monkeypatch.setattr(requests, "get", mock_get)
+
+
+@pytest.fixture()
+def patch_api_requests_error(monkeypatch):
+    # Note: this does not test iterating over multiple pages
+    def mock_get(*args, **kwargs):
+        return MockErrorResponse()
 
     monkeypatch.setattr(requests, "get", mock_get)
 
@@ -271,10 +298,8 @@ def test_date_plus_one():
 
 
 def test_format_response():
-    assert (
-        format_responses(EXAMPLE_RESPONSE["data"][0], SUBMISSION_DATE)
-        == EXAMPLE_RESPONSE_FORMATTED_0
-    )
+    given = format_responses(EXAMPLE_RESPONSE["data"][0], SUBMISSION_DATE, False)
+    assert given == EXAMPLE_RESPONSE_FORMATTED_0
 
 
 def test_format_response_nonnumeric_answer_id():
@@ -282,6 +307,8 @@ def test_format_response_nonnumeric_answer_id():
         "submission_date": SUBMISSION_DATE,
         "id": "1",
         "status": "Complete",
+        "date_started": "2018-09-27 10:43:01 EDT",
+        "language": "English",
         "session_id": "1538059336_5bacec4869caa2.27680217",
         "response_time": 10,
         "survey_data": {
@@ -293,21 +320,25 @@ def test_format_response_nonnumeric_answer_id():
             },
         },
     }
-    res = format_responses(base, SUBMISSION_DATE)
+    res = format_responses(base, SUBMISSION_DATE, False)
     assert res["survey_data"][0]["answer_id"] == 10001
     assert not res["survey_data"][1].get("answer_id")
 
 
 def test_construct_data():
-    assert (
-        construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE) == EXAMPLE_RESPONSE_FORMATTED
-    )
+    given = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE, False)
+    assert given == EXAMPLE_RESPONSE_FORMATTED
 
 
 def test_get_survey_data(patch_api_requests):
-    assert (
-        get_survey_data("555555", SUBMISSION_DATE, "token", "secret")
-        == EXAMPLE_RESPONSE_FORMATTED
+    given = get_survey_data("555555", SUBMISSION_DATE, "token", "secret", False)
+    assert given == EXAMPLE_RESPONSE_FORMATTED
+
+
+def test_get_survey_data_error(patch_api_requests_error):
+    """Test that the wrapper correctly reraises the HTTPError."""
+    pytest.raises(
+        HTTPError, get_survey_data, "555555", SUBMISSION_DATE, "token", "secret", False
     )
 
 
@@ -318,7 +349,7 @@ def test_response_schema():
 
 @pytest.mark.integration
 def test_insert_to_bq(testing_table_id):
-    transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE)
+    transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE, False)
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
@@ -351,7 +382,7 @@ def test_insert_to_bq_options(testing_table_id):
             "shown": True,
         },
     }
-    transformed = [format_responses(base, SUBMISSION_DATE)]
+    transformed = [format_responses(base, SUBMISSION_DATE, False)]
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
@@ -434,7 +465,7 @@ def test_insert_to_bq_subquestions(testing_table_id):
             "shown": True,
         },
     }
-    transformed = [format_responses(base, SUBMISSION_DATE)]
+    transformed = [format_responses(base, SUBMISSION_DATE, False)]
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 

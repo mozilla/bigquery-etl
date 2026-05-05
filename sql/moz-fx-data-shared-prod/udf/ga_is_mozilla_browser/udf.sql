@@ -15,6 +15,6 @@ RETURNS BOOLEAN AS (
 
                 -- Tests
 SELECT
-  assert.true(udf.ga_is_mozilla_browser('Mozilla')),
-  assert.true(udf.ga_is_mozilla_browser('Firefox')),
-  assert.false(udf.ga_is_mozilla_browser('Chrome'));
+  mozfun.assert.true(udf.ga_is_mozilla_browser('Mozilla')),
+  mozfun.assert.true(udf.ga_is_mozilla_browser('Firefox')),
+  mozfun.assert.false(udf.ga_is_mozilla_browser('Chrome'));

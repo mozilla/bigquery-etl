@@ -83,20 +83,37 @@ RETURNS ARRAY<
   )
 );
 
-WITH clients_histogram_aggregates_new AS (
+WITH preconditions AS (
   SELECT
-    *
+    IF(
+      (
+        SELECT
+          MAX(submission_date)
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
+      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY),
+      TRUE,
+      ERROR('Pre-condition failed: Current submission_date parameter skips a day or more of data.')
+    ) histogram_aggregates_up_to_date
+),
+clients_histogram_aggregates_new AS (
+  SELECT
+    * EXCEPT (histogram_aggregates_up_to_date)
   FROM
-    telemetry_derived.clients_histogram_aggregates_new_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_new_v1`,
+    preconditions
   WHERE
-    sample_id >= 0
+    preconditions.histogram_aggregates_up_to_date
+    AND sample_id >= 0
     AND sample_id <= 99
 ),
 clients_histogram_aggregates_partition AS (
   SELECT
     *
   FROM
-    telemetry_derived.clients_histogram_aggregates_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
+  WHERE
+    submission_date = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY)
 ),
 clients_histogram_aggregates_old AS (
   SELECT
@@ -112,15 +129,13 @@ clients_histogram_aggregates_old AS (
   FROM
     clients_histogram_aggregates_partition AS hist_aggs
   LEFT JOIN
-    latest_versions
-  ON
-    latest_versions.channel = hist_aggs.channel
+    `moz-fx-data-shared-prod.telemetry_derived.latest_versions` AS latest_versions
+    ON latest_versions.channel = hist_aggs.channel
   WHERE
     app_version >= (latest_version - 2)
 ),
 merged AS (
   SELECT
-    old_data.submission_date AS old_sub_date,
     COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
     COALESCE(old_data.os, new_data.os) AS os,
@@ -146,8 +161,7 @@ merged AS (
     clients_histogram_aggregates_old AS old_data
   FULL OUTER JOIN
     clients_histogram_aggregates_new AS new_data
-  ON
-    new_data.join_key = old_data.join_key
+    ON new_data.join_key = old_data.join_key
 )
 SELECT
   @submission_date AS submission_date,
@@ -157,11 +171,6 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  CASE
-    old_sub_date
-    WHEN DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY)
-      THEN udf_merged_user_data(old_aggs, new_aggs)
-    ELSE udf_use_old_data(old_aggs)
-  END AS histogram_aggregates
+  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
 FROM
   merged

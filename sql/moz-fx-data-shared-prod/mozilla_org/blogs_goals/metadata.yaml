@@ -1,0 +1,5 @@
+friendly_name: Blogs Goals
+description: |-
+  Intermediate table containing key metrics for blog.mozilla.org sourced from Google Analytics 4
+owners:
+- kwindau@mozilla.com

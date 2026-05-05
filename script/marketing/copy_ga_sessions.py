@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Copy a range of ga_sessions_* tables from one project to another."""
+
 import datetime
 
 import click
@@ -17,9 +18,11 @@ def get_qualified_table_name(project, ga_id, table_date):
 def copy_single_table(bq_client, src_table, dst_table, overwrite):
     """Copy a single day of ga_sessions."""
     job_config = bigquery.CopyJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
-        if overwrite
-        else bigquery.WriteDisposition.WRITE_EMPTY
+        write_disposition=(
+            bigquery.WriteDisposition.WRITE_TRUNCATE
+            if overwrite
+            else bigquery.WriteDisposition.WRITE_EMPTY
+        )
     )
     try:
         copy_job = bq_client.copy_table(

@@ -53,7 +53,7 @@ WITH top_of_funnel_base AS (
     `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
     ON ga4.country = country_names.name
   WHERE
-    session_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    session_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND device_category = 'desktop'
     -- Exclude existing Firefox users - we want new acquisition only
     AND COALESCE(browser, '') NOT IN ('Firefox', 'Mozilla')
@@ -157,7 +157,7 @@ windows_installer_installs_base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_installer.install` AS installs
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 27 day)
+    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND succeeded  -- Only successful installs
     AND NOT had_old_install  -- Exclude upgrades/reinstalls (new installs only)
   -- Only count installs from tracked mozilla.org downloads
@@ -204,7 +204,7 @@ fresh_download_profiles AS (
     USING (client_id)
   WHERE
     cfs.funnel_derived IN ('mozorg windows funnel', 'mozorg mac funnel')
-    AND cfs.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    AND cfs.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND cfs.is_desktop
     AND cfs.attribution_dltoken IS NOT NULL
   -- Download must have occurred within 30 days before profile creation
@@ -266,7 +266,7 @@ desktop_funnels_telemetry AS (
     ga4_attribution AS ga4_attr
     USING (client_id)
   WHERE
-    cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    cfs28.first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND cfs28.is_desktop
     AND cfs28.normalized_channel = 'release'
   GROUP BY

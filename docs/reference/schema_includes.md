@@ -28,13 +28,17 @@ Includes a field from the specified table/view or schema YAML file.
   - `table`: Fully qualified ID of the table/view to include from (must have a `schema.yaml` file or be a stable table).
   - `file`: File path of the schema YAML file to include from (relative to the root of the repository).
 - `field`: Field path of the field to include.
+- `new_name`: Optional name to use in place of the included field's original name.
 - `new_type`: Optional type value to use in place of the included field's original type.
 - `new_mode`: Optional mode value to use in place of the included field's original mode.
 - `new_description`: Optional description to use in place of the included field's original description.
 - `append_description`: Optional text to append to the included field's description.
 - `prepend_description`: Optional text to prepend to the included field's description.
-- `new_fields`: Optional list of field definitions to use in place of the included field's original list of subfields.
-  - **Tip:** include tags can be also used in this list.
+- `new_fields`: Optional list of field definitions to use in place of the included struct field's original list of subfields.
+- `append_fields`: Optional list of field definitions to append to the included struct field's list of subfields.
+- `prepend_fields`: Optional list of field definitions to prepend to the included struct field's list of subfields.
+
+**Tip:** include tags can be used in the `new_fields`, `append_fields`, and `prepend_fields` lists.
 
 #### Examples
 
@@ -44,6 +48,14 @@ fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
   field: default_search_engine
+```
+```yaml
+# Include a top-level column from an ETL table, but override its name.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
+  field: default_search_engine
+  new_name: search_engine
 ```
 ```yaml
 # Include a top-level column from an ETL table, but override its type.
@@ -70,12 +82,24 @@ fields:
   append_description: And one more thing...
 ```
 ```yaml
-# Include a top-level column from a stable table, but override its fields.
+# Include a top-level struct column from a stable table, but exclude one of its subfields.
 fields:
 - !include-field
   table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
   field: client_info
-  new_fields:
+  new_fields: !include-fields
+    table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+    parent_field: client_info
+    exclude_field_names:
+    - client_id
+```
+```yaml
+# Include a top-level struct column from a stable table, but append an additional subfield.
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+  field: client_info
+  append_fields:
   - name: client_id_hash
     type: STRING
 ```
@@ -109,7 +133,8 @@ If the included fields are being inserted into part of a larger list, then the [
 - `field_names`: Optional list of fields to include (either top-level columns, or nested fields if `parent_field` is specified).
 - `exclude_field_names`: Optional list of fields to exclude (either top-level columns, or nested fields if `parent_field` is specified).
 - `field_replacements`: Optional list of field definitions that will be used in place of the associated field definitions found in the include (matched by field name).
-  - **Tip:** include tags can be also used in this list.
+
+**Tip:** include tags can be used in the `field_replacements` list.
 
 #### Examples
 

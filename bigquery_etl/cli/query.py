@@ -30,11 +30,16 @@ from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
-from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..backfill.utils import (
+    QUALIFIED_TABLE_NAME_RE,
+    get_effective_retention_days,
+    qualified_table_name_matching,
+)
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     billing_project_option,
+    defer_option,
     is_authenticated,
     is_valid_project,
     multi_project_id_option,
@@ -60,6 +65,7 @@ from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -76,6 +82,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
+from ..util.target import prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -99,7 +106,6 @@ INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
-NBR_DAYS_RETAINED = 775
 GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
@@ -735,21 +741,6 @@ def backfill(
         )
         sys.exit(1)
 
-    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
-    if (
-        not override_retention_range_limit
-        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
-    ):
-        # Exit - cannot backfill due to risk of losing data
-        click.echo(
-            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
-        )
-        sys.exit(1)
-
-    # If override retention policy is true, continue to run the backfill
-    if override_retention_range_limit:
-        click.echo("Over-riding retention limit - ensure data exists in source tables")
-
     if custom_query_path:
         query_files = paths_matching_name_pattern(
             custom_query_path, sql_dir, project_id, files=["*.sql", "*.py"]
@@ -790,6 +781,20 @@ def backfill(
         raise click.ClickException(
             f"Can't run backfill without metadata for {query_file_path}."
         )
+
+    # Check retention limit using the effective retention (considers partition expiration_days)
+    retention_days = get_effective_retention_days(metadata)
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=retention_days)
+    ):
+        click.echo(
+            f"Cannot backfill more than {retention_days} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
     # If date_partition_parameter isn't set it's assumed to be submission_date:
@@ -974,6 +979,16 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@defer_option()
+@click.option(
+    "--write",
+    is_flag=True,
+    default=False,
+    help=(
+        "Write query results to destination table. "
+        "When used with --target, automatically infers destination table from target configuration."
+    ),
+)
 @click.pass_context
 def run(
     ctx,
@@ -984,6 +999,8 @@ def run(
     public_project_id,
     destination_table,
     dataset_id,
+    defer_to_target,
+    write,
 ):
     """Run a query."""
     if not is_authenticated():
@@ -993,7 +1010,22 @@ def run(
         )
         sys.exit(1)
 
+    if destination_table and write:
+        raise click.UsageError(
+            "--destination_table and --write are mutually exclusive."
+        )
+
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
+    if target and dataset_id:
+        raise click.UsageError("--dataset-id and --target are mutually exclusive.")
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1005,12 +1037,38 @@ def run(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
+    # prepare target directories if using --target
+    if target and target.project_id != project_id:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=write,
+        )
+
+    # apply destination project and dataset
+    effective_project = (target.project_id if target else None) or project_id
+    effective_dataset = dataset_id
+
+    # auto-infer destination_table when --write is used; query_files[0] is already
+    # the target file with project/dataset/prefix applied by prepare_target_files
+    effective_destination_table = destination_table
+    if write and not destination_table:
+        query_project, query_dataset, query_table = extract_from_query_path(
+            query_files[0]
+        )
+        effective_destination_table = f"{query_project}.{query_dataset}.{query_table}"
+        click.echo(f"ℹ️  Writing results to: {effective_destination_table}")
+
     _run_query(
         query_files,
-        project_id,
+        effective_project,
         public_project_id,
-        destination_table,
-        dataset_id,
+        effective_destination_table,
+        effective_dataset,
         ctx.args,
         billing_project=billing_project,
     )
@@ -1074,19 +1132,22 @@ def _run_query(
                     )
                     use_public_table = True
                 else:
-                    print(
-                        "ERROR: Cannot run public dataset query. Parameters"
+                    raise click.ClickException(
+                        "Cannot run public dataset query. Parameters"
                         " --destination_table=<table without dataset ID> and"
                         " --dataset_id=<dataset> required"
                     )
-                    sys.exit(1)
         except yaml.YAMLError as e:
             logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
             logging.warning("No metadata.yaml found for %s", query_file)
 
-        if not use_public_table and destination_table is not None:
+        if (
+            not use_public_table
+            and destination_table is not None
+            and query_file.name != "script.sql"
+        ):
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
 
@@ -1107,9 +1168,15 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
-            # need to do this as parameters are not supported with legacy sql
-            query_arguments.append("--use_legacy_sql=False")
+            # default to WRITE_TRUNCATE so re-runs overwrite existing data.
+            # callers that need different semantics pass --append_table or --noreplace explicitly.
+            if not any(
+                flag in query_arguments
+                for flag in ("--replace", "--append_table", "--noreplace")
+            ):
+                query_arguments.append("--replace")
+
+        query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
         if "query" not in query_arguments:
@@ -1510,6 +1577,7 @@ def validate(
     billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
+    validate_all_datasets = name is None
     if name is None:
         name = "*.*"
 
@@ -1541,6 +1609,17 @@ def validate(
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
+    # Also validate datasets with no query files when no name argument is passed
+    if validate_all_datasets and (
+        project_id is None or project_id == "moz-fx-data-shared-prod"
+    ):
+        for dataset_path in (Path(sql_dir) / "moz-fx-data-shared-prod").iterdir():
+            if (
+                dataset_path.is_dir()
+                and (dataset_path / DATASET_METADATA_FILE).exists()
+            ):
+                dataset_dirs.add(dataset_path)
+
     for dataset_dir in dataset_dirs:
         try:
             validate_metadata.validate_datasets(dataset_dir)
@@ -1557,6 +1636,7 @@ def validate(
 
 def _initialize_in_parallel(
     project,
+    public_project_id,
     table,
     dataset,
     query_file,
@@ -1573,7 +1653,7 @@ def _initialize_in_parallel(
                 _run_query,
                 [query_file],
                 project,
-                None,
+                public_project_id,
                 table,
                 dataset,
                 addl_templates=addl_templates,
@@ -1626,11 +1706,32 @@ def _initialize_in_parallel(
     default=False,
 )
 @click.option(
+    "--skip-nonempty",
+    "--skip_nonempty",
+    help="Skip initialization for tables that already contain data.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--skip-tables-older-than",
+    "--skip_tables_older_than",
+    help="Skip initialization for tables created more than N days ago.",
+    type=int,
+    default=None,
+)
+@click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
     type=int,
     default=4,
+)
+@click.option(
+    "--file",
+    "file_name",
+    help="Only initialize tables whose SQL file matches this filename "
+    "(e.g. materialized_view.sql). Defaults to query.sql, init.sql, and materialized_view.sql.",
+    default=None,
 )
 @click.pass_context
 def initialize(
@@ -1643,7 +1744,10 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    skip_nonempty,
+    skip_tables_older_than,
     sampling_batch_size,
+    file_name,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1651,17 +1755,21 @@ def initialize(
         sys.exit(1)
 
     if Path(name).exists():
-        # allow name to be a path
         query_files = [Path(name)]
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
             r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
+        files = (
+            [file_name]
+            if file_name
+            else ["query.sql", "init.sql", "materialized_view.sql"]
+        )
         query_files = []
         for project_id in project_ids:
             query_files += paths_matching_name_pattern(
-                name, sql_dir, project_id, file_regex=file_regex
+                name, sql_dir, project_id, files=files, file_regex=file_regex
             )
 
     if not query_files:
@@ -1686,17 +1794,40 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
+        public_project_id = None
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                public_project_id = ConfigLoader.get(
+                    "default", "public_project", fallback="mozilla-public-data"
+                )
+        except FileNotFoundError:
+            pass
+
         if "is_init()" in sql_content:
+            table_id_to_check = (
+                f"{public_project_id}.{dataset}.{destination_table}"
+                if public_project_id
+                else full_table_id
+            )
             try:
-                table = client.get_table(full_table_id)
+                table = client.get_table(table_id_to_check)
+
                 if skip_existing:
                     # table exists; skip initialization
                     return
-                if not force and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        " Use --force to overwrite the existing destination table."
-                    )
+                if skip_tables_older_than is not None and table.created:
+                    age = datetime.datetime.now(datetime.timezone.utc) - table.created
+                    if age.days > skip_tables_older_than:
+                        return
+                if table.num_rows > 0:
+                    if skip_nonempty:
+                        return
+                    if not force:
+                        raise click.ClickException(
+                            f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                            " Use --force to overwrite the existing destination table."
+                        )
             except NotFound:
                 # continue with creating the table
                 pass
@@ -1755,7 +1886,8 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=full_table_id,
+                        public_project_id=public_project_id,
+                        table=destination_table if public_project_id else full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1770,8 +1902,10 @@ def initialize(
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
-                        public_project_id=None,
-                        destination_table=full_table_id,
+                        public_project_id=public_project_id,
+                        destination_table=(
+                            destination_table if public_project_id else full_table_id
+                        ),
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={

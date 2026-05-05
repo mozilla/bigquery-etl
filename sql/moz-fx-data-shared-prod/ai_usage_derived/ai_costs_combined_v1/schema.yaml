@@ -1,0 +1,57 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the cost record
+- name: provider
+  type: STRING
+  mode: NULLABLE
+  description: AI provider (OpenAI or Claude)
+- name: amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: Cost amount in the specified currency (normalized to full currency units)
+- name: currency
+  type: STRING
+  mode: NULLABLE
+  description: Currency code (e.g., usd)
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: OpenAI project ID. Null for Claude records.
+- name: organization_id
+  type: STRING
+  mode: NULLABLE
+  description: OpenAI organization ID. Null for Claude records.
+- name: cost_description
+  type: STRING
+  mode: NULLABLE
+  description: Line item (OpenAI) or description (Claude) for the cost
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Anthropic workspace ID. Null for OpenAI records.
+- name: model
+  type: STRING
+  mode: NULLABLE
+  description: Claude model name. Null for OpenAI records.
+- name: token_type
+  type: STRING
+  mode: NULLABLE
+  description: Type of token cost. Null for OpenAI records.
+- name: cost_type
+  type: STRING
+  mode: NULLABLE
+  description: Type of cost (tokens, web_search, code_execution). Null for OpenAI records.
+- name: context_window
+  type: STRING
+  mode: NULLABLE
+  description: Input context window size. Null for OpenAI records.
+- name: service_tier
+  type: STRING
+  mode: NULLABLE
+  description: Service tier (standard or batch). Null for OpenAI records.
+- name: inference_geo
+  type: STRING
+  mode: NULLABLE
+  description: Inference geography. Null for OpenAI records.

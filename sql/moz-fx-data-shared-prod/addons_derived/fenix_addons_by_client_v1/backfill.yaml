@@ -1,0 +1,12 @@
+2026-04-27:
+  start_date: 2024-03-14
+  end_date: 2026-04-27
+  reason: Logic change, need to recompute the table
+  watchers:
+  - kik@mozilla.com
+  - lgreco@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

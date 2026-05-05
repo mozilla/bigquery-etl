@@ -537,7 +537,8 @@ THEN
   WHEN MATCHED
 THEN
   UPDATE
-    SET T.ga_client_id = S.ga_client_id,
+  SET
+    T.ga_client_id = S.ga_client_id,
     T.ga_session_id = S.ga_session_id,
     T.session_date = S.session_date,
     T.is_first_session = S.is_first_session,

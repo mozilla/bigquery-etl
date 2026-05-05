@@ -4,11 +4,11 @@ RETURNS STRING AS (
     WHEN res IS NULL
       THEN NULL
     WHEN res IN (
-      'autofill_origin',
-      'autofill_url',
-      'autofill_adaptive_origin',
-      'autofill_adaptive_url',
-      'history_autofill_fallback_origin'
+        'autofill_origin',
+        'autofill_url',
+        'autofill_adaptive_origin',
+        'autofill_adaptive_url',
+        'history_autofill_fallback_origin'
       )
       THEN 'autofill'
     WHEN res IN ('addon')

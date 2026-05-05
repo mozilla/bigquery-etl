@@ -10,7 +10,19 @@ WITH firefoxdotcom_first_sessions AS (
     `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1` AS ga_sessions_v1,
     UNNEST(gclid_array) AS gclid
   WHERE
-    country IN ("Australia", "Canada", "Japan", "Mexico", "United States")
+    country IN (
+      "Australia",
+      "Argentina",
+      "Bangladesh",
+      "Canada",
+      "Japan",
+      "India",
+      "Indonesia",
+      "Mexico",
+      "United States",
+      "Vietnam",
+      "Thailand"
+    )
   GROUP BY
     gclid
 )
@@ -30,7 +42,7 @@ INNER JOIN
   firefoxdotcom_first_sessions
   USING (gclid)
 WHERE
-  first_session_date >= DATE_SUB(CURRENT_DATE, INTERVAL 28 day)
+  first_session_date >= DATE_SUB(CURRENT_DATE, INTERVAL 28 DAY)
 GROUP BY
   gclid,
   conversion_name

@@ -115,6 +115,13 @@ class SqlTest(pytest.Item, pytest.File):
         elif test_name == "test_script":
             script_test = True
             query = render("script.sql", template_folder=path)
+        elif os.path.exists(os.path.join(path, "view.sql")):
+            query = re.sub(
+                "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                render("view.sql", template_folder=path),
+                flags=re.DOTALL,
+            )
         else:
             query = render("query.sql", template_folder=path)
 

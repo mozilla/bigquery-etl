@@ -1,0 +1,14 @@
+friendly_name: New Profile Churn Clients
+description: |-
+  Union view combining new_profile_churn_clients_v1 (complete cohorts with 30-day lag)
+  and recent_new_profile_churn_clients_v1 (recent cohorts with partial data still filling in).
+  Provides a complete view of all cohorts: the recent table supplies the most current 30 days,
+  and the complete table supplies all older cohorts with fully populated day columns.
+
+  Jira: https://mozilla-hub.atlassian.net/browse/DENG-10676
+owners:
+- bbaird@mozilla.com
+- mhirose@mozilla.com
+labels:
+  owner1: bbaird
+  owner2: mhirose

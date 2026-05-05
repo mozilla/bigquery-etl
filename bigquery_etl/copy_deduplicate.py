@@ -189,7 +189,12 @@ def _get_query_job_configs(
     if write_to_v2:
         stable_table = v2_table
 
-    kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
+    kwargs = dict(
+        use_legacy_sql=False,
+        dry_run=dry_run,
+        priority=priority,
+        labels={"type": "copy_deduplicate"},
+    )
     start_time = datetime(*submission_date.timetuple()[:6])
     end_time = start_time + timedelta(days=1)
     if slices > 1:

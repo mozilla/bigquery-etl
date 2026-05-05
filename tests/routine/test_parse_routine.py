@@ -134,12 +134,12 @@ class TestParseRoutine:
         )
         assert len(result) == 11
         assert (
-            "CREATE OR REPLACE FUNCTION udf.test_bitmask_lowest_28()"
+            "CREATE OR REPLACE FUNCTION `moz-fx-data-test-project.udf.test_bitmask_lowest_28`()"
             + " AS (\n  0x0FFFFFFF\n);"
             in result
         )
         assert (
-            "CREATE OR REPLACE FUNCTION udf.test_safe_sample_id(client_id STRING) AS"
+            "CREATE OR REPLACE FUNCTION `moz-fx-data-test-project.udf.test_safe_sample_id`(client_id STRING) AS"
             + " (\n  MOD(udf.test_safe_crc32_uuid(CAST(client_id AS BYTES)), 100)\n);"
             in result
         )

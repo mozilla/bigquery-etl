@@ -18,9 +18,9 @@ SELECT
   time_spent,
   sessions_per_user,
   sessions,
-  date
+  `date`
 FROM
   `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`
 WHERE
   (network != "Untrusted Devices")
-  AND date IN (SELECT MAX(date) FROM `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`)
+  AND `date` IN (SELECT MAX(`date`) FROM `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`)

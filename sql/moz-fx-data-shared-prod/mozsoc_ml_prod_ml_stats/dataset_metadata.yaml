@@ -1,0 +1,17 @@
+friendly_name: Content ML Team - ML Stats
+description: RSS subtopics drop statistics from New Tab ML jobs
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-mozsoc-ml-prod"
+    syndicated_dataset: "prod_ml_stats"
+  syndicated_tables:
+    - rss_subtopics_drop_table
+    - rss_subtopics_drop_table_manifest
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

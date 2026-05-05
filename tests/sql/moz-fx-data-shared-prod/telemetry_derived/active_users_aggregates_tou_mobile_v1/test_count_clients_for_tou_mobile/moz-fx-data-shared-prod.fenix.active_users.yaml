@@ -1,0 +1,27 @@
+---
+- submission_date: "2026-01-15"
+  client_id: client1
+  is_mobile: true
+  is_dau: true
+  is_wau: true
+  is_mau: true
+  is_daily_user: true
+  is_weekly_user: true
+  is_monthly_user: true
+  first_seen_year: 2026
+  channel: release
+  app_name: Fenix
+  country: US
+  locale: en-US
+  os: Android
+  os_version: "13.0"
+  os_version_major: 13
+  os_version_minor: 0
+  app_version: "133.0"
+  app_version_major: 133
+  app_version_minor: 0
+  app_version_patch_revision: "0"
+  app_version_is_major_release: true
+  is_default_browser: false
+  distribution_id: null
+  activity_segment: regular_users

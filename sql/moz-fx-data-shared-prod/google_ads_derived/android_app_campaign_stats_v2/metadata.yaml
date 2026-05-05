@@ -1,11 +1,12 @@
 friendly_name: Android App Campaign Stats V2
 description: |-
-  Calculates ad spend and new profiles and new activate profiles by day and country.
+  Calculates ad spend and new profiles and new activated profiles by day and country.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
+  level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   owner2: rbaffourawuah
   table_type: aggregate
 scheduling:
@@ -22,5 +23,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-references: {}
 require_column_descriptions: true

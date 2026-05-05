@@ -190,7 +190,7 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 10,
-            "minimum_client_count": 300,
+            "minimum_client_count": 50,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
@@ -291,6 +291,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1",
                 **config[args.prefix],
             ),
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "histogram_bucket_counts_v1",

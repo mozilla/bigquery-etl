@@ -9,6 +9,17 @@
   form_factor: desktop
   browser: firefox(96)
   os_family: windows
+- timestamp: "2021-01-01 12:05:00.000000"
+  request_id: rid_overlap
+  session_id: sid_overlap
+  sequence_no: 5
+  query: "overlap query"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(96)
+  os_family: windows
 - timestamp: "2021-01-01 12:07:00.223"
   request_id: rid7
   session_id: sid7
@@ -63,4 +74,51 @@
   dma: null
   form_factor: desktop
   browser: firefox(134)
+  os_family: windows
+# merino session dedup: sid_multi has two rows; sequence_no 21 (rid_multi_high) wins over 20 (rid_multi_low)
+- timestamp: "2021-01-01 13:20:00.000000"
+  request_id: rid_multi_low
+  session_id: sid_multi
+  sequence_no: 20
+  query: "low seq query"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(96)
+  os_family: windows
+- timestamp: "2021-01-01 13:21:00.000000"
+  request_id: rid_multi_high
+  session_id: sid_multi
+  sequence_no: 21
+  query: "best pizza"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(96)
+  os_family: windows
+# within-Glean dedup: merino record for rid_glean_dup
+- timestamp: "2021-01-01 13:33:00.000000"
+  request_id: rid_glean_dup
+  session_id: sid_glean_dup
+  sequence_no: 33
+  query: "best widget"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(134)
+  os_family: windows
+# query normalization: LTRIM(LOWER("  Great Sandals")) = "great sandals"
+- timestamp: "2021-01-01 13:40:00.000000"
+  request_id: rid_norm
+  session_id: sid_norm
+  sequence_no: 40
+  query: "  Great Sandals"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(96)
   os_family: windows

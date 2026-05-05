@@ -23,5 +23,4 @@ bigquery:
   clustering:
     fields:
     - app_name
-references: {}
 require_column_descriptions: true

@@ -1,0 +1,4 @@
+friendly_name: Broken site Root Domain Weekly Trends
+description: Weekly trend computation for broken site reports.
+owners:
+- gkatre@mozilla.com

@@ -1,20 +1,23 @@
+import datetime
 import os
 import types
 from datetime import date, timedelta
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
+from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
-    NBR_DAYS_RETAINED,
+    _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
     create,
     deploy,
     info,
+    initialize,
     materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
@@ -22,6 +25,9 @@ from bigquery_etl.cli.query import (
 )
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+
+DEFAULT_SAMPLING_BATCH_SIZE = 4
+TOTAL_SAMPLE_ID_COUNT = 100
 
 
 class TestQuery:
@@ -147,9 +153,9 @@ class TestQuery:
                 "dataset_metadata.yaml",
                 "test_query",
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
-                "view.sql"
-            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test/test_query")
+            ) == ["metadata.yaml", "view.sql"]
 
     def test_create_derived_query_with_existing_view(self, runner):
         with runner.isolated_filesystem():
@@ -201,9 +207,9 @@ class TestQuery:
                 "dataset_metadata.yaml",
                 "test_query",
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
-                "view.sql"
-            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test/test_query")
+            ) == ["metadata.yaml", "view.sql"]
 
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():
@@ -711,6 +717,228 @@ class TestQuery:
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
 
+    def test_query_backfill_python_script(self, runner):
+        """Valid script backfill should execute script for each backfill date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch(
+                "bigquery_etl.cli.query._backfill_script",
+            ) as mock_backfill_script,
+        ):
+            mock_backfill_script.side_effect = _backfill_script
+
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+from argparse import ArgumentParser
+
+def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--submission-date")
+    parser.add_argument("--table-id")
+    args = parser.parse_args()
+    submission_date = args.submission_date
+    table_id = args.table_id
+    print(f"writing to {table_id} for {submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+
+            assert mock_backfill_script.call_count == 2
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 1),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
+            )
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 2),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
+            )
+
+    def test_query_backfill_python_script_click(self, runner):
+        """Valid script backfill with click command should execute script for each backfill date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch(
+                "bigquery_etl.cli.query._backfill_script",
+            ) as mock_backfill_script,
+        ):
+            mock_backfill_script.side_effect = _backfill_script
+
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py", "w"
+            ) as f:
+                f.write("""
+import click
+
+@click.command
+@click.option("--submission-date", help="Date in yyyy-mm-dd")
+@click.option("--table-id")
+def main(submission_date, table_id):
+    print(f"writing to {table_id} for {submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+
+            assert mock_backfill_script.call_count == 2
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 1),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
+            )
+
+            mock_backfill_script.assert_any_call(
+                datetime.date(2026, 1, 2),
+                entrypoint_command=ANY,
+                query_script_date_arg="submission-date",
+                query_script_args=("--table-id=telemetry_derived.query_v1",),
+            )
+            assert (
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
+            )
+
+    def test_query_backfill_python_script_invalid_entrypoint(self, runner):
+        """Script backfill should fail if entrypoint is not a function."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write('main = "abc"')
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-arg=--table-id=telemetry_derived.query_v1",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 1
+            assert "must be a function" in result.stderr
+
+    def test_query_backfill_python_script_entrypoint_not_found(self, runner):
+        """Script backfill should fail when the entrypoint is not found."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+import click
+
+@click.command
+@click.option("--submission-date", help="Date in yyyy-mm-dd")
+def main(submission_date):
+    print(submission_date)
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            with pytest.raises(AttributeError):
+                runner.invoke(
+                    backfill,
+                    [
+                        "telemetry_derived.query_v1",
+                        "--start_date=2026-01-01",
+                        "--end_date=2026-01-02",
+                        "--parallelism=1",
+                        "--query-script-date-arg=submission-date",
+                        "--query-script-entrypoint=execute",
+                    ],
+                    catch_exceptions=False,
+                )
+
     @patch("bigquery_etl.cli.query.get_credentials")
     @patch("bigquery_etl.cli.query.get_id_token")
     @patch("bigquery_etl.cli.query.deploy_table")
@@ -777,14 +1005,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -840,14 +1066,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -904,14 +1128,12 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
                 "w",
             ) as f:
-                f.write(
-                    """
+                f.write("""
                 fields:
                 - name: x
                   type: INTEGER
                   mode: NULLABLE
-                """
-                )
+                """)
 
             metadata_conf = {
                 "friendly_name": "test",
@@ -1237,3 +1459,93 @@ class TestQuery:
             assert (
                 "[WARNING] The following column descriptions were overwritten using the base schemas:"
             ) in captured.out
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_query_initialize(
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT column_1 FROM test_table"
+                    "{% raw %}"
+                    "{% if is_init() %}"
+                    "{% endraw %}"
+                    "WHERE sample_id=@sample_id"
+                    "{% raw %}"
+                    "{% else %}"
+                    "{% endraw %}"
+                    "{% raw %}"
+                    "{% endif %}"
+                    "{% endraw %}"
+                )
+
+            mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
+            result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            assert mock_run_query.call_count == TOTAL_SAMPLE_ID_COUNT
+
+            sample_ids = range(0, TOTAL_SAMPLE_ID_COUNT)
+            expected_sample_id_params = [
+                f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
+            ]
+
+            for call in mock_run_query.call_args_list:
+                sample_id_params = [
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
+                ]
+                assert len(sample_id_params) == 1
+                assert sample_id_params[0] in expected_sample_id_params
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_query_initialize_batch(
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT column_1 FROM test_table"
+                    "{% raw %}"
+                    "{% if is_init() %}"
+                    "{% endraw %}"
+                    "WHERE sample_id >= @sample_id "
+                    "AND sample_id < @sample_id + @sampling_batch_size"
+                    "{% raw %}"
+                    "{% else %}"
+                    "{% endraw %}"
+                    "{% raw %}"
+                    "{% endif %}"
+                    "{% endraw %}"
+                )
+
+            mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
+            result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            assert (
+                mock_run_query.call_count
+                == TOTAL_SAMPLE_ID_COUNT // DEFAULT_SAMPLING_BATCH_SIZE
+            )
+
+            sample_ids = range(0, TOTAL_SAMPLE_ID_COUNT, DEFAULT_SAMPLING_BATCH_SIZE)
+            expected_sample_id_params = [
+                f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
+            ]
+
+            for call in mock_run_query.call_args_list:
+                sample_id_params = [
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
+                ]
+                assert len(sample_id_params) == 1
+                assert sample_id_params[0] in expected_sample_id_params

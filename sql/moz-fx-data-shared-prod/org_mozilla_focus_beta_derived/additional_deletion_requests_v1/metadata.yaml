@@ -22,5 +22,4 @@ bigquery:
     expiration_days: 775.0
   range_partitioning: null
   clustering: null
-references: {}
 require_column_descriptions: true

@@ -34,7 +34,6 @@ syndication:
       - error
       - perfherder
       - perfherder_alert
-      - person_mozilla_com
       - pulse_task
       - resource_monitor
       - task_definition
@@ -47,4 +46,4 @@ syndication:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
+      - workgroup:mozilla-confidential/data-viewers

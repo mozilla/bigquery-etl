@@ -38,6 +38,19 @@ GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_MONTHLY_CPI/imf_monthly_cpi_data_%s.csv"
 
 
+# Define a function to rebase data to the mean of 2010
+def rebase_to_2010(df, value_col="consumer_price_index", period_col="report_period"):
+    df = df.copy()
+    dt = pd.to_datetime(df[period_col])
+    y2010 = df.loc[dt.dt.year == 2010, value_col]
+    if y2010.empty:
+        raise ValueError("No 2010 observations to compute a 2010=100 base.")
+    factor = 100.0 / y2010.mean()  # annual average 2010 -> 100
+    df[value_col] = df[value_col] * factor
+    df["base_year"] = "2010=100"
+    return df
+
+
 # Define function to pull CPI data
 def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
     """
@@ -49,33 +62,50 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
     Output:
       JSON with data for this country for the months between start month and end month
     """
-    api_url = f"http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/M.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
-
-    response = requests.get(api_url, timeout=10)
+    api_url = f"https://api.db.nomics.world/v22/series/IMF/CPI/M.{country_code}.PCPI_IX"
+    params = {
+        "observations": 1,  # include observations in the payload
+        "format": "json",  # optional; JSON is the default
+    }
+    response = requests.get(api_url, params=params, timeout=20)
     inflation_data = response.json()
 
-    series = (
-        inflation_data.get("CompactData", {}).get("DataSet", {}).get("Series", None)
+    # Make it into a dataframe
+    doc = (inflation_data.get("series", {}) or {}).get("docs", [None])[0]
+    if doc is None:
+        raise ValueError("Series doc not found in payload")
+
+    # Build a tidy DataFrame
+    curr_country_inflation_df = pd.DataFrame(
+        {
+            "report_period": doc["period"],
+            "consumer_price_index": pd.to_numeric(doc["value"], errors="coerce"),
+            "country": [country_code] * len(doc["period"]),
+        }
     )
 
-    base_year = series.get("@BASE_YEAR", "Unknown Base Year")
+    # Rebase to 2010 = 100
+    curr_country_inflation_df_rebased_to_2010 = rebase_to_2010(
+        curr_country_inflation_df,
+        value_col="consumer_price_index",
+        period_col="report_period",
+    )
+    curr_country_inflation_df_rebased_to_2010["base_year"] = "2010=100"
 
-    observations = series.get("Obs", [])
-    observations_df = pd.DataFrame(observations)
-    observations_df["country"] = country_code
-    observations_df["base_year"] = base_year
-
-    # Rename to friendlier names
-    observations_df.rename(
-        columns={"@TIME_PERIOD": "report_period", "@OBS_VALUE": "consumer_price_index"},
-        inplace=True,
+    # Filter to desired time period
+    curr_country_inflation_df_rebased_to_2010["report_month"] = pd.PeriodIndex(
+        curr_country_inflation_df_rebased_to_2010["report_period"], freq="M"
     )
 
-    # Reorder cols to match schema order
-    observations_df = observations_df[
-        ["report_period", "consumer_price_index", "country", "base_year"]
+    final = curr_country_inflation_df_rebased_to_2010[
+        curr_country_inflation_df_rebased_to_2010["report_month"].between(
+            pd.Period(start_month, "M"), pd.Period(end_month, "M")
+        )
     ]
-    return observations_df
+
+    final = final[["report_period", "consumer_price_index", "country", "base_year"]]
+
+    return final
 
 
 def main():

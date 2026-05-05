@@ -38,6 +38,7 @@ SELECT
   device_type,
   COALESCE(COUNTIF(is_activated), 0) AS activations,
   COALESCE(COUNTIF(is_early_engagement), 0) AS early_engagements,
+  paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix.new_profile_activation_clients`
 LEFT JOIN
@@ -46,25 +47,4 @@ LEFT JOIN
 WHERE
   submission_date = @submission_date
 GROUP BY
-  submission_date,
-  first_seen_date,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  locale,
-  os,
-  os_version,
-  device_type,
-  device_manufacturer,
-  is_mobile,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  distribution_id
+  ALL

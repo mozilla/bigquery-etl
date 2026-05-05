@@ -22,6 +22,7 @@ SELECT
   profile_attribution.adjust_creative,
   profile_attribution.adjust_network,
   COUNT(*) AS dau,
+  profile_attribution.paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix.active_users` AS active_users
 LEFT JOIN
@@ -31,25 +32,4 @@ WHERE
   active_users.submission_date = @submission_date
   AND is_dau
 GROUP BY
-  submission_date,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  city,
-  geo_subdivision,
-  locale,
-  device_type,
-  is_mobile,
-  install_source,
-  distribution_id,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  play_store_attribution_content,
-  play_store_attribution_term,
-  meta_attribution_app,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network
+  ALL

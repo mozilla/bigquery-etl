@@ -6,6 +6,7 @@
 
 > [!IMPORTANT]
 > Please keep in mind that bigConfig managed metrics cannot be modified using the Bigeye UI. The same is true the other way around, metrics defined via the UI cannot be managed via bigConfig.
+> Please apply configuration files to tables -and not to views. For the majority of the data, defining Bigeye metrics on the table and the view is redundant, thus we expect the required checks to run in upstream tables of views. Additionally, the default metrics for volume and freshness validate the data inserted into a table using its metadata, and insertions don’t apply to views.
 
 ---
 
@@ -15,7 +16,6 @@ Bigeye provides CLI tooling that takes bigConfig files as input, compares it wit
 
 This includes actions such as creation, update, and deletion of Bigeye metrics. In our case, the [publish_bigeye_monitors](https://github.com/mozilla/telemetry-airflow/blob/main/dags/bqetl_artifact_deployment.py#L204C5-L212) task inside the `bqetl_artifact_deployment` DAG is responsible for pushing any bigConfig changes that have been merged into the main branch.
 
-
 > [!CAUTION]
 > When working with bigeye CLI be careful and avoid running `bigconfig apply` locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting `deleted`. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors.
 
@@ -24,13 +24,13 @@ This includes actions such as creation, update, and deletion of Bigeye metrics. 
 ## Anatomy of a bigConfig file
 
 ```yaml
-type: BIGCONFIG_FILE  # required field to let bigConfig know it's a bigConfig config file
+type: BIGCONFIG_FILE # required field to let bigConfig know it's a bigConfig config file
 table_deployments:
   #
   - collection:
-      name: 'My Collection'
+      name: "My Collection"
       notification_channels:
-        - slack: '#my-slack-channel'
+        - slack: "#my-slack-channel"
 
     # Here we specify assets (tables) and metrics we should deloy for them
     deployments:
@@ -59,9 +59,9 @@ table_deployments:
 type: BIGCONFIG_FILE
 table_deployments:
   - collection:
-      name: 'My Collection'
+      name: "My Collection"
       notification_channels:
-        - slack: '#data-platform-infa-wg'
+        - slack: "#data-platform-infa-wg"
     deployments:
       - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.retention_v1
         table_metrics:
@@ -82,7 +82,7 @@ When applied, this configuration would result in Bigeye the following metrics be
 
 - a metric to make sure the table is updated on time
 - a metric to ensure an expected number of rows is added to the table on each update
-- a metric to check that both `submission_date` and `client_id` fields do not contain null values*
+- a metric to check that both `submission_date` and `client_id` fields do not contain null values\*
 
 Those would get bundled under `My Collection` Bigeye Collection, and if any of the metrics would fail an alert would be sent to the `#data-platform-infa-wg` Slack channel.
 
@@ -113,7 +113,7 @@ Here's an example definition of a saved metric:
       interval_type: DAYS
       interval_value: 0
   rct_overrides:
-  - submission_date
+    - submission_date
 ```
 
 More information about bigConfig saved metrics and all options available can be found in [the official docs](https://docs.bigeye.com/docs/bigconfig#saved-metric-definitions-optional).
@@ -130,14 +130,14 @@ If the configuration of a saved_metric is not quite exactly as we want it we can
 
 ```yaml
 metrics:
-- saved_metric_id: is_not_null
-  lookback:
-    lookback_window:
-      interval_type: DAYS
-      interval_value: 28
-    lookback_type: DATA_TIME
-  rct_overrides:
-  - date
+  - saved_metric_id: is_not_null
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: 28
+      lookback_type: DATA_TIME
+    rct_overrides:
+      - date
 ```
 
 This would result in the `lookback` and `rct_overrides` properties to be overwritten whilst keeping the rest of the configuration.

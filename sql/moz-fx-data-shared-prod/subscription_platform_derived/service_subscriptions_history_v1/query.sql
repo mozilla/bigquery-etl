@@ -12,9 +12,11 @@ WITH subscription_starts AS (
     subscription.id AS logical_subscription_id,
     service.id AS service_id,
     valid_from AS started_at,
+    valid_to AS next_subscription_change_at,
     subscription.mozilla_account_id_sha256,
     subscription.provider_customer_id,
     subscription.provider_subscription_id,
+    subscription.is_trial AS started_as_trial,
     IF(
       valid_from = subscription.started_at,
       STRUCT(subscription.initial_discount_name, subscription.initial_discount_promotion_code),
@@ -44,7 +46,14 @@ subscriptions_history_periods AS (
     service_id,
     started_at,
     COALESCE(
-      LEAD(started_at) OVER (PARTITION BY logical_subscription_id, service_id ORDER BY started_at),
+      LEAD(started_at) OVER (
+        PARTITION BY
+          logical_subscription_id,
+          service_id
+        ORDER BY
+          started_at,
+          next_subscription_change_at
+      ),
       '9999-12-31 23:59:59.999999'
     ) AS ended_at,
     ROW_NUMBER() OVER (
@@ -55,8 +64,10 @@ subscriptions_history_periods AS (
         service_id
       ORDER BY
         started_at,
+        next_subscription_change_at,
         subscription_id
     ) AS customer_service_subscription_number,
+    started_as_trial,
     initial_discount_name,
     initial_discount_promotion_code
   FROM
@@ -79,6 +90,24 @@ subscription_attributions AS (
   FULL JOIN
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v2` AS attribution_v2
     USING (subscription_id)
+),
+subscription_attributions_with_channel AS (
+  SELECT
+    subscription_id,
+    first_touch_attribution,
+    CASE
+      WHEN last_touch_attribution IS NULL
+        THEN NULL
+      ELSE (
+          SELECT AS STRUCT
+            last_touch_attribution.*,
+            mozfun.norm.subplat_attribution_channel_group(
+              last_touch_attribution.utm_source
+            ) AS channel_group
+        )
+    END AS last_touch_attribution
+  FROM
+    subscription_attributions
 ),
 subscriptions_history AS (
   SELECT
@@ -149,8 +178,18 @@ subscriptions_history AS (
       history.subscription.ongoing_discount_ends_at,
       history.subscription.has_refunds,
       history.subscription.has_fraudulent_charges,
-      subscription_attributions.first_touch_attribution,
-      subscription_attributions.last_touch_attribution
+      subscription_attributions_with_channel.first_touch_attribution,
+      subscription_attributions_with_channel.last_touch_attribution,
+      history.subscription.ended_reason,
+      CONCAT(
+        IF(
+          subscriptions_history_periods.customer_service_subscription_number = 1,
+          'New Customer',
+          'Returning Customer'
+        ),
+        IF(subscriptions_history_periods.started_as_trial, ' Trial', '')
+      ) AS started_reason,
+      history.subscription.payment_method
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history
@@ -163,8 +202,8 @@ subscriptions_history AS (
     AND history.valid_from >= subscriptions_history_periods.started_at
     AND history.valid_from < subscriptions_history_periods.ended_at
   LEFT JOIN
-    subscription_attributions
-    ON subscriptions_history_periods.subscription_id = subscription_attributions.subscription_id
+    subscription_attributions_with_channel
+    ON subscriptions_history_periods.subscription_id = subscription_attributions_with_channel.subscription_id
 ),
 synthetic_subscription_ends_history AS (
   -- Synthesize subscription end history records if subscriptions get downgraded to no longer include a service.
@@ -179,14 +218,21 @@ synthetic_subscription_ends_history AS (
           FALSE AS is_active,
           valid_to AS ended_at,
           CAST(NULL AS TIMESTAMP) AS current_period_started_at,
-          CAST(NULL AS TIMESTAMP) AS current_period_ends_at
+          CAST(NULL AS TIMESTAMP) AS current_period_ends_at,
+          'Downgrade' AS ended_reason
         )
     ) AS subscription
   FROM
-    subscriptions_history
+    subscriptions_history AS history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
-    AND valid_to < '9999-12-31 23:59:59.999999'
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from DESC,
+        history.valid_to DESC
+    )
+    AND history.valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT
   *

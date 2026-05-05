@@ -19,4 +19,3 @@ bigquery:
     fields:
     - table_catalog
     - table_schema
-references: {}

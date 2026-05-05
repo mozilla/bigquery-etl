@@ -2,6 +2,7 @@ friendly_name: Stripe service subscriptions attribution
 description: |-
   Attribution for Stripe service subscriptions based on Stripe subscription metadata stored by SubPlat 3.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
@@ -17,7 +18,8 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}
 require_column_descriptions: true
 monitoring:
   enabled: true
+  freshness: null
+  volume: null

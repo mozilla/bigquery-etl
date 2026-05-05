@@ -134,6 +134,23 @@ labels:
 
 - only labels where value types are eithers integers or strings are published, all other values types are being skipped
 
+### Dynamic Schemas
+
+For tables whose schemas may evolve over time (e.g., tables that use `--schema_update_option=ALLOW_FIELD_ADDITION`), you can indicate this in the metadata to ensure schema updates are not skipped:
+
+```yaml
+schema:
+  allow_field_addition: true
+```
+
+This setting ensures that when running `./bqetl query schema update --skip-existing`, the schema for this query will still be updated even if a `schema.yaml` file already exists. This is particularly useful for:
+
+- Tables that receive new fields dynamically
+- Tables using BigQuery's schema auto-detection
+- Tables that use `ALLOW_FIELD_ADDITION` schema update option
+
+Without this flag, `--skip-existing` will skip schema updates for queries that already have a `schema.yaml` file.
+
 ## Views
 
 - Should be defined in files named as `sql/<project>/<dataset>/<table>/view.sql` e.g.
@@ -186,15 +203,15 @@ labels:
       SELECT
         mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'non-distribution');
   ```
-- [Stub file](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql)
+  - [Stub file](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql) in `bigquery-etl`:
   ```sql
-  CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
-  RETURNS STRING AS (
-    'helloworld'
-  );
+      CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
+      RETURNS STRING AS (
+        'helloworld'
+      );
 
-  SELECT
-    mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'helloworld');
+      SELECT
+        mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'helloworld');
   ```
 - Should use `SQL` over `js` for performance
 - UDFs are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions

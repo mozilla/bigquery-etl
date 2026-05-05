@@ -5,7 +5,7 @@ WITH events_unnested AS (
     normalized_channel AS channel,
     metrics.string.newtab_locale AS locale,
     normalized_country_code AS country,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     category AS event_category,
     name AS event_name,
     extra AS event_details,

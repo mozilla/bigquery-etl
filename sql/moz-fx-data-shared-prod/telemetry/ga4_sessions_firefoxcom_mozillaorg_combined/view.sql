@@ -36,6 +36,8 @@ SELECT
   mo.distinct_experiment_ids_from_event_params,
   mo.first_experiment_branch_from_event_params,
   mo.distinct_experiment_branches_from_event_params,
+  mo.first_gad_campaignid_from_event_params,
+  mo.distinct_gad_campaignid_from_event_params,
   mo.manual_campaign_id,
   mo.manual_campaign_name,
   mo.manual_source,
@@ -64,7 +66,7 @@ SELECT
   mo.ad_crosschannel_primary_channel_group,
   mo.ad_crosschannel_default_channel_group
 FROM
-  `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3` mo
+  `moz-fx-data-shared-prod.mozilla_org.ga_sessions` mo
 UNION ALL
 SELECT
   'FIREFOX.COM' AS flag,
@@ -101,6 +103,8 @@ SELECT
   fx.distinct_experiment_ids_from_event_params,
   fx.first_experiment_branch_from_event_params,
   fx.distinct_experiment_branches_from_event_params,
+  fx.first_gad_campaignid_from_event_params,
+  fx.distinct_gad_campaignid_from_event_params,
   fx.manual_campaign_id,
   fx.manual_campaign_name,
   fx.manual_source,
@@ -129,4 +133,4 @@ SELECT
   fx.ad_crosschannel_primary_channel_group,
   fx.ad_crosschannel_default_channel_group
 FROM
-  `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2` fx
+  `moz-fx-data-shared-prod.firefoxdotcom.ga_sessions` fx

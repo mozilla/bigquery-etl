@@ -10,12 +10,15 @@ fields:
 - name: is_exposed_event
   type: INTEGER
   mode: NULLABLE
+  description: Flag indicating if client had a shopping category surface onboarding displayed event on the submission date.
 - name: is_opt_in_event
   type: INTEGER
   mode: NULLABLE
+  description: Flag indicating if client had surface_opt_in_clicked event on the submission date.
 - name: is_surface_displayed
   type: INTEGER
   mode: NULLABLE
+  description: Flag indicating if client had surface_displayed event on the submission date.
 - name: is_engaged_with_sidebar
   type: INTEGER
   mode: NULLABLE

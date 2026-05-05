@@ -4,7 +4,7 @@ Dry run query files.
 Passes all queries to a Cloud Function that will run the
 queries with the dry_run option enabled.
 
-We could provision BigQuery credentials to the CircleCI job to allow it to run
+We could provision BigQuery credentials to the CI job to allow it to run
 the queries directly, but there is no way to restrict permissions such that
 only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
@@ -71,16 +71,19 @@ def get_credentials(auth_req: Optional[GoogleAuthRequest] = None):
 
 def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credentials=None):
     """Get token to authenticate against Cloud Function."""
-    auth_req = GoogleAuthRequest()
-    credentials = credentials or get_credentials(auth_req)
+    # look for token created by the GitHub Actions workflow
+    id_token = os.environ.get("GOOGLE_GHA_ID_TOKEN")
 
-    if hasattr(credentials, "id_token"):
-        # Get token from default credentials for the current environment created via Cloud SDK run
-        id_token = credentials.id_token
-    else:
-        # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
-        # then ID token is acquired using this service account credentials.
-        id_token = fetch_id_token(auth_req, dry_run_url)
+    if not id_token:
+        auth_req = GoogleAuthRequest()
+        credentials = credentials or get_credentials(auth_req)
+        if hasattr(credentials, "id_token"):
+            # Get token from default credentials for the current environment created via Cloud SDK run
+            id_token = credentials.id_token
+        else:
+            # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
+            # then ID token is acquired using this service account credentials.
+            id_token = fetch_id_token(auth_req, dry_run_url)
     return id_token
 
 

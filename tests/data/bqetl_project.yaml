@@ -1,5 +1,5 @@
 default:
-  test_project: bigquery-etl-integration-test
+  test_project: moz-fx-data-integration-tests
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun

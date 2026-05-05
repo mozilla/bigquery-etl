@@ -29,6 +29,12 @@ from sql_generators.stable_tables_monitoring.stable_tables_monitoring import (
     help="Monitoring enabled true or false",
     default=True,
 )
-def generate(target_project, output_dir, enable_monitoring, **kwargs):
+@click.option(
+    "--parallelism",
+    help="Number of parallel processes",
+    default=8,
+    type=int,
+)
+def generate(target_project, output_dir, enable_monitoring, parallelism, **kwargs):
     """Call generate_stable_table_bigconfig_files function."""
-    generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring)
+    generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring, parallelism)

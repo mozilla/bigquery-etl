@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 import rich_click as click
 
 from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
-from bigquery_etl.util.common import exit_if_running_under_coding_agent
+from bigquery_etl.util.common import block_coding_agents
 
 
 @click.group(help="""Commands for importing alchemer data.
@@ -29,6 +29,7 @@ def alchemer():
 
 
 @alchemer.command()
+@block_coding_agents
 @click.option("--start-date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
 @click.option(
     "--end-date", type=click.DateTime(formats=["%Y-%m-%d"]), default=str(date.today())
@@ -53,8 +54,6 @@ def backfill(
 
     Coding agents aren't allowed to run this command.
     """
-    exit_if_running_under_coding_agent()
-
     print(
         f"Runing backfill of {survey_id} from {start_date} to {end_date}"
         " into {destination_table}"

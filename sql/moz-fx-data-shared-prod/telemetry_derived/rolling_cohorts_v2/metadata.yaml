@@ -10,11 +10,11 @@ description: |-
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
   dag: bqetl_cohort_retention
 scheduling:

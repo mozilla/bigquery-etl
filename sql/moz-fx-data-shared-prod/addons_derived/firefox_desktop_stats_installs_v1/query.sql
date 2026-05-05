@@ -11,6 +11,7 @@ WITH install_stats AS (
     `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND app_version_major >= 148
     AND event_category = "addons_manager"
     AND event_name = "install_stats"
   GROUP BY

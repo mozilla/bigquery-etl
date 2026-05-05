@@ -2,6 +2,7 @@ friendly_name: Recent FxA GCP stderr events (prod)
 description: |
   FxA server events extracted from stderr logs from the past two days.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: fxa

@@ -2,10 +2,10 @@ friendly_name: Firefox Whats New Page Summary V3
 description: |-
   Each row represents an event where the page_location is a what's new page.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
 bigquery:

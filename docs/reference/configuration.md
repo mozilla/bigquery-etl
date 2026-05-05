@@ -7,7 +7,7 @@ The general structure of `bqetl_project.yaml` is as follows:
 ```yaml
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun
-  test_project: bigquery-etl-integration-test
+  test_project: moz-fx-data-integration-tests
   skip:
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
   - sql/**/braze_external*/**/query.sql

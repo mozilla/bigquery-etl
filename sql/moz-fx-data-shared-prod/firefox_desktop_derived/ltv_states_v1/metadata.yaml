@@ -2,11 +2,11 @@ friendly_name: Firefox Desktop LTV States
 description: |-
   Fields required for calculating LTV for Firefox Desktop clients
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_firefox_desktop_ad_click_history
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history

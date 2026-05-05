@@ -6,6 +6,7 @@ description: |-
   It was later copied into the undocumented `mozilla_vpn_external.users_attribution_v1` table with the attribution data as JSON strings.
   Now it's officially archived here in a fully structured table.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

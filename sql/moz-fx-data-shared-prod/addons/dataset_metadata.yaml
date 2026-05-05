@@ -9,4 +9,3 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:amo/prod
-  - workgroup:dataops-managed/external-fides

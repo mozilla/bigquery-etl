@@ -1,0 +1,15 @@
+friendly_name: Gclid Conversions (Fenix)
+description: |-
+  View for accessing gclid conversions information for Fenix.
+  This view is used to set up an integration with Google Ads
+  and is limited to the last 28 days.
+owners:
+- kik@mozilla.com
+- ahe@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc

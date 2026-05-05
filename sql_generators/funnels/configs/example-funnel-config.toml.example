@@ -68,7 +68,7 @@ join_previous_step_on = "client_info.client_id"
 
 [data_sources.events]
 from_expression = """
-    (SELECT * FROM mozdata.mozilla_vpn.events_unnested
+    (SELECT * FROM `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
     WHERE client_info.app_channel = 'production' AND client_info.os = 'iOS')
 """
 submission_date_column = "DATE(submission_timestamp)"

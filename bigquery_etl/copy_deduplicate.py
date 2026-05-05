@@ -31,10 +31,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import generate_compatible_select_expression
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
-from bigquery_etl.util.common import (
-    TempDatasetReference,
-    exit_if_running_under_coding_agent,
-)
+from bigquery_etl.util.common import TempDatasetReference, block_coding_agents
 
 QUERY_TEMPLATE = """
 WITH
@@ -192,7 +189,12 @@ def _get_query_job_configs(
     if write_to_v2:
         stable_table = v2_table
 
-    kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
+    kwargs = dict(
+        use_legacy_sql=False,
+        dry_run=dry_run,
+        priority=priority,
+        labels={"type": "copy_deduplicate"},
+    )
     start_time = datetime(*submission_date.timetuple()[:6])
     end_time = start_time + timedelta(days=1)
     if slices > 1:
@@ -382,6 +384,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     Coding agents aren't allowed to run this command.
     """,
 )
+@block_coding_agents
 @project_id_option("moz-fx-data-shar-nonprod-efed")
 @click.option(
     "--dates",
@@ -495,8 +498,6 @@ def copy_deduplicate(
     write_to_v2,
 ):
     """Copy a day's data from live to stable ping tables, dedup on document_id."""
-    exit_if_running_under_coding_agent()
-
     # create a queue for balancing load across projects
     client_q = ClientQueue(billing_projects, parallelism)
 

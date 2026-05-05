@@ -1,41 +1,23 @@
-WITH legacy_pings AS (
+WITH private_pings AS (
   SELECT
     submission_timestamp,
     document_id,
     events,
-    normalized_country_code
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
-  WHERE
-    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
-),
-private_pings AS (
-  SELECT
-    submission_timestamp,
-    document_id,
-    events,
-    metrics.string.newtab_content_country AS normalized_country_code
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      NULL,
+      metrics.string.newtab_content_country
+    ) AS normalized_country_code
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
   WHERE
     submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 ),
-combined_pings AS (
-  SELECT
-    *
-  FROM
-    legacy_pings
-  UNION ALL
-  SELECT
-    *
-  FROM
-    private_pings
-),
 deduplicated_pings AS (
   SELECT
     *
   FROM
-    combined_pings
+    private_pings
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -87,21 +69,6 @@ raw_grouped_totals AS (
     format,
     section_position
 ),
-/* Find default propensity for long tail items. We only calculate up to 100 */
-default_propensity AS (
-  SELECT
-    COALESCE(
-      (
-        SELECT
-          AVG(wt.weight)
-        FROM
-          `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
-        WHERE
-          position > 80
-      ),
-      1.0
-    ) AS default_weight
-),
 /* Separate and adjust section events */
 section_events AS (
   SELECT
@@ -110,17 +77,22 @@ section_events AS (
     rw.raw_impression_count,
     -- apply propensity scaling to impressions only
     rw.raw_impression_count / COALESCE(
-      wt.weight,
-      (SELECT default_weight FROM default_propensity LIMIT 1)
+      wt_exact.weight,
+      wt_any.weight,
+      1.0
     ) AS adjusted_impression_count,
     rw.report_count,
     rw.click_count
   FROM
     raw_grouped_totals rw
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt
-    ON SAFE_CAST(wt.position AS INT64) = rw.position
-    AND wt.tile_format = rw.format
+    `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt_exact
+    ON SAFE_CAST(wt_exact.position AS INT64) = rw.position
+    AND wt_exact.tile_format = rw.format
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry_derived.newtab_merino_propensity_v1` wt_any
+    ON SAFE_CAST(wt_any.position AS INT64) = rw.position
+    AND wt_any.tile_format = 'any'
   WHERE
     rw.section_position IS NOT NULL
 ),

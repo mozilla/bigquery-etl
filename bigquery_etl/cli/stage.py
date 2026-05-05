@@ -13,10 +13,12 @@ from google.cloud.bigquery.enums import EntityTypes
 from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
+from ..cli.query import render_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..dependency import extract_table_references
 from ..dryrun import DryRun, get_id_token
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -25,7 +27,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
-from ..util.common import exit_if_running_under_coding_agent, render
+from ..util.common import block_coding_agents, render
 from ..view import View
 
 VIEW_FILE = "view.sql"
@@ -54,6 +56,7 @@ def stage():
     # Deploy with custom test directory
     ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
     """)
+@block_coding_agents
 @click.argument(
     "paths",
     nargs=-1,
@@ -62,7 +65,7 @@ def stage():
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @sql_dir_option
 @click.option(
@@ -112,8 +115,6 @@ def deploy(
     test_dir,
 ):
     """Deploy provided artifacts to destination project."""
-    exit_if_running_under_coding_agent()
-
     if copy_sql_to_tmp_dir:
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
@@ -125,6 +126,13 @@ def deploy(
         paths = [path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths]
 
         sql_dir = new_sql_dir
+
+    # If the stage deploy process is going to remove files then any includes in `schema.yaml` files
+    # need to be resolved before that happens.
+    if remove_updated_artifacts:
+        ctx.invoke(
+            render_schema, name=str(sql_dir), sql_dir=sql_dir, output_dir=sql_dir
+        )
 
     artifact_files = set()
 
@@ -199,6 +207,20 @@ def deploy(
         )
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
+
+        # If the artifact has an external_data config (e.g. Google Sheets), the
+        # external source can't be recreated in stage. Remove the query file and
+        # clear external_data from metadata so the table is deployed from schema only.
+        stage_metadata_file = new_artifact_path / METADATA_FILE
+        if stage_metadata_file.exists():
+            try:
+                stage_metadata = Metadata.from_file(stage_metadata_file)
+                if stage_metadata.external_data:
+                    stage_metadata.external_data = None
+                    stage_metadata.write(stage_metadata_file)
+            except Exception:
+                pass
+
         updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure
@@ -267,6 +289,16 @@ def _udf_dependencies(artifact_files):
         # all referenced UDFs need to be deployed in the same stage project due to access restrictions
         raw_routine = RawRoutine.from_file(udf_file)
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
+
+        # Also publish any non-public test dependencies to stage.
+        for test_dependency in raw_routine.test_dependencies:
+            if (
+                test_dependency in raw_routines
+                and raw_routines[test_dependency].project != "mozfun"
+            ):
+                udfs_to_publish = accumulate_dependencies(
+                    udfs_to_publish, raw_routines, test_dependency
+                )
 
         for dependency in udfs_to_publish:
             if dependency in raw_routines:
@@ -355,6 +387,14 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                         break
 
                 path = Path(sql_dir) / project / dataset / name
+                if "*" in name:
+                    # deploy stub for wildcard tables
+                    path = (
+                        Path(sql_dir)
+                        / project
+                        / dataset
+                        / name.replace("*", "wildcard")
+                    )
                 if not path.exists():
                     path.mkdir(parents=True, exist_ok=True)
                     # don't create schema for wildcard and metadata tables
@@ -362,7 +402,7 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
                     # tables not managed by bigquery-etl by doing a dryrun.
                     # The stage project doesn't have access to prod tables (e.g when referenced)
                     # so we need to create the schema here and deploy it.
-                    if "*" not in name and name != "INFORMATION_SCHEMA":
+                    if name != "INFORMATION_SCHEMA":
                         partitioned_by = None
 
                         if any(
@@ -401,6 +441,16 @@ def _collect_artifact_dependencies(artifact_files, sql_dir):
     return artifact_dependencies
 
 
+def _rewrite_dataset_for_stage(original_project, original_dataset, dataset_suffix):
+    """Apply the stage dataset rename rule used when copying artifacts."""
+    if original_dataset in ("INFORMATION_SCHEMA", "region-eu", "region-us"):
+        return original_dataset
+    deployed_dataset = f"{original_dataset}_{original_project.replace('-', '_')}"
+    if dataset_suffix:
+        deployed_dataset += f"_{dataset_suffix}"
+    return deployed_dataset
+
+
 def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     replace_references = []
     replace_partial_references = []
@@ -410,16 +460,9 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         original_dataset = artifact_file.parent.parent.name
         original_project = artifact_file.parent.parent.parent.name
 
-        deployed_dataset = original_dataset
-
-        if original_dataset not in (
-            "INFORMATION_SCHEMA",
-            "region-eu",
-            "region-us",
-        ):
-            deployed_dataset += f"_{original_project.replace('-', '_')}"
-            if dataset_suffix:
-                deployed_dataset += f"_{dataset_suffix}"
+        deployed_dataset = _rewrite_dataset_for_stage(
+            original_project, original_dataset, dataset_suffix
+        )
 
         deployed_project = project_id
 
@@ -492,6 +535,33 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                     sql = re.sub(ref[0], ref[1], sql)
 
             path.write_text(sql)
+
+    # Rewrite derived_from references in metadata.yaml so parent tables can be found
+    for artifact_file in artifact_files:
+        metadata_path = artifact_file.parent / METADATA_FILE
+        if not metadata_path.is_file():
+            continue
+        try:
+            metadata = Metadata.from_file(metadata_path)
+        except Exception:
+            continue
+        if not (metadata.schema and metadata.schema.derived_from):
+            continue
+
+        changed = False
+        for derived_from in metadata.schema.derived_from:
+            if len(derived_from.table) != 3:
+                continue
+            orig_project, orig_dataset, orig_table = derived_from.table
+            derived_from.table = [
+                project_id,
+                _rewrite_dataset_for_stage(orig_project, orig_dataset, dataset_suffix),
+                orig_table,
+            ]
+            changed = True
+
+        if changed:
+            metadata.write(metadata_path)
 
 
 def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
@@ -608,11 +678,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
     Examples:
     ./bqetl stage clean
     """)
+@block_coding_agents
 @click.option(
     "--project-id",
     "--project_id",
     help="GCP project to deploy artifacts to",
-    default="bigquery-etl-integration-test",
+    default="moz-fx-data-integration-tests",
 )
 @click.option(
     "--dataset-suffix",
@@ -628,8 +699,6 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 )
 def clean(project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
-    exit_if_running_under_coding_agent()
-
     client = bigquery.Client(project_id)
 
     dataset_filter = (

@@ -3,4 +3,5 @@ description: 'Aggregated count of Hubs subscription start/end events.
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

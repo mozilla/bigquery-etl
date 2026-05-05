@@ -126,6 +126,10 @@ fields:
   type: BOOLEAN
   description: Retained Week 4
 - mode: NULLABLE
+  name: active_in_last_3_days
+  type: BOOLEAN
+  description: Active in Last 3 Days
+- mode: NULLABLE
   name: new_profile_metric_date
   type: BOOLEAN
   description: New Profile on Metric Date

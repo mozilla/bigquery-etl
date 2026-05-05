@@ -4,9 +4,13 @@ WITH newtab_events_unnested AS (
     mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS app_version,
     normalized_channel AS channel,
     metrics.string.newtab_locale AS locale,
-    normalized_country_code AS country,
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      metrics.string.newtab_locale,
+      normalized_country_code
+    ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     category AS event_category,
     name AS event_name,
     extra AS event_details,
@@ -98,9 +102,14 @@ newtab_content_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     normalized_channel AS channel,
-    IFNULL(metrics.string.newtab_content_country, normalized_country_code) AS country,
+    mozfun.newtab.surface_id_country(
+      metrics.string.newtab_content_surface_id,
+      NULL,
+      metrics.string.newtab_content_country
+      -- normalized_country_code is fastly relay country, so that field should never be used
+    ) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     category AS event_category,
     name AS event_name,
     extra AS event_details,

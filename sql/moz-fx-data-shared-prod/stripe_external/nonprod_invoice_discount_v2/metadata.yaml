@@ -2,6 +2,7 @@ friendly_name: Non-production Stripe invoice discounts
 description: |-
   Non-production Stripe invoice discounts combined from Fivetran's newer `discount` and older `invoice_discount` tables.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false

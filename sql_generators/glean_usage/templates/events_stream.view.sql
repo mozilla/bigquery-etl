@@ -5,8 +5,8 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ events_stream_view }}`
 AS
 SELECT
-  CONCAT(document_id, '-', document_event_number) AS event_id,
-  *,
+  COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
+  * EXCEPT (event_id),
   {% if extras_by_type %}
     {{ event_extras_by_type_struct(extras_by_type) }} AS extras
   {% endif %}

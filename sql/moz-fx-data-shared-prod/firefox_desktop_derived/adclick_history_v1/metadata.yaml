@@ -2,11 +2,11 @@ friendly_name: Adclick History
 description: |-
   Contains the full history of ad-clicks for each Firefox Desktop client.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
   table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history

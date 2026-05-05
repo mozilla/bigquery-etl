@@ -61,17 +61,6 @@
   event_timestamp: 2025-10-29T11:00:00
   event_extra: {profile: b}
 
-# Test 5: Filters - NULL profile_group_id (should be excluded)
-- client_id: client5-null-pg
-  profile_group_id: NULL
-  sample_id: 5
-  event_category: "client5-event-category"
-  event_name: "client5-event-name"
-  event: "client5-event"
-  submission_timestamp: 2025-10-29T10:00:00
-  event_timestamp: 2025-10-29T10:00:00
-  event_extra: {should: excluded}
-
 # Test 6: Filters - excluded event categories (should be excluded)
 - client_id: client6-excluded
   profile_group_id: "client6-profile"

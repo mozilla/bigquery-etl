@@ -52,6 +52,7 @@ class BackfillStatus(enum.Enum):
 
     INITIATE = "Initiate"
     COMPLETE = "Complete"
+    CANCELLED = "Cancelled"
 
 
 @attr.s(auto_attribs=True)
@@ -68,9 +69,20 @@ class Backfill:
     end_date: date = attr.ib()
     excluded_dates: List[date] = attr.ib()
     reason: str = attr.ib()
+    # watchers are expected to be emails with the name matching
+    # the username listed at https://mozilla.slack.com/account/settings#username
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
+    custom_query_path: Optional[str] = attr.ib(None)
+    shredder_mitigation: Optional[bool] = attr.ib(False)
+    override_retention_limit: Optional[bool] = attr.ib(False)
+    override_depends_on_past_end_date: Optional[bool] = attr.ib(False)
+    ignore_date_partition_offset: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
+    query_script_entrypoint: Optional[str] = attr.ib(None)
+    query_script_date_arg: Optional[str] = attr.ib(None)
+    query_script_args: Optional[List[str]] = attr.ib(None)
+    query_script_dry_run_arg: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -89,6 +101,16 @@ class Backfill:
             reason = {self.reason}
             watcher(s) = {self.watchers}
             status = {self.status.value}
+            custom_query_path = {self.custom_query_path}
+            shredder_mitigation = {self.shredder_mitigation}
+            override_retention_limit = {self.override_retention_limit}
+            override_depends_on_past_end_date = {self.override_depends_on_past_end_date}
+            ignore_date_partition_offset = {self.ignore_date_partition_offset}
+            billing_project = {self.billing_project}
+            query_script_entrypoint = {self.query_script_entrypoint}
+            query_script_date_arg = {self.query_script_date_arg}
+            query_script_arg = {self.query_script_args}
+            query_script_dry_run_arg = {self.query_script_dry_run_arg}
             """
 
         return backfill_str.replace("'", "")
@@ -195,35 +217,52 @@ class Backfill:
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
+                        custom_query_path=entry.get("custom_query_path", None),
+                        shredder_mitigation=entry.get("shredder_mitigation", False),
+                        override_retention_limit=entry.get(
+                            "override_retention_limit", False
+                        ),
+                        override_depends_on_past_end_date=entry.get(
+                            "override_depends_on_past_end_date", False
+                        ),
+                        ignore_date_partition_offset=entry.get(
+                            "ignore_date_partition_offset", False
+                        ),
                         billing_project=entry.get("billing_project", None),
+                        query_script_entrypoint=entry.get(
+                            "query_script_entrypoint", None
+                        ),
+                        query_script_date_arg=entry.get("query_script_date_arg", None),
+                        query_script_args=entry.get("query_script_args", None),
+                        query_script_dry_run_arg=entry.get(
+                            "query_script_dry_run_arg", None
+                        ),
                     )
 
                     backfill_entries.append(backfill)
 
             except yaml.YAMLError as e:
                 raise ValueError(f"Unable to parse Backfill file {file}") from e
+            except ValueError as e:
+                raise ValueError(f"Unable to parse Backfill file {file}: {e}") from e
 
             return backfill_entries
 
     def to_yaml(self) -> str:
         """Create dictionary version of yaml for writing to file."""
+        entry_dict = self.__dict__.copy()
+
+        del entry_dict["entry_date"]
+        entry_dict["status"] = self.status.value
+        entry_dict["excluded_dates"] = (
+            sorted(self.excluded_dates) if len(self.excluded_dates) > 0 else None
+        )
+
         yaml_dict = {
             self.entry_date: {
-                "start_date": self.start_date,
-                "end_date": self.end_date,
-                "excluded_dates": sorted(self.excluded_dates),
-                "reason": self.reason,
-                "watchers": self.watchers,
-                "status": self.status.value,
-                "billing_project": self.billing_project,
+                name: value for name, value in entry_dict.items() if value is not None
             }
         }
-
-        if yaml_dict[self.entry_date]["excluded_dates"] == []:
-            del yaml_dict[self.entry_date]["excluded_dates"]
-
-        if yaml_dict[self.entry_date]["billing_project"] is None:
-            del yaml_dict[self.entry_date]["billing_project"]
 
         return yaml.dump(
             yaml_dict,

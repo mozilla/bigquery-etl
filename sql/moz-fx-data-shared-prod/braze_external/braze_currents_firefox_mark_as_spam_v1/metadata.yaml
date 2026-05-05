@@ -4,7 +4,7 @@ description: |-
   Braze sends data in currents to GCS. These tables are build from those files.
   The tables are rebuild every day.
 owners:
-- leli@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: false
   owner1: leli
@@ -18,4 +18,3 @@ scheduling:
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071
   - --event-type=users.messages.email.MarkAsSpam
 bigquery: null
-references: {}

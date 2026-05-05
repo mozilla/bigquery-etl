@@ -1,197 +1,250 @@
-fields:
-- name: id
-  type: STRING
-  mode: NULLABLE
-- name: valid_from
-  type: TIMESTAMP
-  mode: NULLABLE
-- name: valid_to
-  type: TIMESTAMP
-  mode: NULLABLE
-- name: provider_subscriptions_history_id
-  type: STRING
-  mode: NULLABLE
-- name: subscription
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: id
-    type: STRING
-    mode: NULLABLE
-  - name: provider
-    type: STRING
-    mode: NULLABLE
-  - name: payment_provider
-    type: STRING
-    mode: NULLABLE
-  - name: provider_subscription_id
-    type: STRING
-    mode: NULLABLE
-  - name: provider_subscription_item_id
-    type: STRING
-    mode: NULLABLE
-  - name: provider_subscription_created_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: provider_subscription_updated_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: provider_customer_id
-    type: STRING
-    mode: NULLABLE
-  - name: mozilla_account_id
-    type: STRING
-    mode: NULLABLE
-  - name: mozilla_account_id_sha256
-    type: STRING
-    mode: NULLABLE
-  - name: customer_subscription_number
-    type: INTEGER
-    mode: NULLABLE
-  - name: country_code
-    type: STRING
-    mode: NULLABLE
-  - name: country_name
-    type: STRING
-    mode: NULLABLE
-  - name: services
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: id
-      type: STRING
-      mode: NULLABLE
-    - name: name
-      type: STRING
-      mode: NULLABLE
-    - name: tier
-      type: STRING
-      mode: NULLABLE
-  - name: provider_product_id
-    type: STRING
-    mode: NULLABLE
-  - name: product_name
-    type: STRING
-    mode: NULLABLE
-  - name: provider_plan_id
-    type: STRING
-    mode: NULLABLE
-  - name: plan_summary
-    type: STRING
-    mode: NULLABLE
-  - name: plan_interval
-    type: STRING
-    mode: NULLABLE
-  - name: plan_interval_type
-    type: STRING
-    mode: NULLABLE
-  - name: plan_interval_count
-    type: INTEGER
-    mode: NULLABLE
-  - name: plan_interval_months
-    type: INTEGER
-    mode: NULLABLE
-  - name: plan_currency
-    type: STRING
-    mode: NULLABLE
-  - name: plan_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: is_bundle
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: is_trial
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: is_active
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: provider_status
-    type: STRING
-    mode: NULLABLE
-  - name: started_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: ended_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: current_period_started_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: current_period_ends_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: auto_renew
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: auto_renew_disabled_at
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: has_refunds
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: has_fraudulent_charges
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: first_touch_attribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: impression_at
+fields: !include-fields
+  file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+  field_replacements:
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+    field: subscription
+    new_fields: !flatten-lists
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - id
+      - provider
+      - payment_provider
+      - provider_subscription_id
+      - provider_subscription_item_id
+      - provider_subscription_created_at
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider
+        new_description: |-
+          Provider of the subscription ("Stripe", "Google", or "Apple").
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.payment_provider
+        append_description: |-
+          For Stripe subscriptions this will be "Stripe" or "PayPal".
+          For Google subscriptions this will be "Google".
+          For Apple subscriptions this will be "Apple".
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_subscription_id
+        append_description: |-
+          For Stripe subscriptions this will be the subscription ID.
+          For Google subscriptions this will be the purchase token.
+          For Apple subscriptions this will be the original transaction ID.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_subscription_item_id
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+    - name: provider_subscription_updated_at
       type: TIMESTAMP
       mode: NULLABLE
-    - name: entrypoint
+      description: |-
+        When the provider subscription was last updated.
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - provider_customer_id
+      - mozilla_account_id
+      - mozilla_account_id_sha256
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_customer_id
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+      - !include-field
+        table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1
+        field: subscription.mozilla_account_id
+    - name: customer_subscription_number
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        Number of this subscription in the overall sequence of all of the customer's logical subscriptions.
+        For example, this should be `1` for their first logical subscription, `2` for their second logical subscription, etc.
+    - !include-field
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      field: subscription.country_code
+    - name: country_name
       type: STRING
       mode: NULLABLE
-    - name: entrypoint_experiment
+      description: |-
+        Name of the country the subscription is in.
+        This may be "Unknown" for some subscriptions.
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - services
+      - provider_product_id
+      - product_name
+      - provider_plan_id
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_product_id
+        append_description: |-
+          For Stripe subscriptions this will be the product ID.
+          For Google subscriptions this will be the package name.
+          For Apple subscriptions this will be the bundle ID.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_plan_id
+        append_description: |-
+          For Stripe subscriptions this will be the plan/price ID.
+          For Google subscriptions this will be the SKU.
+          For Apple subscriptions this will be the product ID.
+    - name: plan_summary
       type: STRING
       mode: NULLABLE
-    - name: entrypoint_variation
+      description: |-
+        Text summary of the subscription plan's interval, currency, and amount, along with an indication if it's a bundle (i.e. providing multiple services).
+        For example, "1 month EUR 4.99" or "1 year USD 99.00 bundle".
+    - name: plan_interval
       type: STRING
       mode: NULLABLE
-    - name: utm_campaign
+      description: |-
+        Text summary of the subscription plan's interval (e.g. "1 month", "6 months", "1 year").
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - plan_interval_type
+      - plan_interval_count
+    - name: plan_interval_months
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        Number of months in the subscription plan's interval.
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - plan_currency
+      - plan_amount
+      - is_bundle
+      - is_trial
+      - is_active
+      - provider_status
+      - started_at
+      - ended_at
+      - current_period_started_at
+      - current_period_ends_at
+      - auto_renew
+      - auto_renew_disabled_at
+      - has_refunds
+      - has_fraudulent_charges
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.plan_currency
+        append_description: |-
+          For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming USD due to a lack of source data (FXA-10549).
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.plan_amount
+        append_description: |-
+          For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming a USD amount due to a lack of source data (FXA-10549).
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.current_period_started_at
+        new_description: |-
+          When the current subscription period started.
+          This will be null for inactive subscriptions and for all Google subcriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.has_refunds
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.has_fraudulent_charges
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+    - !include-field
+      table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v1
+      field: first_touch_attribution
+      new_description: |-
+        First-touch attribution for the subscription (if any).
+        For Stripe subscriptions created by SubPlat 2 or earlier this will be the earliest (unbounded) attribution impression found in the SubPlat/FxA logs.
+        This will be null for Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later (DENG-8885).
+        This will be null for Google and Apple subscriptions.
+    - !include-field
+      table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
+      field: last_touch_attribution
+      new_description: |-
+        Last-touch attribution for the subscription (if any).
+        For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+        For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
+        This will be null for Google and Apple subscriptions.
+      append_fields:
+      - name: channel_group
+        type: STRING
+        mode: NULLABLE
+        description: |-
+          Categorized marketing channel group (Direct, Marketing Owned, Marketing Paid, Product Owned, or Miscellaneous)
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - initial_discount_name
+      - initial_discount_promotion_code
+      - current_period_discount_name
+      - current_period_discount_promotion_code
+      - current_period_discount_amount
+      - ongoing_discount_name
+      - ongoing_discount_promotion_code
+      - ongoing_discount_amount
+      - ongoing_discount_ends_at
+      - ended_reason
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.initial_discount_name
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.current_period_discount_name
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.current_period_discount_amount
+        append_description: |-
+          This may be null for Apple subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.ongoing_discount_name
+        append_description: |-
+          This will be null for Google and Apple subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.ongoing_discount_amount
+        append_description: |-
+          This may be null for Apple subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.ongoing_discount_ends_at
+        append_description: |-
+          This will be null for Apple subscriptions.
+    - name: started_reason
       type: STRING
       mode: NULLABLE
-    - name: utm_content
-      type: STRING
-      mode: NULLABLE
-    - name: utm_medium
-      type: STRING
-      mode: NULLABLE
-    - name: utm_source
-      type: STRING
-      mode: NULLABLE
-    - name: utm_term
-      type: STRING
-      mode: NULLABLE
-  - name: last_touch_attribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: impression_at
-      type: TIMESTAMP
-      mode: NULLABLE
-    - name: entrypoint
-      type: STRING
-      mode: NULLABLE
-    - name: entrypoint_experiment
-      type: STRING
-      mode: NULLABLE
-    - name: entrypoint_variation
-      type: STRING
-      mode: NULLABLE
-    - name: utm_campaign
-      type: STRING
-      mode: NULLABLE
-    - name: utm_content
-      type: STRING
-      mode: NULLABLE
-    - name: utm_medium
-      type: STRING
-      mode: NULLABLE
-    - name: utm_source
-      type: STRING
-      mode: NULLABLE
-    - name: utm_term
-      type: STRING
-      mode: NULLABLE
+      description: |-
+        Reason why the subscription started.
+        Possible values:
+          * `New Customer` - A new customer started their first subscription.
+          * `New Customer Trial` - A new customer started their first subscription and it is a trial plan.
+          * `Returning Customer` - A customer started a subsequent subscription.
+          * `Returning Customer Trial` - A customer started a subsequent subscription and it is a trial plan.
+    - !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_names:
+      - payment_method

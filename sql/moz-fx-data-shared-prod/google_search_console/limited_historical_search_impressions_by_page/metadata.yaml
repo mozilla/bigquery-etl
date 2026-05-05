@@ -1,0 +1,18 @@
+friendly_name: Limited Historical Search Impressions By Page
+description: |-
+  Limited historical Google Search impressions aggregated by page for the following domains:
+    * addons.mozilla.org (between 2021-03-29 and 2023-08-08)
+    * blog.mozilla.org (between 2021-03-29 and 2023-08-08)
+    * developer.mozilla.org (between 2022-12-18 and 2024-04-29)
+    * getpocket.com (between 2021-03-29 and 2023-08-08)
+    * support.mozilla.org (between 2021-03-29 and 2023-08-08)
+    * www.mozilla.org (between 2021-03-29 and 2023-08-08)
+
+  The data has the following limitations:
+    * For each site only data for specific historical dates is included as noted above.
+    * For each site only the top ~50,000 rows of data per day per search type is included (prioritized by number of clicks).
+    * Anonymized search queries aren't included.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose

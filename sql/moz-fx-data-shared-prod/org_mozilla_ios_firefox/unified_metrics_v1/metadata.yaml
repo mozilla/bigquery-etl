@@ -1,9 +1,0 @@
-description: Union of legacy metrics and glean metrics
-friendly_name: unified metrics
-labels:
-  incremental: true
-owners:
-  - kik@mozilla.com
-scheduling:
-  dag_name: bqetl_firefox_ios
-  depends_on_past: false

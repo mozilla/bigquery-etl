@@ -1,0 +1,13 @@
+friendly_name: Looker User Reported Issues
+description: |-
+  Links to the following spreedsheet with user reported issues in Looker:
+  https://docs.google.com/spreadsheets/d/1joJXR9A8pjdpxEVKAXphXqPh-vy8yRZXs57UZwmUZVs/edit
+owners:
+- ascholtz@mozilla.com
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1joJXR9A8pjdpxEVKAXphXqPh-vy8yRZXs57UZwmUZVs/edit
+  options:
+    skip_leading_rows: 1
+    range: Form Responses 1

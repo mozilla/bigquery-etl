@@ -1,9 +1,19 @@
--- Query for telemetry_derived.clients_first_seen_v2
+-- Query for telemetry_derived.clients_first_seen_v3
 -- Each ping type subquery retrieves all attributes as reported on the first
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes
 -- are retrieved for each client_id from the ping type that reported it.
-WITH new_profile_ping_agg AS (
+WITH error_check AS (
+  SELECT
+    IF(
+      DATE_ADD(MAX(first_seen_date), INTERVAL 1 DAY) != @submission_date,
+      ERROR("Need to run sequentially, day after max day only"),
+      0
+    ) AS result
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
+),
+new_profile_ping_agg AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
@@ -59,6 +69,14 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -73,6 +91,11 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -182,19 +205,6 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -206,6 +216,7 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS windows_build_number,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -286,6 +297,14 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -300,6 +319,11 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -365,19 +389,6 @@ shutdown_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -389,6 +400,7 @@ shutdown_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS windows_build_number,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -464,6 +476,12 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.content RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dlsource,
     ARRAY_AGG(attribution.experiment RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_experiment,
@@ -476,6 +494,9 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.ua RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_variation,
     ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS engine_data_load_path,
@@ -521,20 +542,13 @@ main_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dlsource,
-    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_variation,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
     ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
+-- windows_build_number is an INT64 in the main ping but FLOAT65 in n_p_ping and shutdown_ping, will convert to FLOAT64 in next step
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
-    ] AS windows_build_number,
+    ] AS windows_build_number_raw,
+    ARRAY_AGG(profile_group_id ORDER BY submission_date)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -550,11 +564,13 @@ main_ping_agg AS (
 ),
 main_ping AS (
   SELECT
-    *,
+    * EXCEPT (windows_build_number_raw, profile_group_id),
+    CAST(windows_build_number_raw AS FLOAT64) AS windows_build_number,
+    profile_group_id,
     mozfun.norm.windows_version_info(
       os,
       os_version,
-      CAST(windows_build_number AS INT64)
+      CAST(windows_build_number_raw AS INT64)
     ) AS windows_version
   FROM
     main_ping_agg
@@ -645,14 +661,16 @@ _current AS (
       first_seen_timestamp,
       all_dates,
       source_ping,
-      source_ping_priority
+      source_ping_priority,
+      profile_group_id
     ),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
       pings.reported_main_ping AS reported_main_ping,
       pings.reported_new_profile_ping AS reported_new_profile_ping,
       pings.reported_shutdown_ping AS reported_shutdown_ping
-    ) AS metadata
+    ) AS metadata,
+    unioned.profile_group_id
   FROM
     unioned
   INNER JOIN

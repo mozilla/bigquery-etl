@@ -1,0 +1,93 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: The date of the event
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the event. Download events are normalized to 'product_download'.
+- name: event_timestamp
+  type: INTEGER
+  mode: NULLABLE
+  description: The Unix timestamp in microseconds when the event was logged
+- name: ga_client_id
+  type: STRING
+  mode: NULLABLE
+  description: The Google Analytics client ID (user_pseudo_id), a unique identifier for a user based on cookies
+- name: ga_session_id
+  type: STRING
+  mode: NULLABLE
+  description: The Google Analytics session ID, extracted from event_params
+- name: ga_session_number
+  type: INTEGER
+  mode: NULLABLE
+  description: The session number for this user (1 = first session, 2+ = returning visits)
+- name: is_new_user
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if this is the user's first session (ga_session_number = 1), FALSE otherwise
+- name: session_engaged
+  type: INTEGER
+  mode: NULLABLE
+  description: GA4 engaged session flag (1 = session had >10s engagement, 2+ page views, or a conversion)
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: The platform on which the app was built (e.g., web, iOS, Android)
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: The device category (e.g., desktop, mobile, tablet)
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: The operating system of the device
+- name: geo_country
+  type: STRING
+  mode: NULLABLE
+  description: The country from which the event was reported
+- name: campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Session last-click attribution campaign ID from UTM parameters
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Session last-click attribution campaign name from UTM parameters
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Session last-click attribution source (e.g., google, facebook)
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Session last-click attribution medium (e.g., organic, cpc, referral)
+- name: content
+  type: STRING
+  mode: NULLABLE
+  description: Session last-click attribution content from UTM parameters
+- name: google_ads_campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads campaign name from session last-click attribution
+- name: google_ads_ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads ad group name from session last-click attribution
+- name: page_location
+  type: STRING
+  mode: NULLABLE
+  description: The full URL of the page where the event occurred
+- name: page_location_locale
+  type: STRING
+  mode: NULLABLE
+  description: The locale extracted from the page URL path (e.g., en-US, de, fr)
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: The page path without locale or query params, for grouping pages across all locales
+- name: engagement_time_msec
+  type: INTEGER
+  mode: NULLABLE
+  description: The engagement time in milliseconds for the event

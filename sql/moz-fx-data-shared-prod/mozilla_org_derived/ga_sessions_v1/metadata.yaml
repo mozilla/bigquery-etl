@@ -2,12 +2,12 @@ friendly_name: Ga Sessions
 description: |-
   One row for each GA session.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: kik@mozilla.com
 scheduling:
-  #dag_name: bqetl_mozilla_org_derived - GA3 feed turned off 2024-06-30 so no need to run anymore
+  # dag_name: bqetl_mozilla_org_derived - GA3 feed turned off 2024-06-30 so no need to run anymore
   date_partition_parameter: session_date
 bigquery:
   time_partitioning:
@@ -17,5 +17,3 @@ bigquery:
     expiration_days: null
   clustering:
     fields: ["country"]
-references: {}
-deprecated: true

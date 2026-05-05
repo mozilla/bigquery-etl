@@ -1,0 +1,22 @@
+# Generated via `usage_reporting` SQL generator.
+friendly_name: Clients Last Seen Based on the DAU Reporting Ping.
+description: |-
+  A daily aggregate of the usage_reporting ping for each `usage_profile_id`
+  representing their activity.
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_usage_reporting
+  task_group: firefox_desktop
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+monitoring:
+  enabled: true

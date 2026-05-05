@@ -2,14 +2,19 @@ friendly_name: Cloudflare Operating System Usage
 description: |-
   Contains OS market share data from Cloudflare over time
 owners:
-- kwindau@mozilla.com
+- lmcfall@mozilla.com
 labels:
+  level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: lmcfall@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_cloudflare_os_market_share
   date_partition_parameter: dte
-  arguments: ["--date", "{{ds}}", "--cloudflare_api_token", "{{ var.value.cloudflare_auth_token}}"]
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: CLOUDFLARE_AUTH_TOKEN
+    key: bqetl_cloudflare_os_market_share__cloudflare_auth_token
 bigquery:
   time_partitioning:
     type: day

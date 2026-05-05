@@ -1,0 +1,6 @@
+friendly_name: Desktop Retention V2 - Client Level
+description: 'Desktop Retention data at the client level.
+
+  Includes attribution information, profile_group_id.'
+owners:
+- mhirose@mozilla.com

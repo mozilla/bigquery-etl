@@ -1,0 +1,42 @@
+fields:
+- name: run_date
+  type: DATE
+  mode: NULLABLE
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+- name: dataset_id
+  type: STRING
+  mode: NULLABLE
+- name: table_id
+  type: STRING
+  mode: NULLABLE
+- name: current_sources
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: table
+    type: STRING
+    mode: NULLABLE
+  - name: field
+    type: STRING
+    mode: NULLABLE
+  - name: project
+    type: STRING
+    mode: NULLABLE
+- name: detected_sources
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: table
+    type: STRING
+    mode: NULLABLE
+  - name: field
+    type: STRING
+    mode: NULLABLE
+  - name: project
+    type: STRING
+    mode: NULLABLE
+- name: matching_sources
+  type: BOOLEAN
+  mode: NULLABLE

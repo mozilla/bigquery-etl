@@ -19,6 +19,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: "2024-02-11"

@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Status
+description: |-
+  Jira status for Service Desk synced via Fivetran.

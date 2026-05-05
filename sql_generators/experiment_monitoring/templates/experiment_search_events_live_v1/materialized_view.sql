@@ -2,10 +2,12 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.{{ dataset }}_derived.{{ destination_table }}`
+  PARTITION BY DATE(partition_date)
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
   SELECT
+    TIMESTAMP_TRUNC(submission_timestamp, DAY) AS partition_date,
     DATE(submission_timestamp) AS submission_date,
     experiment.key AS experiment,
     experiment.value.branch AS branch,
@@ -108,6 +110,7 @@ IF
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
     DATE(submission_timestamp) > '{{ start_date }}'
   GROUP BY
+    partition_date,
     submission_date,
     experiment,
     branch,

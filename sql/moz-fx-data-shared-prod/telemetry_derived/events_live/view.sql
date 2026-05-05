@@ -20,7 +20,8 @@ SELECT
   payload.subsession_id AS subsession_id,
   submission_timestamp AS `timestamp`,
   `moz-fx-data-shared-prod`.udf.deanonymize_event(e).*,
-  event_process
+  event_process,
+  profile_group_id,
 FROM
   `moz-fx-data-shared-prod.telemetry_live.event_v4`
 CROSS JOIN

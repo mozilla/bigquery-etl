@@ -1,0 +1,22 @@
+friendly_name: Profile DAU metrics for marketing geo testing.
+description: |-
+  Profile DAU metrics for marketing geo testing.
+owners:
+- kik@mozilla.com
+- shong@mozilla.com
+labels:
+  incremental: true
+  table_type: aggregate
+  application: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - country
+scheduling:
+  dag_name: bqetl_marketing_analysis

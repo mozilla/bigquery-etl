@@ -3,7 +3,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     client_info,
     metadata,
     normalized_os,
@@ -35,6 +35,7 @@ categorized_events AS (
   SELECT
         -- Unique Identifiers
     client_info.client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
         -- Metrics
         -- Search
@@ -169,6 +170,7 @@ aggregated_newtab_activity AS (
         -- topsite_advertiser_id,
         -- topsite_position,
     legacy_telemetry_client_id,
+    ANY_VALUE(profile_group_id) AS profile_group_id,
     ANY_VALUE(experiments) AS experiments,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(default_search_engine) AS default_search_engine,
@@ -241,14 +243,12 @@ aggregated_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    ANY_VALUE(is_new_profile) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    first_seen_date = @submission_date AS is_new_profile,
+    activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 ),
 -- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
 side_filled AS (

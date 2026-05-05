@@ -173,13 +173,15 @@ overactive AS (
     client_id
   HAVING
     COUNT(*) > 150000
-    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 3000000
+    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 2000000
+    OR SUM(ARRAY_LENGTH(environment.experiments)) > 5000000
 ),
 clients_summary AS (
   SELECT
     submission_timestamp,
     client_id,
     sample_id,
+    profile_group_id,
     document_id,
     metadata.uri.app_update_channel AS channel,
     normalized_channel,
@@ -361,14 +363,24 @@ clients_summary AS (
     ) AS places_pages_count,
     ARRAY(
       SELECT AS STRUCT
-        SUBSTR(_key, 0, pos - 2) AS engine,
-        SUBSTR(_key, pos) AS source,
-        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(value) AS `count`
+        CASE
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN
+      -- Capture everything (greedily) until the last '.'
+      -- but do NOT include the '.' or anything after it in the capture
+              REGEXP_EXTRACT(_key, r'^(.*)\.[^.]+$')
+          ELSE _key
+        END AS engine,
+        CASE
+        -- Everything after the last period
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN REGEXP_EXTRACT(_key, r'\.([^.]+)$')
+          ELSE NULL
+        END AS source,
+        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(value) AS count
       FROM
-        UNNEST(payload.keyed_histograms.search_counts),
-        -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
-        UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
+        UNNEST(payload.keyed_histograms.search_counts) AS hist,
+        UNNEST([REPLACE(hist.key, 'in-content.', 'in-content:')]) AS _key
     ) AS search_counts,
     -- A fixed list of fields is selected to maintain compatibility with the udf as fields are added
     `moz-fx-data-shared-prod.udf_js.main_summary_active_addons`(
@@ -665,6 +677,8 @@ clients_summary AS (
       payload.processes.parent.scalars.os_environment_is_taskbar_pinned_private,
       FALSE
     ) AS scalar_parent_os_environment_is_taskbar_pinned_private,
+    payload.processes.parent.scalars.browser_backup_scheduler_enabled AS browser_backup_scheduler_enabled,
+    payload.processes.parent.scalars.browser_backup_archive_enabled AS browser_backup_archive_enabled,
     -- Select out some individual userPrefs values; note that prefs are only available in
     -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
     -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
@@ -1503,6 +1517,9 @@ aggregates AS (
           submission_timestamp ASC
       )
     ) AS startup_profile_selection_first_ping_only,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+    ) AS profile_group_id,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,
@@ -1553,6 +1570,12 @@ aggregates AS (
     SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
     SUM(media_play_time_ms_audio) AS media_play_time_ms_audio_sum,
     SUM(media_play_time_ms_video) AS media_play_time_ms_video_sum,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_scheduler_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_scheduler_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_archive_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_archive_enabled
   FROM
     clients_summary
   GROUP BY

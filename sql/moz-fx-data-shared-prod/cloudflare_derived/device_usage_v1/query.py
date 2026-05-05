@@ -1,20 +1,25 @@
 # Load libraries
 import json
+import os
+import time
+from argparse import ArgumentParser
 from datetime import datetime, timedelta
+
 import pandas as pd
 import requests
-from argparse import ArgumentParser
-from google.cloud import bigquery
-from google.cloud import storage
+from google.cloud import bigquery, storage
 
 # Configs
 device_usg_configs = {
     "timeout_limit": 500,
     "locations": [
         "ALL",
+        "AU",
         "BE",
         "BG",
+        "BR",
         "CA",
+        "CH",
         "CZ",
         "DE",
         "DK",
@@ -25,7 +30,10 @@ device_usg_configs = {
         "GB",
         "HR",
         "IE",
+        "IN",
         "IT",
+        "JP",
+        "KE",
         "CY",
         "LV",
         "LT",
@@ -55,6 +63,9 @@ device_usg_configs = {
     "results_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_results_stg",
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg",
 }
+
+# Load the Cloudflare API Token
+cloudflare_api_token = os.getenv("CLOUDFLARE_AUTH_TOKEN")
 
 
 # Define a function to move a GCS object then delete the original
@@ -87,27 +98,27 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
 def generate_device_type_timeseries_api_call(strt_dt, end_dt, agg_int, location):
     """Calculate API to call based on given parameters."""
     if location == "ALL":
-        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
+        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
     else:
-        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
+        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
     return device_usage_api_url
 
 
 def parse_device_type_timeseries_response_human(result):
     """Take the response JSON and returns parsed human traffic information."""
-    human_timestamps = result["human"]["timestamps"]
-    human_desktop = result["human"]["desktop"]
-    human_mobile = result["human"]["mobile"]
-    human_other = result["human"]["other"]
+    human_timestamps = result["human"]["timestamps"][0]
+    human_desktop = result["human"]["desktop"][0]
+    human_mobile = result["human"]["mobile"][0]
+    human_other = result["human"]["other"][0]
     return human_timestamps, human_desktop, human_mobile, human_other
 
 
 def parse_device_type_timeseries_response_bot(result):
     """Take the response JSON and returns parsed bot traffic information."""
-    bot_timestamps = result["bot"]["timestamps"]
-    bot_desktop = result["bot"]["desktop"]
-    bot_mobile = result["bot"]["mobile"]
-    bot_other = result["bot"]["other"]
+    bot_timestamps = result["bot"]["timestamps"][0]
+    bot_desktop = result["bot"]["desktop"][0]
+    bot_mobile = result["bot"]["mobile"][0]
+    bot_other = result["bot"]["other"][0]
     return bot_timestamps, bot_desktop, bot_mobile, bot_other
 
 
@@ -128,15 +139,15 @@ def make_device_usage_result_df(
     return pd.DataFrame(
         {
             "Timestamp": timestamps,
-            "UserType": [user_type] * len(timestamps),
-            "Location": [location] * len(timestamps),
+            "UserType": [user_type],
+            "Location": [location],
             "DesktopUsagePct": desktop,
             "MobileUsagePct": mobile,
             "OtherUsagePct": other,
-            "ConfLevel": [conf] * len(timestamps),
-            "AggInterval": [agg_interval] * len(timestamps),
-            "NormalizationType": [norm] * len(timestamps),
-            "LastUpdated": [last_upd] * len(timestamps),
+            "ConfLevel": [conf],
+            "AggInterval": [agg_interval],
+            "NormalizationType": [norm],
+            "LastUpdated": [last_upd],
         }
     )
 
@@ -181,80 +192,100 @@ def get_device_usage_data(date_of_interest, auth_token):
         device_usage_api_url = generate_device_type_timeseries_api_call(
             start_date, end_date, "1d", loc
         )
-        try:
-            # Call the API and save the response as JSON
-            response = requests.get(
-                device_usage_api_url,
-                headers=headers,
-                timeout=device_usg_configs["timeout_limit"],
-            )
-            response_json = json.loads(response.text)
-            # If response was successful, get the result
-            if response_json["success"] is True:
-
-                result = response_json["result"]
-                human_ts, human_dsktp, human_mbl, human_othr = (
-                    parse_device_type_timeseries_response_human(result)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # Call the API and save the response as JSON
+                response = requests.get(
+                    device_usage_api_url,
+                    headers=headers,
+                    timeout=device_usg_configs["timeout_limit"],
                 )
-                bot_ts, bot_dsktp, bot_mbl, bot_othr = (
-                    parse_device_type_timeseries_response_bot(result)
-                )
-                conf_lvl = result["meta"]["confidenceInfo"]["level"]
-                aggr_intvl = result["meta"]["aggInterval"]
-                nrmlztn = result["meta"]["normalization"]
-                lst_upd = result["meta"]["lastUpdated"]
+                response_json = json.loads(response.text)
 
-                # Save to the results dataframe ### FIX BELOW HERE ####
-                human_result_df = make_device_usage_result_df(
-                    "Human",
-                    human_dsktp,
-                    human_mbl,
-                    human_othr,
-                    human_ts,
-                    lst_upd,
-                    nrmlztn,
-                    conf_lvl,
-                    aggr_intvl,
-                    loc,
-                )
+                # If response was successful, get the result
+                if response_json["success"] is True:
 
-                bot_result_df = make_device_usage_result_df(
-                    "Bot",
-                    bot_dsktp,
-                    bot_mbl,
-                    bot_othr,
-                    bot_ts,
-                    lst_upd,
-                    nrmlztn,
-                    conf_lvl,
-                    aggr_intvl,
-                    loc,
-                )
+                    result = response_json["result"]
+                    human_ts, human_dsktp, human_mbl, human_othr = (
+                        parse_device_type_timeseries_response_human(result)
+                    )
+                    bot_ts, bot_dsktp, bot_mbl, bot_othr = (
+                        parse_device_type_timeseries_response_bot(result)
+                    )
+                    conf_lvl = result["meta"]["confidenceInfo"]["level"]
+                    aggr_intvl = result["meta"]["aggInterval"]
+                    nrmlztn = result["meta"]["normalization"]
+                    lst_upd = result["meta"]["lastUpdated"]
 
-                # Union the results
-                new_result_df = pd.concat(
-                    [human_result_df, bot_result_df], ignore_index=True, sort=False
-                )
+                    # Save to the results dataframe ### FIX BELOW HERE ####
+                    human_result_df = make_device_usage_result_df(
+                        "Human",
+                        human_dsktp,
+                        human_mbl,
+                        human_othr,
+                        human_ts,
+                        lst_upd,
+                        nrmlztn,
+                        conf_lvl,
+                        aggr_intvl,
+                        loc,
+                    )
 
-                # Add results to the results dataframe
-                results_df = pd.concat([results_df, new_result_df])
+                    bot_result_df = make_device_usage_result_df(
+                        "Bot",
+                        bot_dsktp,
+                        bot_mbl,
+                        bot_othr,
+                        bot_ts,
+                        lst_upd,
+                        nrmlztn,
+                        conf_lvl,
+                        aggr_intvl,
+                        loc,
+                    )
 
-            # If response was not successful, save to the errors dataframe
-            else:
-                new_errors_df = pd.DataFrame(
-                    {
-                        "StartTime": [start_date],
-                        "EndTime": [end_date],
-                        "Location": [loc],
-                    }
-                )
-                errors_df = pd.concat([errors_df, new_errors_df])
+                    # Union the results
+                    new_result_df = pd.concat(
+                        [human_result_df, bot_result_df], ignore_index=True, sort=False
+                    )
 
-        except:
-            new_errors_df = pd.DataFrame(
-                {"StartTime": [start_date], "EndTime": [end_date], "Location": [loc]}
-            )
-            errors_df = pd.concat([errors_df, new_errors_df])
+                    # Add results to the results dataframe
+                    results_df = pd.concat([results_df, new_result_df])
+                    break
+
+                # If response was not successful, save to the errors dataframe
+                else:
+                    if attempt < max_retries - 1:
+                        print(
+                            f"API returned success=False for Loc: {loc}, retrying (attempt {attempt + 1})..."
+                        )
+                        time.sleep(5 * 2**attempt)
+                    else:
+                        new_errors_df = pd.DataFrame(
+                            {
+                                "StartTime": [start_date],
+                                "EndTime": [end_date],
+                                "Location": [loc],
+                            }
+                        )
+                        errors_df = pd.concat([errors_df, new_errors_df])
+
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(
+                        f"Exception for Loc: {loc}: {e}, retrying (attempt {attempt + 1})..."
+                    )
+                    time.sleep(5 * 2**attempt)
+                else:
+                    new_errors_df = pd.DataFrame(
+                        {
+                            "StartTime": [start_date],
+                            "EndTime": [end_date],
+                            "Location": [loc],
+                        }
+                    )
+                    errors_df = pd.concat([errors_df, new_errors_df])
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = device_usg_configs["bucket"] + device_usg_configs[
@@ -271,15 +302,15 @@ def get_device_usage_data(date_of_interest, auth_token):
     # Print a summary to the console
     len_results = str(len(results_df))
     len_errors = str(len(errors_df))
-    result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
-    return result_summary
+    results_summary = [len_results, len_errors]
+    return results_summary
 
 
 def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
+    parser.add_argument("--cloudflare_api_token", default=cloudflare_api_token)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="cloudflare_derived")
 
@@ -288,7 +319,10 @@ def main():
     print(args.date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    results_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    nbr_successful = results_summary[0]
+    nbr_errors = results_summary[1]
+    result_summary = f"# Result Rows: {nbr_successful}; # of Error Rows: {nbr_errors}"
     print("result_summary")
     print(result_summary)
 
@@ -343,8 +377,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartTime", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
             ],
             skip_leading_rows=1,
@@ -370,7 +404,7 @@ def main():
 
     # STEP 6 - Load results from stage to gold
     device_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_v1`
-SELECT 
+SELECT
 CAST(StartTime AS DATE) AS dte,
 UserType AS user_type,
 Location AS location,
@@ -379,7 +413,7 @@ MobileUsagePct AS mobile_usage_pct,
 OtherUsagePct AS other_usage_pct,
 AggInterval AS aggregation_interval,
 NormalizationType AS normalization_type,
-LastUpdated AS last_updated_ts 
+LastUpdated AS last_updated_ts
 FROM `moz-fx-data-shared-prod.cloudflare_derived.device_results_stg`
 WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_res_to_gold = client.query(device_usg_stg_to_gold_query)
@@ -428,6 +462,10 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         device_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+    # Lastly, if # errors > 4, fail with error
+    if int(nbr_errors) > 4:
+        raise Exception("5 or more errors, check for issues")
 
 
 if __name__ == "__main__":

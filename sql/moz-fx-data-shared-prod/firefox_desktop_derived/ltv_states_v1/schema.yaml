@@ -1,16 +1,17 @@
 fields:
-- description: Unique ID for the client installation.
+- description: A unique identifier (UUID) for the client.
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: Submission Date
+- description: The date when the telemetry ping is received on the server side.
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: Sample ID
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   mode: NULLABLE
   name: sample_id
-  type: INT64
+  type: INTEGER
 - description: First Seen Date
   mode: NULLABLE
   name: first_seen_date
@@ -18,11 +19,11 @@ fields:
 - description: Days Since First Seen
   mode: NULLABLE
   name: days_since_first_seen
-  type: INT64
+  type: INTEGER
 - description: Days Since Active
   mode: NULLABLE
   name: days_since_active
-  type: INT64
+  type: INTEGER
 - description: First Reported Country
   mode: NULLABLE
   name: first_reported_country
@@ -35,34 +36,39 @@ fields:
   - mode: NULLABLE
     name: source
     type: STRING
-    description: null
+    description: Attribution Source
   - mode: NULLABLE
     name: medium
     type: STRING
-    description: null
+    description: Attribution Medium
   - mode: NULLABLE
     name: campaign
     type: STRING
-    description: null
+    description: Attribution Campaign
   - mode: NULLABLE
     name: content
     type: STRING
-    description: null
+    description: Attribution Content
   - mode: NULLABLE
     name: experiment
     type: STRING
+    description: Attribution Experiment
   - mode: NULLABLE
     name: variation
     type: STRING
+    description: Attribution Variation
   - mode: NULLABLE
     name: dltoken
     type: STRING
+    description: Attribution Download Token
   - name: dlsource
     type: STRING
     mode: NULLABLE
+    description: Attribution Download Source
   - name: ua
     type: STRING
     mode: NULLABLE
+    description: Attribution User Agent
 - description: Days Seen Bytes
   mode: NULLABLE
   name: days_seen_bytes
@@ -70,12 +76,12 @@ fields:
 - description: Active
   mode: NULLABLE
   name: active
-  type: INT64
+  type: INTEGER
 - description: Ad Clicks
   mode: NULLABLE
   name: ad_clicks
-  type: INT64
+  type: INTEGER
 - description: Total Historic Ad Clicks
   mode: NULLABLE
   name: total_historic_ad_clicks
-  type: INT64
+  type: INTEGER

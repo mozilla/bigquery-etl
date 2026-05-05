@@ -12,6 +12,7 @@ SELECT
   verificationMethod,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(verifiedAt AS INT)) AS verifiedAt,
   SAFE_CAST(mustVerify AS BOOL) AS mustVerify,
+  providerId,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
@@ -28,7 +29,8 @@ FROM
          authAt,
          verificationMethod,
          verifiedAt,
-         mustVerify
+         mustVerify,
+         providerId
        FROM
          fxa.sessionTokens
     """

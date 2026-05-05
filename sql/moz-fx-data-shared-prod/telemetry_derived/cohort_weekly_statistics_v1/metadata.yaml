@@ -1,0 +1,21 @@
+friendly_name: Cohort Weekly Statistics
+description: |-
+  Contains weekly retention by multiple different attributes as of first seen date
+owners:
+- kik@mozilla.com
+labels:
+  level: bronze
+  incremental: false
+  owner1: kik
+scheduling:
+  dag_name: bqetl_cohort_retention
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_name
+    - normalized_channel
+    - app_version
+require_column_descriptions: true

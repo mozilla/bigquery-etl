@@ -1,0 +1,109 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date corresponding to processing date.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: Date we first received a baseline ping from the profile.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Release channel of the app the profile is using.
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name the profile is using.
+
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's app version on the first seen date.
+
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Client's country on the first seen date.
+
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Client's city on the first seen date.
+
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: Client's geo subdivision on the first seen date.
+
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Client's locale on the first seen date.
+
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: Client's isp subdivision on the first seen date.
+
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Client's os on the first seen date.
+
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's os version on the first seen date.
+
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+  description: Client's device model on the first seen date.
+
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+  description: Client's device manufacturer on the first seen date.
+
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if this specific entry is used towards calculating mobile DAU.
+{% for field in product_attribution_fields.values() %}
+- name: {{ field.name }}
+  type: {{ field.type }}
+  mode: NULLABLE
+  description: {{ field.description }}
+{% endfor %}
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
+
+- name: num_days_seen_day_2_7
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of days we saw the client in between 2nd and 7th days since first_seen_date.
+
+- name: num_days_active_day_2_7
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of days the client was active between day 2 and 7 since first_seen_date.
+
+- name: search_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of searches performed by the client in the last 3 days.

@@ -2,7 +2,10 @@
 
 import logging
 import multiprocessing
+import re
+import shutil
 import sys
+from collections import defaultdict
 from collections.abc import MutableMapping
 from functools import partial
 from pathlib import Path
@@ -15,10 +18,10 @@ from bigquery_etl.cli.query import _update_query_schema
 from bigquery_etl.cli.routine import ROUTINE_FILE_RE
 from bigquery_etl.cli.routine import _publish_to_target as _publish_routines_to_target
 from bigquery_etl.cli.routine import publish as publish_routines_cmd
-from bigquery_etl.cli.stage import QUERY_FILE, QUERY_SCRIPT, VIEW_FILE
 from bigquery_etl.cli.utils import (
     defer_option,
     is_authenticated,
+    isolated_option,
     multi_project_id_option,
     parallelism_option,
     paths_matching_name_pattern,
@@ -41,7 +44,16 @@ from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import block_coding_agents, render
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
-from bigquery_etl.util.target import ensure_dataset_exists, prepare_target_files
+from bigquery_etl.util.target import (
+    MATERIALIZED_VIEW,
+    QUERY_FILE,
+    QUERY_SCRIPT,
+    VIEW_FILE,
+    Target,
+    collect_target_dependencies,
+    ensure_dataset_exists,
+    prepare_target_files,
+)
 from bigquery_etl.view import View
 
 log = logging.getLogger(__name__)
@@ -201,7 +213,31 @@ log = logging.getLogger(__name__)
     default=ConfigLoader.get("routine", "publish", "gcs_path"),
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
+@click.option(
+    "--rewrite-tests/--no-rewrite-tests",
+    "rewrite_tests",
+    default=None,
+    help="For --target deploys, copy and rename SQL tests under tests/sql/ to "
+    "match the target paths. Defaults to the target's `rewrite_tests` setting "
+    "in bqetl_targets.yaml; use this to override per run.",
+)
+@click.option(
+    "--expire-after-hours",
+    "--expire_after_hours",
+    type=int,
+    default=None,
+    help="Override the target's default table expiration (in hours). Defaults "
+    "to the target's `expire_after_hours` setting in bqetl_targets.yaml.",
+)
+@click.option(
+    "--test-dir",
+    "--test_dir",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
+    default=None,
+    help="Test directory for --rewrite-tests (defaults to tests/sql at repo root).",
+)
 @defer_option()
+@isolated_option()
 @click.pass_context
 def deploy(
     ctx,
@@ -227,10 +263,14 @@ def deploy(
     routine_dependency_dir,
     routine_gcs_bucket,
     routine_gcs_path,
+    rewrite_tests,
+    expire_after_hours,
+    test_dir,
     defer_to_target,
+    isolated,
 ):
     """Deploy BigQuery artifacts with dependency resolution."""
-    if not any([tables, views, routines]):
+    if not any([tables, views, routines, isolated]):
         raise click.UsageError(
             "Must specify at least one artifact type: --tables, --views, or --routines"
         )
@@ -240,7 +280,30 @@ def deploy(
             "Cannot use both --view-skip-authorized and --view-authorized-only"
         )
 
+    if defer_to_target and isolated:
+        raise click.UsageError(
+            "--defer-to-target and --isolated are mutually exclusive."
+        )
+
     target = ctx.obj.get("target") if ctx.obj else None
+
+    # CLI flags override per-run; otherwise fall back to the target's config.
+    if target is not None:
+        if rewrite_tests is None:
+            rewrite_tests = target.rewrite_tests
+        if expire_after_hours is None:
+            expire_after_hours = target.expire_after_hours
+    if rewrite_tests is None:
+        rewrite_tests = False
+
+    # The `--isolated` profile: a self-contained mirror into the target
+    # project
+    if isolated:
+        table_force = True
+        table_skip_external_data = True
+        table_skip_existing_schemas = True
+        view_force = True
+        routines = True
 
     if target and view_target_project:
         raise click.UsageError(
@@ -254,47 +317,6 @@ def deploy(
         )
         sys.exit(1)
 
-    # publish routines first since tables/views may depend on them
-    routine_results = {}
-    if routines:
-        for project_id in project_ids:
-            if target and target.project_id not in project_ids:
-                routine_files = [
-                    f
-                    for f in paths_matching_name_pattern(
-                        paths if paths else None,
-                        sql_dir,
-                        project_id,
-                        list(ROUTINE_FILES),
-                        file_regex=ROUTINE_FILE_RE,
-                    )
-                    if f.name in ROUTINE_FILES
-                ]
-                result = _publish_routines_to_target(
-                    target,
-                    project_id,
-                    sql_dir,
-                    routine_dependency_dir,
-                    routine_gcs_bucket,
-                    routine_gcs_path,
-                    defer_to_target,
-                    routine_files=routine_files,
-                    dry_run=dry_run,
-                )
-                if result:
-                    routine_results.update(result)
-            else:
-                ctx.invoke(
-                    publish_routines_cmd,
-                    project_id=project_id,
-                    sql_dir=sql_dir,
-                    dependency_dir=routine_dependency_dir,
-                    gcs_bucket=routine_gcs_bucket,
-                    gcs_path=routine_gcs_path,
-                    dry_run=dry_run,
-                    defer_to_target=defer_to_target,
-                )
-
     artifact_types = []
     if tables:
         artifact_types.append("table")
@@ -304,28 +326,86 @@ def deploy(
     credentials = None
     id_token = get_id_token()
 
-    artifacts = _discover_artifacts(paths, sql_dir, project_ids, artifact_types)
+    artifacts = _discover_artifacts(
+        paths,
+        sql_dir,
+        project_ids,
+        artifact_types,
+        include_materialized_views=isolated,
+    )
+
+    # For --isolated, collect dependencies up front so we can feed any
+    # discovered UDFs into the routine publish step below (otherwise the
+    # schema-resolver dry-run sees a stale or missing target UDF). Stubs for
+    # unmanaged dep tables land directly under sql/<target_project>/...,
+    # alongside the regular target artifacts produced by prepare_target_files.
+    isolated_routine_deps: List[Path] = []
+    if isolated and target and target.project_id not in project_ids:
+        isolated_routine_deps = _collect_isolated_dependencies(
+            artifacts, sql_dir, target
+        )
+
+    # publish routines first since tables/views may depend on them
+    routine_results = {}
+    cross_project_target = target and target.project_id not in project_ids
+    if cross_project_target and (routines or isolated_routine_deps):
+        # Group all routine paths by their source project. `_publish_to_target`
+        # is called once per source project so its qualify-non-published-refs
+        # logic stays correct — refs to unpublished UDFs need to be qualified
+        # with the *source* project they belong to.
+        routines_by_source: Dict[str, Set[Path]] = defaultdict(set)
+        if routines:
+            for f in paths_matching_name_pattern(
+                paths if paths else None,
+                sql_dir,
+                None,
+                list(ROUTINE_FILES),
+                file_regex=ROUTINE_FILE_RE,
+            ):
+                if f.name in ROUTINE_FILES:
+                    routines_by_source[f.parent.parent.parent.name].add(f)
+        for p in isolated_routine_deps:
+            routines_by_source[p.parent.parent.parent.name].add(p)
+
+        for source_project, files in routines_by_source.items():
+            result = _publish_routines_to_target(
+                target,
+                source_project,
+                sql_dir,
+                routine_dependency_dir,
+                routine_gcs_bucket,
+                routine_gcs_path,
+                defer_to_target,
+                isolated,
+                routine_files=sorted(files),
+                dry_run=dry_run,
+            )
+            if result:
+                routine_results.update(result)
+    elif routines:
+        for project_id in project_ids:
+            ctx.invoke(
+                publish_routines_cmd,
+                project_id=project_id,
+                sql_dir=sql_dir,
+                dependency_dir=routine_dependency_dir,
+                gcs_bucket=routine_gcs_bucket,
+                gcs_path=routine_gcs_path,
+                dry_run=dry_run,
+                defer_to_target=defer_to_target,
+                isolated=isolated,
+            )
 
     if target and target.project_id not in project_ids:
-        new_artifacts = {}
-        for _artifact_id, (file_path, artifact_type) in artifacts.items():
-            source_project, _, _ = extract_from_query_path(file_path)
-            target_files = prepare_target_files(
-                [file_path],
-                sql_dir,
-                source_project,
-                target,
-                defer_to_target=defer_to_target,
-                isolated=False,
-                auto_deploy=False,
+        artifacts, source_to_target_paths = _prepare_target_artifacts(
+            artifacts, target, sql_dir, defer_to_target, isolated
+        )
+
+        if rewrite_tests:
+            _rewrite_tests_for_target(
+                source_to_target_paths,
+                test_dir or ConfigLoader.project_dir / "tests" / "sql",
             )
-            target_file = target_files[0]
-            project, dataset, name = extract_from_query_path(target_file)
-            new_artifacts[f"{project}.{dataset}.{name}"] = (
-                target_file,
-                artifact_type,
-            )
-        artifacts = new_artifacts
 
         client = bigquery.Client(project=target.project_id)
         seen_datasets: set = set()
@@ -335,7 +415,12 @@ def deploy(
             dataset_ref = f"{project}.{dataset}"
             if dataset_ref not in seen_datasets:
                 seen_datasets.add(dataset_ref)
-                ensure_dataset_exists(client, dataset_ref)
+                ensure_dataset_exists(
+                    client,
+                    dataset_ref,
+                    expiration_hours=expire_after_hours,
+                    grant_dryrun_access=target.grant_dryrun_access,
+                )
 
     # filter views based on authorized flags
     if view_skip_authorized or view_authorized_only:
@@ -368,6 +453,7 @@ def deploy(
         "sql_dir": sql_dir,
         "credentials": credentials,
         "id_token": id_token,
+        "isolated": isolated,
         # Table options
         "table_force": table_force,
         "table_skip_existing": table_skip_existing,
@@ -384,22 +470,271 @@ def deploy(
     _report_results(results)
 
 
+def _rewrite_tests_for_target(
+    source_to_target_paths: Dict[Path, Path],
+    test_dir: Path,
+) -> None:
+    """Copy and rename SQL tests so they target the deployed artifacts.
+
+    For each (source, target) artifact pair, copies
+    `tests/sql/<src_project>/<src_dataset>/<src_table>/` into
+    `tests/sql/<tgt_project>/<tgt_dataset>/<tgt_table>/`, then renames any
+    files in the new tree whose basenames encode the source identity (e.g.
+    `proj.dataset.table.expected.yaml`) to use the target identity.
+    Mirrors legacy `bqetl stage deploy` so CI can pytest staged artifacts.
+    """
+    if not test_dir.exists():
+        return
+
+    for source_path, target_path in source_to_target_paths.items():
+        src = extract_from_query_path(source_path)
+        tgt = extract_from_query_path(target_path)
+        src_test_dir = test_dir.joinpath(*src)
+        if not src_test_dir.exists():
+            continue
+        tgt_test_dir = test_dir.joinpath(*tgt)
+        shutil.copytree(src_test_dir, tgt_test_dir, dirs_exist_ok=True)
+
+        src_id = ".".join(src)
+        src_short = f"{src[1]}.{src[2]}"
+        tgt_id = ".".join(tgt)
+        for test_file in tgt_test_dir.rglob("*"):
+            if not test_file.is_file():
+                continue
+            suffix = test_file.suffix
+            stem = test_file.name[: -len(suffix)] if suffix else test_file.name
+            schema_part = ""
+            if stem.endswith(".schema"):
+                stem = stem[: -len(".schema")]
+                schema_part = ".schema"
+            if stem in (src_id, src_short):
+                new_path = test_file.parent / f"{tgt_id}{schema_part}{suffix}"
+                if not new_path.exists():
+                    test_file.rename(new_path)
+
+
+def _strip_materialized_view(target_file: Path) -> Path:
+    """Convert a materialized view in target dir to query.sql.
+
+    Strips `CREATE MATERIALIZED VIEW … AS` so the artifact deploys as a
+    regular table from schema.yaml — matches legacy stage behavior, since
+    materialized views can't be recreated without source data access.
+    """
+    sql_content = target_file.read_text()
+    sql_content = re.sub(
+        r"CREATE\s+MATERIALIZED\s+VIEW.*?AS",
+        "",
+        sql_content,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    new_query_file = target_file.parent / QUERY_FILE
+    new_query_file.write_text(sql_content)
+    target_file.unlink()
+    return new_query_file
+
+
+def _collect_isolated_dependencies(
+    artifacts: Dict[str, Tuple[Path, str]],
+    sql_dir: str,
+    target: Target,
+) -> List[Path]:
+    """Walk dependencies of `artifacts` for an --isolated deploy.
+
+    Mutates `artifacts` to include discovered table/view/MV paths. Stubs for
+    unmanaged dep tables are written directly into the target tree
+    (sql/<target_project>/...) by `collect_target_dependencies`.
+    Returns the list of UDF paths discovered (callers feed these to the
+    routine publish step so the schema resolver can dry-run against target).
+    """
+    routine_deps: List[Path] = []
+    existing_paths = {fp for fp, _ in artifacts.values()}
+    for dep_path in collect_target_dependencies(existing_paths, sql_dir, target):
+        if dep_path.name in (
+            QUERY_FILE,
+            QUERY_SCRIPT,
+            VIEW_FILE,
+            MATERIALIZED_VIEW,
+        ):
+            project, dataset, name = extract_from_query_path(dep_path)
+            artifact_type = "view" if dep_path.name == VIEW_FILE else "table"
+            artifacts[f"{project}.{dataset}.{name}"] = (dep_path, artifact_type)
+        elif dep_path.name in ROUTINE_FILES:
+            routine_deps.append(dep_path)
+    return routine_deps
+
+
+def _prepare_target_artifacts(
+    artifacts: Dict[str, Tuple[Path, str]],
+    target: Target,
+    sql_dir: str,
+    defer_to_target: bool,
+    isolated: bool,
+) -> Tuple[Dict[str, Tuple[Path, str]], Dict[Path, Path]]:
+    """Copy each artifact into the target tree.
+
+    Per artifact: prepare_target_files (rewrite refs), strip materialized-view
+    syntax, and resolve schema.yaml for isolated table deploys.
+
+    Returns a tuple of:
+    - artifacts dict re-keyed by target identity
+    - source-path → target-path mapping (used by --rewrite-tests; restricted
+      to artifacts that survived the INFORMATION_SCHEMA filter)
+    """
+    new_artifacts: Dict[str, Tuple[Path, str]] = {}
+    source_to_target: Dict[Path, Path] = {}
+    for _artifact_id, (file_path, artifact_type) in artifacts.items():
+        source_project, source_dataset, source_table = extract_from_query_path(
+            file_path
+        )
+
+        # Skip INFORMATION_SCHEMA artifacts — they're metadata views provided
+        # by BigQuery, not deployable artifacts.
+        if (
+            source_dataset == "INFORMATION_SCHEMA"
+            or "INFORMATION_SCHEMA" in source_table
+        ):
+            continue
+
+        # Stubs from collect_target_dependencies live directly under
+        # sql/<target_project>/... — they're already at their final target
+        # path so prepare_target_files would needlessly re-render them.
+        if source_project == target.project_id:
+            target_file = file_path
+        else:
+            target_files = prepare_target_files(
+                [file_path],
+                sql_dir,
+                source_project,
+                target,
+                defer_to_target=defer_to_target,
+                isolated=isolated,
+                auto_deploy=False,
+            )
+            target_file = target_files[0]
+
+        if target_file.name == MATERIALIZED_VIEW:
+            target_file = _strip_materialized_view(target_file)
+
+        if (
+            isolated
+            and artifact_type == "table"
+            and target_file.name in (QUERY_FILE, QUERY_SCRIPT)
+        ):
+            _resolve_isolated_schema(
+                target_file=target_file,
+                artifact_metadata_path=file_path.parent / "metadata.yaml",
+                source_project=source_project,
+                source_dataset=source_dataset,
+                source_table=source_table,
+                sql_dir=sql_dir,
+            )
+
+        project, dataset, name = extract_from_query_path(target_file)
+        new_artifacts[f"{project}.{dataset}.{name}"] = (target_file, artifact_type)
+        source_to_target[file_path] = target_file
+    return new_artifacts, source_to_target
+
+
+def _resolve_isolated_schema(
+    target_file: Path,
+    artifact_metadata_path: Path,
+    source_project: str,
+    source_dataset: str,
+    source_table: str,
+    sql_dir: str,
+) -> None:
+    """Ensure target_file's schema.yaml exists for an --isolated table deploy.
+
+    Resolution order (first match wins):
+      1. target_file already has a schema.yaml (copied from source) — keep it,
+         unless the table declares allow_field_addition (schema may have drifted).
+      2. The table is deployed in the source project — fetch via client.get_table.
+      3. Dry-run the rewritten query against the target project. UDFs and
+         dependency stubs were already published earlier in the deploy, so the
+         dry-run picks up local UDF changes.
+
+    Raises FailedDeployException if none of the above produces a schema.
+    """
+    target_schema = target_file.parent / SCHEMA_FILE
+
+    refresh_for_field_addition = False
+    if artifact_metadata_path.exists():
+        try:
+            md = Metadata.from_file(artifact_metadata_path)
+            if md.schema and md.schema.allow_field_addition:
+                refresh_for_field_addition = True
+            elif md.scheduling:
+                arguments = md.scheduling.get("arguments", [])
+                if any(
+                    "--schema_update_option=ALLOW_FIELD_ADDITION" in arg
+                    for arg in arguments
+                ):
+                    refresh_for_field_addition = True
+        except Exception:
+            pass
+
+    # 1. existing schema.yaml is authoritative unless allow_field_addition.
+    # Flatten any `!include` directives so the target schema is self-contained.
+    if target_schema.exists() and not refresh_for_field_addition:
+        text = target_schema.read_text()
+        if "!include" in text:
+            Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
+        return
+
+    # 2. fetch from source project's deployed table (no dry-run, fastest)
+    try:
+        bq_table = bigquery.Client(project=source_project).get_table(
+            f"{source_project}.{source_dataset}.{source_table}"
+        )
+        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(target_schema)
+        return
+    except Exception as e:
+        log.info(
+            f"Source table {source_project}.{source_dataset}.{source_table} "
+            f"not available, falling back to target dry-run ({e})"
+        )
+
+    # 3. dry-run the rewritten query against the target project
+    try:
+        Schema.from_query_file(target_file).to_yaml_file(target_schema)
+        return
+    except Exception as e:
+        raise FailedDeployException(
+            f"Cannot resolve schema for {source_project}.{source_dataset}."
+            f"{source_table}: target dry-run failed ({e}). If the query "
+            f"references UDFs you've changed, ensure they're discoverable "
+            f"(--routines auto-detects from query refs in --isolated mode)."
+        )
+
+
 def _discover_artifacts(
     paths: Tuple[str],
     sql_dir: str,
     project_ids: List[str],
     artifact_types: List[str],
+    include_materialized_views: bool = False,
 ) -> Dict[str, Tuple[Path, str]]:
-    """Find artifacts."""
+    """Find artifacts.
+
+    `include_materialized_views` is opt-in because only the --isolated path
+    knows how to strip `CREATE MATERIALIZED VIEW` and deploy MVs as schema-
+    only tables. Regular deploys skip MV files (matches pre-target behavior).
+    """
     artifacts: Dict[str, Tuple[Path, str]] = {}
     patterns = {
-        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"],
+        "table": [QUERY_FILE, QUERY_SCRIPT, "script.sql"]
+        + ([MATERIALIZED_VIEW] if include_materialized_views else []),
         "view": [VIEW_FILE],
     }
 
     # Prefer query files when a directory contains multiple definition files (e.g. stage deploys
     # for query.sql manually refreshed materialized views will have a query.sql and script.sql)
-    table_priority = {QUERY_FILE: 0, QUERY_SCRIPT: 1, "script.sql": 2}
+    table_priority = {
+        QUERY_FILE: 0,
+        QUERY_SCRIPT: 1,
+        "script.sql": 2,
+        MATERIALIZED_VIEW: 3,
+    }
 
     file_patterns = [
         pattern
@@ -696,10 +1031,17 @@ def _update_table_schema(file_path: Path, options: dict):
 
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
-    # Check if schema update is needed before deployment
-    if not options["dry_run"] and _needs_schema_update(
-        file_path,
-        skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+    # Check if schema update is needed before deployment.
+    # Skip entirely for --isolated: schema update dry-runs the query, but
+    # rewritten refs in the isolated mirror point at deps that aren't deployed.
+    # The schema.yaml in the target dir is authoritative.
+    if (
+        not options["dry_run"]
+        and not options.get("isolated", False)
+        and _needs_schema_update(
+            file_path,
+            skip_existing_schemas=options.get("table_skip_existing_schemas", False),
+        )
     ):
         _update_table_schema(file_path, options)
 

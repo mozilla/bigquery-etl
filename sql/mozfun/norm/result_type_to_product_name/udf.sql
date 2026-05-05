@@ -3,14 +3,12 @@ RETURNS STRING AS (
   CASE
     WHEN res IS NULL
       THEN NULL
-    WHEN res IN (
-        'autofill_origin',
-        'autofill_url',
-        'autofill_adaptive_origin',
-        'autofill_adaptive_url',
-        'history_autofill_fallback_origin'
-      )
+    WHEN res IN ('autofill_origin', 'autofill_url', 'history_autofill_fallback_origin')
       THEN 'autofill'
+    WHEN res IN ('autofill_adaptive', 'autofill_adaptive_origin', 'autofill_adaptive_url')
+      THEN 'adaptive_autofill'
+    WHEN res IN ('autofill_about')
+      THEN 'about_autofill'
     WHEN res IN ('addon')
       THEN 'xchannels_add_on'
     WHEN res IN ('rs_amo', 'rust_amo')
@@ -78,10 +76,6 @@ RETURNS STRING AS (
       THEN 'calculator'
     WHEN res IN ('tip_onboard', 'tip_redirect', 'tip_persist')
       THEN 'tip'
-    WHEN res IN ('autofill_about')
-      THEN 'about_autofill'
-    WHEN res IN ('autofill_adaptive')
-      THEN 'adaptive_autofill'
     WHEN res IN ('unit')
       THEN 'unit_converter'
     WHEN res IN ('fxsuggest_data_sharing_opt_in')

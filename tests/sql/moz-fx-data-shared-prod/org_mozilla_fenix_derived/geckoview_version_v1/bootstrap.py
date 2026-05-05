@@ -28,7 +28,10 @@ def input_row(submission_offset, build_offset, version_offset=0):
         "submission_timestamp": (START_DATE - timedelta(submission_offset)).isoformat(),
         "client_info": {"app_build": app_build(START_DATE - timedelta(build_offset))},
         "metrics": {
-            "string": {"geckoview_version": f"{START_VERSION-version_offset}.0.0"}
+            "string": {
+                "gecko_version": f"{START_VERSION-version_offset}.0.0",
+                "geckoview_version": f"{START_VERSION-version_offset}.0.0",
+            },
         },
     }
 

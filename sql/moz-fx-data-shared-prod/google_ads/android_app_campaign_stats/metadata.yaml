@@ -1,0 +1,5 @@
+friendly_name: Android App Campaign Stats
+description: |-
+  Calculates ad spend, new profiles, and new activated profiles by day and country.
+owners:
+- kwindau@mozilla.com

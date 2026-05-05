@@ -1,0 +1,157 @@
+[
+  {
+    "name": "submission_date",
+    "mode": "NULLABLE",
+    "type": "DATE"
+  },
+  {
+    "name": "client_id",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "sample_id",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "activity_segment",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "days_seen_bits",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "days_active_bits",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "app_name",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "app_version",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_channel",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "country",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "city",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "locale",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "first_seen_date",
+    "mode": "NULLABLE",
+    "type": "DATE"
+  },
+  {
+    "name": "os",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_os_version",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "windows_build_number",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_sum",
+    "mode": "NULLABLE",
+    "type": "INTEGER"
+  },
+  {
+    "name": "is_default_browser",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "isp_name",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "distribution_id",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "active_hours_sum",
+    "mode": "NULLABLE",
+    "type": "FLOAT"
+  },
+  {
+    "name": "attribution_source",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "attribution_medium",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "is_dau",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_wau",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_mau",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_daily_user",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_weekly_user",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_monthly_user",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "is_desktop",
+    "mode": "NULLABLE",
+    "type": "BOOLEAN"
+  }
+]

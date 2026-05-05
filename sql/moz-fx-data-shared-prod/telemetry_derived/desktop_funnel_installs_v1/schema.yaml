@@ -2,30 +2,40 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
+  description: Date
 - mode: NULLABLE
   name: country_name
   type: STRING
+  description: Country Name
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: Operating System Version
 - mode: NULLABLE
   name: build_channel
   type: STRING
+  description: Build Channel
 - mode: NULLABLE
   name: build_id
   type: STRING
+  description: Build ID
 - mode: NULLABLE
   name: silent
   type: BOOLEAN
+  description: Silent
 - mode: NULLABLE
   name: succeeded
   type: BOOLEAN
+  description: Succeeded
 - mode: NULLABLE
   name: ua_attribution
   type: STRING
+  description: UA Attribution
 - mode: NULLABLE
   name: successful_new_installs
   type: INTEGER
+  description: Successful New Installs
 - mode: NULLABLE
   name: successful_paveovers
   type: INTEGER
+  description: Successful Paveovers

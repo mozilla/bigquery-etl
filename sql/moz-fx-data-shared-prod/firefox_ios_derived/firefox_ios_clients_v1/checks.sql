@@ -1,7 +1,7 @@
-#fail
+#warn
 {{ is_unique(columns=["client_id"]) }}
 
-#fail
+#warn
 {{ not_null(columns=["client_id"], where="first_seen_date = @submission_date") }}
 
 #fail

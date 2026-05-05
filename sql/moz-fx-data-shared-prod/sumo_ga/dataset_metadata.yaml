@@ -1,0 +1,11 @@
+friendly_name: SUMO Google Analytics
+description: |-
+  SUMO (support.mozilla.org) data from Google Analytics
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation

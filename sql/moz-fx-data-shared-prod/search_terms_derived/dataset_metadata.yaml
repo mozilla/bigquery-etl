@@ -11,3 +11,4 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:search-terms/sanitized-writer
+  - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized

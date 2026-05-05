@@ -12,12 +12,15 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level
 # Query descheduled as a direct result of AWS migration to GCP
 # on 27th September 2023 the last AWS instances were spun down.
 # scheduling:
 #   dag_name: bqetl_fxa_events
 #   task_name: docker_fxa_admin_server_v1
 #   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+schema:
+  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day
@@ -25,4 +28,3 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}

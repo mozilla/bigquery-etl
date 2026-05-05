@@ -1,0 +1,8 @@
+# users_v1
+---
+# user 1
+- external_id: user_1
+# user 2
+- external_id: user_2
+# user 3 no active subscriptions
+- external_id: user_3

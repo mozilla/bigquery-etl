@@ -1,0 +1,21 @@
+friendly_name: Broken site Root Domain Weekly Trends
+description: |-
+  Weekly trend computation for broken site reports.
+owners:
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  depends_on_past: true
+  owner1: gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_broken_reports_agg
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: report_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - root_domain

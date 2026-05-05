@@ -1,0 +1,5 @@
+fields:
+
+- name: email
+  type: STRING
+  mode: NULLABLE

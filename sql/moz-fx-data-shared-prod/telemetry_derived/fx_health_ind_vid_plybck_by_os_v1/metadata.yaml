@@ -1,0 +1,23 @@
+friendly_name: Fx Health Ind Vid Plybck By Os
+description: |-
+  Aggregate table of video playback minutes per user per OS
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  owner1: kik
+  table_type: aggregate
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_os
+require_column_descriptions: false

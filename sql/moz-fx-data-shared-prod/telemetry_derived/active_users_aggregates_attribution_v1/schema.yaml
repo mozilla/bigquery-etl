@@ -31,18 +31,23 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+  description: An ISO 3166-1 alpha-2 country code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: dau
   type: INTEGER

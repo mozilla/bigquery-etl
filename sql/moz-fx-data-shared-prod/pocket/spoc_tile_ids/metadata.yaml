@@ -7,3 +7,4 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:pocket/prefect
+deprecated: true

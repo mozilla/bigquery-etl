@@ -1,0 +1,9 @@
+description: |
+  LTV states for Desktop. Results in strings like: "0_1_1_1_1"
+  Where each component is
+  1. the age in days of the client
+  2. the day of week of first_seen_date
+  3. the day of week of submission_date
+  4. the activity level, possible values are 0-3, plus "00" for "dead"
+  5. whether the client is active on submission_date
+friendly_name: Desktop States V1

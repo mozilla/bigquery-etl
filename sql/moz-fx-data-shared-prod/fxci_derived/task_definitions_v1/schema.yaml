@@ -1,0 +1,64 @@
+fields:
+  - name: taskId
+    type: STRING
+    mode: REQUIRED
+  - name: submission_date
+    type: DATE
+    mode: REQUIRED
+  - name: created
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: deadline
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: dependencies
+    type: STRING
+    mode: REPEATED
+  - name: expires
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: extra
+    type: JSON
+    mode: REQUIRED
+  - name: metadata
+    type: JSON
+    mode: REQUIRED
+  - name: payload
+    type: JSON
+    mode: REQUIRED
+  - name: priority
+    type: STRING
+    mode: REQUIRED
+  - name: projectId
+    type: STRING
+    mode: REQUIRED
+  - name: provisionerId
+    type: STRING
+    mode: REQUIRED
+  - name: requires
+    type: STRING
+    mode: REQUIRED
+  - name: retries
+    type: INTEGER
+    mode: REQUIRED
+  - name: routes
+    type: STRING
+    mode: REPEATED
+  - name: schedulerId
+    type: STRING
+    mode: REQUIRED
+  - name: scopes
+    type: STRING
+    mode: REPEATED
+  - name: tags
+    type: JSON
+    mode: REQUIRED
+  - name: taskGroupId
+    type: STRING
+    mode: REQUIRED
+  - name: taskQueueId
+    type: STRING
+    mode: REQUIRED
+  - name: workerType
+    type: STRING
+    mode: REQUIRED

@@ -27,7 +27,7 @@ WITH client_shares AS (
       END
     ) AS eligible_clients
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date >= "2022-06-07"
@@ -55,7 +55,7 @@ suggest_clients AS (
     submission_date,
     COUNT(client_id) AS live_market_dau
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date >= "2022-06-07"
@@ -78,7 +78,7 @@ search_clients AS (
     SUM(CASE WHEN SOURCE LIKE "urlbar%" THEN sap ELSE 0 END) AS urlbar_search,
     MAX(COALESCE(SOURCE LIKE "urlbar%", FALSE)) AS did_urlbar_search,
   FROM
-    search.search_clients_engines_sources_daily
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date >= "2022-06-07"
     AND browser_version_info.major_version >= 92
@@ -123,7 +123,7 @@ desktop_population AS (
     SUM(impression_sponsored_count) AS spons_impressions,
     SUM(click_sponsored_count) AS spons_clicks
   FROM
-    telemetry.suggest_clients_daily
+    `moz-fx-data-shared-prod.telemetry.suggest_clients_daily`
   WHERE
     submission_date >= "2022-06-07"
   GROUP BY

@@ -82,7 +82,7 @@ flows AS (
   SELECT
     *
   FROM
-    `mozilla_vpn_derived.fxa_attribution_v1`
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.fxa_attribution_v1`
 )
 SELECT
   flow_id,

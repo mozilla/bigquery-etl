@@ -1,0 +1,34 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: The first date in the date range for the install data
+- mode: NULLABLE
+  name: application_id
+  type: STRING
+  description: The Store ID of the app for which you are retrieving install data
+- mode: NULLABLE
+  name: application_name
+  type: STRING
+  description: The display name of the app
+- mode: NULLABLE
+  name: package_version
+  type: STRING
+  description: The version of the package that was installed
+- mode: NULLABLE
+  name: device_type
+  type: STRING
+  description: Device Type
+- mode: NULLABLE
+  name: market
+  type: STRING
+  description: The ISO 3166 country code of the market where the install occurred
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: The OS version on which the install occurred
+- mode: NULLABLE
+  name: successful_install_count
+  type: INT64
+  description: The number of successful installs that occurred during the specified aggregation level

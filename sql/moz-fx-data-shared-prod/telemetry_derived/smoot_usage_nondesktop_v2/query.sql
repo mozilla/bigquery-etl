@@ -4,7 +4,7 @@ WITH base AS (
     normalized_channel AS channel,
     (campaign IS NOT NULL) AS attributed,
   FROM
-    telemetry.nondesktop_clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen`
   WHERE
     product != 'Other'
 ),
@@ -36,7 +36,7 @@ nested AS (
     [
       STRUCT(
         FORMAT('Any %s Activity', product) AS usage,
-        udf.smoot_usage_from_28_bits(
+        `moz-fx-data-shared-prod.udf.smoot_usage_from_28_bits`(
           ARRAY_AGG(STRUCT(days_created_profile_bits, days_seen_bits))
         ) AS metrics
       )

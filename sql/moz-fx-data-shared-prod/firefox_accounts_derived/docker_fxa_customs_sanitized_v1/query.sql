@@ -10,4 +10,8 @@ SELECT
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_customs`
 WHERE
-  DATE(`timestamp`) = @submission_date
+  {% if is_init() %}
+    DATE(`timestamp`) = "2020-01-01"
+  {% else %}
+    DATE(`timestamp`) = @submission_date
+  {% endif %}

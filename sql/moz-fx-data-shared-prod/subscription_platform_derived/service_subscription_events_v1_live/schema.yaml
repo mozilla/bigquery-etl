@@ -1,0 +1,42 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Service subscription event ID.
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    When the event occurred.
+- name: service_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the service provided by the subscription, as defined in the `services_v1` ETL.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of event.
+- name: reason
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Reason the event occurred.
+- name: service_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `service_subscriptions_history_v1` record this event was derived from.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription
+  new_description: |-
+    The service subscription as it ostensibly was after the event occurred.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription
+  new_name: old_subscription
+  new_description: |-
+    The service subscription as it ostensibly was before the event occurred.

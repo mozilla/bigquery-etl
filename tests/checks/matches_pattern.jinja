@@ -4,7 +4,10 @@
 
   SELECT
     IF(
-      ROUND((COUNTIF(NOT REGEXP_CONTAINS({{ column }}, r"{{ pattern }}"))) / COUNT(*) * 100, 2) > {{ threshold_fail_percentage }},
+      ROUND(
+        COUNTIF(NOT REGEXP_CONTAINS({{ column }}, r"{{ pattern }}")) / GREATEST(COUNT(*), 1) * 100,
+        2
+      ) > {{ threshold_fail_percentage }},
       ERROR("{{ message }}"),
       NULL
     )

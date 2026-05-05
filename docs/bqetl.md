@@ -50,3 +50,29 @@ $ ./bqetl [command] --help
 ```
 
 <!--- Documentation for comments is generated via ./bqetl docs generate -->
+
+## Autocomplete
+
+CLI autocomplete for `bqetl` can be enabled for bash and zsh shells using the `script/bqetl_complete` script:
+
+```sh
+source script/bqetl_complete
+```
+
+Then pressing tab after `bqetl` commands should print possible commands, e.g. for zsh:
+```sh
+% bqetl query<TAB><TAB>
+backfill       -- Run a backfill for a query.
+create         -- Create a new query with name...
+info           -- Get information about all or specific...
+initialize     -- Run a full backfill on the destination...
+render         -- Render a query Jinja template.
+run            -- Run a query.
+...
+```
+
+`source script/bqetl_complete` can also be added to `~/.bashrc` or `~/.zshrc` to persist settings
+across shell instances.
+
+For more details on shell completion, see the [click documentation](https://click.palletsprojects.com/en/8.1.x/shell-completion/).
+

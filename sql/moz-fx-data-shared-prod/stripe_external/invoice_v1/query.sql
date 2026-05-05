@@ -14,7 +14,7 @@ SELECT
   created,
   currency,
   customer_id,
-  date,
+  `date`,
   default_payment_method_id,
   default_source_id,
   description,

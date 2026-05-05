@@ -12,7 +12,7 @@ WITH clients_first_seen AS (
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
     cohort_date >= DATE_TRUNC(
-      DATE_SUB(current_date, INTERVAL 180 day),
+      DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY),
       WEEK
     ) --start of week for date 180 days ago
     AND LOWER(normalized_app_name) NOT LIKE '%browserstack'
@@ -27,11 +27,11 @@ submission_date_activity AS (
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
     submission_date > DATE_TRUNC(
-      DATE_SUB(current_date, INTERVAL 180 day),
+      DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY),
       WEEK
     ) --start of week for date 180 days ago
     AND submission_date <= DATE_SUB(
-      DATE_TRUNC(current_date, WEEK),
+      DATE_TRUNC(CURRENT_DATE, WEEK),
       INTERVAL 1 DAY
     ) --through last completed week
     AND is_dau IS TRUE

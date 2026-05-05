@@ -1,0 +1,57 @@
+# Subscription 1: active, then expired, then active
+- id: s1-2000-01-01T00:00:00.000000
+  valid_from: 2000-01-01 00:00:00Z
+  valid_to: 2000-02-01 00:00:00Z
+  original_subscription_purchase_token: s1
+  subscription:
+    metadata:
+      purchase_token: s1
+    auto_renewing: false
+    expiry_time: 2000-02-01 00:00:00Z
+- id: s1-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  original_subscription_purchase_token: s1
+  subscription:
+    metadata:
+      purchase_token: s1
+    auto_renewing: false
+    expiry_time: 2000-02-01 00:00:00Z
+- id: s1-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  original_subscription_purchase_token: s1
+  subscription:
+    metadata:
+      purchase_token: s1
+    auto_renewing: true
+    expiry_time: 2000-04-01 00:00:00Z
+
+# Subscription 2: active, then replaced, then expired
+- id: s2-2000-02-01T00:00:00.000000
+  valid_from: 2000-02-01 00:00:00Z
+  valid_to: 2000-03-01 00:00:00Z
+  original_subscription_purchase_token: s2
+  subscription:
+    metadata:
+      purchase_token: s2
+    auto_renewing: true
+    expiry_time: 2000-03-01 00:00:00Z
+- id: s2-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  original_subscription_purchase_token: s2
+  subscription:
+    metadata:
+      purchase_token: s2b
+    auto_renewing: false
+    expiry_time: 2000-04-01 00:00:00Z
+- id: s2-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  original_subscription_purchase_token: s2
+  subscription:
+    metadata:
+      purchase_token: s2b
+    auto_renewing: false
+    expiry_time: 2000-04-01 00:00:00Z

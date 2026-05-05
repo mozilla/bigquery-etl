@@ -1,0 +1,66 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+  - collection:
+      name: Ads Client
+      notification_channels:
+        - slack: '#ads-client-notifications'
+    deployments:
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.*
+        metrics:
+          - metric_type:
+              type: PREDEFINED
+              predefined_metric: FRESHNESS
+            metric_name: FRESHNESS
+            metric_schedule:
+              named_schedule:
+                name: Default Schedule - 13:00 UTC
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.op_request_ads
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.op_record_click
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.op_record_impression
+        metrics:
+          - metric_type:
+              type: PREDEFINED
+              predefined_metric: SUM
+            threshold:
+              type: AUTO
+              sensitivity: MEDIUM
+              lower_bound_only: true
+            metric_schedule:
+              named_schedule:
+                name: Default Schedule - 13:00 UTC
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.client_error_request_ads
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.client_error_record_click
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.client_error_record_impression
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.build_cache_error_builder_error
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.build_cache_error_database_error
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.build_cache_error_empty_db_path
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.build_cache_error_invalid_max_size
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.build_cache_error_invalid_ttl
+        metrics:
+          - metric_type:
+              type: PREDEFINED
+              predefined_metric: SUM
+            threshold:
+              type: AUTO
+              sensitivity: MEDIUM
+              upper_bound_only: true
+            metric_schedule:
+              named_schedule:
+                name: Default Schedule - 13:00 UTC
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.deserialization_error_invalid_ad_item
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.deserialization_error_invalid_array
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.ads_derived.ads_client_operations_and_errors_hourly_v1.deserialization_error_invalid_structure
+        metrics:
+          - metric_type:
+              type: PREDEFINED
+              predefined_metric: SUM
+            threshold:
+              type: CONSTANT
+              upper_bound: 0
+            metric_schedule:
+              named_schedule:
+                name: Default Schedule - 13:00 UTC

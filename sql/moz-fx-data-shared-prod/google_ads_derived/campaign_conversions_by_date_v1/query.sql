@@ -1,6 +1,6 @@
 WITH conversion_counts AS (
   SELECT
-    date,
+    `date`,
     customer_id AS account_id,
     campaign_id,
     SUM(biddable_app_install_conversions) AS installs,
@@ -8,12 +8,12 @@ WITH conversion_counts AS (
   FROM
     `moz-fx-data-bq-fivetran`.ads_google_mmc.campaign_conversions_by_date
   GROUP BY
-    date,
+    `date`,
     account_id,
     campaign_id
 )
 SELECT
-  date,
+  `date`,
   account_name,
   account_id,
   campaign_name,

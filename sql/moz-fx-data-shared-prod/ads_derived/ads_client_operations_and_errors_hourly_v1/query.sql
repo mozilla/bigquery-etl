@@ -2,9 +2,9 @@
 -- Covers operation counts (labeled_counter) and error occurrence counts (labeled_string)
 -- broken down by key, plus total ping count and device dimensions.
 -- Source tables and their channels:
---   - org_mozilla_ios_firefox_stable (iOS release)
---   - org_mozilla_firefox_stable (Android release)
---   - org_mozilla_fenix_stable (Android nightly)
+--   - org_mozilla_ios_firefox_live (iOS release)
+--   - org_mozilla_firefox_live (Android release)
+--   - org_mozilla_fenix_live (Android nightly)
 -- Only pings with at least one ads_client metric entry are included.
 WITH ios_base AS (
   SELECT
@@ -22,9 +22,17 @@ WITH ios_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
+    {% endif %}
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2026-02-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND (
       ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
       OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
@@ -49,9 +57,17 @@ android_release_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
+    {% endif %}
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2026-02-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND (
       ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
       OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
@@ -76,9 +92,17 @@ android_nightly_base AS (
     metrics.labeled_string.ads_client_deserialization_error AS deserialization_error,
     metrics.labeled_string.ads_client_http_cache_outcome AS http_cache_outcome,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    {% endif %}
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2026-02-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND (
       ARRAY_LENGTH(metrics.labeled_counter.ads_client_client_operation_total) > 0
       OR ARRAY_LENGTH(metrics.labeled_string.ads_client_client_error) > 0
@@ -92,21 +116,19 @@ base AS (
     *
   FROM
     ios_base
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM
     android_release_base
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM
     android_nightly_base
 )
 SELECT
-  @submission_date AS submission_date,
+  DATE(submission_timestamp) AS submission_date,
   TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS submission_hour,
   surface,
   normalized_os,

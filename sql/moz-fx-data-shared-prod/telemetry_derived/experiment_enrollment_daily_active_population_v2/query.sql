@@ -1,5 +1,5 @@
 SELECT
-  CAST(DATE_ADD(submission_date, INTERVAL 1 day) AS timestamp) AS time,
+  CAST(DATE_ADD(submission_date, INTERVAL 1 DAY) AS timestamp) AS time,
   experiment_id AS experiment,
   branch,
   normalized_channel,

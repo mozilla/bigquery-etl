@@ -80,11 +80,7 @@ WITH all_events AS (
 )
 SELECT
   event_date,
-  CASE
-    WHEN ENDS_WITH(event_name, '_download')
-      THEN 'product_download'
-    ELSE event_name
-  END AS event_name,
+  event_name,
   event_timestamp,
   ga_client_id,
   ga_session_id,

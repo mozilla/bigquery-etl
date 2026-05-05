@@ -1,12 +1,12 @@
 """Experiment monitoring materialized view generation."""
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import click
-import yaml
+from metric_config_parser.config import ConfigCollection
+from metric_config_parser.featmon import SourceTableSpec
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -39,21 +39,39 @@ class Dimension:
 
 
 @dataclass
-class SourceTable:
-    name: str
+class SourceTableConfiguration:
+    """Wraps a SourceTableSpec with rendering context needed to generate SQL."""
+
+    source_table_spec: SourceTableSpec
     project: str
     dataset: str
-    table_name: str
     dimensions: list[Dimension]
-    analysis_unit_id: str = "client_info.client_id"
-    time_partition_field: str = "submission_timestamp"
-    is_events_stream: bool = False
 
     def __post_init__(self):
         self.last_dimensions = [d for d in self.dimensions if d.aggregator == "last"]
         self.non_last_dimensions = [
             d for d in self.dimensions if d.aggregator != "last"
         ]
+
+    @property
+    def name(self) -> str:
+        return self.source_table_spec.name
+
+    @property
+    def table_name(self) -> str:
+        return self.source_table_spec.table_name
+
+    @property
+    def analysis_unit_id(self) -> str:
+        return self.source_table_spec.analysis_unit_id
+
+    @property
+    def type(self) -> str:
+        return self.source_table_spec.type
+
+    @property
+    def time_partition_field(self) -> str:
+        return "submission_timestamp"
 
 
 @dataclass
@@ -68,7 +86,7 @@ class Metric:
         self.is_labeled = isinstance(self, LabeledMetric)
 
     @classmethod
-    def from_(_, source_is_events_stream=False, **kwargs) -> "Metric":
+    def from_(_, source_type="metrics", **kwargs) -> "Metric":
         data_type = kwargs["data_type"]
 
         if (_key := "field") not in kwargs:
@@ -86,7 +104,7 @@ class Metric:
         if (_key := "ping_aggregator") not in kwargs:
             if data_type in ("boolean", "labeled_boolean"):
                 kwargs[_key] = "logical_or"
-            elif data_type == "event" and source_is_events_stream:
+            elif data_type == "event" and source_type == "events_stream":
                 kwargs[_key] = "countif"
             else:
                 kwargs[_key] = "sum"
@@ -118,7 +136,7 @@ class Feature:
     project: str
     dataset: str
     metrics_by_source: dict[str, list[Metric]]
-    ratios: list[list[str, str]]
+    ratios: list[list[str]]
 
     def all_metrics(self):
         return [
@@ -139,17 +157,16 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
-    for app_config_path in path.glob("*.yaml"):
-        app_config = yaml.safe_load(app_config_path.read_text())
-        dataset = app_config["dataset"]
+    for app_config in ConfigCollection.from_github_repo().featmon_configs:
+        dataset = app_config.spec.dataset
         source_tables = {}
-        for source_name, source in app_config["source_tables"].items():
-            if source is None:
-                source = {}
+        for source_name, source in app_config.spec.data_sources.items():
             dimensions = []
-            for dim_name, dim in source.pop("dimensions", {}).items():
+            for dim_name, dim in source.dimensions.items():
                 if dim is None:
                     dim = {}
+                else:
+                    dim = dict(dim)
                 dimensions.append(
                     Dimension(
                         name=dim_name,
@@ -157,19 +174,16 @@ def generate_queries(project, path, write_dir):
                         **dim,
                     )
                 )
-            source_tables[source_name] = SourceTable(
-                name=source_name,
-                project=source.pop("project", project),
-                dataset=source.pop("dataset", dataset),
+            source_tables[source_name] = SourceTableConfiguration(
+                source_table_spec=source,
+                project=project,
+                dataset=dataset,
                 dimensions=dimensions,
-                **source,
             )
         features = []
-        for feat_name, feat in app_config["features"].items():
+        for _feat_name, feat in app_config.spec.features.items():
             metrics_by_source = {}
-            for source_name, source_metrics in feat.pop(
-                "metrics_by_source", {}
-            ).items():
+            for source_name, source_metrics in feat.metrics_by_source.items():
                 metrics_by_source[source_name] = metrics = []
                 for data_type, data_type_metrics in source_metrics.items():
                     if data_type == "event":
@@ -185,9 +199,9 @@ def generate_queries(project, path, write_dir):
                                         event_name=metric.pop(
                                             "event_name", metric_name
                                         ),
-                                        source_is_events_stream=source_tables[
+                                        source_type=source_tables[
                                             source_name
-                                        ].is_events_stream,
+                                        ].type,
                                         **metric,
                                     )
                                 )
@@ -202,19 +216,22 @@ def generate_queries(project, path, write_dir):
                             )
             features.append(
                 Feature(
-                    name=feat_name,
-                    project=feat.pop("project", project),
-                    dataset=feat.pop("dataset", f"{dataset}_derived"),
-                    ratios=feat.pop("ratios", []),
+                    name=feat.nimbus_slug(),
+                    project=project,
+                    dataset=f"{dataset}_derived",
+                    ratios=feat.ratios,
                     metrics_by_source=metrics_by_source,
-                    **feat,
                 )
             )
 
         feature_tables = []
         for feature in features:
             args = {
-                "source_tables": list(source_tables.values()),
+                "source_tables": [
+                    t
+                    for t in source_tables.values()
+                    if t.dimensions or (t.name in feature.metrics_by_source)
+                ],
                 "feature": feature,
             }
 

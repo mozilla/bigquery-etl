@@ -2,7 +2,8 @@ friendly_name: GitHub External
 description: |-
   Raw pull request data ingested daily from the GitHub API for delivery visibility,
   incident analysis and team reporting. Repos currently included: mozilla/bigquery-etl,
-  mozilla/private-bigquery-etl.
+  mozilla/private-bigquery-etl, mozilla/lookml-generator, mozilla/looker-spoke-default,
+  mozilla/looker-spoke-private.
 dataset_base_acl: derived
 user_facing: false
 labels: {}

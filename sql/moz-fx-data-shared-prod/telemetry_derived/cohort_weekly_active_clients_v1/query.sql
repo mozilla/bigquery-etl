@@ -5,7 +5,7 @@ FROM
   `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_staging_v1`
 WHERE
   submission_date >= DATE_TRUNC(
-    DATE_SUB(@submission_date, INTERVAL 768 day),
+    DATE_SUB(@submission_date, INTERVAL 768 DAY),
     WEEK
   ) --start of week for date 768 days ago
   AND submission_date <= DATE_SUB(

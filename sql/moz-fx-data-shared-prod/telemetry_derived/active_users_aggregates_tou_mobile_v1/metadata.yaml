@@ -9,12 +9,22 @@ description: |-
   Focus and klar are not in scope as of this date.
 
   Jira ticket: https://mozilla-hub.atlassian.net/browse/DO-2122
+
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+
+  The label "shredder mitigation" indicates that this table is set up for
+  managed backfill with shredder mitigation, as described in
+  https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill.
 owners:
 - rbaffourawuah@mozilla.com
 - mhirose@mozilla.com
+- mozilla/kpi_table_reviewers
 labels:
+  level: gold
   incremental: true
-  shredder_mitigation: false
+  change_controlled: true
+  shredder_mitigation: true
   owner1: rbaffourawuah
   owner2: mhirose
 scheduling:

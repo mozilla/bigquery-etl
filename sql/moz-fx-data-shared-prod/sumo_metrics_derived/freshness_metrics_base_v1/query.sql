@@ -7,7 +7,7 @@ WITH date_range AS (
 -- Generate daily date spine
 daily_dates AS (
   SELECT
-    date AS observation_date
+    `date` AS observation_date
   FROM
     UNNEST(
       GENERATE_DATE_ARRAY((SELECT start_date FROM date_range), (SELECT end_date FROM date_range))

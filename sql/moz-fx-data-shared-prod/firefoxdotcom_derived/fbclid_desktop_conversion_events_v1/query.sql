@@ -96,8 +96,10 @@ early_conversion_events AS (
       *
     -- Make sure these events are listed and up-to-date inside the metadata file.
     FROM
-      events_stage UNPIVOT(
-        activity_date FOR conversion_name IN (
+      events_stage
+      UNPIVOT (
+        activity_date
+        FOR conversion_name IN (
           firefox_first_run,
           firefox_first_ad_click,
           firefox_first_search,
@@ -148,8 +150,10 @@ activity_conversion_events AS (
     * EXCEPT (did_conversion),
   -- Make sure these events are listed and up-to-date inside the metadata file.
   FROM
-    events_stage UNPIVOT(
-      did_conversion FOR conversion_name IN (
+    events_stage
+    UNPIVOT (
+      did_conversion
+      FOR conversion_name IN (
         first_wk_5_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_24_active_minutes,
@@ -171,8 +175,7 @@ current_conversions AS (
     *
   FROM
     early_conversion_events
-  UNION ALL
-    BY NAME
+  UNION ALL BY NAME
   SELECT
     *
   FROM

@@ -1,6 +1,6 @@
 2026-04-29:
-  start_date: 2024-03-23
-  end_date: 2026-04-27
+  start_date: 2024-05-04
+  end_date: 2026-04-03
   reason: 'backfill of new table, https://mozilla-hub.atlassian.net/browse/DENG-10676'
   watchers:
   - mhirose@mozilla.com

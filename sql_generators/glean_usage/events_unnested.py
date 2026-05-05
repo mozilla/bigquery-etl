@@ -1,6 +1,6 @@
 """Generate unnested events queries for Glean apps."""
 
-from sql_generators.glean_usage.common import GleanTable
+from sql_generators.glean_usage.common import GleanTable, ping_has_metrics
 
 TARGET_TABLE_ID = "events_unnested_v1"
 PREFIX = "events_unnested"
@@ -25,13 +25,30 @@ class EventsUnnestedTable(GleanTable):
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
     ):
         """Generate the events_unnested table query per app_name."""
-        target_dataset = app_info[0]["app_name"]
+        target_dataset = app_name
         if target_dataset not in DATASET_SKIP:
-            super().generate_per_app(project_id, app_info, output_dir, id_token=id_token)
+            custom_render_kwargs = {
+                "has_metrics": ping_has_metrics(
+                    app_ids_info[0]["bq_dataset_family"], "events"
+                )
+            }
+            super().generate_per_app(
+                project_id,
+                app_name,
+                app_ids_info,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
+                id_token=id_token,
+                all_base_tables_exist=all_base_tables_exist,
+                custom_render_kwargs=custom_render_kwargs,
+            )

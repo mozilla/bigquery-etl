@@ -1,0 +1,20 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.monthly_active_service_subscriptions_v1
+  field_replacements:
+  - !include-field
+    table: moz-fx-data-shared-prod.subscription_platform_derived.monthly_active_service_subscriptions_v1
+    field: subscription
+    new_fields: !flatten-lists
+    - !include-fields
+      table: moz-fx-data-shared-prod.subscription_platform_derived.monthly_active_service_subscriptions_v1
+      parent_field: subscription
+      exclude_field_names:
+      - first_touch_attribution
+    - !include-fields
+      file: sql/moz-fx-data-shared-prod/subscription_platform/subscription_revenue_fields_schema.yaml
+      field_replacements:
+      - !include-field
+        file: sql/moz-fx-data-shared-prod/subscription_platform/subscription_revenue_fields_schema.yaml
+        field: annual_recurring_revenue_usd
+        append_description: |-
+          This will be null for Stripe subscriptions prior to 2023-02-01 (DENG-754).

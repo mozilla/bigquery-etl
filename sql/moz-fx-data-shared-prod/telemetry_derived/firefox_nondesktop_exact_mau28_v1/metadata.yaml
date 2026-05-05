@@ -8,6 +8,8 @@ labels:
   application: nondesktop
   schedule: daily
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_nondesktop
 bigquery:
@@ -15,3 +17,5 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+deprecated: true
+deletion_date: 2025-12-12

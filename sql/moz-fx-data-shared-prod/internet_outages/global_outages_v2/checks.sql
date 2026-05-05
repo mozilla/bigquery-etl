@@ -1,4 +1,4 @@
-{% set _WHERE = '@submission_date = @submission_date' %}
+{% set _WHERE = 'DATE(`datetime`) = @submission_date' %}
 
 #warn
 {{ min_row_count(1000, where=_WHERE) }}

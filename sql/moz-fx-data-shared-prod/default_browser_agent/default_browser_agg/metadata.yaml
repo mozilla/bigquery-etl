@@ -1,0 +1,5 @@
+friendly_name: Default Browser Aggregates
+description: |-
+  Aggregate table for default browser setting
+owners:
+- wichan@mozilla.com

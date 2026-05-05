@@ -440,6 +440,11 @@
             "name": "topsites_rows",
             "type": "INTEGER",
             "mode": "NULLABLE"
+          },
+          {
+            "name": "topsites_sponsored_tiles_configured",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
           }
         ]
       },

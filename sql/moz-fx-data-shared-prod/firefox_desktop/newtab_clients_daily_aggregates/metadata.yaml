@@ -1,0 +1,6 @@
+friendly_name: Newtab Clients Daily Aggregates
+description: |-
+  A daily aggregation of newtab metrics.
+  The granularity is one row per submission_date
+owners:
+- gkatre@mozilla.com

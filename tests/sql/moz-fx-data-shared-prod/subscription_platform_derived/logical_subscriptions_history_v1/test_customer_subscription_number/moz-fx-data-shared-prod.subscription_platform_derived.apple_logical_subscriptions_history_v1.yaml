@@ -1,0 +1,24 @@
+# Customer 1, subscription 3
+- id: Apple-sub_1_3-2000-03-01T00:00:00.000000-2000-03-01T00:00:00.000000
+  valid_from: 2000-03-01 00:00:00Z
+  valid_to: 2000-04-01 00:00:00Z
+  subscription:
+    id: Apple-sub_1_3-2000-03-01T00:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_1_3
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    is_active: true
+    started_at: 2000-03-01 00:00:00Z
+- id: Apple-sub_1_3-2000-03-01T00:00:00.000000-2000-04-01T00:00:00.000000
+  valid_from: 2000-04-01 00:00:00Z
+  valid_to: 9999-12-31 23:59:59.999999Z
+  subscription:
+    id: Apple-sub_1_3-2000-03-01T00:00:00.000000
+    provider: Apple
+    provider_subscription_id: sub_1_3
+    mozilla_account_id: cus_1
+    mozilla_account_id_sha256: abc123
+    is_active: false
+    started_at: 2000-03-01 00:00:00Z
+    ended_at: 2000-04-01 00:00:00Z

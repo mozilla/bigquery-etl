@@ -8,13 +8,13 @@ table_deployments:
     table_metrics:
     - metric_type:
         type: PREDEFINED
-        predefined_metric: FRESHNESS
+        predefined_metric: FRESHNESS [warn]
       metric_schedule:
         named_schedule:
           name: Default Schedule - 17:00 UTC
     - metric_type:
         type: PREDEFINED
-        predefined_metric: VOLUME
+        predefined_metric: VOLUME [fail]
       metric_schedule:
         named_schedule:
           name: Default Schedule - 17:00 UTC

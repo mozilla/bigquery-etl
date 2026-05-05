@@ -1,0 +1,30 @@
+---
+friendly_name: Addons - Search Detection
+description: |
+  Used for addons search detection and based on event_category: addonsSearchDetection.
+
+  This event category is recorded when a request for a search query is redirected to another
+  domain. This can be via the webRequest API, or through other means.
+
+  More information about this event_category:
+  https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml#304
+owners:
+  - kik@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
+scheduling:
+  dag_name: bqetl_amo_stats
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - normalized_channel
+      - app_name
+      - os_name

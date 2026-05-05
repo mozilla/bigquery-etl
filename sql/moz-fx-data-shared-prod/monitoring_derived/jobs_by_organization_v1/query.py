@@ -12,6 +12,12 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",
     "moz-fx-data-marketing-prod",
     "moz-fx-data-bq-data-science",
+    "moz-fx-glam-prod",
+    "moz-fx-glam-nonprod",
+    "moz-fx-sumo-prod",
+    "moz-fx-sumo-nonprod",
+    "moz-fx-mozsocial-dw-prod",
+    "moz-fx-data-bq-people",
 ]
 
 parser = ArgumentParser(description=__doc__)
@@ -39,13 +45,7 @@ def create_query(job_date: date, project: str):
           priority,
           project_id,
           project_number,
-          ARRAY_CONCAT(referenced_tables, IFNULL((SELECT ARRAY_AGG(
-            STRUCT(
-              materialized_view.table_reference.project_id AS project_id,
-              materialized_view.table_reference.dataset_id AS dataset_id,
-              materialized_view.table_reference.table_id AS table_id
-            )
-          ) FROM UNNEST(materialized_view_statistics.materialized_view) AS materialized_view), [])) AS referenced_tables,
+          referenced_tables,
           reservation_id,
           start_time,
           state,
@@ -59,7 +59,12 @@ def create_query(job_date: date, project: str):
           query_info.resource_warning as query_info_resource_warning,
           query_info.query_hashes.normalized_literals as query_info_query_hashes_normalized_literals,
           transferred_bytes,
-          DATE(creation_time) as creation_date
+          DATE(creation_time) as creation_date,
+          materialized_view_statistics,
+          query_dialect,
+          bi_engine_statistics.bi_engine_mode AS bi_engine_mode,
+          bi_engine_statistics.acceleration_mode AS acceleration_mode,
+          bi_engine_statistics.bi_engine_reasons AS bi_engine_reasons,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

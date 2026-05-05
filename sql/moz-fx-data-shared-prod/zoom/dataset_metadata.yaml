@@ -1,0 +1,10 @@
+friendly_name: Zoom
+description: |-
+  Data about Mozilla's Zoom meetings and participants.
+dataset_base_acl: view_restricted
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:zoom/data-developers
+  - workgroup:zoom/data-viewers

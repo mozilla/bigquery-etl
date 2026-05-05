@@ -9,7 +9,7 @@
 SELECT
   mozfun.assert.equals(1, COUNT(DISTINCT state_function))
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1`
+  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2`
 GROUP BY
   country;
 
@@ -18,4 +18,4 @@ GROUP BY
 SELECT
   `mozfun.assert.true`(COUNT(DISTINCT country) > 2)
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1`;
+  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2`;

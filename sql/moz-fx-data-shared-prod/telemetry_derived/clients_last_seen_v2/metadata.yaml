@@ -16,10 +16,12 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
   owner1: kwindau
+  table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85
@@ -27,16 +29,12 @@ scheduling:
   email:
   - kwindau@mozilla.com
   depends_on_past: true
-  external_downstream_tasks:
-  - task_id: wait_for_clients_last_seen
-    dag_name: taar_daily
-    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   range_partitioning: null
   clustering:
     fields:
@@ -49,9 +47,3 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:dataops-managed/taar
-references: {}

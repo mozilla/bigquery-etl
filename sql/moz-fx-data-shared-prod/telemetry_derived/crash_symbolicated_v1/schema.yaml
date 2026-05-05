@@ -1,14 +1,16 @@
----
 fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the ping is received on the server side.
 - name: document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: async_shutdown_timeout
   type: STRING
   mode: NULLABLE

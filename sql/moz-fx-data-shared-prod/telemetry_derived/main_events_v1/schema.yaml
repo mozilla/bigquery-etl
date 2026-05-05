@@ -2,30 +2,38 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: app_name
   type: STRING
   mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: STRING
   mode: NULLABLE
@@ -52,6 +60,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: session_id
   type: STRING
   mode: NULLABLE
@@ -113,12 +123,16 @@ fields:
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether we're in Windows32-on-Windows64 mode. Windows only.
 - name: system_memory_mb
   type: FLOAT
   mode: NULLABLE
+  description: The physical memory size in MB (2^20 bytes). e.g. 32211
 - name: city
   type: STRING
   mode: NULLABLE
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

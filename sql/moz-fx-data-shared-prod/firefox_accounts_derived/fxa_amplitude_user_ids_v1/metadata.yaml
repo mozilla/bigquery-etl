@@ -11,3 +11,4 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level

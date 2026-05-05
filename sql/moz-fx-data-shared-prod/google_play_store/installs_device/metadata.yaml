@@ -1,0 +1,8 @@
+friendly_name: Google Play Store Installs by Device (444337733603)
+description: |-
+  Google Play Store Installs by Device.
+  Pulled using data transfer (444337733603).
+owners:
+  - kik@mozilla.com
+labels:
+  authorized: true

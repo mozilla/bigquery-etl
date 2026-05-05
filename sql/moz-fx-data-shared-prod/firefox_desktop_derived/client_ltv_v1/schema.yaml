@@ -1,13 +1,15 @@
 fields:
-- description: Unique ID for the client installation.
+- description: A unique identifier (UUID) for the client.
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: Sample ID, a number 0-99 inclusive, that samples by client ID
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   mode: NULLABLE
   name: sample_id
-  type: INT64
-- description: The date associated with the Markov state; as_of_date will not update after a year of inactivity as the markov states stop updating
+  type: INTEGER
+- description: The date associated with the Markov state; as_of_date will not update
+    after a year of inactivity as the markov states stop updating
   mode: NULLABLE
   name: as_of_date
   type: DATE
@@ -18,11 +20,11 @@ fields:
 - description: Days Since First Seen
   mode: NULLABLE
   name: days_since_first_seen
-  type: INT64
+  type: INTEGER
 - description: Days Since Active
   mode: NULLABLE
   name: days_since_active
-  type: INT64
+  type: INTEGER
 - description: First Reported Country
   mode: NULLABLE
   name: first_reported_country
@@ -70,12 +72,12 @@ fields:
 - description: Active
   mode: NULLABLE
   name: active
-  type: INT64
+  type: INTEGER
 - description: Ad Clicks
   mode: NULLABLE
   name: ad_clicks
-  type: INT64
+  type: INTEGER
 - description: Total Historical Ad Clicks
   mode: NULLABLE
   name: total_historic_ad_clicks
-  type: INT64
+  type: INTEGER

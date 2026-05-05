@@ -18,12 +18,13 @@ labels:
   owner2: mhirose
 scheduling:
   dag_name: bqetl_cohort_daily_churn
+  date_partition_offset: -30
 bigquery:
   time_partitioning:
     type: day
-    field: 'submission_date'
+    field: cohort_date
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: [cohort_date]
+    fields: [sample_id]
 require_column_descriptions: true

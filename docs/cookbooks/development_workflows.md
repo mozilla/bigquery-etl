@@ -91,7 +91,7 @@ With `--defer-to-target`:
 
 Without `--defer-to-target` (default): no rewrites — all references stay pointed at prod.
 
-### 3. Deploy artifacts without running _(future)_
+### 3. Deploy artifacts without running
 
 ```bash
 # Deploy table schema only (no data)
@@ -102,7 +102,14 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
 
 # Deploy a UDF
 ./bqetl --target dev deploy --routines udf.normalize_metadata
+
+# Deploy tables and views together, rewriting references to target
+./bqetl --target dev deploy --tables --views --defer-to-target \
+  telemetry_derived.clients_daily_v6
 ```
+
+Supports `--defer-to-target` (same as `query run`) and `--dry-run` to preview
+without making changes.
 
 ### 4. Backfill testing  _(future)_
 
@@ -113,13 +120,42 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
   telemetry_derived.clients_daily_v6
 ```
 
-### 5. Share with teammates _(future)_
+### 5. Share with teammates
 
 ```bash
-./bqetl --target dev share telemetry_derived.clients_daily_v6 \
-  --email teammate@mozilla.com \
-  --role READER
+# Grant read access to all datasets for the current branch
+./bqetl --target dev target share --email teammate@mozilla.com
+
+# Grant write access
+./bqetl --target dev target share --email teammate@mozilla.com --role WRITER
+
+# Share only datasets for a specific branch
+./bqetl --target dev target share --branch feature-xyz --email teammate@mozilla.com
+
+# Narrow to datasets containing "telemetry_derived"
+./bqetl --target dev target share --dataset telemetry_derived --email teammate@mozilla.com
+
+# Share specific tables within matched datasets
+./bqetl --target dev target share --table tbl1 --table tbl2 --email teammate@mozilla.com
+
+# Combine: specific table within specific dataset
+./bqetl --target dev target share --dataset telemetry_derived --table clients_daily_v6 --email teammate@mozilla.com
+
+# Preview without sharing
+./bqetl --target dev target share --dry-run --email teammate@mozilla.com
 ```
+
+Datasets are discovered automatically from the target's naming pattern in
+`bqetl_targets.yaml` (same as `target clean`). Use `--branch` to narrow by branch,
+`--dataset` to filter by dataset name substring. Both are repeatable.
+
+Without `--table`, grants dataset-level access to matched datasets.
+With `--table`, grants table-level IAM access to specific tables within matched
+datasets (repeatable). `--dataset` and `--table` can be combined.
+Table-level sharing is persisted in the local manifest so it is re-applied
+automatically on re-deploy.
+
+Supports `READER` (default), `WRITER`, and `OWNER` roles.
 
 ### 6. Clean up dev deployments
 
@@ -152,21 +188,134 @@ Empty datasets are removed automatically after table-level cleanup.
 
 Local copied files are cleaned up in both cases.
 
-### 7. Handle branch renames _(future)_
+### 7. Migrate a previous branch's deployment to the current branch
 
 ```bash
-./bqetl --target dev rename-branch old-feature-name new-feature-name
+# Check out the destination branch first
+git checkout new-feature-name
+
+./bqetl --target dev target migrate-branch old-feature-name
+
+# Preview first
+./bqetl --target dev target migrate-branch old-feature-name --dry-run
 ```
 
-### 8. Isolated deploys (e.g. for staging) _(future)_
+The destination branch is always the currently checked-out git branch —
+the deploy step that recreates views/MVs/routines renders target names
+from the current branch, so this command must be run from the branch
+you're migrating to.
 
-Use `--isolated` to rewrite **all** references to the target environment, ensuring complete isolation:
+Replaces the sanitized old-branch string with the current-branch string
+in dataset and/or artifact names, depending on where `git.branch` appears
+in the target's templates. Tables are copied to their new location and
+the originals deleted. Views, materialized views, and routines are
+skipped during the migration; the deploy step prompted at the end of the
+command recreates them at the new location from local SQL templates and
+cleans up the originals.
+
+References (FROM clauses, routine calls, manifests) in local SQL/YAML
+files under the target dir are also rewritten to the new names, so
+downstream queries generated under the target path keep pointing at the
+migrated artifacts.
+
+If the target template includes `git.commit`, only the most recently
+modified commit's datasets are migrated — older commit deployments are
+left behind (clean those up with `./bqetl target clean` if no longer
+needed). The commit hash in dataset and artifact names is rewritten to
+the current `HEAD`, so the next deploy lands at the matching location
+instead of creating a parallel set of artifacts.
+
+Migrated tables reflect the BigQuery state at time of migration, not the
+current local SQL templates. If templates have drifted since the last
+deploy, migrated tables won't pick those changes up. Accept the deploy
+prompt at the end of the command — or run `./bqetl deploy` manually on
+the migrated paths — to re-render everything from templates.
+
+**Caveat: substring replacement.** Renames and local reference rewrites
+are implemented as plain substring replacement of the sanitized branch
+(and commit) string. A very short or generic branch name (e.g. `dev`,
+`test`, `a`) can incorrectly match unrelated substrings inside identifiers
+or SQL/YAML content, producing bad names or content edits. In practice
+ticket-prefixed branch names (`DENG-1234-*`, `feature-xyz`) are unique
+enough that this doesn't bite, and the rewrite is scoped to the target
+project's dev directory — but if you use generic branch names, preview
+with `--dry-run` and spot-check the migration plan before accepting.
+A more robust implementation would match qualified table IDs via regex
+rather than using raw substring replace.
+
+### 8. Isolated deploys (e.g. for staging)
+
+Use `--isolated` to deploy a fully self-contained mirror into the target —
+every reference is rewritten so the deployed artifacts touch only target
+project data:
 
 ```bash
-./bqetl --target stage query run --isolated telemetry_derived.clients_daily_v6
+./bqetl --target stage deploy --tables --views --isolated \
+  telemetry_derived.clients_daily_v6
 ```
 
-This creates stubs in the target environment for all referenced artifacts.
+What `--isolated` does:
+
+1. **Walks dependencies** of each input artifact. Managed deps (under `sql/`)
+   are added as full artifacts. Unmanaged deps (live/stable tables, syndicated
+   tables, etc.) get a stub written directly into the target tree
+   (`sql/<target_project>/<target_dataset>/<target_artifact>/`) with a
+   `schema.yaml` fetched via `client.get_table()`.
+2. **Auto-discovers UDF dependencies** of every query/view/MV in the input
+   set, including transitive deps. These are added to the routine publish
+   step automatically; you don't need to list them in `--routines` paths.
+3. **Rewrites all 3-part references** in every artifact to point at target —
+   project, dataset, and artifact names rendered through the target's
+   templates. Same source of truth as the stub placement, so refs land where
+   the stubs are. 2-part UDF refs within UDF bodies (e.g.
+   `json.extract_int_map(...)` inside `mozfun.json.extract`) are also
+   rewritten.
+4. **Forces these flags together**: `--table-force`, `--table-skip-external-data`,
+   `--table-skip-existing-schemas`, `--view-force`, `--routines`. Schema
+   updates via dry-run are skipped — the schema in the target dir is
+   authoritative.
+5. **Strips `CREATE MATERIALIZED VIEW … AS`** for materialized-view artifacts
+   and renames them to `query.sql`, deploying as schema-only tables. (The
+   target project usually can't refresh MVs because it lacks source data.)
+
+`--isolated` is mutually exclusive with `--defer-to-target`.
+
+#### Schema resolution
+
+For each table without a `schema.yaml` in the target dir,
+`--isolated` falls back through:
+
+1. The `schema.yaml` copied from source (kept as-is, with `!include`
+   directives flattened).
+2. `client.get_table()` against the source project — fastest, works on
+   partition-required tables.
+3. Dry-running the rewritten query against the **target** project. UDFs and
+   stubs are already published at this point, so this picks up local UDF
+   changes.
+4. Fail loudly with the errors from steps 2 and 3 in the message.
+
+Tables marked `allow_field_addition` always re-derive (skip step 1) so
+schema drift is captured.
+
+#### CI parity flags
+
+For the `stage` target (or any CI-shared target), set these on the target
+in `bqetl_targets.yaml` so you don't have to remember to pass them every
+time:
+
+```yaml
+stage:
+  project_id: moz-fx-data-integration-tests
+  dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.commit }}"
+  grant_dryrun_access: true     # READER for dry_run.function_accounts
+  expire_after_hours: 12         # auto-GC by `target clean --delete-expired`
+  rewrite_tests: true            # mirror tests/sql/<src>/ → tests/sql/<tgt>/
+```
+
+CLI flags `--rewrite-tests/--no-rewrite-tests` and `--expire-after-hours=N`
+override per-run if needed. For personal `dev` targets, leave these unset —
+your dev datasets stay private (no service-account access), persist across
+iterations, and don't touch your `tests/sql/` tree.
 
 ## Future Enhancements
 

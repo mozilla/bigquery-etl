@@ -1,5 +1,5 @@
 ---
-friendly_name: AMO Stats DAU
+friendly_name: AMO Stats Installs
 description: >
   Daily install statistics to power addons.mozilla.org stats pages.
   See bug 1654330. Note that this table uses a hashed_addon_id

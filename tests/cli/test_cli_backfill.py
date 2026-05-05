@@ -2638,7 +2638,11 @@ class TestCopyPermissionsToStagingTable:
             }
         ]
         dataset_access_entries = [
-            MagicMock(role="READER", entity_type="iamMember", entity_id="workgroup:def/data-viewers"),
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:def/data-viewers",
+            ),
         ]
         client = self.build_client(
             prod_table_bindings, dataset_access_entries, staging_bindings=[]
@@ -2661,13 +2665,35 @@ class TestCopyPermissionsToStagingTable:
     def test_skips_non_principal_access_entries(self):
         """Permission copy should skip access entries that aren't principals."""
         dataset_access_entries = [
-            MagicMock(role="READER", entity_type="userByEmail", entity_id="abc@mozilla.com"),
-            MagicMock(role="READER", entity_type="groupByEmail", entity_id="team@mozilla.com"),
-            MagicMock(role="READER", entity_type="iamMember", entity_id="workgroup:foo/data-viewers"),
-            MagicMock(role="READER", entity_type="specialGroup", entity_id="projectOwners"),
-            MagicMock(role="READER", entity_type="view", entity_id="moz-fx-data-shared-prod.x.y"),
-            MagicMock(role="READER", entity_type="routine", entity_id="moz-fx-data-shared-prod.x.r"),
-            MagicMock(role="READER", entity_type="dataset", entity_id="moz-fx-data-shared-prod.x"),
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="abc@mozilla.com"
+            ),
+            MagicMock(
+                role="READER", entity_type="groupByEmail", entity_id="team@mozilla.com"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:foo/data-viewers",
+            ),
+            MagicMock(
+                role="READER", entity_type="specialGroup", entity_id="projectOwners"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="view",
+                entity_id="moz-fx-data-shared-prod.x.y",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="routine",
+                entity_id="moz-fx-data-shared-prod.x.r",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="dataset",
+                entity_id="moz-fx-data-shared-prod.x",
+            ),
         ]
         client = self.build_client(
             prod_table_bindings=[],
@@ -2690,9 +2716,15 @@ class TestCopyPermissionsToStagingTable:
     def test_translate_legacy_dataset_roles(self):
         """Permission copy should translate legacy dataset role names into IAM roles."""
         dataset_access_entries = [
-            MagicMock(role="READER", entity_type="userByEmail", entity_id="reader@mozilla.com"),
-            MagicMock(role="WRITER", entity_type="userByEmail", entity_id="writer@mozilla.com"),
-            MagicMock(role="OWNER", entity_type="userByEmail", entity_id="owner@mozilla.com"),
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="reader@mozilla.com"
+            ),
+            MagicMock(
+                role="WRITER", entity_type="userByEmail", entity_id="writer@mozilla.com"
+            ),
+            MagicMock(
+                role="OWNER", entity_type="userByEmail", entity_id="owner@mozilla.com"
+            ),
         ]
         client = self.build_client(
             prod_table_bindings=[],

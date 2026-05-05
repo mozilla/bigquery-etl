@@ -1,0 +1,13 @@
+fields:
+  - name: dte
+    mode: NULLABLE
+    type: DATE
+    description: Date unable to get operating system usage data for
+  - name: location
+    mode: NULLABLE
+    type: STRING
+    description: Location unable to get operating system usage data for
+  - name: device_type
+    mode: NULLABLE
+    type: STRING
+    description: Device type unable to get operating system usage data for

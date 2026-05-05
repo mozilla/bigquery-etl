@@ -100,7 +100,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: filing_exchange_rate
-  type: NUMERIC
+  type: BIGNUMERIC
   mode: NULLABLE
 - name: filing_total
   type: NUMERIC

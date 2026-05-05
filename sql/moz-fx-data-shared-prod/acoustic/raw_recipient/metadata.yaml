@@ -1,0 +1,6 @@
+friendly_name: Adjust raw recipient
+description: |-
+  Adjust raw recipient data. This includes information related to email events such as "clicked" and "opened".
+
+labels:
+  authorized: true

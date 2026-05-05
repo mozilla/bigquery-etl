@@ -12,16 +12,6 @@ WITH all_counts AS (
     *
   FROM
     `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__histogram_probe_counts_v1`
-  UNION ALL
-  SELECT
-    *
-  FROM
-    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__scalar_percentiles_v1`
-  UNION ALL
-  SELECT
-    *
-  FROM
-    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__histogram_percentiles_v1`
 )
 SELECT
   *

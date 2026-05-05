@@ -25,17 +25,27 @@ SQL_BASE_DIR = (
 )
 
 
+def default_billing_project(ctx, param, value):
+    """Falls back to --project."""
+    if value is not None:
+        return value
+    return ctx.params.get("project", "default_value")
+
+
 @click.command()
 @click.option("--submission-date", required=True, type=datetime.date.fromisoformat)
 @click.option("--dst-table", required=True)
 @click.option(
     "--project", default="moz-fx-data-shared-prod", help="Project for final table"
 )
+@click.option(
+    "--billing-project", callback=default_billing_project, help="Billing project"
+)
 @click.option("--tmp-project", help="Project for temporary intermediate tables")
 @click.option("--dataset", default="telemetry_derived")
-def main(submission_date, dst_table, project, tmp_project, dataset):
+def main(submission_date, dst_table, project, billing_project, tmp_project, dataset):
     """Run query per app_version."""
-    bq_client = bigquery.Client(project=project)
+    bq_client = bigquery.Client(project=billing_project)
 
     app_versions = [
         row["app_version"]

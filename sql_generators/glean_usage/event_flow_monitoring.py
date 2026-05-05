@@ -4,6 +4,7 @@ import os
 from collections import namedtuple
 from pathlib import Path
 
+from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import (
     GleanTable,
     get_table_dir,
@@ -21,13 +22,13 @@ class EventFlowMonitoring(GleanTable):
     """Represents the generated aggregated table for event flow monitoring."""
 
     def __init__(self) -> None:
-        self.no_init = False
+        """Initialize."""
         self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = AGGREGATE_TABLE_NAME
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_unnested"
 
     def generate_across_apps(
@@ -37,14 +38,27 @@ class EventFlowMonitoring(GleanTable):
         if not self.across_apps_enabled:
             return
 
-        apps = [app[0] for app in apps]
+        # Include only selected apps to avoid too complex query
+        include_apps = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "event_flow_monitoring",
+            "include_apps",
+            fallback=[],
+        )
+
+        apps = [
+            app_ids_info[0]
+            for app_name, app_ids_info in apps.items()
+            if app_name in include_apps
+        ]
 
         render_kwargs = dict(
             project_id=project_id,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",
             apps=apps,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

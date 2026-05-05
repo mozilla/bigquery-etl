@@ -14,7 +14,10 @@ combined AS (
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
-    normalized_country_code AS country,
+    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
+    -- receives geo information from the client rather than from Glean ingestion's
+    -- IP geolocation. We no longer send subdivision, only country.
+    COALESCE(normalized_country_code, metrics.string.quick_suggest_country) AS country,
     LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     client_info.app_channel AS release_channel,
@@ -96,6 +99,69 @@ combined AS (
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
     SAFE_CAST(metadata.user_agent.version AS INT64) < 116
+  UNION ALL
+  -- Suggest Android
+  SELECT
+    metrics.uuid.fx_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'phone' AS form_factor,
+    -- With shift to OHTTP, we expect to stop receiving normalized_country_code soon
+    COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
+    metrics.string.fx_suggest_advertiser AS advertiser,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.fx_suggest_position AS position,
+    -- Only remote settings is in use on mobile
+    'remote settings' AS provider,
+    -- Only standard suggestions are in use on mobile
+    'firefox-suggest' AS match_type,
+    -- This is the opt-in for Merino, not in use on mobile
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+    blocks.query_type,
+  FROM
+    `moz-fx-data-shared-prod.fenix.fx_suggest` fs
+  LEFT JOIN
+    blocks
+    ON fs.metrics.quantity.fx_suggest_block_id = blocks.id
+  WHERE
+    metrics.string.fx_suggest_ping_type IN ("fxsuggest-click", "fxsuggest-impression")
+  UNION ALL
+  -- Suggest iOS
+  SELECT
+    metrics.uuid.fx_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'phone' AS form_factor,
+    COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
+    metrics.string.fx_suggest_advertiser AS advertiser,
+    -- This is now hardcoded, we can use the derived `normalized_os` once
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
+    'iOS' AS normalized_os,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.fx_suggest_position AS position,
+    -- Only remote settings is in use on mobile
+    'remote settings' AS provider,
+    -- Only standard suggestions are in use on mobile
+    'firefox-suggest' AS match_type,
+    -- This is the opt-in for Merino, not in use on mobile
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+    blocks.query_type,
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.fx_suggest` fs
+  LEFT JOIN
+    blocks
+    ON fs.metrics.quantity.fx_suggest_block_id = blocks.id
+  WHERE
+    metrics.string.fx_suggest_ping_type IN ("fxsuggest-click", "fxsuggest-impression")
 ),
 with_event_count AS (
   SELECT

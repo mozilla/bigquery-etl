@@ -1,0 +1,15 @@
+friendly_name: Fenix nightly derived baseline last seen
+description: |-
+  fenix nightly derived baseline last seen
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  table_type: client_level
+  shredder_mitigation: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

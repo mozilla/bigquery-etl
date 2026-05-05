@@ -7,7 +7,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
 ### bqetl_test_dag
@@ -28,12 +28,13 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["test@example.org"],
+    "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
+    "max_active_tis_per_dag": None,
 }
 
 tags = ["repo/bigquery-etl"]
@@ -44,9 +45,22 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     task_group_test_group = TaskGroup("test_group")
+
+    bigeye__test__python_script_query__v1 = bigquery_bigeye_check(
+        task_id="bigeye__test__python_script_query__v1",
+        table_id="moz-fx-data-test-project.test.python_script_query_v1",
+        warehouse_id="1939",
+        owner="test@example.com",
+        email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_test_group,
+    )
 
     test__python_script_query__v1 = GKEPodOperator(
         task_id="test__python_script_query__v1",
@@ -55,8 +69,10 @@ with DAG(
             "sql/moz-fx-data-test-project/test/python_script_query_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
         owner="test@example.com",
-        email=["test@example.com"],
+        email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
         task_group=task_group_test_group,
     )
+
+    bigeye__test__python_script_query__v1.set_upstream(test__python_script_query__v1)

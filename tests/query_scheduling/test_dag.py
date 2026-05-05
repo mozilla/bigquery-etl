@@ -11,6 +11,7 @@ from bigquery_etl.query_scheduling.dag import (
 )
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.utils import TELEMETRY_ALERTS_EMAIL
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -102,7 +103,7 @@ class TestDag:
         assert dag.name == "bqetl_test_dag"
         assert dag.schedule_interval == "daily"
         assert dag.default_args.owner == "test@example.com"
-        assert dag.default_args.email == ["test@example.com"]
+        assert dag.default_args.email == ["test@example.com", TELEMETRY_ALERTS_EMAIL]
         assert dag.default_args.depends_on_past is False
 
     def test_from_empty_dict(self):
@@ -194,10 +195,9 @@ class TestDag:
                 owner="test@example.com", start_date="2020-12-12", retry_delay="90"
             )
 
-        with pytest.raises(ValueError):
-            assert DagDefaultArgs(
-                owner="test@example.com", start_date="2020-12-12", retry_delay="1d1h1m"
-            )
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="1d1h1m"
+        )
 
         assert DagDefaultArgs(
             owner="test@example.com", start_date="2020-12-12", retry_delay="3h15m1s"

@@ -1,0 +1,29 @@
+friendly_name: AMO Stats DAU (dev)
+description: |-
+  A dev subset of daily user statistics to power addons.mozilla.org stats pages.
+
+owners:
+- kik@mozilla.com
+- lgreco@mozilla.com
+
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
+
+scheduling:
+  dag_name: bqetl_amo_stats
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/nonprod

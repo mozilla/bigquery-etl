@@ -22,7 +22,7 @@ SELECT
   SUM(search_count_tagged_sap) AS tagged_sap,
   SUM(search_count_organic) AS organic
 FROM
-  telemetry.clients_last_seen
+  `moz-fx-data-shared-prod.telemetry.clients_last_seen`
 WHERE
   submission_date = @submission_date
   AND days_since_seen = 0
@@ -33,6 +33,6 @@ WHERE
   AND COALESCE(search_count_tagged_sap, 0) < 10000
   AND COALESCE(search_count_organic, 0) < 10000
 GROUP BY
-  1,
-  2,
-  3;
+  submission_date,
+  geo,
+  user_state;

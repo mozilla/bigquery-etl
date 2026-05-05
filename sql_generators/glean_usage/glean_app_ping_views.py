@@ -12,12 +12,14 @@ import os
 from copy import deepcopy
 from pathlib import Path
 
+import yaml
 from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
 from pathos.multiprocessing import ThreadingPool
 
+from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import get_table_dir, write_sql
 from sql_generators.glean_usage.common import GleanTable
 
@@ -38,6 +40,8 @@ description: |-
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
 OVERRIDDEN_FIELDS = {"normalized_channel"}
 
+VIEW_SQL_LENGTH_LIMIT = 1024 * 1024
+
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -47,27 +51,29 @@ class GleanAppPingViews(GleanTable):
     def __init__(self):
         """Initialize Glean ping view."""
         GleanTable.__init__(self)
-        self.no_init = True
         self.per_app_id_enabled = False
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
 
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None,
+        all_base_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.
 
         If schemas are incompatible, then use release channel only.
         """
-
         # get release channel info
-        release_app = app_info[0]
-        target_dataset = release_app["app_name"]
+        release_app = app_ids_info[0]
+        target_dataset = app_name
 
         # channels are all in the same repo, sending the same pings
         repo = next(
@@ -80,6 +86,10 @@ class GleanAppPingViews(GleanTable):
             or release_app["bq_dataset_family"] == release_app["app_name"]
         ):
             return
+
+        ignored_pings = ConfigLoader.get(
+            "generate", "glean_usage", "app_ping_views", "skip", fallback=[]
+        )
 
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
@@ -100,16 +110,60 @@ class GleanAppPingViews(GleanTable):
             cached_schemas = {}
 
             # iterate through app_info to get all channels
-            for channel in app_info:
-                channel_dataset = channel["document_namespace"].replace("-", "_")
-                schema = Schema.for_table(
-                    "moz-fx-data-shared-prod",
-                    channel_dataset,
-                    view_name,
-                    partitioned_by="submission_timestamp",
-                    use_cloud_function=use_cloud_function,
+            included_channel_apps = []
+            included_channel_views = []
+            for channel_app in app_ids_info:
+                channel_dataset = channel_app["bq_dataset_family"]
+                channel_dataset_view = f"{channel_dataset}.{view_name}"
+
+                if channel_dataset_view in ignored_pings:
+                    continue
+
+                # look for schema in output_dir because bqetl generate all runs stable_views first
+                sql_dir = (
+                    output_dir
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
                 )
+                existing_schema_path = (
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
+                )
+
+                schema = None
+                if existing_schema_path.exists():
+                    schema = Schema.from_schema_file(existing_schema_path)
+
+                if (
+                    schema is None
+                    or "fields" not in schema.schema
+                    or schema.schema["fields"] == []
+                ):
+                    # fetch schema from BQ if not present in the repo, or empty
+                    for attempt in range(3):
+                        # try 3 times to account for transient errors
+                        try:
+                            schema = Schema.for_table(
+                                "moz-fx-data-shared-prod",
+                                channel_dataset,
+                                view_name,
+                                partitioned_by="submission_timestamp",
+                                use_cloud_function=use_cloud_function,
+                                id_token=id_token,
+                            )
+                            if schema.schema["fields"] != []:
+                                break
+                            print(
+                                f"Attempt {attempt + 1}: Empty schema for {channel_dataset_view}"
+                            )
+                        except Exception as e:
+                            print(
+                                f"Attempt {attempt + 1}: Failed to get schema for {channel_dataset_view}: {e}"
+                            )
+
                 cached_schemas[channel_dataset] = deepcopy(schema)
+
+                if schema.schema["fields"] == []:
+                    raise Exception(f"Cannot get schema for `{channel_dataset_view}`")
 
                 try:
                     unioned_schema.merge(
@@ -118,52 +172,63 @@ class GleanAppPingViews(GleanTable):
                 except Exception as e:
                     # if schema incompatibilities are detected, then only generate for release channel
                     print(
-                        f"Cannot UNION 'moz-fx-data-shared-prod.{channel_dataset}.{view_name}': {e}"
+                        f"Cannot UNION `moz-fx-data-shared-prod.{channel_dataset_view}`: {e}"
                     )
-
                     break
 
-            # generate the SELECT expression used for UNIONing the stable tables;
-            # fields that are not part of a table, but exist in others, are set to NULL
-            queries = []
-            for app in app_info:
-                channel_dataset = app["document_namespace"].replace("-", "_")
+                included_channel_apps.append(channel_app)
+                included_channel_views.append(channel_dataset_view)
 
-                if (
-                    channel_dataset not in cached_schemas
-                    or cached_schemas[channel_dataset].schema["fields"] == []
-                ):
-                    # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(
-                        f"Cannot get schema for `{channel_dataset}.{view_name}`; Skipping"
-                    )
-                    continue
-
-                # compare table schema with unioned schema to determine fields that need to be NULL
-                select_expression = self._generate_select_expression(
-                    unioned_schema.schema["fields"],
-                    cached_schemas[channel_dataset].schema["fields"],
-                )
-
-                queries.append(
-                    dict(
-                        select_expression=select_expression,
-                        dataset=channel_dataset,
-                        table=view_name,
-                        channel=app.get("app_channel"),
-                        app_name=release_app["app_name"],
-                    )
-                )
-
-            if queries == []:
+            if included_channel_apps == []:
                 # nothing to render
                 return
 
-            # render view SQL
-            render_kwargs = dict(
-                project_id=project_id, target_view=full_view_id, queries=queries
-            )
-            rendered_view = reformat(view_template.render(**render_kwargs))
+            # generate the SELECT expression used for UNIONing the stable tables;
+            # fields that are not part of a table, but exist in others, are set to NULL
+            def _generate_view_sql(restructure_metrics=False) -> str:
+                queries = []
+                for channel_app in included_channel_apps:
+                    channel_dataset = channel_app["bq_dataset_family"]
+
+                    # compare table schema with unioned schema to determine fields that need to be NULL
+                    select_expression = cached_schemas[
+                        channel_dataset
+                    ].generate_compatible_select_expression(
+                        unioned_schema,
+                        fields_to_remove=OVERRIDDEN_FIELDS,
+                        unnest_structs=restructure_metrics,
+                        max_unnest_depth=2,
+                        unnest_allowlist="metrics",
+                    )
+
+                    queries.append(
+                        dict(
+                            select_expression=select_expression,
+                            dataset=channel_dataset,
+                            table=view_name,
+                            channel=channel_app.get("app_channel"),
+                            app_name=release_app["app_name"],
+                            includes_client_info=any(
+                                [
+                                    "client_info" == f["name"]
+                                    for f in unioned_schema.schema["fields"]
+                                ]
+                            ),
+                        )
+                    )
+
+                render_kwargs = dict(
+                    project_id=project_id, target_view=full_view_id, queries=queries
+                )
+                return reformat(view_template.render(**render_kwargs))
+
+            view_sql = _generate_view_sql(restructure_metrics=True)
+            if len(view_sql) > VIEW_SQL_LENGTH_LIMIT:
+                print(
+                    f"Generated SQL for `{full_view_id}` view with restructured `metrics` exceeds {VIEW_SQL_LENGTH_LIMIT:,} character limit."
+                    " Regenerating SQL without restructured `metrics`."
+                )
+                view_sql = _generate_view_sql(restructure_metrics=False)
 
             # write generated SQL files to destination folders
             if output_dir:
@@ -171,26 +236,37 @@ class GleanAppPingViews(GleanTable):
                     output_dir,
                     full_view_id,
                     "view.sql",
-                    rendered_view,
+                    view_sql,
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "view.sql"
                     )
                     in skip_existing,
                 )
 
-                app_channels = [
-                    f"{channel['dataset']}.{view_name}" for channel in queries
-                ]
+                metadata_content = VIEW_METADATA_TEMPLATE.format(
+                    ping_name=ping_name,
+                    app_name=release_app["canonical_app_name"],
+                    app_channels=", ".join(included_channel_views),
+                )
+                metadata_file = Path(
+                    get_table_dir(output_dir, full_view_id) / "metadata.yaml"
+                )
+                if metadata_file.exists():
+                    with metadata_file.open() as f:
+                        existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
+                        if (
+                            "friendly_name" not in existing_metadata
+                            and "description" not in existing_metadata
+                        ):
+                            metadata_content = metadata_content + yaml.dump(
+                                existing_metadata
+                            )
 
                 write_sql(
                     output_dir,
                     full_view_id,
                     "metadata.yaml",
-                    VIEW_METADATA_TEMPLATE.format(
-                        ping_name=ping_name,
-                        app_name=release_app["canonical_app_name"],
-                        app_channels=", ".join(app_channels),
-                    ),
+                    metadata_content,
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "metadata.yaml"
                     )
@@ -233,82 +309,3 @@ class GleanAppPingViews(GleanTable):
                 _process_ping,
                 p.get_pings(),
             )
-
-    def _generate_select_expression(
-        self, unioned_schema_nodes, app_schema_nodes, path=[]
-    ) -> str:
-        """
-        Generate the select expression based on the unioned schema and the app channel schema.
-
-        Any fields that are missing in the app_schema are set to NULL.
-        """
-        select_expr = []
-        unioned_schema_nodes = {n["name"]: n for n in unioned_schema_nodes}
-        app_schema_nodes = {n["name"]: n for n in app_schema_nodes}
-
-        # iterate through fields
-        for node_name, node in unioned_schema_nodes.items():
-            dtype = node["type"]
-
-            if node_name in app_schema_nodes:
-                # field exists in app schema
-
-                if node == app_schema_nodes[node_name]:
-                    if node_name not in OVERRIDDEN_FIELDS:
-                        # field (and all nested fields) are identical, so just query it
-                        select_expr.append(f"{'.'.join(path + [node_name])}")
-                else:
-                    # fields, and/or nested fields are not identical
-                    if dtype == "RECORD":
-                        # for nested fields, recursively generate select expression
-
-                        if node.get("mode", None) == "REPEATED":
-                            # unnest repeated record
-                            select_expr.append(
-                                f"""
-                                    ARRAY(
-                                        SELECT
-                                            STRUCT(
-                                                {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
-                                            )
-                                        FROM UNNEST({'.'.join(path + [node_name])}) AS `{node_name}`
-                                    ) AS `{node_name}`
-                                """
-                            )
-                        else:
-                            # select struct fields
-                            select_expr.append(
-                                f"""
-                                    STRUCT(
-                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
-                                    ) AS `{node_name}`
-                                """
-                            )
-                    else:
-                        select_expr.append(
-                            f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                        )
-            else:
-                select_expr.append(
-                    f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                )
-
-        return ", ".join(select_expr)
-
-    def _type_info(self, node):
-        """Determine the type information"""
-        dtype = node["type"]
-        if dtype == "RECORD":
-            dtype = (
-                "STRUCT<"
-                + ", ".join(
-                    f"`{field['name']}` {self._type_info(field)}"
-                    for field in node["fields"]
-                )
-                + ">"
-            )
-        elif dtype == "FLOAT":
-            dtype = "FLOAT64"
-        if node.get("mode") == "REPEATED":
-            return f"ARRAY<{dtype}>"
-        return dtype

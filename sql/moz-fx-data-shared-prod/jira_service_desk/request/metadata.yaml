@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Requests
+description: |-
+  Jira requests for Service Desk synced via Fivetran.

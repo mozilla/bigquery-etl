@@ -1,0 +1,8 @@
+# test_braze_users - subscriptions_map
+---
+- braze_subscription_name: newsletter_1
+- braze_subscription_name: newsletter_2
+- braze_subscription_name: newsletter_3
+- braze_subscription_name: waitlist_1-waitlist
+- braze_subscription_name: waitlist_2-waitlist
+- braze_subscription_name: guardian-vpn-waitlist

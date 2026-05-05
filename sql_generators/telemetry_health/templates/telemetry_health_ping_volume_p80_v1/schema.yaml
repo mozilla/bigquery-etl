@@ -1,0 +1,13 @@
+fields:
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+  - name: p80
+    type: INTEGER
+    mode: NULLABLE

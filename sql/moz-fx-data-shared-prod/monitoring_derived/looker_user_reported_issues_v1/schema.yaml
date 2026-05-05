@@ -1,0 +1,13 @@
+fields:
+  - mode: NULLABLE
+    name: timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: email_address
+    type: STRING
+  - mode: NULLABLE
+    name: issue_description
+    type: STRING
+  - mode: NULLABLE
+    name: additional_information
+    type: STRING

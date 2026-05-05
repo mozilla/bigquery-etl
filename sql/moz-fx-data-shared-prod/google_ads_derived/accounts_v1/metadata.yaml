@@ -2,7 +2,7 @@ friendly_name: Accounts
 description: |-
   Account information for different Google Ads accounts
 owners:
-- lschiestl@mozilla.com
+- kik@mozilla.com
 labels: {}
 scheduling:
   scheduling:
@@ -10,4 +10,3 @@ scheduling:
   depends_on_past: false
   date_partition_parameter: null
 bigquery: null
-references: {}

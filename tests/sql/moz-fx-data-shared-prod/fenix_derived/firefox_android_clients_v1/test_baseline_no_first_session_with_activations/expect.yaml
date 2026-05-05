@@ -5,7 +5,7 @@
   first_seen_date: 2023-01-01
   submission_date: 2023-01-01
   last_reported_date: 2023-01-01
-  device_model: model-1
+  device_model: model-2
   last_reported_device_model: model-2
   last_reported_channel: release
   activated: true
@@ -34,6 +34,7 @@
     reported_first_session_ping: false
     reported_baseline_ping: false
     min_metrics_ping_submission_date: 2023-01-01
+  meta_attribution_app: 'Test Meta'
 - client_id: client-3
   sample_id: 50
   adjust_network: Organic
@@ -44,3 +45,5 @@
     min_first_session_ping_submission_date: 2023-01-01
     adjust_network__source_ping_datetime: '2023-01-01T00:00:00'
     adjust_network__source_ping: first_session
+    meta_attribution_app__ping_datetime: '2023-01-01T00:00:00'
+  meta_attribution_app: 'Test Meta'

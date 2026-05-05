@@ -3,7 +3,13 @@ WITH subscriptions_history AS (
     id,
     `timestamp` AS valid_from,
     COALESCE(
-      LEAD(`timestamp`) OVER (PARTITION BY subscription.id ORDER BY `timestamp`),
+      LEAD(`timestamp`) OVER (
+        PARTITION BY
+          subscription.id
+        ORDER BY
+          `timestamp`,
+          stripe_subscriptions_changelog_id
+      ),
       '9999-12-31 23:59:59.999999'
     ) AS valid_to,
     id AS stripe_subscriptions_revised_changelog_id,
@@ -17,7 +23,8 @@ subscriptions_customers_history AS (
     subscriptions_history.id,
     subscriptions_history.valid_from,
     IF(
-      customers_history.valid_to IS NOT NULL,
+      subscriptions_history.subscription.ended_at IS NULL
+      AND customers_history.valid_to IS NOT NULL,
       LEAST(subscriptions_history.valid_to, customers_history.valid_to),
       subscriptions_history.valid_to
     ) AS valid_to,
@@ -33,7 +40,7 @@ subscriptions_customers_history AS (
     AND subscriptions_history.valid_from >= customers_history.valid_from
     AND subscriptions_history.valid_from < customers_history.valid_to
   UNION ALL
-  -- Include customer changes during the subscription history periods.
+  -- Include customer changes during the active subscription history periods.
   SELECT
     CONCAT(
       subscriptions_history.subscription.id,
@@ -53,6 +60,9 @@ subscriptions_customers_history AS (
     ON subscriptions_history.subscription.customer_id = customers_history.customer.id
     AND subscriptions_history.valid_from < customers_history.valid_from
     AND subscriptions_history.valid_to > customers_history.valid_from
+    AND customers_history.valid_to > customers_history.valid_from
+  WHERE
+    subscriptions_history.subscription.ended_at IS NULL
 )
 SELECT
   id,

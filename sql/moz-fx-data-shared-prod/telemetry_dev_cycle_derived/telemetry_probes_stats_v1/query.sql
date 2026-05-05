@@ -17,7 +17,7 @@ WITH telemetry_probes_with_expiration AS (
     END AS expired_version_helper,
     first_added_date AS release_date
   FROM
-    `telemetry_dev_cycle_external.telemetry_probes_stats_v1` AS probes
+    `moz-fx-data-shared-prod.telemetry_dev_cycle_external.telemetry_probes_stats_v1` AS probes
 ),
 final AS (
   SELECT
@@ -36,7 +36,7 @@ final AS (
   FROM
     telemetry_probes_with_expiration AS probes
   LEFT JOIN
-    `telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS release_dates
+    `moz-fx-data-shared-prod.telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS release_dates
     ON probes.channel = release_dates.channel
     AND probes.expired_version_helper = release_dates.version
 )

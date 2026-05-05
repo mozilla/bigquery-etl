@@ -13,7 +13,8 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
    1. Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
-   * Optionally add column descriptions to `schema.yaml`
+   * Optionally add or [include](../reference/schema_includes.md#include-field-description) field descriptions in `schema.yaml`.
+   * Optionally replace fields in `schema.yaml` with appropriate [includes](../reference/schema_includes.md) from upstream table schemas.
 1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
    * Add a description of the query
    * Add BigQuery information such as table partitioning or clustering
@@ -100,7 +101,7 @@ Adding a new field to a table schema also means that the field has to propagate 
    * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
 1. Open a new PR with these changes.
 1. PR reviewed and approved.
-1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
+1. Find and run again the [CI pipeline](https://github.com/mozilla/bigquery-etl/actions) for the PR.
    * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
@@ -126,7 +127,7 @@ The following is an example to update a new field in `telemetry_derived.clients_
 
 ## Remove a field from a table schema
 
-Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
+Deleting a field from an existing table schema should be done only when is totally necessary. If you decide to delete it:
 1. Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
 1. Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
 1. If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.
@@ -221,7 +222,7 @@ user_facing: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 ```
 
 ## Publishing data
@@ -269,13 +270,7 @@ deactivate
 
 ## Making a pull request from a fork
 
-When opening a pull-request to merge a fork, the `manual-trigger-required-for-fork` CI task will
-fail and some integration test tasks will be skipped. A user with repository write permissions
-will have to run the [Push to upstream workflow](https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml)
-and provide the `<username>:<branch>` of the fork as parameter. The parameter will also show up
-in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
-Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
-executed.
+Pull requests from forks are handled automatically via environment gates in CI. Fork PRs from Mozilla org members (with [public organization membership](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership)) use the `dev` environment for the initial build and the `external-fork` environment for integration tests. Fork PRs from external contributors use the `external-fork` environment for all CI jobs. A repository maintainer must approve `external-fork` deployments before those jobs run. No manual workflow trigger is needed.
 
 ## Building the Documentation
 

@@ -23,7 +23,7 @@ WITH unioned_source AS (
     isp,
     'Fenix' AS normalized_app_name
   FROM
-    fenix.clients_last_seen_joined
+    `moz-fx-data-shared-prod.fenix.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -51,7 +51,7 @@ WITH unioned_source AS (
     isp,
     'Firefox iOS' AS normalized_app_name
   FROM
-    firefox_ios.clients_last_seen_joined
+    `moz-fx-data-shared-prod.firefox_ios.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -79,7 +79,7 @@ WITH unioned_source AS (
     isp,
     'Focus iOS' AS normalized_app_name
   FROM
-    focus_ios.clients_last_seen_joined
+    `moz-fx-data-shared-prod.focus_ios.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -87,7 +87,7 @@ WITH unioned_source AS (
     submission_date,
     normalized_channel,
     client_id,
-    udf_js.sample_id(client_id) AS sample_id,
+    `moz-fx-data-shared-prod.udf_js.sample_id`(client_id) AS sample_id,
     days_since_seen,
     days_seen_bits,
     days_created_profile_bits,
@@ -107,7 +107,7 @@ WITH unioned_source AS (
     CAST(NULL AS string) AS isp,
     'Focus Android' AS normalized_app_name
   FROM
-    telemetry.core_clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND app_name = 'Focus'
@@ -137,7 +137,7 @@ WITH unioned_source AS (
     isp,
     'Focus Android Glean' AS normalized_app_name
   FROM
-    focus_android.clients_last_seen_joined
+    `moz-fx-data-shared-prod.focus_android.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -165,7 +165,7 @@ WITH unioned_source AS (
     isp,
     'Klar iOS' AS normalized_app_name
   FROM
-    klar_ios.clients_last_seen_joined
+    `moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
 ),
@@ -194,7 +194,7 @@ search_clients AS (
     search_count,
     search_with_ads
   FROM
-    search_derived.mobile_search_clients_daily_v1
+    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -342,7 +342,7 @@ desktop AS (
     search_with_ads_count_all AS search_with_ads,
     active_hours_sum
   FROM
-    telemetry.clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
     submission_date = @submission_date
 )

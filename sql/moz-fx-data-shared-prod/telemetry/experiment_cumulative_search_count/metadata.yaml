@@ -1,0 +1,4 @@
+friendly_name: Experiment Cumulative Search Count
+description: Cumulative search count data related to experiments
+owners:
+- ascholtz@mozilla.com

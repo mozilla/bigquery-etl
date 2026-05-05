@@ -1,0 +1,61 @@
+# expect newsletters
+---
+# user 1
+- external_id: email_id_1
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      newsletter_lang: en
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      update_timestamp: 2021-01-01 11:00:00+00:00
+    - newsletter_name: newsletter_2
+      subscribed: true
+      newsletter_lang: en
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-02-01 10:00:00+00:00
+      update_timestamp: 2021-02-01 11:00:00+00:00
+    - newsletter_name: newsletter_not_subscribed
+      subscribed: false
+      newsletter_lang: en
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-02-01 10:00:00+00:00
+      update_timestamp: 2021-02-01 11:00:00+00:00
+
+# user 2
+- external_id: email_id_2
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      newsletter_lang: de
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      update_timestamp: 2021-01-01 11:00:00+00:00
+# user 3 with multiple entries
+- external_id: email_id_3_sort_multiple_entries
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      newsletter_lang: de
+      newsletter_source: https://some.other.url.com
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      update_timestamp: 2021-01-01 11:00:00+00:00
+    - newsletter_name: newsletter_11
+      subscribed: true
+      newsletter_lang: de
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      update_timestamp: 2021-01-01 11:00:00+00:00
+    - newsletter_name: newsletter_3
+      subscribed: true
+      newsletter_lang: de
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-01-01 10:00:01+00:00
+      update_timestamp: 2021-01-01 11:00:00+00:00
+    - newsletter_name: newsletter_2
+      subscribed: true
+      newsletter_lang: de
+      newsletter_source: https://some.url.com
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      update_timestamp: 2021-01-01 11:00:01+00:00
+# user 4 should not show up no current newsletters

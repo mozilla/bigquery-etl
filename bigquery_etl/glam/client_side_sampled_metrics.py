@@ -1,0 +1,77 @@
+"""Client-side sampled metrics.
+
+Fetches sampled metrics information from BigQuery.
+"""
+
+import math
+from textwrap import dedent
+from typing import Iterable, List, Optional
+
+from google.cloud import bigquery
+
+PROJECT_ID = "moz-fx-data-shared-prod"
+DATASET = "telemetry_derived"
+TABLE_NAME = "sampled_metrics_v1"
+EXPECTED_SAMPLE_RATE = 0.1  # For now, we only support 10% sampling.
+
+
+def _run_bq_query(query: str):
+    """Run a BigQuery query and return rows."""
+    client = bigquery.Client(project=PROJECT_ID)
+    query_job = client.query(query)
+    return query_job.result()
+
+
+def _format_metric_types_filter(metric_types: Iterable[str]) -> str:
+    """Return a SQL filter for the provided metric types."""
+    unique_types = {mt for mt in metric_types}
+    if not unique_types:
+        return ""
+    quoted = ",".join(f"'{mt}'" for mt in sorted(unique_types))
+    return f"WHERE metric_type IN ({quoted})"
+
+
+def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
+    """Return sampled metrics grouped by metric_type from BigQuery.
+
+    Takes the latest submission for each metric.
+    Pass metric_types to restrict the query to specific types.
+    """
+    if metric_types is not None:
+        metric_types = list(metric_types)
+        if not metric_types:
+            return {}
+        where_clause = _format_metric_types_filter(metric_types)
+    else:
+        where_clause = ""
+    query = dedent(f"""
+        WITH latest_metrics AS (
+          SELECT metric_type, metric_name, sample_rate, start_date
+          FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
+          {where_clause}
+          QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY metric_type, metric_name
+            ORDER BY start_date DESC
+          ) = 1
+        )
+        SELECT metric_type, metric_name, sample_rate
+        FROM latest_metrics
+        """)
+
+    try:
+        rows = _run_bq_query(query)
+    except Exception as e:
+        raise RuntimeError("Failed to fetch sampled metrics") from e
+
+    metrics: dict[str, List[str]] = {}
+    for row in rows:
+        sample_rate = float(row["sample_rate"])
+        if not math.isclose(sample_rate, EXPECTED_SAMPLE_RATE, rel_tol=0, abs_tol=1e-9):
+            raise RuntimeError(
+                f"Sample rate for metric '{row['metric_name']}' "
+                f"(type '{row['metric_type']}') is {row['sample_rate']} "
+                f"not {EXPECTED_SAMPLE_RATE}"
+            )
+        metrics.setdefault(row["metric_type"], []).append(row["metric_name"])
+
+    return metrics

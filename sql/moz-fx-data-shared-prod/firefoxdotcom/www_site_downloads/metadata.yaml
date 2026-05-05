@@ -1,0 +1,5 @@
+friendly_name: WWW Site Downloads
+description: |-
+  Data about downloads from firefox.com from GA4
+owners:
+- kwindau@mozilla.com

@@ -6,4 +6,4 @@ SELECT
   platform,
   useragent,
 FROM
-  mozilla_vpn_external.devices_v1
+  `moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1`

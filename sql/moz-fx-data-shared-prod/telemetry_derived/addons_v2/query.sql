@@ -20,9 +20,10 @@ SELECT
   value.signed_state,
   value.is_system,
   value.is_web_extension,
-  value.multiprocess_compatible
+  value.multiprocess_compatible,
+  profile_group_id
 FROM
-  telemetry.main,
+  `moz-fx-data-shared-prod.telemetry.main`,
   UNNEST(
     IF(
       ARRAY_LENGTH(environment.addons.active_addons) > 0,

@@ -1,0 +1,50 @@
+---
+- &base
+  submission_date: "2021-09-01"
+  client_id: "client_1"
+  default_search_engine: "engine_1"
+  app_version: "one"
+  normalized_channel: "nightly"
+  locale: "en-US"
+  country: "US"
+  profile_group_id: "profile_group_id_1"
+  user_pref_browser_search_region: "US"
+  user_pref_browser_search_suggest_enabled: true
+  user_pref_browser_widget_in_navbar: true
+  user_pref_browser_urlbar_suggest_searches: true
+  user_pref_browser_urlbar_show_search_suggestions_first: true
+  scalar_parent_urlbar_picked_autofill_sum:
+    - key: "0"
+      value: 5
+  scalar_parent_urlbar_picked_bookmark_sum:
+    - key: "0"
+      value: 5
+  scalar_parent_urlbar_picked_dynamic_sum: []
+  scalar_parent_urlbar_picked_extension_sum: []
+  scalar_parent_urlbar_picked_formhistory_sum: []
+  scalar_parent_urlbar_picked_history_sum:
+    - key: "1"
+      value: 5
+  scalar_parent_urlbar_picked_keyword_sum: []
+  scalar_parent_urlbar_picked_remotetab_sum: []
+  scalar_parent_urlbar_picked_searchengine_sum:
+    - key: "1"
+      value: 5
+  scalar_parent_urlbar_picked_searchsuggestion_sum: []
+  scalar_parent_urlbar_picked_switchtab_sum: []
+  scalar_parent_urlbar_picked_tabtosearch_sum: []
+  scalar_parent_urlbar_picked_tip_sum: []
+  scalar_parent_urlbar_picked_topsite_sum: []
+  scalar_parent_urlbar_picked_unknown_sum: []
+  scalar_parent_urlbar_picked_visiturl_sum: []
+  experiments:
+    - key: "experiment_key"
+      value: "experiment_value"
+- <<: *base
+  client_id: "client_2"
+  profile_group_id: "profile_group_id_2"
+  scalar_parent_urlbar_picked_autofill_sum:
+    - key: "0"
+      value: 6
+    - key: "1"
+      value: 10001  # 1 over the threshold

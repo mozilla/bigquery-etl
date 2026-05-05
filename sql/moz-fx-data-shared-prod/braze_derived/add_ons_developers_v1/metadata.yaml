@@ -1,0 +1,17 @@
+friendly_name: Add-ons Developers Users
+description: |-
+  Imported Add-ons developer list.
+owners:
+  - cbeck@mozilla.com
+labels:
+  incremental: false
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze_add_ons_devs_users
+  arguments:
+    - --destination-project=moz-fx-data-shared-prod
+    - --destination-dataset=braze_derived
+    - --destination-table=add_ons_developers_v1
+    - --source-bucket=moz-fx-data-prod-external-pocket-data
+    - --source-prefix=braze_data_syncs
+    - --source-file=add_ons_devs

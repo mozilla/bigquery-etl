@@ -1,0 +1,13 @@
+fields:
+  - name: email
+    type: STRING
+    mode: NULLABLE
+    description: Email added to Acoustic suppression list.
+  - name: suppressed_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: timestamp of the email being added to the Acoustic suppression list.
+  - name: suppression_reason
+    type: STRING
+    mode: NULLABLE
+    description: Reason for adding email to Acoustic suppression list.

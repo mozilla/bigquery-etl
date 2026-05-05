@@ -76,6 +76,9 @@ fields:
   mode: NULLABLE
   name: install_source
   type: STRING
+- description: The id of the browser distribution made available in installation sources.
+  name: distribution_id
+  type: STRING
 - description: The utm_campaign this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_campaign
@@ -99,6 +102,10 @@ fields:
 - description: The full install referrer response.
   mode: NULLABLE
   name: play_store_attribution_install_referrer_response
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: meta_attribution_app
   type: STRING
 - description: Last reported client locale.
   mode: NULLABLE
@@ -205,6 +212,10 @@ fields:
   - description: Datetime of the ping that reported the first play_store_attribution_install_referrer_response__ping_datetime value.
     mode: NULLABLE
     name: play_store_attribution_install_referrer_response__ping_datetime
+    type: DATETIME
+  - description: Datetime of the ping that reported the first meta_attribution_app value.
+    mode: NULLABLE
+    name: meta_attribution_app__ping_datetime
     type: DATETIME
   mode: NULLABLE
   name: metadata

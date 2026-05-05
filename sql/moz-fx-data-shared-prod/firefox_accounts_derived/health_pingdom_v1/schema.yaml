@@ -1,0 +1,25 @@
+fields:
+  - mode: NULLABLE
+    name: avgresponse
+    type: INTEGER
+  - mode: NULLABLE
+    name: downtime
+    type: INTEGER
+  - mode: NULLABLE
+    name: starttime
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: unmonitored
+    type: INTEGER
+  - mode: NULLABLE
+    name: uptime
+    type: INTEGER
+  - mode: NULLABLE
+    name: project
+    type: STRING
+  - mode: NULLABLE
+    name: fuzzy_uptime_percent
+    type: FLOAT
+  - mode: NULLABLE
+    name: unmonitored_percent
+    type: FLOAT

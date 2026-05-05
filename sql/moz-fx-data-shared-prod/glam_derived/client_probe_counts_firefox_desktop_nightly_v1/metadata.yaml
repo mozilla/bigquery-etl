@@ -10,10 +10,3 @@ labels:
   public_json: true
   review_bugs:
   - '1866889'
-scheduling:
-  dag_name: bqetl_glam_export
-  date_partition_parameter: null
-  depends_on:
-  - task_id: extracts
-    dag_name: glam
-    execution_delta: 6h

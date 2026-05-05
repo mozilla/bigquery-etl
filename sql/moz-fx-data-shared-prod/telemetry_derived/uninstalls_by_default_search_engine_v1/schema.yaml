@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Default Search Engine
+- name: nbr_unique_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

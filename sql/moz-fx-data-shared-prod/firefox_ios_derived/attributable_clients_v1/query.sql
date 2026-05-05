@@ -15,7 +15,7 @@ WITH client_days AS (
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
-    firefox_ios.baseline
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= "2020-05-01"
@@ -37,7 +37,7 @@ metrics_searches AS (
     SUM(search_with_ads) AS searches_with_ads,
     SUM(ad_click) AS ad_clicks
   FROM
-    search_derived.mobile_search_clients_daily_v1
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     {% if is_init() %}
       submission_date >= "2020-05-01"
@@ -62,7 +62,7 @@ adjust_client_info AS (
     adjust_creative,
     metadata.is_reported_first_session_ping,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 )
 SELECT
   submission_date,

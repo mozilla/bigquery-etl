@@ -56,7 +56,7 @@ SELECT
     CAST(ROUND(SUM(record.value)) AS INT64)
   ) AS aggregates
 FROM
-  glam_etl.org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1
+  `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1`
 GROUP BY
   ping_type,
   os,

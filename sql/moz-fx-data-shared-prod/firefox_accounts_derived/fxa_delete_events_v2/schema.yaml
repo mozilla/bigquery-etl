@@ -5,6 +5,11 @@ fields:
 - name: user_id
   type: STRING
   mode: NULLABLE
+  description: Hashed user_id
 - name: hmac_user_id
   type: STRING
   mode: NULLABLE
+- name: user_id_unhashed
+  type: STRING
+  mode: NULLABLE
+  description: Unhashed user_id

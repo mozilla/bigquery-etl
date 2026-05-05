@@ -1,0 +1,22 @@
+fields:
+  - name: project
+    type: STRING
+    mode: REQUIRED
+  - name: zone
+    type: STRING
+    mode: REQUIRED
+  - name: instance_id
+    type: STRING
+    mode: REQUIRED
+  - name: interval_start_time
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: interval_end_time
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: submission_date
+    type: DATE
+    mode: REQUIRED
+  - name: uptime
+    type: FLOAT
+    mode: NULLABLE

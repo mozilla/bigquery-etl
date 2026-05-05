@@ -39,12 +39,6 @@ worker_cost AS (
     zone,
     instance_id
 ),
--- GCP uptime comes from Cloud Monitoring via worker_metrics_v1. There is no
--- equivalent Azure Monitor puller yet, so Azure uptime is approximated from
--- task_runs_v1 as (MAX(resolved) - MIN(started)) per (worker_id, day).
--- This misses VM provisioning before the first task and shutdown after the
--- last task. Error is under 1% for long-lived multi-task VMs and up to
--- ~10-20% for short single-task VMs. Replace with a real puller in v2.
 worker_metric AS (
   SELECT
     zone,
@@ -65,26 +59,11 @@ worker_metric AS (
     instance_id,
     SUM(uptime) AS total_uptime
   FROM
-    (
-      SELECT
-        worker_group AS zone,
-        worker_id AS instance_id,
-        DATE(started) AS usage_start_date,
-        TIMESTAMP_DIFF(MAX(resolved), MIN(started), SECOND) AS uptime
-      FROM
-        `moz-fx-data-shared-prod.fxci_derived.task_runs_v1`
-      WHERE
-        submission_date
-        BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-        AND @submission_date
-        AND worker_id LIKE "vm-%"
-        AND started IS NOT NULL
-        AND resolved IS NOT NULL
-      GROUP BY
-        zone,
-        instance_id,
-        usage_start_date
-    )
+    `moz-fx-data-shared-prod.fxci_derived.worker_metrics_azure_v1`
+  WHERE
+    submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
   GROUP BY
     zone,
     instance_id

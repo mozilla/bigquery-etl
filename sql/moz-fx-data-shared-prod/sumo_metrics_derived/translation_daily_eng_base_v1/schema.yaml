@@ -1,7 +1,7 @@
 fields:
 - name: event_date
   type: DATE
-  mode: REQUIRED
+  mode: NULLABLE
   description: Date of English article review or translation activity
 - name: en_article_id
   type: INTEGER

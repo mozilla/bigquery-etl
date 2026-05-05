@@ -1,0 +1,14 @@
+---
+friendly_name: Experiment Sample Ratio Mismatch
+description: |-
+  Computed Sample Ratio Mismatch (SRM) probabilities and p-values for live experiments.
+  Table is re-written daily with current data.
+owners:
+  - mwilliams@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_experiments_daily
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null

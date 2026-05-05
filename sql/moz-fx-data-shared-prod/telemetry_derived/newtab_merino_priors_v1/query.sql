@@ -4,6 +4,19 @@ WITH params AS (
     DATE(TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 7 DAY) AS start_date,
     DATE(TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 8 DAY) AS start_date_items
 ),
+date_span AS (
+  SELECT
+    DAY
+  FROM
+    params,
+    UNNEST(GENERATE_DATE_ARRAY(start_date, end_date)) AS day
+),
+target_regions AS (
+  SELECT
+    region
+  FROM
+    UNNEST(['US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE']) AS region
+),
 corpus_items AS (
   SELECT DISTINCT
     corpus_item_id
@@ -14,8 +27,9 @@ corpus_items AS (
 ),
 base AS (
   SELECT
+    submission_date,
     corpus_item_id,
-    country AS region,    -- rename here
+    country AS region,
     impression_count,
     click_count
   FROM
@@ -27,23 +41,31 @@ base AS (
     BETWEEN (SELECT start_date FROM params)
     AND (SELECT end_date FROM params)
 ),
-  -- Keep only items that exist in corpus_items and aggregate by item/region
-aggregated_events AS (
+filtered_base AS (
   SELECT
+    b.submission_date,
     b.corpus_item_id,
     b.region,
-    SUM(b.impression_count) AS impression_count,
-    SUM(b.click_count) AS click_count
+    b.impression_count,
+    b.click_count
   FROM
     base b
   INNER JOIN
     corpus_items c
     ON b.corpus_item_id = c.corpus_item_id
-  GROUP BY
-    b.corpus_item_id,
-    b.region
 ),
-  -- Calculate CTR per corpus_item_id and region
+aggregated_events AS (
+  SELECT
+    corpus_item_id,
+    region,
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count
+  FROM
+    filtered_base
+  GROUP BY
+    corpus_item_id,
+    region
+),
 per_region_ctr AS (
   SELECT
     corpus_item_id,
@@ -54,9 +76,8 @@ per_region_ctr AS (
   FROM
     aggregated_events
   WHERE
-    impression_count > 2000 -- 1/min_ctr protects against CTRs form low sample size
+    impression_count > 2000
 ),
-  -- Average impressions per item per region (rounded)
 per_region_impressions_per_item AS (
   SELECT
     region,
@@ -66,7 +87,6 @@ per_region_impressions_per_item AS (
   GROUP BY
     region
 ),
-  -- Rank items by click_count per region
 ranked_per_region AS (
   SELECT
     *,
@@ -74,40 +94,59 @@ ranked_per_region AS (
   FROM
     per_region_ctr
 ),
-  -- Top 2 items per region
-top2_per_region AS (
-  SELECT
-    corpus_item_id,
-    region,
-    ctr
-  FROM
-    ranked_per_region
-  WHERE
-    rank <= 2
-),
-  -- Average CTR of top 2 items per region
 per_region_stats AS (
   SELECT
     region,
-    AVG(ctr) AS average_ctr_top2_items
+    AVG(CASE WHEN rank <= 10 THEN ctr END) AS average_ctr_top10_items,
+    AVG(CASE WHEN rank <= 2 THEN ctr END) AS average_ctr_top2_items
   FROM
-    top2_per_region
+    ranked_per_region
   GROUP BY
     region
 ),
-  -- Combine per-region stats with impressions_per_item
-per_region_stats_with_impressions AS (
+daily_region_totals AS (
+  SELECT
+    submission_date,
+    region,
+    SUM(impression_count) AS total_impressions
+  FROM
+    filtered_base
+  GROUP BY
+    submission_date,
+    region
+),
+per_region_total_impressions_per_day AS (
+  SELECT
+    tr.region,
+    ROUND(AVG(COALESCE(drt.total_impressions, 0))) AS total_impressions_per_day
+  FROM
+    target_regions tr
+  CROSS JOIN
+    date_span ds
+  LEFT JOIN
+    daily_region_totals drt
+    ON drt.region = tr.region
+    AND drt.submission_date = ds.day
+  GROUP BY
+    tr.region
+),
+per_region_final AS (
   SELECT
     s.region,
+    s.average_ctr_top10_items,
     s.average_ctr_top2_items,
-    i.impressions_per_item
+    i.impressions_per_item,
+    d.total_impressions_per_day
   FROM
     per_region_stats s
   JOIN
     per_region_impressions_per_item i
     USING (region)
+  JOIN
+    per_region_total_impressions_per_day d
+    USING (region)
 ),
-  -- Aggregate events globally
+ -- Aggregate events globally
 aggregated_events_global AS (
   SELECT
     corpus_item_id,
@@ -118,7 +157,6 @@ aggregated_events_global AS (
   GROUP BY
     corpus_item_id
 ),
-  -- CTR per item globally
 per_global_ctr AS (
   SELECT
     corpus_item_id,
@@ -130,15 +168,13 @@ per_global_ctr AS (
   WHERE
     impression_count > 2000
 ),
-  -- Avg impressions per item globally (rounded)
+-- Avg impressions per item globally (rounded)
 global_impressions_per_item AS (
   SELECT
-    CAST(NULL AS STRING) AS region,
     ROUND(AVG(impression_count)) AS impressions_per_item
   FROM
     aggregated_events_global
 ),
-  -- Rank items globally by click_count
 ranked_global AS (
   SELECT
     *,
@@ -146,50 +182,64 @@ ranked_global AS (
   FROM
     per_global_ctr
 ),
-  -- Top 2 items globally
-top2_global AS (
-  SELECT
-    corpus_item_id,
-    ctr
-  FROM
-    ranked_global
-  WHERE
-    rank <= 2
-),
-  -- Avg CTR of top 2 items globally
 global_stats AS (
   SELECT
-    CAST(NULL AS STRING) AS region,
-    AVG(ctr) AS average_ctr_top2_items
+    AVG(CASE WHEN rank <= 10 THEN ctr END) AS average_ctr_top10_items,
+    AVG(CASE WHEN rank <= 2 THEN ctr END) AS average_ctr_top2_items
   FROM
-    top2_global
+    ranked_global
 ),
-  -- Combine global stats with global impressions_per_item
-global_stats_with_impressions AS (
+daily_global_totals AS (
   SELECT
-    s.region,
-    s.average_ctr_top2_items,
-    i.impressions_per_item
+    submission_date,
+    SUM(impression_count) AS total_impressions
   FROM
-    global_stats s
+    filtered_base
+  GROUP BY
+    submission_date
+),
+-- Combine global stats with global impressions_per_item
+global_total_impressions_per_day AS (
+  SELECT
+    ROUND(AVG(COALESCE(dgt.total_impressions, 0))) AS total_impressions_per_day
+  FROM
+    date_span ds
+  LEFT JOIN
+    daily_global_totals dgt
+    ON dgt.submission_date = ds.day
+),
+global_final AS (
+  SELECT
+    CAST(NULL AS STRING) AS region,
+    gs.average_ctr_top10_items,
+    gs.average_ctr_top2_items,
+    gip.impressions_per_item,
+    gtipd.total_impressions_per_day
+  FROM
+    global_stats gs
   CROSS JOIN
-    global_impressions_per_item i
+    global_impressions_per_item gip
+  CROSS JOIN
+    global_total_impressions_per_day gtipd
 )
--- Final output combining per-region and global statistics
 SELECT
   region,
+  average_ctr_top10_items,
   average_ctr_top2_items,
-  impressions_per_item
+  impressions_per_item,
+  total_impressions_per_day
 FROM
-  per_region_stats_with_impressions
+  per_region_final
 WHERE
   region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE')
 UNION ALL
 SELECT
   region,
+  average_ctr_top10_items,
   average_ctr_top2_items,
-  impressions_per_item
+  impressions_per_item,
+  total_impressions_per_day
 FROM
-  global_stats_with_impressions
+  global_final
 ORDER BY
   impressions_per_item DESC;

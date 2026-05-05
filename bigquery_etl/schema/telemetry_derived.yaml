@@ -1,0 +1,453 @@
+fields:
+- name: aborts_content_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of content process abort events recorded on this submission
+    date.
+- name: aborts_gmplugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of GMP (Gecko Media Plugin) process abort events recorded
+    on this submission date.
+- name: aborts_plugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of NPAPI plugin process abort events recorded on this submission
+    date.
+- name: active_addons
+  type: RECORD
+  mode: REPEATED
+  description: Array of active add-ons installed in the browser on this submission date,
+    with one record per add-on reflecting the last-seen state.
+- name: active_addons_count_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean number of active add-ons across pings aggregated into this row on
+    this submission date.
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+  description: Total number of active hours (time the browser was in active use) across
+    all subsessions on this submission date, computed from active ticks (each tick is
+    5 seconds).
+- name: ad_clicks_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of ad clicks recorded across all search access points on
+    this submission date, prioritizing access-point-based probes over legacy scalar
+    probes.
+- name: addon_compatibility_check_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the add-on compatibility checking feature is enabled in the browser.
+- name: blocklist_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the browser blocklist (for blocking malicious add-ons and plugins)
+    is enabled.
+- name: client_clock_skew_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean difference in seconds between the client-reported time and the server-side
+    submission time at ping submission, indicating clock skew on the client device,
+    averaged across all pings on this date.
+- name: client_submission_latency_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean difference in seconds between ping creation time on the client and
+    ping receipt time on the server, averaged across all pings on this date.
+- name: content_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of content process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: crash_submit_attempt_content_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of crash report submission attempts for the content process
+    on this submission date.
+- name: crash_submit_attempt_main_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of crash report submission attempts for the main process
+    on this submission date.
+- name: crash_submit_attempt_plugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of crash report submission attempts for plugin processes
+    on this submission date.
+- name: crash_submit_success_content_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of successful crash report submissions for the content process
+    on this submission date.
+- name: crash_submit_success_main_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of successful crash report submissions for the main process
+    on this submission date.
+- name: crash_submit_success_plugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of successful crash report submissions for plugin processes
+    on this submission date.
+- name: crashes_detected_content_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of content process crashes detected across sessions on this
+    submission date.
+- name: crashes_detected_gmplugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of GMP plugin process crashes detected across sessions on
+    this submission date.
+- name: crashes_detected_plugin_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of NPAPI plugin process crashes detected across sessions
+    on this submission date.
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: The identifier of the default search engine configured in the browser.
+- name: default_search_engine_data_load_path
+  type: STRING
+  mode: NULLABLE
+  description: The load path indicating how the default search engine was installed.
+- name: default_search_engine_data_name
+  type: STRING
+  mode: NULLABLE
+  description: The human-readable name of the default search engine as reported by search
+    engine configuration data.
+- name: default_search_engine_data_origin
+  type: STRING
+  mode: NULLABLE
+  description: The origin of the default search engine definition (e.g. "default", "verified",
+    "unverified", "custom").
+- name: default_search_engine_data_submission_url
+  type: STRING
+  mode: NULLABLE
+  description: The submission URL template for the default search engine.
+- name: devtools_toolbox_opened_count_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times the Firefox Developer Tools toolbox was opened
+    on this submission date.
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+  description: The version string of the distribution package associated with the Firefox
+    installation.
+- name: distributor_channel
+  type: STRING
+  mode: NULLABLE
+  description: The distribution channel through which this Firefox installation was
+    delivered by the distributor.
+- name: e10s_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the Electrolysis (e10s) multi-process architecture is enabled
+    in the browser.
+- name: env_build_id
+  type: STRING
+  mode: NULLABLE
+  description: The build ID from the browser's environment build metadata, distinct
+    from the application build ID.
+- name: env_build_platform_version
+  type: STRING
+  mode: NULLABLE
+  description: The version of the platform (e.g. XULRunner) on which the browser was
+    built, from environment build metadata.
+- name: env_build_version
+  type: STRING
+  mode: NULLABLE
+  description: The version string from the browser's environment build metadata.
+- name: env_build_xpcom_abi
+  type: STRING
+  mode: NULLABLE
+  description: The XPCOM ABI (application binary interface) string identifying the target
+    platform for the browser build.
+- name: environment_settings_intl_accept_languages
+  type: STRING
+  mode: REPEATED
+  description: List of language tags from the browser's Accept-Languages HTTP header
+    setting, reflecting the user's preferred languages.
+- name: environment_settings_intl_app_locales
+  type: STRING
+  mode: REPEATED
+  description: List of locale identifiers the Firefox application is currently using
+    for its user interface.
+- name: environment_settings_intl_available_locales
+  type: STRING
+  mode: REPEATED
+  description: List of locale identifiers available in the current Firefox build for
+    the user interface.
+- name: environment_settings_intl_regional_prefs_locales
+  type: STRING
+  mode: REPEATED
+  description: List of locale identifiers derived from regional preference settings
+    reported by the operating system.
+- name: environment_settings_intl_requested_locales
+  type: STRING
+  mode: REPEATED
+  description: List of locale identifiers explicitly requested by the user for the Firefox
+    interface.
+- name: environment_settings_intl_system_locales
+  type: STRING
+  mode: REPEATED
+  description: List of system-level locale identifiers as reported by the operating
+    system.
+- name: first_paint_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean time in milliseconds from navigation start to first paint, averaged
+    across pings on this submission date.
+- name: flash_version
+  type: STRING
+  mode: NULLABLE
+  description: The version string of the Adobe Flash plugin installed on the client,
+    or NULL if Flash is not installed.
+- name: gfx_features_advanced_layers_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the Advanced Layers compositing GFX feature (e.g. "available",
+    "disabled", "blocked", "failed").
+- name: gfx_features_d2d_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the Direct2D (D2D) hardware acceleration GFX feature on Windows
+    (e.g. available, blocked, disabled).
+- name: gfx_features_d3d11_status
+  type: STRING
+  mode: NULLABLE
+  description: Status of the Direct3D 11 (D3D11) compositing GFX feature on Windows
+    (e.g. available, blocked, disabled).
+- name: gfx_features_gpu_process_status
+  type: STRING
+  mode: NULLABLE
+  description: 'Status of the out-of-process compositing ("GPU Process") GFX feature.
+    Values: unused (not requested), unavailable (Safe Mode or OS restriction), blocked
+    (internal condition), blocklisted (blocklist restriction), denied (allowlist restriction),
+    disabled (user-disabled), failed (initialization failure), available (in use by
+    default).'
+- name: gpu_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of GPU process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: install_year
+  type: INTEGER
+  mode: NULLABLE
+  description: The calendar year in which Firefox was installed on the client device.
+- name: main_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of main process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: max_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+  description: The maximum subsession counter value seen across all pings on this submission
+    date, representing the highest numbered subsession of the day.
+- name: min_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+  description: The minimum subsession counter value seen across all pings on this submission
+    date, representing the lowest numbered subsession of the day.
+- name: n_created_pictureinpicture
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of Picture-in-Picture windows created on this day (from
+    event pings).
+- name: n_logged_event
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of telemetry events logged in the event ping on this day.
+- name: n_viewed_protection_report
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times the Enhanced Tracking Protection report was viewed
+    on this day (from event pings).
+- name: os_service_pack_major
+  type: INTEGER
+  mode: NULLABLE
+  description: The major version number of the Windows Service Pack installed on the
+    client, or NULL on non-Windows systems.
+- name: os_service_pack_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: The minor version number of the Windows Service Pack installed on the
+    client, or NULL on non-Windows systems.
+- name: pings_aggregated_by_this_row
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of main pings aggregated into this row for this client on
+    this submission date.
+- name: places_bookmarks_count_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean number of bookmarks in the client's Firefox Places database, averaged
+    across pings on this submission date.
+- name: places_pages_count_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean number of pages in the client's Firefox Places browsing history
+    database, averaged across pings on this submission date.
+- name: plugin_hangs_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of plugin hang events (unresponsive plugin processes) recorded
+    on this submission date.
+- name: plugins_infobar_allow_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times the user clicked Allow on a plugin activation infobar
+    on this submission date.
+- name: plugins_infobar_block_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times the user clicked Block on a plugin activation infobar
+    on this submission date.
+- name: plugins_infobar_shown_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times a plugin activation infobar was shown to the user
+    on this submission date.
+- name: plugins_notification_shown_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of times a plugin permission notification was shown to the
+    user on this submission date.
+- name: previous_build_id
+  type: STRING
+  mode: NULLABLE
+  description: The Firefox build ID the browser was updating from; follows the same
+    format as application.buildId. Only valid for "update" pings with reason "success".
+- name: push_api_notify_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of Web Push API notifications delivered to the browser on
+    this submission date.
+- name: rdd_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of Remote Data Decoder (RDD) process crashes recorded on
+    this submission date, sourced from telemetry.crashes_daily.
+- name: sandbox_effective_content_process_level
+  type: INTEGER
+  mode: NULLABLE
+  description: The effective content process sandbox level reported by the browser's
+    security sandbox configuration.
+- name: search_cohort
+  type: STRING
+  mode: NULLABLE
+  description: The search cohort identifier associated with the client for search experimentation
+    and revenue attribution tracking.
+- name: search_with_ads_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of search result pages with ads shown across all search
+    access points on this submission date, prioritizing access-point-based probes over
+    legacy scalar probes.
+- name: session_restored_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean session restore time in milliseconds, averaged across pings on this
+    submission date.
+- name: sessions_started_on_this_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of new browser sessions started on this submission date (counted
+    when subsession_counter equals 1).
+- name: shutdown_kill_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of forced browser shutdown (kill) events on this submission
+    date, where a content process was killed during Firefox shutdown.
+- name: socket_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of socket process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: ssl_handshake_result_failure_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of failed SSL/TLS handshakes on this submission date.
+- name: ssl_handshake_result_success_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of successful SSL/TLS handshakes on this submission date.
+- name: startup_profile_selection_first_ping_only
+  type: STRING
+  mode: NULLABLE
+  description: The profile selection reason at startup captured only from the first
+    ping of the day, used as an alternative to startup_profile_selection_reason_first.
+- name: submission_timestamp_min
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: The earliest submission timestamp across all pings aggregated into this
+    row on the submission date.
+- name: subsession_hours_sum
+  type: NUMERIC
+  mode: NULLABLE
+  description: Total number of hours spent in active subsessions on this submission
+    date, in fractional hours (computed from subsession_length in seconds).
+- name: sync_count_desktop_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean number of desktop devices linked via Firefox Sync, averaged across
+    pings on this submission date.
+- name: sync_count_desktop_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total count of desktop device sync events recorded on this submission
+    date.
+- name: sync_count_mobile_mean
+  type: FLOAT
+  mode: NULLABLE
+  description: Mean number of mobile devices linked via Firefox Sync, averaged across
+    pings on this submission date.
+- name: sync_count_mobile_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total count of mobile device sync events recorded on this submission
+    date.
+- name: total_hours_sum
+  type: NUMERIC
+  mode: NULLABLE
+  description: Total number of hours Firefox was open (active + inactive) on this submission
+    date. Deprecated in clients_daily_v6 (always NULL).
+- name: trackers_blocked_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of tracking content items blocked by Enhanced Tracking Protection
+    on this submission date.
+- name: update_auto_download
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Firefox is configured to automatically download updates in the
+    background.
+- name: update_channel
+  type: STRING
+  mode: NULLABLE
+  description: The update channel configured in the browser's update settings (e.g.
+    release, beta, nightly, esr). Related to normalized_channel but sourced from environment.settings.update.channel.
+- name: update_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the browser's automatic update feature is enabled.
+- name: utility_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of utility process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: vr_crash_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of VR process crashes recorded on this submission date,
+    sourced from telemetry.crashes_daily.
+- name: web_notification_shown_sum
+  type: INTEGER
+  mode: NULLABLE
+  description: Total number of web notification permission prompts shown to the user
+    on this submission date.

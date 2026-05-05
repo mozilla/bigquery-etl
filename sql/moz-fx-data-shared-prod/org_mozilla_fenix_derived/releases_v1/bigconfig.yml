@@ -2,6 +2,8 @@ type: BIGCONFIG_FILE
 tag_deployments:
 - collection:
     name: Test
+    notification_channels:
+    - slack: '#ds-bigeye-triage'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fenix_derived.releases_v1.*
@@ -9,7 +11,7 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: FRESHNESS
-      metric_name: FRESHNESS [warn]
+      metric_name: FRESHNESS
       metric_schedule:
         named_schedule:
           name: Default Schedule - 13:00 UTC

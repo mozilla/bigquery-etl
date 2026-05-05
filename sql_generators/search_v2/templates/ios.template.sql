@@ -7,10 +7,10 @@ baseline_{{ namespace }} AS (
     '{{ app_name }}' AS app_name,
     -- Fennec is used to be consistent with core pings
     'Fennec' AS normalized_app_name,
-    client_info.locale,
     client_info.app_display_version AS app_version,
     '{{ channel }}' AS channel,
     normalized_os AS os,
+    client_info.locale,
     normalized_os_version AS os_version,
     metrics.string.search_default_engine AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
@@ -23,6 +23,7 @@ baseline_{{ namespace }} AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.tabs_normal_and_private_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     {{ namespace }}.baseline
   AS

@@ -10,21 +10,25 @@ description: |-
   Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
   In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: valid_to
-    require_partition_filter: false
-    expiration_days: null
+  # Use clustering rather than partitioning because the whole table is being overwritten every time
+  # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.
+  time_partitioning: null
   clustering:
     fields:
+    - valid_to
     - valid_from
-references: {}
+require_column_descriptions: true
+monitoring:
+  enabled: true
+  freshness: null
+  volume: null

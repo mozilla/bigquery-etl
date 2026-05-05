@@ -42,7 +42,7 @@ SELECT
   `mozfun.mobile_search.normalize_app_name`(
     app_name,
     os
-  ).normalized_app_name AS normalized_app_name_os
+  ).normalized_app_name_os AS normalized_app_name_os
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical_pre202408`
 WHERE
@@ -113,7 +113,7 @@ SELECT
   `mozfun.mobile_search.normalize_app_name`(
     app_name,
     os
-  ).normalized_app_name AS normalized_app_name_os
+  ).normalized_app_name_os AS normalized_app_name_os
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
 WHERE
@@ -141,4 +141,4 @@ WHERE
       AND submission_date >= '2023-01-01'
     )
     OR (app_name IN ('Focus', 'Klar') AND submission_date < '2023-01-01')
-  );
+  )

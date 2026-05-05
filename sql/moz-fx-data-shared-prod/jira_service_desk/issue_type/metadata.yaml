@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Issue Types
+description: |-
+  Jira issues types for Service Desk synced via Fivetran.

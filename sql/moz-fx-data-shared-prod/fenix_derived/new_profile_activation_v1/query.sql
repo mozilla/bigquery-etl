@@ -35,9 +35,9 @@ client_search AS (
     USING (client_id)
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    AND normalized_app_name = 'Fenix'
+    AND normalized_app_name_os = "Firefox Android"
   GROUP BY
-    1
+    client_id
 ),
 dou AS (
   SELECT
@@ -71,7 +71,7 @@ adjust_client AS (
     AND metrics.string.first_session_network IS NOT NULL
     AND metrics.string.first_session_network <> ''
   GROUP BY
-    1
+    client_id
 )
 SELECT
   client_id,
@@ -93,7 +93,7 @@ SELECT
   first_seen_date,
   submission_date,
   1 AS new_profile,
-  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS integer) AS activated
+  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS INTEGER) AS activated
 FROM
   dou
 INNER JOIN

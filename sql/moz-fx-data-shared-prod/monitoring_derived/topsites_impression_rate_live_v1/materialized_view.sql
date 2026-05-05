@@ -1,9 +1,10 @@
-CREATE MATERIALIZED VIEW `moz-fx-data-shared-prod.monitoring_derived.topsites_impression_rate_live_v1`
+CREATE MATERIALIZED VIEW
+  `moz-fx-data-shared-prod.monitoring_derived.topsites_impression_rate_live_v1`
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
 SELECT
-  TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
+  TIMESTAMP_TRUNC(submission_timestamp, MINUTE) AS submission_minute,
   COUNT(*) AS n,
   COUNT(reporting_url) AS n_contile,
   -- Yandex pings are not included in this monitor

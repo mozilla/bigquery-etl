@@ -9,6 +9,7 @@ labels:
   incremental: true
   dag: bqetl_addons
   owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_addons
 bigquery:
@@ -16,9 +17,9 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:
     - sample_id
-references: {}
+require_column_descriptions: false

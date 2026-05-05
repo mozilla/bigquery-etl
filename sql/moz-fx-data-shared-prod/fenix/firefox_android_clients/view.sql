@@ -32,6 +32,9 @@ SELECT
   END AS install_source,
   CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
   CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
+  `moz-fx-data-shared-prod`.udf.organic_vs_paid_mobile_gclid_attribution(
+    play_store_attribution_install_referrer_response
+  ) AS paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 WHERE

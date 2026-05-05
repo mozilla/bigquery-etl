@@ -49,6 +49,20 @@ SELECT
   SUM(pocket_saves) AS pocket_saves,
   SUM(sponsored_pocket_saves) AS sponsored_pocket_saves,
   SUM(organic_pocket_saves) AS organic_pocket_saves,
+  SUM(pocket_thumb_voting_events) AS pocket_thumb_voting_events,
+  SUM(topic_selection_opened) AS topic_selection_opened,
+  SUM(topic_selection_updates) AS topic_selection_updates,
+  SUM(weather_widget_clicks) AS weather_widget_clicks,
+  SUM(weather_widget_change_display_to_detailed) AS weather_widget_change_display_to_detailed,
+  SUM(weather_widget_change_display_to_simple) AS weather_widget_change_display_to_simple,
+  SUM(wallpaper_clicks) AS wallpaper_clicks,
+  SUM(
+    IF(topic_selection_selected_topics_first_time, 1, 0)
+  ) AS topic_selection_selected_topics_first_time_count,
+  SUM(sponsored_pocket_dismissals) AS sponsored_pocket_dismissals,
+  SUM(organic_pocket_dismissals) AS organic_pocket_dismissals,
+  SUM(topic_selection_dismissals) AS topic_selection_dismissals,
+  SUM(visits_with_default_ui) AS visits_with_default_ui,
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.newtab_clients_daily_v1`
 WHERE

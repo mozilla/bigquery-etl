@@ -11,7 +11,9 @@ IF
   WITH all_events AS (
     SELECT
       submission_timestamp,
-      events
+      events,
+      normalized_channel,
+      TRUE as validation_errors_valid
     FROM
        `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
   ),
@@ -21,7 +23,9 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
-      event.name AS event_method
+      normalized_channel,
+      event.name AS event_method,
+      validation_errors_valid
     FROM
       all_events,
       UNNEST(events) AS event,
@@ -40,7 +44,11 @@ IF
   WITH all_events AS (
     SELECT
       submission_timestamp,
-      events
+      events,
+      normalized_channel,
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+).*") AS NUMERIC) >= 109 OR normalized_app_name != 'firefox_desktop' AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.events_v1`
   ),
@@ -50,7 +58,9 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
-      event.name AS event_method
+      normalized_channel,
+      event.name AS event_method,
+      validation_errors_valid
     FROM
       all_events,
       UNNEST(events) AS event,
@@ -73,7 +83,11 @@ IF
       event.f2_ AS event_method,
       event.f3_ AS `type`,
       event.f4_ AS experiment,
-      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
+      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
+      normalized_channel,
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      CAST(REGEXP_EXTRACT(application.version, r"^([0-9]+).*") AS NUMERIC) >= 109 AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.event_v4`
     CROSS JOIN
@@ -108,6 +122,7 @@ IF
     `type`,
     experiment,
     branch,
+    normalized_channel,
     TIMESTAMP_ADD(
       TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -126,18 +141,20 @@ IF
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
-    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
+    -- order of operations bug means validation will always fail for clients before
+    COUNTIF(event_method = 'validationFailed' AND validation_errors_valid) AS validation_failed_count
   FROM
     experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('{{ start_date }}')
+    `timestamp` > TIMESTAMP('{{ start_date }}')
   GROUP BY
     partition_date,
     submission_date,
     `type`,
     experiment,
     branch,
+    normalized_channel,
     window_start,
     window_end

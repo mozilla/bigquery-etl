@@ -170,7 +170,7 @@ staging AS (
     _previous
     USING (client_id)
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` AS cfs
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` AS cfs
     USING (client_id)
 )
 SELECT

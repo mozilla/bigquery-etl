@@ -24,12 +24,13 @@ owners:
   - lvargas@mozilla.com
   - mozilla/kpi_table_reviewers
 labels:
+  level: gold
   incremental: true
   change_controlled: true
   shredder_mitigation: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: {{ app_name }}_active_users_aggregates_v3
+  task_name: {{ app_name }}_{{ table_name }}
   date_partition_offset: -1
 bigquery:
   time_partitioning:

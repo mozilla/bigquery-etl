@@ -3,7 +3,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     client_info,
     METADATA,
     normalized_os,
@@ -595,14 +595,12 @@ combined_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    ANY_VALUE(is_new_profile) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    first_seen_date = @submission_date AS is_new_profile,
+    activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 )
 SELECT
   *,

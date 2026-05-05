@@ -4,4 +4,10 @@ description: |-
 dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
-workgroup_access: []
+workgroup_access:
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:ads/data-developers
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:ads/data-viewers

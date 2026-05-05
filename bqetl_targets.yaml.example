@@ -1,0 +1,15 @@
+# target_name:
+#   project_id: moz-fx-data-shared-dev # or personal sandbox
+#   dataset_prefix: 'dev_{{ account.username }}_{{ git.branch }}_{{ git.commit }}_'  # optional prefix
+# Supported variables:  account.username, artifact.project_id, artifact.dataset_id, git.branch, git.commit
+
+shared_dev:
+  project_id: moz-fx-data-shared-dev
+  dataset: '{{ account.username }}_{{ git.branch }}'
+  artifact_prefix: '{{ artifact.project_id }}__{{ artifact.dataset_id }}__'
+
+dev:
+  project_id: your-sandbox-project  # TODO: specify your personal sandbox project
+  dataset_prefix: 'dev_{{ git.branch }}__{{ artifact.project_id }}__'
+
+default_target: shared_dev

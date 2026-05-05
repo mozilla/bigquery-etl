@@ -1,0 +1,40 @@
+# Android - 1 ping with ops only.
+# Schema stub row (2025-01-14): filtered out by WHERE clause, ensures all fields
+# exist in the inferred schema.
+- submission_timestamp: "2025-01-14 10:00:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+    os: Android
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 1
+    labeled_string:
+      ads_client_client_error:
+        - key: new
+          value: stub
+      ads_client_build_cache_error:
+        - key: timeout
+          value: stub
+      ads_client_deserialization_error:
+        - key: parse_error
+          value: stub
+      ads_client_http_cache_outcome:
+        - key: miss
+          value: stub
+- submission_timestamp: "2025-01-15 10:20:00 UTC"
+  normalized_country_code: US
+  normalized_channel: release
+  client_info:
+    app_display_version: "132.0.0"
+    os: Android
+  metrics:
+    labeled_counter:
+      ads_client_client_operation_total:
+        - key: new
+          value: 2
+        - key: request_ads
+          value: 1

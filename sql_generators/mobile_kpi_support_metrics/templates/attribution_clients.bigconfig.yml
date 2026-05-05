@@ -1,22 +1,42 @@
 type: BIGCONFIG_FILE
+
 tag_deployments:
-- collection:
-    name: {{ bigeye_collection }}
-  deployments:
-  - column_selectors:
-    - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
-    metrics:
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: FRESHNESS
-      metric_name: FRESHNESS [warn]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: VOLUME
-      metric_name: VOLUME [fail]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
+  - collection:
+      name: {{ bigeye_collection }}
+      notification_channels:
+        - slack: '{{ bigeye_notification_slack_channel }}'
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.submission_date
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.sample_id
+        metrics:
+          - saved_metric_id: is_not_null
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
+        metrics:
+          - saved_metric_id: is_99_percent_valid_normalized_channel
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: composite_key_uniqueness_2_column
+            parameters:
+              - key: col_1
+                column_name: client_id
+              - key: col_1_string
+                string_value: client_id
+              - key: col_2
+                column_name: normalized_channel
+              - key: col_2_string
+                string_value: normalized_channel
+              - key: table
+                string_value: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
+            rct_overrides:
+              - FULL_SCAN
+            conditions:
+              - normalized_channel IS NOT NULL
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: freshness
+          - saved_metric_id: volume

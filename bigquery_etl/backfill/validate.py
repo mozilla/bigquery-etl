@@ -1,9 +1,23 @@
 """Validate backfill entries."""
 
+import datetime
 from pathlib import Path
 from typing import List
 
-from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
+from ..backfill.parse import (
+    BACKFILL_FILE,
+    DEFAULT_REASON,
+    DEFAULT_WATCHER,
+    Backfill,
+    BackfillStatus,
+)
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
+from .utils import (
+    MAX_BACKFILL_ENTRY_AGE_DAYS,
+    NBR_DAYS_RETAINED,
+    get_effective_retention_days,
+)
 
 
 def validate_duplicate_entry_dates(
@@ -48,10 +62,37 @@ def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
         raise ValueError("Backfill entries are not sorted by entry dates")
 
 
-def validate_file(file: Path) -> None:
-    """Validate all entries from a given backfill.yaml file."""
-    backfills = Backfill.entries_from_file(file)
-    validate_entries(backfills)
+def validate_shredder_mitigation(entry: Backfill, backfill_file: Path) -> None:
+    """Check if shredder mitigation in backfill entry and metadata label matches."""
+    if entry.status == BackfillStatus.INITIATE:
+        metadata_file = Path(str(backfill_file).replace(BACKFILL_FILE, METADATA_FILE))
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+
+        if has_shredder_mitigation_label != entry.shredder_mitigation:
+            raise ValueError(
+                f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} entry {entry.entry_date} should match."
+            )
+
+
+def validate_depends_on_past_end_date(backfill_entry: Backfill, backfill_file: Path):
+    """Check if the table depends on past and has an end_date before the entry date.
+
+    An end date in the past may result in data inconsistencies with depends_on_past tables.
+    """
+    if backfill_entry.override_depends_on_past_end_date:
+        return
+
+    table_metadata = Metadata.from_file(backfill_file.parent / METADATA_FILE)
+
+    if not table_metadata.scheduling.get("depends_on_past", False):
+        return
+
+    if backfill_entry.end_date < backfill_entry.entry_date:
+        raise ValueError(
+            "End date must be on or after the backfill entry date for a depends_on_past table. "
+            "Use --override-depends-on-past-end-date flag with `bqetl backfill create` to override this check."
+        )
 
 
 def validate_duplicate_entry_with_initiate_status(
@@ -66,14 +107,88 @@ def validate_duplicate_entry_with_initiate_status(
                 )
 
 
-def validate_entries(backfills: list) -> None:
+def validate_old_entry_date(backfill_entry: Backfill) -> None:
+    """Check if entry is in Initiate but is too old to run."""
+    if (
+        backfill_entry.status == BackfillStatus.INITIATE
+        and backfill_entry.entry_date
+        < datetime.date.today() - datetime.timedelta(days=MAX_BACKFILL_ENTRY_AGE_DAYS)
+    ):
+        raise ValueError(
+            "Backfill entries will not run if they are older than "
+            f"{MAX_BACKFILL_ENTRY_AGE_DAYS} days old"
+        )
+
+
+def validate_retention_range(backfill_entry: Backfill, backfill_file: Path) -> None:
+    """Check if start date exceeds retention limit.
+
+    When backfill_file is provided, also considers the table's partition
+    expiration_days and uses the smaller of that and the default retention limit.
+    """
+    if (
+        backfill_entry.status != BackfillStatus.INITIATE
+        or backfill_entry.override_retention_limit
+    ):
+        return
+
+    retention_days = NBR_DAYS_RETAINED
+    metadata_file = backfill_file.parent / METADATA_FILE
+    if metadata_file.exists():
+        metadata = Metadata.from_file(metadata_file)
+        retention_days = get_effective_retention_days(metadata)
+
+    if backfill_entry.start_date < backfill_entry.entry_date - datetime.timedelta(
+        days=retention_days - 1
+    ):
+        raise ValueError(
+            f"Cannot backfill more than {retention_days} days prior to entry date "
+            "due to retention policies. "
+            "Add `override_retention_limit: true` to backfill to override this check."
+        )
+
+
+def validate_query_script_options(
+    backfill_entry: Backfill, backfill_file: Path
+) -> None:
+    """Check if required script options are provided when the query file is a .py script."""
+    if (
+        backfill_entry.custom_query_path is not None
+        and backfill_entry.custom_query_path.endswith(".py")
+    ) or (backfill_file.parent / "query.py").exists():
+        if (
+            backfill_entry.query_script_entrypoint is None
+            or backfill_entry.query_script_date_arg is None
+        ):
+            raise ValueError(
+                "Backfill for query scripts require --query-script-entrypoint "
+                "and --query-script-date-arg arguments"
+            )
+
+
+def validate_file(file: Path) -> None:
+    """Validate all entries from a given backfill.yaml file."""
+    backfills = Backfill.entries_from_file(file)
+    validate_entries(backfills, file)
+
+
+def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
     """Validate a list of backfill entries."""
     for i, backfill_entry in enumerate(backfills):
         validate_default_watchers(backfill_entry)
         validate_default_reason(backfill_entry)
         validate_duplicate_entry_dates(backfill_entry, backfills[i + 1 :])
         validate_excluded_dates(backfill_entry)
+        validate_shredder_mitigation(backfill_entry, backfill_file)
         validate_duplicate_entry_with_initiate_status(
             backfill_entry, backfills[i + 1 :]
         )
+        validate_depends_on_past_end_date(backfill_entry, backfill_file)
+        validate_old_entry_date(backfill_entry)
+        validate_retention_range(backfill_entry, backfill_file)
+        validate_query_script_options(backfill_entry, backfill_file)
     validate_entries_are_sorted(backfills)
+
+
+class BackfillConfigurationError(Exception):
+    """Backfill configuration error."""

@@ -35,10 +35,9 @@ client_search AS (
     USING (client_id)
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    AND normalized_app_name = 'Fennec'
-    AND os = 'iOS'
+    AND normalized_app_name_os = "Firefox iOS"
   GROUP BY
-    1
+    client_id
 ),
 dou AS (
   SELECT
@@ -70,7 +69,7 @@ SELECT
   first_seen_date,
   submission_date,
   1 AS new_profile,
-  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS integer) AS activated
+  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS INTEGER) AS activated
 FROM
   dou
 INNER JOIN

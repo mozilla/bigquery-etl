@@ -2,57 +2,77 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: Monthly Active Users
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: Weekly Active Users
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: Daily Active Users
 - mode: NULLABLE
   name: visited_5_uri_mau
   type: INTEGER
+  description: Visited 5 URI MAU
 - mode: NULLABLE
   name: visited_5_uri_wau
   type: INTEGER
+  description: Visited 5 URI WAU
 - mode: NULLABLE
   name: visited_5_uri_dau
   type: INTEGER
+  description: Visited 5 URI DAU
 - mode: NULLABLE
   name: dev_tools_mau
   type: INTEGER
+  description: Dev Tools MAU
 - mode: NULLABLE
   name: dev_tools_wau
   type: INTEGER
+  description: Dev Tools WAU
 - mode: NULLABLE
   name: dev_tools_dau
   type: INTEGER
+  description: Dev Tools DAU
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: App Name
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: Operating System Version
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: country_name
   type: STRING
+  description: Country Name

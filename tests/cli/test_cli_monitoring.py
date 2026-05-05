@@ -85,8 +85,7 @@ class TestMonitoring:
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
 
-            (SQL_DIR / "bigeye_custom_rules.sql").write_text(
-                """
+            (SQL_DIR / "bigeye_custom_rules.sql").write_text("""
                 -- {
                 --   "name": "Custom check",
                 --   "alert_conditions": "value",
@@ -102,8 +101,7 @@ class TestMonitoring:
                 COUNT(*)
                 FROM
                 `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`;
-            """
-            )
+            """)
 
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
@@ -171,8 +169,7 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigconfig.yml").write_text(
-                """
+            (SQL_DIR / "bigconfig.yml").write_text("""
                 type: BIGCONFIG_FILE
                 table_deployments:
                 - deployments:
@@ -184,8 +181,7 @@ class TestMonitoring:
                     metric_schedule:
                         named_schedule:
                         name: Default Schedule - 13:00 UTC
-            """
-            )
+            """)
 
             assert (SQL_DIR / "bigconfig.yml").exists()
             runner.invoke(update, [f"{str(SQL_DIR)}"])
@@ -371,7 +367,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = []
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -388,7 +384,7 @@ class TestMonitoring:
                 catch_exceptions=False,
             )
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -414,21 +410,17 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(
-                metric_infos=[
-                    SimpleNamespace(
-                        latest_metric_runs=[
-                            SimpleNamespace(
-                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
-                            )
-                        ],
-                        metric_configuration=SimpleNamespace(
-                            id=123, name="test [fail]"
-                        ),
-                        active_issue=SimpleNamespace(display_name="error"),
-                    )
-                ]
-            )
+            mock_client.run_metric_batch_async.return_value = [
+                SimpleNamespace(
+                    latest_metric_runs=[
+                        SimpleNamespace(
+                            status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                        )
+                    ],
+                    metric_configuration=SimpleNamespace(id=123, name="test [fail]"),
+                    active_issue=SimpleNamespace(display_name="error"),
+                )
+            ]
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -446,7 +438,7 @@ class TestMonitoring:
             )
             assert result.exit_code == 1
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -472,21 +464,17 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(
-                metric_infos=[
-                    SimpleNamespace(
-                        latest_metric_runs=[
-                            SimpleNamespace(
-                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
-                            )
-                        ],
-                        metric_configuration=SimpleNamespace(
-                            id=123, name="test [warn]"
-                        ),
-                        active_issue=SimpleNamespace(display_name="error"),
-                    )
-                ]
-            )
+            mock_client.run_metric_batch_async.return_value = [
+                SimpleNamespace(
+                    latest_metric_runs=[
+                        SimpleNamespace(
+                            status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                        )
+                    ],
+                    metric_configuration=SimpleNamespace(id=123, name="test [warn]"),
+                    active_issue=SimpleNamespace(display_name="error"),
+                )
+            ]
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -505,7 +493,7 @@ class TestMonitoring:
             )
             assert result.exit_code == 0
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -529,16 +517,14 @@ class TestMonitoring:
             SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
             os.makedirs(str(SQL_DIR))
             copy_tree(str(test_query), str(SQL_DIR))
-            (SQL_DIR / "bigeye_custom_rules.sql").write_text(
-                """
+            (SQL_DIR / "bigeye_custom_rules.sql").write_text("""
                 SELECT 1
-            """
-            )
+            """)
 
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = []
             rules_mock = mock.Mock(
                 custom_rules=[
                     mock.Mock(

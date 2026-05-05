@@ -14,6 +14,7 @@ from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
 from google.cloud.exceptions import NotFound
 
+from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 from bigquery_etl.schema import Schema
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
@@ -22,7 +23,6 @@ from bigquery_etl.shredder.config import (
     SHARED_PROD,
     DeleteSource,
     find_glean_targets,
-    get_glean_channel_to_app_name_mapping,
 )
 
 FIND_TABLES_QUERY_TEMPLATE = """
@@ -69,12 +69,14 @@ WHERE
   AND table_schema != "backfills_staging_derived"
   AND table_name != 'deletion_request_v1'
   AND table_name != 'deletion_request_v4'
+  -- ignore recently created tables that may not have lineage populated yet
+  AND DATE(creation_time) < DATE_SUB('2025-11-24', INTERVAL 1 DAY)
 """
 
 
 def find_client_id_tables(project: str) -> List[str]:
     """Return a list of tables that have columns ending with 'client_id'."""
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
     row_results = client.query_and_wait(
         query=FIND_TABLES_QUERY_TEMPLATE.format(project=project)
     )
@@ -108,9 +110,12 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
             )
             # recursively add upstream tables
             for upstream_link in upstream_links_result:
-                # remove "bigquery:" and "sharded:" prefixes
-                parent_table = upstream_link.source.fully_qualified_name.split(":")[-1]
-
+                # possible sources: https://cloud.google.com/dataplex/docs/fully-qualified-names
+                link_parts = upstream_link.source.fully_qualified_name.split(":")
+                source = link_parts[0]
+                parent_table = link_parts[-1]
+                if not source.startswith("bigquery") or parent_table.startswith("moz-fx-data-shredder.shredder_tmp"):
+                    break
                 upstream_stable_tables[base_table] = upstream_stable_tables[
                     base_table
                 ].union(traverse_upstream(parent_table))
@@ -138,10 +143,10 @@ def table_exists(client: bigquery.Client, table_name: str) -> bool:
 
 
 def get_associated_deletions(
-    upstream_stable_tables: Dict[str, Set[str]]
+    project: str, upstream_stable_tables: Dict[str, Set[str]]
 ) -> Dict[str, Set[DeleteSource]]:
     """Get a list of associated deletion requests tables per table based on the stable tables."""
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
 
     # deletion targets for stable tables defined in the shredder config
     known_stable_table_sources: Dict[str, Set[DeleteSource]] = {
@@ -166,7 +171,7 @@ def get_associated_deletions(
                 dataset_name.replace("_derived", "_stable")
             ] = f"{dataset_name}.additional_deletion_requests_v1"
 
-    glean_channel_names = get_glean_channel_to_app_name_mapping()
+    glean_channel_names = get_glean_app_id_to_app_name_mapping()
 
     for table_name, stable_tables in upstream_stable_tables.items():
         deletion_tables: Set[DeleteSource] = set()
@@ -184,13 +189,13 @@ def get_associated_deletions(
                     stable_table_ref.dataset_id[: -len("_stable")]
                     in glean_channel_names
                 ):
-                    deletion_request_table = (
-                        f"{stable_table_ref.dataset_id}.deletion_request_v1"
-                    )
-                    if table_exists(client, deletion_request_table):
+                    if table_exists(
+                        client,
+                        f"{stable_table_ref.project}.{stable_table_ref.dataset_id}.deletion_request_v1",
+                    ):
                         table_to_deletions[stable_table] = {
                             DeleteSource(
-                                table=deletion_request_table,
+                                table=f"{stable_table_ref.dataset_id}.deletion_request_v1",
                                 field=GLEAN_CLIENT_ID,
                                 project=SHARED_PROD,
                             )
@@ -243,7 +248,7 @@ def get_missing_deletions(
         bigquery_client = bigquery.Client()
         glean_delete_targets = find_glean_targets(pool, client=bigquery_client)
 
-    glean_channel_names = get_glean_channel_to_app_name_mapping()
+    glean_channel_names = get_glean_app_id_to_app_name_mapping()
     glean_app_name_to_channels = defaultdict(list)
     for channel, app_name in glean_channel_names.items():
         glean_app_name_to_channels[app_name].append(channel)
@@ -361,7 +366,7 @@ def main(run_date, output_table, project_id):
 
     upstream_stable_tables = get_upstream_stable_tables(client_id_tables)
 
-    associated_deletions = get_associated_deletions(upstream_stable_tables)
+    associated_deletions = get_associated_deletions(project_id, upstream_stable_tables)
 
     table_deletions = get_missing_deletions(associated_deletions)
 

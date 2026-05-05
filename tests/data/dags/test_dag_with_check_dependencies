@@ -8,7 +8,6 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
-from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
 ### bqetl_test_dag
@@ -29,12 +28,13 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 5, 25, 0, 0),
     "end_date": None,
-    "email": [],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
+    "max_active_tis_per_dag": None,
 }
 
 tags = ["repo/bigquery-etl"]
@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_test__external_table__v1 = ExternalTaskSensor(
@@ -53,6 +54,7 @@ with DAG(
         external_task_id="checks__fail_test__external_table__v1",
         check_existence=True,
         mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -65,10 +67,11 @@ with DAG(
         project_id="test-project",
         is_dq_check_fail=True,
         owner="test@example.org",
-        email=["test@example.org"],
+        email=["telemetry-alerts@mozilla.com", "test@example.org"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     test__query__v1 = bigquery_etl_query(
@@ -77,7 +80,7 @@ with DAG(
         dataset_id="test",
         project_id="test-project",
         owner="test@example.org",
-        email=["test@example.org"],
+        email=["telemetry-alerts@mozilla.com", "test@example.org"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -88,7 +91,7 @@ with DAG(
         dataset_id="test",
         project_id="test-project",
         owner="test@example.org",
-        email=["test@example.org"],
+        email=["telemetry-alerts@mozilla.com", "test@example.org"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -99,7 +102,7 @@ with DAG(
         dataset_id="test",
         project_id="test-project",
         owner="test@example.org",
-        email=["test@example.org"],
+        email=["telemetry-alerts@mozilla.com", "test@example.org"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

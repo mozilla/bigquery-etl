@@ -9,6 +9,7 @@ labels:
   schedule: daily
   dag: bqetl_fxa_events
   owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_fxa_events
 bigquery:
@@ -18,4 +19,3 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}

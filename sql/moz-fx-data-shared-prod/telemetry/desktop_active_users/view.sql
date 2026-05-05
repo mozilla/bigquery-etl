@@ -4,6 +4,7 @@ AS
 SELECT
   submission_date,
   client_id,
+  profile_group_id,
   sample_id,
   CASE
     WHEN BIT_COUNT(days_active_bits)

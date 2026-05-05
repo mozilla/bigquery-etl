@@ -10,19 +10,19 @@ fields:
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -58,7 +58,7 @@ fields:
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized OS
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -69,29 +69,29 @@ fields:
   description: Indicates if the client is included in the desktop KPI
 - mode: NULLABLE
   name: ping_sent_metric_date
-  type: INT64
+  type: INTEGER
   description: Count of Pings Sent on Metric Date
 - mode: NULLABLE
   name: ping_sent_week_4
-  type: INT64
+  type: INTEGER
   description: Count of Pings Sent on Week 4
 - mode: NULLABLE
   name: active_metric_date
-  type: INT64
+  type: INTEGER
   description: Count of Clients Active on Metric Date
 - mode: NULLABLE
   name: retained_week_4
-  type: INT64
+  type: INTEGER
   description: Count of Clients Retained on Week 4
 - mode: NULLABLE
   name: retained_week_4_new_profiles
-  type: INT64
+  type: INTEGER
   description: Count of New Profiles Retained on Week 4
 - mode: NULLABLE
   name: new_profiles_metric_date
-  type: INT64
+  type: INTEGER
   description: Count of New Profiles on Metric Date
 - mode: NULLABLE
   name: repeat_profiles
-  type: INT64
+  type: INTEGER
   description: Count of Repeat Profiles

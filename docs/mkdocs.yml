@@ -45,7 +45,9 @@ nav:
       - Recommended practices: reference/recommended_practices.md
       - Incremental queries: reference/incremental.md
       - Scheduling: reference/scheduling.md
+      - Schema includes: reference/schema_includes.md
       - Public data: reference/public_data.md
       - Airflow Tags: reference/airflow_tags.md
       - Data Checks: reference/data_checks.md
+      - bigConfig: reference/bigconfig.md
       - Stage Deploy & CI: reference/stage-deploys-continuous-integration.md

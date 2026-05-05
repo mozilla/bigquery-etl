@@ -10,7 +10,7 @@ worker_event AS (
     workerId AS instance_id,
     workerPoolId AS worker_pool_id,
     eventType AS event_type,
-    timestamp AS event_time,
+    `timestamp` AS event_time,
     CASE
       eventType
       WHEN "instanceBoot"
@@ -30,8 +30,8 @@ worker_event AS (
     `moz-fx-data-shared-prod.taskclusteretl.worker_metrics`,
     date_window
   WHERE
-    timestamp >= TIMESTAMP_SUB(window_start, INTERVAL 1 DAY)
-    AND timestamp < TIMESTAMP_ADD(window_end, INTERVAL 1 DAY)
+    `timestamp` >= TIMESTAMP_SUB(window_start, INTERVAL 1 DAY)
+    AND `timestamp` < TIMESTAMP_ADD(window_end, INTERVAL 1 DAY)
     AND worker = "generic-worker"
     AND workerId LIKE "vm-%"
     AND region IS NOT NULL

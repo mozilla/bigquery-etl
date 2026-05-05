@@ -1,0 +1,6 @@
+friendly_name: Addon Aggregates
+description: |-
+  Addon usages by clients, aggregated across unique sets of dimensions
+  and partitioned by day.
+owners:
+- kik@mozilla.com

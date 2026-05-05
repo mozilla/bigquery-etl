@@ -17,4 +17,4 @@ bigquery:
   clustering:
     fields:
     - experiment
-references: {}
+    - normalized_channel

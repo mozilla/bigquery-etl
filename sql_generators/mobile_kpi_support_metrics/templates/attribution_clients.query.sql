@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'distribution_id' in product_attribution_group_names %}
     distribution_id,
     {% endif %}
@@ -24,6 +25,7 @@ WITH new_profiles AS (
 SELECT
     client_info.client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% if 'distribution_id' in product_attribution_group_names %}
@@ -62,6 +64,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -163,7 +166,73 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
+)
+{% endif %}
+{% if 'play_store_attribution' in product_attribution_group_pings %}
+, play_store_attribution_ping_base AS (
+SELECT
+    client_info.client_id,
+    sample_id,
+    normalized_channel,
+    submission_timestamp,
+    ping_info.seq AS ping_seq,
+    {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
+      {% if field.name == 'play_store_attribution_install_referrer_response' %}
+      NULLIF(metrics.text2.{{ field.name }}, "") AS {{ field.name }},
+      {% else %}
+      NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
+      {% endif %}
+    {% endfor %}
+    {% endfor %}
+  FROM
+    `moz-fx-data-shared-prod.{{ dataset }}.play_store_attribution`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    -- We stopped receiving play_store_attribution via the first-session ping on 2026-04-07 including this filter
+    -- to only start using the new ping starting one day prior to this to ensure consistency.
+    AND DATE(submission_timestamp) >= "2026-04-06"
+    AND client_info.client_id IS NOT NULL
+),
+play_store_attribution_ping AS (
+  SELECT
+    client_id,
+    sample_id,
+    normalized_channel,
+    {% if 'play_store' in product_attribution_group_names %}
+    ARRAY_AGG(
+      IF(
+        {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
+          {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
+        {% endfor %}
+        {% endfor %}
+        STRUCT(
+          {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
+          {% for field in attribution_group.fields %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
+          {% endfor %}
+          {% endfor %}
+        ),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC, submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS play_store_info,
+    {% endif %}
+  FROM
+    play_store_attribution_ping_base
+  GROUP BY
+    ALL
 )
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}
@@ -171,6 +240,7 @@ first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% if 'distribution_id' in product_attribution_group_names %}
@@ -206,6 +276,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -264,13 +335,15 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 )
 {% endif %}
 SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   {% if 'install_source' in product_attribution_group_names %}
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}
@@ -278,7 +351,7 @@ SELECT
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   {% endif %}
   {% if 'play_store' in product_attribution_group_names %}
-  first_session_ping.play_store_info,
+  COALESCE(play_store_attribution_ping.play_store_info, first_session_ping.play_store_info) AS play_store_info,
   {% endif %}
   {% if 'meta' in product_attribution_group_names %}
   first_session_ping.meta_info,
@@ -291,9 +364,12 @@ SELECT
   {% endif %}
 FROM
   new_profiles
+{% if 'play_store_attribution' in product_attribution_group_pings %}LEFT JOIN
+  play_store_attribution_ping USING(client_id, sample_id, normalized_channel)
+{% endif %}
 {% if 'first_session' in product_attribution_group_pings %}LEFT JOIN
-  first_session_ping USING(client_id, sample_id)
+  first_session_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}LEFT JOIN
-  metrics_ping USING(client_id, sample_id)
+  metrics_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}

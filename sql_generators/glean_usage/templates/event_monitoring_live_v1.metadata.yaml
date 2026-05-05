@@ -1,9 +1,19 @@
 friendly_name: Event Monitoring Live
 description: |-
-  Materialized view of experimentation related events
-  coming from {{ dataset }}.
+  Materialized view of experimentation related events coming from {{ dataset }}.
+  {%- if manual_refresh %}
+  This view is refreshed using manual refreshes scheduled in Airflow to run with on-demand billing.
+  {%- endif %}
 owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
+{%- if manual_refresh %}
+scheduling:
+  dag_name: bqetl_materialized_view_refresh
+  query_file_path: sql/{{ project_id }}/{{ derived_dataset }}/event_monitoring_live_v1/script.sql
+  arguments:
+  - '--use_legacy_sql=false'
+  - '--billing-project=moz-fx-data-backfill-3'
+{%- endif %}
 labels:
   materialized_view: true

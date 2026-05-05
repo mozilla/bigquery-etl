@@ -1,0 +1,53 @@
+# Subscription 1
+- id: s1-2000-01-01T00:00:00.000000-CREATE
+  timestamp: 2000-01-01 00:00:00Z
+  type: original
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 2000-01-01 00:00:00Z
+    expiry_time: 2001-01-01 00:00:00Z
+- id: s1-2000-02-02T00:00:00.000000-UPDATE
+  timestamp: 2000-02-02 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    metadata:
+      purchase_token: s1
+    start_time: 2000-01-01 00:00:00Z
+    expiry_time: 2000-02-01 00:00:00Z
+
+# Subscription 2: replaced subscription 1
+- id: s2-2000-02-01T00:00:00.000000-CREATE
+  timestamp: 2000-02-01 00:00:00Z
+  type: original
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s2
+    linked_purchase_token: s1
+    start_time: 2000-02-01 00:00:00Z
+    expiry_time: 2001-02-01 00:00:00Z
+- id: s2-2000-03-02T00:00:00.000000-UPDATE
+  timestamp: 2000-03-02 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    metadata:
+      purchase_token: s2
+    linked_purchase_token: s1
+    start_time: 2000-02-01 00:00:00Z
+    expiry_time: 2000-03-01 00:00:00Z
+
+# Subscription 3: replaced subscription 2
+- id: s3-2000-03-01T00:00:00.000000-CREATE
+  timestamp: 2000-03-01 00:00:00Z
+  type: original
+  firestore_export_operation: CREATE
+  subscription:
+    metadata:
+      purchase_token: s3
+    linked_purchase_token: s2
+    start_time: 2000-03-01 00:00:00Z
+    expiry_time: 2001-03-01 00:00:00Z

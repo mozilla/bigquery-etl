@@ -1,31 +1,15 @@
-friendly_name: Contact Database (Acoustic data)
+friendly_name: (DEPRECATED) Contact Database (Acoustic data)
 
 description: >
-  Import Contacts file exported from Acoustic (CSV data)
+  Import Contacts file exported from Acoustic (CSV data).
+  Deprecated as of 2025-04-15.
 
-  Each partition represents CSV data extracted from Acoustic
-  each submission_date represents contacts that were last modified
-  on the date corresponding to Airflow's execution date
-  (this means each record corresponds to the latest contact
-  change event)
-
-  Data source: https://developer.goacoustic.com/acoustic-campaign/reference/export-from-a-database
-  Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
-  Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 labels:
   incremental: true
   table_type: client_level
 
 owners:
   - cbeck@mozilla.com
-
-scheduling:
-  dag_name: bqetl_acoustic_contact_export
-  date_partition_parameter: submission_date
-  depends_on:
-    - task_id: fivetran_load_completed
-      dag_name: fivetran_acoustic_contact_export
-      execution_delta: 1h
 
 bigquery:
   time_partitioning:
@@ -39,3 +23,5 @@ bigquery:
       - double_opt_in
       - email_lang
       - mailing_country
+
+deprecated: true

@@ -17,10 +17,11 @@ syndication:
     - glam_fog_beta_aggregates
     - glam_fog_nightly_aggregates
     - glam_fog_release_aggregates
+    - latest_versions
   administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
-      - workgroup:dataops-managed/glam
+      - workgroup:mozilla-confidential/data-viewers
+      - workgroup:dataplatform/glam-gke
       - workgroup:treeherder/service

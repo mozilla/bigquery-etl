@@ -5,6 +5,6 @@
   watchers:
   - kik@mozilla.com
   - akommasani@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true

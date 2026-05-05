@@ -32,10 +32,12 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
@@ -60,6 +62,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -80,4 +83,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING(client_id, sample_id)
+  USING(client_id, sample_id, normalized_channel)

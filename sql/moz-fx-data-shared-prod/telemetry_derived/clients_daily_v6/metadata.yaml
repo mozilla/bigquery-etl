@@ -12,6 +12,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
@@ -30,15 +31,18 @@ scheduling:
   - task_id: wait_for_clients_daily
     dag_name: parquet_export
     execution_delta: 1h
+  - task_id: wait_for_clients_daily
+    dag_name: catalyst
+    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
-references: {}
+require_column_descriptions: false

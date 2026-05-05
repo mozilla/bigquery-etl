@@ -1195,6 +1195,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    environment: *deploy-env
     steps:
       - *checkout
       - *download-generated-sql

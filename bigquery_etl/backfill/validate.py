@@ -13,7 +13,11 @@ from ..backfill.parse import (
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
-from .utils import MAX_BACKFILL_ENTRY_AGE_DAYS
+from .utils import (
+    MAX_BACKFILL_ENTRY_AGE_DAYS,
+    NBR_DAYS_RETAINED,
+    get_effective_retention_days,
+)
 
 
 def validate_duplicate_entry_dates(
@@ -116,6 +120,52 @@ def validate_old_entry_date(backfill_entry: Backfill) -> None:
         )
 
 
+def validate_retention_range(backfill_entry: Backfill, backfill_file: Path) -> None:
+    """Check if start date exceeds retention limit.
+
+    When backfill_file is provided, also considers the table's partition
+    expiration_days and uses the smaller of that and the default retention limit.
+    """
+    if (
+        backfill_entry.status != BackfillStatus.INITIATE
+        or backfill_entry.override_retention_limit
+    ):
+        return
+
+    retention_days = NBR_DAYS_RETAINED
+    metadata_file = backfill_file.parent / METADATA_FILE
+    if metadata_file.exists():
+        metadata = Metadata.from_file(metadata_file)
+        retention_days = get_effective_retention_days(metadata)
+
+    if backfill_entry.start_date < backfill_entry.entry_date - datetime.timedelta(
+        days=retention_days - 1
+    ):
+        raise ValueError(
+            f"Cannot backfill more than {retention_days} days prior to entry date "
+            "due to retention policies. "
+            "Add `override_retention_limit: true` to backfill to override this check."
+        )
+
+
+def validate_query_script_options(
+    backfill_entry: Backfill, backfill_file: Path
+) -> None:
+    """Check if required script options are provided when the query file is a .py script."""
+    if (
+        backfill_entry.custom_query_path is not None
+        and backfill_entry.custom_query_path.endswith(".py")
+    ) or (backfill_file.parent / "query.py").exists():
+        if (
+            backfill_entry.query_script_entrypoint is None
+            or backfill_entry.query_script_date_arg is None
+        ):
+            raise ValueError(
+                "Backfill for query scripts require --query-script-entrypoint "
+                "and --query-script-date-arg arguments"
+            )
+
+
 def validate_file(file: Path) -> None:
     """Validate all entries from a given backfill.yaml file."""
     backfills = Backfill.entries_from_file(file)
@@ -135,6 +185,8 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         )
         validate_depends_on_past_end_date(backfill_entry, backfill_file)
         validate_old_entry_date(backfill_entry)
+        validate_retention_range(backfill_entry, backfill_file)
+        validate_query_script_options(backfill_entry, backfill_file)
     validate_entries_are_sorted(backfills)
 
 

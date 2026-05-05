@@ -64,6 +64,6 @@ FULL OUTER JOIN
     FROM
       `moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen`
     WHERE
-      submission_date <= current_date --required since this view has a requirement to filter on submission date
+      submission_date <= CURRENT_DATE --required since this view has a requirement to filter on submission date
   ) b
   ON m.client_id = b.client_id

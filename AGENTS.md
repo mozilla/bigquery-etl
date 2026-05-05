@@ -31,6 +31,3 @@ Generate SQL files with `./bqetl generate`. When running locally, add `--output_
 - Common workflows: `docs/cookbooks/common_workflows.md`
 - Testing guide: `docs/cookbooks/testing.md`
 - Reference docs: `docs/reference/`
-
-## Workflow
-- Do not perform commits yourself, ever

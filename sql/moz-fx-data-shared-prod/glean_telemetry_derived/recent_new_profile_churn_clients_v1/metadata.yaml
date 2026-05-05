@@ -21,9 +21,9 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: 'cohort_date'
+    field: cohort_date
     require_partition_filter: false
     expiration_days: null
   clustering:
-    fields: [cohort_date, sample_id]
+    fields: [sample_id]
 require_column_descriptions: true

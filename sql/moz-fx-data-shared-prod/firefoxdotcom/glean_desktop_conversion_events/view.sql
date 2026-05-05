@@ -33,7 +33,7 @@ INNER JOIN
   firefoxdotcom_first_sessions
   USING (gclid)
 WHERE
-  first_session_date >= DATE_SUB(CURRENT_DATE, INTERVAL 28 day)
+  first_session_date >= DATE_SUB(CURRENT_DATE, INTERVAL 28 DAY)
 GROUP BY
   gclid,
   conversion_name

@@ -16,8 +16,10 @@ from google.cloud import bigquery, storage
 ENROLLMENT_QUERY = """
 WITH active_experiments AS (
   SELECT DISTINCT
-    normandy_slug as experiment
+    normandy_slug as experiment,
+    b.slug AS branch
   FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+  CROSS JOIN UNNEST(branches) b
   WHERE start_date IS NOT NULL
 ),
 enrollment_totals AS (
@@ -56,7 +58,7 @@ SELECT
   SUM(enrollments) OVER (PARTITION BY experiment) as experiment_total_enrollments,
   SUM(unenrollments) OVER (PARTITION BY experiment) as experiment_total_unenrollments
 FROM combined_by_experiment_branch
-WHERE experiment IN (SELECT experiment FROM active_experiments)
+INNER JOIN active_experiments USING (experiment, branch)
 ORDER BY 1, 2
 """
 
@@ -66,18 +68,21 @@ UNENROLLMENT_REASONS_QUERY = """
 -- Alerts will link to Looker dashboard for detailed analysis of actual counts.
 WITH active_experiments AS (
   SELECT DISTINCT
-    normandy_slug as experiment
+    normandy_slug as experiment,
+    b.slug AS branch
   FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+  CROSS JOIN UNNEST(branches) b
   WHERE start_date IS NOT NULL
 )
 SELECT
   active_experiments.experiment,
-  mozfun.map.get_key(events.event_map_values, 'branch') as branch,
+  active_experiments.branch,
   mozfun.map.get_key(events.event_map_values, 'reason') as reason,
   COUNT(*) as count
 FROM active_experiments
 LEFT JOIN `mozdata.telemetry.events` events
   ON active_experiments.experiment = events.event_string_value
+  AND active_experiments.branch = mozfun.map.get_key(events.event_map_values, 'branch')
   AND events.event_category = 'normandy'
   AND events.event_method LIKE 'unenroll%'
   AND events.sample_id = 0

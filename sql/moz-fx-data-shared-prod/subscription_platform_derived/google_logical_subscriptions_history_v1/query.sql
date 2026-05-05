@@ -2,9 +2,9 @@ CREATE TEMP FUNCTION make_introductory_price_interval(period STRING, cycles INTE
 RETURNS INTERVAL AS (
   -- Convert the period from an ISO 8601 duration string into a BigQuery interval.
   MAKE_INTERVAL(
-    year => COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)Y') AS INTEGER), 0),
-    month => COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)M') AS INTEGER), 0),
-    day => (
+    `year` => COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)Y') AS INTEGER), 0),
+    `month` => COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)M') AS INTEGER), 0),
+    `day` => (
       COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)D') AS INTEGER), 0) + (
         COALESCE(CAST(REGEXP_EXTRACT(period, r'(\d+)W') AS INTEGER), 0) * 7
       )

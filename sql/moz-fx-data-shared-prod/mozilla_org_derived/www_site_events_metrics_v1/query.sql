@@ -1,5 +1,5 @@
 SELECT
-  date,
+  `date`,
   event_category,
   event_action,
   event_label,
@@ -25,12 +25,12 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
 WHERE
-  date = @submission_date
+  `date` = @submission_date
   AND hit_type = 'EVENT'
   AND visits = 1
   AND event_category IS NOT NULL
 GROUP BY
-  date,
+  `date`,
   event_category,
   event_action,
   event_label,

@@ -37,7 +37,7 @@ WITH events_unnested AS (
     ) AS is_default_ui,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     extra AS event_details,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,

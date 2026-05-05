@@ -26,7 +26,7 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["test@example.org"],
+    "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,

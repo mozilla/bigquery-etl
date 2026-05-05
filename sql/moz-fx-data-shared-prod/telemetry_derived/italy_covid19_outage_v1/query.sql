@@ -81,7 +81,7 @@ health_data_sample AS (
 ),
 health_data_aggregates AS (
   SELECT
-    date,
+    `date`,
     COUNTIF(eUndefined > 0) AS num_clients_eUndefined,
     COUNTIF(eTimeOut > 0) AS num_clients_eTimeOut,
     COUNTIF(eAbort > 0) AS num_clients_eAbort,
@@ -91,7 +91,7 @@ health_data_aggregates AS (
   FROM
     health_data_sample
   GROUP BY
-    date
+    `date`
   HAVING
     COUNT(*) > 5000
 ),
@@ -245,7 +245,7 @@ tls_handshake_time AS (
 )
 SELECT
   DAUs.date AS date,
-  hd.* EXCEPT (date),
+  hd.* EXCEPT (`date`),
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,

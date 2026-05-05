@@ -15,7 +15,7 @@
     WHERE
       submission_date
       BETWEEN '2020-01-01'
-      AND current_date
+      AND CURRENT_DATE
   ),
   clients AS (
     SELECT

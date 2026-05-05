@@ -38,6 +38,26 @@
   reporting_url: "url2"
   scenario: "online"
   version: "94.0.2"
+- submission_timestamp: "2021-01-01 13:06:00"
+  request_id: rid_overlap
+  search_query: null
+  advertiser: legacy store
+  block_id: 105
+  context_id: cid_overlap
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: TX
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 5
+  reporting_url: "url_overlap"
+  scenario: "online"
+  version: "94.0.2"
 - submission_timestamp: "2021-01-01 12:07:00"
   request_id: rid7
   search_query: null
@@ -56,5 +76,47 @@
   release_channel: beta
   position: 7
   reporting_url: "url7"
+  scenario: "online"
+  version: "94.0.2"
+# merino session dedup: rid_multi_high wins because it has a higher sequence_no
+- submission_timestamp: "2021-01-01 13:20:30"
+  request_id: rid_multi_high
+  search_query: null
+  advertiser: pizza place
+  block_id: 120
+  context_id: cid_multi_high
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: CO
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 20
+  reporting_url: "url_multi_high"
+  scenario: "online"
+  version: "94.0.2"
+# query normalization: LTRIM(LOWER(search_query)) produces telemetry_query "best shoes"
+- submission_timestamp: "2021-01-01 13:40:00"
+  request_id: rid_norm
+  search_query: "  BEST SHOES"
+  advertiser: norm store
+  block_id: 140
+  context_id: cid_norm
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: GA
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  release_channel: release
+  position: 40
+  reporting_url: "url_norm"
   scenario: "online"
   version: "94.0.2"

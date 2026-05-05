@@ -3,6 +3,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Day the event was received in the newtab content ping
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: The surface identifier for the newtab content ping.
 - name: card_type
   type: STRING
   mode: NULLABLE

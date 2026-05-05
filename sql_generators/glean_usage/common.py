@@ -10,6 +10,7 @@ from pathlib import Path
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
@@ -124,6 +125,21 @@ def ping_has_metrics(dataset_family: str, unversioned_table: str) -> bool:
     return (dataset_family, unversioned_table) not in _get_pings_without_metrics()
 
 
+@cache
+def _get_glean_stable_tables():
+    """Return (dataset_family, unversioned_table) for all Glean stable tables."""
+    return {
+        (schema.bq_dataset_family, schema.bq_table_unversioned)
+        for schema in get_stable_table_schemas()
+        if "glean" in schema.schema_id
+    }
+
+
+def ping_has_stable_table(dataset_family: str, ping_name: str) -> bool:
+    """Return true if the given Glean ping has a stable table in the dataset."""
+    return (dataset_family, ping_name.replace("-", "_")) in _get_glean_stable_tables()
+
+
 def table_names_from_baseline(baseline_table, include_project_id=True):
     """Return a dict with full table IDs for derived tables and views.
 
@@ -197,6 +213,48 @@ def get_glean_app_metrics(v1_name: str) -> dict[str, dict]:
     resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/metrics")
     resp.raise_for_status()
     return resp.json()
+
+
+def get_prod_datasets_with_event() -> List[str]:
+    """Get glean datasets with an events table in generated schemas."""
+    return [
+        s.bq_dataset_family
+        for s in get_stable_table_schemas()
+        if s.schema_id.startswith("moz://mozilla.org/schemas/glean/ping/")
+        and s.bq_table == "events_v1"
+    ]
+
+
+def get_tables_with_events(
+    v1_name: str, bq_dataset_name: str, skip_min_ping: bool
+) -> Set[str]:
+    """Get tables for the given app that receive event type metrics."""
+    pings = set()
+    metrics_json = get_glean_app_metrics(v1_name)
+    min_pings = set()
+    if skip_min_ping:
+        ping_json = get_glean_app_pings(v1_name)
+        min_pings = {
+            name
+            for name, info in ping_json.items()
+            if not info["history"][-1].get("include_info_sections", True)
+        }
+
+    for _, metric in metrics_json.items():
+        if metric.get("type", None) == "event":
+            latest_history = metric.get("history", [])[-1]
+            pings.update(latest_history.get("send_in_pings", []))
+
+    if bq_dataset_name in get_prod_datasets_with_event():
+        pings.add("events")
+
+    pings = pings.difference(min_pings)
+
+    # Only include pings that have a corresponding stable table deployed
+    # A metric can have a non-existent ping in "send_in_pings"
+    pings = {ping for ping in pings if ping_has_stable_table(bq_dataset_name, ping)}
+
+    return pings
 
 
 class GleanTable:

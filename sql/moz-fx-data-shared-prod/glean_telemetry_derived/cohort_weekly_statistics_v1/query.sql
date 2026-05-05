@@ -2,10 +2,10 @@ WITH unique_weeks AS (
   SELECT DISTINCT
     first_date_of_week AS activity_date_week
   FROM
-    `mozdata.external.calendar`
+    `moz-fx-data-shared-prod.external.calendar`
   WHERE
     submission_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 768 day),
+      DATE_SUB(@submission_date, INTERVAL 768 DAY),
       WEEK
     ) --start of week 768 days ago
     AND submission_date <= DATE_SUB(

@@ -9,8 +9,13 @@ syndication:
     syndicated_project: moz-fx-sumo-prod
     syndicated_dataset: sumo
   syndicated_tables:
+    - kitsune_auth_user
     - kitsune_questions
-  administer_views: true
+    - kitsune_questions_plus
+    - kitsune_answers_raw
+    - kitsune_wiki_document
+    - kitsune_wiki_revision
+  administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

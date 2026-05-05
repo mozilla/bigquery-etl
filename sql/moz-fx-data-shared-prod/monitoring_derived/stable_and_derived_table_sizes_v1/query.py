@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import click
 from google.cloud import bigquery, exceptions
 
+from bigquery_etl.util.client_queue import ClientQueue
+
 
 def get_tables(client: bigquery.Client, dataset: str) -> List[Tuple[str, str]]:
     """Returns list of all available tables."""
@@ -134,6 +136,13 @@ def save_table_sizes(
 @click.option("--destination_dataset", default="monitoring_derived")
 @click.option("--destination_table", default="stable_and_derived_table_sizes_v1")
 @click.option("--dry_run", "--dry-run", default=False, is_flag=True)
+@click.option(
+    "--lookback_days",
+    "--lookback-days",
+    default=3,
+    type=int,
+    help="Number of days to query, starting from --date and going backwards",
+)
 def main(
     date,
     project,
@@ -142,13 +151,26 @@ def main(
     destination_dataset,
     destination_table,
     dry_run,
+    lookback_days,
 ):
+    if lookback_days < 1:
+        raise click.BadParameter("must be >= 1", param_hint="--lookback-days")
+
     if destination_project is None:
         destination_project = project
 
-    client = bigquery.Client(project)
+    # Use ClientQueue to increase connection pool size
+    client_queue = ClientQueue(
+        billing_projects=[project], parallelism=1, connection_pool_max_size=30
+    )
+    client = client_queue.default_client
 
-    for datediff in range(2):
+    print(
+        f"Querying dataset {dataset} in project {project} for {date} "
+        f"to {date - datetime.timedelta(days=lookback_days - 1)}"
+    )
+
+    for datediff in range(lookback_days):
         stable_derived_partition_sizes = []
         current_date = date - datetime.timedelta(days=datediff)
         print(f"Getting {current_date}")

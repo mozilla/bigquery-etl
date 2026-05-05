@@ -3,4 +3,5 @@ description: 'Funnel from Google Analytics 4 to Mozilla VPN Subscriptions
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

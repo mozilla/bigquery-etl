@@ -3,4 +3,5 @@ description: 'Mozilla VPN Subscriptions from both IAP and FxA.
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

@@ -27,6 +27,9 @@ SELECT
   mozfun.map.sum(
     ARRAY_AGG(IF(is_shutdown_kill, STRUCT(process_type AS key, 1 AS value), NULL) IGNORE NULLS)
   ) AS process_shutdown_kill_crash_counts,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+  ) AS profile_group_id,
 FROM
   crashes
 GROUP BY

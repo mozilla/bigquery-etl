@@ -1,0 +1,5 @@
+friendly_name: Terms of Service Rollout Enrollments
+description: |-
+  A client-level dataset from clients enrolled in the Android ToS scaled rollout experiments.
+owners:
+  - dberry@mozilla.com

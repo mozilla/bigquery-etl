@@ -28,14 +28,14 @@ SELECT
   COUNTIF(had_old_install = FALSE) AS successful_new_installs,
   COUNTIF(had_old_install = TRUE) AS successful_paveovers
 FROM
-  firefox_installer.install
+  `moz-fx-data-shared-prod.firefox_installer.install`
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
   ON (country_codes.code = normalized_country_code)
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
-  date,
+  `date`,
   os_version,
   build_channel,
   build_id,

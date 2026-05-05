@@ -1,0 +1,4 @@
+friendly_name: LTV iOS Aggregates
+description: Aggregated historical data for LTV estimates beyond a 2-year horizon.
+owners:
+- mbowerman@mozilla.com

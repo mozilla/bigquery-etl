@@ -1,0 +1,20 @@
+friendly_name: Pocket usage by event type
+description: |-
+  Percentage of DAU for Pocket usage by event type for each channel
+owners:
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  owner1: gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_pocket
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - event_name

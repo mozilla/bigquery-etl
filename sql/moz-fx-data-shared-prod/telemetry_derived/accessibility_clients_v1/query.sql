@@ -6,7 +6,7 @@ WITH a11y_consumers_instantiators AS (
     SPLIT(payload.processes.parent.scalars.a11y_instantiators, '|')[OFFSET(0)] AS instantiator,
     hpac.key AS consumer
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod.telemetry.main`
   LEFT JOIN -- Do not exclude rows that have empty or NULL hpac
     UNNEST(mozfun.hist.extract(payload.histograms.a11y_consumers).values) AS hpac
   WHERE

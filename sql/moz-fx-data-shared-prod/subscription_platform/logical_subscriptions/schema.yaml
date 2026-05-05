@@ -1,0 +1,7 @@
+fields: !flatten-lists
+- !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_v1
+  exclude_field_names:
+  - first_touch_attribution
+- !include-fields
+  file: sql/moz-fx-data-shared-prod/subscription_platform/subscription_revenue_fields_schema.yaml

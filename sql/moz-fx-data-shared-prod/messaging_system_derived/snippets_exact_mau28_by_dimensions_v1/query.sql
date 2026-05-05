@@ -9,9 +9,9 @@ SELECT
   COUNTIF(days_since_seen < 7) AS wau,
   COUNTIF(days_since_seen < 1) AS dau,
 FROM
-  messaging_system.snippets_users_last_seen AS suls
+  `moz-fx-data-shared-prod.messaging_system.snippets_users_last_seen` AS suls
 LEFT JOIN
-  static.country_codes_v1 AS cc
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
   ON (suls.country = cc.code)
 WHERE
   client_id IS NOT NULL

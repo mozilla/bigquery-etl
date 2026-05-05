@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: user_id
+- name: user_id_sha256
   type: STRING
   mode: NULLABLE
 - name: service
@@ -11,15 +11,13 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-- name: language
-  type: STRING
-  mode: NULLABLE
 - name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE
 - name: registered
   type: BOOLEAN
   mode: NULLABLE
-- name: service_events
-  type: STRING
-  mode: REPEATED
+- name: user_agent_device_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of devices associated with the user, per service, per day. Estimated from the number of unique user agent strings.

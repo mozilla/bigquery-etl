@@ -7,7 +7,7 @@ Reduced stats table for dev and stage versions of the AMO service.
 SELECT
   *
 FROM
-  amo_prod.amo_stats_dau_v2
+  `moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2`
 WHERE
   submission_date = @submission_date
   AND (

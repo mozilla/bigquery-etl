@@ -3,10 +3,10 @@ description: |-
   This table represents data downloaded from bugzilla API https://bugzilla.mozilla.org/rest/bug
   The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
 owners:
-- leli@mozilla.com
+- ascholtz@mozilla.com
 labels:
   incremental: false
-  owner1: leli@mozilla.com
+  owner1: ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle
   date_partition_parameter: null

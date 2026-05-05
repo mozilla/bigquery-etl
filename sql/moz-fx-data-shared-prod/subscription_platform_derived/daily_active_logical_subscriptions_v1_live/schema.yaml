@@ -1,0 +1,31 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Daily snapshot record ID.
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The day during which the logical subscription was active.
+- name: logical_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `logical_subscriptions_history_v1` record this daily snapshot record was derived from.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
+  field: subscription
+  new_description: |-
+    The logical subscription as it ostensibly was at the end of the day.
+- name: was_active_at_day_start
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription was active at the start of the day.
+- name: was_active_at_day_end
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription was active at the end of the day.

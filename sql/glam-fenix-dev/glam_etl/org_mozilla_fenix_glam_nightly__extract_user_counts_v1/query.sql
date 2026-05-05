@@ -13,7 +13,7 @@ WITH deduped AS (
         total_users DESC
     ) AS rank
   FROM
-    `glam_etl.org_mozilla_fenix_glam_nightly__view_user_counts_v1`
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__view_user_counts_v1`
 )
 SELECT
   channel,

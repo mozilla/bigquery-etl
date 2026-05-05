@@ -1,0 +1,43 @@
+# braze users
+---
+# user 1 - changed
+- external_id: user_1
+  email: user_1@mail.com
+  mailing_country: country_1
+  email_subscribe: subscribed
+  basket_token: token_1
+  email_lang: DE
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 14:00:00+00:00
+  fxa_id_sha256: fxa_user_1
+  has_fxa: true
+  fxa_primary_email: user_1_primary@mail.com
+  fxa_lang: DE
+  fxa_first_service: service_1
+  fxa_created_at: 2020-01-01 10:00:00+00:00
+
+# user 2 - deleted
+# user 3 - unchanged
+- external_id: user_3
+  email: user_3@mail.com
+  mailing_country: country_1
+  email_subscribe: subscribed
+  basket_token: token_3
+  email_lang: DE
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 14:00:00+00:00
+  fxa_id_sha256: fxa_user_3
+  has_fxa: true
+  fxa_primary_email: user_3_primary@mail.com
+  fxa_lang: DE
+  fxa_first_service: service_1
+# user 4 - new user
+- external_id: user_4
+  email: user_4@mail.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: token_4
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2024-05-13 19:00:00+00:00
+  update_timestamp: 2024-05-13 20:00:00+00:00

@@ -1,0 +1,28 @@
+friendly_name: New profile metrics with geo information for marketing testing.
+description: |-
+  New profile metrics with geo information for marketing testing. This table is updated with a 28 day lag
+  as we need to wait until week 4 after first_seen_date for retention calculation.
+owners:
+- kik@mozilla.com
+- shong@mozilla.com
+labels:
+  application: fenix
+  incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
+scheduling:
+  dag_name: bqetl_marketing_analysis
+  date_partition_offset: -27
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - country

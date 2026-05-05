@@ -8,6 +8,7 @@ WITH customers AS (
     address_state,
     created,
     default_card_id,
+    invoice_settings_default_payment_method,
     is_deleted,
     PARSE_JSON(metadata) AS metadata,
     shipping_address_country,
@@ -61,7 +62,7 @@ customer_latest_discounts AS (
   FROM
     customers
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.customer_discount_v1 AS customer_discounts
+    `moz-fx-data-shared-prod`.stripe_external.customer_discount_v2 AS customer_discounts
     ON customers.id = customer_discounts.customer_id
     AND customers._fivetran_synced >= customer_discounts.start
     AND (customers._fivetran_synced < customer_discounts.`end` OR customer_discounts.`end` IS NULL)
@@ -93,7 +94,10 @@ SELECT
         customers.shipping_address_state AS state
       ) AS address
     ) AS shipping,
-    customers.tax_exempt
+    customers.tax_exempt,
+    STRUCT(
+      customers.invoice_settings_default_payment_method AS default_payment_method_id
+    ) AS invoice_settings
   ) AS customer
 FROM
   customers

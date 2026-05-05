@@ -1,0 +1,10 @@
+2024-11-15:
+  start_date: 2018-01-02
+  end_date: 2024-11-11
+  reason: Correct Windows OS version for Desktop.
+    The backfill creates new version v4.
+    Jira ticket https://mozilla-hub.atlassian.net/browse/DENG-4060.
+  watchers:
+  - lvargas@mozilla.com
+  status: Complete
+  shredder_mitigation: true

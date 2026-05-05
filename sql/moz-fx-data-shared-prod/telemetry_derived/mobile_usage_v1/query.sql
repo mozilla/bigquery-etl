@@ -3,7 +3,7 @@ WITH base AS (
     *,
     EXTRACT(YEAR FROM submission_date) AS submission_year,
   FROM
-    telemetry_derived.firefox_nondesktop_exact_mau28_v1
+    `moz-fx-data-shared-prod.telemetry_derived.firefox_nondesktop_exact_mau28_v1`
   WHERE
     -- We completely recreate this table every night since the source table
     -- is small and this query windows over a large time range.

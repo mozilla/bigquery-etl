@@ -12,3 +12,6 @@ fields:
 - name: enabled
   type: BOOLEAN
   mode: NULLABLE
+- name: hint
+  type: STRING
+  mode: NULLABLE

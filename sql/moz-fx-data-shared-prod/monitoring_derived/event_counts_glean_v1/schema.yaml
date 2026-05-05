@@ -1,0 +1,27 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: event_category
+  type: STRING
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Friendly app name defined in probe scraper, e.g. "Firefox for Desktop"
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: version
+  type: STRING
+  mode: NULLABLE
+- name: total_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of events with the current dimension set

@@ -1,0 +1,8 @@
+friendly_name: Mozilla VPN Users
+description: 'A subset of Mozilla VPN users columns that are accessible to a broader
+  audience.
+
+  '
+owners:
+- phlee@mozilla.com
+- srose@mozilla.com

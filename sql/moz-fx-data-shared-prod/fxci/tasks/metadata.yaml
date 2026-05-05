@@ -1,0 +1,4 @@
+friendly_name: Firefox-CI Tasks
+description: Derived Firefox-CI task data exported from Taskcluster pulse.
+owners:
+- ahalberstadt@mozilla.com

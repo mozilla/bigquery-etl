@@ -4,10 +4,10 @@ WITH baseline_clients AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country
+    normalized_channel,
+    normalized_country_code,
   FROM
-    firefox_ios.baseline
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
@@ -28,10 +28,10 @@ WITH baseline_clients AS (
 client_attribution AS (
   SELECT
     client_id,
-    channel,
     adjust_network,
+    normalized_channel,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
 metric_ping_clients_feature_usage AS (
   SELECT
@@ -41,8 +41,8 @@ metric_ping_clients_feature_usage AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country,
+    normalized_channel,
+    normalized_country_code,
     IF(SUM(metrics.counter.app_opened_as_default_browser) > 0, TRUE, FALSE) AS is_default_browser,
     --Credential Management: Logins
     SUM(COALESCE(metrics.counter.logins_deleted, 0)) AS logins_deleted,
@@ -99,8 +99,10 @@ metric_ping_clients_feature_usage AS (
     SUM(
       COALESCE(metrics.counter.firefox_home_page_customize_homepage_button, 0)
     ) AS firefox_home_page_customize_homepage_button,
+    --Address
+    SUM(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS addresses_saved_all
   FROM
-    firefox_ios.metrics AS metric_ping
+    `moz-fx-data-shared-prod.firefox_ios.metrics` AS metric_ping
   LEFT JOIN
     UNNEST(metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
   LEFT JOIN
@@ -123,15 +125,15 @@ metric_ping_clients_feature_usage AS (
   GROUP BY
     ping_date,
     client_id,
-    channel,
-    country
+    normalized_channel,
+    normalized_country_code
 )
 -- Aggregated feature usage
 SELECT
   @submission_date AS submission_date,
   ping_date,
-  channel,
-  country,
+  normalized_channel AS channel,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
   /*Logins*/
@@ -287,20 +289,23 @@ SELECT
     DISTINCT IF(firefox_home_page_customize_homepage_button > 0, client_id, NULL)
   ) AS firefox_home_page_customize_homepage_button_users,
   SUM(firefox_home_page_customize_homepage_button) AS firefox_home_page_customize_homepage_button,
+  -- addresses_saved_all
+  COUNT(DISTINCT IF(addresses_saved_all > 0, client_id, NULL)) AS addresses_saved_all_users,
+  SUM(addresses_saved_all) AS addresses_saved_all
 FROM
   metric_ping_clients_feature_usage
 -- Note: baseline_clients is necessary to restrict which clients are used in this aggregation
 -- to avoid situation where client count based feature usage is greater than DAU.
 INNER JOIN
   baseline_clients
-  USING (ping_date, client_id, channel, country)
+  USING (ping_date, client_id, normalized_channel, normalized_country_code)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id, normalized_channel)
 GROUP BY
   submission_date,
   ping_date,
-  channel,
-  country,
+  normalized_channel,
+  normalized_country_code,
   adjust_network,
   is_default_browser

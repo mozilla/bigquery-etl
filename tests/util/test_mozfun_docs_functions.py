@@ -155,16 +155,14 @@ class TestUDFFunctions:
         def test_get_output_without_as(self):
             # note that the odd string formatting below is intentional and spacing affects test results
             assert (
-                get_output(
-                    """
+                get_output("""
                     CREATE OR REPLACE FUNCTION norm.get_windows_info(os_version STRING)
 RETURNS STRUCT<name STRING, version_name STRING, version_number DECIMAL, build_number INT64>
 LANGUAGE js AS r\"\"\"
   const test = "test";
   return test;
 \"\"\";
-                    """
-                )
+                    """)
                 == "STRUCT<name STRING, version_name STRING, version_number DECIMAL, build_number INT64>"
             )
 
@@ -185,19 +183,14 @@ LANGUAGE js AS r\"\"\"
             )
 
         def test_get_output_create_count_steps_query(self):
-            assert (
-                get_output(
-                    """CREATE OR REPLACE PROCEDURE
+            assert get_output("""CREATE OR REPLACE PROCEDURE
                         event_analysis.create_count_steps_query(
                             project STRING,
                             dataset STRING,
                             events ARRAY<STRUCT<category STRING, event_name STRING>>,
                             OUT sql STRING
                         )
-                    """
-                )
-                == "sql STRING"
-            )
+                    """) == "sql STRING"
 
     class TestGetMozfunParameters:
         def test_get_mozfun_parameters_1(self):

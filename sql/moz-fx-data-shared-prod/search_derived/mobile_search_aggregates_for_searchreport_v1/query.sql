@@ -39,12 +39,12 @@ SELECT
   SUM(search_with_ads) AS search_with_ads,
   SUM(organic) AS organic
 FROM
-  search.mobile_search_clients_engines_sources_daily
+  `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 WHERE
   normalized_app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
   AND submission_date = @submission_date
 GROUP BY
-  1,
-  2,
-  3,
-  4
+  submission_date,
+  country,
+  product,
+  normalized_engine

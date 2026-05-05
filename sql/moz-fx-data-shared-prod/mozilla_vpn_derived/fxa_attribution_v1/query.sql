@@ -17,7 +17,7 @@ WITH fxa_content_auth_stdout_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
 ),
 flows AS (
   SELECT
@@ -82,7 +82,7 @@ flows AS (
   SELECT
     *
   FROM
-    `mozilla_vpn_derived.fxa_attribution_v1`
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.fxa_attribution_v1`
 )
 SELECT
   flow_id,

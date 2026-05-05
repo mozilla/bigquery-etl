@@ -1,0 +1,8 @@
+friendly_name: FxA Users Services Devices Last Seen
+description: 'Usage aggregations describing FxA user, service, device_id combination
+
+  activity in the last 28 days.
+
+  '
+owners:
+- kik@mozilla.com

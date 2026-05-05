@@ -1,0 +1,6 @@
+friendly_name: Tenants Deployed Charts
+description: |-
+  MozCloud tenant deployed Helm charts exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a Helm chart deployed by a MozCloud tenant.
+owners:
+- wstuckey@mozilla.com

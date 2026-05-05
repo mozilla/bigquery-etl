@@ -95,7 +95,7 @@ WITH flat_clients_scalar_aggregates AS (
     os = 'Windows'
     AND channel = 'release' AS sampled,
   FROM
-    clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
     AND (@app_version IS NULL OR app_version = @app_version)
@@ -167,7 +167,9 @@ user_aggregates AS (
     IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
     channel,
     IF(MAX(sampled), 10, 1) AS user_count,
-    udf.merge_scalar_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
+    `moz-fx-data-shared-prod`.udf.merge_scalar_user_data(
+      ARRAY_CONCAT_AGG(scalar_aggregates)
+    ) AS scalar_aggregates
   FROM
     all_combos
   GROUP BY
@@ -261,8 +263,10 @@ booleans_and_scalars AS (
     bucketed_scalars
 ),
 valid_booleans_scalars AS (
-  SELECT *
-  FROM booleans_and_scalars
+  SELECT
+    *
+  FROM
+    booleans_and_scalars
   INNER JOIN
     build_ids
     USING (app_build_id, channel)

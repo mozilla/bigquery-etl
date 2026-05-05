@@ -1,0 +1,9 @@
+friendly_name: Mozcloud Derived
+description: |-
+  Mozcloud and Cloud Eng platform metrics and KPIs
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

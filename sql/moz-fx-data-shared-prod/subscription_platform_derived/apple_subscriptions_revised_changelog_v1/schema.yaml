@@ -1,0 +1,35 @@
+fields: !flatten-lists
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Revised changelog ID.
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    When the change ostensibly occurred.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    When the revised changelog record was created.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of revised changelog.
+
+    * "original" indicates the changelog wasn't altered from what SubPlat recorded.
+    * "synthetic_..." indicates the changelog was synthesized based on other available data.
+- name: apple_subscriptions_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `apple_subscriptions_changelog_v1` record this changelog was derived from.
+- !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_changelog_v1
+  field_names:
+  - firestore_export_event_id
+  - firestore_export_operation
+  - subscription

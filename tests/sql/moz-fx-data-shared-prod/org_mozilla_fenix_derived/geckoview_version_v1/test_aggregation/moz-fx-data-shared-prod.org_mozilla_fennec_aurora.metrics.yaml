@@ -1,0 +1,13 @@
+---
+- client_info:
+    app_build: 0000374784
+  metrics:
+    string:
+      gecko_version: -1230.0.0
+  submission_timestamp: '2020-05-23T00:00:00'
+- client_info:
+    app_build: 0000374784
+  metrics:
+    string:
+      gecko_version: -1230.0.0
+  submission_timestamp: '2020-05-27T00:00:00'

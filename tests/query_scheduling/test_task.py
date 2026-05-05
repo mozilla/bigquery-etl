@@ -741,6 +741,8 @@ class TestTask:
                     "dag_name": "external_dag2",
                     "task_id": "external_task2",
                     "execution_delta": "15m",
+                    "poke_interval": "30m",
+                    "timeout": "8h",
                 },
             ],
         }
@@ -756,6 +758,8 @@ class TestTask:
         assert task.depends_on[1].dag_name == "external_dag2"
         assert task.depends_on[1].task_id == "external_task2"
         assert task.depends_on[1].execution_delta == "15m"
+        assert task.depends_on[1].poke_interval == "30m"
+        assert task.depends_on[1].timeout == "8h"
 
     def test_task_trigger_rule(self):
         query_file = (

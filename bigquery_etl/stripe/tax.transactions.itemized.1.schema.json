@@ -133,7 +133,7 @@
   },
   {
     "name": "filing_exchange_rate",
-    "type": "NUMERIC"
+    "type": "BIGNUMERIC"
   },
   {
     "name": "filing_total",

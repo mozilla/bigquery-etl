@@ -1,0 +1,4 @@
+friendly_name: Shredder Per Job Stats
+description: Runtime and compute stats for shredder jobs.
+owners:
+  - bewu@mozilla.com

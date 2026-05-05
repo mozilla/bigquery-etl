@@ -29,7 +29,10 @@ class TestFormat:
                 f.write("SELECT 1 FROM test")
             with open("test/bar.sql", "w") as f:
                 f.write("SELECT 1 FROM test")
+            with open("test/baz.sql", "w") as f:
+                f.write("SELECT 1 FROM test WHERE 1 AND AND")
 
             result = runner.invoke(sql_format, ["test"])
-            assert "2 files reformatted." in result.output
+            assert "2 files reformatted" in result.output
+            assert "1 file invalid" in result.output
             assert result.exit_code == 0

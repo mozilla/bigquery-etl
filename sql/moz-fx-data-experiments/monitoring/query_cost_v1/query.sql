@@ -11,6 +11,9 @@ SELECT
     '-'
   ) AS experiment_slug,
   query,
+  TIMESTAMP_DIFF(end_time, start_time, MINUTE) AS duration_minutes,
+  error_result.reason AS error_reason,
+  error_result.message AS error_message,
   total_bytes_processed,
   total_slot_ms,
   total_slot_ms / 1000 / 60 / 60 * 0.06 AS cost_usd

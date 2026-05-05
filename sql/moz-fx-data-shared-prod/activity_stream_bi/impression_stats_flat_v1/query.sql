@@ -23,7 +23,7 @@ SELECT
   ANY_VALUE(experiments) AS experiments,
   sample_id
 FROM
-  activity_stream_stable.impression_stats_v1
+  `moz-fx-data-shared-prod.activity_stream_stable.impression_stats_v1`
 CROSS JOIN
   UNNEST(tiles) AS flattened_tiles
   WITH OFFSET AS alt_pos

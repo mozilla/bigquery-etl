@@ -1125,7 +1125,6 @@ jobs:
           cd generated-sql/
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
-          rm -rf dags/ || true
           git add .
           if git diff --cached --quiet; then
             echo "No changes to push"
@@ -1144,7 +1143,7 @@ jobs:
             git@github.com:mozilla/bigquery-etl.git \
             generated-dags
           cd generated-dags/
-          rm -rf dags/ || true
+          rm -rf dags/
           cp -r /tmp/workspace/generated-dags/dags dags
           git add .
           if git diff --cached --quiet; then
@@ -1202,7 +1201,6 @@ jobs:
           cd private-generated-sql/
           rm -rf sql/
           cp -r /tmp/workspace/private-generated-sql/sql sql
-          rm -rf dags/ || true
           git add .
 
           private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
@@ -1222,7 +1220,7 @@ jobs:
             git@github.com:mozilla/private-bigquery-etl \
             private-generated-dags
           cd private-generated-dags/
-          rm -rf dags/ || true
+          rm -rf dags/
           cp -r /tmp/workspace/private-generated-dags/dags dags
           git add .
 
@@ -1402,9 +1400,11 @@ jobs:
         run: |
           git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
           cd telemetry-airflow-dags
-          # Manually clone bigquery-etl submodule to avoid initializing private repos
-          rm -rf bigquery-etl
-          git clone --branch generated-dags --depth 1 https://github.com/mozilla/bigquery-etl.git bigquery-etl
+          git submodule update --init --depth 1 bigquery-etl
+          cd bigquery-etl
+          git fetch --depth=1 origin generated-dags
+          git reset --hard FETCH_HEAD
+          cd ..
           git add bigquery-etl
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
           git push origin main

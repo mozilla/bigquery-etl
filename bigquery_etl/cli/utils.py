@@ -343,6 +343,27 @@ def defer_option():
     )
 
 
+def isolated_option():
+    """Generate an --isolated option for full reference rewriting + stub creation.
+
+    Rewrites *all* 3-part references in the query to point at the target
+    project, and creates empty stub tables in the target for any referenced
+    artifact that doesn't already exist there. Used to fully isolate a
+    development environment from prod.
+    """
+    return click.option(
+        "--isolated",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite all references to point at the target project and create "
+            "empty stub tables in the target for any referenced artifact that "
+            "isn't already deployed there. Mutually exclusive with "
+            "--defer-to-target."
+        ),
+    )
+
+
 @cache
 def get_glean_app_id_to_app_name_mapping() -> Dict[str, str]:
     """Return a dict where key is the channel app id and the value is the shared app name.

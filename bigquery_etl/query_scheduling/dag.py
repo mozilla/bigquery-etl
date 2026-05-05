@@ -1,25 +1,30 @@
 """Represents an Airflow DAG."""
 
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import attr
 import cattrs
 from jinja2 import Environment, PackageLoader
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
+    ensure_telemetry_alerts_email,
     is_date_string,
     is_email_or_github_identity,
     is_schedule_interval,
-    is_timedelta_string,
     is_valid_dag_name,
     schedule_interval_delta,
+    validate_timedelta_string,
 )
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
+
+CONFIDENTIAL_TAG = "triage/confidential"
+NO_TRIAGE_TAG = "triage/no_triage"
 
 
 class DagParseException(Exception):
@@ -66,6 +71,7 @@ class DagDefaultArgs:
     email_on_failure: bool = attr.ib(True)
     email_on_retry: bool = attr.ib(True)
     retries: int = attr.ib(2)
+    max_active_tis_per_dag: Optional[int] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -84,11 +90,7 @@ class DagDefaultArgs:
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
         """Check that retry_delay is in a valid timedelta format."""
-        if not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        validate_timedelta_string(value)
 
     @end_date.validator
     @start_date.validator
@@ -121,6 +123,8 @@ class Dag:
     description: str = attr.ib("")
     repo: str = attr.ib("bigquery-etl")
     tags: List[str] = attr.ib([])
+    catchup: bool = attr.ib(False)
+    max_active_runs: Optional[int] = attr.ib(None)
 
     @name.validator
     def validate_dag_name(self, attribute, value):
@@ -175,6 +179,20 @@ class Dag:
 
         return {name: d}
 
+    @property
+    def no_triage(self) -> bool:
+        """Return whether this DAG has a `triage/no_triage` tag."""
+        return NO_TRIAGE_TAG in self.tags
+
+    @property
+    def task_groups(self) -> Set[str]:
+        """
+        Return list of task groups in this DAG.
+
+        Task groups are specified as part of the task configurations.
+        """
+        return {task.task_group for task in self.tasks if task.task_group is not None}
+
     @classmethod
     def from_dict(cls: type, d: dict):
         """
@@ -194,9 +212,22 @@ class Dag:
         converter = cattrs.BaseConverter()
         try:
             name = list(d.keys())[0]
+            default_args: dict = d[name].get("default_args", {})
             tags: set[str] = set(d[name].get("tags", []))
+
+            no_triage = NO_TRIAGE_TAG in tags
+            default_args["email"] = ensure_telemetry_alerts_email(
+                default_args.get("email", []), no_triage
+            )
+
             if not any(tag.startswith("repo/") for tag in tags):
                 tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
+
+            if name.startswith("private_") and CONFIDENTIAL_TAG not in tags:
+                tags.add(
+                    CONFIDENTIAL_TAG,
+                )
+
             d[name]["tags"] = sorted(tags)
 
             if name == PUBLIC_DATA_JSON_DAG:
@@ -234,6 +265,13 @@ class Dag:
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
+        args["task_groups"] = self.task_groups
+        args["bigeye_warehouse_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_warehouse_id", fallback=1939
+        )
+        args["bigeye_conn_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_conn_id", fallback="bigeye_connection"
+        )
 
         return dag_template.render(args)
 

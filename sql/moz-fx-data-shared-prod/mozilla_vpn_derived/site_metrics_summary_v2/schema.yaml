@@ -1,0 +1,85 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the visit
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: The device category the visitor used to visit the site
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: The operating system the visitor used to visit the site
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: The browser the visitng device was using when it visited the site
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: The language the visitng device was using when it visited the site
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: The country from which events were reported, based on IP address
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Referring partner domain
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Category of the source, such as 'organic' for a search engine
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Identifier for the marketing campaign
+- name: content
+  type: STRING
+  mode: NULLABLE
+  description: Identifies the particular link within a campaign
+- name: site
+  type: STRING
+  mode: NULLABLE
+  description: The domain of the website visited
+- name: sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations that visited a page like %/products/vpn/%
+- name: non_fx_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations that visited a page like %/products/vpn/% from a non-Firefox browser
+- name: subscribe_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations that had a begin_checkout event for VPN
+- name: non_fx_subscribe_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations with a begin_checkout event for VPN from a non-Firefox browser
+- name: join_waitlist_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: Join Waitlist Intent Goal
+- name: join_waitlist_success_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: Join Waitlist Success Goal
+- name: sign_in_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: Sign-In Intent Goal
+- name: download_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations that visited a page like '%/products/vpn/download/%'
+- name: download_installer_intent_goal
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique user_pseudo_id, session ID combinations that visited a page like '%/products/vpn/download/windows/thanks%'
+- name: standardized_country_name
+  type: STRING
+  mode: NULLABLE
+  description: The standardized name of the country the visitor came from during the visit

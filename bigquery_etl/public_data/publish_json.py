@@ -13,6 +13,7 @@ import smart_open
 from google.cloud import storage  # type: ignore
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data
 
@@ -23,8 +24,6 @@ MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON fil
 MAX_FILE_COUNT = 10_000
 # exported file name format: 000000000000.json, 000000000001.json, ...
 MAX_JSON_NAME_LENGTH = 12
-DEFAULT_BUCKET = "mozilla-public-data-http"
-DEFAULT_API_VERSION = "v1"
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -80,7 +79,7 @@ class JsonPublisher:
             self.table = query_file_re.group(2)
             self.version = query_file_re.group(3)
         else:
-            logging.error("Invalid file naming format: {}", self.query_file)
+            logging.error("Invalid file naming format: %s", self.query_file)
             sys.exit(1)
 
     def _clear_stage_directory(self):
@@ -134,18 +133,51 @@ class JsonPublisher:
 
         logging.info(f"""Export JSON for {result_table} to {self.stage_gcs_path}""")
 
-        table_ref = self.client.get_table(result_table)
+        order_by_field = None
+        if (
+            self.metadata.bigquery
+            and self.metadata.bigquery.time_partitioning
+            and self.metadata.bigquery.time_partitioning.field
+        ):
+            order_by_field = self.metadata.bigquery.time_partitioning.field
 
-        job_config = bigquery.ExtractJobConfig()
-        job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+        ordered_temp_table = None
+        try:
+            if order_by_field:
+                ordered_temp_table = (
+                    f"{self.project_id}.tmp.publish_public_{self.table}_{self.version}_"
+                    + "".join(random.choices(string.ascii_lowercase, k=12))
+                    + "_ordered_temp"
+                )
+                logging.info(
+                    f"Creating ordered temp table {ordered_temp_table} "
+                    f"ordered by {order_by_field}"
+                )
+                # add where clause if partition filter is required
+                query_job = self.client.query(
+                    f"SELECT * FROM `{result_table}` WHERE {order_by_field} IS NOT NULL ORDER BY {order_by_field} ASC",
+                    job_config=bigquery.QueryJobConfig(destination=ordered_temp_table),
+                )
+                query_job.result()
+                export_table = ordered_temp_table
+            else:
+                export_table = result_table
 
-        # "*" makes sure that files larger than 1GB get split up into JSON files
-        # files are written to a stage directory first
-        destination_uri = f"gs://{self.target_bucket}/{self.stage_gcs_path}*.ndjson"
-        extract_job = self.client.extract_table(
-            table_ref, destination_uri, location="US", job_config=job_config
-        )
-        extract_job.result()
+            table_ref = self.client.get_table(export_table)
+
+            job_config = bigquery.ExtractJobConfig()
+            job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+
+            # "*" makes sure that files larger than 1GB get split up into JSON files
+            # files are written to a stage directory first
+            destination_uri = f"gs://{self.target_bucket}/{self.stage_gcs_path}*.ndjson"
+            extract_job = self.client.extract_table(
+                table_ref, destination_uri, location="US", job_config=job_config
+            )
+            extract_job.result()
+        finally:
+            if ordered_temp_table:
+                self.client.delete_table(ordered_temp_table, not_found_ok=True)
 
         self._gcp_convert_ndjson_to_json(prefix)
 
@@ -285,7 +317,9 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--target-bucket",
     "--target_bucket",
-    default=DEFAULT_BUCKET,
+    default=ConfigLoader.get(
+        "public_data", "bucket", fallback="mozilla-public-data-http"
+    ),
     help="GCP bucket JSON data is exported to",
 )
 parser.add_argument(
@@ -297,7 +331,7 @@ parser.add_argument(
 parser.add_argument(
     "--api_version",
     "--api-version",
-    default=DEFAULT_API_VERSION,
+    default=ConfigLoader.get("public_data", "api_version", fallback="v1"),
     help="API version data is published under in the storage bucket",
 )
 parser.add_argument(

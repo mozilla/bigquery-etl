@@ -1,0 +1,57 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: candidate_set_id
+    description: A string identifier for the candidate set to which this run pertains.
+  - mode: NULLABLE
+    type: STRING
+    name: candidate_set_type
+    description: Indicates if candidate set consists of either prospects for curation or candidates for recommendation slates
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: expires_at
+    description: The date at which this candidate set is no longer "fresh".
+  - mode: NULLABLE
+    type: STRING
+    name: flow
+    description: Name of the metaflow script generating this candidate set from dl-meatflow-jobs.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: happened_at
+    description: This is an alias for happened_at (timestamp for the prospect creation signal)
+  - mode: NULLABLE
+    type: STRING
+    name: predicted_topic
+    description: Topic categorization based on content predictions (examples TECHNOLOGY, TRAVEL, SPORTS, BUSINESS, EDUCATION)
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_id
+    description: The id of the item as a prospect (potential corporeal candidate)
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_source
+    description: Source identified by the ML process for the prospect (SYNDICATED, ORGANIC_TIMESPENT, GLOBAL).
+  - mode: NULLABLE
+    type: INTEGER
+    name: rank
+    description: Rank of prospects within a candidate set (based on prospect_source and scheduled_surface_id).
+  - mode: NULLABLE
+    type: STRING
+    name: run_id
+    description:
+      A string identifier for the unique run of the given candidate set.
+      Will be constant across items that were part of the same candidate set & run.
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_id
+    description: The curated rec destination where the corpus item is expected to appear (NEW_TAB_EN_INTL, NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB).
+  - mode: NULLABLE
+    type: STRING
+    name: schema_version
+    description: Allows for future updates to the schema for this event.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: snowflake_loaded_at
+    description:
+      This is an alias for happened_at (timestamp for the prospect creation signal)
+      Note - The "snowflake_loaded_at" name is being retained for backward compatibility

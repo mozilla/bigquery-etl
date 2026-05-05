@@ -49,8 +49,7 @@ FROM
   `moz-fx-data-marketing-prod.iprospect.adspend_raw_v1` today
 LEFT JOIN
   `moz-fx-data-marketing-prod.iprospect.adspend_raw_v1` yesterday
-USING
-  (`date`, fetch_ad_name)
+  USING (`date`, fetch_ad_name)
 WHERE
   today.submission_date = @submission_date
   AND yesterday.submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)

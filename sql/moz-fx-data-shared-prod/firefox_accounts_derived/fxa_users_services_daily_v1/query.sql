@@ -1,7 +1,5 @@
-CREATE TEMP FUNCTION udf_contains_tier1_country(
-  x ANY TYPE
-) AS ( --
-  EXISTS(
+CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
+  EXISTS (
     SELECT
       country
     FROM
@@ -19,10 +17,8 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(
 
   --
   -- This UDF is also only applicable in the context of this query.
-CREATE TEMP FUNCTION udf_contains_registration(
-  x ANY TYPE
-) AS ( --
-  EXISTS(
+CREATE TEMP FUNCTION udf_contains_registration(x ANY TYPE) AS ( --
+  EXISTS (
     SELECT
       event_type
     FROM
@@ -74,11 +70,11 @@ windowed AS (
     user_id,
     service,
     ROW_NUMBER() OVER w1_unframed AS _n,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf.mode_last(ARRAY_AGG(LANGUAGE) OVER w1) AS language,
-    udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
-    udf.mode_last(ARRAY_AGG(os_name) OVER w1) AS os_name,
-    udf.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country) OVER w1) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(LANGUAGE) OVER w1) AS language,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_name) OVER w1) AS os_name,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version) OVER w1) AS os_version,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered
   FROM

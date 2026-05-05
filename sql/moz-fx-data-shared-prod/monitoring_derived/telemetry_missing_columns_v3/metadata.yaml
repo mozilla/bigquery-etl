@@ -4,14 +4,12 @@ description: >
   Enumerated paths in additional properties for the Telemetry namespace. This
   excludes the main ping and its variants for the sake of efficiency.
 owners:
-  - amiyaguchi@mozilla.com
+  - ascholtz@mozilla.com
 labels:
   schedule: daily
   incremental: false
 scheduling:
   dag_name: bqetl_monitoring
-  referenced_tables:
-    - ['moz-fx-data-shared-prod', '*_stable', '*']
 bigquery:
   time_partitioning:
     type: day

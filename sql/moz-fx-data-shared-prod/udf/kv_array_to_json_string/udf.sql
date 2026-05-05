@@ -25,13 +25,13 @@ CREATE OR REPLACE FUNCTION udf.kv_array_to_json_string(kv_arr ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     '{"hello":"1","world":"2"}',
     udf.kv_array_to_json_string(
       [STRUCT('hello' AS key, 1 AS value), STRUCT('world' AS key, 2 AS value)]
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     '{"one-entry":"1"}',
     udf.kv_array_to_json_string([STRUCT('one-entry' AS key, 1 AS value)])
   );

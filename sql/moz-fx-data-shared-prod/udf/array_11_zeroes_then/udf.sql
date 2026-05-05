@@ -7,4 +7,4 @@ CREATE OR REPLACE FUNCTION udf.array_11_zeroes_then(val INT64) AS (
 
 -- Test
 SELECT
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114], udf.array_11_zeroes_then(114))
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114], udf.array_11_zeroes_then(114))

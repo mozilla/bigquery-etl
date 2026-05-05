@@ -1,0 +1,41 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Monthly snapshot record ID.
+- name: month_start_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The start date of the month during which the service subscription was active.
+- name: month_end_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The end date of the month during which the service subscription was active.
+- name: service_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the service provided by the subscription, as defined in the `services_v1` ETL.
+- name: service_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `service_subscriptions_history_v1` record this monthly snapshot record was derived from.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription
+  new_description: |-
+    The service subscription as it ostensibly was at the end of the month.
+- name: was_active_at_month_start
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription was active at the start of the month.
+- name: was_active_at_month_end
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription was active at the end of the month.

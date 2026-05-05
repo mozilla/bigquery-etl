@@ -9,19 +9,19 @@ WITH test_data AS (
     udf.bits28_retention((1 << 13) | (1 << 10) | 1, DATE('2020-01-28')) AS retention
 )
 SELECT
-  assert.equals(DATE('2020-01-28'), retention.day_0.metric_date),
-  assert.equals(DATE('2020-01-22'), retention.day_6.metric_date),
-  assert.equals(DATE('2020-01-15'), retention.day_13.metric_date),
-  assert.equals(DATE('2020-01-08'), retention.day_20.metric_date),
-  assert.equals(DATE('2020-01-01'), retention.day_27.metric_date),
-  assert.true(retention.day_0.active_on_metric_date),
-  assert.false(retention.day_6.active_on_metric_date),
-  assert.true(retention.day_13.active_on_metric_date),
-  assert.false(retention.day_20.active_on_metric_date),
-  assert.false(retention.day_27.active_on_metric_date),
-  assert.true(retention.day_13.active_in_week_0),
-  assert.true(retention.day_13.active_in_week_0_after_metric_date),
-  assert.true(retention.day_13.active_in_week_1),
-  assert.false(retention.day_20.active_in_week_0),
+  mozfun.assert.equals(DATE('2020-01-28'), retention.day_0.metric_date),
+  mozfun.assert.equals(DATE('2020-01-22'), retention.day_6.metric_date),
+  mozfun.assert.equals(DATE('2020-01-15'), retention.day_13.metric_date),
+  mozfun.assert.equals(DATE('2020-01-08'), retention.day_20.metric_date),
+  mozfun.assert.equals(DATE('2020-01-01'), retention.day_27.metric_date),
+  mozfun.assert.true(retention.day_0.active_on_metric_date),
+  mozfun.assert.false(retention.day_6.active_on_metric_date),
+  mozfun.assert.true(retention.day_13.active_on_metric_date),
+  mozfun.assert.false(retention.day_20.active_on_metric_date),
+  mozfun.assert.false(retention.day_27.active_on_metric_date),
+  mozfun.assert.true(retention.day_13.active_in_week_0),
+  mozfun.assert.true(retention.day_13.active_in_week_0_after_metric_date),
+  mozfun.assert.true(retention.day_13.active_in_week_1),
+  mozfun.assert.false(retention.day_20.active_in_week_0),
 FROM
   test_data

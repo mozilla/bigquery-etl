@@ -88,8 +88,7 @@ client_meta AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
   LEFT JOIN
     client_searches
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     submission_date = @submission_date
 ),
@@ -225,21 +224,16 @@ FROM
   (SELECT * EXCEPT (rank) FROM names WHERE rank = 1)
 JOIN
   (SELECT * EXCEPT (rank) FROM default_search_engines WHERE rank = 1)
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   daut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   waut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   maut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   engagement
-USING
-  (addon_id)
+  USING (addon_id)

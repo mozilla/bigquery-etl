@@ -1,0 +1,5 @@
+friendly_name: Zoom users
+description: |-
+  Mozilla's Zoom users as synced by Fivetran starting in January 2025.
+labels:
+  authorized: true

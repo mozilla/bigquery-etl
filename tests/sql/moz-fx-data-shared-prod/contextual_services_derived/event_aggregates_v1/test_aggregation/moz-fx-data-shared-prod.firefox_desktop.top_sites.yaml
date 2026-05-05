@@ -1,0 +1,40 @@
+---
+- &click
+  submission_timestamp: "2030-01-01 01:00:00"
+  client_info:
+    app_channel: release
+  metadata:
+    geo:
+      subdivision1: AZ
+    user_agent:
+      os: "Windows 11"
+  metrics: &click_metrics
+    quantity:
+      top_sites_position: 1
+    string:
+      top_sites_advertiser: ad1
+      top_sites_ping_type: topsites-click
+    url:
+      top_sites_reporting_url: "http://foo.com"
+    uuid:
+      top_sites_context_id: a
+  normalized_country_code: US
+- &impression
+  <<: *click
+  metrics: &impression_metrics
+    <<: *click_metrics
+    string:
+      top_sites_advertiser: ad1
+      top_sites_ping_type: topsites-impression
+- <<: *impression
+- <<: *impression
+  metrics:
+    <<: *impression_metrics
+    uuid:
+      top_sites_context_id: b
+- <<: *impression
+  metrics:
+    <<: *impression_metrics
+    string:
+      top_sites_advertiser: ad2
+      top_sites_ping_type: topsites-impression

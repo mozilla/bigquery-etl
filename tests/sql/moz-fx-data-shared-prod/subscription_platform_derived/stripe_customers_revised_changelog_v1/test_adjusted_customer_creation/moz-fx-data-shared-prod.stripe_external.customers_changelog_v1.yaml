@@ -1,0 +1,25 @@
+# Customer 1: no adjusted record because not initial change
+- id: cus_1-2024-01-01T00:00:00.000000
+  timestamp: 2024-01-01 00:00:00Z
+  customer:
+    id: cus_1
+    created: 2024-01-01 00:00:00Z
+- id: cus_1-2024-01-01T01:00:00.000000
+  timestamp: 2024-01-01 01:00:00Z
+  customer:
+    id: cus_1
+    created: 2024-01-01 00:00:00Z
+
+# Customer 2: no adjusted record because `created` not in past
+- id: cus_2-2024-01-01T02:00:00.000000
+  timestamp: 2024-01-01 02:00:00Z
+  customer:
+    id: cus_2
+    created: 2024-01-01 02:00:00Z
+
+# Customer 3: adjusted record
+- id: cus_3-2024-01-01T04:00:00.000000
+  timestamp: 2024-01-01 04:00:00Z
+  customer:
+    id: cus_3
+    created: 2024-01-01 03:00:00Z

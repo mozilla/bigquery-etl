@@ -14,8 +14,8 @@ or else 0.
 */
 -- Test
 SELECT
-  assert.equals(2, udf.coalesce_adjacent_days_28_bits(1, 64)),
-  assert.equals(128, udf.coalesce_adjacent_days_28_bits(64, 1)),
-  assert.equals(64, udf.coalesce_adjacent_days_28_bits(0, 64)),
-  assert.equals(64, udf.coalesce_adjacent_days_28_bits(NULL, 64)),
-  assert.equals(0, udf.coalesce_adjacent_days_28_bits(NULL, NULL));
+  mozfun.assert.equals(2, udf.coalesce_adjacent_days_28_bits(1, 64)),
+  mozfun.assert.equals(128, udf.coalesce_adjacent_days_28_bits(64, 1)),
+  mozfun.assert.equals(64, udf.coalesce_adjacent_days_28_bits(0, 64)),
+  mozfun.assert.equals(64, udf.coalesce_adjacent_days_28_bits(NULL, 64)),
+  mozfun.assert.equals(0, udf.coalesce_adjacent_days_28_bits(NULL, NULL));

@@ -15,14 +15,20 @@ from .tokenizer import (
     ExpressionSeparator,
     FieldAccessOperator,
     Identifier,
+    JinjaBlockEnd,
+    JinjaBlockStart,
+    JinjaBlockStatement,
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
+    Keyword,
+    LineComment,
     Literal,
     NewlineKeyword,
     OpeningBracket,
     Operator,
-    ReservedKeyword,
+    PipeOperator,
+    PseudocolumnIdentifier,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
     TopLevelKeyword,
@@ -66,15 +72,24 @@ def simple_format(tokens, indent="  "):
             # decrease indent from previous TopLevelKeyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
                 indent_types.pop()
+        elif isinstance(token, PipeOperator):
+            if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
+                indent_types.pop()
         elif isinstance(token, BlockEndKeyword):
             # decrease indent to match last BlockKeyword
             while indent_types and indent_types.pop() is not BlockKeyword:
                 pass
             prev_was_statement_separator = False
+        elif isinstance(token, JinjaBlockEnd):
+            # decrease indent to match last JinjaBlockStart
+            while indent_types and indent_types.pop() is not JinjaBlockStart:
+                pass
         elif isinstance(token, CaseSubclause):
             if token.value.upper() in ("WHEN", "ELSE"):
                 # Have WHEN and ELSE clauses indented one level more than CASE.
-                while indent_types and indent_types[-1] is not BlockKeyword:
+                while indent_types and indent_types[-1] is CaseSubclause:
                     indent_types.pop()
         elif isinstance(
             token, (AliasSeparator, ExpressionSeparator, FieldAccessOperator)
@@ -89,14 +104,25 @@ def simple_format(tokens, indent="  "):
             # no space before statement separator
             # no space before first token
             pass
-        elif isinstance(token, (Comment, JinjaComment)):
-            # blank line before comments only if they start on their own line
-            # and come after a statement separator
+        elif isinstance(token, Comment):
+            # blank line before comments if they start on their own line
+            # and come after a statement separator, and before #fail and #warn
             if token.value.startswith("\n") and prev_was_statement_separator:
+                yield Whitespace("\n")
+            elif re.fullmatch(r"\s*#(fail|warn)", token.value):
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token
-            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockKeyword))
+            or isinstance(
+                token,
+                (
+                    NewlineKeyword,
+                    PipeOperator,
+                    ClosingBracket,
+                    BlockKeyword,
+                    JinjaBlockStatement,
+                ),
+            )
             or prev_was_statement_separator
         ):
             if prev_was_statement_separator:
@@ -116,10 +142,10 @@ def simple_format(tokens, indent="  "):
 
         if can_format:
             # uppercase keywords and replace contained whitespace with single spaces
-            if isinstance(token, ReservedKeyword):
+            if isinstance(token, Keyword):
                 token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
-            # uppercase built-in function names
-            elif isinstance(token, BuiltInFunctionIdentifier):
+            # uppercase pseudocolumns and built-in function names
+            elif isinstance(token, (PseudocolumnIdentifier, BuiltInFunctionIdentifier)):
                 token = replace(token, value=token.value.upper())
 
         yield token
@@ -131,11 +157,11 @@ def simple_format(tokens, indent="  "):
                 Comment,
                 BlockKeyword,
                 TopLevelKeyword,
+                PipeOperator,
                 OpeningBracket,
                 ExpressionSeparator,
                 StatementSeparator,
                 JinjaStatement,
-                JinjaComment,
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
@@ -159,12 +185,19 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, BlockStartKeyword):
             # increase indent
             indent_types.append(BlockKeyword)
-        elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
+        elif isinstance(token, JinjaBlockStart):
+            # increase indent
+            indent_types.append(JinjaBlockStart)
+        elif isinstance(
+            token, (TopLevelKeyword, PipeOperator, OpeningBracket, CaseSubclause)
+        ):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
             # decrease for previous top level keyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
+            if indent_types and indent_types[-1] is PipeOperator:
                 indent_types.pop()
         first_token = False
 
@@ -175,7 +208,7 @@ class Line:
     def __init__(self, indent_token=None, can_format=True):
         """Initialize."""
         self.indent_token = indent_token
-        self.can_format = can_format
+        self.can_format = can_format and not isinstance(indent_token, Comment)
         if indent_token is None:
             self.indent_level = 0
         else:
@@ -184,17 +217,11 @@ class Line:
                 self.indent_level -= 1
         self.inline_tokens = []
         self.inline_length = 0
-        self.can_format = can_format and not isinstance(
-            indent_token, (Comment, JinjaComment)
-        )
 
     def add(self, token):
         """Add a token to this line."""
         self.inline_length += len(token.value)
         self.inline_tokens.append(token)
-        self.can_format = self.can_format and not isinstance(
-            token, (Comment, JinjaComment)
-        )
 
     @property
     def tokens(self):
@@ -233,6 +260,11 @@ class Line:
     def starts_with_closing_bracket(self):
         """Determine if this line starts with a ClosingBracket."""
         return self.inline_tokens and isinstance(self.inline_tokens[0], ClosingBracket)
+
+    @property
+    def ends_with_line_comment(self):
+        """Determine if this line ends with a line comment."""
+        return self.inline_tokens and isinstance(self.inline_tokens[-1], LineComment)
 
 
 def inline_block_format(tokens, max_line_length=100):
@@ -291,14 +323,17 @@ def inline_block_format(tokens, max_line_length=100):
             line_length = indent_level + line.inline_length
             pending_lines = 0
             pending = []
-            last_token_was_opening_bracket = line.ends_with_opening_bracket
             open_brackets = 1
             index += 1  # start on the next line
+            previous_line = line
             for line in lines[index:]:
                 if not line.can_format:
                     break
+                # Line comments can't be moved into the middle of a line.
+                if previous_line.ends_with_line_comment:
+                    break
                 if (
-                    not last_token_was_opening_bracket
+                    not previous_line.ends_with_opening_bracket
                     and not line.starts_with_closing_bracket
                 ):
                     pending.append(Whitespace(" "))
@@ -321,7 +356,7 @@ def inline_block_format(tokens, max_line_length=100):
                         break
                 if line.ends_with_opening_bracket:
                     open_brackets += 1
-                last_token_was_opening_bracket = line.ends_with_opening_bracket
+                previous_line = line
 
 
 def reformat(query, format_=inline_block_format, trailing_newline=False):

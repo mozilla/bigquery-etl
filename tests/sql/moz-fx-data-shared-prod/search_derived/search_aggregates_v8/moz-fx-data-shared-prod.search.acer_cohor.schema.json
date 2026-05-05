@@ -1,0 +1,7 @@
+[
+  {
+    "type": "DATE",
+    "name": "client_id",
+    "mode": "NULLABLE"
+  }
+]

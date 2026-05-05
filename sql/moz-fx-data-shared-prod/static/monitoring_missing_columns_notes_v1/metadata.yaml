@@ -8,7 +8,7 @@ owners:
 labels:
   incremental: false
 external_data:
-  format: google_sheet
+  format: google_sheets
   source_uris:
     - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA
   options:

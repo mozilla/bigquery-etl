@@ -3,6 +3,9 @@
 import datetime
 import json
 import os.path
+import re
+from functools import partial
+from multiprocessing.pool import ThreadPool
 
 import pytest
 from google.api_core.exceptions import BadRequest
@@ -18,8 +21,8 @@ from .sql_test import (
     default_encoding,
     get_query_params,
     load,
-    load_tables,
-    load_views,
+    load_table,
+    load_view,
     print_and_test,
     read,
 )
@@ -47,6 +50,10 @@ class SqlTest(pytest.Item, pytest.File):
         self._nodeid += "::SQL"
         self.add_marker("sql")
 
+    def collect(self):
+        """Collect files to test."""
+        return super().collect()
+
     def reportinfo(self):
         """Set report title to `{dataset}.{table}:{test}`."""
         project, dataset, table, test = self.fspath.strpath.split(os.path.sep)[-4:]
@@ -68,31 +75,53 @@ class SqlTest(pytest.Item, pytest.File):
         """Run."""
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
-        dataset_name = self.fspath.dirpath().dirpath().basename
         project_dir = (
-            self.fspath.dirpath().dirpath().dirpath().dirname.replace("tests", "")
+            self.fspath.dirpath()
+            .dirpath()
+            .dirpath()
+            .dirname.replace(
+                "moz-fx-data-integration-tests", "___INTEGRATION_TESTS_PLACEHOLDER___"
+            )
+            .replace("tests", "")
+            .replace(
+                "___INTEGRATION_TESTS_PLACEHOLDER___", "moz-fx-data-integration-tests"
+            )
         )
 
-        init_test = False
         script_test = False
 
-        # init tests write to dataset_query_test, instead of their
-        # default name
-        # We assume the init sql contains `CREATE TABLE dataset.table`
-        path = self.fspath.dirname.replace("tests", "")
-        if test_name == "test_init":
-            init_test = True
-
-            query = render("init.sql", template_folder=path)
-            original, dest_name = (
-                f"{dataset_name}.{query_name}",
-                f"{dataset_name}_{query_name}_{test_name}",
+        # init tests write to dataset_query_test, instead of their default name
+        if self.fspath.dirname.endswith("moz-fx-data-integration-tests"):
+            path = self.fspath.dirname
+        else:
+            path = (
+                self.fspath.dirname.replace(
+                    "moz-fx-data-integration-tests",
+                    "___INTEGRATION_TESTS_PLACEHOLDER___",
+                )
+                .replace("tests", "")
+                .replace(
+                    "___INTEGRATION_TESTS_PLACEHOLDER___",
+                    "moz-fx-data-integration-tests",
+                )
             )
-            query = query.replace(original, dest_name)
-            query_name = dest_name
+
+        if test_name == "test_init":
+            query = render(
+                "query.sql",
+                template_folder=path,
+                **{"is_init": lambda: True},
+            )
         elif test_name == "test_script":
             script_test = True
             query = render("script.sql", template_folder=path)
+        elif os.path.exists(os.path.join(path, "view.sql")):
+            query = re.sub(
+                "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                render("view.sql", template_folder=path),
+                flags=re.DOTALL,
+            )
         else:
             query = render("query.sql", template_folder=path)
 
@@ -124,7 +153,14 @@ class SqlTest(pytest.Item, pytest.File):
                         table_name,
                         table_name.replace(".", "_").replace("-", "_"),
                     )
-                    query = query.replace(original, table_name)
+                    original_pattern = (
+                        r"`?(?<![._])\b"
+                        + r"`?\.`?".join(original.split("."))
+                        + r"\b(?![._])`?"
+                    )
+                    query = re.sub(original_pattern, table_name, query)
+                else:
+                    original = table_name
 
                 # second check for tablename tweaks.
                 # if the tablename ends with a date then need to replace that date with '*' for the
@@ -162,18 +198,25 @@ class SqlTest(pytest.Item, pytest.File):
         )
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        if "CI_RUN_ID" in os.environ:
+            dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:
-            load_tables(bq, default_dataset, tables.values())
-            load_views(bq, default_dataset, views)
+            with ThreadPool(8) as pool:
+                pool.map(
+                    partial(load_table, bq, default_dataset),
+                    tables.values(),
+                    chunksize=1,
+                )
+                pool.starmap(
+                    partial(load_view, bq, default_dataset), views.items(), chunksize=1
+                )
 
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)
 
-            if init_test or script_test:
+            if script_test:
                 job_config = bigquery.QueryJobConfig(
                     default_dataset=default_dataset,
                     query_parameters=get_query_params(self.fspath.strpath),

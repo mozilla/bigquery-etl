@@ -1,9 +1,9 @@
 friendly_name: Get Earliest Value
 description: |
-  This UDF returns the earliest not-null value from a list of values
-  and their corresponding timestamp.
+  This UDF returns the earliest not-null value pair and datetime
+  from a list of values and their corresponding timestamp.
 
-  The function will return the first value in the input array,
+  The function will return the first value pair in the input array,
   that is not null and has the earliest timestamp.
 
   Because there may be more than one value on the same date e.g. more

@@ -1,0 +1,3 @@
+friendly_name: Extract URL Locale
+description: >-
+  Extract the locale from a URL if it's present.

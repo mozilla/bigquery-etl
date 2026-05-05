@@ -19,7 +19,7 @@ SELECT
   country,
   distribution_id
 FROM
-  telemetry.clients_last_seen
+  `moz-fx-data-shared-prod.telemetry.clients_last_seen`
 WHERE
   client_id IS NOT NULL
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

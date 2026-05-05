@@ -1,0 +1,677 @@
+fields:
+- name: event_date
+  type: STRING
+  mode: NULLABLE
+- name: event_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: event_params
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE
+- name: event_previous_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: event_value_in_usd
+  type: FLOAT
+  mode: NULLABLE
+- name: event_bundle_sequence_id
+  type: INTEGER
+  mode: NULLABLE
+- name: event_server_timestamp_offset
+  type: INTEGER
+  mode: NULLABLE
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+- name: user_pseudo_id
+  type: STRING
+  mode: NULLABLE
+- name: privacy_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: analytics_storage
+    type: STRING
+    mode: NULLABLE
+  - name: ads_storage
+    type: STRING
+    mode: NULLABLE
+  - name: uses_transient_token
+    type: STRING
+    mode: NULLABLE
+- name: user_properties
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: set_timestamp_micros
+      type: INTEGER
+      mode: NULLABLE
+- name: user_first_touch_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: user_ltv
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: revenue
+    type: FLOAT
+    mode: NULLABLE
+  - name: currency
+    type: STRING
+    mode: NULLABLE
+- name: device
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: mobile_brand_name
+    type: STRING
+    mode: NULLABLE
+  - name: mobile_model_name
+    type: STRING
+    mode: NULLABLE
+  - name: mobile_marketing_name
+    type: STRING
+    mode: NULLABLE
+  - name: mobile_os_hardware_model
+    type: STRING
+    mode: NULLABLE
+  - name: operating_system
+    type: STRING
+    mode: NULLABLE
+  - name: operating_system_version
+    type: STRING
+    mode: NULLABLE
+  - name: vendor_id
+    type: STRING
+    mode: NULLABLE
+  - name: advertising_id
+    type: STRING
+    mode: NULLABLE
+  - name: language
+    type: STRING
+    mode: NULLABLE
+  - name: is_limited_ad_tracking
+    type: STRING
+    mode: NULLABLE
+  - name: time_zone_offset_seconds
+    type: INTEGER
+    mode: NULLABLE
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+  - name: browser_version
+    type: STRING
+    mode: NULLABLE
+  - name: web_info
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: browser_version
+      type: STRING
+      mode: NULLABLE
+    - name: hostname
+      type: STRING
+      mode: NULLABLE
+- name: geo
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: city
+    type: STRING
+    mode: NULLABLE
+  - name: country
+    type: STRING
+    mode: NULLABLE
+  - name: continent
+    type: STRING
+    mode: NULLABLE
+  - name: region
+    type: STRING
+    mode: NULLABLE
+  - name: sub_continent
+    type: STRING
+    mode: NULLABLE
+  - name: metro
+    type: STRING
+    mode: NULLABLE
+- name: app_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: install_store
+    type: STRING
+    mode: NULLABLE
+  - name: firebase_app_id
+    type: STRING
+    mode: NULLABLE
+  - name: install_source
+    type: STRING
+    mode: NULLABLE
+- name: traffic_source
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+- name: stream_id
+  type: STRING
+  mode: NULLABLE
+- name: platform
+  type: STRING
+  mode: NULLABLE
+- name: event_dimensions
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: hostname
+    type: STRING
+    mode: NULLABLE
+- name: ecommerce
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: total_item_quantity
+    type: INTEGER
+    mode: NULLABLE
+  - name: purchase_revenue_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: purchase_revenue
+    type: FLOAT
+    mode: NULLABLE
+  - name: refund_value_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: refund_value
+    type: FLOAT
+    mode: NULLABLE
+  - name: shipping_value_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: shipping_value
+    type: FLOAT
+    mode: NULLABLE
+  - name: tax_value_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: tax_value
+    type: FLOAT
+    mode: NULLABLE
+  - name: unique_items
+    type: INTEGER
+    mode: NULLABLE
+  - name: transaction_id
+    type: STRING
+    mode: NULLABLE
+- name: items
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: item_id
+    type: STRING
+    mode: NULLABLE
+  - name: item_name
+    type: STRING
+    mode: NULLABLE
+  - name: item_brand
+    type: STRING
+    mode: NULLABLE
+  - name: item_variant
+    type: STRING
+    mode: NULLABLE
+  - name: item_category
+    type: STRING
+    mode: NULLABLE
+  - name: item_category2
+    type: STRING
+    mode: NULLABLE
+  - name: item_category3
+    type: STRING
+    mode: NULLABLE
+  - name: item_category4
+    type: STRING
+    mode: NULLABLE
+  - name: item_category5
+    type: STRING
+    mode: NULLABLE
+  - name: price_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: price
+    type: FLOAT
+    mode: NULLABLE
+  - name: quantity
+    type: INTEGER
+    mode: NULLABLE
+  - name: item_revenue_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: item_revenue
+    type: FLOAT
+    mode: NULLABLE
+  - name: item_refund_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: item_refund
+    type: FLOAT
+    mode: NULLABLE
+  - name: coupon
+    type: STRING
+    mode: NULLABLE
+  - name: affiliation
+    type: STRING
+    mode: NULLABLE
+  - name: location_id
+    type: STRING
+    mode: NULLABLE
+  - name: item_list_id
+    type: STRING
+    mode: NULLABLE
+  - name: item_list_name
+    type: STRING
+    mode: NULLABLE
+  - name: item_list_index
+    type: STRING
+    mode: NULLABLE
+  - name: promotion_id
+    type: STRING
+    mode: NULLABLE
+  - name: promotion_name
+    type: STRING
+    mode: NULLABLE
+  - name: creative_name
+    type: STRING
+    mode: NULLABLE
+  - name: creative_slot
+    type: STRING
+    mode: NULLABLE
+  - name: item_params
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: string_value
+        type: STRING
+        mode: NULLABLE
+      - name: int_value
+        type: INTEGER
+        mode: NULLABLE
+      - name: float_value
+        type: FLOAT
+        mode: NULLABLE
+      - name: double_value
+        type: FLOAT
+        mode: NULLABLE
+- name: collected_traffic_source
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: manual_campaign_id
+    type: STRING
+    mode: NULLABLE
+  - name: manual_campaign_name
+    type: STRING
+    mode: NULLABLE
+  - name: manual_source
+    type: STRING
+    mode: NULLABLE
+  - name: manual_medium
+    type: STRING
+    mode: NULLABLE
+  - name: manual_term
+    type: STRING
+    mode: NULLABLE
+  - name: manual_content
+    type: STRING
+    mode: NULLABLE
+  - name: manual_source_platform
+    type: STRING
+    mode: NULLABLE
+  - name: manual_creative_format
+    type: STRING
+    mode: NULLABLE
+  - name: manual_marketing_tactic
+    type: STRING
+    mode: NULLABLE
+  - name: gclid
+    type: STRING
+    mode: NULLABLE
+  - name: dclid
+    type: STRING
+    mode: NULLABLE
+  - name: srsltid
+    type: STRING
+    mode: NULLABLE
+- name: is_active_user
+  type: BOOLEAN
+  mode: NULLABLE
+- name: batch_event_index
+  type: INTEGER
+  mode: NULLABLE
+- name: batch_page_id
+  type: INTEGER
+  mode: NULLABLE
+- name: batch_ordering_id
+  type: INTEGER
+  mode: NULLABLE
+- name: session_traffic_source_last_click
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: manual_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: term
+      type: STRING
+      mode: NULLABLE
+    - name: content
+      type: STRING
+      mode: NULLABLE
+    - name: source_platform
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: marketing_tactic
+      type: STRING
+      mode: NULLABLE
+  - name: google_ads_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: customer_id
+      type: STRING
+      mode: NULLABLE
+    - name: account_name
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_id
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_name
+      type: STRING
+      mode: NULLABLE
+  - name: cross_channel_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: source_platform
+      type: STRING
+      mode: NULLABLE
+    - name: default_channel_group
+      type: STRING
+      mode: NULLABLE
+    - name: primary_channel_group
+      type: STRING
+      mode: NULLABLE
+  - name: sa360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_id
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: engine_account_name
+      type: STRING
+      mode: NULLABLE
+    - name: engine_account_type
+      type: STRING
+      mode: NULLABLE
+    - name: manager_account_name
+      type: STRING
+      mode: NULLABLE
+  - name: cm360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: account_id
+      type: STRING
+      mode: NULLABLE
+    - name: account_name
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_id
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: creative_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_type
+      type: STRING
+      mode: NULLABLE
+    - name: creative_type_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_version
+      type: STRING
+      mode: NULLABLE
+    - name: placement_id
+      type: STRING
+      mode: NULLABLE
+    - name: placement_cost_structure
+      type: STRING
+      mode: NULLABLE
+    - name: placement_name
+      type: STRING
+      mode: NULLABLE
+    - name: rendering_id
+      type: STRING
+      mode: NULLABLE
+    - name: site_id
+      type: STRING
+      mode: NULLABLE
+    - name: site_name
+      type: STRING
+      mode: NULLABLE
+  - name: dv360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_id
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: creative_name
+      type: STRING
+      mode: NULLABLE
+    - name: exchange_id
+      type: STRING
+      mode: NULLABLE
+    - name: exchange_name
+      type: STRING
+      mode: NULLABLE
+    - name: insertion_order_id
+      type: STRING
+      mode: NULLABLE
+    - name: insertion_order_name
+      type: STRING
+      mode: NULLABLE
+    - name: line_item_id
+      type: STRING
+      mode: NULLABLE
+    - name: line_item_name
+      type: STRING
+      mode: NULLABLE
+    - name: partner_id
+      type: STRING
+      mode: NULLABLE
+    - name: partner_name
+      type: STRING
+      mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: publisher
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: ad_revenue_in_usd
+    type: FLOAT
+    mode: NULLABLE
+  - name: ad_format
+    type: STRING
+    mode: NULLABLE
+  - name: ad_source_name
+    type: STRING
+    mode: NULLABLE
+  - name: ad_unit_id
+    type: STRING
+    mode: NULLABLE

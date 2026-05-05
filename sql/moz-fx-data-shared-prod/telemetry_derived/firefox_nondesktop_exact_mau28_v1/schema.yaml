@@ -1,0 +1,45 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: MAU - Monthly Active Users
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: WAU - Weekly Active Users
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: DAU - Daily Active Users
+- name: id_bucket
+  type: INTEGER
+  mode: NULLABLE
+  description: ID Bucket
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: Product
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: New Profiles

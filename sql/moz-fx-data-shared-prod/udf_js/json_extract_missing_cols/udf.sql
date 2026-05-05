@@ -85,7 +85,7 @@ WITH addl_properties AS (
         "first": {
           "second": {
             "third": "hello world"
-          }, 
+          },
           "other-second": "value",
           "array": [
             {
@@ -93,7 +93,7 @@ WITH addl_properties AS (
               "unique-array-element": "value"
             },
             {
-              "duplicate-array-element": "value", 
+              "duplicate-array-element": "value",
               "nested-array-element": {"nested": "value"}
             }
           ]
@@ -116,7 +116,7 @@ extracted AS (
 )
     --
 SELECT
-  assert.array_equals_any_order(
+  mozfun.assert.array_equals_any_order(
     no_args,
     ARRAY[
       '`first`.`second`.`third`',
@@ -126,7 +126,7 @@ SELECT
       '`first`.`array`.[...].`unique-array-element`'
     ]
   ),
-  assert.array_equals_any_order(
+  mozfun.assert.array_equals_any_order(
     indicates_node_arg,
     ARRAY[
       '`first`.`second`',
@@ -136,6 +136,6 @@ SELECT
       '`first`.`array`.[...].`unique-array-element`'
     ]
   ),
-  assert.array_equals_any_order(is_node_arg, ARRAY['`first`'])
+  mozfun.assert.array_equals_any_order(is_node_arg, ARRAY['`first`'])
 FROM
   extracted

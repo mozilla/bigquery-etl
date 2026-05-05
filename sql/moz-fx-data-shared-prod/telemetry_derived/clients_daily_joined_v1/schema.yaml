@@ -1,9 +1,9 @@
 fields:
-- description: null
+- description: The date when the telemetry ping is received on the server side.
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: A unique identifier (UUID) for the client.
   mode: NULLABLE
   name: client_id
   type: STRING
@@ -112,7 +112,7 @@ fields:
   mode: NULLABLE
   name: app_build_id
   type: STRING
-- description: null
+- description: User visible version string (e.g. "1.0.3") for the browser.
   mode: NULLABLE
   name: app_display_version
   type: STRING
@@ -120,7 +120,7 @@ fields:
   mode: NULLABLE
   name: app_name
   type: STRING
-- description: null
+- description: User visible version string (e.g. "1.0.3") for the browser.
   mode: NULLABLE
   name: app_version
   type: STRING
@@ -151,6 +151,12 @@ fields:
   - mode: NULLABLE
     name: dltoken
     type: STRING
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
+  - name: ua
+    type: STRING
+    mode: NULLABLE
   mode: NULLABLE
   name: attribution
   type: RECORD
@@ -158,7 +164,7 @@ fields:
   mode: NULLABLE
   name: blocklist_enabled
   type: BOOLEAN
-- description: null
+- description: The normalized channel the application is being distributed on.
   mode: NULLABLE
   name: channel
   type: STRING
@@ -266,7 +272,7 @@ fields:
   mode: NULLABLE
   name: devtools_toolbox_opened_count_sum
   type: INTEGER
-- description: null
+- description: The distribution id associated with the install of Firefox.
   mode: NULLABLE
   name: distribution_id
   type: STRING
@@ -331,7 +337,8 @@ fields:
   mode: NULLABLE
   name: flash_version
   type: STRING
-- description: null
+- description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
   mode: NULLABLE
   name: country
   type: STRING
@@ -499,7 +506,8 @@ fields:
   mode: NULLABLE
   name: install_year
   type: INTEGER
-- description: null
+- description: A flag indicating whether the browser is set as the default browser
+    on the client side.
   mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
@@ -507,7 +515,7 @@ fields:
   mode: NULLABLE
   name: is_wow64
   type: BOOLEAN
-- description: null
+- description: Set of language- and/or country-based preferences for a user interface.
   mode: NULLABLE
   name: locale
   type: STRING
@@ -515,7 +523,7 @@ fields:
   mode: NULLABLE
   name: memory_mb
   type: INTEGER
-- description: null
+- description: The normalized channel the application is being distributed on.
   mode: NULLABLE
   name: normalized_channel
   type: STRING
@@ -523,7 +531,7 @@ fields:
   mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- description: null
+- description: The normalized name of the operating system running at the client.
   mode: NULLABLE
   name: os
   type: STRING
@@ -587,7 +595,7 @@ fields:
   mode: NULLABLE
   name: push_api_notify_sum
   type: INTEGER
-- description: null
+- description: A number, 0-99, that samples by client_id.
   mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -2291,3 +2299,100 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_link_sum
   type: RECORD
+- name: places_previousday_visits_mean
+  type: FLOAT
+  mode: NULLABLE
+- name: places_library_cumulative_bookmark_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: places_library_cumulative_history_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: places_bookmarks_searchbar_cumulative_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: scalar_parent_library_link_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: scalar_parent_library_opened_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: scalar_parent_library_search_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
+- name: first_document_id
+  type: STRING
+  mode: NULLABLE
+- name: partner_id
+  type: STRING
+  mode: NULLABLE
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+- name: distributor
+  type: STRING
+  mode: NULLABLE
+- name: distributor_channel
+  type: STRING
+  mode: NULLABLE
+- name: env_build_platform_version
+  type: STRING
+  mode: NULLABLE
+- name: env_build_xpcom_abi
+  type: STRING
+  mode: NULLABLE
+- name: geo_db_version
+  type: STRING
+  mode: NULLABLE
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+- name: max_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+- name: min_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+- name: startup_profile_selection_first_ping_only
+  type: STRING
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
+- name: browser_backup_scheduler_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled most frequently seen on the submission date.
+    If there is a tie, the value seen last according to submission_timestamp.
+    True if the BackupService is configured to automatically create backups in the background.
+- name: browser_backup_archive_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.

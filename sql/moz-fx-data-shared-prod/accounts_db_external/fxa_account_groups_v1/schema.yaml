@@ -1,0 +1,20 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: group_id
+  type: INTEGER
+  mode: NULLABLE
+- name: role
+  type: STRING
+  mode: NULLABLE
+- name: managed_by
+  type: STRING
+  mode: NULLABLE
+- name: expires
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: notes
+  type: STRING
+  mode: NULLABLE

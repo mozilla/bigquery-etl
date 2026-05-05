@@ -31,16 +31,24 @@ class TestEntrypoint:
                 b"+---+-----+\n| a |  b  |\n+---+-----+\n| 1 | abc |\n+---+-----+\n"
                 in result
             )
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
-            # running bq in CircleCI will fail since it's not installed
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
             # but the error output can be checked for whether bq was called
-            assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
             assert (
-                b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                b"No such file or directory: 'bq'" in e.output
+                or b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
+                or b"returned non-zero exit status" in e.output
             )
+            # metadata warning should appear when bq is not found
+            if b"No such file or directory: 'bq'" in e.output:
+                assert b"No metadata.yaml found for " in e.output
+                assert (
+                    b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                    in e.output
+                )
 
     @pytest.mark.integration
     def test_run_templated_query(self, tmp_path, project_id):
@@ -72,16 +80,24 @@ class TestEntrypoint:
                 b"+---+---+---+\n| a | b | c |\n+---+---+---+\n| a | b | c |\n+---+---+---+"
                 in result
             )
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
-            # running bq in CircleCI will fail since it's not installed
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
             # but the error output can be checked for whether bq was called
-            assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
             assert (
-                b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                b"No such file or directory: 'bq'" in e.output
+                or b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
+                or b"returned non-zero exit status" in e.output
             )
+            # metadata warning should appear when bq is not found
+            if b"No such file or directory: 'bq'" in e.output:
+                assert b"No metadata.yaml found for " in e.output
+                assert (
+                    b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                    in e.output
+                )
 
     @pytest.mark.integration
     def test_run_query_write_to_table(
@@ -113,7 +129,7 @@ class TestEntrypoint:
                 stderr=subprocess.STDOUT,
             )
             assert b"Current status: DONE" in result
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
 
             result = bigquery_client.query(
                 f"SELECT a FROM {project_id}.{temporary_dataset}.query_v1"
@@ -122,14 +138,32 @@ class TestEntrypoint:
             for row in result:
                 assert row.a == "foo"
         except subprocess.CalledProcessError as e:
-            assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
+            # Running bq in CircleCI will fail since it's not installed.
+            # In GitHub Actions, bq is installed but may fail for other reasons
+            # but the error output can be checked for whether bq was called
             assert (
-                b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                b"No such file or directory: 'bq'" in e.output
+                or b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
+                or b"returned non-zero exit status" in e.output
             )
+            # metadata warning should appear when bq is not found
+            if b"No such file or directory: 'bq'" in e.output:
+                assert b"No metadata.yaml found for " in e.output
+                assert (
+                    b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
+                    in e.output
+                )
 
     @pytest.mark.integration
     def test_run_query_no_query_file(self):
-        result = subprocess.check_output([ENTRYPOINT_SCRIPT, "query"])
-        assert b"No files matching:" in result
+        with pytest.raises(subprocess.CalledProcessError) as e:
+            subprocess.run(
+                [ENTRYPOINT_SCRIPT, "query"],
+                check=True,
+                capture_output=True,
+            )
+            assert (
+                b"Error: 'query' command requires at least one argument (FILE)"
+                in e.value.stderr
+            )

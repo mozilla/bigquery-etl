@@ -2,7 +2,11 @@ from pathlib import Path
 
 import pytest
 
-from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
+from bigquery_etl.metadata.parse_metadata import (
+    DatasetMetadata,
+    Metadata,
+    PartitionType,
+)
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -68,7 +72,7 @@ class TestParseMetadata(object):
         metadata = Metadata.from_file(metadata_file)
 
         assert metadata.friendly_name == "Test metadata file"
-        assert metadata.description is None
+        assert metadata.description == "Please provide a description for the query"
         assert "schedule" in metadata.labels
         assert metadata.labels["schedule"] == "daily"
         assert "public_json" in metadata.labels
@@ -84,7 +88,11 @@ class TestParseMetadata(object):
         assert "number_string" in metadata.labels
         assert metadata.labels["number_string"] == "1234abcde"
         assert "123-432" in metadata.labels
-        assert metadata.owners == ["test1@mozilla.com", "test2@example.com"]
+        assert metadata.owners == [
+            "test1@mozilla.com",
+            "test2@example.com",
+            "mozilla/test_group",
+        ]
         assert metadata.labels["owner1"] == "test1"
         assert metadata.labels["owner2"] == "test2"
         assert "query.sql" in metadata.references
@@ -112,9 +120,7 @@ class TestParseMetadata(object):
         assert metadata.review_bugs() == ["1999999", "12121212"]
         assert metadata.workgroup_access is not None
         assert metadata.workgroup_access[0].role == "roles/bigquery.dataViewer"
-        assert (
-            metadata.workgroup_access[0].members[0] == "workgroup:dataops-managed/taar"
-        )
+        assert metadata.workgroup_access[0].members[0] == "workgroup:dataplatform/test"
 
     def test_of_query_file_no_metadata(self):
         metadata_file = (
@@ -175,3 +181,31 @@ class TestParseMetadata(object):
         assert metadata.bigquery.time_partitioning.require_partition_filter
         assert metadata.bigquery.time_partitioning.expiration_days == 2
         assert metadata.bigquery.time_partitioning.expiration_ms == 2 * 86400000
+
+    def test_of_deprecated_metadata(self):
+        metadata = Metadata.of_table(
+            "test",
+            "non_incremental_query",
+            "v1",
+            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
+        )
+
+        assert metadata.deprecated
+
+    def test_of_dataset_metadata(self):
+        metadata = DatasetMetadata.from_file(
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "dataset_metadata.yaml",
+        )
+
+        assert metadata.default_table_workgroup_access[0]["members"] == [
+            "test_default_member"
+        ]
+        assert (
+            metadata.default_table_workgroup_access[0]["role"]
+            == "roles/bigquery.dataViewer"
+        )

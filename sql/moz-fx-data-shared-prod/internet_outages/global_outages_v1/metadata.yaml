@@ -1,4 +1,4 @@
-friendly_name: Internet Outages
+friendly_name: Internet Outages (Version 1)
 # yamllint disable rule:line-length
 description: |-
   This contains a set aggregated metrics that correlate to internet
@@ -54,6 +54,8 @@ description: |-
     - Geographical data is based on IPGeo databases. These databases are
     imperfect, so some activity may be attributed to the wrong location.
     Further, proxy and VPN usage can create geo-attribution errors.
+    - Data contains duplicates prior to mid-2022. See [this bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1753470)
+    for further information.
 owners:
 - aplacitelli@mozilla.com
 labels:
@@ -62,18 +64,6 @@ labels:
   - '1640204'
 scheduling:
   dag_name: bqetl_internet_outages
-  # provide this value so that DAG generation does not have to dry run the
-  # query to get it, and that would be slow because main_v4 is referenced
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v4
-  - - moz-fx-data-shared-prod
-    - telemetry_derived
-    - clients_daily_v6
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - health_v4
 bigquery:
   time_partitioning:
     type: day

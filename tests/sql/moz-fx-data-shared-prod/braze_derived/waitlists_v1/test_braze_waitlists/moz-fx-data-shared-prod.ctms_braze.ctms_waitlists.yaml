@@ -1,0 +1,59 @@
+# test_braze_waitlists - ctms_waitlists
+---
+# user 1
+- email_id: user_1
+  name: waitlist_1
+  fields: '{
+    "geo": "DE",
+    "platform": "platform_1"
+  }'
+  source: source_1
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  subscribed: true
+  unsub_reason: because
+  update_timestamp: 2021-01-01 13:00:00+00:00
+- email_id: user_1
+  name: waitlist_2
+  fields: '{
+    "geo": "DE",
+    "platform": "Platform_2"
+  }'
+  source: source_2
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  subscribed: true
+  unsub_reason: for reasons
+  update_timestamp: 2021-01-01 13:00:00+00:00
+- email_id: user_1
+  name: waitlist_3
+  fields: '{
+    "geo": "DE",
+    "platform": "platform_3"
+  }'
+  source: Source_3
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  subscribed: false
+  unsub_reason: for reasons
+  update_timestamp: 2021-01-01 13:00:00+00:00
+# user 2 unsubscribed from two waitlists
+- email_id: user_2
+  name: waitlist_2
+  fields: '{
+    "geo": "EN",
+    "platform": "platform_2"
+  }'
+  source: source_2
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  subscribed: false
+  unsub_reason: because
+  update_timestamp: 2021-01-01 13:00:00+00:00
+- email_id: user_2
+  name: waitlist_3
+  fields: '{
+    "geo": "EN",
+    "platform": "platform_3"
+  }'
+  source: source_3
+  create_timestamp: 2020-01-02 10:00:00+00:00
+  subscribed: false
+  unsub_reason: because
+  update_timestamp: 2021-01-01 13:00:00+00:00

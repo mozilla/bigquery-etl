@@ -15,8 +15,7 @@ WITH stripe_plans AS (
     `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   LEFT JOIN
     `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
-  ON
-    plans.product_id = products.id
+    ON plans.product_id = products.id
 ),
 events AS (
   SELECT
@@ -46,7 +45,7 @@ events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
 ),
 flows AS (
   SELECT
@@ -127,13 +126,15 @@ flows AS (
       AND user_id IS NOT NULL
     ) AS pay_setup_engage_with_uid,
     -- new fxa after entering the email
-    LOGICAL_OR(event_type = "fxa_pay_setup - 3ds_complete") AS pay_setup_complete,
     LOGICAL_OR(
-      event_type = "fxa_pay_setup - 3ds_complete"
+      event_type IN ("fxa_pay_setup - 3ds_complete", "fxa_pay_setup - success")
+    ) AS pay_setup_complete,
+    LOGICAL_OR(
+      event_type IN ("fxa_pay_setup - 3ds_complete", "fxa_pay_setup - success")
       AND user_id IS NULL
     ) AS pay_setup_complete_without_uid,
     LOGICAL_OR(
-      event_type = "fxa_pay_setup - 3ds_complete"
+      event_type IN ("fxa_pay_setup - 3ds_complete", "fxa_pay_setup - success")
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
     -- coupon activities
@@ -342,8 +343,7 @@ FROM
   flow_counts
 LEFT JOIN
   stripe_plans
-USING
-  (plan_id)
+  USING (plan_id)
 WINDOW
   partition_date AS (
     PARTITION BY

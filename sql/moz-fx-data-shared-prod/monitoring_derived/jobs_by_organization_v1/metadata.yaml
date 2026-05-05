@@ -1,0 +1,21 @@
+friendly_name: Jobs By Organization
+description: |-
+  Table containing subset of jobs region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION.
+  Any job that is executed in, reads from, or writes to a project in the list
+  in the code is included. The query string is omitted from the columns.
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+scheduling:
+  dag_name: bqetl_monitoring_hourly
+  arguments: ["--date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_time'
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields: ['project_id', 'user_email']

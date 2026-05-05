@@ -2,11 +2,13 @@
 friendly_name: Addons Daily
 description: A daily aggregate of addon usages, partitioned by day
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: addons
   schedule: daily
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_addons
 bigquery:

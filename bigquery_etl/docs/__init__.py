@@ -7,15 +7,11 @@ import sys
 import tempfile
 from pathlib import Path
 
-import click
+import rich_click as click
 
-from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
-    generate_derived_dataset_docs,
-)
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
 
-DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
-DOCS_DIR = "docs/"
 EXAMPLE_DIR = "examples"
 INDEX_MD = "index.md"
 
@@ -31,7 +27,10 @@ project_dirs_option = click.option(
     "--project-dirs",
     help="Directories of projects documentation is generated for.",
     multiple=True,
-    default=DEFAULT_PROJECTS_DIRS,
+    default=[
+        ConfigLoader.get("default", "sql_dir") + "/" + project + "/"
+        for project in ConfigLoader.get("docs", "default_projects")
+    ],
 )
 
 log_level_option = click.option(
@@ -48,7 +47,7 @@ log_level_option = click.option(
 @click.option(
     "--docs_dir",
     "--docs-dir",
-    default=DOCS_DIR,
+    default=ConfigLoader.get("docs", "docs_dir"),
     help="Directory containing static documentation.",
 )
 @click.option(
@@ -61,7 +60,7 @@ log_level_option = click.option(
 def generate(project_dirs, docs_dir, output_dir, log_level):
     """Generate documentation for project."""
     from bigquery_etl.docs.bqetl.generate_bqetl_docs import generate_bqetl_docs
-    from bigquery_etl.docs.mozfun.generate_mozfun_docs import generate_mozfun_docs
+    from bigquery_etl.docs.mozfun.generate_mozfun_docs import generate_udf_docs
 
     out_dir = os.path.join(output_dir, "docs")
 
@@ -84,15 +83,9 @@ def generate(project_dirs, docs_dir, output_dir, log_level):
     # generate bqetl command docs
     generate_bqetl_docs(Path(out_dir) / "bqetl.md")
 
-    # move files to docs/
+    # generate docs
     for project_dir in project_dirs:
-        if not os.path.isdir(project_dir):
-            continue
-
-        if "mozfun" in project_dir:
-            generate_mozfun_docs(out_dir, project_dir)
-        else:
-            generate_derived_dataset_docs(out_dir, project_dir)
+        generate_udf_docs(out_dir, project_dir)
 
 
 @docs_.command("validate", help="Validate the project docs.")
@@ -108,7 +101,7 @@ def validate(project_dirs, log_level):
         if os.path.isdir(project_dir):
             parsed_routines = read_routine_dir(project_dir)
 
-            for root, dirs, files in os.walk(project_dir):
+            for root, dirs, files in os.walk(project_dir, followlinks=True):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     sql_files = (f for f in files if os.path.splitext(f)[1] == ".sql")
                     for file in sql_files:

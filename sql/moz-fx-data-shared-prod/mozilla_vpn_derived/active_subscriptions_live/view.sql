@@ -43,8 +43,7 @@ FROM
   all_subscriptions
 JOIN
   `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
-USING
-  (subscription_id)
+  USING (subscription_id)
 GROUP BY
   active_date,
   plan_id,

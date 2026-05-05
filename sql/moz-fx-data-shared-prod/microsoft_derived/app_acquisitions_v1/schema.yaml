@@ -1,0 +1,70 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: The first date in the date range for the acquisition data
+
+- mode: NULLABLE
+  name: application_id
+  type: STRING
+  description: The Store ID of the app for which you are retrieving acquisition data
+
+- mode: NULLABLE
+  name: application_name
+  type: STRING
+  description: The display name of the app
+
+- mode: NULLABLE
+  name: acquisition_type
+  type: STRING
+  description: The type of acquisition
+
+- mode: NULLABLE
+  name: store_client
+  type: STRING
+  description: The version of the Store where the acquisition occurred
+
+- mode: NULLABLE
+  name: gender
+  type: STRING
+  description: The gender of the user who made the acquisition
+
+- mode: NULLABLE
+  name: market
+  type: STRING
+  description: The ISO 3166 country code of the market where the acquisition occurred
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: the OS version on which the acquisition occurred
+
+- mode: NULLABLE
+  name: device_type
+  type: STRING
+  description: he type of device on which the acquisition occurred
+
+- mode: NULLABLE
+  name: acquisition_quantity
+  type: INT64
+  description: The number of acquisitions that occurred during the specified aggregation level
+- mode: NULLABLE
+  name: purchase_price_usd_amount
+  type: NUMERIC
+  description: Purchase price USD amount
+
+- mode: NULLABLE
+  name: purchase_price_local_amount
+  type: NUMERIC
+  description: Purchase price local currency amount
+
+- mode: NULLABLE
+  name: purchase_tax_usd_amount
+  type: NUMERIC
+  description: Purchase tax USD amount
+
+- mode: NULLABLE
+  name: purchase_tax_local_amount
+  type: NUMERIC
+  description: Purchase tax local currency amount

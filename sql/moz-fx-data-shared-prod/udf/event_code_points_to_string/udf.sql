@@ -28,18 +28,18 @@ CREATE OR REPLACE FUNCTION udf.event_code_points_to_string(code_points ANY TYPE)
 );
 
 SELECT
-  assert.equals("!", udf.event_code_points_to_string([33])),
-  assert.equals("#", udf.event_code_points_to_string([34])),
-  assert.equals("-", udf.event_code_points_to_string([43])),
-  assert.equals(CODE_POINTS_TO_STRING([1, 2]), udf.event_code_points_to_string([1, 2])),
-  assert.equals(
+  mozfun.assert.equals("!", udf.event_code_points_to_string([33])),
+  mozfun.assert.equals("#", udf.event_code_points_to_string([34])),
+  mozfun.assert.equals("-", udf.event_code_points_to_string([43])),
+  mozfun.assert.equals(CODE_POINTS_TO_STRING([1, 2]), udf.event_code_points_to_string([1, 2])),
+  mozfun.assert.equals(
     CODE_POINTS_TO_STRING(NULL),
     udf.event_code_points_to_string(CAST(NULL AS ARRAY<INT64>))
   ),
-  assert.equals(CODE_POINTS_TO_STRING([NULL]), udf.event_code_points_to_string([NULL])),
-  assert.equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([]));
+  mozfun.assert.equals(CODE_POINTS_TO_STRING([NULL]), udf.event_code_points_to_string([NULL])),
+  mozfun.assert.equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([]));
 
 SELECT
-  assert.not_null(udf.event_code_points_to_string([n]))
+  mozfun.assert.not_null(udf.event_code_points_to_string([n]))
 FROM
   UNNEST(GENERATE_ARRAY(1, 1000000)) AS n

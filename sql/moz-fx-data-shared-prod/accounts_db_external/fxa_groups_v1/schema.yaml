@@ -1,0 +1,13 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: display_name
+  type: STRING
+  mode: NULLABLE
+- name: capabilities
+  type: STRING
+  mode: NULLABLE

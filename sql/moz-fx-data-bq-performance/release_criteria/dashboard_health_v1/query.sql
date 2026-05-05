@@ -8,9 +8,9 @@ WITH recent_tests AS (
     IFNULL(test_extra_options, '') AS test_extra_options,
     IFNULL(subtest_name, '') AS subtest_name
   FROM
-    rc_flattened_test_data_v1
+    `moz-fx-data-bq-performance.release_criteria.rc_flattened_test_data_v1`
   WHERE
-    task_group_time >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 DAY)
+    task_group_time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY)
 ),
 distinct_rc AS (
   SELECT
@@ -23,7 +23,7 @@ distinct_rc AS (
     ARRAY_TO_STRING(ARRAY_AGG(DISTINCT rc_test_name), '\n') AS rc_test_name,
     COUNT(*) AS defined_criteria
   FROM
-    release_criteria_helper
+    `moz-fx-data-bq-performance.release_criteria.release_criteria_helper`
   GROUP BY
     framework,
     platform,
@@ -52,8 +52,7 @@ FROM
   distinct_rc
 FULL OUTER JOIN
   recent_tests
-USING
-  (framework, platform, test_name, test_type, test_extra_options, subtest_name)
+  USING (framework, platform, test_name, test_type, test_extra_options, subtest_name)
 WHERE
   distinct_rc.rc_test_name IS NULL
   OR distinct_rc.defined_criteria > 1

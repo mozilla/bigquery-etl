@@ -1,0 +1,21 @@
+friendly_name: Suggest Revenue Levers Daily
+description: |-
+  Daily metrics identified as Suggest revenue levers, including DOU,
+  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest ad clicks.
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+owners:
+  - skahmann@mozilla.com
+  - mozilla/revenue_forecasting_data_reviewers
+labels:
+  incremental: true
+  schedule: daily
+  change_controlled: true
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

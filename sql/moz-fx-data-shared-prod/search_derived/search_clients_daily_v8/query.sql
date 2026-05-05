@@ -20,9 +20,70 @@ CREATE TEMP FUNCTION add_access_point(
   ARRAY(SELECT AS STRUCT CONCAT(key, '.', access_point) AS key, value, FROM UNNEST(entries))
 );
 
-WITH combined_access_point AS (
+-- List of Ad Blocking Addons produced using this logic: https://github.com/mozilla/search-adhoc-analysis/tree/master/monetization-blocking-addons
+WITH adblocker_addons AS (
   SELECT
-    *,
+    addon_id,
+    addon_name
+  FROM
+    `moz-fx-data-shared-prod.revenue.monetization_blocking_addons`
+  WHERE
+    blocks_monetization
+),
+clients_with_adblocker_addons AS (
+  SELECT
+    client_id,
+    submission_date,
+    TRUE AS has_adblocker_addon
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
+  CROSS JOIN
+    UNNEST(active_addons) a
+  INNER JOIN
+    adblocker_addons
+    USING (addon_id)
+  WHERE
+    submission_date = @submission_date
+    AND NOT a.user_disabled
+    AND NOT a.app_disabled
+    AND NOT a.blocklisted
+  GROUP BY
+    client_id,
+    submission_date
+),
+profile_group_id AS (
+  SELECT
+    client_id,
+    profile_group_id
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+  WHERE
+    submission_date = @submission_date
+),
+is_enterprise_policies AS (
+  SELECT
+    client_id,
+    DATE(submission_timestamp) AS submission_date,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        payload.processes.parent.scalars.policies_is_enterprise
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS policies_is_enterprise
+  FROM
+    `moz-fx-data-shared-prod`.telemetry_stable.main_v5
+  WHERE
+    normalized_app_name = 'Firefox'
+    AND document_id IS NOT NULL
+  GROUP BY
+    client_id,
+    submission_date
+),
+combined_access_point AS (
+  SELECT
+    * EXCEPT (has_adblocker_addon),
+    COALESCE(has_adblocker_addon, FALSE) AS has_adblocker_addon,
     ARRAY_CONCAT(
       add_access_point(search_content_urlbar_sum, 'urlbar'),
       add_access_point(search_content_urlbar_persisted_sum, 'urlbar_persisted'),
@@ -69,7 +130,13 @@ WITH combined_access_point AS (
       add_access_point(search_adclicks_unknown_sum, 'unknown')
     ) AS ad_clicks_with_sap,
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
+  LEFT JOIN
+    clients_with_adblocker_addons
+    USING (client_id, submission_date)
+  LEFT JOIN
+    is_enterprise_policies
+    USING (client_id, submission_date)
 ),
 augmented AS (
   SELECT
@@ -193,6 +260,8 @@ counted AS (
     source,
     country,
     get_search_addon_version(active_addons) AS addon_version,
+    has_adblocker_addon,
+    policies_is_enterprise,
     app_version,
     distribution_id,
     locale,
@@ -200,9 +269,19 @@ counted AS (
     search_cohort,
     os,
     os_version,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
+    END AS os_version_minor,
     channel,
     is_default_browser,
-    UNIX_DATE(DATE(profile_creation_date)) AS profile_creation_date,
+    UNIX_DATE(DATE(SAFE_CAST(profile_creation_date AS DATETIME))) AS profile_creation_date,
     default_search_engine,
     default_search_engine_data_load_path,
     default_search_engine_data_submission_url,
@@ -259,16 +338,26 @@ counted AS (
         source,
         type
     )
+),
+staging AS (
+  SELECT
+    * EXCEPT (_n),
+    `moz-fx-data-shared-prod.udf.monetized_search`(
+      engine,
+      country,
+      distribution_id,
+      submission_date
+    ) AS is_sap_monetizable
+  FROM
+    counted
+  WHERE
+    _n = 1
 )
 SELECT
-  * EXCEPT (_n),
-  `moz-fx-data-shared-prod.udf.monetized_search`(
-    engine,
-    country,
-    distribution_id,
-    submission_date
-  ) AS is_sap_monetizable
+  stg.*,
+  prfl_gp_id.profile_group_id
 FROM
-  counted
-WHERE
-  _n = 1
+  staging stg
+LEFT JOIN
+  profile_group_id prfl_gp_id
+  ON stg.client_id = prfl_gp_id.client_id

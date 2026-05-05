@@ -1,0 +1,14 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: stripeCustomerId
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: updatedAt
+  type: TIMESTAMP
+  mode: NULLABLE

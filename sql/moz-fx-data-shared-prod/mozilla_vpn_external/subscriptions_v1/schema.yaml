@@ -32,24 +32,6 @@ fields:
 - name: fxa_last_changed_at
   type: TIMESTAMP
   mode: NULLABLE
-- name: provider
-  type: STRING
-  mode: NULLABLE
-- name: provider_product_id
-  type: STRING
-  mode: NULLABLE
-- name: provider_original_purchase_token
-  type: STRING
-  mode: NULLABLE
-- name: provider_receipt_raw
-  type: STRING
-  mode: NULLABLE
-- name: provider_receipt_json
-  type: STRING
-  mode: NULLABLE
-- name: provider_expiration_date
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: fxa_migration_note
   type: STRING
   mode: NULLABLE

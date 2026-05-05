@@ -22,5 +22,5 @@ CREATE OR REPLACE FUNCTION udf.decode_int64(raw BYTES) AS (
 
 -- Tests
 SELECT
-  assert.equals(1, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x01')),
-  assert.equals(16, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x10'));
+  mozfun.assert.equals(1, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x01')),
+  mozfun.assert.equals(16, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x10'));

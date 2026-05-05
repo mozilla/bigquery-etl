@@ -6,11 +6,14 @@ description: |
   fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
   Partitioned by submission_date and clustered by user_id.
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level
+# TODO: Once fxa_users_daily_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
 bigquery:

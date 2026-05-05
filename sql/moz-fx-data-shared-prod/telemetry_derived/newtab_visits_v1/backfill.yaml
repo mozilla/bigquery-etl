@@ -1,0 +1,75 @@
+2024-12-06:
+  start_date: 2024-02-01
+  end_date: 2024-10-23
+  reason:
+    We discovered a missing field in `newtab_visits_v1`. Added it in https://github.com/mozilla/bigquery-etl/pull/6380.
+    Now we need to backfill for since the new telemetry was released to use this field downstream.
+  watchers:
+    - sbetancourt@mozilla.com
+    - cmorales@mozilla.com
+    - cbeck@mozilla.com
+    - mbowerman@mozilla.com
+  status: Complete
+
+2024-11-15:
+  start_date: 2024-11-05
+  end_date: 2024-11-13
+  reason: Backfill dates where error in query caused Pocket clicks to be 0.
+  watchers:
+    - mbowerman@mozilla.com
+  status: Complete
+
+2024-08-26:
+  start_date: 2024-08-01
+  end_date: 2024-08-26
+  reason: Include telemetry in derived tables necessary for running experiments.
+  watchers:
+    - mbowerman@mozilla.com
+  status: Complete
+
+2024-04-12:
+  start_date: 2022-11-01
+  end_date: 2024-04-10
+  reason:
+    We discovered a missing field in `newtab_visits_v1`. Added it in https://github.com/mozilla/bigquery-etl/pull/5345.
+    Now we need to backfill for its entire history so we can use this field downstream.
+  watchers:
+    - sbetancourt@mozilla.com
+    - mbowerman@mozilla.com
+    - anicholson@mozilla.com
+    - wichan@mozilla.com
+  status: Complete
+
+2024-04-05:
+  start_date: 2023-03-01
+  end_date: 2024-03-17
+  reason:
+    The previous backfill needs to be extended to cover the full history of visits
+    to fill in the two new fields. The PR that added these fields merged on
+    '2024-03-18' (https://github.com/mozilla/bigquery-etl/pull/5224#event-12159631760),
+    and `newtab_visits` has the new fields populated on that date
+  watchers:
+    - mbowerman@mozilla.com
+    - anicholson@mozilla.com
+    - wichan@mozilla.com
+  status: Complete
+
+2024-04-02:
+  start_date: 2022-11-01
+  end_date: 2023-02-28
+  reason: Populates new fields with data and populates data from the beginning of the newtab ping
+  watchers:
+    - mbowerman@mozilla.com
+    - anicholson@mozilla.com
+    - wichan@mozilla.com
+  status: Complete
+
+2023-08-16:
+  start_date: 2023-03-01
+  end_date: 2023-04-01
+  reason:
+    This is mostly a test backfill, this table will replace newtab_interactions_v1
+    eventually
+  watchers:
+    - anicholson@mozilla.com
+  status: Complete

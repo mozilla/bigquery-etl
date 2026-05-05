@@ -1,19 +1,18 @@
 """Update metadata of BigQuery tables and views."""
 
-import logging
-import os
 from argparse import ArgumentParser
+from pathlib import Path
 
-import yaml
 from google.cloud import bigquery
 
+from ..config import ConfigLoader
 from ..util import standard_args
-from ..util.bigquery_tables import get_tables_matching_patterns
-from ..util.common import project_dirs
-from .parse_metadata import Metadata
+from .parse_metadata import ExternalDataFormat, Metadata
 
 METADATA_FILE = "metadata.yaml"
-DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"
+DEFAULT_PATTERN = (
+    f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}:*.*"
+)
 
 
 parser = ArgumentParser(description=__doc__)
@@ -29,7 +28,11 @@ parser.add_argument("--target", help="File or directory containing metadata file
 standard_args.add_log_level(parser)
 
 
-def publish_metadata(client, dataset, table, metadata):
+class InvalidExternalDataConfigException(Exception):
+    """Raised invalid config for external data tables."""
+
+
+def publish_metadata(client, project, dataset, table, metadata):
     """Push metadata to BigQuery tables."""
     try:
         table_ref = client.dataset(dataset).table(table)
@@ -47,45 +50,103 @@ def publish_metadata(client, dataset, table, metadata):
             if isinstance(value, str)
         }
 
+        if metadata.deprecated is True:
+            table.labels["deprecated"] = "true"
+        if metadata.deletion_date:
+            table.labels["deletion_date"] = metadata.deletion_date.strftime("%Y-%m-%d")
+            # TODO: in the future we can consider updating the table expiration date based on deletion_date
+        if metadata.monitoring and metadata.monitoring.enabled:
+            table.labels["monitoring"] = "true"
+
         client.update_table(table, ["friendly_name", "description", "labels"])
-    except yaml.YAMLError as e:
+        print("Published metadata for: {}.{}.{}".format(project, dataset, table))
+
+    except Exception as e:
         print(e)
 
 
-def main():
-    """Update BigQuery table metadata."""
-    args = parser.parse_args()
-
-    # set log level
+def attach_metadata(artifact_file_path: Path, table: bigquery.Table) -> None:
+    """Add metadata from query file's metadata.yaml to table object."""
     try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
-    projects = project_dirs(args.target)
-
-    for target in projects:
-        client = bigquery.Client(target)
-        if os.path.isdir(target):
-            for full_table_id in get_tables_matching_patterns(client, args.patterns):
-                [project, dataset, table] = full_table_id.split(".")
-                metadata_file = os.path.join(target, dataset, table, METADATA_FILE)
-
-                try:
-                    metadata = Metadata.from_file(metadata_file)
-                    publish_metadata(client, dataset, table, metadata)
-                except FileNotFoundError:
-                    print("No metadata file for: {}.{}".format(dataset, table))
+        if artifact_file_path.is_file() and artifact_file_path.name == METADATA_FILE:
+            metadata = Metadata.from_file(artifact_file_path)
         else:
-            print(
-                """
-                Invalid target: {}, target must be a directory with
-                structure <project>/<dataset>/<table>/metadata.yaml.
-                """.format(
-                    target
-                )
-            )
+            metadata = Metadata.of_query_file(artifact_file_path)
+    except FileNotFoundError:
+        return
+
+    table.description = metadata.description
+    table.friendly_name = metadata.friendly_name
+
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        table.time_partitioning = bigquery.TimePartitioning(
+            metadata.bigquery.time_partitioning.type.bigquery_type,
+            field=metadata.bigquery.time_partitioning.field,
+            require_partition_filter=(
+                metadata.bigquery.time_partitioning.require_partition_filter
+            ),
+            expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
+        )
+    elif metadata.bigquery and metadata.bigquery.range_partitioning:
+        table.range_partitioning = bigquery.RangePartitioning(
+            field=metadata.bigquery.range_partitioning.field,
+            range_=bigquery.PartitionRange(
+                start=metadata.bigquery.range_partitioning.range.start,
+                end=metadata.bigquery.range_partitioning.range.end,
+                interval=metadata.bigquery.range_partitioning.range.interval,
+            ),
+        )
+
+    if metadata.bigquery and metadata.bigquery.clustering:
+        table.clustering_fields = metadata.bigquery.clustering.fields
+
+    # BigQuery only allows for string type labels with specific requirements to be published:
+    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
+    if metadata.labels:
+        table.labels = {
+            key: value
+            for key, value in metadata.labels.items()
+            if isinstance(value, str)
+        }
 
 
-if __name__ == "__main__":
-    main()
+def attach_external_data_config(artifact_file_path, table) -> None:
+    """Add external data metadata from query file's metadata.yaml to table object."""
+    try:
+        if artifact_file_path.is_file() and artifact_file_path.name == METADATA_FILE:
+            metadata = Metadata.from_file(artifact_file_path)
+        else:
+            metadata = Metadata.of_query_file(artifact_file_path)
+    except FileNotFoundError:
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} missing metadata file"
+        )
+
+    if not metadata.external_data:
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} has no external_data config"
+        )
+
+    if metadata.external_data.format not in (
+        ExternalDataFormat.GOOGLE_SHEETS,
+        ExternalDataFormat.CSV,
+    ):
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} has unsupported format {metadata.external_data.format}"
+        )
+
+    external_config = bigquery.ExternalConfig(
+        metadata.external_data.format.value.upper()
+    )
+    external_config.source_uris = metadata.external_data.source_uris
+    external_config.ignore_unknown_values = True
+    external_config.autodetect = False
+
+    if metadata.external_data.options:
+        for key, v in metadata.external_data.options.items():
+            setattr(external_config.options, key, v)
+
+    table.external_data_configuration = external_config

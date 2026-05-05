@@ -1,0 +1,23 @@
+---
+- client_id: client-1
+  sample_id: 54
+  first_seen_date: 2023-05-02
+  submission_date: 2023-05-02
+  first_run_date: 2023-05-01
+  normalized_channel: release
+  is_new_profile: true
+  device_model: model-1
+- client_id: client-2
+  sample_id: 90
+  first_seen_date: 2023-05-02
+  submission_date: 2023-05-02
+  first_run_date: 2023-05-02
+  normalized_channel: beta
+  is_new_profile: true
+- client_id: client-3
+  sample_id: 60
+  first_seen_date: 2023-05-02
+  submission_date: 2023-05-02
+  first_run_date: 2023-05-02
+  normalized_channel: nightly
+  is_new_profile: true

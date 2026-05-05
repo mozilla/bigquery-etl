@@ -192,8 +192,7 @@ FROM
   sessions_table
 LEFT JOIN
   goals_table
-USING
-  (
+  USING (
     `date`,
     device_category,
     operating_system,
@@ -208,5 +207,4 @@ USING
   )
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
-ON
-  sessions_table.country = third_party_standardized_country_names.raw_country
+  ON sessions_table.country = third_party_standardized_country_names.raw_country

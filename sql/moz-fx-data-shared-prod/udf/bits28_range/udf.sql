@@ -6,7 +6,7 @@ RETURNS INT64 AS (
 
 -- Tests
 SELECT
-  assert.equals(1 << 3, udf.bits28_range(1 << 10, -13, 7)),
-  assert.equals(0, udf.bits28_range(1 << 10, -6, 7)),
-  assert.equals(1, udf.bits28_range(1, 0, 1)),
-  assert.equals(0, udf.bits28_range(0, 0, 1));
+  mozfun.assert.equals(1 << 3, udf.bits28_range(1 << 10, -13, 7)),
+  mozfun.assert.equals(0, udf.bits28_range(1 << 10, -6, 7)),
+  mozfun.assert.equals(1, udf.bits28_range(1, 0, 1)),
+  mozfun.assert.equals(0, udf.bits28_range(0, 0, 1));

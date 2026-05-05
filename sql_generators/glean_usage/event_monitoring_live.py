@@ -1,0 +1,302 @@
+"""Generate Materialized Views and aggregate queries for event monitoring."""
+
+import os
+from collections import OrderedDict, namedtuple
+from datetime import datetime
+from pathlib import Path
+
+from bigquery_etl.config import ConfigLoader
+from sql_generators.glean_usage.common import (
+    GleanTable,
+    get_prod_datasets_with_event,
+    get_table_dir,
+    get_tables_with_events,
+    render,
+    table_names_from_baseline,
+    write_sql,
+)
+
+TARGET_TABLE_ID = "event_monitoring_live_v1"
+TARGET_DATASET_CROSS_APP = "monitoring"
+PREFIX = "event_monitoring"
+PATH = Path(os.path.dirname(__file__))
+
+
+class EventMonitoringLive(GleanTable):
+    """Represents the generated materialized view for event monitoring."""
+
+    def __init__(self) -> None:
+        """Initialize materialized view generation."""
+        self.per_app_id_enabled = True
+        self.per_app_enabled = False
+        self.across_apps_enabled = True
+        self.prefix = PREFIX
+        self.target_table_id = TARGET_TABLE_ID
+        self.common_render_kwargs = {}
+        self.base_table_name = "events_v1"
+
+    def generate_per_app_id(
+        self,
+        project_id,
+        baseline_table,
+        app_name,
+        app_id_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
+        id_token=None,
+    ):
+        """Generate a query for the app_id."""
+        tables = table_names_from_baseline(baseline_table, include_project_id=False)
+
+        init_filename = f"{self.target_table_id}.materialized_view.sql"
+        metadata_filename = f"{self.target_table_id}.metadata.yaml"
+        refresh_script_filename = f"{self.target_table_id}.script.sql"
+
+        table = tables[f"{self.prefix}"]
+        dataset = tables[self.prefix].split(".")[-2].replace("_derived", "")
+
+        events_table_overwrites = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
+        )
+
+        deprecated = app_id_info.get("deprecated", False)
+
+        # Skip any not-allowed or deprecated app
+        if (
+            app_name
+            in ConfigLoader.get(
+                "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+            )
+            or app_id_info["app_id"]
+            in ConfigLoader.get(
+                "generate",
+                "glean_usage",
+                "events_monitoring",
+                "skip_app_ids",
+                fallback=[],
+            )
+            or deprecated
+        ):
+            return
+
+        if app_name in events_table_overwrites:
+            events_tables = events_table_overwrites[app_name]
+        else:
+            v1_name = app_id_info["v1_name"]
+            events_tables = get_tables_with_events(v1_name, dataset, skip_min_ping=True)
+            events_tables = [
+                f"{ping.replace('-', '_')}_v1"
+                for ping in events_tables
+                if ping
+                not in ConfigLoader.get(
+                    "generate", "glean_usage", "events_monitoring", "skip_pings"
+                )
+            ]
+
+        if len(events_tables) == 0:
+            return
+
+        manual_refresh = app_name in ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "manual_refresh_apps",
+            fallback=[],
+        )
+
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
+            derived_dataset=tables[self.prefix].split(".")[-2],
+            dataset=dataset,
+            current_date=datetime.today().strftime("%Y-%m-%d"),
+            app_name=app_id_info["canonical_app_name"],
+            events_tables=sorted(events_tables),
+            manual_refresh=manual_refresh,
+        )
+
+        render_kwargs.update(self.common_render_kwargs)
+        render_kwargs.update(tables)
+
+        # generated files to update
+        Artifact = namedtuple("Artifact", "table_id basename sql")
+        artifacts = []
+
+        init_sql = render(
+            init_filename, template_folder=PATH / "templates", **render_kwargs
+        )
+        metadata = render(
+            metadata_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+        artifacts.append(Artifact(table, "metadata.yaml", metadata))
+
+        if manual_refresh:
+            refresh_script = render(
+                refresh_script_filename,
+                template_folder=PATH / "templates",
+                format=False,
+                **render_kwargs,
+            )
+            artifacts.append(Artifact(table, "script.sql", refresh_script))
+
+        skip_existing_artifact = self.skip_existing(output_dir, project_id)
+
+        if output_dir:
+            artifacts.append(Artifact(table, "materialized_view.sql", init_sql))
+
+            for artifact in artifacts:
+                destination = (
+                    get_table_dir(output_dir, artifact.table_id) / artifact.basename
+                )
+                skip_existing = str(destination) in skip_existing_artifact
+
+                write_sql(
+                    output_dir,
+                    artifact.table_id,
+                    artifact.basename,
+                    artifact.sql,
+                    skip_existing=skip_existing,
+                )
+
+    def generate_across_apps(
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
+    ):
+        """Generate a query across all apps."""
+        if not self.across_apps_enabled:
+            return
+
+        aggregate_table = "event_monitoring_aggregates_v1"
+        target_view_name = "_".join(self.target_table_id.split("_")[:-1])
+
+        events_table_overwrites = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
+        )
+
+        event_tables_per_dataset = OrderedDict()
+
+        # Skip any not-allowed app.
+        skip_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        )
+        skip_app_ids = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "skip_app_ids",
+            fallback=[],
+        )
+
+        manual_refresh_apps = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "manual_refresh_apps",
+            fallback=[],
+        )
+
+        for app_name, app_ids_info in apps.items():
+            for app_dataset in app_ids_info:
+                if (
+                    app_name in skip_apps
+                    or app_dataset["app_id"] in skip_app_ids
+                    or app_dataset.get("deprecated", False) is True
+                ):
+                    continue
+
+                dataset = app_dataset["bq_dataset_family"]
+
+                if app_name in events_table_overwrites:
+                    event_tables_per_dataset[dataset] = events_table_overwrites[
+                        app_name
+                    ]
+                else:
+                    v1_name = app_dataset["v1_name"]
+                    event_tables = [
+                        f"{ping.replace('-', '_')}_v1"
+                        for ping in get_tables_with_events(
+                            v1_name,
+                            app_dataset["bq_dataset_family"],
+                            skip_min_ping=True,
+                        )
+                        if ping
+                        not in ConfigLoader.get(
+                            "generate", "glean_usage", "events_monitoring", "skip_pings"
+                        )
+                    ]
+
+                    if len(event_tables) > 0:
+                        event_tables_per_dataset[dataset] = sorted(event_tables)
+
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
+            target_view=f"{TARGET_DATASET_CROSS_APP}.{target_view_name}",
+            table=target_view_name,
+            target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
+            apps=list(apps.values()),
+            prod_datasets=get_prod_datasets_with_event(),
+            event_tables_per_dataset=event_tables_per_dataset,
+            manual_refresh_apps=manual_refresh_apps,
+        )
+        render_kwargs.update(self.common_render_kwargs)
+
+        skip_existing_artifacts = self.skip_existing(output_dir, project_id)
+
+        Artifact = namedtuple("Artifact", "table_id basename sql")
+
+        query_filename = f"{aggregate_table}.query.sql"
+        query_sql = render(
+            query_filename, template_folder=PATH / "templates", **render_kwargs
+        )
+        metadata = render(
+            f"{aggregate_table}.metadata.yaml",
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+        table = f"{project_id}.{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}"
+
+        view_sql = render(
+            "event_monitoring_live.view.sql",
+            template_folder=PATH / "templates",
+            **render_kwargs,
+        )
+        view_metadata = render(
+            "event_monitoring_live.metadata.yaml",
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+        schema = (
+            PATH / "templates" / "event_monitoring_aggregates_v1.schema.yaml"
+        ).read_text()
+
+        view = f"{project_id}.{TARGET_DATASET_CROSS_APP}.{target_view_name}"
+        if output_dir:
+            artifacts = [
+                Artifact(table, "metadata.yaml", metadata),
+                Artifact(table, "query.sql", query_sql),
+                Artifact(table, "schema.yaml", schema),
+                Artifact(view, "metadata.yaml", view_metadata),
+                Artifact(view, "view.sql", view_sql),
+            ]
+
+            for artifact in artifacts:
+                destination = (
+                    get_table_dir(output_dir, artifact.table_id) / artifact.basename
+                )
+                skip_existing = destination in skip_existing_artifacts
+
+                write_sql(
+                    output_dir,
+                    artifact.table_id,
+                    artifact.basename,
+                    artifact.sql,
+                    skip_existing=skip_existing,
+                )

@@ -10,10 +10,14 @@ description: |-
   ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-- dthorn@mozilla.com
+- ascholtz@mozilla.com
 labels:
+  level: bronze
   application: firefox
   schedule: daily
+  dag: bqetl_main_summary
+  owner1: ascholtz
+  table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2019-11-05'
@@ -27,18 +31,18 @@ scheduling:
   - task_id: wait_for_clients_daily
     dag_name: parquet_export
     execution_delta: 1h
+  - task_id: wait_for_clients_daily
+    dag_name: catalyst
+    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:cloudops-managed/poucave
-references: {}
+require_column_descriptions: false

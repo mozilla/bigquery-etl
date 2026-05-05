@@ -7,7 +7,6 @@ from jinja2.exceptions import TemplateNotFound
 from bigquery_etl.dependency import show as dependency_show
 
 
-@pytest.mark.java
 class TestDependency:
     @pytest.fixture
     def runner(self):

@@ -19,7 +19,7 @@ stripe_subscriptions_history AS (
       )
     ) AS subscription_sequence_id
   FROM
-    `moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions_history`
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1`
   WHERE
     -- Only include the current history records and the last history records for previous plans.
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)
@@ -90,14 +90,16 @@ relay_subscriptions AS (
     ) AS pricing_plan,
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
+    has_refunds,
+    has_fraudulent_charges,
+    has_fraudulent_charge_refunds,
     promotion_codes,
     promotion_discounts_amount,
   FROM
     stripe_subscriptions_history
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   -- LEFT JOIN
   --   users
   -- USING

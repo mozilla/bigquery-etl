@@ -32,8 +32,7 @@ monthly_costs AS (
     monthly_costs_credits
   FULL OUTER JOIN
     monthly_costs_dollars
-  USING
-    (destination_id, measured_month)
+    USING (destination_id, measured_month)
 )
 SELECT
   *

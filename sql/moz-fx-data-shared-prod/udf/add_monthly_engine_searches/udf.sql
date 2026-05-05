@@ -85,17 +85,17 @@ oct_second AS (
     examples
 )
 SELECT
-  assert.array_equals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
-  assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  mozfun.assert.array_equals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
+  mozfun.assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_first
 UNION ALL
 SELECT
-  assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
-  assert.array_equals([12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  mozfun.assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
+  mozfun.assert.array_equals([12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_second

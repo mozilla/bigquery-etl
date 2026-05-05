@@ -8,6 +8,7 @@ from functools import partial
 
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.common import TempDatasetReference
 
 
@@ -133,7 +134,7 @@ def add_temp_dataset(parser, *extra_args):
         "--temporary-dataset",
         "--temporary_dataset",
         *extra_args,
-        default="moz-fx-data-shared-prod.tmp",
+        default=f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}.tmp",
         type=TempDatasetReference.from_string,
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",

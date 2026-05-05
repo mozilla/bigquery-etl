@@ -5,11 +5,12 @@ description: >-
   that records only the dimensions and addon info necessary to power the daily
   amo_stats_dau_v2 query.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: amo
   incremental: true
   schedule: daily
+  table_table: client_level
 scheduling:
   dag_name: bqetl_amo_stats
 bigquery:
@@ -17,6 +18,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: 775
   clustering:
     fields:
       - sample_id

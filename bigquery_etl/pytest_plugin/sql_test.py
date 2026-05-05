@@ -13,21 +13,15 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO, TextIOWrapper
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
+from pathlib import Path
+from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 import yaml
-from google.api_core.exceptions import BadRequest, NotFound
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
+
+from ..schema import SCHEMA_FILE, Schema
+from ..schema.stable_table_schema import get_stable_table_schemas
 
 QueryParameter = Union[
     bigquery.ArrayQueryParameter,
@@ -66,14 +60,29 @@ class Table:
                 full_name, _ = resource.rsplit(".", 1)
             else:
                 resource_dir, full_name = self.source_path
-            try:
-                table_dir, _ = os.path.split(resource_dir)
+
+            table_dir, _ = os.path.split(resource_dir)
+            if any(
+                os.path.exists(os.path.join(table_dir, f"{full_name}.schema.{ext}"))
+                for ext in ("json", "yaml")
+            ):
+                schema = load(table_dir, f"{full_name}.schema")
                 self.schema = [
                     bigquery.SchemaField.from_api_repr(field)
-                    for field in load(table_dir, f"{full_name}.schema")
+                    for field in (schema["fields"] if "fields" in schema else schema)
                 ]
-            except FileNotFoundError:
-                pass
+            else:
+                schema_file = (
+                    Path("sql") / full_name.replace(".", os.path.sep) / SCHEMA_FILE
+                )
+                if schema_file.exists():
+                    schema = Schema.from_schema_file(schema_file)
+                    self.schema = schema.to_bigquery_schema()
+                elif "_stable." in full_name:
+                    for stable_table_schema in get_stable_table_schemas():
+                        if full_name.endswith("." + stable_table_schema.stable_table):
+                            schema = Schema({"fields": stable_table_schema.schema})
+                            self.schema = schema.to_bigquery_schema()
 
 
 class NDJsonDecodeError(Exception):
@@ -91,10 +100,10 @@ class JsonDecodeError(Exception):
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
-    try:
-        result = bq.get_dataset(dataset_id)
-    except NotFound:
-        result = bq.create_dataset(dataset_id)
+    # The dataset shouldn't already exist, but specifying `exists_ok` is still necessary here
+    # just in case the BigQuery client times out waiting for the initial API call and retries,
+    # except the initial API call actually does create the dataset before the retry executes.
+    result = bq.create_dataset(dataset_id, exists_ok=True)
     try:
         yield result.reference
     finally:
@@ -108,61 +117,55 @@ def default_encoding(obj):
     return obj
 
 
-def load_tables(
-    bq: bigquery.Client, dataset: bigquery.Dataset, tables: Iterable[Table]
+def load_table(bq: bigquery.Client, dataset: bigquery.Dataset, table: Table):
+    """Load table for a test."""
+    destination = dataset.table(table.name)
+    job_config = bigquery.LoadJobConfig(
+        source_format=table.source_format,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+
+    if table.schema is None:
+        # autodetect schema if not provided
+        job_config.autodetect = True
+    else:
+        job_config.schema = table.schema
+        # look for time_partitioning_field in provided schema
+        for field in job_config.schema:
+            if field.description == "time_partitioning_field":
+                job_config.time_partitioning = bigquery.TimePartitioning(
+                    field=field.name
+                )
+                break  # stop because there can only be one time partitioning field
+
+    if isinstance(table.source_path, str):
+        with open(table.source_path, "rb") as file_obj:
+            job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
+    else:
+        mem_file = BytesIO()
+        for row in load(*table.source_path):
+            mem_file.write(json.dumps(row, default=default_encoding).encode() + b"\n")
+        mem_file.seek(0)
+        job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
+
+    try:
+        job.result()
+    except BadRequest:
+        # print the first 5 rows for debugging errors
+        for row in job.errors[:5]:
+            print(row)
+        raise
+
+
+def load_view(
+    bq: bigquery.Client, dataset: bigquery.Dataset, view_name: str, view_query: str
 ):
-    """Load tables for a test."""
-    for table in tables:
-        destination = dataset.table(table.name)
-        job_config = bigquery.LoadJobConfig(
-            source_format=table.source_format,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-        )
-
-        if table.schema is None:
-            # autodetect schema if not provided
-            job_config.autodetect = True
-        else:
-            job_config.schema = table.schema
-            # look for time_partitioning_field in provided schema
-            for field in job_config.schema:
-                if field.description == "time_partitioning_field":
-                    job_config.time_partitioning = bigquery.TimePartitioning(
-                        field=field.name
-                    )
-                    break  # stop because there can only be one time partitioning field
-
-        if isinstance(table.source_path, str):
-            with open(table.source_path, "rb") as file_obj:
-                job = bq.load_table_from_file(
-                    file_obj, destination, job_config=job_config
-                )
-        else:
-            mem_file = BytesIO()
-            for row in load(*table.source_path):
-                mem_file.write(
-                    json.dumps(row, default=default_encoding).encode() + b"\n"
-                )
-            mem_file.seek(0)
-            job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
-
-        try:
-            job.result()
-        except BadRequest:
-            # print the first 5 rows for debugging errors
-            for row in job.errors[:5]:
-                print(row)
-            raise
-
-
-def load_views(bq: bigquery.Client, dataset: bigquery.Dataset, views: Dict[str, str]):
-    """Load views for a test."""
-    for table, view_query in views.items():
-        view = bigquery.Table(dataset.table(table))
-        view.view_query = view_query.format(
-            project=dataset.project, dataset=dataset.dataset_id
-        )
-        bq.create_table(view)
+    """Load view for a test."""
+    view = bigquery.Table(dataset.table(view_name))
+    view.view_query = view_query.format(
+        project=dataset.project, dataset=dataset.dataset_id
+    )
+    bq.create_table(view)
 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
@@ -251,7 +254,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
     Coerce date and datetime to string using isoformat.
     Coerce bigquery.Row to dict using comprehensions.
     Coerce bytes to base64 encoded strings.
-    Omit dict keys named "generated_time".
+    Omit dict keys named "created_at" or "generated_time".
     Omit columns with null results to simplify `expect` files.
     """
     for element in elements:
@@ -264,7 +267,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
                 )
                 for key, value in element.items()
                 # drop generated_time column
-                if key not in ("generated_time",) and value is not None
+                if key not in ("created_at", "generated_time") and value is not None
             }
         elif isinstance(element, (date, datetime)):
             yield element.isoformat()

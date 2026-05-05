@@ -4,16 +4,13 @@ This repository uses `pytest`:
 
 ```bash
 # create a venv
-python3.10 -m venv venv/
+python3.11 -m venv venv/
 
 # install pip-tools for managing dependencies
 ./venv/bin/pip install pip-tools -c requirements.in
 
 # install python dependencies with pip-sync (provided by pip-tools)
 ./venv/bin/pip-sync --pip-args=--no-deps requirements.txt
-
-# build java dependencies with maven
-mvn package
 
 # run pytest with all linters and 8 workers in parallel
 ./venv/bin/pytest --black --flake8 --isort --mypy-ignore-missing-imports --pydocstyle -n 8
@@ -26,7 +23,7 @@ mvn package
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_PROJECT_ID=bigquery-etl-integration-test
+export GOOGLE_PROJECT_ID=moz-fx-data-integration-tests
 gcloud config set project $GOOGLE_PROJECT_ID
 ./venv/bin/pytest -m integration -n 4
 ```
@@ -42,7 +39,7 @@ that defines a UDF that does not define a temporary function is collected as a
 test and executed independently of other tests in the file.
 
 Each test must use the UDF and throw an error to fail. Assert functions defined
-in `tests/assert/` may be used to evaluate outputs. Tests must not use any
+in `sql/mozfun/assert/` may be used to evaluate outputs. Tests must not use any
 query parameters and should not reference any tables. Each test that is
 expected to fail must be preceded by a comment like `#xfail`, similar to a [SQL
 dialect prefix] in the BigQuery Cloud Console.
@@ -59,8 +56,8 @@ CREATE TEMP FUNCTION udf_example(option INT64) AS (
 );
 -- Tests
 SELECT
-  assert_true(udf_example(1)),
-  assert_false(udf_example(0));
+  mozfun.assert.true(udf_example(1)),
+  mozfun.assert.false(udf_example(0));
 #xfail
 SELECT
   udf_example(-1);
@@ -79,7 +76,7 @@ Queries are tested by running the `query.sql` with test-input tables and compari
    - `table` must match a directory named like `{dataset}/{table}`, e.g.
      `telemetry_derived/clients_last_seen_v1`
    - `test_name` should start with `test_`, e.g. `test_single_day`
-   - If `test_name` is `test_init` or `test_script`, then the query will run `init.sql`
+   - If `test_name` is `test_init` or `test_script`, then the query with `is_init()` set to `true`
      or `script.sql` respectively; otherwise, the test will run `query.sql`
 1. Add `.yaml` files for input tables, e.g. `clients_daily_v6.yaml`
    - Include the dataset prefix if it's set in the tested query,
@@ -111,18 +108,9 @@ Queries are tested by running the `query.sql` with test-input tables and compari
 
 ## Init Tests
 
-Tests of `init.sql` statements are supported, similarly to other generated tests.
+Tests of `is_init()` statements are supported, similarly to other generated tests.
 Simply name the test `test_init`. The other guidelines still apply.
 
-_Note_: Init SQL statements must contain a create statement with the dataset
-and table name, like so:
-
-```sql
-CREATE OR REPLACE TABLE
-  dataset.table_v1
-AS
-...
-```
 
 ## Additional Guidelines and Options
 
@@ -152,25 +140,3 @@ AS
   - File extensions `yaml`, `json` and `ndjson` are supported
   - Preferred format is `yaml` for readability
 
-## How to Run CircleCI Locally
-
-- Install the [CircleCI Local CI](https://circleci.com/docs/2.0/local-cli/)
-- Download GCP [service account](https://cloud.google.com/iam/docs/service-accounts) keys
-  - Integration tests will only successfully run with service account keys
-    that belong to the `circleci` service account in the `biguqery-etl-integration-test` project
-- Run `circleci build` and set required environment variables `GOOGLE_PROJECT_ID` and
-  `GCLOUD_SERVICE_KEY`:
-
-```bash
-gcloud_service_key=`cat /path/to/key_file.json`
-
-# to run a specific job, e.g. integration:
-circleci build --job integration \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
-
-# to run all jobs
-circleci build \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
-```

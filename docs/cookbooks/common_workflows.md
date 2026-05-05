@@ -13,7 +13,8 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
    1. Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
-   * Optionally add column descriptions to `schema.yaml`
+   * Optionally add or [include](../reference/schema_includes.md#include-field-description) field descriptions in `schema.yaml`.
+   * Optionally replace fields in `schema.yaml` with appropriate [includes](../reference/schema_includes.md) from upstream table schemas.
 1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
    * Add a description of the query
    * Add BigQuery information such as table partitioning or clustering
@@ -21,7 +22,6 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
 1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>`
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
-1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
 1. PR gets reviewed and eventually approved
 1. Merge pull-request
@@ -101,7 +101,7 @@ Adding a new field to a table schema also means that the field has to propagate 
    * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
 1. Open a new PR with these changes.
 1. PR reviewed and approved.
-1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
+1. Find and run again the [CI pipeline](https://github.com/mozilla/bigquery-etl/actions) for the PR.
    * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
@@ -114,8 +114,11 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
 1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
-1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
+1. Authenticate to GCP: `gcloud auth login --update-adc`
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip --use-cloud-function=false`.
    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
+   * If the schema has no changes, we do not run schema updates on any of its downstream dependencies.
+   * `--use-cloud-function=false` is necessary when updating tables related to `clients_daily` but optional for other tables. The dry run cloud function times out when fetching the deployed table schema for some of `clients_daily`s downstream dependencies. Using GCP credentials instead works, however this means users need to have permissions to run queries in `moz-fx-data-shared-prod`.
 1. Open a PR with these changes.
 1. PR is reviewed and approved.
 1. Merge pull-request.
@@ -124,10 +127,10 @@ The following is an example to update a new field in `telemetry_derived.clients_
 
 ## Remove a field from a table schema
 
-Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
-* [x] Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
-* Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
-* If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.
+Deleting a field from an existing table schema should be done only when is totally necessary. If you decide to delete it:
+1. Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
+1. Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
+1. If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.
 
 ## Adding a new mozfun UDF
 
@@ -219,7 +222,7 @@ user_facing: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers
 ```
 
 ## Publishing data
@@ -232,7 +235,6 @@ See also the reference for [Public Data](../reference/public_data.md).
    * Specify the `review_bugs`
 1. If an internal dataset already exists, move it to `mozilla-public-data`
 1. If an `init.sql` file exists for the query, change the destination project for the created table to `mozilla-public-data`
-1. Run `./bqetl dag generate bqetl_public_public_data_json` to update the DAG
 1. Open a PR
 1. PR gets reviewed, approved and merged
    * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset
@@ -268,13 +270,7 @@ deactivate
 
 ## Making a pull request from a fork
 
-When opening a pull-request to merge a fork, the `manual-trigger-required-for-fork` CI task will
-fail and some integration test tasks will be skipped. A user with repository write permissions
-will have to run the [Push to upstream workflow](https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml)
-and provide the `<username>:<branch>` of the fork as parameter. The parameter will also show up
-in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
-Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
-executed.
+Pull requests from forks are handled automatically via environment gates in CI. Fork PRs from Mozilla org members (with [public organization membership](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership)) use the `dev` environment for the initial build and the `external-fork` environment for integration tests. Fork PRs from external contributors use the `external-fork` environment for all CI jobs. A repository maintainer must approve `external-fork` deployments before those jobs run. No manual workflow trigger is needed.
 
 ## Building the Documentation
 
@@ -284,3 +280,22 @@ To generate and check the docs locally:
 1. Run `./bqetl docs generate --output_dir generated_docs`
 1. Navigate to the `generated_docs` directory
 1. Run `mkdocs serve` to start a local `mkdocs` server.
+
+
+## Setting up change control to code files
+
+Each code files in the bigquery-etl repository can have a set of owners who are responsible to review and approve changes, and are automatically assigned as PR reviewers.
+The query files in the repo also benefit from the metadata labels to be able to validate and identify the data that is change controlled.
+
+Here is a [sample PR with the implementation of change control for contextual services data](https://github.com/mozilla/bigquery-etl/pull/3833).
+
+1. Select or create a [Github team or identity](https://docs.github.com/en/organizations/organizing-members-into-teams/creating-a-team) and add the GitHub emails of the query codeowners. A GitHub identity is particularly useful when you need to include non @mozilla emails or to randomly assign PR reviewers from the team members. This team requires edit permissions to bigquery-etl, to achieve this, inherit the team from one that has the required permissions e.g. `mozilla > telemetry`.
+1. Open the `metadata.yaml` for the query where you want to apply change control:
+   * In the section `owners`, add the selected GitHub identity, along with the list of owners' emails.
+   * In the section `labels`, add `change_controlled: true`. This enables identifying change controlled data in the BigQuery console and in the Data Catalog.
+1. Setup the `CODEOWNERS`:
+   * Open the `CODEOWNERS` file located in the root of the repo.
+   * Add a new row with the path and owners for the query. You can place it in the corresponding section or create a new section in the file, e.g. `/sql_generators/active_users/templates/ @mozilla/kpi_table_reviewers`.
+1. The queries labeled change_controlled are automatically validated in the CI. To run the validation locally:
+   * Run the command `script/bqetl query validate <query_path>`.
+   * If the query is generated using the `/sql-generators`, first run `./script/bqetl generate <path>` and then run `script/bqetl query validate <query_path>`.

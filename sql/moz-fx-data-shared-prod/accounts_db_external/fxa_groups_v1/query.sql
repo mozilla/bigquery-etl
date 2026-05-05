@@ -1,0 +1,17 @@
+SELECT
+  id,
+  name,
+  display_name,
+  capabilities,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
+    """SELECT
+         id,
+         name,
+         display_name,
+         capabilities
+       FROM
+         fxa.groups
+    """
+  )

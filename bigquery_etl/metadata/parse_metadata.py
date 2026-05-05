@@ -3,6 +3,9 @@
 import enum
 import os
 import re
+import string
+from datetime import date
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -10,13 +13,17 @@ import cattrs
 import yaml
 from google.cloud import bigquery
 
-from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
+from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_identity
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
-    dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
+    dict(
+        role="roles/bigquery.dataViewer",
+        members=["workgroup:mozilla-confidential/data-viewers"],
+    )
 ]
+DEFAULT_TABLE_WORKGROUP_ACCESS = DEFAULT_WORKGROUP_ACCESS
 
 
 class Literal(str):
@@ -31,6 +38,14 @@ def literal_presenter(dumper, data):
 
 
 yaml.add_representer(Literal, literal_presenter)
+
+
+class AssetLevel(enum.Enum):
+    """Represents BigQuery table level based on requirements for quality and maturity."""
+
+    GOLD = "gold"
+    SILVER = "silver"
+    BRONZE = "bronze"
 
 
 class PartitionType(enum.Enum):
@@ -59,7 +74,7 @@ class PartitionMetadata:
 
     type: PartitionType
     field: Optional[str] = attr.ib(None)
-    require_partition_filter: bool = attr.ib(True)
+    require_partition_filter: Optional[bool] = attr.ib(None)
     expiration_days: Optional[float] = attr.ib(None)
 
     @property
@@ -69,6 +84,23 @@ class PartitionMetadata:
             return None
 
         return int(self.expiration_days * 86400000)
+
+
+@attr.s(auto_attribs=True)
+class PartitionRange:
+    """Metadata for defining the partition range."""
+
+    start: int
+    end: int
+    interval: int
+
+
+@attr.s(auto_attribs=True)
+class RangePartitionMetadata:
+    """Metadata for defining range partitioned tables."""
+
+    range: PartitionRange
+    field: str
 
 
 @attr.s(auto_attribs=True)
@@ -87,6 +119,7 @@ class BigQueryMetadata:
     """
 
     time_partitioning: Optional[PartitionMetadata] = attr.ib(None)
+    range_partitioning: Optional[RangePartitionMetadata] = attr.ib(None)
     clustering: Optional[ClusteringMetadata] = attr.ib(None)
 
 
@@ -103,7 +136,9 @@ class SchemaDerivedMetadata:
 class SchemaMetadata:
     """Metadata related to additional schema information."""
 
-    derived_from: List[SchemaDerivedMetadata]
+    derived_from: Optional[List[SchemaDerivedMetadata]] = attr.ib(None)
+    # indicates that the schema might change over time and should be updated even with --skip-existing
+    allow_field_addition: Optional[bool] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -117,7 +152,8 @@ class WorkgroupAccessMetadata:
 class ExternalDataFormat(enum.Enum):
     """Represents the external types fo data that are supported to be integrated."""
 
-    GOOGLE_SHEET = "google_sheet"
+    GOOGLE_SHEETS = "google_sheets"
+    CSV = "csv"
 
 
 @attr.s(auto_attribs=True)
@@ -127,6 +163,33 @@ class ExternalDataMetadata:
     format: ExternalDataFormat
     source_uris: List[str]
     options: Optional[Dict[str, Any]] = attr.ib(None)
+
+
+@attr.s(auto_attribs=True)
+class MonitoringMetricMetadata:
+    """Metadata for specifying observability and monitoring metric configuration."""
+
+    blocking: bool = attr.ib()
+
+
+@attr.s(auto_attribs=True)
+class MonitoringMetadata:
+    """Metadata for specifying observability and monitoring configuration."""
+
+    enabled: bool = attr.ib()
+    collection: Optional[str] = attr.ib(None)
+    partition_column: Optional[str] = attr.ib(None)
+    partition_column_set: bool = attr.ib(False)
+    freshness: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=False)
+    )
+    volume: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=True)
+    )
+    # Bigeye workspace ID this table is registered in. When unset, monitoring
+    # commands fall back to the --workspace CLI flag default. Must be one of
+    # `monitoring.bigeye_workspace_ids` in bqetl_project.yaml.
+    workspace: Optional[int] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -146,8 +209,12 @@ class Metadata:
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
-    references: Dict = attr.ib({})
+    references: Optional[Dict] = attr.ib(None)
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
+    deprecated: Optional[bool] = attr.ib(None)
+    deletion_date: Optional[date] = attr.ib(None)
+    monitoring: Optional[MonitoringMetadata] = attr.ib(None)
+    require_column_descriptions: Optional[bool] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -220,19 +287,26 @@ class Metadata:
         bigquery = None
         schema = None
         workgroup_access = None
-        references = {}
+        references = None
         external_data = None
+        deprecated = None
+        deletion_date = None
+        monitoring = None
+        require_column_descriptions = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
                 metadata = yaml.safe_load(yaml_stream)
-
-                friendly_name = metadata.get("friendly_name", None)
-                description = metadata.get("description", None)
+                table_name = str(Path(metadata_file).parent.name)
+                friendly_name = metadata.get(
+                    "friendly_name", string.capwords(table_name.replace("_", " "))
+                )
+                description = metadata.get(
+                    "description",
+                    "Please provide a description for the query",
+                )
 
                 if "labels" in metadata:
-                    labels = {}
-
                     for key, label in metadata["labels"].items():
                         if isinstance(label, bool):
                             # publish key-value pair with bool value as tag
@@ -246,6 +320,10 @@ class Metadata:
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
+                    if "dag_name" in scheduling and cls.is_valid_label(
+                        scheduling["dag_name"]
+                    ):
+                        labels["dag"] = scheduling["dag_name"]
 
                 if "bigquery" in metadata and metadata["bigquery"]:
                     converter = cattrs.BaseConverter()
@@ -255,11 +333,12 @@ class Metadata:
 
                 if "owners" in metadata:
                     owners = metadata["owners"]
-                    for i, owner in enumerate(metadata["owners"]):
+                    owner_idx = 1
+                    for owner in filter(is_email, owners):
                         label = owner.split("@")[0]
-                        if not Metadata.is_valid_label(label):
-                            label = ""
-                        labels[f"owner{i+1}"] = label
+                        if Metadata.is_valid_label(label):
+                            labels[f"owner{owner_idx}"] = label
+                            owner_idx += 1
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()
@@ -279,6 +358,27 @@ class Metadata:
                     external_data = converter.structure(
                         metadata["external_data"], ExternalDataMetadata
                     )
+                if "deprecated" in metadata:
+                    deprecated = metadata["deprecated"]
+                if "deletion_date" in metadata:
+                    deletion_date = metadata["deletion_date"]
+
+                if "monitoring" in metadata:
+                    converter = cattrs.BaseConverter()
+                    monitoring = converter.structure(
+                        metadata["monitoring"], MonitoringMetadata
+                    )
+
+                    if "partition_column" in metadata["monitoring"]:
+                        # check if partition column metadata has been set explicitly;
+                        # needed for monitoring config validation for views where partition
+                        # column needs to be set explicitly
+                        monitoring.partition_column_set = True
+
+                if "require_column_descriptions" in metadata:
+                    require_column_descriptions = metadata[
+                        "require_column_descriptions"
+                    ]
 
                 return cls(
                     friendly_name,
@@ -291,6 +391,10 @@ class Metadata:
                     workgroup_access,
                     references,
                     external_data,
+                    deprecated,
+                    deletion_date,
+                    monitoring,
+                    require_column_descriptions,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -305,13 +409,19 @@ class Metadata:
 
     def write(self, file):
         """Write metadata information to the provided file."""
-        converter = cattrs.BaseConverter()
+        # Omit metadata fields with default values, except for the partition metadata fields because
+        # it's helpful to always show the partition field, filter requirement, and expiration options.
+        converter = cattrs.Converter(omit_if_default=True)
+        unstructure_partition_metadata = cattrs.gen.make_dict_unstructure_fn(
+            PartitionMetadata, converter, _cattrs_omit_if_default=False
+        )
+        converter.register_unstructure_hook(
+            PartitionMetadata, unstructure_partition_metadata
+        )
+
         metadata_dict = converter.unstructure(self)
 
-        if metadata_dict["scheduling"] == {}:
-            del metadata_dict["scheduling"]
-
-        if metadata_dict["labels"]:
+        if "labels" in metadata_dict:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags
                 if label_value == "":
@@ -320,18 +430,9 @@ class Metadata:
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
 
-        if metadata_dict["schema"] is None:
-            del metadata_dict["schema"]
-
-        if metadata_dict["workgroup_access"] is None:
-            del metadata_dict["workgroup_access"]
-
-        if metadata_dict["external_data"] is None:
-            del metadata_dict["external_data"]
-
         file.write_text(
             yaml.dump(
-                converter.unstructure(metadata_dict),
+                metadata_dict,
                 default_flow_style=False,
                 sort_keys=False,
             )
@@ -377,14 +478,15 @@ class Metadata:
 
     def set_bigquery_clustering(self, clustering_fields):
         """Update the BigQuery partitioning metadata."""
-        partitioning = None
-        if self.bigquery and self.bigquery.time_partitioning:
-            partitioning = self.bigquery.time_partitioning
+        if self.bigquery:
+            time_partitioning = self.bigquery.time_partitioning
+            range_partitioning = self.bigquery.range_partitioning
 
-        self.bigquery = BigQueryMetadata(
-            time_partitioning=partitioning,
-            clustering=ClusteringMetadata(fields=clustering_fields),
-        )
+            self.bigquery = BigQueryMetadata(
+                time_partitioning=time_partitioning,
+                range_partitioning=range_partitioning,
+                clustering=ClusteringMetadata(fields=clustering_fields),
+            )
 
 
 @attr.s(auto_attribs=True)
@@ -399,9 +501,20 @@ class DatasetMetadata:
     friendly_name: str = attr.ib()
     description: str = attr.ib()
     dataset_base_acl: str = attr.ib()
-    user_facing: bool = attr.ib(False)
+    user_facing: bool = attr.ib()
     labels: Dict = attr.ib({})
-    workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    default_table_expiration_ms: Optional[str] = attr.ib(None)
+    workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    syndication: Optional[Dict] = attr.ib(None)
+
+    def __attrs_post_init__(self):
+        """Do additional updates after attrs is done initializing."""
+        # Set workgroup access appropriately.
+        if self.workgroup_access is None:
+            self.workgroup_access = DEFAULT_WORKGROUP_ACCESS
+        if self.default_table_workgroup_access is None:
+            self.default_table_workgroup_access = self.workgroup_access
 
     @staticmethod
     def is_dataset_metadata_file(file_path):
@@ -415,9 +528,11 @@ class DatasetMetadata:
 
     def write(self, file):
         """Write dataset metadata information to the provided file."""
-        metadata_dict = self.__dict__
+        # Omit metadata fields with default values.
+        converter = cattrs.Converter(omit_if_default=True)
+        metadata_dict = converter.unstructure(self)
 
-        if metadata_dict["labels"]:
+        if "labels" in metadata_dict:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags
                 if label_value == "":
@@ -426,10 +541,17 @@ class DatasetMetadata:
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
 
-        converter = cattrs.BaseConverter()
+        if (
+            "workgroup_access" in metadata_dict
+            and "default_table_workgroup_access" in metadata_dict
+            and metadata_dict["default_table_workgroup_access"]
+            == metadata_dict["workgroup_access"]
+        ):
+            del metadata_dict["default_table_workgroup_access"]
+
         file.write_text(
             yaml.dump(
-                converter.unstructure(metadata_dict),
+                metadata_dict,
                 default_flow_style=False,
                 sort_keys=False,
             )

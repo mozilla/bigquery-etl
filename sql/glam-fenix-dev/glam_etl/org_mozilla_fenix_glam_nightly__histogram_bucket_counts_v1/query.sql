@@ -29,7 +29,7 @@ all_combos AS (
     COALESCE(combo.os, table.os) AS os,
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1 table
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1` table
   CROSS JOIN
     static_combos combo
 ),
@@ -84,8 +84,7 @@ unnested AS (
     UNNEST(aggregates) AS aggregates
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the
@@ -274,5 +273,4 @@ FROM
   records
 LEFT OUTER JOIN
   distribution_metadata
-USING
-  (metric_type, metric)
+  USING (metric_type, metric)

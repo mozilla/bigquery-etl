@@ -1,0 +1,14 @@
+SELECT
+  id,
+  subscription_id,
+  _fivetran_synced,
+  checkout_session,
+  coupon_id,
+  customer_id,
+  `end`,
+  invoice_id,
+  invoice_item_id,
+  promotion_code,
+  start,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.subscription_discount

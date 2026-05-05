@@ -1,0 +1,19 @@
+---
+friendly_name: FxA Delete Events
+description: Deletion events extracted from FxA auth server logs
+ used as signal for Mozilla to delete analysis data associated with
+ the user
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false

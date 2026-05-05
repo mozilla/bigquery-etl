@@ -1,0 +1,29 @@
+---
+friendly_name: FxA Log Device Command Events
+description: |-
+  A subset of FxA auth server logs related to "send tab" activity.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
+
+  This table contains FxA log device command events from the GCP based FxA deployment.
+  The migration from AWS to GCP started on 2023-09-07 and concluded by 2023-09-15.
+  And the v1 version of the table contains event data prior to the migration coming to a conclusion.
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+  # v2 created as the result of the source table changing post AWS to GCP migration.
+  # The start date represents when the migration started.
+  start_date: "2023-09-07"
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+  clustering:
+    fields:
+      - command

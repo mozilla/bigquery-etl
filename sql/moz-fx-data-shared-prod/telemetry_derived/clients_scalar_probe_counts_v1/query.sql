@@ -95,7 +95,7 @@ WITH flat_clients_scalar_aggregates AS (
     os = 'Windows'
     AND channel = 'release' AS sampled,
   FROM
-    clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
     AND (@app_version IS NULL OR app_version = @app_version)
@@ -167,7 +167,9 @@ user_aggregates AS (
     IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
     channel,
     IF(MAX(sampled), 10, 1) AS user_count,
-    udf.merge_scalar_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
+    `moz-fx-data-shared-prod`.udf.merge_scalar_user_data(
+      ARRAY_CONCAT_AGG(scalar_aggregates)
+    ) AS scalar_aggregates
   FROM
     all_combos
   GROUP BY
@@ -242,8 +244,7 @@ bucketed_scalars AS (
     UNNEST(scalar_aggregates)
   LEFT JOIN
     buckets_by_metric
-  USING
-    (metric, key)
+    USING (metric, key)
   WHERE
     metric_type = 'scalar'
     OR metric_type = 'keyed-scalar'
@@ -262,12 +263,13 @@ booleans_and_scalars AS (
     bucketed_scalars
 ),
 valid_booleans_scalars AS (
-  SELECT *
-  FROM booleans_and_scalars
+  SELECT
+    *
+  FROM
+    booleans_and_scalars
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 clients_scalar_bucket_counts AS (
   SELECT
@@ -296,51 +298,57 @@ clients_scalar_bucket_counts AS (
     process,
     client_agg_type,
     bucket
+),
+aggregated AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    -- empty columns to match clients_histogram_probe_counts_v1 schema
+    NULL AS first_bucket,
+    NULL AS last_bucket,
+    NULL AS num_buckets,
+    client_agg_type,
+    agg_type,
+    SUM(user_count) AS total_users,
+    CASE
+      WHEN metric_type = 'scalar'
+        OR metric_type = 'keyed-scalar'
+        THEN mozfun.glam.histogram_fill_buckets(
+            ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+            ANY_VALUE(buckets)
+          )
+      WHEN metric_type = 'boolean'
+        OR metric_type = 'keyed-scalar-boolean'
+        THEN mozfun.glam.histogram_fill_buckets(
+            ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+            ['always', 'never', 'sometimes']
+          )
+    END AS aggregates
+  FROM
+    clients_scalar_bucket_counts
+  LEFT JOIN
+    buckets_by_metric
+    USING (metric, key)
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    client_agg_type,
+    agg_type
 )
 SELECT
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  -- empty columns to match clients_histogram_probe_counts_v1 schema
-  NULL AS first_bucket,
-  NULL AS last_bucket,
-  NULL AS num_buckets,
-  client_agg_type,
-  agg_type,
-  SUM(user_count) AS total_users,
-  CASE
-    WHEN metric_type = 'scalar'
-      OR metric_type = 'keyed-scalar'
-      THEN mozfun.glam.histogram_fill_buckets(
-          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-          ANY_VALUE(buckets)
-        )
-    WHEN metric_type = 'boolean'
-      OR metric_type = 'keyed-scalar-boolean'
-      THEN mozfun.glam.histogram_fill_buckets(
-          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-          ['always', 'never', 'sometimes']
-        )
-  END AS aggregates
+  *,
+  aggregates AS non_norm_aggregates
 FROM
-  clients_scalar_bucket_counts
-LEFT JOIN
-  buckets_by_metric
-USING
-  (metric, key)
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  agg_type
+  aggregated

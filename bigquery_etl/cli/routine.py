@@ -7,19 +7,38 @@ import shutil
 import string
 import sys
 from fnmatch import fnmatchcase
+from glob import glob
 from pathlib import Path
 
-import click
 import pytest
+import rich_click as click
 import yaml
+from google.cloud import bigquery
 
 from ..cli.format import format
-from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..cli.utils import (
+    defer_option,
+    is_authenticated,
+    is_valid_project,
+    isolated_option,
+    project_id_option,
+    sql_dir_option,
+)
+from ..config import ConfigLoader
 from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
-from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..util.common import project_dirs
+from ..routine.parse_routine import (
+    PROCEDURE_FILE,
+    UDF_FILE,
+    RawRoutine,
+    accumulate_dependencies,
+    read_routine_dir,
+    routine_usage_pattern,
+)
+from ..util import extract_from_query_path
+from ..util.common import block_coding_agents, project_dirs
+from ..util.target import ensure_dataset_exists, prepare_target_files
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 ROUTINE_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -27,10 +46,6 @@ ROUTINE_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/"
     r"(udf\.sql|stored_procedure\.sql)$"
 )
-DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
-DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
-DEFAULT_GCS_PATH = ""
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 
 
 def _routines_matching_name_pattern(pattern, sql_path, project_id):
@@ -39,7 +54,7 @@ def _routines_matching_name_pattern(pattern, sql_path, project_id):
     if project_id is not None:
         sql_path = sql_path / project_id
 
-    all_sql_files = Path(sql_path).rglob("*.sql")
+    all_sql_files = map(Path, glob(f"{sql_path}/**/*.sql", recursive=True))
     routine_files = []
 
     for sql_file in all_sql_files:
@@ -55,22 +70,6 @@ def _routines_matching_name_pattern(pattern, sql_path, project_id):
                 routine_files.append(sql_file)
 
     return routine_files
-
-
-sql_dir_option = click.option(
-    "--sql_dir",
-    help="Path to directory which contains queries.",
-    type=click.Path(file_okay=False),
-    default="sql",
-    callback=is_valid_dir,
-)
-
-project_id_option = click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    callback=lambda *args: is_valid_project(*args) if args[-1] else args[-1],
-)
 
 
 def get_project_id(ctx, project_id=None):
@@ -92,7 +91,7 @@ def get_project_id(ctx, project_id=None):
 def routine(ctx):
     """Create the CLI group for the routine command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = "moz-fx-data-shared-prod"
+    ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("default", "project")
 
 
 @click.group(help="Commands for managing public mozfun routines.")
@@ -100,11 +99,10 @@ def routine(ctx):
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = "mozfun"
+    ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("routine", "project")
 
 
-@routine.command(
-    help="""Create a new routine. Specify whether the routine is a UDF or
+@routine.command(help="""Create a new routine. Specify whether the routine is a UDF or
     stored procedure by adding a --udf or --stored_prodecure flag.
 
     Examples:
@@ -120,11 +118,10 @@ def mozfun(ctx):
     \b
     # Create a UDF in a project other than shared-prod
     ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
-    """
-)
+    """)
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option("--udf", "-u", is_flag=True, help="Create a new UDF", default=False)
 @click.option(
     "--stored_procedure",
@@ -160,12 +157,12 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
     routine_path = Path(sql_dir) / project_id / dataset / name
     routine_path.mkdir(parents=True)
 
+    assert_udf_qualifier = "" if project_id == "mozfun" else "mozfun."
+
     # create SQL file with UDF definition
     if udf:
         routine_file = routine_path / UDF_FILE
-        routine_file.write_text(
-            reformat(
-                f"""
+        routine_file.write_text(reformat(f"""
                 -- Definition for {dataset}.{name}
                 -- For more information on writing UDFs see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
@@ -175,16 +172,11 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
                 );
 
                 -- Tests
-                SELECT assert.true({dataset}.{name}())
-                """
-            )
-            + "\n"
-        )
+                SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
+                """) + "\n")
     elif stored_procedure:
         stored_procedure_file = routine_path / PROCEDURE_FILE
-        stored_procedure_file.write_text(
-            reformat(
-                f"""
+        stored_procedure_file.write_text(reformat(f"""
                 -- Definition for {dataset}.{name}
                 CREATE OR REPLACE PROCEDURE {dataset}.{name}()
                 BEGIN
@@ -192,11 +184,8 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
                 END;
 
                 -- Tests
-                SELECT assert.true({dataset}.{name}())
-                """
-            )
-            + "\n"
-        )
+                SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
+                """) + "\n")
 
     # create default metadata.yaml
     metadata_file = routine_path / "metadata.yaml"
@@ -224,9 +213,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
             @sql(../examples/fenix_app_info.sql)
             -->
-            """.split(
-                        "\n"
-                    ),
+            """.split("\n"),
                 )
             )
         )
@@ -235,9 +222,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
 
 
 mozfun.add_command(copy.copy(create))
-mozfun.commands[
-    "create"
-].help = """
+mozfun.commands["create"].help = """
 Create a new mozfun routine. Specify whether the routine is a UDF or
 stored procedure by adding a --udf or --stored_prodecure flag. UDFs
 are added to the `mozfun` project.
@@ -254,8 +239,7 @@ Examples:
 """
 
 
-@routine.command(
-    help="""Get routine information.
+@routine.command(help="""Get routine information.
 
     Examples:
 
@@ -266,11 +250,10 @@ Examples:
     \b
     # Get usage information of specific routine
     ./bqetl routine info --usages udf.get_key
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option("--usages", "-u", is_flag=True, help="Show routine usages", default=False)
 @click.pass_context
 def info(ctx, name, sql_dir, project_id, usages):
@@ -306,7 +289,9 @@ def info(ctx, name, sql_dir, project_id, usages):
             # find routine usages in SQL files
             click.echo("usages: ")
             sql_files = [
-                p for project in project_dirs() for p in Path(project).rglob("*.sql")
+                p
+                for project in project_dirs()
+                for p in map(Path, glob(f"{project}/**/*.sql", recursive=True))
             ]
             for sql_file in sql_files:
                 if f"{routine_dataset}.{routine_name}" in sql_file.read_text():
@@ -320,9 +305,7 @@ def info(ctx, name, sql_dir, project_id, usages):
 
 
 mozfun.add_command(copy.copy(info))
-mozfun.commands[
-    "info"
-].help = """Get mozfun routine information.
+mozfun.commands["info"].help = """Get mozfun routine information.
 
 Examples:
 
@@ -352,7 +335,7 @@ Examples:
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--docs-only",
     "--docs_only",
@@ -398,6 +381,8 @@ Examples:
 @routine.command(
     help="""Publish routines to BigQuery. Requires service account access.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -409,61 +394,213 @@ Examples:
     ./bqetl routine validate udf.*
     """,
 )
+@block_coding_agents
 @click.argument("name", required=False)
-@project_id_option
+@project_id_option()
+@sql_dir_option
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
-    default=DEFAULT_UDF_DEPENDENCY_DIR,
+    default=ConfigLoader.get("routine", "dependency_dir"),
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 @click.option(
     "--gcs-bucket",
     "--gcs_bucket",
-    default=DEFAULT_GCS_BUCKET,
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
     help="The GCS bucket where dependency files are uploaded to.",
 )
 @click.option(
     "--gcs-path",
     "--gcs_path",
-    default=DEFAULT_GCS_PATH,
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 @click.option(
     "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
 )
+@defer_option()
+@isolated_option()
 @click.pass_context
-def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
+def publish(
+    ctx,
+    name,
+    project_id,
+    sql_dir,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    dry_run,
+    defer_to_target,
+    isolated,
+):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
+    target = ctx.obj.get("target") if ctx.obj else None
 
     public = False
+
+    if defer_to_target and isolated:
+        raise click.UsageError(
+            "--defer-to-target and --isolated are mutually exclusive."
+        )
 
     if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    click.echo(f"Publish routines to {project_id}")
-    # NOTE: this will only publish to a single project
-    for target in project_dirs(project_id):
-        publish_routines.publish(
+    if target and target.project_id != project_id:
+        _publish_to_target(
             target,
             project_id,
+            sql_dir,
             dependency_dir,
             gcs_bucket,
             gcs_path,
-            public,
+            defer_to_target,
+            isolated,
             pattern=name,
             dry_run=dry_run,
         )
+    else:
+        click.echo(f"Publish routines to {project_id}")
+        for target_dir in project_dirs(project_id):
+            publish_routines.publish(
+                target_dir,
+                project_id,
+                dependency_dir,
+                gcs_bucket,
+                gcs_path,
+                public,
+                pattern=name,
+                dry_run=dry_run,
+            )
         click.echo(f"Published routines to {project_id}")
 
 
+def _publish_to_target(
+    target,
+    source_project_id,
+    sql_dir,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    defer_to_target,
+    isolated=False,
+    pattern=None,
+    routine_files=None,
+    dry_run=False,
+):
+    """Publish routines to a --target environment."""
+    if routine_files is None:
+        # discover routine files under the source project
+        source_dir = Path(sql_dir) / source_project_id
+        routine_files = [
+            Path(p)
+            for p in glob(f"{source_dir}/**/*.sql", recursive=True)
+            if ROUTINE_FILE_RE.match(p)
+        ]
+
+        if pattern:
+            routine_files = [
+                f
+                for f in routine_files
+                if fnmatchcase(".".join(extract_from_query_path(f)), f"*{pattern}")
+            ]
+
+    if not routine_files:
+        click.echo(
+            f"No routines found matching the specified criteria in {source_project_id}."
+        )
+        return
+
+    if dependency_dir and os.path.exists(dependency_dir):
+        publish_routines.push_dependencies_to_gcs(
+            gcs_bucket, gcs_path, dependency_dir, target.project_id
+        )
+
+    target_files = prepare_target_files(
+        routine_files,
+        sql_dir,
+        source_project_id,
+        target,
+        defer_to_target=defer_to_target,
+        isolated=isolated,
+        auto_deploy=False,
+    )
+
+    # ensure target datasets exist
+    client = bigquery.Client(project=target.project_id)
+    seen_datasets: set = set()
+    for target_file in target_files:
+        project, dataset, _ = extract_from_query_path(target_file)
+        dataset_ref = f"{project}.{dataset}"
+        if dataset_ref not in seen_datasets:
+            seen_datasets.add(dataset_ref)
+            ensure_dataset_exists(client, dataset_ref)
+
+    # qualify references to UDFs not being published so they resolve to prod
+    source_dir = str(Path(sql_dir) / source_project_id)
+    all_source_routines = read_routine_dir(source_dir)
+    target_routine_names = set()
+    for tf in target_files:
+        _, ds, nm = extract_from_query_path(tf)
+        target_routine_names.add(f"{ds}.{nm}")
+
+    for target_file in target_files:
+        sql = target_file.read_text()
+        for routine_name in all_source_routines:
+            if routine_name in target_routine_names:
+                continue
+            pattern = routine_usage_pattern(routine_name, source_project_id)
+            sql = pattern.sub(f"`{source_project_id}`.{routine_name}", sql)
+        target_file.write_text(sql)
+
+    # publish each copied routine directly
+    click.echo(f"Publish routines to {target.project_id} (target: {target.name})")
+    client = bigquery.Client(project=target.project_id)
+    raw_routines = [RawRoutine.from_file(f) for f in target_files]
+    known_udfs = [r.name for r in raw_routines]
+
+    # Topologically sort so dependencies are published before dependents.
+    raw_routines_by_name = {r.name: r for r in raw_routines}
+    ordered_names: list = []
+    for r in raw_routines:
+        ordered_names = accumulate_dependencies(
+            ordered_names, raw_routines_by_name, r.name
+        )
+    raw_routines = [
+        raw_routines_by_name[n] for n in ordered_names if n in raw_routines_by_name
+    ]
+
+    results = {}
+    for raw_routine in raw_routines:
+        routine_id = f"{target.project_id}.{raw_routine.name}"
+        try:
+            publish_routines.publish_routine(
+                raw_routine,
+                client,
+                target.project_id,
+                gcs_bucket,
+                gcs_path,
+                known_udfs,
+                is_public=False,
+                dry_run=dry_run,
+            )
+            results[routine_id] = ("success", None)
+        except Exception as e:
+            results[routine_id] = ("failed", str(e))
+            click.echo(f"✗ {routine_id} (failed: {e})", err=True)
+    click.echo(f"Published routines to {target.project_id}")
+    return results
+
+
 mozfun.add_command(copy.copy(publish))
-mozfun.commands[
-    "publish"
-].help = """Publish mozfun routines. This command is used
-by Airflow only."""
+mozfun.commands["publish"].help = """Publish mozfun routines. This command is used
+by Airflow only.
+
+Coding agents aren't allowed to run this command.
+"""
 
 
 @routine.command(
@@ -484,7 +621,7 @@ by Airflow only."""
 @click.argument("name", required=True)
 @click.argument("new_name", required=True)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.pass_context
 def rename(ctx, name, new_name, sql_dir, project_id):
     """Rename routines based on pattern."""
@@ -530,9 +667,11 @@ def rename(ctx, name, new_name, sql_dir, project_id):
             shutil.move(source, destination)
 
         # replace usages
-        all_sql_files = list(
-            [p for project in project_dirs() for p in Path(project).rglob("*.sql")]
-        )
+        all_sql_files = [
+            p
+            for project in project_dirs()
+            for p in map(Path, glob(f"{project}/**/*.sql", recursive=True))
+        ]
 
         for sql_file in all_sql_files:
             sql = sql_file.read_text()
@@ -546,9 +685,7 @@ def rename(ctx, name, new_name, sql_dir, project_id):
 
 
 mozfun.add_command(copy.copy(rename))
-mozfun.commands[
-    "rename"
-].help = """Rename mozfun routine or mozfun routine dataset.
+mozfun.commands["rename"].help = """Rename mozfun routine or mozfun routine dataset.
 Replaces all usages in queries with the new name.
 
 Examples:

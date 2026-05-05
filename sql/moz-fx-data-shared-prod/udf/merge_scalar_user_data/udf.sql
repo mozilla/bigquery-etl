@@ -206,6 +206,6 @@ merged_expected_actual AS (
     )
 )
 SELECT
-  assert.array_equals(expected, actual)
+  mozfun.assert.array_equals(expected, actual)
 FROM
   merged_expected_actual

@@ -7,14 +7,16 @@ WITH base AS (
     `moz-fx-guardian-prod-bfc7`.log_storage.stdout
   WHERE
     jsonPayload.fields.isprotected
-    AND DATE(`timestamp`) = @date
+    {% if not is_init() %}
+      AND DATE(`timestamp`) = @date
+    {% endif %}
   GROUP BY
     fxa_uid
   UNION ALL
   SELECT
     *
   FROM
-    protected_v1
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1`
 )
 SELECT
   fxa_uid,

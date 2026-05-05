@@ -1,0 +1,45 @@
+fields:
+  - name: dte
+    mode: NULLABLE
+    type: DATE
+    description: The date of device usage
+  - name: user_type
+    mode: NULLABLE
+    type: STRING
+    description: The user type, i.e. human or bot, using the devices
+  - name: location
+    mode: NULLABLE
+    type: STRING
+    description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
+  - name: desktop_usage_pct
+    mode: NULLABLE
+    type: NUMERIC
+    description: The percent share of Cloudflare traffic from desktop devices
+  - name: mobile_usage_pct
+    mode: NULLABLE
+    type: NUMERIC
+    description: The percent share of Cloudflare traffic from mobile devices
+  - name: other_usage_pct
+    mode: NULLABLE
+    type: NUMERIC
+    description: The percent share of Cloudflare traffic from other devices
+  - name: aggregation_interval
+    mode: NULLABLE
+    type: STRING
+    description: The aggregation interval the API used
+  - name: normalization_type
+    mode: NULLABLE
+    type: STRING
+    description: The normalization type of the usage (i.e. percentage)
+  - name: last_updated_ts
+    mode: NULLABLE
+    type: TIMESTAMP
+    description: The timestamp this data was retrieved from the API
+  - name: location_name
+    mode: NULLABLE
+    type: STRING
+    description: Location Name - Either country name (Germany, Japan, Canada, etc) or "Global" if all
+  - name: region_name
+    mode: NULLABLE
+    type: STRING
+    description: Region Name - Europe, North America, Asia, etc

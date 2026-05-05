@@ -268,5 +268,9 @@
     ],
     "type": "RECORD",
     "name": "payload"
+  },
+  {
+    "type": "STRING",
+    "name": "profile_group_id"
   }
 ]

@@ -1,0 +1,29 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the ingestion edge server accepted this message.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows version number in major.minor.build.UBR format (UBR is optional, only available on Win10).
+- name: windows_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the window os version.
+- name: default_browser
+  type: STRING
+  mode: NULLABLE
+  description: The current default browser.
+- name: previous_default_browser
+  type: STRING
+  mode: NULLABLE
+  description: What the default browser was before it was changed to the current one.
+- name: build_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: Major build version.
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of rows aggregated.

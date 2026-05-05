@@ -1,0 +1,62 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATETIME
+  description: |
+    Date on which the event occurred. For weekly and monthly instances,
+    this column represents the first day of the week and month, respectively.
+
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: |
+    The name of the app provided by you during app setup in App Store Connect.
+
+- mode: NULLABLE
+  name: app_apple_identifier
+  type: INTEGER
+  description: |
+    Your app’s Apple ID.
+
+- mode: NULLABLE
+  name: event
+  type: STRING
+  description: |
+    The type of event that occurred.
+
+- mode: NULLABLE
+  name: device
+  type: STRING
+  description: |
+    The device on which the event occurred.
+
+- mode: NULLABLE
+  name: platform_version
+  type: STRING
+  description: |
+    The OS version of the device on which the event occurred.
+
+- mode: NULLABLE
+  name: territory
+  type: STRING
+  description: |
+    The App Store country or region in which the event occurred.
+
+- mode: NULLABLE
+  name: counts
+  type: INTEGER
+  description: |
+    The total number of events that occurred.
+
+- mode: NULLABLE
+  name: unique_devices
+  type: INTEGER
+  description: |
+    The count of unique devices on which the event occurred.
+
+- mode: NULLABLE
+  name: logical_date
+  type: DATETIME
+  description: |
+    Logical date used by the date for processing.

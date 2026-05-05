@@ -4,6 +4,7 @@ owners: {{ owners }}
 {% endif %}
 labels:
   incremental: true
+  table_type: aggregate
 
 scheduling:
   dag_name: bqetl_generated_funnels

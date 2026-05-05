@@ -16,27 +16,27 @@ WITH fenix_clients_last_seen AS (
   SELECT
     * REPLACE ('firefox-preview nightly' AS normalized_channel),
   FROM
-    org_mozilla_fenix.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_last_seen`
   UNION ALL
   SELECT
     * REPLACE ('preview nightly' AS normalized_channel),
   FROM
-    org_mozilla_fenix_nightly.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_last_seen`
   UNION ALL
   SELECT
     * REPLACE ('release' AS normalized_channel),
   FROM
-    org_mozilla_firefox.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_last_seen`
   UNION ALL
   SELECT
     * REPLACE ('beta' AS normalized_channel),
   FROM
-    org_mozilla_firefox_beta.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline_clients_last_seen`
   UNION ALL
   SELECT
     * REPLACE ('nightly' AS normalized_channel),
   FROM
-    org_mozilla_fennec_aurora.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
 ),
 --
 fennec_client_info AS (
@@ -53,14 +53,14 @@ fennec_client_info AS (
       AND SAFE_CAST(osversion AS INT64) >= 21,
       FALSE
     ) AS can_migrate,
-    udf.active_n_weeks_ago(days_seen_bits, 0) AS active_this_week,
-    udf.active_n_weeks_ago(days_seen_bits, 1) AS active_last_week,
-    udf.active_n_weeks_ago(days_created_profile_bits, 0) AS new_this_week,
-    udf.active_n_weeks_ago(days_created_profile_bits, 1) AS new_last_week
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_created_profile_bits, 0) AS new_this_week,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_created_profile_bits, 1) AS new_last_week
   FROM
-    telemetry_derived.core_clients_last_seen_v1 clients_last_seen
+    `moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1` clients_last_seen
   LEFT JOIN
-    org_mozilla_firefox.migrated_clients migrated_clients
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
     -- For Fennec, we only want to look at historical migration pings
     -- to see if this client has migrated. We use this to check if they
     -- were migrated today as well.
@@ -87,8 +87,8 @@ fenix_client_info AS (
     device_manufacturer AS manufacturer,
     clients_last_seen.country,
     TRUE AS can_migrate,
-    udf.active_n_weeks_ago(days_seen_bits, 0) AS active_this_week,
-    udf.active_n_weeks_ago(days_seen_bits, 1) AS active_last_week,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
     DATE_DIFF(clients_last_seen.submission_date, first_run_date, DAY)
     BETWEEN 0
     AND 6 AS new_this_week,
@@ -98,7 +98,7 @@ fenix_client_info AS (
   FROM
     fenix_clients_last_seen clients_last_seen
   LEFT JOIN
-    org_mozilla_firefox.migrated_clients migrated_clients
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
     -- For Fenix, we don't care if there's a delay in the migration ping, we know they
     -- have been migrated the entire time
     ON clients_last_seen.client_id = migrated_clients.fenix_client_id
@@ -118,7 +118,7 @@ client_info AS (
 ),
 counts AS (
   SELECT
-    date,
+    `date`,
     app_name,
     is_migrated_group AS is_migrated,
     channel_group AS channel,
@@ -171,7 +171,7 @@ counts AS (
     active_last_week
     OR active_this_week
   GROUP BY
-    date,
+    `date`,
     is_migrated,
     app_name,
     channel,
@@ -208,16 +208,16 @@ _current AS (
   FROM
     with_retention
   WHERE
-    date = @submission_date
+    `date` = @submission_date
 ),
 last_week AS (
   -- We want WoW for topline metrics, so get this data from last week
   SELECT
-    * EXCEPT (date)
+    * EXCEPT (`date`)
   FROM
-    org_mozilla_firefox_derived.incline_executive_v1
+    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
   WHERE
-    date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
+    `date` = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
 ),
 last_year AS (
   -- We want YoY change in WoW retention, calculate last year's WoW retention here
@@ -251,7 +251,7 @@ all_migrated_clients AS (
     country_group AS country,
     COUNT(*) AS cumulative_migration_count
   FROM
-    org_mozilla_firefox.migrated_clients migrated_clients
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
   CROSS JOIN
     UNNEST(['Overall', normalized_channel]) AS channel_group
   CROSS JOIN

@@ -1,0 +1,5 @@
+friendly_name: Zoom meetings
+description: |-
+  Mozilla's Zoom meetings as synced by Fivetran starting in January 2025.
+labels:
+  authorized: true

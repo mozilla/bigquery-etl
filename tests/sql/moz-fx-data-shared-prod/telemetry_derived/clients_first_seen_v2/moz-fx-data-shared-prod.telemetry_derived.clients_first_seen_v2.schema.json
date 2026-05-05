@@ -176,5 +176,9 @@
     ],
     "name": "metadata",
     "type": "RECORD"
+  },
+  {
+    "type": "STRING",
+    "name": "profile_group_id"
   }
 ]

@@ -5,9 +5,9 @@ Floor a timestamp object to the given minute interval.
  */
 CREATE OR REPLACE FUNCTION udf.round_timestamp_to_minute(
   timestamp_expression TIMESTAMP,
-  minute INT64
+  `minute` INT64
 ) AS (
-  TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60)
+  TIMESTAMP_SECONDS(DIV(UNIX_SECONDS(timestamp_expression), `minute` * 60) * `minute` * 60)
 );
 
 -- Test

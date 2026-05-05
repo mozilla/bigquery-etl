@@ -15,22 +15,31 @@ SELECT
   `timestamp`,
   jsonPayload.type,
   TO_HEX(
-    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.uid AS BYTES))
+    `moz-fx-data-shared-prod.udf.hmac_sha256`(
+      (SELECT * FROM hmac_key),
+      CAST(jsonPayload.fields.uid AS BYTES)
+    )
   ) AS user_id,
   TO_HEX(
-    udf.hmac_sha256(
+    `moz-fx-data-shared-prod.udf.hmac_sha256`(
       (SELECT * FROM hmac_key),
       CAST(FORMAT('%d', CAST(jsonPayload.fields.index AS INT64)) AS BYTES)
     )
   ) AS index,
   jsonPayload.fields.command,
   TO_HEX(
-    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.target AS BYTES))
+    `moz-fx-data-shared-prod.udf.hmac_sha256`(
+      (SELECT * FROM hmac_key),
+      CAST(jsonPayload.fields.target AS BYTES)
+    )
   ) AS target,
   jsonPayload.fields.targetOS AS target_os,
   jsonPayload.fields.targetType AS target_type,
   TO_HEX(
-    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.sender AS BYTES))
+    `moz-fx-data-shared-prod.udf.hmac_sha256`(
+      (SELECT * FROM hmac_key),
+      CAST(jsonPayload.fields.sender AS BYTES)
+    )
   ) AS sender,
   jsonPayload.fields.senderOS AS sender_os,
   jsonPayload.fields.senderType AS sender_type,

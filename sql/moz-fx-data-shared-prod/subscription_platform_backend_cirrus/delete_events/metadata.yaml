@@ -1,0 +1,5 @@
+friendly_name: Subscription Platform Backend Cirrus Delete Events
+description: Deletion events for subscription platform backend cirrus, derived
+  from FxA's delete events and subplat's namespace secrets
+owners:
+  - mwilliams@mozilla.com

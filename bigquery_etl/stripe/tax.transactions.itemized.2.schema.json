@@ -1,0 +1,130 @@
+[
+  {
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "name": "type",
+    "type": "STRING"
+  },
+  {
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "name": "transaction_date",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "tax_date",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "line_item_id",
+    "type": "STRING"
+  },
+  {
+    "name": "subtotal",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "total",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "tax_code",
+    "type": "STRING"
+  },
+  {
+    "name": "jurisdiction_name",
+    "type": "STRING"
+  },
+  {
+    "name": "jurisdiction_level",
+    "type": "STRING"
+  },
+  {
+    "name": "country_code",
+    "type": "STRING"
+  },
+  {
+    "name": "state_code",
+    "type": "STRING"
+  },
+  {
+    "name": "origin_resolved_address_country",
+    "type": "STRING"
+  },
+  {
+    "name": "origin_resolved_address_state",
+    "type": "STRING"
+  },
+  {
+    "name": "taxability",
+    "type": "STRING"
+  },
+  {
+    "name": "taxability_reason",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_rate",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "quantity_decimal",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "customer_tax_id",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_country",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_state",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_name",
+    "type": "STRING"
+  },
+  {
+    "name": "taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "non_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "tax_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_currency",
+    "type": "STRING"
+  },
+  {
+    "name": "filing_exchange_rate",
+    "type": "BIGNUMERIC"
+  },
+  {
+    "name": "filing_total",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_non_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_tax_amount",
+    "type": "NUMERIC"
+  }
+]

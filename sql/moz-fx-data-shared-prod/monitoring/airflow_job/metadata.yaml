@@ -1,0 +1,4 @@
+friendly_name: Airflow jobs
+description: List of jobs
+owners:
+- kik@mozilla.com

@@ -1,0 +1,32 @@
+fields:
+- mode: NULLABLE
+  name: external_id
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: waitlist_name
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_geo
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_platform
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_source
+    type: STRING
+  - mode: NULLABLE
+    name: create_timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: subscribed
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: unsub_reason
+    type: STRING
+  - mode: NULLABLE
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: waitlists
+  type: RECORD

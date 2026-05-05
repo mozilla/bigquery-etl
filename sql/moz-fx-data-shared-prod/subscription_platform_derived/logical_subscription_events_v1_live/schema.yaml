@@ -1,0 +1,37 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Logical subscription event ID.
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    When the event occurred.
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of event.
+- name: reason
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Reason the event occurred.
+- name: logical_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `logical_subscriptions_history_v1` record this event was derived from.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
+  field: subscription
+  new_description: |-
+    The logical subscription as it ostensibly was after the event occurred.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
+  field: subscription
+  new_name: old_subscription
+  new_description: |-
+    The logical subscription as it ostensibly was before the event occurred.

@@ -31,204 +31,252 @@ metric_percentile_cut_and_aggregates AS (
 metric_aggregates_from_metric AS (
   SELECT
     SUM(
-      udf.quantile_search_metric_contribution(sap, search_with_ads, sap_percentiles[OFFSET(9)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        search_with_ads,
+        sap_percentiles[OFFSET(9)]
+      )
     ) AS search_with_ads_from_sap_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(sap, search_with_ads, sap_percentiles[OFFSET(8)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        search_with_ads,
+        sap_percentiles[OFFSET(8)]
+      )
     ) AS search_with_ads_from_sap_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(sap, search_with_ads, sap_percentiles[OFFSET(7)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        search_with_ads,
+        sap_percentiles[OFFSET(7)]
+      )
     ) AS search_with_ads_from_sap_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         search_with_ads,
         active_hours_percentiles[OFFSET(9)]
       )
     ) AS search_with_ads_from_active_hours_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         search_with_ads,
         active_hours_percentiles[OFFSET(8)]
       )
     ) AS search_with_ads_from_active_hours_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         search_with_ads,
         active_hours_percentiles[OFFSET(7)]
       )
     ) AS search_with_ads_from_active_hours_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         search_with_ads,
         ad_click_percentiles[OFFSET(9)]
       )
     ) AS search_with_ads_from_ad_click_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         search_with_ads,
         ad_click_percentiles[OFFSET(8)]
       )
     ) AS search_with_ads_from_ad_click_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         search_with_ads,
         ad_click_percentiles[OFFSET(7)]
       )
     ) AS search_with_ads_from_ad_click_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(sap, ad_click, sap_percentiles[OFFSET(9)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        ad_click,
+        sap_percentiles[OFFSET(9)]
+      )
     ) AS ad_click_from_sap_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(sap, ad_click, sap_percentiles[OFFSET(8)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        ad_click,
+        sap_percentiles[OFFSET(8)]
+      )
     ) AS ad_click_from_sap_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(sap, ad_click, sap_percentiles[OFFSET(7)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        ad_click,
+        sap_percentiles[OFFSET(7)]
+      )
     ) AS ad_click_from_sap_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         ad_click,
         search_with_ads_percentiles[OFFSET(9)]
       )
     ) AS ad_click_from_search_with_ads_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         ad_click,
         search_with_ads_percentiles[OFFSET(8)]
       )
     ) AS ad_click_from_search_with_ads_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         ad_click,
         search_with_ads_percentiles[OFFSET(7)]
       )
     ) AS ad_click_from_search_with_ads_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         ad_click,
         active_hours_percentiles[OFFSET(9)]
       )
     ) AS ad_click_from_active_hours_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         ad_click,
         active_hours_percentiles[OFFSET(8)]
       )
     ) AS ad_click_from_active_hours_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         ad_click,
         active_hours_percentiles[OFFSET(7)]
       )
     ) AS ad_click_from_active_hours_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(sap, active_hours_sum, sap_percentiles[OFFSET(9)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        active_hours_sum,
+        sap_percentiles[OFFSET(9)]
+      )
     ) AS active_hours_from_sap_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(sap, active_hours_sum, sap_percentiles[OFFSET(8)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        active_hours_sum,
+        sap_percentiles[OFFSET(8)]
+      )
     ) AS active_hours_from_sap_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(sap, active_hours_sum, sap_percentiles[OFFSET(7)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        sap,
+        active_hours_sum,
+        sap_percentiles[OFFSET(7)]
+      )
     ) AS active_hours_from_sap_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         active_hours_sum,
         ad_click_percentiles[OFFSET(9)]
       )
     ) AS active_hours_from_ad_click_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         active_hours_sum,
         ad_click_percentiles[OFFSET(8)]
       )
     ) AS active_hours_from_ad_click_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         ad_click,
         active_hours_sum,
         ad_click_percentiles[OFFSET(7)]
       )
     ) AS active_hours_from_ad_click_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         active_hours_sum,
         search_with_ads_percentiles[OFFSET(9)]
       )
     ) AS active_hours_from_search_with_ads_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         active_hours_sum,
         search_with_ads_percentiles[OFFSET(8)]
       )
     ) AS active_hours_from_search_with_ads_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         active_hours_sum,
         search_with_ads_percentiles[OFFSET(7)]
       )
     ) AS active_hours_from_search_with_ads_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         sap,
         search_with_ads_percentiles[OFFSET(9)]
       )
     ) AS sap_from_search_with_ads_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         sap,
         search_with_ads_percentiles[OFFSET(8)]
       )
     ) AS sap_from_search_with_ads_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         search_with_ads,
         sap,
         search_with_ads_percentiles[OFFSET(7)]
       )
     ) AS sap_from_search_with_ads_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(ad_click, sap, ad_click_percentiles[OFFSET(9)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        ad_click,
+        sap,
+        ad_click_percentiles[OFFSET(9)]
+      )
     ) AS sap_from_ad_click_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(ad_click, sap, ad_click_percentiles[OFFSET(8)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        ad_click,
+        sap,
+        ad_click_percentiles[OFFSET(8)]
+      )
     ) AS sap_from_ad_click_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(ad_click, sap, ad_click_percentiles[OFFSET(7)])
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
+        ad_click,
+        sap,
+        ad_click_percentiles[OFFSET(7)]
+      )
     ) AS sap_from_ad_click_top_30,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         sap,
         active_hours_percentiles[OFFSET(9)]
       )
     ) AS sap_from_active_hours_top_10,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         sap,
         active_hours_percentiles[OFFSET(8)]
       )
     ) AS sap_from_active_hours_top_20,
     SUM(
-      udf.quantile_search_metric_contribution(
+      `moz-fx-data-shared-prod.udf.quantile_search_metric_contribution`(
         active_hours_sum,
         sap,
         active_hours_percentiles[OFFSET(7)]

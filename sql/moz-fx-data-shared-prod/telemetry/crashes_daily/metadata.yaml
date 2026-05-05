@@ -1,0 +1,10 @@
+friendly_name: Crashes Daily
+description: |-
+  One row per-client, per-day, for those who crashed on that day.
+  Includes a bit of helpful information for analysis, like
+  os, os_version, channel, and country; however this data
+  will be most useful when joined with clients_daily.
+  Clustered on channel and os, since these are common
+  query dimensions.
+owners:
+- ascholtz@mozilla.com

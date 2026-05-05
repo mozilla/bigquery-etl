@@ -1,0 +1,17 @@
+# braze unsubscribes
+---
+# User 1 only on Acoustic
+# User 2 Acoustic and braze unsubscribe
+- email_address: user2@email.com
+  time: 1612141200
+# User 3 Acoustic and braze unsubscribe and braze hard bounce
+- email_address: user3@email.com
+  time: 1614560400
+# User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
+- email_address: user4@email.com
+  time: 1617235200
+# User 5 braze unsubscribe
+- email_address: user5@email.com
+  time: 1619827200
+# User 6 braze hard bounce
+# User 7 MoFo

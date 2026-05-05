@@ -68,11 +68,9 @@ def _parse_check_output(output: str) -> str:
     return output
 
 
-@click.group(
-    help="""
+@click.group(help="""
         Commands for managing and running bqetl data checks.
-    """
-)
+    """)
 @click.pass_context
 def check(ctx):
     """Create the CLI group for the check command."""
@@ -199,7 +197,7 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -207,12 +205,15 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
     ):
+        query_args = (
+            [] if (Path(checks_file).parent / "query.py").exists() else ctx.args
+        )
         _run_check(
             checks_file,
             project_id,
             dataset_id,
             table,
-            ctx.args,
+            query_args,
             dry_run=dry_run,
             marker=marker,
         )

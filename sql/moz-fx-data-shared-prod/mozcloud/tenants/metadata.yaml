@@ -1,0 +1,7 @@
+friendly_name: Tenants
+description: |-
+  MozCloud tenants exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a MozCloud tenant — a service or application
+  onboarded to the MozCloud platform.
+owners:
+- wstuckey@mozilla.com

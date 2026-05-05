@@ -1,0 +1,33 @@
+friendly_name: Braze Delete Users Sync
+description: |-
+  Users added to this table are deleted in Braze. Deleted users
+  can be a result of the following actions:
+
+  - User data deletion request
+  - User added to suppression list
+  - User requested FxA deletion - this logic is currently under
+  discussion and may change. The FxA/Basket/FxA teams are discussing
+  adding an option for users to also unsubscribe from newsletters
+  to grant agency.
+
+  Braze Cloud Data Ingestion (CDI) tool documentation for deleting users:
+  https://www.braze.com/docs/user_guide/data_and_analytics/cloud_ingestion/delete_users/
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  owner: cbeck
+bigquery:
+  time_partitioning:
+  type: day
+  field: updated_at
+  require_partition_filter: false
+  expiration_days: 7
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace

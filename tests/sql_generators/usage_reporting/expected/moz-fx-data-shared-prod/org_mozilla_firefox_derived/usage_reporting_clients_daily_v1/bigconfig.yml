@@ -1,0 +1,25 @@
+type: BIGCONFIG_FILE
+table_deployments:
+  - collection:
+      name: Operational Checks
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+
+    deployments:
+      - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_firefox_derived.usage_reporting_clients_daily_v1
+        table_metrics:
+          - saved_metric_id: volume
+          - saved_metric_id: freshness
+        columns:
+          - column_name: submission_date
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: usage_profile_id
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: is_active
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: normalized_country_code
+            metrics:
+              - saved_metric_id: is_2_char_len

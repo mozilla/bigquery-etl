@@ -5,4 +5,4 @@ SELECT
   country,
   state_function,
 FROM
-  mozdata.analysis.android_state_ltvs_v2
+  `moz-fx-data-shared-prod.ltv_state_values_derived.android_state_ltvs_v2`

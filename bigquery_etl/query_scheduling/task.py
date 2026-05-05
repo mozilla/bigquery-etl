@@ -16,6 +16,7 @@ import click
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
+    ensure_telemetry_alerts_email,
     is_date_string,
     is_email,
     is_email_or_github_identity,
@@ -500,6 +501,7 @@ class Task:
 
         # Get default email from default_args if available
         default_email = []
+        dag = None
         if dag_collection is not None:
             dag = dag_collection.dag_by_name(dag_name)
             if dag is not None:
@@ -514,6 +516,10 @@ class Task:
                     f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
+        if dag:
+            task_config["email"] = ensure_telemetry_alerts_email(
+                task_config["email"], dag.no_triage
+            )
 
         # expose secret config
         task_config["secrets"] = metadata.scheduling.get("secrets", [])
@@ -618,7 +624,8 @@ class Task:
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
         task.depends_on_past = False
-        task.retries = 0
+        task.retries = 1
+        task.retry_delay = "5m"
         task.depends_on_fivetran = []
         task.referenced_tables = None
         task.depends_on = []

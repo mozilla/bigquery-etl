@@ -5,7 +5,7 @@ from datetime import date
 import click
 
 
-def start_date():
+def start_date(required=True, default=None):
     """Return a Click option for the backfill start date."""
     return click.option(
         "--start_date",
@@ -13,7 +13,8 @@ def start_date():
         "-s",
         help="First date to be backfilled. Date format: yyyy-mm-dd",
         type=click.DateTime(formats=["%Y-%m-%d"]),
-        required=True,
+        required=required,
+        default=default,
     )
 
 
@@ -68,7 +69,7 @@ def query_script_entrypoint():
     """Return a Click option for the entrypoint command name in a query.py script."""
     return click.option(
         "--query-script-entrypoint",
-        help="Name of the Click command in the query.py to use in the backfill. "
+        help="Name of the main function in the query.py to use in the backfill. "
         "Either a @click.command() or a python function, e.g. `--query-script-entrypoint=main`. "
         "Required when custom_query_path is a .py file.",
     )

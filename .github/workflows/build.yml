@@ -1140,7 +1140,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions generate-dags job"
           git config --global user.email "dataops+generated-dags@mozilla.com"
-          git clone --single-branch --branch generated-dags \
+          git clone --single-branch --branch generated-dags --depth=1 \
             git@github.com:mozilla/bigquery-etl.git \
             generated-dags
           cd generated-dags/
@@ -1218,7 +1218,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions private-generate-dags job"
           git config --global user.email "dataops+private-generated-dags@mozilla.com"
-          git clone --single-branch --branch private-generated-dags \
+          git clone --single-branch --branch private-generated-dags --depth=1 \
             git@github.com:mozilla/private-bigquery-etl \
             private-generated-dags
           cd private-generated-dags/

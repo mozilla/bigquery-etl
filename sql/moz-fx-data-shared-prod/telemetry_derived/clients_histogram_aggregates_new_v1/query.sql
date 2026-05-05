@@ -1,10 +1,25 @@
-WITH filtered_date_channel AS (
+WITH preconditions AS (
   SELECT
-    *
+    IF(
+      (
+        SELECT
+          MAX(submission_date)
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
+      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY),
+      TRUE,
+      ERROR('Pre-condition failed: table clients_histogram_aggregates_v2 must be up to date')
+    ) histogram_aggregates_up_to_date
+),
+filtered_date_channel AS (
+  SELECT
+    * EXCEPT (histogram_aggregates_up_to_date)
   FROM
-    clients_daily_histogram_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_histogram_aggregates_v1`,
+    preconditions
   WHERE
-    submission_date = @submission_date
+    preconditions.histogram_aggregates_up_to_date
+    AND submission_date = @submission_date
 ),
 filtered_aggregates AS (
   SELECT
@@ -51,7 +66,7 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS hist_aggs
   LEFT JOIN
-    latest_versions
+    `moz-fx-data-shared-prod.telemetry_derived.latest_versions` AS latest_versions
     ON latest_versions.channel = hist_aggs.channel
   WHERE
     CAST(app_version AS INT64) >= (latest_version - 2)
@@ -72,7 +87,7 @@ aggregated_histograms AS (
     key,
     process,
     agg_type,
-    udf.map_sum(ARRAY_CONCAT_AGG(value)) AS aggregates
+    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS aggregates
   FROM
     version_filtered_new
   GROUP BY
@@ -92,7 +107,7 @@ aggregated_histograms AS (
     latest_version
 )
 SELECT
-  udf_js.sample_id(client_id) AS sample_id,
+  `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
   client_id,
   os,
   app_version,

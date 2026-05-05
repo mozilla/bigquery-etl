@@ -7,6 +7,7 @@ import pytest
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.common import project_dirs
 
 from ..routine.parse_routine import (
@@ -26,7 +27,9 @@ def parsed_routines():
     if _parsed_routines is None:
         _parsed_routines = {
             routine.filepath: routine
-            for project in project_dirs()
+            for project in ConfigLoader.get(
+                "routine", "test_projects", fallback=project_dirs()
+            )
             for routine in parse_routines(project)
         }
 
@@ -51,7 +54,10 @@ class RoutineFile(pytest.File):
     def collect(self):
         """Collect."""
         self.add_marker("routine")
-        self.routine = parsed_routines()[self.name]
+        base_path = self.parent.parent.parent.parent.parent.path
+        path = str(self.path.relative_to(base_path))
+        self.routine = parsed_routines()[path]
+
         for i, query in enumerate(self.routine.tests_full_sql):
             yield RoutineTest.from_parent(
                 self, name=f"{self.routine.name}#{i+1}", query=query
@@ -93,8 +99,8 @@ class RoutineTest(pytest.Item):
         """Run Test."""
         bq = bigquery.Client()
         dataset_id = self.safe_name()
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        if "CI_RUN_ID" in os.environ:
+            dataset_id += f"_{os.environ['CI_RUN_ID']}"
         with dataset(bq, dataset_id) as default_dataset:
             job_config = bigquery.QueryJobConfig(
                 use_legacy_sql=False, default_dataset=default_dataset

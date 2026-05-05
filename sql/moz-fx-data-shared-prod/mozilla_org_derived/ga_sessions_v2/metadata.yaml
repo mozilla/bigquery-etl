@@ -2,10 +2,11 @@ friendly_name: GA Sessions V2
 description: |-
   Contains 1 row for each Google Analytics 4 session
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: false
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
@@ -18,9 +19,14 @@ bigquery:
     type: day
     field: session_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - ga_client_id
     - country
-references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataplatform/external-census
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc

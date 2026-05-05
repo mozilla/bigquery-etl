@@ -3,6 +3,9 @@ WITH shopping_metrics AS (
     metrics.uuid.legacy_telemetry_client_id AS legacy_client_id,
     client_info.client_id AS client_id,
     DATE(submission_timestamp) AS submission_date,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp)
+    ) AS profile_group_id,
     SUM(
       CASE
         WHEN metrics.counter.shopping_product_page_visits IS NOT NULL
@@ -99,7 +102,8 @@ joined_data AS (
     s.sap,
     s.ad_click,
     active_agg.active_hours_sum,
-    active_agg.is_fx_dau
+    active_agg.is_fx_dau,
+    sm.profile_group_id
   FROM
     shopping_metrics sm
   LEFT JOIN

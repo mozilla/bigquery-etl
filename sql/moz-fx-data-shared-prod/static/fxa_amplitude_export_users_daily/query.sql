@@ -20,7 +20,7 @@ CREATE TEMP FUNCTION udf_mode_last(list ANY TYPE) AS (
 -- data includes long-form country names. The logic here is specific
 -- to the FxA data.
 CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
-  EXISTS(
+  EXISTS (
     SELECT
       country
     FROM
@@ -38,7 +38,7 @@ WITH windowed AS (
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country
   FROM
-    fxa_amplitude_export_event_date
+    `moz-fx-data-shared-prod.static.fxa_amplitude_export_event_date`
   WHERE
     user_id IS NOT NULL
     AND event_type NOT IN (

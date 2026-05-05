@@ -9,8 +9,8 @@ CREATE TEMP TABLE
     channel STRING,
     events ARRAY<
       STRUCT<
-        source STRUCT<category STRING, name STRING, timestamp TIMESTAMP>,
-        target STRUCT<category STRING, name STRING, timestamp TIMESTAMP>
+        source STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>,
+        target STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>
       >
     >,
     flow_hash STRING
@@ -41,19 +41,38 @@ CREATE TEMP TABLE
             DATE(submission_timestamp) = @submission_date
             AND ext.key = "flow_id"
         {% elif app['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
+          (WITH events_unnested_with_metrics AS (
+            -- events_unnested views do not have metrics, accounts send flow_id in a string metric
+            -- so we need to unnest with metrics here
+            SELECT
+            e.* EXCEPT (events),
+            event.timestamp AS event_timestamp,
+            event.category AS event_category,
+            event.name AS event_name,
+            event.extra AS event_extra
+          FROM
+            `moz-fx-data-shared-prod.{{ app['app_name'] }}.events` e
+          CROSS JOIN
+            UNNEST(e.events) AS event
+          )
           SELECT DISTINCT
             @submission_date AS submission_date,
             metrics.string.session_flow_id AS flow_id,
-            CAST(NULL AS STRING) AS category,
-            metrics.string.event_name AS name,
-            submission_timestamp AS timestamp,
+            event_category AS category,
+            event_name AS name,
+            TIMESTAMP_ADD(
+              submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+              INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+            ) AS timestamp,
             "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            `moz-fx-data-shared-prod.{{ app['app_name'] }}.accounts_events`
+            events_unnested_with_metrics
           WHERE
             DATE(submission_timestamp) = @submission_date
-            AND metrics.string.session_flow_id != ""
+            AND metrics.string.session_flow_id IS NOT NULL
+            AND metrics.string.session_flow_id != "")
         {% endif %}
       {% endfor %}
     ),
@@ -66,9 +85,9 @@ CREATE TEMP TABLE
         channel,
         ARRAY_AGG((
           SELECT AS
-          STRUCT category AS category, name AS name, timestamp AS timestamp
+          STRUCT category AS category, name AS name, `timestamp` AS timestamp
           LIMIT 100 -- limit number of events considered
-        ) ORDER BY timestamp) AS events
+        ) ORDER BY `timestamp`) AS events
       FROM
         all_app_events
       GROUP BY
@@ -113,7 +132,7 @@ CREATE TEMP TABLE
       flow_id,
       normalized_app_name,
       channel,
-      ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
+      ARRAY_AGG(event ORDER BY event.source.timestamp LIMIT 10000) AS events,
       -- create a flow hash that concats all the events that are part of the flow
       -- <event_category>.<event_name> -> <event_category>.<event_name> -> ...
       ARRAY_TO_STRING(
@@ -122,6 +141,7 @@ CREATE TEMP TABLE
             CONCAT(IF(event.source.category IS NOT NULL, CONCAT(event.source.category, "."), ""), event.source.name)
             ORDER BY
               event.source.timestamp
+            LIMIT 10000
           ),
           [
             ARRAY_REVERSE(
@@ -129,6 +149,7 @@ CREATE TEMP TABLE
                 CONCAT(IF(event.target.category IS NOT NULL, CONCAT(event.target.category, "."), ""), event.target.name)
                 ORDER BY
                   event.source.timestamp
+                LIMIT 10000
               )
             )[SAFE_OFFSET(0)]
           ]

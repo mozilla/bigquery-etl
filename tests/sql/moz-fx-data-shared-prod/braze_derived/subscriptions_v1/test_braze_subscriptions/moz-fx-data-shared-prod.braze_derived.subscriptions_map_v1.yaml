@@ -1,0 +1,34 @@
+# test_braze_subscriptions - braze subscription map
+---
+- braze_subscription_name: newsletter_1
+  firefox_subscription_id: firefox_newsletter_1
+  mozilla_subscription_id: mozilla_newsletter_1
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_1
+- braze_subscription_name: newsletter_2
+  firefox_subscription_id: firefox_newsletter_2
+  mozilla_subscription_id: mozilla_newsletter_2
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_2
+- braze_subscription_name: newsletter_3
+  firefox_subscription_id: firefox_newsletter_3
+  mozilla_subscription_id: mozilla_newsletter_3
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_3
+- braze_subscription_name: newsletter_4
+  firefox_subscription_id: firefox_newsletter_4
+  mozilla_subscription_id: mozilla_newsletter_4
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_4
+- braze_subscription_name: waitlist_1-waitlist
+  firefox_subscription_id: firefox_waitlist_1
+  mozilla_subscription_id: mozilla_waitlist_1
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_1
+- braze_subscription_name: waitlist_2-waitlist
+  firefox_subscription_id: firefox_waitlist_2
+  mozilla_subscription_id: mozilla_waitlist_2
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_2
+- braze_subscription_name: waitlist_3-waitlist
+  firefox_subscription_id: firefox_waitlist_3
+  mozilla_subscription_id: mozilla_waitlist_3
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_3
+- braze_subscription_name: waitlist_4-waitlist
+  firefox_subscription_id: firefox_waitlist_4
+  mozilla_subscription_id: mozilla_waitlist_4
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_4

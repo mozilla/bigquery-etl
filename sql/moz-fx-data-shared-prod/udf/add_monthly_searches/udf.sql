@@ -398,4 +398,4 @@ FROM
   results
 INNER JOIN
   expected
-  USING (p_type, c_type, date);
+  USING (p_type, c_type, `date`);

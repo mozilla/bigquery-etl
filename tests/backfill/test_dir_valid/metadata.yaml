@@ -1,0 +1,7 @@
+friendly_name: Metadata file for backfill validation testing
+description: |-
+  Metadata file for backfill validation testing
+owners:
+- nobody@mozilla.com
+labels:
+  owner1: nobody@mozilla.com

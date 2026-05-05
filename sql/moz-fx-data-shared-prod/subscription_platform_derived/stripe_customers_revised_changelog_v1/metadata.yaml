@@ -9,12 +9,14 @@ description: |-
   Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
   In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
   date_partition_parameter: date
 bigquery:
   time_partitioning:
@@ -23,4 +25,8 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}
+require_column_descriptions: true
+monitoring:
+  enabled: true
+  freshness: null
+  volume: null

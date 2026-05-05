@@ -42,20 +42,34 @@ WITH shredder AS (
 jobs AS (
   -- https://cloud.google.com/bigquery/docs/information-schema-jobs
   SELECT
-    *
+    creation_time,
+    start_time,
+    end_time,
+    state,
+    error_result,
+    job_id,
+    project_id,
+    total_bytes_processed AS bytes_complete,
+    total_slot_ms AS slot_ms,
   FROM
     `moz-fx-data-shredder.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
   UNION ALL
   SELECT
-    *
+    creation_time,
+    start_time,
+    end_time,
+    state,
+    error_result,
+    job_id,
+    project_id,
+    total_bytes_processed AS bytes_complete,
+    total_slot_ms AS slot_ms,
   FROM
     `moz-fx-data-bq-batch-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
 ),
 successful_jobs AS (
   SELECT
-    *,
-    total_bytes_processed AS bytes_complete,
-    total_slot_ms AS slot_ms,
+    *
   FROM
     jobs
   WHERE

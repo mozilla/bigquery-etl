@@ -1,0 +1,153 @@
+# test_braze_users - expect
+---
+# user 1 has all the subscriptions
+- external_id: user_1
+  email: user_1@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_1
+  email_lang: en
+  fxa_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+  has_fxa: true
+  fxa_primary_email: user_1_primary@email.com
+  fxa_lang: en
+  fxa_first_service: firefox-desktop
+  fxa_created_at: 2020-01-01 00:00:00+00:00
+  create_timestamp: 2021-01-01 10:00:00+00:00
+  update_timestamp: 2024-01-01 08:00:00+00:00
+# user 2 only has newsletter subscription
+- external_id: user_2
+  email: user_2@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_2
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-02 10:00:00+00:00
+  update_timestamp: 2024-01-02 08:00:00+00:00
+# user 3 only has waitlist subscription
+- external_id: user_3
+  email: user_3@email.com
+  email_subscribe: opted_in
+  mailing_country: de
+  basket_token: basket_user_3
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-03 10:00:00+00:00
+  update_timestamp: 2024-01-03 08:00:00+00:00
+# user 4 only has product subscription
+# user 5 has newsletter and waitlist subscription
+- external_id: user_5
+  email: user_5@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_5
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-05 10:00:00+00:00
+  update_timestamp: 2024-01-05 08:00:00+00:00
+# user 6 has newsletter, waitlist and product subscription
+- external_id: user_6
+  email: user_6@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_6
+  email_lang: en
+  fxa_id_sha256: 56d7e178eb20f8324e84e641277fca5de54cb9cdef64005a67967e7ce10f902e # fxa_uid_6
+  has_fxa: true
+  fxa_primary_email: user_6_primary@email.com
+  fxa_lang: en
+  fxa_first_service: firefox-desktop
+  fxa_created_at: 2020-01-06 00:00:00+00:00
+  create_timestamp: 2021-01-06 10:00:00+00:00
+  update_timestamp: 2024-01-06 08:00:00+00:00
+# user 7 has newsletter subscription but is on suppression list
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+# user 9 has newsletter subscription but not double opted in yet
+- external_id: user_9
+  email: user_9@email.com
+  email_subscribe: subscribed
+  mailing_country: us
+  basket_token: basket_user_9
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-09 10:00:00+00:00
+  update_timestamp: 2024-01-09 08:00:00+00:00
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+# user 11 has newsletter subscription, double opted in and opted out of emails
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+- external_id: user_12
+  email: user_12@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_12
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-12 10:00:00+00:00
+  update_timestamp: 2024-01-12 08:00:00+00:00
+# user 13 has waitlist subscription and clicked on it
+- external_id: user_13
+  email: user_13@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_13
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-13 10:00:00+00:00
+  update_timestamp: 2024-01-13 08:00:00+00:00
+# user 14 has waitlist subscription but deleted their fxa_account
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+- external_id: user_16
+  email: user_16@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_16
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-16 10:00:00+00:00
+  update_timestamp: 2024-01-16 08:00:00+00:00
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription
+- external_id: user_19
+  email: user_19@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_19
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-19 10:00:00+00:00
+  update_timestamp: 2024-01-19 08:00:00+00:00
+# user 20 has newsletter subscription and multiple acoustic events
+- external_id: user_20
+  email: user_20@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_20
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-20 10:00:00+00:00
+  update_timestamp: 2024-01-20 08:00:00+00:00
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- external_id: user_21
+  email: user_21@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_21
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-21 10:00:00+00:00
+  update_timestamp: 2024-01-21 08:00:00+00:00
+# user 22 has waitlist subscription to vpn
+- external_id: user_22
+  email: user_22@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_22
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-22 10:00:00+00:00
+  update_timestamp: 2024-01-22 08:00:00+00:00
+# user 23 has newsletter subscription not in the subscription map
+# user 24 has waitlist subscription not on the subscription map

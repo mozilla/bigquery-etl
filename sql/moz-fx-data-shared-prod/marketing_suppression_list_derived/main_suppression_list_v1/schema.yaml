@@ -1,0 +1,17 @@
+fields:
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: Email on the suppression list
+- name: suppressed_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp it the email first showed up on one of the suppression lists.
+- name: suppression_reason
+  type: STRING
+  mode: NULLABLE
+  description: Reason for the mail to be on the suppression list
+- name: suppression_source
+  type: STRING
+  mode: NULLABLE
+  description: On which suppression list did the record first appear.

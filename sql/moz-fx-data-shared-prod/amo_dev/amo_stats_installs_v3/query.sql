@@ -6,12 +6,12 @@ WITH addon_id_lookup AS (
     addon_id,
     TO_HEX(SHA256(addon_id)) AS hashed_addon_id
   FROM
-    amo_dev.amo_stats_dau_v2
+    `moz-fx-data-shared-prod.amo_dev.amo_stats_dau_v2`
 )
 SELECT
   installs.*
 FROM
-  amo_prod.amo_stats_installs_v3 AS installs
+  `moz-fx-data-shared-prod.amo_prod.amo_stats_installs_v3` AS installs
 -- This join will filter out all addon_ids that are not already present
 -- in the dev dau table, so we don't need to duplicate the list of addons
 -- approved for dev here.

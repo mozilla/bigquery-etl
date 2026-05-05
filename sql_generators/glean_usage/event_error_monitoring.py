@@ -23,13 +23,13 @@ class EventErrorMonitoring(GleanTable):
     """Represents the generated aggregated table for event error monitoring."""
 
     def __init__(self) -> None:
-        self.no_init = False
+        """Initialize."""
         self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = AGGREGATE_TABLE_NAME
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_v1"
 
     def generate_across_apps(
@@ -46,26 +46,36 @@ class EventErrorMonitoring(GleanTable):
             and s.bq_table == "events_v1"
         ]
 
-        default_events_table = ConfigLoader.get(
+        default_event_table = ConfigLoader.get(
             "generate",
             "glean_usage",
             "events_monitoring",
             "default_event_table",
             fallback="events_v1",
         )
-        events_table_overwrites = ConfigLoader.get(
-            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
+
+        # Skip any not-allowed app.
+        skip_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
+
+        apps = [
+            app_ids_info
+            for app_name, app_ids_info in apps.items()
+            if app_name not in skip_apps
+            # errors are from metrics in glean-core/js; nothing to monitor for server apps
+            and "glean-server" not in app_ids_info[0]["dependencies"]
+            and "glean-server-metrics-compat" not in app_ids_info[0]["dependencies"]
+        ]
 
         render_kwargs = dict(
             project_id=project_id,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",
             apps=apps,
             prod_datasets=prod_datasets_with_event,
-            default_events_table=default_events_table,
-            events_table_overwrites=events_table_overwrites,
+            default_events_table=default_event_table,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

@@ -3,7 +3,15 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (engine_searches, total_searches),
-  `moz-fx-data-shared-prod`.udf.normalize_monthly_searches(engine_searches) AS engine_searches,
+  `moz-fx-data-shared-prod`.udf.normalize_monthly_searches(
+    ARRAY(
+      SELECT AS STRUCT
+        COALESCE(`moz-fx-data-shared-prod`.udf.normalize_search_engine(key), "Other") AS key,
+        value
+      FROM
+        UNNEST(engine_searches)
+    )
+  ) AS engine_searches,
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_last_seen_v1`
 WHERE

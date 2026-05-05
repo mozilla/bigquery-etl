@@ -5,5 +5,11 @@ updates:
     directory: /
     schedule:
       interval: daily
-    reviewers:
-      - mozilla/data-platform-infra-wg
+    open-pull-requests-limit: 10
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]

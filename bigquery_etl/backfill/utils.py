@@ -2,7 +2,7 @@
 
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -16,6 +16,7 @@ from bigquery_etl.metadata.parse_metadata import (
     METADATA_FILE,
     DatasetMetadata,
     Metadata,
+    PartitionType,
 )
 from bigquery_etl.util import extract_from_query_path
 
@@ -27,11 +28,35 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 # currently only supporting backfilling tables with workgroup access: mozilla-confidential.
-VALID_WORKGROUP_MEMBER = ["workgroup:mozilla-confidential"]
+VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential/data-viewers"
+
+# Backfills older than this will not run due to staging table expiration
+MAX_BACKFILL_ENTRY_AGE_DAYS = 28
+
+# default retention limit to prevent backfills from accidentally querying empty partitions
+NBR_DAYS_RETAINED = 775
+
+
+def get_effective_retention_days(metadata: Metadata) -> int:
+    """Return the effective retention limit in days.
+
+    Uses the smaller of NBR_DAYS_RETAINED and the table's partition expiration_days from
+    bigquery.time_partitioning.expiration_days in metadata.yaml, if set.
+    """
+    retention = NBR_DAYS_RETAINED
+    if (
+        metadata.bigquery
+        and metadata.bigquery.time_partitioning
+        and metadata.bigquery.time_partitioning.expiration_days is not None
+    ):
+        retention = min(
+            retention, int(metadata.bigquery.time_partitioning.expiration_days)
+        )
+    return retention
 
 
 def get_entries_from_qualified_table_name(
-    sql_dir, qualified_table_name, status=None
+    sql_dir, qualified_table_name, status=None, table_not_exists_ok=False
 ) -> List[Backfill]:
     """Return backfill entries from qualified table name."""
     backfills = []
@@ -40,7 +65,9 @@ def get_entries_from_qualified_table_name(
     table_path = Path(sql_dir) / project / dataset / table
 
     if not table_path.exists():
-        click.echo(f"{project}.{dataset}.{table}" + " does not exist")
+        if table_not_exists_ok:
+            return []
+        click.echo(f"{project}.{dataset}.{table} does not exist")
         sys.exit(1)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
@@ -56,10 +83,12 @@ def get_entries_from_qualified_table_name(
 def get_qualified_table_name_to_entries_map_by_project(
     sql_dir, project_id: str, status: Optional[str] = None
 ) -> Dict[str, List[Backfill]]:
-    """Return backfill entries from project."""
+    """Return backfill entries from project or all projects if project_id=None is given."""
     backfills_dict: dict = {}
 
-    backfill_files = Path(sql_dir).glob(f"{project_id}/*/*/{BACKFILL_FILE}")
+    project_id_glob = project_id if project_id is not None else "*"
+
+    backfill_files = Path(sql_dir).glob(f"{project_id_glob}/*/*/{BACKFILL_FILE}")
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
@@ -87,25 +116,99 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
 # TODO: It would be better to take in a backfill object.
 def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
     """Return full table name where processed backfills are stored."""
-    _, _, table = qualified_table_name_matching(qualified_table_name)
-    backfill_table_id = f"{table}_{entry_date}".replace("-", "_")
+    _, dataset, table = qualified_table_name_matching(qualified_table_name)
+    backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
 
 def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) -> str:
     """Return full table name where backup of production table is stored."""
-    _, _, table = qualified_table_name_matching(qualified_table_name)
-    cloned_table_id = f"{table}_backup_{entry_date}".replace("-", "_")
+    _, dataset, table = qualified_table_name_matching(qualified_table_name)
+    cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+
+
+def validate_table_metadata(
+    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+) -> List[str]:
+    """Run all metadata.yaml validation checks and return list of error strings."""
+    if ignore_missing_metadata:
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        metadata_exists = (
+            Path(sql_dir) / project / dataset / table / METADATA_FILE
+        ).exists()
+        if not metadata_exists:
+            print(
+                f"Skipping {qualified_table_name} validation because of missing metadata.yaml"
+            )
+            return []
+
+    errors = []
+    if not validate_depends_on_past(sql_dir, qualified_table_name):
+        errors.append(
+            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}"
+        )
+
+    if not validate_partitioning_type(sql_dir, qualified_table_name):
+        errors.append(
+            f"Unsupported table partitioning type:  {qualified_table_name}, "
+            "only day and month partitioning are supported."
+        )
+
+    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+        errors.append(
+            "Only mozilla-confidential workgroups are supported. "
+            f"{qualified_table_name} contains workgroup access that is not supported"
+        )
+
+    return errors
+
+
+def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
+    """Check if the table depends on past and has null date_partition_parameter.
+
+    Fail if depends_on_past=true and date_partition_parameter=null
+    """
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+
+    table_metadata = Metadata.from_file(table_metadata_path)
+
+    if (
+        "depends_on_past" in table_metadata.scheduling
+        and "date_partition_parameter" in table_metadata.scheduling
+    ):
+        return not (
+            table_metadata.scheduling["depends_on_past"]
+            and table_metadata.scheduling["date_partition_parameter"] is None
+        )
+
+    return True
+
+
+def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
+    """Check if the partitioning type is supported."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+
+    table_metadata = Metadata.from_file(table_metadata_path)
+
+    if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
+        return table_metadata.bigquery.time_partitioning.type in [
+            PartitionType.DAY,
+            PartitionType.MONTH,
+        ]
+
+    return True
 
 
 def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     """
     Check if either table or dataset metadata workgroup is valid.
 
-    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential.
+    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential/data-viewers.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     query_file = Path(sql_dir) / project / dataset / table / "query.sql"
@@ -113,8 +216,8 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
     table_metadata_path = dataset_path / table / METADATA_FILE
 
-    if not query_file.exists():
-        click.echo("No query.sql file found for {}", qualified_table_name)
+    if not query_file.exists() and not (query_file.parent / "query.py").exists():
+        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
         sys.exit(1)
 
     # check dataset level metadata
@@ -127,7 +230,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
     except FileNotFoundError as e:
         raise ValueError(
-            f"Unable to validate workgroups for {qualified_table_name}"
+            f"Unable to validate workgroups for {qualified_table_name} in dataset metadata file."
         ) from e
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
@@ -152,7 +255,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
 
 def _validate_workgroup_members(workgroup_access, metadata_filename):
-    """Return True if workgroup members is valid (workgroup:mozilla-confidential)."""
+    """Return True if workgroup members is valid (workgroup:mozilla-confidential/data-viewers)."""
     if workgroup_access:
         for workgroup in workgroup_access:
             if metadata_filename == METADATA_FILE:
@@ -160,7 +263,7 @@ def _validate_workgroup_members(workgroup_access, metadata_filename):
             elif metadata_filename == DATASET_METADATA_FILE:
                 members = workgroup["members"]
 
-            if members == VALID_WORKGROUP_MEMBER:
+            if VALID_WORKGROUP_MEMBER in members:
                 return True
 
     return False
@@ -185,8 +288,10 @@ def get_scheduled_backfills(
     project: str,
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
+    ignore_old_entries: bool = False,
+    ignore_missing_metadata: bool = False,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate."""
+    """Return backfill entries to initiate or complete."""
     client = bigquery.Client(project=project)
 
     if qualified_table_name:
@@ -200,12 +305,28 @@ def get_scheduled_backfills(
             sql_dir, project, status
         )
 
+    if ignore_old_entries:
+        min_backfill_date = date.today() - timedelta(days=MAX_BACKFILL_ENTRY_AGE_DAYS)
+    else:
+        min_backfill_date = None
+
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
         # do not return backfill if not mozilla-confidential
-        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-            continue
+        try:
+            if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+                print(
+                    f"Skipping backfill for {qualified_table_name} because of unsupported metadata workgroups."
+                )
+                continue
+        except FileNotFoundError:
+            if ignore_missing_metadata:
+                print(
+                    f"Skipping backfill for {qualified_table_name} because table metadata is missing."
+                )
+            else:
+                raise
 
         if not entries:
             continue
@@ -216,6 +337,14 @@ def get_scheduled_backfills(
             )
 
         entry_to_process = entries[0]
+        if (
+            min_backfill_date is not None
+            and entry_to_process.entry_date < min_backfill_date
+        ):
+            print(
+                f"Skipping backfill for {qualified_table_name} because entry date is too old."
+            )
+            continue
 
         if (
             BackfillStatus.INITIATE.value == status
@@ -242,6 +371,7 @@ def _should_initiate(
     staging_table = get_backfill_staging_qualified_table_name(
         qualified_table_name, backfill.entry_date
     )
+
     if _table_exists(client, staging_table):
         return False
 
@@ -262,12 +392,14 @@ def _should_complete(
         qualified_table_name, backfill.entry_date
     )
     if not _table_exists(client, staging_table):
+        click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(
         qualified_table_name, backfill.entry_date
     )
     if _table_exists(client, backup_table_name):
+        click.echo(f"Backfill backup table already exists: {backup_table_name}")
         return False
 
     return True

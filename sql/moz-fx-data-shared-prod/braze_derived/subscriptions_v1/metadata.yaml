@@ -1,0 +1,17 @@
+friendly_name: Braze Subscriptions
+description: |-
+  This table combines newsletter and waitlist subscriptions and maps them to Braze subscriptions.
+  This allows us to use Braze's subscription ID to update a user's subscribed status in Braze.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null

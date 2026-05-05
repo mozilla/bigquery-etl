@@ -1,0 +1,7 @@
+friendly_name: VAT Rates
+description: 'Import VAT rates from Google Sheets.
+
+  '
+owners:
+- phlee@mozilla.com
+- srose@mozilla.com

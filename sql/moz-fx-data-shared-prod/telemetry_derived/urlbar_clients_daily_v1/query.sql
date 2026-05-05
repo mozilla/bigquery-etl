@@ -35,6 +35,7 @@ WITH combined_urlbar_picked AS (
   SELECT
     submission_date,
     client_id,
+    profile_group_id,
     default_search_engine,
     experiments,
     app_version,
@@ -128,7 +129,7 @@ WITH combined_urlbar_picked AS (
       )
     ] AS urlbar_picked_by_type_by_position
   FROM
-    `telemetry_derived.clients_daily_joined_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -174,6 +175,7 @@ SELECT
   count_picked_by_type,
   count_picked_by_position,
   urlbar_picked_by_type_by_position,
+  combined_urlbar_picked.profile_group_id
 FROM
   combined_urlbar_picked
 FULL OUTER JOIN

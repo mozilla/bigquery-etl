@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By ISP Name
+description: Number of clients uninstalling by submission date and ISP
+owners:
+- kwindau@mozilla.com

@@ -9,3 +9,4 @@
     reported_metrics_ping: true
     min_metrics_ping_submission_date: 2022-12-30
     install_source__source_ping: metrics
+  meta_attribution_app: 'Test Meta'

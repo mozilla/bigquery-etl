@@ -1,0 +1,71 @@
+# The general structure of this config file is as follows:
+
+# apps:
+#   <app name>:
+#     criteria:
+#       <criteria name>: |
+#         <criteria SQL>
+
+apps:
+  firefox_desktop:
+    criteria:
+      any_event: |
+        true
+      chatbot_usage: |
+        event_category = 'genai.chatbot'
+        AND event_name = 'sidebar_toggle'
+        AND JSON_VALUE(event_extra.provider) <> 'none'
+      smart_tabgroup_save: |
+        event_category = 'tabgroup'
+        AND (
+          (
+            event_name = 'smart_tab_suggest'
+            AND JSON_VALUE(event_extra.action) LIKE 'save%'
+          )
+          OR (
+            event_name = 'smart_tab_topic'
+            AND JSON_VALUE(event_extra.action) = 'save'
+            )
+        )
+      linkpreview_ai_consent: |
+        event_category = 'genai.linkpreview'
+        AND event_name = 'card_ai_consent'
+        AND JSON_VALUE(event_extra.option) = 'continue'
+  firefox_ios:
+    criteria:
+      tou_accept: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name = 'accepted'
+          AND JSON_VALUE(event_extra.surface) = 'bottom_sheet'
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = 'terms_of_service_accepted'
+          )
+      tou_impressions: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name in ('impression', 'shown')
+          AND JSON_VALUE(event_extra.surface) = 'bottom_sheet'
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = 'terms_of_service_card'
+          )
+  fenix:
+    criteria:
+      tou_accept: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name = 'accepted'
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = 'terms_of_service_accepted'
+          )
+      tou_impressions: |
+        (
+          event_category = 'terms_of_use'
+          AND event_name in ('impression', 'shown')
+        ) OR (
+            event_category = 'onboarding'
+            AND event_name = 'terms_of_service_card'
+          )

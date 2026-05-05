@@ -1,0 +1,37 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: days_logged_event_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_used_pictureinpicture_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_viewed_protection_report_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: n_logged_event
+  type: INTEGER
+  mode: NULLABLE
+- name: n_created_pictureinpicture
+  type: INTEGER
+  mode: NULLABLE
+- name: n_viewed_protection_report
+  type: INTEGER
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

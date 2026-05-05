@@ -1,7 +1,10 @@
 """Methods for working with stable table schemas."""
 
 import json
+import os
+import pickle
 import tarfile
+import tempfile
 import urllib.request
 from dataclasses import dataclass
 from functools import cache
@@ -17,7 +20,7 @@ from bigquery_etl.dryrun import DryRun
 class SchemaFile:
     """Container for metadata about a JSON schema and corresponding BQ table."""
 
-    schema: dict
+    schema: list[dict]
     schema_id: str
     bq_dataset_family: str
     bq_table: str
@@ -56,7 +59,9 @@ def prod_schemas_uri():
     with the most recent production schemas deploy.
     """
     dryrun = DryRun(
-        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql", content="SELECT 1"
+        "moz-fx-data-shared-prod/firefox_desktop_stable/foo/query.sql",
+        content="SELECT 1",
+        use_cache=False,
     )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
@@ -68,6 +73,28 @@ def prod_schemas_uri():
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
     schemas_uri = prod_schemas_uri()
+
+    # create cache file path based on the schemas URI
+    commit_hash = schemas_uri.split("/")[-1].replace(".tar.gz", "")
+    cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_schemas")
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(cache_dir, f"schemas_{commit_hash}.pkl")
+
+    # check if cached file exists and load it
+    if os.path.exists(cache_file):
+        print(f"Loading cached schemas from {cache_file}")
+        try:
+            with open(cache_file, "rb") as f:
+                return pickle.load(f)
+        except (pickle.PickleError, EOFError, OSError) as e:
+            print(f"Failed to load cached schemas: {e}, re-downloading...")
+
+    print(f"Downloading schemas from {schemas_uri}")
+
+    # Clear dry run cache when downloading new schemas
+    # Schema changes could affect dry run results
+    DryRun.clear_cache()
+
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
@@ -80,7 +107,8 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 )
                 version = int(basename.split(".")[1])
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
-                bq_schema = {}
+                schema_id = schema.get("$id", "")
+                bq_schema = []
 
                 # Schemas without `bq_dataset_family` and `bq_table` metadata (like glean/glean)
                 # do not have corresponding BQ tables, so we skip them here.
@@ -90,6 +118,21 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                     or "bq_dataset_family" not in pipeline_meta
                     or "bq_table" not in pipeline_meta
                 ):
+                    continue
+
+                # Ignore temporary glean v2 schemas: https://mozilla-hub.atlassian.net/browse/DENG-10558
+                if (
+                    schema_id
+                    in [
+                        "moz://mozilla.org/schemas/glean/ping/2",
+                        "moz://mozilla.org/schemas/glean-min/ping/2",
+                    ]
+                    and version != 1
+                ):
+                    continue
+
+                # .bq files no longer being generated for these: https://mozilla-hub.atlassian.net/browse/DENG-4097
+                if version == 4 and document_type in ("first-shutdown", "main"):
                     continue
 
                 try:
@@ -103,7 +146,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 schemas.append(
                     SchemaFile(
                         schema=bq_schema,
-                        schema_id=schema.get("$id", ""),
+                        schema_id=schema_id,
                         bq_dataset_family=pipeline_meta["bq_dataset_family"],
                         bq_table=pipeline_meta["bq_table"],
                         document_namespace=document_namespace,
@@ -131,5 +174,13 @@ def get_stable_table_schemas() -> List[SchemaFile]:
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+    # Cache the processed schemas
+    try:
+        with open(cache_file, "wb") as f:
+            pickle.dump(schemas, f)
+        print(f"Cached schemas to {cache_file}")
+    except (pickle.PickleError, OSError) as e:
+        print(f"Failed to cache schemas: {e}")
 
     return schemas

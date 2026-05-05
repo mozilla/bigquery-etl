@@ -1,0 +1,36 @@
+# braze users
+---
+# user 1
+- external_id: user_1
+  email: user_1@mail.com
+  mailing_country: country_1
+  email_subscribe: subscribed
+  basket_token: token_1
+  email_lang: EN
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 14:00:00+00:00
+  fxa_id_sha256: fxa_user_1
+  fxa_primary_email: user_1_primary@mail.com
+  fxa_lang: DE
+  fxa_first_service: service_1
+  fxa_created_at: 2020-01-01 10:00:00+00:00
+  has_fxa: true
+# user 2
+- external_id: user_2_only_newsletters
+  email: user_2@mail.com
+  mailing_country: country_1
+  email_subscribe: subscribed
+  basket_token: token_1
+  email_lang: EN
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 14:00:00+00:00
+  has_fxa: false
+# user 3
+- external_id: user_3_only_waitlist
+  has_fxa: false
+# user 4
+- external_id: user_4_only_products
+  fxa_id_sha256: fxa_user_4
+  has_fxa: true
+  fxa_created_at: 2020-01-01 10:00:00+00:00
+# user 5 not in user list - should not show up

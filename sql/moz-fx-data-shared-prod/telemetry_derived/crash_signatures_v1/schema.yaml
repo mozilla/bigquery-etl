@@ -3,9 +3,11 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: REQUIRED
+  description: Timestamp when the ping is received on the server side.
 - name: document_id
   type: STRING
   mode: REQUIRED
+  description: The document ID specified in the URI when the client sent this message.
 - name: signature
   type: STRING
   mode: NULLABLE

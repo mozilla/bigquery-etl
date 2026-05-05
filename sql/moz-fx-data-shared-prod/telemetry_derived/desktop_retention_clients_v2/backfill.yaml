@@ -1,0 +1,10 @@
+2024-09-12:
+  start_date: 2021-01-01
+  end_date: 2024-09-11
+  reason: DENG-4265 - new table, need to backfill back to 2021-01-01 for KPI reporting
+  watchers:
+  - mhirose@mozilla.com
+  - vsabino@mozilla.com
+  - wichan@mozilla.com
+  status: Complete
+  shredder_mitigation: false

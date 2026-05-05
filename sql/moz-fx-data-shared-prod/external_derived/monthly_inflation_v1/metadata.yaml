@@ -1,0 +1,16 @@
+friendly_name: Inflation
+description: |-
+  Contains monthly inflation rate data by country from IMF
+owners:
+- kbammarito@mozilla.com
+labels:
+  incremental: true
+  owner1: kbammarito
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_imf_cpi_data
+bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - country

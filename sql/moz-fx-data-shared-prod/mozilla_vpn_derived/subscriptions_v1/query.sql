@@ -7,4 +7,4 @@ SELECT
   updated_at,
   type,
 FROM
-  mozilla_vpn_external.subscriptions_v1
+  `moz-fx-data-shared-prod.mozilla_vpn_external.subscriptions_v1`

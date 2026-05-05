@@ -707,7 +707,7 @@ jobs:
         name: Setup SSH key for private repo
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_KEY_BQETL_PRIVATE }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Pull down private SQL content
@@ -1419,7 +1419,7 @@ jobs:
       - name: Setup SSH keys for multiple repos
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_PRIVATE_BQETL }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_KEY_BQETL_PRIVATE }}" > ~/.ssh/id_rsa
           echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa_telemetry
           chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa_telemetry
           ssh-keyscan github.com >> ~/.ssh/known_hosts

@@ -15,14 +15,16 @@ RETURNS STRING AS (
         ARRAY_TO_STRING(
           [
             r'.i.e.ox',
+            r'\besr\b',
             r'\bf..ef[ioa]+',
             r'\bf[aie]+re?\s?[fbv]',
             r'\bf[ier]+\s?[fv][oei]?[xkc]',
+            r'\bff\b',
             r'\bfi[aeiobcfkrvx]+x',
             r'\bfirf',
             r'f.r.f.x',
             r'faiya-fokkusu',  -- fire fox (Japanese)
-            r'foxfire',
+            r'fox',
             r'huohu',  -- fire fox (Chinese)
             r'nightly',
             r'quantum',
@@ -37,13 +39,12 @@ RETURNS STRING AS (
             r'כןרקכםס',  -- yes you have been (Hebrew)
             r'פיירפוקס',  -- firefox (Hebrew)
             r'فاجا بوكس',  -- `faja buks` (Arabic)
-            r'فاير فوكس',  -- fire fox (Arabic)
-            r'فايرفوكس',  -- firefox (Arabic)
             r'فایر فاکس',  -- fire fox (Arabic)
             r'فایرفاکس',  -- firefox (Arabic)
             r'فرفاكس',  -- `firfaks` (Arabic)
             r'فري فاكس',  -- `fri faks` (Arabic)
             r'فكس',  -- `fiks` (Arabic)
+            r'فوكس',  -- fox (Arabic)
             r'فياير',  -- `fayayar` (Arabic)
             r'فير',  -- `fir` (Arabic)
             r'फायर फॉक्स',  -- fire fox (Indic)
@@ -65,9 +66,9 @@ RETURNS STRING AS (
             r'ไฟลฟอก',  -- `fil fxk` (Thai)
             r'ไฟล์ฟอก',  -- `fil fxk` (Thai)
             r'หมาไฟ',  -- fire dog (Thai)
-            r'파워폭스',  -- powerfox (Korean)
             r'파이어',  -- fire (Korean)
             r'파폭',  -- `papog` (Korean)
+            r'폭스',  -- fox (Korean)
             r'ふぁいあ',  -- `faia` (Japanese)
             r'ファイア',  -- fire (Japanese)
             r'ふあいあーふぉっくす',  -- `faia fokkusu` (Japanese)
@@ -106,10 +107,13 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
+            r'\bmpl\b',
             r'm o z i l l a',
             r'm.zil',
             r'm\w*zilla',
             r'mizolla',
+            r'mo[dnr]?zil+a',
+            r'mo[jsx]il+a',
             r'moz://a',
             r'moz:lla',
             r'moz+\w*l',

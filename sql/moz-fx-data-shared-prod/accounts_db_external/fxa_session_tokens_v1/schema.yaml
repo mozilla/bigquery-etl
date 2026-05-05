@@ -39,3 +39,6 @@ fields:
 - name: mustVerify
   type: BOOLEAN
   mode: NULLABLE
+- name: providerId
+  type: INTEGER
+  mode: NULLABLE

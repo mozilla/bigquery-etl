@@ -4,25 +4,73 @@ import fnmatch
 import os
 import re
 from fnmatch import fnmatchcase
+from functools import cache
 from glob import glob
 from pathlib import Path
-from typing import Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import click
+import requests
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.query_scheduling.utils import is_email
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-    r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
+    r"(?:query\.sql|shredder_mitigation_query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
 )
 CHECKS_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:checks\.sql)$"
 )
+GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+
+
+class QualifiedTableNameType(click.ParamType):
+    """Click parameter type for qualified table names.
+
+    Accepts project.dataset.table (with_project=True) or dataset.table (with_project=False).
+    """
+
+    name = "table_name"
+
+    def __init__(self, with_project=True):
+        """Create QualifiedTableNameType with or without project qualification."""
+        self.with_project = with_project
+
+    def convert(self, value, param, ctx):
+        """Validate and return the qualified table name string."""
+        if isinstance(value, str):
+            parts = value.split(".")
+            expected = 3 if self.with_project else 2
+            fmt = "project.dataset.table" if self.with_project else "dataset.table"
+            if len(parts) != expected:
+                self.fail(f"Expected format {fmt}, got '{value}'.", param, ctx)
+            segment_re = re.compile(r"^[a-zA-Z0-9_-]+$")
+            for part in parts:
+                if not segment_re.match(part):
+                    self.fail(
+                        f"Invalid segment '{part}' in '{value}'. "
+                        "Only alphanumeric characters, underscores, and hyphens are allowed.",
+                        param,
+                        ctx,
+                    )
+        return value
+
+
+class EmailType(click.ParamType):
+    """Click parameter type that validates email addresses."""
+
+    name = "email"
+
+    def convert(self, value, param, ctx):
+        """Validate that the value is an email address."""
+        if not is_email(value):
+            self.fail(f"'{value}' is not a valid email address.", param, ctx)
+        return value
 
 
 def is_valid_dir(ctx, param, value):
@@ -101,7 +149,12 @@ def paths_matching_checks_pattern(
 
 
 def paths_matching_name_pattern(
-    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+    pattern,
+    sql_path,
+    project_id,
+    files=["*.sql"],
+    file_regex=QUERY_FILE_RE,
+    silent=False,
 ) -> List[Path]:
     """Return paths to queries matching the name pattern."""
     matching_files: List[Path] = []
@@ -113,7 +166,7 @@ def paths_matching_name_pattern(
     if isinstance(pattern, tuple) or isinstance(pattern, list):
         for p in pattern:
             matching_files += paths_matching_name_pattern(
-                str(p), sql_path, project_id, files, file_regex
+                str(p), sql_path, project_id, files, file_regex, silent
             )
     elif os.path.isdir(pattern):
         for root, _, _ in os.walk(pattern, followlinks=True):
@@ -134,7 +187,6 @@ def paths_matching_name_pattern(
             all_matching_files.extend(
                 map(Path, glob(f"{sql_path}/**/{file}", recursive=True))
             )
-
         for query_file in all_matching_files:
             match = file_regex.match(str(query_file))
             if match:
@@ -147,10 +199,10 @@ def paths_matching_name_pattern(
                 elif project_id and fnmatchcase(query_name, f"{project_id}.{pattern}"):
                     matching_files.append(query_file)
 
-    if len(matching_files) == 0:
-        print(f"No files matching: {pattern}")
+    if len(matching_files) == 0 and not silent:
+        print(f"No files matching: {pattern}, {files}")
 
-    return matching_files
+    return list(set(matching_files))
 
 
 sql_dir_option = click.option(
@@ -195,6 +247,25 @@ def project_id_option(default=None, required=False):
         help="GCP project ID",
         default=default,
         callback=is_valid_project,
+        required=required,
+    )
+
+
+def multi_project_id_option(default=None, required=False):
+    """Generate a multi project-id option."""
+    if default is None:
+        default = []
+    return click.option(
+        "--project-ids",
+        "--project_ids",
+        "--project-id",
+        "--project_id",
+        help="GCP project IDs",
+        default=default,
+        multiple=True,
+        callback=lambda ctx, param, value: [
+            is_valid_project(ctx, param, v) for v in value
+        ],
         required=required,
     )
 
@@ -251,3 +322,66 @@ def temp_dataset_option(
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
     )
+
+
+def defer_option():
+    """Generate a --defer-to-target option for smart reference rewriting.
+
+    Only rewrites references to artifacts that exist in the target directory;
+    everything else stays pointing at prod.
+    """
+    return click.option(
+        "--defer-to-target",
+        "--defer_to_target",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite references to artifacts that exist in the target directory. "
+            "Other references remain pointing to prod. "
+            "Used for development workflows."
+        ),
+    )
+
+
+def isolated_option():
+    """Generate an --isolated option for full reference rewriting + stub creation.
+
+    Rewrites *all* 3-part references in the query to point at the target
+    project, and creates empty stub tables in the target for any referenced
+    artifact that doesn't already exist there. Used to fully isolate a
+    development environment from prod.
+    """
+    return click.option(
+        "--isolated",
+        is_flag=True,
+        default=False,
+        help=(
+            "Rewrite all references to point at the target project and create "
+            "empty stub tables in the target for any referenced artifact that "
+            "isn't already deployed there. Mutually exclusive with "
+            "--defer-to-target."
+        ),
+    )
+
+
+@cache
+def get_glean_app_id_to_app_name_mapping() -> Dict[str, str]:
+    """Return a dict where key is the channel app id and the value is the shared app name.
+
+    e.g. {
+        "org_mozilla_firefox": "fenix",
+        "org_mozilla_firefox_beta": "fenix",
+        "org_mozilla_ios_firefox": "firefox_ios",
+        "org_mozilla_ios_firefoxbeta": "firefox_ios",
+    }
+    """
+    response = requests.get(GLEAN_APP_LISTINGS_URL)
+    response.raise_for_status()
+
+    app_listings = response.json()
+
+    return {
+        app["bq_dataset_family"]: app["app_name"]
+        for app in app_listings
+        if "bq_dataset_family" in app and "app_name" in app
+    }

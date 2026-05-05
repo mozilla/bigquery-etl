@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION event_analysis.create_funnel_regex(
 RETURNS STRING AS (
   IF(
     ARRAY_LENGTH(step_regexes) > 0,
-    CONCAT('(', ARRAY_TO_STRING(step_regexes, IF(intermediate_steps, '(?:.*?)', '')), ')'),
+    CONCAT('(', ARRAY_TO_STRING(step_regexes, IF(intermediate_steps, r'(?:.|\n)*?', '')), ')'),
     ''
   )
 );
@@ -13,7 +13,7 @@ RETURNS STRING AS (
 -- Tests
 SELECT
   assert.equals(
-    '((?:a|b)(?:.*?)(?:b))',
+    r'((?:a|b)(?:.|\n)*?(?:b))',
     event_analysis.create_funnel_regex(['(?:a|b)', '(?:b)'], TRUE)
   ),
   assert.equals('((?:a|b)(?:b))', event_analysis.create_funnel_regex(['(?:a|b)', '(?:b)'], FALSE)),

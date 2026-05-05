@@ -10,6 +10,9 @@ WITH subscriptions_history AS (
     cancel_at,
     cancel_at_period_end,
     canceled_at,
+    cancellation_details_comment,
+    cancellation_details_reason,
+    cancellation_details_feedback,
     -- `billing` was renamed `collection_method`.
     COALESCE(collection_method, billing) AS collection_method,
     created,
@@ -29,12 +32,34 @@ WITH subscriptions_history AS (
     trial_start,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
-  WHERE
-    {% if is_init() %}
-      TRUE
-    {% else %}
-      DATE(_fivetran_start) >= @date
-    {% endif %}
+),
+new_subscriptions_history AS (
+  {% if is_init() %}
+    SELECT
+      *
+    FROM
+      subscriptions_history
+  {% else %}
+    WITH latest_subscriptions_changelog AS (
+      SELECT
+        subscription.id AS subscription_id,
+        MAX(`timestamp`) AS max_timestamp
+      FROM
+        `moz-fx-data-shared-prod`.stripe_external.subscriptions_changelog_v1
+      GROUP BY
+        subscription.id
+    )
+    SELECT
+      subscriptions_history.*
+    FROM
+      subscriptions_history
+    LEFT JOIN
+      latest_subscriptions_changelog
+      USING (subscription_id)
+    WHERE
+      subscriptions_history._fivetran_start > latest_subscriptions_changelog.max_timestamp
+      OR latest_subscriptions_changelog.max_timestamp IS NULL
+  {% endif %}
 ),
 subscription_items AS (
   SELECT
@@ -93,7 +118,7 @@ subscriptions_history_with_plan_metadata AS (
         _fivetran_start
     ) AS lead_previous_plan_id
   FROM
-    subscriptions_history
+    new_subscriptions_history
 ),
 subscriptions_history_with_end_plan_ids AS (
   -- Determine the plan ID for the last record in each time span that a subscription had a particular plan.
@@ -148,7 +173,7 @@ subscriptions_history_tax_rates AS (
         tax_rates.created
     ) AS tax_rates
   FROM
-    subscriptions_history
+    new_subscriptions_history AS subscriptions_history
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.subscription_tax_rate_v1 AS subscription_tax_rates
     ON subscriptions_history.subscription_id = subscription_tax_rates.subscription_id
@@ -189,11 +214,15 @@ subscriptions_history_latest_discounts AS (
         1
     )[SAFE_ORDINAL(1)] AS discount
   FROM
-    subscriptions_history
+    new_subscriptions_history AS subscriptions_history
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v1 AS subscription_discounts
+    `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v2 AS subscription_discounts
     ON subscriptions_history.subscription_id = subscription_discounts.subscription_id
     AND subscriptions_history._fivetran_start >= subscription_discounts.start
+    AND (
+      subscriptions_history._fivetran_start < subscription_discounts.`end`
+      OR subscription_discounts.`end` IS NULL
+    )
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
     ON subscription_discounts.coupon_id = coupons.id
@@ -261,7 +290,12 @@ SELECT
     subscriptions_history.start_date,
     subscriptions_history.status,
     subscriptions_history.trial_end,
-    subscriptions_history.trial_start
+    subscriptions_history.trial_start,
+    STRUCT(
+      subscriptions_history.cancellation_details_comment AS comment,
+      subscriptions_history.cancellation_details_feedback AS feedback,
+      subscriptions_history.cancellation_details_reason AS reason
+    ) AS cancellation_details
   ) AS subscription
 FROM
   subscriptions_history_with_plan_ids AS subscriptions_history
@@ -280,9 +314,3 @@ LEFT JOIN
 LEFT JOIN
   subscriptions_history_latest_discounts
   ON subscriptions_history.id = subscriptions_history_latest_discounts.subscription_history_id
-WHERE
-  {% if is_init() %}
-    DATE(subscriptions_history._fivetran_start) < CURRENT_DATE()
-  {% else %}
-    DATE(subscriptions_history._fivetran_start) = @date
-  {% endif %}

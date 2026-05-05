@@ -15,4 +15,4 @@ SELECT
     ELSE 'Unknown'
   END AS lifecycle_stage,
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.desktop_retention_clients_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_retention_clients_v2`

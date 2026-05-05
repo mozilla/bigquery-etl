@@ -6,8 +6,10 @@ owners:
 - efixler@mozilla.com
 labels:
   incremental: true
+  table_type: client_id
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: false
+deprecated: true

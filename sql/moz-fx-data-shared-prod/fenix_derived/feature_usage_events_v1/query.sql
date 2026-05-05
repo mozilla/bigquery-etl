@@ -4,8 +4,8 @@ WITH baseline_clients AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country
+    normalized_channel,
+    normalized_country_code,
   FROM
     `moz-fx-data-shared-prod.fenix.baseline`
   WHERE
@@ -28,10 +28,11 @@ WITH baseline_clients AS (
 client_attribution AS (
   SELECT
     client_id,
-    channel,
     adjust_network,
+    distribution_id,
+    normalized_channel,
   FROM
-    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
+    `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
 default_browser AS (
   SELECT
@@ -41,8 +42,8 @@ default_browser AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country,
+    normalized_channel,
+    normalized_country_code,
     COALESCE(metrics.boolean.metrics_default_browser, FALSE) AS is_default_browser,
   FROM
     `moz-fx-data-shared-prod.fenix.metrics` AS metric_ping
@@ -64,8 +65,8 @@ event_ping_clients_feature_usage AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country,
+    normalized_channel,
+    normalized_country_code,
     /*Logins*/
     --autofill
     COUNTIF(
@@ -330,7 +331,15 @@ event_ping_clients_feature_usage AS (
     COUNTIF(
       event_category = 'home_screen'
       AND event_name = 'customize_home_clicked'
-    ) AS home_page_customize_home_clicked
+    ) AS home_page_customize_home_clicked,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_click'
+    ) AS top_sites_contile_click,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_impression'
+    ) AS top_sites_contile_impression,
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE
@@ -343,16 +352,17 @@ event_ping_clients_feature_usage AS (
   GROUP BY
     ping_date,
     client_id,
-    channel,
-    country
+    normalized_channel,
+    normalized_country_code
 )
 SELECT
   @submission_date AS submission_date,
   ping_date,
-  channel,
-  country,
+  normalized_channel AS channel,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
+  distribution_id,
 /*Logins*/
 --autofill_prompt_shown
   SUM(autofill_password_detected_logins) AS autofill_password_detected_logins,
@@ -938,22 +948,42 @@ SELECT
       WHEN home_page_customize_home_clicked > 0
         THEN client_id
     END
-  ) AS home_page_customize_home_clicked_users
+  ) AS home_page_customize_home_clicked_users,
+/*Sponsored Tiles*/
+--top_sites_contile_click
+  SUM(top_sites_contile_click) AS top_sites_contile_click,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_click > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_click_users,
+--top_sites_contile_impression
+  SUM(top_sites_contile_impression) AS top_sites_contile_impression,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_impression > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_impression_users,
 FROM
   event_ping_clients_feature_usage
 INNER JOIN
   baseline_clients
-  USING (ping_date, client_id, channel, country)
+  USING (ping_date, client_id, normalized_channel, normalized_country_code)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id, normalized_channel)
 LEFT JOIN
   default_browser
-  USING (ping_date, client_id, channel, country)
+  USING (ping_date, client_id, normalized_channel, normalized_country_code)
 GROUP BY
   submission_date,
   ping_date,
   channel,
   country,
   adjust_network,
-  is_default_browser
+  is_default_browser,
+  distribution_id

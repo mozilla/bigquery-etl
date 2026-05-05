@@ -3,7 +3,6 @@ friendly_name: {{ name }} Event Types
 description: >
   A materialized view of the most recent day of event_types data
 owners:
-  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: {{ dataset }}

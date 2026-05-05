@@ -37,15 +37,18 @@ check_results AS (
     events_new
   FULL OUTER JOIN
     events_old
-    USING (day, event_name)
+    USING (`day`, event_name)
   WHERE
-    events_new.count_new IS NULL
-    OR events_old.count_old IS NULL
-    OR (
-      (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
-    -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
-      OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+    (
+      events_new.count_new IS NULL
+      OR events_old.count_old IS NULL
+      OR (
+        (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
+        -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
+        OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+      )
     )
+    AND events_new.count_new < events_old.count_old -- we no longer need old events, it's safe to ignore if they're not instrumented
 )
 SELECT
   IF(
@@ -61,6 +64,7 @@ FROM
 WITH events_new AS (
   SELECT
     DATE(e.submission_timestamp) AS day,
+    client_info.app_channel,
     CONCAT(event.category, "_", event.name) AS event_name,
     COUNT(*) AS count_new
   FROM
@@ -71,11 +75,13 @@ WITH events_new AS (
     DATE(submission_timestamp) = @submission_date
   GROUP BY
     DATE(e.submission_timestamp),
+    client_info.app_channel,
     CONCAT(event.category, "_", event.name)
 ),
 events_old AS (
   SELECT
     DATE(submission_timestamp) AS day,
+    client_info.app_channel,
     metrics.string.event_name AS event_name,
     COUNT(*) AS count_old
   FROM
@@ -84,6 +90,7 @@ events_old AS (
     DATE(submission_timestamp) = @submission_date
   GROUP BY
     DATE(submission_timestamp),
+    client_info.app_channel,
     metrics.string.event_name
 ),
 check_results AS (
@@ -98,24 +105,24 @@ check_results AS (
     events_new
   FULL OUTER JOIN
     events_old
-    USING (day, event_name)
+    USING (`day`, event_name, app_channel)
   WHERE
     event_name IS NOT NULL
-  -- these were recently added in https://mozilla-hub.atlassian.net/browse/FXA-9978
-  -- will be removed from here when this lands in production
-    AND event_name NOT IN (
-      'login_backup_code_submit',
-      'login_backup_code_success_view',
-      'login_backup_code_view'
-    )
+    -- temporary filter until https://github.com/mozilla/fxa/pull/17565 lands in prod
+    AND event_name NOT IN ('two_step_auth_enter_code_view', 'two_step_auth_codes_view')
+    -- filter out data submitted from local development runs
+    AND app_channel IN ('production', 'stage')
+    -- glean_page_load and click events are automatically sent only in `events` ping
+    AND event_name NOT IN ('glean_page_load', 'glean_element_click')
     AND (
-      (events_new.count_new IS NULL AND events_old.count_old > 1) -- ignore erroneous event names
-      OR (events_old.count_old IS NULL AND events_new.count_new > 1)
+      (events_new.count_new IS NULL AND events_old.count_old > 10) -- ignore erroneous event names
+      OR (events_old.count_old IS NULL AND events_new.count_new > 10)
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.01
+      ) > 0.15 -- low-volume events can have higher relative discrepancies
     )
+    AND events_new.count_new < events_old.count_old -- we no longer need old events, it's safe to ignore if they're not instrumented
 )
 SELECT
   IF(

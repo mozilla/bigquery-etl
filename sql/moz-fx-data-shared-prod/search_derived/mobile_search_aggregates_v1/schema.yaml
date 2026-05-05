@@ -2,6 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: engine
   type: STRING
@@ -11,33 +12,43 @@ fields:
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The name of the browser.
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
 - mode: NULLABLE
   name: os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: Version of the operating system version running at the client. E.g.
+    "100.9.11".
 - mode: NULLABLE
   name: client_count
   type: INTEGER
@@ -73,4 +84,7 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: normalized_app_name_os
+  type: STRING
+- mode: NULLABLE
+  name: normalized_default_search_engine
   type: STRING

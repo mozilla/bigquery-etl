@@ -208,5 +208,10 @@
     "type": "BOOLEAN",
     "name": "policies_is_enterprise",
     "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_sap_monetizable",
+    "mode": "NULLABLE"
   }
 ]

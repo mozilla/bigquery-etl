@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Issue Multiselect History
+description: |-
+  Jira issue multiselect history for Service Desk synced via Fivetran.

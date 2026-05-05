@@ -5,7 +5,7 @@ description: |-
   campaign names change over time, we will
   take the last campaign name found.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: false
 scheduling:

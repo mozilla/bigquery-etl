@@ -1,0 +1,5 @@
+friendly_name: Newtab Interactions Daily Aggregates
+description: |-
+  A daily aggregation of newtab interactions, partitioned by day.
+owners:
+- gkatre@mozilla.com

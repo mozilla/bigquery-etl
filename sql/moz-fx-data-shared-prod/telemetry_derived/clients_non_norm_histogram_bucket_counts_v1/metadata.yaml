@@ -1,6 +1,0 @@
-friendly_name: |-
-  Telemetry Derived - Clients Non Normalized Histogram Bucket Counts
-description: |-
-  Not normalized Histogram Buckets aggregates
-owners:
-- efilho@mozilla.com

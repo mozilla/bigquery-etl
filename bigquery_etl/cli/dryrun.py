@@ -5,16 +5,16 @@ import glob
 import os
 import re
 import sys
+import time
 from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set, Tuple
 
 import rich_click as click
-from google.cloud import bigquery
 
-from ..cli.utils import is_authenticated
+from ..cli.utils import billing_project_option, is_authenticated
 from ..config import ConfigLoader
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_credentials, get_id_token
 
 
 @click.command(
@@ -64,12 +64,14 @@ from ..dryrun import DryRun
     help="GCP project to perform dry run in when --use_cloud_function=False",
     default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
 )
+@billing_project_option()
 def dryrun(
     paths: List[str],
     use_cloud_function: bool,
     validate_schemas: bool,
     respect_skip: bool,
     project: str,
+    billing_project: str,
 ):
     """Perform a dry run."""
     file_names = (
@@ -100,7 +102,7 @@ def dryrun(
 
     if not sql_files:
         click.echo("Skipping dry run because no queries matched")
-        sys.exit(0)
+        return
 
     if not use_cloud_function and not is_authenticated():
         click.echo(
@@ -108,12 +110,22 @@ def dryrun(
         )
         sys.exit(1)
 
-    sql_file_valid = partial(
-        _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas
-    )
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
+    sql_file_valid = partial(
+        _sql_file_valid,
+        use_cloud_function,
+        respect_skip,
+        validate_schemas,
+        credentials=credentials,
+        id_token=id_token,
+        billing_project=billing_project,
+    )
+    start_time = time.time()
     with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
+    print(f"Total dryrun time: {time.time() - start_time:.2f}s")
 
     failures = sorted([r[1] for r in result if not r[0]])
     if len(failures) > 0:
@@ -126,19 +138,22 @@ def dryrun(
 
 
 def _sql_file_valid(
-    use_cloud_function, project, respect_skip, validate_schemas, sqlfile
+    use_cloud_function,
+    respect_skip,
+    validate_schemas,
+    sqlfile,
+    credentials,
+    id_token,
+    billing_project=None,
 ) -> Tuple[bool, str]:
-    if not use_cloud_function:
-        client = bigquery.Client(project=project)
-    else:
-        client = None
-
     """Dry run the SQL file."""
     result = DryRun(
         sqlfile,
         use_cloud_function=use_cloud_function,
-        client=client,
+        credentials=credentials,
         respect_skip=respect_skip,
+        id_token=id_token,
+        billing_project=billing_project,
     )
     if validate_schemas:
         try:

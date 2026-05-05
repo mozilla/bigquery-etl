@@ -7,11 +7,12 @@ labels:
   application: firefox_ios
   incremental: true
   owner1: rzhao
-scheduling:
-  dag_name: bqetl_mobile_feature_usage
+  table_type: aggregate
+  shredder_mitigation: true
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+deprecated: true

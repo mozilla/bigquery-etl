@@ -137,6 +137,7 @@ clients AS (
     normalized_channel,
     normalized_os_version,
     sample_id,
+    profile_group_id
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE

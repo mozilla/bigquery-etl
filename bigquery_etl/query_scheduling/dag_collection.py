@@ -10,7 +10,34 @@ from pathlib import Path
 import yaml
 from black import FileMode, format_file_contents
 
+from bigquery_etl.dependency import extract_table_references_without_views
+from bigquery_etl.query_scheduling.copy_deduplicate_task_markers import (
+    write_task_markers_dag,
+)
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
+from bigquery_etl.query_scheduling.utils import negate_timedelta_string
+from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+
+
+def _precompute_task_references(task):
+    """Pre-compute expensive table references parsing and return result."""
+    if (
+        task.is_python_script
+        or task.is_bigeye_check
+        or task.referenced_tables is not None
+    ):
+        return (task.task_key, task.referenced_tables or [])
+
+    query_files = [Path(task.query_file)]
+    if task.multipart:
+        query_files = list(Path(task.query_file_path).glob("*.sql"))
+
+    table_names = {
+        tuple(table.split("."))
+        for query_file in query_files
+        for table in extract_table_references_without_views(query_file)
+    }
+    return (task.task_key, sorted(table_names))
 
 
 class DagCollection:
@@ -73,6 +100,7 @@ class DagCollection:
                     and dataset == task.dataset
                     and table == f"{task.table}_{task.version}"
                     and not task.is_dq_check
+                    and not task.is_bigeye_check
                 ):
                     return task
 
@@ -93,6 +121,20 @@ class DagCollection:
 
         return None
 
+    def fail_bigeye_checks_task_for_table(self, project, dataset, table):
+        """Return the task that schedules the BigEye checks for the provided table."""
+        for dag in self.dags:
+            for task in dag.tasks:
+                if (
+                    project == task.project
+                    and dataset == task.dataset
+                    and table == f"{task.table}_{task.version}"
+                    and task.is_bigeye_check
+                ):
+                    return task
+
+        return None
+
     def with_tasks(self, tasks):
         """Assign tasks to their corresponding DAGs."""
         public_data_json_dag = None
@@ -108,7 +150,9 @@ class DagCollection:
             dag.add_tasks(list(group))
 
         public_json_tasks = [
-            task for task in tasks if task.public_json and not task.is_dq_check
+            task
+            for task in tasks
+            if task.public_json and not (task.is_dq_check or task.is_bigeye_check)
         ]
         if public_json_tasks:
             for dag in self.dags:
@@ -130,8 +174,14 @@ class DagCollection:
                     for upstream_dependency in (
                         _task.depends_on + _task.upstream_dependencies
                     ):
+                        execution_delta = None
+                        if upstream_dependency.execution_delta:
+                            # Make the execution delta relative to the upstream dependency.
+                            execution_delta = negate_timedelta_string(
+                                upstream_dependency.execution_delta
+                            )
                         downstream_dependencies[upstream_dependency.task_key].append(
-                            _task.to_ref(self)
+                            _task.to_ref(self, execution_delta=execution_delta)
                         )
             self._downstream_dependencies = downstream_dependencies
 
@@ -168,10 +218,35 @@ class DagCollection:
         except Exception:
             pass
 
+        # Pre-load stable table schemas before spawning workers to avoid loading multiple times
+        # This downloads and caches schemas once in the main process
+        try:
+            get_stable_table_schemas()
+        except Exception:
+            # If schema loading fails, continue anyway (some tasks may not need them)
+            pass
+
+        # Pre-compute referenced tables for all tasks in parallel
+        # This is the expensive I/O-heavy part (SQL parsing via extract_table_references_without_views)
+        all_tasks = [task for dag in self.dags for task in dag.tasks]
+
+        with get_context("spawn").Pool(8) as p:
+            task_references = p.map(_precompute_task_references, all_tasks)
+
+        # Update tasks with precomputed references
+        task_map = {task.task_key: task for task in all_tasks}
+        for task_key, referenced_tables in task_references:
+            task_map[task_key].referenced_tables = referenced_tables
+
+        # Resolve dependencies sequentially
         for dag in self.dags:
             dag.with_upstream_dependencies(self)
             dag.with_downstream_dependencies(self)
 
+        # Create copy_deduplicate_task_markers DAG to support task state propagation
+        write_task_markers_dag(self, output_dir)
+
+        # Finally, parallelize DAG-to-Airflow conversion
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
         with get_context("spawn").Pool(8) as p:
             p.map(to_airflow_dag, self.dags)

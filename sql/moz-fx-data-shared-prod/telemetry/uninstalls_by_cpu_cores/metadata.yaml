@@ -1,0 +1,4 @@
+friendly_name: Uninstalls By Cpu Cores
+description: Records number of unique clients uninstalling by day and CPU core count
+owners:
+- kwindau@mozilla.com

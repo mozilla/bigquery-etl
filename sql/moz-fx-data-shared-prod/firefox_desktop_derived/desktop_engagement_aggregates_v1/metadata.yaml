@@ -1,0 +1,25 @@
+friendly_name: Desktop Engagement Aggregates
+description: |-
+  Contains aggregated DAU, WAU, and MAU by different attributes for engagement ratio calculation.
+owners:
+- kwindau@mozilla.com
+labels:
+  level: bronze
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_desktop_engagement_model
+scheduling:
+  dag_name: bqetl_desktop_engagement_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - normalized_os
+require_column_descriptions: true

@@ -17,7 +17,7 @@ WHERE
   {% endif %}
   AND client_info.app_display_version NOT LIKE '%.dev%'
 GROUP BY
-  date,
+  `date`,
   mozregression_version,
   mozregression_variant,
   app_used,

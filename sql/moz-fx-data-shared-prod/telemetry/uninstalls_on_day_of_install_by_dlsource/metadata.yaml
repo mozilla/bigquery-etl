@@ -1,0 +1,5 @@
+friendly_name: Uninstalls On Day Of Install By Dlsource
+description: Uninstalls by attribution_dlsource split by if the uninstall was on date
+  of installation or not
+owners:
+- kwindau@mozilla.com

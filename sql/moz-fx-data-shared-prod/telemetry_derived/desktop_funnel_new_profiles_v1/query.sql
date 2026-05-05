@@ -17,7 +17,7 @@ WITH pop AS (
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 )
 SELECT
-  date,
+  `date`,
   channel,
   build_id,
   os,
@@ -34,7 +34,7 @@ LEFT JOIN
 WHERE
   rn = 1
 GROUP BY
-  date,
+  `date`,
   country_name,
   channel,
   build_id,

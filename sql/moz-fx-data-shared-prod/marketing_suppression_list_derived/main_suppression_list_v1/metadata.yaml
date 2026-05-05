@@ -3,7 +3,7 @@ description: |-
   Main Suppression List for Marketing Suppression List.
   This is a List of email addresses that should not be sent marketing emails.
 owners:
-- leli@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: false
   owner1: leli
@@ -11,4 +11,3 @@ scheduling:
   dag_name: bqetl_marketing_suppression_list
   date_partition_parameter: null
 bigquery: null
-references: {}

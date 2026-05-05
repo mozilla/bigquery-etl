@@ -12,12 +12,14 @@ import os
 from copy import deepcopy
 from pathlib import Path
 
+import yaml
 from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
 from pathos.multiprocessing import ThreadingPool
 
+from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import get_table_dir, write_sql
 from sql_generators.glean_usage.common import GleanTable
 
@@ -38,7 +40,7 @@ description: |-
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
 OVERRIDDEN_FIELDS = {"normalized_channel"}
 
-VIEW_SQL_LENGTH_LIMIT = 256 * 1024
+VIEW_SQL_LENGTH_LIMIT = 1024 * 1024
 
 PATH = Path(os.path.dirname(__file__))
 
@@ -51,14 +53,18 @@ class GleanAppPingViews(GleanTable):
         GleanTable.__init__(self)
         self.per_app_id_enabled = False
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
 
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None,
+        all_base_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.
@@ -66,8 +72,8 @@ class GleanAppPingViews(GleanTable):
         If schemas are incompatible, then use release channel only.
         """
         # get release channel info
-        release_app = app_info[0]
-        target_dataset = release_app["app_name"]
+        release_app = app_ids_info[0]
+        target_dataset = app_name
 
         # channels are all in the same repo, sending the same pings
         repo = next(
@@ -80,6 +86,10 @@ class GleanAppPingViews(GleanTable):
             or release_app["bq_dataset_family"] == release_app["app_name"]
         ):
             return
+
+        ignored_pings = ConfigLoader.get(
+            "generate", "glean_usage", "app_ping_views", "skip", fallback=[]
+        )
 
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
@@ -102,22 +112,58 @@ class GleanAppPingViews(GleanTable):
             # iterate through app_info to get all channels
             included_channel_apps = []
             included_channel_views = []
-            for channel_app in app_info:
+            for channel_app in app_ids_info:
                 channel_dataset = channel_app["bq_dataset_family"]
                 channel_dataset_view = f"{channel_dataset}.{view_name}"
-                schema = Schema.for_table(
-                    "moz-fx-data-shared-prod",
-                    channel_dataset,
-                    view_name,
-                    partitioned_by="submission_timestamp",
-                    use_cloud_function=use_cloud_function,
+
+                if channel_dataset_view in ignored_pings:
+                    continue
+
+                # look for schema in output_dir because bqetl generate all runs stable_views first
+                sql_dir = (
+                    output_dir
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
                 )
+                existing_schema_path = (
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
+                )
+
+                schema = None
+                if existing_schema_path.exists():
+                    schema = Schema.from_schema_file(existing_schema_path)
+
+                if (
+                    schema is None
+                    or "fields" not in schema.schema
+                    or schema.schema["fields"] == []
+                ):
+                    # fetch schema from BQ if not present in the repo, or empty
+                    for attempt in range(3):
+                        # try 3 times to account for transient errors
+                        try:
+                            schema = Schema.for_table(
+                                "moz-fx-data-shared-prod",
+                                channel_dataset,
+                                view_name,
+                                partitioned_by="submission_timestamp",
+                                use_cloud_function=use_cloud_function,
+                                id_token=id_token,
+                            )
+                            if schema.schema["fields"] != []:
+                                break
+                            print(
+                                f"Attempt {attempt + 1}: Empty schema for {channel_dataset_view}"
+                            )
+                        except Exception as e:
+                            print(
+                                f"Attempt {attempt + 1}: Failed to get schema for {channel_dataset_view}: {e}"
+                            )
+
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
                 if schema.schema["fields"] == []:
-                    # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(f"Cannot get schema for `{channel_dataset_view}`; Skipping")
-                    continue
+                    raise Exception(f"Cannot get schema for `{channel_dataset_view}`")
 
                 try:
                     unioned_schema.merge(
@@ -145,10 +191,14 @@ class GleanAppPingViews(GleanTable):
                     channel_dataset = channel_app["bq_dataset_family"]
 
                     # compare table schema with unioned schema to determine fields that need to be NULL
-                    select_expression = self._generate_select_expression(
-                        unioned_schema.schema["fields"],
-                        cached_schemas[channel_dataset].schema["fields"],
-                        restructure_metrics=restructure_metrics,
+                    select_expression = cached_schemas[
+                        channel_dataset
+                    ].generate_compatible_select_expression(
+                        unioned_schema,
+                        fields_to_remove=OVERRIDDEN_FIELDS,
+                        unnest_structs=restructure_metrics,
+                        max_unnest_depth=2,
+                        unnest_allowlist="metrics",
                     )
 
                     queries.append(
@@ -193,15 +243,30 @@ class GleanAppPingViews(GleanTable):
                     in skip_existing,
                 )
 
+                metadata_content = VIEW_METADATA_TEMPLATE.format(
+                    ping_name=ping_name,
+                    app_name=release_app["canonical_app_name"],
+                    app_channels=", ".join(included_channel_views),
+                )
+                metadata_file = Path(
+                    get_table_dir(output_dir, full_view_id) / "metadata.yaml"
+                )
+                if metadata_file.exists():
+                    with metadata_file.open() as f:
+                        existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
+                        if (
+                            "friendly_name" not in existing_metadata
+                            and "description" not in existing_metadata
+                        ):
+                            metadata_content = metadata_content + yaml.dump(
+                                existing_metadata
+                            )
+
                 write_sql(
                     output_dir,
                     full_view_id,
                     "metadata.yaml",
-                    VIEW_METADATA_TEMPLATE.format(
-                        ping_name=ping_name,
-                        app_name=release_app["canonical_app_name"],
-                        app_channels=", ".join(included_channel_views),
-                    ),
+                    metadata_content,
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "metadata.yaml"
                     )
@@ -244,100 +309,3 @@ class GleanAppPingViews(GleanTable):
                 _process_ping,
                 p.get_pings(),
             )
-
-    def _generate_select_expression(
-        self, unioned_schema_nodes, app_schema_nodes, path=[], restructure_metrics=False
-    ) -> str:
-        """
-        Generate the select expression based on the unioned schema and the app channel schema.
-
-        Any fields that are missing in the app_schema are set to NULL.
-        """
-        select_expr = []
-        unioned_schema_nodes = {n["name"]: n for n in unioned_schema_nodes}
-        app_schema_nodes = {n["name"]: n for n in app_schema_nodes}
-
-        # iterate through fields
-        for node_name, node in unioned_schema_nodes.items():
-            dtype = node["type"]
-            node_path = path + [node_name]
-
-            if node_name in app_schema_nodes:
-                # field exists in app schema
-
-                # We sometimes fully specify the `metrics` fields structure to try to avoid problems
-                # when the underlying table/view schemas change due to new metrics being added.
-                if node == app_schema_nodes[node_name] and not (
-                    restructure_metrics
-                    and node_path[0] == "metrics"
-                    and len(node_path) <= 2
-                    and dtype == "RECORD"
-                ):
-                    if node_name not in OVERRIDDEN_FIELDS:
-                        # field (and all nested fields) are identical, so just query it
-                        select_expr.append(f"{'.'.join(node_path)}")
-                else:
-                    # fields and/or nested fields are not identical, or this is within `metrics`
-                    if dtype == "RECORD":
-                        # for nested fields, recursively generate select expression
-
-                        if node.get("mode", None) == "REPEATED":
-                            # unnest repeated record
-                            select_expr.append(
-                                f"""
-                                    ARRAY(
-                                        SELECT
-                                            STRUCT(
-                                                {self._generate_select_expression(
-                                                    node['fields'],
-                                                    app_schema_nodes[node_name]['fields'],
-                                                    [node_name],
-                                                    restructure_metrics
-                                                )}
-                                            )
-                                        FROM UNNEST({'.'.join(node_path)}) AS `{node_name}`
-                                    ) AS `{node_name}`
-                                """
-                            )
-                        else:
-                            # select struct fields
-                            select_expr.append(
-                                f"""
-                                    STRUCT(
-                                        {self._generate_select_expression(
-                                            node['fields'],
-                                            app_schema_nodes[node_name]['fields'],
-                                            node_path,
-                                            restructure_metrics
-                                        )}
-                                    ) AS `{node_name}`
-                                """
-                            )
-                    else:
-                        select_expr.append(
-                            f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                        )
-            else:
-                select_expr.append(
-                    f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                )
-
-        return ", ".join(select_expr)
-
-    def _type_info(self, node):
-        """Determine the type information."""
-        dtype = node["type"]
-        if dtype == "RECORD":
-            dtype = (
-                "STRUCT<"
-                + ", ".join(
-                    f"`{field['name']}` {self._type_info(field)}"
-                    for field in node["fields"]
-                )
-                + ">"
-            )
-        elif dtype == "FLOAT":
-            dtype = "FLOAT64"
-        if node.get("mode") == "REPEATED":
-            return f"ARRAY<{dtype}>"
-        return dtype

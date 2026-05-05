@@ -1,4 +1,3 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg&circle-token=1df4cefd991043d7d3f13243ea80f38e7aa18341)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
 # BigQuery ETL
 
 This repository contains Mozilla Data Team's:
@@ -12,10 +11,10 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 
 ## Quick Start
 
-### Pre-requisites
-- **Pyenv** (optional) Recommended if you want to install different versions of python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).
-- **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.
-- **Python 3.11+** - (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python).
+### Prerequisites
+- **Pyenv** (optional) Recommended if you want to install different versions of Python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).
+- **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install Homebrew on your Mac.
+- **Python 3.11** - (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a Mac and haven't installed anything other than the default system Python).
 
 ### GCP CLI tools
 
@@ -46,7 +45,7 @@ cp .vscode/settings.json.default .vscode/settings.json
 cp .vscode/launch.json.default .vscode/launch.json
 ```
 
-And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
+And you should now be set up to start working in the repo. The easiest way to do this for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
 
 
 ## Releasing a new version of `bqetl`

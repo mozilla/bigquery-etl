@@ -3,11 +3,12 @@
 import glob
 import re
 import string
+import sys
 import time
 from functools import cached_property
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+from typing import Any, Optional
 
 import attr
 import sqlparse
@@ -41,6 +42,7 @@ class View:
     dataset: str = attr.ib()
     project: str = attr.ib()
     partition_column: Optional[str] = attr.ib(None)
+    id_token: Optional[Any] = attr.ib(None)
 
     @path.validator
     def validate_path(self, attribute, value):
@@ -122,15 +124,10 @@ class View:
         if not base_table:
             base_table = f"{project}.{dataset}_derived.{name}_v1"
 
-        path.write_text(
-            reformat(
-                f"""
+        path.write_text(reformat(f"""
                 CREATE OR REPLACE VIEW `{project}.{dataset}.{name}` AS
                 SELECT * FROM `{base_table}`
-                """
-            )
-            + "\n"
-        )
+                """) + "\n")
         return cls(path, name, dataset, project)
 
     def skip_validation(self):
@@ -208,17 +205,17 @@ class View:
                 if self.partition_column
                 else "FALSE"
             )
-            schema_query = dedent(
-                f"""
+            schema_query = dedent(f"""
                 WITH view_query AS (
                     {CREATE_VIEW_PATTERN.sub("", self.content)}
                 )
                 SELECT *
                 FROM view_query
                 WHERE {schema_query_filter}
-                """
+                """)
+            return Schema.from_query_file(
+                Path(self.path), content=schema_query, id_token=self.id_token
             )
-            return Schema.from_query_file(Path(self.path), content=schema_query)
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
             return None
@@ -288,7 +285,7 @@ class View:
             return self.view_identifier.replace(self.project, target_project, 1)
         return self.view_identifier
 
-    def has_changes(self, target_project=None):
+    def has_changes(self, target_project=None, credentials=None):
         """Determine whether there are any changes that would be published."""
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
@@ -299,7 +296,10 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        client = bigquery.Client()
+        if credentials:
+            client = bigquery.Client(credentials=credentials)
+        else:
+            client = bigquery.Client()
         target_view_id = self.target_view_identifier(target_project)
         try:
             table = client.get_table(target_view_id)
@@ -309,14 +309,17 @@ class View:
 
         try:
             expected_view_query = CREATE_VIEW_PATTERN.sub(
-                "", sqlparse.format(self.content, strip_comments=True), count=1
+                "", sqlparse.format(self.content), count=1
             ).strip(";" + string.whitespace)
 
-            actual_view_query = sqlparse.format(
-                table.view_query, strip_comments=True
-            ).strip(";" + string.whitespace)
+            actual_view_query = sqlparse.format(table.view_query).strip(
+                ";" + string.whitespace
+            )
         except TypeError:
-            print(f"ERROR: There has been an issue formating: {target_view_id}")
+            print(
+                f"ERROR: There has been an issue formatting: {target_view_id}",
+                file=sys.stderr,
+            )
             raise
 
         if expected_view_query != actual_view_query:
@@ -345,7 +348,7 @@ class View:
 
         return False
 
-    def publish(self, target_project=None, dry_run=False):
+    def publish(self, target_project=None, dry_run=False, client=None, force=False):
         """
         Publish this view to BigQuery.
 
@@ -361,7 +364,7 @@ class View:
             any(str(self.path).endswith(p) for p in self.skip_validation())
             or self._valid_view_naming()
         ):
-            client = bigquery.Client()
+            client = client or bigquery.Client()
             sql = self.content
             target_view = self.target_view_identifier(target_project)
 
@@ -373,7 +376,13 @@ class View:
                     return True
 
                 # We only change the first occurrence, which is in the target view name.
-                sql = sql.replace(self.project, target_project, 1)
+                sql = re.sub(
+                    rf"^(?!--)(.*){self.project}",
+                    rf"\1{target_project}",
+                    sql,
+                    count=1,
+                    flags=re.MULTILINE,
+                )
 
             job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
             query_job = client.query(sql, job_config)
@@ -382,29 +391,37 @@ class View:
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
                 try:
-                    query_job.result()
+                    job_id = query_job.result().job_id
                 except BadRequest as e:
                     if "Invalid snapshot time" in e.message:
                         # This occasionally happens due to dependent views being
                         # published concurrently; we wait briefly and give it one
                         # extra try in this situation.
                         time.sleep(1)
-                        client.query(sql, job_config).result()
+                        job_id = client.query(sql, job_config).result().job_id
                     else:
                         raise
 
                 try:
+                    table = client.get_table(target_view)
+                except NotFound:
+                    print(
+                        f"{target_view} failed to publish to the correct location, verify job id {job_id}",
+                        file=sys.stderr,
+                    )
+                    return False
+
+                try:
                     if self.schema_path.is_file():
-                        self.schema.deploy(target_view)
+                        table = self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
-                table = client.get_table(target_view)
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
-
-                table.description = self.metadata.description
-                table.friendly_name = self.metadata.friendly_name
+                else:
+                    table.description = self.metadata.description
+                    table.friendly_name = self.metadata.friendly_name
 
                 if table.labels != self.labels:
                     labels = self.labels.copy()
@@ -425,7 +442,10 @@ class View:
 
                 print(f"Published view {target_view}")
         else:
-            print(f"Error publishing {self.path}. Invalid view definition.")
+            print(
+                f"Error publishing {self.path}. Invalid view definition.",
+                file=sys.stderr,
+            )
             return False
 
         return True

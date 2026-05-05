@@ -1,0 +1,94 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's ID.
+    The API does not return this value for users with the `pending` status.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    The date and time when this user was created in UTC.
+- name: dept
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's department.
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's email address.
+- name: first_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's first name.
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's default language for the Zoom Web Portal.
+- name: last_client_version
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The last client version that user used to log in.
+- name: last_login_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    The user's last login time in UTC.
+    This field has a three-day buffer period.
+    For example, if user first logged in on 2020-01-01 then logged out and logged in on 2020-01-02, this value will still reflect the login time of 2020-01-01.
+    However, if the user logs in on 2020-01-04, the value of this field will reflect the corresponding login time since it exceeds the three-day buffer period.
+- name: last_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's last name.
+- name: pmi
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The user's personal meeting ID.
+- name: role_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The ID of the user's assigned role.
+- name: status
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's status.
+    * `active` - An active user.
+    * `inactive` - A deactivated user.
+    * `pending` - A pending user.
+- name: timezone
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The user's timezone.
+- name: type
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The user's assigned plan type.
+    * `1` - Basic.
+    * `2` - Licensed.
+    * `4` - Unassigned without Meetings Basic.
+    * `99` - None (this can only be set with `ssoCreate`).
+- name: verified
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Whether the user's email address for the Zoom account is verified.
+    * `1` - A verified user email.
+    * `0` - The user's email is not verified.
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the user is deleted.

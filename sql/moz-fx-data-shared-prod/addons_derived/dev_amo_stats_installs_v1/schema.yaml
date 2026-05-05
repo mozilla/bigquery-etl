@@ -62,3 +62,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Number of downloads attributed to the campaign.
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: For now always "Desktop".

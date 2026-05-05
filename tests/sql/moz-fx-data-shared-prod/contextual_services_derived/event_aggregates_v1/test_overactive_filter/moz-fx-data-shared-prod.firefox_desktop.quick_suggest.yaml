@@ -8,6 +8,7 @@
       subdivision1: AZ
     user_agent:
       os: "Windows 11"
+      version: 130
   metrics: &click_metrics
     boolean:
       quick_suggest_improve_suggest_experience: true
@@ -19,6 +20,7 @@
       quick_suggest_match_type: firefox-suggest
       quick_suggest_ping_type: quicksuggest-click
       quick_suggest_request_id: HASH123
+      quick_suggest_country: null
     uuid:
       quick_suggest_context_id: a
   normalized_country_code: US

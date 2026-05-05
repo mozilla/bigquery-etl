@@ -14,52 +14,60 @@ BEGIN
 
   DECLARE event_filters ARRAY<STRING> DEFAULT[];
 
-  WHILE
-    i <= ARRAY_LENGTH(events)
+  WHILE i <= ARRAY_LENGTH(events)
   DO
-    SET event = events[ORDINAL(i)];
+    SET
+      event = events[ORDINAL(i)];
 
-    SET event_filter = CONCAT(
-      '(category = "',
-      event.category,
-      '"',
-      ' AND event = "',
-      event.event_name,
-      '")'
-    );
+    SET
+      event_filter = CONCAT(
+        '(category = "',
+        event.category,
+        '"',
+        ' AND event = "',
+        event.event_name,
+        '")'
+      );
 
-    SET event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
+    SET
+      event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
 
-    SET i = i + 1;
+    SET
+      i = i + 1;
   END WHILE;
 
-  SET sql = CONCAT(
-    '\n  SELECT',
-    '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
-    '\n  FROM',
-    '\n    `',
-    project,
-    '`.',
-    dataset,
-    '.event_types',
-    '\n  WHERE',
-    '\n    ',
-    ARRAY_TO_STRING(event_filters, ' OR ')
-  );
+  -- The extra concatenation operations in this expression are intentional to break up references
+  -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
+  SET
+    sql = CONCAT(
+      '\n  SELECT',
+      '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS count_regex',
+      '\n  FROM',
+      '\n    `',
+      project,
+      '`.',
+      dataset,
+      '.event_types',
+      '\n  WHERE',
+      '\n    ',
+      ARRAY_TO_STRING(event_filters, ' OR ')
+    );
 END;
 
 -- Tests
 BEGIN
   DECLARE result_sql STRING;
 
-  DECLARE expect STRING DEFAULT """
-  SELECT
-    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex
-  FROM
-    `moz-fx-data-shared-prod`.org_mozilla_firefox.event_types
-  WHERE
-    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")
-""";
+  -- The extra concatenation operations in this expression are intentional to break up references
+  -- so they don't accidentally get mangled by the deploy-to-stage reference replacement logic.
+  DECLARE expect STRING DEFAULT CONCAT(
+    '\n  SELECT',
+    '\n    event_analysis.' || 'aggregate_match_strings(ARRAY_AGG(event_analysis.' || 'event_index_to_match_string(index))) AS count_regex',
+    '\n  FROM',
+    '\n    `moz-fx-data-shared-prod`.' || 'org_mozilla_firefox.' || 'event_types',
+    '\n  WHERE',
+    '\n    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")'
+  );
 
   CALL event_analysis.create_count_steps_query(
     'moz-fx-data-shared-prod',

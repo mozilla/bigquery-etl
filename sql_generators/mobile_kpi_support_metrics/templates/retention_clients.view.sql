@@ -23,10 +23,12 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
@@ -49,6 +51,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -86,7 +89,10 @@ SELECT
     ELSE 'Unknown'
   END AS lifecycle_stage,
   active_users.device_type,
-  active_users.device_manufacturer,
+  clients_daily.device_manufacturer,
+  clients_daily.device_model,
+  clients_daily.normalized_os AS os,
+  clients_daily.normalized_os_version AS os_version,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_daily` AS clients_daily
 INNER JOIN
@@ -98,5 +104,6 @@ LEFT JOIN
   attribution
   ON clients_daily.client_id = attribution.client_id
   AND clients_daily.sample_id = attribution.sample_id
+  AND clients_daily.normalized_channel = attribution.normalized_channel
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

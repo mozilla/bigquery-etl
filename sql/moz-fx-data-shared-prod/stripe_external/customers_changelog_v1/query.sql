@@ -8,6 +8,7 @@ WITH customers AS (
     address_state,
     created,
     default_card_id,
+    invoice_settings_default_payment_method,
     is_deleted,
     PARSE_JSON(metadata) AS metadata,
     shipping_address_country,
@@ -93,7 +94,10 @@ SELECT
         customers.shipping_address_state AS state
       ) AS address
     ) AS shipping,
-    customers.tax_exempt
+    customers.tax_exempt,
+    STRUCT(
+      customers.invoice_settings_default_payment_method AS default_payment_method_id
+    ) AS invoice_settings
   ) AS customer
 FROM
   customers

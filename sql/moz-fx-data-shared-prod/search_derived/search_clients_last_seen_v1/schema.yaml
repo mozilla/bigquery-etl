@@ -2,24 +2,33 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: search_cohort
   type: STRING
@@ -29,9 +38,11 @@ fields:
 - mode: NULLABLE
   name: os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: profile_creation_date
   type: INTEGER
@@ -142,3 +153,5 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

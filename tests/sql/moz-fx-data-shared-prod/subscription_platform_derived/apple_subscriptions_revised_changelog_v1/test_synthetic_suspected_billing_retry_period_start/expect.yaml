@@ -1,0 +1,55 @@
+# Subscription 5: no synthetic record because latest change too recent
+- id: s5-2999-05-03T00:00:00.000000-UPDATE
+  timestamp: 2999-05-03 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s5
+    status: 1
+    last_transaction:
+      expires_date: 2000-05-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 6: synthetic record for future expiration
+- id: s6-2000-06-01T00:00:00.000000-UPDATE
+  timestamp: 2000-06-01 00:00:00Z
+  type: synthetic_suspected_billing_retry_period_start
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s6
+    status: 3
+    last_transaction:
+      expires_date: 2000-06-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+      is_in_billing_retry_period: true
+
+# Subscription 7: synthetic record for future expiration
+- id: s7-2000-07-01T00:00:00.000000-UPDATE
+  timestamp: 2000-07-01 00:00:00Z
+  type: synthetic_suspected_billing_retry_period_start
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s7
+    status: 3
+    last_transaction:
+      expires_date: 2000-06-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+      grace_period_expires_date: 2000-07-01 00:00:00Z
+      is_in_billing_retry_period: true
+
+# Subscription 8: synthetic record for past expiration
+- id: s8-2000-08-02T00:00:00.000001-UPDATE
+  timestamp: 2000-08-02 00:00:00.000001Z
+  type: synthetic_suspected_billing_retry_period_start
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s8
+    status: 3
+    last_transaction:
+      expires_date: 2000-08-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+      is_in_billing_retry_period: true

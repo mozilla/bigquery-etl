@@ -1,0 +1,5 @@
+friendly_name: WWW Site Landing Page Metrics
+description: |-
+  Aggregated metrics for the www.firefox.com landing page sourced from Google Analytics 4 (GA4)
+owners:
+- mhirose@mozilla.com

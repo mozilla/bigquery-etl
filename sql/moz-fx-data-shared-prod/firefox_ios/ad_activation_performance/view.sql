@@ -22,9 +22,9 @@ ad_stats AS (
     campaign_name,
     currency,
     SUM(taps) AS taps,
-    SUM(new_downloads) AS new_downloads,
-    SUM(redownloads) AS redownloads,
-    SUM(total_downloads) AS total_downloads,
+    SUM(tap_new_downloads) AS new_downloads,
+    SUM(tap_redownloads) AS redownloads,
+    SUM(tap_total_downloads) AS total_downloads,
     SUM(impressions) AS impressions,
     SUM(spend) AS campaign_spend,
   FROM

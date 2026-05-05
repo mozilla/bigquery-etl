@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG owner attributes
+description: List of DAG owner attributes
+owners:
+- kik@mozilla.com

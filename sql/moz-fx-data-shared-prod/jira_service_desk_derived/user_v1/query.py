@@ -137,7 +137,7 @@ def main():
     parser.add_argument(
         "--base-url",
         dest="base_jira_url",
-        default="https://mozilla-hub-sandbox-721.atlassian.net",
+        default="https://mozilla-hub.atlassian.net",
         required=False
     )
 

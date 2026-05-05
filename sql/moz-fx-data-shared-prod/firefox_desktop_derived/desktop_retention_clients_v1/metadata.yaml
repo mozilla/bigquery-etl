@@ -1,0 +1,31 @@
+friendly_name: Desktop Retention Clients
+description: |-
+  Measures 28-day (week-4) retention for Firefox Desktop clients anchored on a cohort “metric date.”
+  Metric date represents the cohort of clients who were either:
+  A) New on the metric date (first_seen_date = metric_date), or
+  B) Seen on the metric date (sent a baseline ping that day).
+  Submission date represents the date 27 days after the metric date (end of the 28-day window), when week-4 retention is evaluated.
+  Primary Key: Client ID + Metric Date
+owners:
+- kwindau@mozilla.com
+labels:
+  level: bronze
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+  dag: bqetl_desktop_retention_model
+scheduling:
+  dag_name: bqetl_desktop_retention_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+    - country
+    - normalized_os
+require_column_descriptions: true

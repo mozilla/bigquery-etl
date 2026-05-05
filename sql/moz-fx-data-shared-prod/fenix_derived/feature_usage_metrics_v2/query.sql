@@ -1,11 +1,12 @@
 WITH baseline_clients AS (
   SELECT
     submission_date AS dau_date,
-    client_id
+    client_id,
+    LEAD(submission_date) OVER (PARTITION BY client_id ORDER BY submission_date) AS next_dau
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    submission_date >= DATE_SUB(@submission_date, INTERVAL 4 DAY)
     AND durations > 0
     AND LOWER(COALESCE(isp, "")) <> "browserstack"
     AND LOWER(COALESCE(distribution_id, "")) <> "mozillaonline"
@@ -14,6 +15,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
+    normalized_channel,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
@@ -27,10 +29,12 @@ metrics_dau AS (
   JOIN
     baseline_clients
     ON client_info.client_id = client_id
-     -- offset by at least one to reflect metrics ping design considerations
+    -- offset by at least one to reflect metrics ping design considerations
     AND DATE_DIFF(DATE(submission_timestamp), dau_date, DAY)
     BETWEEN 1
     AND 4
+    -- exclude metrics pings that should be matched to next DAU date
+    AND DATE(submission_timestamp) <= DATE_ADD(next_dau, INTERVAL 1 DAY)
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
@@ -42,10 +46,12 @@ metric_ping_clients_feature_usage AS (
   SELECT
     dau_date,
     client_info.client_id,
-    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[SAFE_OFFSET(0)] AS channel,
+    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
     ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp DESC)[
       SAFE_OFFSET(0)
-    ] AS country,
+    ] AS normalized_country_code,
     LOGICAL_OR(COALESCE(metrics.boolean.metrics_default_browser, FALSE)) AS is_default_browser,
     --Credential Management: Logins
     SUM(COALESCE(metrics.counter.logins_deleted, 0)) AS logins_deleted,
@@ -59,14 +65,34 @@ metric_ping_clients_feature_usage AS (
     SUM(COALESCE(metrics.counter.addresses_updated, 0)) AS addresses_modified,
     MAX(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS currently_stored_addresses,
     --Bookmark
-    SUM(COALESCE(metrics_bookmarks_add_table.value, 0)) AS bookmarks_add,
-    SUM(COALESCE(metrics_bookmarks_delete_table.value, 0)) AS bookmarks_delete,
-    SUM(COALESCE(metrics_bookmarks_edit_table.value, 0)) AS bookmarks_edit,
-    SUM(COALESCE(metrics_bookmarks_open_table.value, 0)) AS bookmarks_open,
-    MAX(
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_add),
+        0
+      )
+    ) AS bookmarks_add,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_delete),
+        0
+      )
+    ) AS bookmarks_delete,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_edit),
+        0
+      )
+    ) AS bookmarks_edit,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_open),
+        0
+      )
+    ) AS bookmarks_open,
+    SUM(
       COALESCE(metrics.counter.metrics_desktop_bookmarks_count, 0)
     ) AS metrics_desktop_bookmarks_count,
-    MAX(
+    SUM(
       COALESCE(metrics.counter.metrics_mobile_bookmarks_count, 0)
     ) AS metrics_mobile_bookmarks_count,
     CAST(
@@ -161,14 +187,6 @@ metric_ping_clients_feature_usage AS (
     ) AS customize_home_recently_visited
   FROM
     metrics_dau
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   GROUP BY
     dau_date,
     client_id
@@ -178,8 +196,8 @@ SELECT
   @submission_date AS submission_date,
   dau_date AS metric_date,
   COUNT(DISTINCT client_id) AS clients,
-  channel,
-  country,
+  normalized_channel AS channel,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
   /*Logins*/
@@ -321,11 +339,13 @@ FROM
   metric_ping_clients_feature_usage
 LEFT JOIN
   client_attribution
-  USING (client_id)
+  USING (client_id, normalized_channel)
+WHERE
+  dau_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
 GROUP BY
   submission_date,
   metric_date,
-  channel,
-  country,
+  normalized_channel,
+  normalized_country_code,
   adjust_network,
   is_default_browser

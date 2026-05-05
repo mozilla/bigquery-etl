@@ -16,8 +16,10 @@ labels:
   incremental: false
   schedule: daily
 scheduling:
+{%- if not deprecated_app %}
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
+{%- endif %}
   depends_on_past: true
   date_partition_parameter: null
   parameters:
@@ -39,3 +41,6 @@ bigquery:
     - submission_date
 monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+{%- if deprecated_app %}
+deprecated: true
+{%- endif -%}

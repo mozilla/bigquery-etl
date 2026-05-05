@@ -1,0 +1,5 @@
+friendly_name: Client LTV
+description: |-
+  Per-client historical and predicted future ad clicks, using the latest android_states_v2 state.
+owners:
+- frank@mozilla.com

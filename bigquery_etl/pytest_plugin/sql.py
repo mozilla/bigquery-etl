@@ -50,6 +50,10 @@ class SqlTest(pytest.Item, pytest.File):
         self._nodeid += "::SQL"
         self.add_marker("sql")
 
+    def collect(self):
+        """Collect files to test."""
+        return super().collect()
+
     def reportinfo(self):
         """Set report title to `{dataset}.{table}:{test}`."""
         project, dataset, table, test = self.fspath.strpath.split(os.path.sep)[-4:]
@@ -72,13 +76,36 @@ class SqlTest(pytest.Item, pytest.File):
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         project_dir = (
-            self.fspath.dirpath().dirpath().dirpath().dirname.replace("tests", "")
+            self.fspath.dirpath()
+            .dirpath()
+            .dirpath()
+            .dirname.replace(
+                "moz-fx-data-integration-tests", "___INTEGRATION_TESTS_PLACEHOLDER___"
+            )
+            .replace("tests", "")
+            .replace(
+                "___INTEGRATION_TESTS_PLACEHOLDER___", "moz-fx-data-integration-tests"
+            )
         )
 
         script_test = False
 
         # init tests write to dataset_query_test, instead of their default name
-        path = self.fspath.dirname.replace("tests", "")
+        if self.fspath.dirname.endswith("moz-fx-data-integration-tests"):
+            path = self.fspath.dirname
+        else:
+            path = (
+                self.fspath.dirname.replace(
+                    "moz-fx-data-integration-tests",
+                    "___INTEGRATION_TESTS_PLACEHOLDER___",
+                )
+                .replace("tests", "")
+                .replace(
+                    "___INTEGRATION_TESTS_PLACEHOLDER___",
+                    "moz-fx-data-integration-tests",
+                )
+            )
+
         if test_name == "test_init":
             query = render(
                 "query.sql",
@@ -88,6 +115,13 @@ class SqlTest(pytest.Item, pytest.File):
         elif test_name == "test_script":
             script_test = True
             query = render("script.sql", template_folder=path)
+        elif os.path.exists(os.path.join(path, "view.sql")):
+            query = re.sub(
+                "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                render("view.sql", template_folder=path),
+                flags=re.DOTALL,
+            )
         else:
             query = render("query.sql", template_folder=path)
 
@@ -164,8 +198,8 @@ class SqlTest(pytest.Item, pytest.File):
         )
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        if "CI_RUN_ID" in os.environ:
+            dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:

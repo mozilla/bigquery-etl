@@ -1,0 +1,15 @@
+friendly_name: Cohort Daily Statistics
+description: |-
+  Cohort Daily Statistics tracks retention for a cohort with
+  the same first seen date and same set of attributes over the next 180 days
+
+  Note that the values for client attributes are based on the
+  attributes at the time the cohort started (rather than the
+  values at activity time)
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9516
+  - README: https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/glean_telemetry_derived/cohort_daily_statistics_v1/README.md
+owners:
+- mhirose@mozilla.com

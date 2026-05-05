@@ -25,4 +25,5 @@ syndication:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
+      - workgroup:service-desk/data-viewers
+      - workgroup:service-desk/data-developers

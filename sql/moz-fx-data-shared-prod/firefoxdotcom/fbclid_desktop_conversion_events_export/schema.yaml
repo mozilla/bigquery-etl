@@ -1,0 +1,23 @@
+fields:
+
+- name: submission_date
+  mode: NULLABLE
+  type: DATE
+  description: |-
+    Logical date processed, also used for partitioning (scheduled to run with 2 day lag).
+
+- name: activity_unix_timestamp
+  mode: NULLABLE
+  type: INTEGER
+  description: activity_date in UNIX seconds.
+
+- name: fbc
+  mode: NULLABLE
+  type: STRING
+  description: |-
+    Formatted fbc (expected format: fbc.subdomain_index.creation_time.fbclid).
+
+- name: conversion_name
+  mode: NULLABLE
+  type: STRING
+  description: Conversion name.

@@ -203,12 +203,28 @@ VALUES
     'security-privacy-news'
   ),
   (
+    'smart-window-waitlist',
+    'Firefox AI Window News',
+    '13fad2d2-d236-4bd0-8015-e5ed64780d25',
+    '0f09d5bc-83cf-47e2-81eb-a3d0a4972d93',
+    '40fb8be3-cb2e-4856-b5fd-2906f43a5753',
+    'smart-window-waitlist'
+  ),
+  (
     'take-action-for-the-internet',
     'Take Action for the Internet',
     'cd16fdf7-88bb-4ff3-a8d9-cc5102790f49',
     '3396d77f-3996-4364-90df-f80813947b4c',
     '8627ca41-5358-4107-9d50-677ed31d57ff',
     'take-action-for-the-internet'
+  ),
+  (
+    'ten-tabs',
+    'Ten Tabs Newsletter',
+    '5711f4ee-663a-4010-81e5-b087c273681c',
+    'f01e85e1-12a8-42ef-848c-2083bce89038',
+    '1da167f2-c473-4949-ac8e-0045ad5b23ff',
+    'ten-tabs'
   ),
   (
     'test-pilot',

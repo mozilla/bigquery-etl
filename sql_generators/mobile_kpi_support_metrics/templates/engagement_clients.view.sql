@@ -8,20 +8,23 @@ WITH active_users AS (
     client_id,
     sample_id,
     first_seen_date,
-    app_name,
     normalized_channel,
-    locale,
+    app_name,
+    app_display_version,
     country,
     city,
     geo_subdivision,
+    locale,
     isp,
-    app_display_version,
+    normalized_os,
+    normalized_os_version,
+    device_model,
+    device_manufacturer,
+    device_type,
     is_dau,
     is_wau,
     is_mau,
     is_mobile,
-    device_type,
-    device_manufacturer,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 ),
@@ -29,10 +32,12 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
@@ -57,6 +62,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -70,8 +76,11 @@ SELECT
   END AS lifecycle_stage,
   device_type,
   device_manufacturer,
+  normalized_os AS os,
+  normalized_os_version AS os_version,
+  device_model,
 FROM
   active_users
 LEFT JOIN
   attribution
-  USING(client_id, sample_id)
+  USING(client_id, sample_id, normalized_channel)

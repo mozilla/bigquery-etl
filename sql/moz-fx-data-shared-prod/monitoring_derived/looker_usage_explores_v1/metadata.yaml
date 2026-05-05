@@ -1,0 +1,7 @@
+friendly_name: Looker Usage Explores
+description: |-
+  Usage of Looker explores via henry.
+
+  This is run via docker-etl.
+owners:
+- ascholtz@mozilla.com

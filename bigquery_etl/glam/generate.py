@@ -291,6 +291,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1",
                 **config[args.prefix],
             ),
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "histogram_bucket_counts_v1",

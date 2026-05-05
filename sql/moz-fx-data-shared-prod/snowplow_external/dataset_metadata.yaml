@@ -11,5 +11,5 @@ workgroup_access:
       - workgroup:pocket/apps
   - role: roles/bigquery.dataEditor
     members:
-      - workgroup:dataops-managed/external-snowplow
+      - workgroup:dataplatform/external-snowplow
       - workgroup:pocket/apps

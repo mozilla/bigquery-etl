@@ -25,4 +25,4 @@ bigquery:
     expiration_days: 775
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members: [workgroup:dataplatform/external-census]

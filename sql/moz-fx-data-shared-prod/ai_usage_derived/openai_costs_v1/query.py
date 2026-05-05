@@ -39,7 +39,9 @@ class BigQueryAPI:
                     "project_id": result.get("project_id"),
                     "line_item": result.get("line_item"),
                     "organization_id": result.get("organization_id"),
-                    "amount_value": result.get("amount", {}).get("value"),
+                    "amount_value": round(
+                        result.get("amount", {}).get("value") or 0, 9
+                    ),
                     "currency": result.get("amount", {}).get("currency"),
                 }
                 records.append(record)

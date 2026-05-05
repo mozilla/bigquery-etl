@@ -1,6 +1,6 @@
 WITH sessions_table AS (
   SELECT
-    PARSE_DATE('%Y%m%d', date) AS date,
+    PARSE_DATE('%Y%m%d', `date`) AS date,
     device.deviceCategory AS device_category,
     device.operatingSystem AS operating_system,
     device.language,
@@ -20,7 +20,7 @@ WITH sessions_table AS (
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND totals.visits = 1
   GROUP BY
-    date,
+    `date`,
     device_category,
     operating_system,
     browser,
@@ -33,7 +33,7 @@ WITH sessions_table AS (
 ),
 download_aggregates AS (
   SELECT
-    date,
+    `date`,
     device_category,
     operating_system,
     browser,
@@ -48,7 +48,7 @@ download_aggregates AS (
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_downloads_v1`
   GROUP BY
-    date,
+    `date`,
     device_category,
     operating_system,
     browser,
@@ -90,7 +90,7 @@ site_data AS (
     AND sessions_table.campaign = download_aggregates.campaign
     AND sessions_table.ad_content = download_aggregates.ad_content
   GROUP BY
-    date,
+    `date`,
     device_category,
     operating_system,
     browser,
@@ -102,7 +102,7 @@ site_data AS (
     ad_content
 )
 SELECT
-  date,
+  `date`,
   device_category,
   operating_system,
   browser,

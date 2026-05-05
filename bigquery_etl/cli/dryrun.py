@@ -5,6 +5,7 @@ import glob
 import os
 import re
 import sys
+import time
 from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set, Tuple
@@ -121,9 +122,10 @@ def dryrun(
         id_token=id_token,
         billing_project=billing_project,
     )
-
+    start_time = time.time()
     with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
+    print(f"Total dryrun time: {time.time() - start_time:.2f}s")
 
     failures = sorted([r[1] for r in result if not r[0]])
     if len(failures) > 0:

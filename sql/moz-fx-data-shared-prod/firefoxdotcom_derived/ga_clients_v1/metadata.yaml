@@ -4,7 +4,7 @@ description: |-
   Key is ga_client_id.
 owners:
 - mhirose@mozilla.com
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   owner1: mhirose@mozilla.com
 scheduling:
@@ -12,7 +12,8 @@ scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   date_partition_parameter: null
   parameters: ["session_date:DATE:{{ds}}"]
+monitoring:
+  enabled: true
 bigquery:
   clustering:
     fields: ["first_seen_date"]
-references: {}

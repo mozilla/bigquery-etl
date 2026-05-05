@@ -16,4 +16,3 @@ scheduling:
   - --source-prefix=newtab_interactions_historical
   - --source-file=firefox_newtab_legacy_interactions
 bigquery: null
-references: {}

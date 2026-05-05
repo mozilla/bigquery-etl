@@ -1,0 +1,41 @@
+fields:
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+  description: Nimbus experiment (or rollout) slug.
+- name: enrollments_probability
+  type: FLOAT
+  mode: NULLABLE
+  description: Probability of Sample Ratio Mismatch (SRM) for enrollments.
+- name: enrollments_p_value
+  type: FLOAT
+  mode: NULLABLE
+  description: P-value of Sample Ratio Mismatch (SRM) for enrollments.
+- name: enrollments_srm_likely
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Sample Ratio Mismatch (SRM) is likely (True if p-value < 0.1).
+- name: unenrollments_probability
+  type: FLOAT
+  mode: NULLABLE
+  description: Probability of Sample Ratio Mismatch (SRM) for unenrollments.
+- name: unenrollments_p_value
+  type: FLOAT
+  mode: NULLABLE
+  description: P-value of Sample Ratio Mismatch (SRM) for unenrollments.
+- name: unenrollments_srm_likely
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Sample Ratio Mismatch (SRM) is likely (True if p-value < 0.1).
+- name: dau_probability
+  type: FLOAT
+  mode: NULLABLE
+  description: Probability of Sample Ratio Mismatch (SRM) for DAU.
+- name: dau_p_value
+  type: FLOAT
+  mode: NULLABLE
+  description: P-value of Sample Ratio Mismatch (SRM) for DAU.
+- name: dau_srm_likely
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether Sample Ratio Mismatch (SRM) is likely (True if p-value < 0.1).

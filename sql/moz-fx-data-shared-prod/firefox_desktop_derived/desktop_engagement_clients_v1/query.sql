@@ -42,7 +42,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` cls
 LEFT JOIN
-  `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_first_seen` cfs
+  `moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen` cfs
   ON cls.client_id = cfs.client_id
   AND cfs.submission_date <= @submission_date
 LEFT JOIN

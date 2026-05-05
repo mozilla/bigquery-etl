@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG warning
+description: List of DAG warnings
+owners:
+- kik@mozilla.com

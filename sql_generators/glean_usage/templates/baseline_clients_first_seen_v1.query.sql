@@ -14,34 +14,93 @@ WITH
       DATE(MIN(submission_timestamp)) as submission_date,
       DATE(MIN(submission_timestamp)) as first_seen_date,
       ARRAY_AGG(
-        client_info.attribution 
+        client_info.attribution
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS attribution,
       ARRAY_AGG(
-        client_info.distribution 
+        client_info.distribution
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS `distribution`,
       {% if app_name == "firefox_desktop" %}
       ARRAY_AGG(
-        metrics.object.glean_attribution_ext 
+        metrics.object.glean_attribution_ext
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS attribution_ext,
       ARRAY_AGG(
-        metrics.object.glean_distribution_ext 
+        metrics.object.glean_distribution_ext
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS distribution_ext,
       mozfun.stats.mode_last(
         ARRAY_AGG(
-          metrics.uuid.legacy_telemetry_client_id 
+          metrics.uuid.legacy_telemetry_client_id
           ORDER BY submission_timestamp ASC
           )
       ) AS legacy_telemetry_client_id,
       mozfun.stats.mode_last(
         ARRAY_AGG(
-          metrics.uuid.legacy_telemetry_profile_group_id 
+          metrics.uuid.legacy_telemetry_profile_group_id
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale)
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
+     ARRAY_AGG(
+        metrics.string.startup_profile_selection_reason
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id,
+     ARRAY_AGG(
+      metrics.boolean.policies_is_enterprise IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS policies_is_enterprise,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -91,32 +150,91 @@ _baseline AS (
     ] AS `distribution`,
     {% if app_name == "firefox_desktop" %}
     ARRAY_AGG(
-      metrics.object.glean_attribution_ext 
+      metrics.object.glean_attribution_ext
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS attribution_ext,
     ARRAY_AGG(
-      metrics.object.glean_distribution_ext 
+      metrics.object.glean_distribution_ext
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext,
       mozfun.stats.mode_last(
         ARRAY_AGG(
-          metrics.uuid.legacy_telemetry_client_id 
+          metrics.uuid.legacy_telemetry_client_id
           ORDER BY submission_timestamp ASC
           )
       ) AS legacy_telemetry_client_id,
       mozfun.stats.mode_last(
         ARRAY_AGG(
-          metrics.uuid.legacy_telemetry_profile_group_id 
+          metrics.uuid.legacy_telemetry_profile_group_id
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale)
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        metrics.string.startup_profile_selection_reason
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id,
+     ARRAY_AGG(
+      metrics.boolean.policies_is_enterprise IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS policies_is_enterprise
     {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
-  GROUP BY 
+  GROUP BY
     client_id,
     sample_id
 ),
@@ -132,7 +250,20 @@ _current AS (
     attribution_ext,
     distribution_ext,
     legacy_telemetry_client_id,
-    legacy_telemetry_profile_group_id
+    legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
+    startup_profile_selection_reason_first,
+    architecture,
+    app_build_id,
+    policies_is_enterprise,
     {% endif %}
   FROM
     _baseline
@@ -157,6 +288,19 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
+    startup_profile_selection_reason_first,
+    architecture,
+    app_build_id,
+    policies_is_enterprise,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -175,41 +319,100 @@ _current AS (
     sample_id,
     client_info.client_id,
     ARRAY_AGG(
-      client_info.attribution 
+      client_info.attribution
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS attribution,
     ARRAY_AGG(
-      client_info.distribution 
+      client_info.distribution
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS `distribution`,
     {% if app_name == "firefox_desktop" %}
     ARRAY_AGG(
-      metrics.object.glean_attribution_ext 
+      metrics.object.glean_attribution_ext
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS attribution_ext,
     ARRAY_AGG(
-      metrics.object.glean_distribution_ext 
+      metrics.object.glean_distribution_ext
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext,
           mozfun.stats.mode_last(
         ARRAY_AGG(
-          metrics.uuid.legacy_telemetry_client_id 
+          metrics.uuid.legacy_telemetry_client_id
           ORDER BY submission_timestamp ASC
           )
       ) AS legacy_telemetry_client_id,
     mozfun.stats.mode_last(
       ARRAY_AGG(
-        metrics.uuid.legacy_telemetry_profile_group_id 
+        metrics.uuid.legacy_telemetry_profile_group_id
         ORDER BY submission_timestamp ASC
         )
-    ) AS legacy_telemetry_profile_group_id
+    ) AS legacy_telemetry_profile_group_id,
+    mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale)
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        metrics.string.startup_profile_selection_reason
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id,
+     ARRAY_AGG(
+      metrics.boolean.policies_is_enterprise IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS policies_is_enterprise,
     {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
-  GROUP BY 
+  GROUP BY
     submission_date,
     first_seen_date,
     sample_id,
@@ -229,6 +432,19 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
+    startup_profile_selection_reason_first,
+    architecture,
+    app_build_id,
+    policies_is_enterprise,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -268,6 +484,19 @@ SELECT
   distribution_ext,
   legacy_telemetry_client_id,
   legacy_telemetry_profile_group_id,
+  country,
+  distribution_id,
+  windows_build_number,
+  locale,
+  normalized_os,
+  app_display_version,
+  normalized_channel,
+  normalized_os_version,
+  isp,
+  startup_profile_selection_reason_first,
+  architecture,
+  app_build_id,
+  policies_is_enterprise,
   {% endif %}
 FROM _joined
 QUALIFY

@@ -10,26 +10,19 @@ WITH subscription_starts AS (
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', valid_from)
     ) AS subscription_id,
     subscription.id AS logical_subscription_id,
-    subscription.provider,
-    subscription.services,
     service.id AS service_id,
     valid_from AS started_at,
+    valid_to AS next_subscription_change_at,
     subscription.mozilla_account_id_sha256,
     subscription.provider_customer_id,
     subscription.provider_subscription_id,
+    subscription.is_trial AS started_as_trial,
     IF(
       valid_from = subscription.started_at,
-      STRUCT(
-        subscription.initial_discount_name,
-        subscription.initial_discount_promotion_code,
-        subscription.first_touch_attribution,
-        subscription.last_touch_attribution
-      ),
+      STRUCT(subscription.initial_discount_name, subscription.initial_discount_promotion_code),
       STRUCT(
         subscription.current_period_discount_name AS initial_discount_name,
-        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code,
-        NULL AS first_touch_attribution,
-        NULL AS last_touch_attribution
+        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code
       )
     ).*
   FROM
@@ -53,7 +46,14 @@ subscriptions_history_periods AS (
     service_id,
     started_at,
     COALESCE(
-      LEAD(started_at) OVER (PARTITION BY logical_subscription_id, service_id ORDER BY started_at),
+      LEAD(started_at) OVER (
+        PARTITION BY
+          logical_subscription_id,
+          service_id
+        ORDER BY
+          started_at,
+          next_subscription_change_at
+      ),
       '9999-12-31 23:59:59.999999'
     ) AS ended_at,
     ROW_NUMBER() OVER (
@@ -64,132 +64,50 @@ subscriptions_history_periods AS (
         service_id
       ORDER BY
         started_at,
+        next_subscription_change_at,
         subscription_id
     ) AS customer_service_subscription_number,
+    started_as_trial,
     initial_discount_name,
-    initial_discount_promotion_code,
-    first_touch_attribution,
-    last_touch_attribution
+    initial_discount_promotion_code
   FROM
     subscription_starts
-),
-customer_attribution_impressions AS (
-  SELECT
-    mozilla_account_id_sha256,
-    impression_at,
-    entrypoint,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
-    service_ids
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.recent_subplat_attribution_impressions_v1`
-  CROSS JOIN
-    UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
-  UNION ALL
-  SELECT
-    mozilla_account_id_sha256,
-    impression_at,
-    entrypoint,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
-    service_ids
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1`
-  CROSS JOIN
-    UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
-  WHERE
-    DATE(impression_at) < (
-      SELECT
-        COALESCE(MIN(DATE(impression_at)), '9999-12-31')
-      FROM
-        `moz-fx-data-shared-prod.subscription_platform_derived.recent_subplat_attribution_impressions_v1`
-    )
-  UNION ALL
-  -- Include historical VPN attributions from before VPN's SubPlat funnel was implemented on 2021-08-25.
-  SELECT
-    fxa_uid AS mozilla_account_id_sha256,
-    user_created_at AS impression_at,
-    CAST(NULL AS STRING) AS entrypoint,
-    attribution.entrypoint_experiment,
-    attribution.entrypoint_variation,
-    attribution.utm_campaign,
-    attribution.utm_content,
-    attribution.utm_medium,
-    attribution.utm_source,
-    attribution.utm_term,
-    ['VPN'] AS service_ids
-  FROM
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v2`
-  WHERE
-    fxa_uid IS NOT NULL
-    AND DATE(user_created_at) <= '2021-08-25'
-    AND (
-      attribution.entrypoint_experiment IS NOT NULL
-      OR attribution.entrypoint_variation IS NOT NULL
-      OR attribution.utm_campaign IS NOT NULL
-      OR attribution.utm_content IS NOT NULL
-      OR attribution.utm_medium IS NOT NULL
-      OR attribution.utm_source IS NOT NULL
-      OR attribution.utm_term IS NOT NULL
-    )
 ),
 subscription_attributions AS (
   SELECT
-    subscription_starts.subscription_id,
-    MIN_BY(
-      STRUCT(
-        customer_attribution_impressions.impression_at,
-        customer_attribution_impressions.entrypoint,
-        customer_attribution_impressions.entrypoint_experiment,
-        customer_attribution_impressions.entrypoint_variation,
-        customer_attribution_impressions.utm_campaign,
-        customer_attribution_impressions.utm_content,
-        customer_attribution_impressions.utm_medium,
-        customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term
-        -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
-      ),
-      customer_attribution_impressions.impression_at
+    subscription_id,
+    IF(
+      attribution_v2.subscription_id IS NOT NULL,
+      NULL,
+      attribution_v1.first_touch_attribution
     ) AS first_touch_attribution,
-    MAX_BY(
-      STRUCT(
-        customer_attribution_impressions.impression_at,
-        customer_attribution_impressions.entrypoint,
-        customer_attribution_impressions.entrypoint_experiment,
-        customer_attribution_impressions.entrypoint_variation,
-        customer_attribution_impressions.utm_campaign,
-        customer_attribution_impressions.utm_content,
-        customer_attribution_impressions.utm_medium,
-        customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term
-        -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
-      ),
-      customer_attribution_impressions.impression_at
+    COALESCE(
+      attribution_v2.last_touch_attribution,
+      attribution_v1.last_touch_attribution
     ) AS last_touch_attribution
   FROM
-    subscription_starts
-  CROSS JOIN
-    UNNEST(subscription_starts.services) AS service
-  JOIN
-    customer_attribution_impressions
-    ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
-    AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
-    AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
-  WHERE
-    -- The SubPlat attribution impression events we have access to are only for the Stripe subscription funnel.
-    subscription_starts.provider = 'Stripe'
-  GROUP BY
-    subscription_id
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v1` AS attribution_v1
+  FULL JOIN
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v2` AS attribution_v2
+    USING (subscription_id)
+),
+subscription_attributions_with_channel AS (
+  SELECT
+    subscription_id,
+    first_touch_attribution,
+    CASE
+      WHEN last_touch_attribution IS NULL
+        THEN NULL
+      ELSE (
+          SELECT AS STRUCT
+            last_touch_attribution.*,
+            mozfun.norm.subplat_attribution_channel_group(
+              last_touch_attribution.utm_source
+            ) AS channel_group
+        )
+    END AS last_touch_attribution
+  FROM
+    subscription_attributions
 ),
 subscriptions_history AS (
   SELECT
@@ -260,14 +178,18 @@ subscriptions_history AS (
       history.subscription.ongoing_discount_ends_at,
       history.subscription.has_refunds,
       history.subscription.has_fraudulent_charges,
-      COALESCE(
-        subscriptions_history_periods.first_touch_attribution,
-        subscription_attributions.first_touch_attribution
-      ) AS first_touch_attribution,
-      COALESCE(
-        subscriptions_history_periods.last_touch_attribution,
-        subscription_attributions.last_touch_attribution
-      ) AS last_touch_attribution
+      subscription_attributions_with_channel.first_touch_attribution,
+      subscription_attributions_with_channel.last_touch_attribution,
+      history.subscription.ended_reason,
+      CONCAT(
+        IF(
+          subscriptions_history_periods.customer_service_subscription_number = 1,
+          'New Customer',
+          'Returning Customer'
+        ),
+        IF(subscriptions_history_periods.started_as_trial, ' Trial', '')
+      ) AS started_reason,
+      history.subscription.payment_method
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history
@@ -280,8 +202,8 @@ subscriptions_history AS (
     AND history.valid_from >= subscriptions_history_periods.started_at
     AND history.valid_from < subscriptions_history_periods.ended_at
   LEFT JOIN
-    subscription_attributions
-    ON subscriptions_history_periods.subscription_id = subscription_attributions.subscription_id
+    subscription_attributions_with_channel
+    ON subscriptions_history_periods.subscription_id = subscription_attributions_with_channel.subscription_id
 ),
 synthetic_subscription_ends_history AS (
   -- Synthesize subscription end history records if subscriptions get downgraded to no longer include a service.
@@ -296,14 +218,21 @@ synthetic_subscription_ends_history AS (
           FALSE AS is_active,
           valid_to AS ended_at,
           CAST(NULL AS TIMESTAMP) AS current_period_started_at,
-          CAST(NULL AS TIMESTAMP) AS current_period_ends_at
+          CAST(NULL AS TIMESTAMP) AS current_period_ends_at,
+          'Downgrade' AS ended_reason
         )
     ) AS subscription
   FROM
-    subscriptions_history
+    subscriptions_history AS history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
-    AND valid_to < '9999-12-31 23:59:59.999999'
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from DESC,
+        history.valid_to DESC
+    )
+    AND history.valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT
   *

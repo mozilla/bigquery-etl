@@ -3,8 +3,10 @@ description: |-
   New profile clients ({{ friendly_name }}) metrics
 
   Table grain: client_id, normalized_channel
+  Table population: all clients
+
   Partitioned by: first_seen_date
-  Clustered by: normalized_channel, country
+  Clustered by: app_name, normalized_channel
 
   Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}

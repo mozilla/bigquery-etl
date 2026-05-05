@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 
 import rich_click as click
@@ -15,7 +15,9 @@ from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound
 
+from ..backfill import backfill_options
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.interactive import is_interactive, prompt_for_options
 from ..backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_BILLING_PROJECT,
@@ -45,9 +47,11 @@ from ..backfill.validate import (
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
+    validate_query_script_options,
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
+    QualifiedTableNameType,
     billing_project_option,
     is_authenticated,
     project_id_option,
@@ -62,6 +66,7 @@ from ..metadata.validate_metadata import (
     MetadataValidationError,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util.common import block_coding_agents
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -89,65 +94,58 @@ def backfill(ctx):
     help="""Create a new backfill entry in the backfill.yaml file.  Create
     a backfill.yaml file if it does not already exist.
 
+    Run without arguments to enter interactive mode, which prompts for each
+    option with descriptions.
+
     Examples:
 
     \b
+    # Interactive mode
+    ./bqetl backfill create
+
+    \b
+    # Non-interactive mode
     ./bqetl backfill create moz-fx-data-shared-prod.telemetry_derived.deviations_v1 \\
       --start_date=2021-03-01 \\
       --end_date=2021-03-31 \\
       --exclude=2021-03-03 \\
     """,
 )
-@click.argument("qualified_table_name")
-@sql_dir_option
-@click.option(
-    "--start_date",
-    "--start-date",
-    "-s",
-    help="First date to be backfilled. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-)
-@click.option(
-    "--end_date",
-    "--end-date",
-    "-e",
-    help="Last date to be backfilled. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=datetime.today(),
-)
-@click.option(
-    "--exclude",
-    "-x",
-    multiple=True,
-    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
+@click.argument(
+    "qualified_table_name",
+    required=False,
+    type=QualifiedTableNameType(with_project=True),
     default=None,
 )
+@sql_dir_option
+@backfill_options.start_date(required=False, default=None)
+@backfill_options.end_date()
+@backfill_options.exclude()
 @click.option(
     "--watcher",
     "-w",
-    help="Watcher of the backfill (email address)",
-    default=DEFAULT_WATCHER,
+    multiple=True,
+    help="Watcher of the backfill (email address). Can be specified multiple times.",
 )
 @click.option(
-    "--custom_query_path",
-    "--custom-query-path",
-    help="Path of the custom query to run the backfill. Optional.",
+    "--reason",
+    default=DEFAULT_REASON,
+    help="Reason for the backfill, including links to any related bugzilla or jira tickets.",
+)
+@backfill_options.custom_query_path()
+@backfill_options.query_script_entrypoint()
+@backfill_options.query_script_date_arg()
+@backfill_options.query_script_arg()
+@click.option(
+    "--query-script-dry-run-arg",
+    help="CLI argument to append for the dry run pass of the backfill before the real run, "
+    'e.g. "--dry-run". If not provided, the backfill will not be dry run.',
 )
 @click.option(
     "--shredder_mitigation/--no_shredder_mitigation",
-    help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
+    help="Whether to run a backfill using an auto-generated query that mitigates shredder effect.",
 )
-@click.option(
-    "--override-retention-range-limit",
-    "--override_retention_range_limit",
-    required=False,
-    type=bool,
-    is_flag=True,
-    help="True to allow running a backfill outside the retention policy limit.",
-    default=False,
-)
+@backfill_options.override_retention()
 @click.option(
     "--override-depends-on-past-end-date",
     "--override_depends_on_past_end_date",
@@ -159,6 +157,7 @@ def backfill(ctx):
 @billing_project_option()
 @click.pass_context
 def create(
+    # Any new options must be added to the return value of prompt_for_options
     ctx,
     qualified_table_name,
     sql_dir,
@@ -166,7 +165,12 @@ def create(
     end_date,
     exclude,
     watcher,
+    reason,
     custom_query_path,
+    query_script_entrypoint,
+    query_script_date_arg,
+    query_script_arg,
+    query_script_dry_run_arg,
     shredder_mitigation,
     override_retention_range_limit,
     override_depends_on_past_end_date,
@@ -176,29 +180,64 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
+    # Enter interactive mode if required options are missing
+    if is_interactive(qualified_table_name, start_date):
+        opts = prompt_for_options(sql_dir, qualified_table_name)
+        qualified_table_name = opts["qualified_table_name"]
+        start_date = opts["start_date"]
+        end_date = opts["end_date"]
+        exclude = opts["exclude"]
+        watcher = opts["watcher"]
+        custom_query_path = opts["custom_query_path"]
+        query_script_entrypoint = opts.get("query_script_entrypoint")
+        query_script_date_arg = opts.get("query_script_date_arg")
+        query_script_arg = opts.get("query_script_arg")
+        query_script_dry_run_arg = opts.get("query_script_dry_run_arg")
+        reason = opts["reason"]
+        shredder_mitigation = opts["shredder_mitigation"]
+        override_retention_range_limit = opts["override_retention_range_limit"]
+        override_depends_on_past_end_date = opts.get(
+            "override_depends_on_past_end_date", False
+        )
+
     if errors := validate_table_metadata(
-        sql_dir, qualified_table_name, ignore_missing_metadata=False
+        sql_dir, qualified_table_name, ignore_missing_metadata=True
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
 
     existing_backfills = get_entries_from_qualified_table_name(
-        sql_dir, qualified_table_name
+        sql_dir, qualified_table_name, table_not_exists_ok=True
     )
+
+    # set default query_script_args only if query is a python script
+    if query_script_arg:
+        query_script_args = list(query_script_arg)
+    elif query_script_entrypoint:
+        query_script_args = [
+            "--destination-table="
+            f"{get_backfill_staging_qualified_table_name(qualified_table_name, date.today())}"
+        ]
+    else:
+        query_script_args = None
 
     new_entry = Backfill(
         entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
-        reason=DEFAULT_REASON,
-        watchers=[watcher],
+        reason=reason,
+        watchers=list(watcher) if watcher else [DEFAULT_WATCHER],
         status=BackfillStatus.INITIATE,
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
         override_retention_limit=override_retention_range_limit,
         override_depends_on_past_end_date=override_depends_on_past_end_date,
         billing_project=billing_project,
+        query_script_entrypoint=query_script_entrypoint or None,
+        query_script_date_arg=query_script_date_arg or None,
+        query_script_dry_run_arg=query_script_dry_run_arg or None,
+        query_script_args=query_script_args,
     )
 
     backfill_file = get_backfill_file_from_qualified_table_name(
@@ -206,22 +245,36 @@ def create(
     )
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
+    validate_query_script_options(new_entry, backfill_file)
 
-    validate_depends_on_past_end_date(new_entry, backfill_file)
+    if (backfill_file.parent / METADATA_FILE).exists():
+        validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
 
-    backfill_file.write_text(
-        "\n".join(
-            backfill.to_yaml() for backfill in sorted(existing_backfills, reverse=True)
+    backfill_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with backfill_file.open("w") as f:
+        f.write(
+            "\n".join(
+                backfill.to_yaml()
+                for backfill in sorted(existing_backfills, reverse=True)
+            )
         )
-    )
+        if query_script_entrypoint is not None:
+            f.write(
+                "# WARNING: Destination tables arguments for python scripts are not automatically "
+                "configured to write to a backfill staging table. "
+                "Adjust the query_script_arg values as needed.\n"
+                "# Destination table should be "
+                f"{get_backfill_staging_qualified_table_name(qualified_table_name, date.today())} "
+                f"in order for the copy to production to work."
+            )
 
     click.echo(f"Created backfill entry in {backfill_file}.")
 
 
-@backfill.command(
-    help="""Validate backfill.yaml file format and content.
+@backfill.command(help="""Validate backfill.yaml file format and content.
 
     Examples:
 
@@ -235,8 +288,7 @@ def create(
     Examples:
 
     ./bqetl backfill validate
-    """
-)
+    """)
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
 @project_id_option()
@@ -304,8 +356,7 @@ def validate(
         )
 
 
-@backfill.command(
-    help="""Validates multiple backfill.yaml files format and content.
+@backfill.command(help="""Validates multiple backfill.yaml files format and content.
 
     This command was created to enable pre-commit hook for backfill file changes related validation.
 
@@ -320,8 +371,7 @@ def validate(
         sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml \
         sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
 
-    """
-)
+    """)
 @ignore_missing_metadata_option
 @click.argument("backfill_files", required=True, nargs=-1)
 @click.pass_context
@@ -494,6 +544,8 @@ def scheduled(
 @backfill.command(
     help="""Process entry in backfill.yaml with Initiate status that has not yet been processed.
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -505,6 +557,7 @@ def scheduled(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @click.option(
     "--parallelism",
@@ -542,12 +595,19 @@ def initiate(
     )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+    is_python_script = (Path(sql_dir) / project / dataset / table / "query.py").exists()
+    query_path = (
+        Path(sql_dir)
+        / project
+        / dataset
+        / table
+        / ("query.py" if is_python_script else "query.sql")
+    )
 
     # create schema before deploying staging table if it does not exist
     schema_path = query_path.parent / SCHEMA_FILE
 
-    if not schema_path.exists():
+    if not schema_path.exists() and not is_python_script:
         # if schema doesn't exist, a schema file is created to allow backfill staging table deployment
         Schema.from_query_file(
             query_file=query_path,
@@ -563,9 +623,12 @@ def initiate(
             respect_dryrun_skip=False,
         )
     except (SkippedDeployException, FailedDeployException) as e:
-        raise RuntimeError(
-            f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
-        ) from e
+        if is_python_script:
+            click.echo("No schema.yaml, backfill staging table not deployed")
+        else:
+            raise RuntimeError(
+                f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
+            ) from e
 
     billing_project = DEFAULT_BILLING_PROJECT
 
@@ -578,19 +641,22 @@ def initiate(
         )
         sys.exit(1)
 
-    click.echo(
-        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
-    )
+    if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
+        click.echo(
+            f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+        )
 
-    _initiate_backfill(
-        ctx,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        entry_to_initiate,
-        parallelism,
-        dry_run=True,
-        billing_project=billing_project,
-    )
+        _initiate_backfill(
+            ctx,
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+            entry_to_initiate,
+            parallelism,
+            dry_run=True,
+            billing_project=billing_project,
+            is_python_script=is_python_script,
+            query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
+        )
 
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
@@ -602,6 +668,7 @@ def initiate(
         entry_to_initiate,
         parallelism,
         billing_project=billing_project,
+        is_python_script=is_python_script,
     )
 
     click.echo(
@@ -617,6 +684,8 @@ def _initiate_backfill(
     parallelism: int = 16,
     dry_run: bool = False,
     billing_project=DEFAULT_BILLING_PROJECT,
+    is_python_script=False,
+    query_script_dry_run_arg=None,
 ):
     if not is_authenticated():
         click.echo(
@@ -630,7 +699,11 @@ def _initiate_backfill(
     logging_str = f"""Initiating backfill for {qualified_table_name} (destination: {backfill_staging_qualified_table_name}).
                     Query will be executed in {billing_project}."""
 
-    if dry_run:
+    if query_script_dry_run_arg:
+        logging_str += (
+            f"  This is a python script dry run using {query_script_dry_run_arg}."
+        )
+    elif dry_run:
         logging_str += "  This is a dry run."
 
     log.info(logging_str)
@@ -686,8 +759,15 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
-    # rewrite query to query the staging table instead of the prod table if table depends on past
-    if metadata.scheduling.get("depends_on_past"):
+    scheduling_overrides = "{}"
+    if entry.ignore_date_partition_offset:
+        scheduling_overrides = '{"date_partition_offset": 0}'
+
+    override_retention_limit = entry.override_retention_limit
+
+    # rewrite query to query the staging table instead of the prod table
+    # and copy previous partition if table depends on past
+    if metadata.scheduling.get("depends_on_past") and not is_python_script:
         query_path = (
             custom_query_path or Path("sql") / project / dataset / table / "query.sql"
         )
@@ -704,20 +784,13 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
-    scheduling_overrides = "{}"
-    if entry.ignore_date_partition_offset:
-        scheduling_overrides = '{"date_partition_offset": 0}'
-
-    override_retention_limit = entry.override_retention_limit
-
-    # copy previous partition if depends_on_past
-    _initialize_previous_partition(
-        client,
-        qualified_table_name,
-        backfill_staging_qualified_table_name,
-        metadata,
-        entry,
-    )
+        _initialize_previous_partition(
+            client,
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+            metadata,
+            entry,
+        )
 
     # Backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -726,12 +799,13 @@ def _initiate_backfill(
             query_backfill,
             name=f"{dataset}.{table}",
             project_id=project,
-            start_date=datetime.fromisoformat(entry.start_date.isoformat()),
-            end_date=datetime.fromisoformat(entry.end_date.isoformat()),
-            exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
+            # convert date objects to datetime
+            start_date=datetime.combine(entry.start_date, time.min),
+            end_date=datetime.combine(entry.end_date, time.min),
+            exclude=[datetime.combine(e, time.min) for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
-            dry_run=dry_run,
+            dry_run=dry_run and query_script_dry_run_arg is None,
             **(
                 {
                     k: param
@@ -739,6 +813,17 @@ def _initiate_backfill(
                         ("custom_query_path", custom_query_path),
                         ("checks", checks),
                         ("checks_file_name", custom_checks_name),
+                        ("query_script_entrypoint", entry.query_script_entrypoint),
+                        ("query_script_date_arg", entry.query_script_date_arg),
+                        (
+                            "query_script_arg",
+                            (entry.query_script_args or [])
+                            + (
+                                [query_script_dry_run_arg]
+                                if query_script_dry_run_arg
+                                else []
+                            ),
+                        ),
                     ]
                     if param is not None
                 }
@@ -815,6 +900,8 @@ def _initialize_previous_partition(
 @backfill.command(
     help="""Complete entry in backfill.yaml with Complete status that has not yet been processed..
 
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     \b
@@ -826,6 +913,7 @@ def _initialize_previous_partition(
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
+@block_coding_agents
 @click.argument("qualified_table_name")
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")
@@ -903,6 +991,17 @@ def _copy_backfill_staging_to_prod(
        un-partitioned: copy the entire staging table to production.
        partitioned: determine and copy each partition from staging to production.
     """
+    # If this is a public dataset, change the destination to the public project
+    if table_metadata.is_public_bigquery():
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        public_project_id = ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        )
+        qualified_table_name = f"{public_project_id}.{dataset}.{table}"
+        click.echo(
+            f"Public dataset detected. Copying to public project: {qualified_table_name}"
+        )
+
     partitioning_type = None
     if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
         partitioning_type = table_metadata.bigquery.time_partitioning.type

@@ -21,5 +21,6 @@ SELECT
   shipping_address_postal_code,
   shipping_address_state,
   shipping_address_country,
+  invoice_settings_default_payment_method,
 FROM
   `moz-fx-data-bq-fivetran`.stripe.customer

@@ -1,0 +1,94 @@
+# Subscription 1: no synthetic record because subscription not active
+- id: s1-2000-01-01T00:00:00.000000-UPDATE
+  timestamp: 2000-01-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s1
+    status: 2
+    last_transaction:
+      expires_date: 2000-01-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 2: no synthetic record because auto-renewal off
+- id: s2-2000-02-01T00:00:00.000000-UPDATE
+  timestamp: 2000-02-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s2
+    status: 1
+    last_transaction:
+      expires_date: 2000-03-01 00:00:00Z
+    renewal_info:
+      # In reality `auto_renew_status` would be set to `0` in this case, but doing that would result
+      # in a `synthetic_suspected_subscription_expiration` record, which we shouldn't test for here.
+      auto_renew_status: -1
+
+# Subscription 3: no synthetic record because expires date too recent
+- id: s3-2000-03-01T00:00:00.000000-UPDATE
+  timestamp: 2000-03-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s3
+    status: 1
+    last_transaction:
+      expires_date: 2999-03-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 4: no synthetic record because grace period expires date too recent
+- id: s4-2000-04-01T00:00:00.000000-UPDATE
+  timestamp: 2000-04-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s4
+    status: 4
+    last_transaction:
+      expires_date: 2000-04-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+      grace_period_expires_date: 2999-04-01 00:00:00Z
+
+# Subscription 6: synthetic record for future expiration
+- id: s6-2000-05-01T00:00:00.000000-UPDATE
+  timestamp: 2000-05-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s6
+    status: 1
+    last_transaction:
+      expires_date: 2000-06-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 7: synthetic record for future grace period expiration
+- id: s7-2000-06-01T00:00:00.000000-UPDATE
+  timestamp: 2000-06-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s7
+    status: 4
+    last_transaction:
+      expires_date: 2000-06-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+      grace_period_expires_date: 2000-07-01 00:00:00Z
+
+# Subscription 8: synthetic record for past expiration
+- id: s8-2000-08-02T00:00:00.000000-UPDATE
+  timestamp: 2000-08-02 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s8
+    status: 1
+    last_transaction:
+      expires_date: 2000-08-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1

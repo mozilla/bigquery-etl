@@ -1,0 +1,6 @@
+friendly_name: ECH Adoption Rate
+description: 'A distinct client count of a combination of metrics to measure
+
+  the adoption of ECH (Encrypted Client Hello) in Firefox.'
+owners:
+- efilho@mozilla.com

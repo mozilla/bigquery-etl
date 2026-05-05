@@ -8,7 +8,7 @@ labels:
   schedule: daily
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
-#scheduling:
+# scheduling:
 #  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
@@ -17,5 +17,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}
 deprecated: true

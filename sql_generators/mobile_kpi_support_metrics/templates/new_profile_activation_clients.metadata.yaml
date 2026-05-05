@@ -3,6 +3,7 @@ description: |-
   Activation Clients ({{ friendly_name }}).
 
   Table grain: submission_date, client_id, normalized_channel
+  Table population: all clients
 
   Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}

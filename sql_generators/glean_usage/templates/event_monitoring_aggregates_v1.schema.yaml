@@ -2,6 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: window_start
   type: TIMESTAMP
   mode: NULLABLE
@@ -20,12 +21,16 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the application.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: version
   type: STRING
   mode: NULLABLE
@@ -38,3 +43,4 @@ fields:
 - name: total_events
   type: INTEGER
   mode: NULLABLE
+  description: Total number of events.

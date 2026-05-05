@@ -7,6 +7,8 @@ description: |-
 
   see: DENG-3183 for more information.
 
+  Grouped by all dimensions to generate activity, new profiles, and retention metrics.
+
   Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}
   - 2024-03-05: `device_type` and `device_manufacturer` fields added

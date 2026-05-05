@@ -2,6 +2,7 @@ friendly_name: Recent FxA GCP stdout events (prod)
 description: |
   FxA server events extracted from stdout logs from the past two days.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   application: fxa
@@ -12,6 +13,8 @@ scheduling:
   dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
+schema:
+  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day

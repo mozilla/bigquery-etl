@@ -92,7 +92,7 @@ subscriptions_revised_changelog AS (
   QUALIFY
     -- Exclude records for suspected expirations when it later turned out the subscription hadn't expired.
     (
-      changelog.type = 'synthetic_subscription_suspected_expiration'
+      changelog.type = 'synthetic_suspected_subscription_expiration'
       AND LEAD(changelog.subscription.expiry_time) OVER subscription_changes_asc > (
         LEAD(changelog.timestamp) OVER subscription_changes_asc
       )

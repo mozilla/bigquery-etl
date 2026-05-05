@@ -22,18 +22,44 @@ WITH potential_new_conversions AS (
         THEN "first_wk_3_actv_days_and_1_or_more_search_w_ads"
       WHEN "first_wk_3_actv_days_and_24_active_minutes"
         THEN "first_wk_3_actv_days_and_24_active_minutes"
+      WHEN "is_dau_at_least_4_of_first_7_days"
+        THEN "is_dau_at_least_4_of_first_7_days"
+      WHEN "is_dau_at_least_3_of_first_7_days"
+        THEN "is_dau_at_least_3_of_first_7_days"
+      WHEN "is_dau_at_least_2_of_first_7_days"
+        THEN "is_dau_at_least_2_of_first_7_days"
+      WHEN "is_dau_at_least_5_of_first_7_days"
+        THEN "is_dau_at_least_5_of_first_7_days"
+      WHEN "is_dau_at_least_6_of_first_7_days"
+        THEN "is_dau_at_least_6_of_first_7_days"
+      WHEN "is_dau_at_least_7_of_first_7_days"
+        THEN "is_dau_at_least_7_of_first_7_days"
+      WHEN "set_default"
+        THEN "set_default"
+      WHEN "is_dau_on_days_6_or_7"
+        THEN "is_dau_on_days_6_or_7"
       ELSE NULL
     END AS conversion_name,
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1` UNPIVOT(
-      did_conversion FOR conversion_name IN (
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1`
+    UNPIVOT (
+      did_conversion
+      FOR conversion_name IN (
         did_firefox_first_run,
         did_search,
         did_click_ad,
         did_returned_second_day,
         first_wk_5_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_1_or_more_search_w_ads,
-        first_wk_3_actv_days_and_24_active_minutes
+        first_wk_3_actv_days_and_24_active_minutes,
+        is_dau_at_least_4_of_first_7_days,
+        is_dau_at_least_3_of_first_7_days,
+        is_dau_at_least_2_of_first_7_days,
+        is_dau_at_least_5_of_first_7_days,
+        is_dau_at_least_6_of_first_7_days,
+        is_dau_at_least_7_of_first_7_days,
+        set_default,
+        is_dau_on_days_6_or_7
       )
     )
   WHERE

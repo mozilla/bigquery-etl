@@ -92,18 +92,24 @@ def import_google_sheet(
         )
 
     result = client.query_and_wait(
-        dedent(
-            f"""
+        dedent(f"""
             SELECT
               {select_sql}
             FROM
               google_sheet
             WHERE
               {where_sql or "TRUE"}
-            """
-        ),
+            """),
         job_config=job_config,
     )
     print(
         f"Imported {result.total_rows} rows from {sheet_url} into `{destination_table}`."
+    )
+
+    # Redeploy the table schema to add back field descriptions, which get removed when overwriting the table.
+    client.update_table(
+        bigquery.Table(
+            destination_table, schema=destination_schema.to_bigquery_schema()
+        ),
+        fields=["schema"],
     )

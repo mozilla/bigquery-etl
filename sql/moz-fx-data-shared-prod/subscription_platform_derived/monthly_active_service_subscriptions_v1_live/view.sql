@@ -30,8 +30,12 @@ monthly_active_subscriptions_history AS (
     ON TIMESTAMP(months.next_month_start_date) > subscriptions_history.valid_from
     AND TIMESTAMP(months.month_start_date) < subscriptions_history.valid_to
     AND (
-      TIMESTAMP(months.month_start_date) < subscriptions_history.subscription.ended_at
-      OR subscriptions_history.subscription.ended_at IS NULL
+      subscriptions_history.subscription.is_active
+      OR (
+        DATE(subscriptions_history.valid_from)
+        BETWEEN months.month_start_date
+        AND months.month_end_date
+      )
     )
   GROUP BY
     months.month_start_date,

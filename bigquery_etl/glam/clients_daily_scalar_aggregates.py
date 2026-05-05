@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
+
 import argparse
 import sys
 from collections import defaultdict
@@ -38,9 +39,17 @@ def get_labeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     probes_struct = []
     for metric_type, _probes in probes.items():
         for probe in _probes:
-            probes_struct.append(
-                f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
-            )
+            if metric_type == "labeled_boolean":
+                probes_struct.append(
+                    (
+                        f"('{probe}', '{metric_type}', "
+                        f"cast_labeled_boolean(metrics.{metric_type}.{probe}))"
+                    )
+                )
+            else:
+                probes_struct.append(
+                    f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
+                )
 
     probes_struct.sort()
     probes_arr = ",\n".join(probes_struct)
@@ -94,10 +103,11 @@ def get_scalar_metrics(
     Metric types are defined in the Glean documentation found here:
     https://mozilla.github.io/glean/book/user/metrics/index.html
     """
-    assert scalar_type in ("unlabeled", "labeled")
+    assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
-        "labeled": ["labeled_counter"],
+        "labeled": ["labeled_counter", "labeled_boolean"],
+        "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {
         metric_type: [] for metric_type in metric_type_set[scalar_type]
@@ -105,8 +115,7 @@ def get_scalar_metrics(
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Metrics that are already sampled
-    sampled_metric_names = get_sampled_metrics("counters")
-    sampled_metrics = {"counter": sampled_metric_names}
+    sampled_metrics = get_sampled_metrics(metric_type_set[scalar_type])
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
@@ -161,8 +170,16 @@ def main():
         schema, "unlabeled"
     )
     labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
+    dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
+    dual_labeled_metric_names["dual_labeled_counter"] = [
+        name
+        for name in dual_labeled_metric_names["dual_labeled_counter"]
+        if name not in metrics_with_too_many_labels
+    ]
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
+    dual_labeled_metrics = get_labeled_metrics_sql(dual_labeled_metric_names).strip()
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
     if args.product == "firefox_desktop":
         client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
@@ -180,6 +197,7 @@ def main():
             attributes=ATTRIBUTES,
             unlabeled_metrics=unlabeled_metrics,
             labeled_metrics=labeled_metrics,
+            dual_labeled_metrics=dual_labeled_metrics,
             ping_type=ping_type_from_table(args.source_table),
             client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
             client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],

@@ -145,7 +145,8 @@ def attach_external_data_config(artifact_file_path, table) -> None:
     external_config.ignore_unknown_values = True
     external_config.autodetect = False
 
-    for key, v in metadata.external_data.options.items():
-        setattr(external_config.options, key, v)
+    if metadata.external_data.options:
+        for key, v in metadata.external_data.options.items():
+            setattr(external_config.options, key, v)
 
     table.external_data_configuration = external_config

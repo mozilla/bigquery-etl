@@ -8,16 +8,17 @@ description: |-
   ga_client_id - Available in Stub Attribution Service and GA
   stub_session_id - Available in Stub Attribution Service and GA
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
+  level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
   table_type: client_level
 scheduling:
   dag_name: bqetl_mozilla_org_derived
   date_partition_parameter: null
   parameters: ["download_date:DATE:{{ds}}"]
+  depends_on_past: true
 bigquery:
   clustering:
     fields: [first_seen_date]
-references: {}

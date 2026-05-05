@@ -7,6 +7,10 @@ fields:
   type: STRING
   description: |-
     Application the metric was collected for
+- name: channel
+  type: STRING
+  description: |-
+    Release channel
 - name: count
   type: INTEGER
   description: |-

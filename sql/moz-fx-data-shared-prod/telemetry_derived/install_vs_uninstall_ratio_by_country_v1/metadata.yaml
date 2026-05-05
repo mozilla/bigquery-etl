@@ -2,11 +2,11 @@ friendly_name: Install Vs Uninstall Ratio By Country
 description: |-
   Aggregate table calculating install vs uninstalls by country
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

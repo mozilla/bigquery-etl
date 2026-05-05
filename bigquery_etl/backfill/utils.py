@@ -33,9 +33,30 @@ VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential/data-viewers"
 # Backfills older than this will not run due to staging table expiration
 MAX_BACKFILL_ENTRY_AGE_DAYS = 28
 
+# default retention limit to prevent backfills from accidentally querying empty partitions
+NBR_DAYS_RETAINED = 775
+
+
+def get_effective_retention_days(metadata: Metadata) -> int:
+    """Return the effective retention limit in days.
+
+    Uses the smaller of NBR_DAYS_RETAINED and the table's partition expiration_days from
+    bigquery.time_partitioning.expiration_days in metadata.yaml, if set.
+    """
+    retention = NBR_DAYS_RETAINED
+    if (
+        metadata.bigquery
+        and metadata.bigquery.time_partitioning
+        and metadata.bigquery.time_partitioning.expiration_days is not None
+    ):
+        retention = min(
+            retention, int(metadata.bigquery.time_partitioning.expiration_days)
+        )
+    return retention
+
 
 def get_entries_from_qualified_table_name(
-    sql_dir, qualified_table_name, status=None
+    sql_dir, qualified_table_name, status=None, table_not_exists_ok=False
 ) -> List[Backfill]:
     """Return backfill entries from qualified table name."""
     backfills = []
@@ -44,6 +65,8 @@ def get_entries_from_qualified_table_name(
     table_path = Path(sql_dir) / project / dataset / table
 
     if not table_path.exists():
+        if table_not_exists_ok:
+            return []
         click.echo(f"{project}.{dataset}.{table} does not exist")
         sys.exit(1)
 
@@ -193,13 +216,8 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
     table_metadata_path = dataset_path / table / METADATA_FILE
 
-    if not query_file.exists():
-        if (query_file.parent / "query.py").exists():
-            click.echo(
-                f"Backfills with query.py are not supported: {qualified_table_name}"
-            )
-        else:
-            click.echo(f"No query.sql file found: {qualified_table_name}")
+    if not query_file.exists() and not (query_file.parent / "query.py").exists():
+        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
         sys.exit(1)
 
     # check dataset level metadata

@@ -26,7 +26,7 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["test@example.org"],
+    "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,
@@ -44,7 +44,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+    docker_image = (
+        "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
+    )
 
     export_public_data_json_test__non_incremental_query__v1 = GKEPodOperator(
         task_id="export_public_data_json_test__non_incremental_query__v1",

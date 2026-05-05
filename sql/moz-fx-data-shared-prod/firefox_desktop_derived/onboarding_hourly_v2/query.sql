@@ -49,7 +49,8 @@ SELECT
     metrics.string.messaging_system_attribution_variation AS variation,
     metrics.string.messaging_system_attribution_dltoken AS dltoken,
     metrics.string.messaging_system_attribution_dlsource AS dlsource,
-    metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin
+    metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin,
+    metrics.string.messaging_system_attribution_msclkid AS msclkid
   ) AS attribution
 FROM
   messaging_system_live_deduped

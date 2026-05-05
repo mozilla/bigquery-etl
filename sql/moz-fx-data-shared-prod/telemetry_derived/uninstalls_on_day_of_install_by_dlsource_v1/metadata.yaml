@@ -2,10 +2,10 @@ friendly_name: Uninstalls On Day Of Install By Dlsource
 description: |-
   Uninstalls by attribution_dlsource split by if the uninstall was on date of installation or not
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:

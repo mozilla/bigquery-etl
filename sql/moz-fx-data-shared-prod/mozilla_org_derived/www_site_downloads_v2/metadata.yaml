@@ -2,10 +2,10 @@ friendly_name: WWW Site Downloads V2
 description: |-
   Aggregated download counts for www.mozilla.org from Google Analytics 4 (GA4)
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
 # scheduling:
 #  dag_name: bqetl_google_analytics_derived_ga4
 #  depends_on:

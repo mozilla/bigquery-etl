@@ -18,7 +18,7 @@ crashes AS (
     DATE(submission_timestamp) AS submission_date,
     normalized_os AS os,
     crash_app_channel AS channel,
-    SAFE_CAST(REGEXP_SUBSTR(crash_app_display_version, "[0-9]*") AS INT) AS major_version,
+    CAST(mozfun.norm.extract_version(crash_app_display_version, "major") AS INT) AS major_version,
     (
       CASE
         metrics.string.crash_process_type
@@ -54,7 +54,15 @@ crashes AS (
     (
       metrics.string.crash_minidump_sha256_hash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
       OR metrics.string.crash_minidump_sha256_hash IS NULL
-    ) AS no_minidump
+    )
+    AND metrics.string.crash_process_type = 'main'
+    AND NOT (
+      SAFE_CAST(REGEXP_SUBSTR(crash_app_display_version, "[0-9]*") AS INT) > 149
+      OR (
+        SAFE_CAST(REGEXP_SUBSTR(crash_app_display_version, "[0-9]*") AS INT) = 149
+        AND crash_app_build >= '20260128215503'
+      )
+    ) AS count_half
   FROM
     `moz-fx-data-shared-prod.telemetry.firefox_crashes`
   WHERE
@@ -79,8 +87,8 @@ client_daily_crashes AS (
     BIT_OR(process_type_bit) AS process_types_bitset,
     major_version,
     BIT_OR(classification_bit) AS classifications_bitset,
-    no_minidump
-    AND process_type_bit = (1 << 0) AS main_no_minidump  -- PROCESS_TYPE_MAIN
+    count_half
+    AND process_type_bit = (1 << 0) AS main_count_half
   FROM
     crashes
   GROUP BY
@@ -93,8 +101,8 @@ SELECT
   major_version,
   process_types_bitset,
   classifications_bitset,
-  COUNT(DISTINCT IF(main_no_minidump, client_id, NULL)) / 2 + COUNT(
-    DISTINCT IF(main_no_minidump, NULL, client_id)
+  COUNT(DISTINCT IF(main_count_half, client_id, NULL)) / 2 + COUNT(
+    DISTINCT IF(main_count_half, NULL, client_id)
   ) AS crashing_users
 FROM
   client_daily_crashes

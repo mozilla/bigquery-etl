@@ -8,11 +8,11 @@ description: |-
   It also contains columns that say, what was the first seen source of attribution across all the events
   in that session, such as first_campaign_from_event_params_in_session & first_source_from_event_params_in_session
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:

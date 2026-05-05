@@ -35,7 +35,7 @@ WITH schema_errors AS (
     document_namespace,
     document_type,
     document_version,
-    hour,
+    `hour`,
     job_name,
     path,
     channel

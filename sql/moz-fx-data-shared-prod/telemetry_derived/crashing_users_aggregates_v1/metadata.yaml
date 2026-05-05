@@ -5,6 +5,7 @@ description: |-
   Related Documentation:
   - Parent JIRA ticket: https://mozilla-hub.atlassian.net/browse/DENG-9398
   - JIRA ticket for this table: https://mozilla-hub.atlassian.net/browse/DENG-10311
+  - Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=2007044 - explains the count half column
   - Data Model README: ./README.md
 owners:
 - mhirose@mozilla.com

@@ -17,6 +17,7 @@ WITH newtab_content_live_deduped AS (
 newtab_content_live_events AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
+    metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     mozfun.map.get_key(event.extra, 'card_type') AS card_type,
     mozfun.map.get_key(event.extra, 'corpus_item_id') AS corpus_item_id,
     mozfun.map.get_key(event.extra, 'report_reason') AS report_reason,

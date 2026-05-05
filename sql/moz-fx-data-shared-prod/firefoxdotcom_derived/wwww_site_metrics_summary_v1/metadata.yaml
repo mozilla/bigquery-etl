@@ -2,11 +2,11 @@ friendly_name: WWW Site Metrics Summary
 description: |-
   Summary of site metrics from Google Analytics about firefox.com
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom

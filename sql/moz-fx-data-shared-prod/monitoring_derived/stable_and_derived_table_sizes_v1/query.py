@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 """Determine stable and derived table size partitions by performing dry runs."""
+
 import datetime
 from fnmatch import fnmatchcase
 from functools import partial, cache
@@ -10,10 +11,10 @@ from typing import Any, Dict, List, Optional, Tuple
 import click
 from google.cloud import bigquery, exceptions
 
+from bigquery_etl.util.client_queue import ClientQueue
 
-def get_tables(
-    client: bigquery.Client, dataset: str
-) -> List[Tuple[str, str]]:
+
+def get_tables(client: bigquery.Client, dataset: str) -> List[Tuple[str, str]]:
     """Returns list of all available tables."""
     return [(table.dataset_id, table.table_id) for table in client.list_tables(dataset)]
 
@@ -109,9 +110,11 @@ def save_table_sizes(
     job_config.time_partitioning = bigquery.TimePartitioning(field="submission_date")
 
     partition_date = date.strftime("%Y%m%d")
+    full_dest_table_id = f"{destination_project}.{destination_dataset}.{destination_table}${partition_date}"
+    print(f"Writing {len(table_sizes)} rows to {full_dest_table_id}")
     client.load_table_from_json(
         table_sizes,
-        f"{destination_project}.{destination_dataset}.{destination_table}${partition_date}",
+        full_dest_table_id,
         job_config=job_config,
     ).result()
 
@@ -125,18 +128,49 @@ def save_table_sizes(
     default="moz-fx-data-shared-prod",
     help="Project of tables to get sizes for",
 )
-@click.option("--dataset", default=("*_derived", "*_stable"))  # pattern
-@click.option("--destination_project", help="Project to write results to. Defaults to --project value.")
+@click.option("--dataset", multiple=True, default=("*_derived", "*_stable"))  # pattern
+@click.option(
+    "--destination_project",
+    help="Project to write results to. Defaults to --project value.",
+)
 @click.option("--destination_dataset", default="monitoring_derived")
 @click.option("--destination_table", default="stable_and_derived_table_sizes_v1")
 @click.option("--dry_run", "--dry-run", default=False, is_flag=True)
-def main(date, project, dataset, destination_project, destination_dataset, destination_table, dry_run):
+@click.option(
+    "--lookback_days",
+    "--lookback-days",
+    default=3,
+    type=int,
+    help="Number of days to query, starting from --date and going backwards",
+)
+def main(
+    date,
+    project,
+    dataset,
+    destination_project,
+    destination_dataset,
+    destination_table,
+    dry_run,
+    lookback_days,
+):
+    if lookback_days < 1:
+        raise click.BadParameter("must be >= 1", param_hint="--lookback-days")
+
     if destination_project is None:
         destination_project = project
 
-    client = bigquery.Client(project)
+    # Use ClientQueue to increase connection pool size
+    client_queue = ClientQueue(
+        billing_projects=[project], parallelism=1, connection_pool_max_size=30
+    )
+    client = client_queue.default_client
 
-    for datediff in range(2):
+    print(
+        f"Querying dataset {dataset} in project {project} for {date} "
+        f"to {date - datetime.timedelta(days=lookback_days - 1)}"
+    )
+
+    for datediff in range(lookback_days):
         stable_derived_partition_sizes = []
         current_date = date - datetime.timedelta(days=datediff)
         print(f"Getting {current_date}")
@@ -146,8 +180,10 @@ def main(date, project, dataset, destination_project, destination_dataset, desti
                 dataset.dataset_id
                 for dataset in list(client.list_datasets())
                 if fnmatchcase(dataset.dataset_id, arg_dataset)
-                and dataset.dataset_id not in ("monitoring_derived", "backfills_staging_derived")
+                and dataset.dataset_id
+                not in ("monitoring_derived", "backfills_staging_derived")
             ]
+            print(f"Found {len(datasets)} datasets matching {arg_dataset}")
             with ThreadPool(20) as p:
                 tables = p.map(
                     partial(get_tables, client),

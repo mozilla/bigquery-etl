@@ -2,6 +2,7 @@ friendly_name: Active Firefox Relay Subscription IDs
 description: >
   IDs of active Firefox Relay subscriptions by date.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   application: relay

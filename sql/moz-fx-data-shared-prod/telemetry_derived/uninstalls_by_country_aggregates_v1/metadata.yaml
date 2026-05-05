@@ -2,10 +2,10 @@ friendly_name: Uninstalls By Country Aggregates
 description: |-
   Calculates uninstalls by country and submission date
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
   dag: bqetl_fx_health_ind_dashboard

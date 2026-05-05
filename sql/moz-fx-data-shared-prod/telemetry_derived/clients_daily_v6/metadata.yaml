@@ -31,6 +31,9 @@ scheduling:
   - task_id: wait_for_clients_daily
     dag_name: parquet_export
     execution_delta: 1h
+  - task_id: wait_for_clients_daily
+    dag_name: catalyst
+    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day

@@ -3,4 +3,5 @@ description: 'IDs of active Hubs subscriptions by date.
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

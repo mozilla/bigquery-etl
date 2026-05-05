@@ -2,11 +2,11 @@ friendly_name: Uninstalls By Download Source
 description: |-
   Number of unique clients uninstalling by submission date and download source
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
   dag: bqetl_fx_health_ind_dashboard

@@ -21,7 +21,7 @@ description: |
 
 owners:
   - plee@mozilla.com
-  - mozilla/customer_insights
+  - mozilla/customer_experience
 labels:
   incremental: false
   application: sumo

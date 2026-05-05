@@ -243,15 +243,79 @@ with `--dry-run` and spot-check the migration plan before accepting.
 A more robust implementation would match qualified table IDs via regex
 rather than using raw substring replace.
 
-### 8. Isolated deploys (e.g. for staging) _(future)_
+### 8. Isolated deploys (e.g. for staging)
 
-Use `--isolated` to rewrite **all** references to the target environment, ensuring complete isolation:
+Use `--isolated` to deploy a fully self-contained mirror into the target —
+every reference is rewritten so the deployed artifacts touch only target
+project data:
 
 ```bash
-./bqetl --target stage query run --isolated telemetry_derived.clients_daily_v6
+./bqetl --target stage deploy --tables --views --isolated \
+  telemetry_derived.clients_daily_v6
 ```
 
-This creates stubs in the target environment for all referenced artifacts.
+What `--isolated` does:
+
+1. **Walks dependencies** of each input artifact. Managed deps (under `sql/`)
+   are added as full artifacts. Unmanaged deps (live/stable tables, syndicated
+   tables, etc.) get a stub written directly into the target tree
+   (`sql/<target_project>/<target_dataset>/<target_artifact>/`) with a
+   `schema.yaml` fetched via `client.get_table()`.
+2. **Auto-discovers UDF dependencies** of every query/view/MV in the input
+   set, including transitive deps. These are added to the routine publish
+   step automatically; you don't need to list them in `--routines` paths.
+3. **Rewrites all 3-part references** in every artifact to point at target —
+   project, dataset, and artifact names rendered through the target's
+   templates. Same source of truth as the stub placement, so refs land where
+   the stubs are. 2-part UDF refs within UDF bodies (e.g.
+   `json.extract_int_map(...)` inside `mozfun.json.extract`) are also
+   rewritten.
+4. **Forces these flags together**: `--table-force`, `--table-skip-external-data`,
+   `--table-skip-existing-schemas`, `--view-force`, `--routines`. Schema
+   updates via dry-run are skipped — the schema in the target dir is
+   authoritative.
+5. **Strips `CREATE MATERIALIZED VIEW … AS`** for materialized-view artifacts
+   and renames them to `query.sql`, deploying as schema-only tables. (The
+   target project usually can't refresh MVs because it lacks source data.)
+
+`--isolated` is mutually exclusive with `--defer-to-target`.
+
+#### Schema resolution
+
+For each table without a `schema.yaml` in the target dir,
+`--isolated` falls back through:
+
+1. The `schema.yaml` copied from source (kept as-is, with `!include`
+   directives flattened).
+2. `client.get_table()` against the source project — fastest, works on
+   partition-required tables.
+3. Dry-running the rewritten query against the **target** project. UDFs and
+   stubs are already published at this point, so this picks up local UDF
+   changes.
+4. Fail loudly with the errors from steps 2 and 3 in the message.
+
+Tables marked `allow_field_addition` always re-derive (skip step 1) so
+schema drift is captured.
+
+#### CI parity flags
+
+For the `stage` target (or any CI-shared target), set these on the target
+in `bqetl_targets.yaml` so you don't have to remember to pass them every
+time:
+
+```yaml
+stage:
+  project_id: moz-fx-data-integration-tests
+  dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.commit }}"
+  grant_dryrun_access: true     # READER for dry_run.function_accounts
+  expire_after_hours: 12         # auto-GC by `target clean --delete-expired`
+  rewrite_tests: true            # mirror tests/sql/<src>/ → tests/sql/<tgt>/
+```
+
+CLI flags `--rewrite-tests/--no-rewrite-tests` and `--expire-after-hours=N`
+override per-run if needed. For personal `dev` targets, leave these unset —
+your dev datasets stay private (no service-account access), persist across
+iterations, and don't touch your `tests/sql/` tree.
 
 ## Future Enhancements
 

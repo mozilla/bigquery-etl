@@ -52,6 +52,9 @@ jobs:
         uses: anthropics/claude-code-action@v1 # zizmor: ignore[unpinned-uses]
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Pass GITHUB_TOKEN explicitly so the action doesn't try to mint an OIDC token
+          # (which would require `id-token: write`). Comments will be authored by github-actions[bot].
+          github_token: ${{ github.token }}
           trigger_phrase: "@claude"
           track_progress: true
           use_sticky_comment: true

@@ -1,2 +1,2 @@
-{"agg_type":"histogram","aggregates":[],"app_build_id":"first","app_version":75,"channel":"nightly","client_agg_type":"min","key":"","metric":"some_metric","metric_type":"scalar","os":"first","process":"parent","total_users":400}
-{"agg_type":"histogram","aggregates":[],"app_build_id":"first","app_version":75,"channel":"nightly","client_agg_type":"min","key":"","metric":"some_metric","metric_type":"scalar","process":"parent","total_users":400}
+{"agg_type":"histogram","aggregates":[],"non_norm_aggregates":[],"app_build_id":"first","app_version":75,"channel":"nightly","client_agg_type":"min","key":"","metric":"some_metric","metric_type":"scalar","os":"first","process":"parent","total_users":400}
+{"agg_type":"histogram","aggregates":[],"non_norm_aggregates":[],"app_build_id":"first","app_version":75,"channel":"nightly","client_agg_type":"min","key":"","metric":"some_metric","metric_type":"scalar","process":"parent","total_users":400}

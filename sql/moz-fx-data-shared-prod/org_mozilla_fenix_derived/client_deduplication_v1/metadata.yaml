@@ -1,0 +1,18 @@
+friendly_name: Client Deduplication
+description: |-
+  Rewrite the client deduplication ping, anonymizing the Ad ID.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: false
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

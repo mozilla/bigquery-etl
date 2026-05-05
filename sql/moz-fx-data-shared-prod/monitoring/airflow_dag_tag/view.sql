@@ -3,6 +3,8 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   dag_id,
-  tag_name
+  ARRAY_AGG(tag_name) AS tags
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.airflow_dag_tag_v1`
+GROUP BY
+  dag_id

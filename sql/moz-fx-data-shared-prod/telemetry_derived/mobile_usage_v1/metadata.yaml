@@ -16,8 +16,10 @@ description: |-
   CDOU for that slice even on days with no active clients.
 labels:
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: true
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_nondesktop
   # The source table is already small here, so we completely recreate this
@@ -25,7 +27,8 @@ scheduling:
   # previous day and adding dau from the new day, but this would make each
   # query dependent on history. Recreating the table is simpler and more robust.
   date_partition_parameter: null
-  external_downstream_tasks:
-  - task_id: wait_for_mobile_usage
-    dag_name: kpi_forecasting
-    execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

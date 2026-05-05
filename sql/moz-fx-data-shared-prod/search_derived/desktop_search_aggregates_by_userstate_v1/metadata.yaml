@@ -5,18 +5,25 @@ description: |-
   and whether the user searched or not.
   Originally created for the search report dashboard.
 owners:
-- xluo@mozilla.com
+- cmorales@mozilla.com
+- akommasani@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_search_dashboard
+  owner1: cmorales
+  owner2: akommasani
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - geo

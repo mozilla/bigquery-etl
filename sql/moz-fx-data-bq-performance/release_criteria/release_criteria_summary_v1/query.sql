@@ -26,13 +26,13 @@ WITH stage_1 AS (
     SAFE_DIVIDE(rc_three_week_prior_average - rc_value, rc_value) AS three_week_pct_change,
     SAFE_DIVIDE(rc_four_week_prior_average - rc_value, rc_value) AS four_week_pct_change,
   FROM
-    release_criteria_v1 AS a
+    `moz-fx-data-bq-performance.release_criteria.release_criteria_v1` AS a
   WHERE
     task_group_time = (
       SELECT
         MAX(task_group_time)
       FROM
-        release_criteria_v1 AS b
+        `moz-fx-data-bq-performance.release_criteria.release_criteria_v1` AS b
       WHERE
         a.project = b.project
         AND a.platform = b.platform
@@ -84,8 +84,14 @@ stage_2 AS (
       WHERE
         STARTS_WITH(app_name, 'target')
     ) AS b
-  USING
-    (task_group_id, project, normalized_device_name, normalized_device_os, rc_tier, rc_test_name)
+    USING (
+      task_group_id,
+      project,
+      normalized_device_name,
+      normalized_device_os,
+      rc_tier,
+      rc_test_name
+    )
   WHERE
     NOT STARTS_WITH(app_name, 'target')
 ),

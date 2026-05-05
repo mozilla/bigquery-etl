@@ -1,0 +1,224 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "DATE",
+    "name": "first_run_date"
+  },
+  {
+    "type": "STRING",
+    "name": "first_reported_country"
+  },
+  {
+    "type": "STRING",
+    "name": "first_reported_isp"
+  },
+  {
+    "type": "STRING",
+    "name": "channel"
+  },
+  {
+    "type": "STRING",
+    "name": "device_manufacturer"
+  },
+  {
+    "type": "STRING",
+    "name": "device_model"
+  },
+  {
+    "type": "STRING",
+    "name": "os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "activated"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_ad_group"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_creative"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_network"
+  },
+  {
+    "type": "STRING",
+    "name": "install_source"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_content"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_medium"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_source"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_term"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_install_referrer_response"
+  },
+  {
+    "type": "STRING",
+    "name": "meta_attribution_app"
+  },
+  {
+    "fields": [
+      {
+        "type": "BOOLEAN",
+        "name": "reported_first_session_ping"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_metrics_ping"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_baseline_ping"
+      },
+      {
+        "type": "DATE",
+        "name": "min_first_session_ping_submission_date"
+      },
+      {
+        "type": "DATE",
+        "name": "min_first_session_ping_run_date"
+      },
+      {
+        "type": "DATE",
+        "name": "min_metrics_ping_submission_date"
+      },
+      {
+        "type": "STRING",
+        "name": "adjust_network__source_ping"
+      },
+      {
+        "type": "STRING",
+        "name": "install_source__source_ping"
+      },
+      {
+        "type": "DATETIME",
+        "name": "adjust_network__source_ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "install_source__source_ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_campaign__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_content__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_medium__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_source__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_term__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_install_referrer_response__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "meta_attribution_app__ping_datetime"
+      }
+    ],
+    "name": "metadata",
+    "type": "RECORD"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_locale"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_device_manufacturer"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_device_model"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_country"
+  },
+  {
+    "type": "DATE",
+    "name": "last_reported_date"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_network"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_creative"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_ad_group"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_campaign"
+  }
+]

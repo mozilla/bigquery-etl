@@ -37,7 +37,7 @@ SELECT
   subtest_replicate_offset,
   test_run.type AS test_type
 FROM
-  mozdata.taskclusteretl.perfherder AS test_run
+  `moz-fx-data-shared-prod.taskclusteretl.perfherder` AS test_run
 LEFT JOIN
   UNNEST(suites) AS test_suite
 LEFT JOIN
@@ -46,7 +46,7 @@ LEFT JOIN
   UNNEST(subtest.replicates) AS subtest_replicate
   WITH OFFSET AS subtest_replicate_offset
 WHERE
-  test_run.time >= TIMESTAMP_SUB(current_timestamp, INTERVAL 52 * 7 DAY)
+  test_run.time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL (52 * 7) DAY)
   AND `moz-fx-data-bq-performance.udf.is_included_project`(test_run.project)
   AND `moz-fx-data-bq-performance.udf.is_included_framework`(test_run.framework)
   AND STRPOS(test_run.platform, '-shippable') > 0

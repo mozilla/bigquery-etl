@@ -21,10 +21,6 @@ WITH new_device_entries AS (
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1`
   WHERE
     DATE(`timestamp`) = @submission_date
-    -- Making sure we only use login or registration complete events
-    -- just in case any other events got through into
-    -- fxa_users_services_devices_daily_v1
-    AND ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL))
 ),
 existing_devices AS (
   SELECT DISTINCT

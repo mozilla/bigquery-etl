@@ -10,21 +10,14 @@ RETURNS STRUCT<`interval` STRING, interval_count INT64> AS (
     )
     SELECT
       CASE
-      WHEN
-        DATETIME_ADD(start, INTERVAL years YEAR) = `end`
-      THEN
-        ("year", years)
-      WHEN
-        DATETIME_ADD(start, INTERVAL months MONTH) = `end`
-        OR DATETIME_SUB(`end`, INTERVAL months MONTH) = start
-      THEN
-        ("month", months)
-      WHEN
-        DATETIME_ADD(start, INTERVAL weeks WEEK) = `end`
-      THEN
-        ("week", weeks)
-      ELSE
-        ("day", days)
+        WHEN DATETIME_ADD(start, INTERVAL years YEAR) = `end`
+          THEN ("year", years)
+        WHEN DATETIME_ADD(start, INTERVAL months MONTH) = `end`
+          OR DATETIME_SUB(`end`, INTERVAL months MONTH) = start
+          THEN ("month", months)
+        WHEN DATETIME_ADD(start, INTERVAL weeks WEEK) = `end`
+          THEN ("week", weeks)
+        ELSE ("day", days)
       END
     FROM
       interval_counts

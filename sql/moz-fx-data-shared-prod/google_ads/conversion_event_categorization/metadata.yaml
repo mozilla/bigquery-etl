@@ -1,0 +1,4 @@
+friendly_name: Conversion Event Categorization
+description: Classifies conversion events
+owners:
+- kwindau@mozilla.com

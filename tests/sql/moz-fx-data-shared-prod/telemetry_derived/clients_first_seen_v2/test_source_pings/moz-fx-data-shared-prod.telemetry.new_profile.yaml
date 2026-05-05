@@ -1,0 +1,9 @@
+---
+- client_id: client-3
+  sample_id: 30
+  profile_group_id: profile-group-id-3
+  submission_timestamp: '2023-06-01 12:03:00'
+  environment:
+    settings:
+      attribution:
+        dltoken: token3

@@ -6,7 +6,7 @@ WITH all_subscriptions AS (
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    mozdata.mozilla_vpn.all_subscriptions
+    `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
 )
 SELECT
   active_subscription_ids.active_date,
@@ -42,9 +42,8 @@ SELECT
 FROM
   all_subscriptions
 JOIN
-  mozdata.mozilla_vpn.active_subscription_ids
-USING
-  (subscription_id)
+  `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
+  USING (subscription_id)
 GROUP BY
   active_date,
   plan_id,

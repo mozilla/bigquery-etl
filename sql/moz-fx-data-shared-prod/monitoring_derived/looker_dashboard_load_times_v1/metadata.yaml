@@ -1,0 +1,23 @@
+friendly_name: Looker Dashboard Load Times
+description: |-
+  Looker dashboard load times imported from Looker.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_monitoring
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  date_partition_parameter: null
+  secrets:
+  - deploy_target: LOOKER_API_CLIENT_ID
+    key: probe_scraper_secret__looker_api_client_id_prod
+  - deploy_target: LOOKER_API_CLIENT_SECRET
+    key: probe_scraper_secret__looker_api_client_secret_prod
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

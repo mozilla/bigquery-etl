@@ -16,11 +16,11 @@ SELECT
   COALESCE(SUM(tagged_follow_on), 0) AS tagged_follow_on,
   COALESCE(SUM(tagged_sap), 0) AS tagged_sap,
 FROM
-  search.mobile_search_clients_engines_sources_daily
+  `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 WHERE
   submission_date
-  BETWEEN date_trunc(date_sub(@submission_date, INTERVAL 1 month), month)
-  AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
+  BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+  AND LAST_DAY(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
 GROUP BY
   client_id,
   submission_month,
@@ -38,18 +38,18 @@ SELECT
   'Firefox Desktop' AS normalized_app_name,
   os,
   country,
-  count(DISTINCT submission_date) AS days_of_use,
+  COUNT(DISTINCT submission_date) AS days_of_use,
   COALESCE(SUM(sap), 0) AS searches,
   COALESCE(SUM(search_with_ads), 0) AS search_with_ads,
   COALESCE(SUM(ad_click), 0) AS ad_click,
   COALESCE(SUM(tagged_follow_on), 0) AS tagged_follow_on,
   COALESCE(SUM(tagged_sap), 0) AS tagged_sap,
 FROM
-  search.search_clients_engines_sources_daily
+  `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
 WHERE
   submission_date
-  BETWEEN date_trunc(date_sub(@submission_date, INTERVAL 1 month), month)
-  AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
+  BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+  AND LAST_DAY(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
 GROUP BY
   client_id,
   submission_month,

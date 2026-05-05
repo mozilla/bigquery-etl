@@ -16,7 +16,7 @@ WITH metrics_base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `mozdata.firefox_desktop.metrics`
+    `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = @submission_date
@@ -92,8 +92,6 @@ metrics_windowed AS (
   FROM
     metrics_unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 ),
@@ -111,7 +109,7 @@ baseline_base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `mozdata.firefox_desktop.baseline`
+    `moz-fx-data-shared-prod.firefox_desktop.baseline`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = @submission_date
@@ -187,8 +185,6 @@ baseline_windowed AS (
   FROM
     baseline_unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 ),
@@ -209,7 +205,7 @@ base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = @submission_date
@@ -285,8 +281,6 @@ windowed AS (
   FROM
     unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 )
@@ -298,8 +292,7 @@ FROM
   metrics_grouped
 FULL JOIN
   metrics_windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 UNION ALL
 SELECT
   @submission_date AS submission_date,
@@ -309,8 +302,7 @@ FROM
   baseline_grouped
 FULL JOIN
   baseline_windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 UNION ALL
 SELECT
   @submission_date AS submission_date,
@@ -320,8 +312,7 @@ FROM
   grouped
 FULL JOIN
   windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 ORDER BY
   metric_name,
   channel

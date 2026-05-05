@@ -1,0 +1,30 @@
+- client_id: a
+  submission_date: '2017-01-01'
+  normalized_app_name: Firefox
+  document_id: '123'
+  submission_timestamp: '2017-01-01 01:00:00'
+  payload:
+    processes:
+      parent:
+        scalars:
+          policies_is_enterprise: true
+- client_id: b
+  submission_date: '2017-01-01'
+  normalized_app_name: Firefox
+  document_id: '123'
+  submission_timestamp: '2017-01-01 01:00:00'
+  payload:
+    processes:
+      parent:
+        scalars:
+          policies_is_enterprise: true
+- client_id: c
+  submission_date: '2017-01-01'
+  normalized_app_name: Firefox
+  document_id: '123'
+  submission_timestamp: '2017-01-01 01:00:00'
+  payload:
+    processes:
+      parent:
+        scalars:
+          policies_is_enterprise: false

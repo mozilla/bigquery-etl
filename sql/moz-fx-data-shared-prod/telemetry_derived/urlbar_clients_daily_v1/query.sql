@@ -35,11 +35,12 @@ WITH combined_urlbar_picked AS (
   SELECT
     submission_date,
     client_id,
+    profile_group_id,
     default_search_engine,
     experiments,
     app_version,
     normalized_channel,
-    country,
+    IFNULL(country, '??') AS country,
     locale,
     user_pref_browser_search_region AS search_region,
     SAFE_CAST(user_pref_browser_search_suggest_enabled AS BOOL) AS suggest_enabled,
@@ -128,7 +129,7 @@ WITH combined_urlbar_picked AS (
       )
     ] AS urlbar_picked_by_type_by_position
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -174,9 +175,9 @@ SELECT
   count_picked_by_type,
   count_picked_by_position,
   urlbar_picked_by_type_by_position,
+  combined_urlbar_picked.profile_group_id
 FROM
   combined_urlbar_picked
 FULL OUTER JOIN
   count_picked
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)

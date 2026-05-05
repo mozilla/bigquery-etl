@@ -2,6 +2,8 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
+from google.cloud import bigquery
+
 from bigquery_etl.routine import parse_routine, publish_routines
 
 TEST_DIR = Path(__file__).parent.parent
@@ -25,7 +27,17 @@ class TestPublishRoutine:
             + 'OPTIONS(description="Shift input bits one day left and drop any bits'
             + ' beyond 28 days.");'
         )
-        mock_client.query.assert_called_with(query)
+        job_config = bigquery.QueryJobConfig(dry_run=False)
+        assert [
+            (
+                c.args,
+                {
+                    k: (v.to_api_repr() if k == "job_config" else v)
+                    for k, v in c.kwargs.items()
+                },
+            )
+            for c in mock_client.query.call_args_list
+        ] == [((query,), {"job_config": job_config.to_api_repr()})]
 
     @mock.patch("google.cloud.bigquery.Client")
     def test_publish_js_udf_with_description(self, mock_client):
@@ -42,4 +54,14 @@ class TestPublishRoutine:
             + ' """return 1;"""\nOPTIONS(description="Some description",'
             + 'library = "gs:///script.js");'
         )
-        mock_client.query.assert_called_with(query)
+        job_config = bigquery.QueryJobConfig(dry_run=False)
+        assert [
+            (
+                c.args,
+                {
+                    k: (v.to_api_repr() if k == "job_config" else v)
+                    for k, v in c.kwargs.items()
+                },
+            )
+            for c in mock_client.query.call_args_list
+        ] == [((query,), {"job_config": job_config.to_api_repr()})]

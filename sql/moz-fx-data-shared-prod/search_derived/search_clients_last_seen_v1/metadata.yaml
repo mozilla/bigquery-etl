@@ -6,10 +6,14 @@ description: |
   Exposed to users as view `search.search_clients_last_seen` and used
   as the basis for LTV calculations.
 owners:
-- akomar@mozilla.com
-- anicholson@mozilla.com
+- akommasani@mozilla.com
+- cmorales@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_search
+  owner1: akommasani
+  owner2: cmorales
+  table_type: client_level
 scheduling:
   dag_name: bqetl_search
   depends_on_past: true
@@ -19,10 +23,13 @@ scheduling:
     execution_delta: 1h
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - sample_id
     - client_id
+require_column_descriptions: false

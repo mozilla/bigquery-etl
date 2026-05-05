@@ -1,6 +1,6 @@
 /*
 
-Add fields from additional_attributes to active_addons in main_v4.
+Add fields from additional_attributes to active_addons in main pings.
 
 Return an array instead of a "map" for backwards compatibility.
 
@@ -21,17 +21,17 @@ CREATE OR REPLACE FUNCTION udf_js.main_summary_active_addons(
         app_disabled BOOL,
         blocklisted BOOL,
         description STRING,
+        foreign_install INT64,
         has_binary_components BOOL,
         install_day INT64,
         is_system BOOL,
+        is_web_extension BOOL,
+        multiprocess_compatible BOOL,
         name STRING,
         scope INT64,
         signed_state INT64,
         type STRING,
         update_day INT64,
-        is_web_extension BOOL,
-        multiprocess_compatible BOOL,
-        foreign_install INT64,
         user_disabled INT64,
         version STRING
       >
@@ -113,19 +113,19 @@ WITH result AS (
   SELECT AS VALUE
     ARRAY_CONCAT(
       udf_js.main_summary_active_addons(
-        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING>>>[
           -- truthy columns and additional_properties
-          ('a', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, NULL)),
+          ('a', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL)),
           -- falsey columns and truthy additional_properties
-          ('b', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, NULL, NULL, NULL)),
+          ('b', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL)),
           -- falsey columns and additional_properties
-          ('c', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, NULL, NULL, NULL)),
+          ('c', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL)),
           -- truthy columns and falsey additional_properties
-          ('d', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, NULL)),
+          ('d', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL)),
           -- truthy columns and missing additional_properties
-          ('e', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, "version")),
+          ('e', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version")),
           -- falsey columns and missing additional_properties
-          ('f', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, 0, 0, "")),
+          ('f', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "")),
           -- null columns and missing additional_properties
           ('g', (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)),
           -- null value and ignore additional_properties
@@ -149,11 +149,11 @@ WITH result AS (
       ),
       -- null additional properties
       udf_js.main_summary_active_addons(
-        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING>>>[
           -- truthy columns and null additional_properties
-          ('l', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, "version")),
+          ('l', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version")),
           -- falsey columns and null additional_properties
-          ('m', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, 0, 0, "")),
+          ('m', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "")),
           -- null columns and additional_properties
           ('n', NULL)
         ],
@@ -166,25 +166,25 @@ WITH result AS (
     )
 )
 SELECT
-  assert.equals(13, ARRAY_LENGTH(result)),
-  assert.equals(('a', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(0)]),
-  assert.equals(('b', FALSE, '', TRUE, FALSE, 'version', 0, '', TRUE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(1)]),
-  assert.equals(('c', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(2)]),
-  assert.equals(('d', TRUE, 'name', FALSE, TRUE, '', 1, 'type', FALSE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(3)]),
-  assert.equals(('e', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(4)]),
-  assert.equals(('f', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(5)]),
-  assert.equals('g', result[OFFSET(6)].addon_id),
-  assert.all_fields_null((SELECT AS STRUCT result[OFFSET(6)].* EXCEPT (addon_id))),
-  assert.equals('h', result[OFFSET(7)].addon_id),
-  assert.all_fields_null((SELECT AS STRUCT result[OFFSET(7)].* EXCEPT (addon_id))),
-  assert.equals(('i', "version", TRUE, TRUE), STRUCT(result[OFFSET(8)].addon_id, result[OFFSET(8)].version, result[OFFSET(8)].user_disabled, result[OFFSET(8)].foreign_install)),
-  assert.all_fields_null((SELECT AS STRUCT result[OFFSET(8)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
-  assert.equals(('j', "", FALSE, FALSE), STRUCT(result[OFFSET(9)].addon_id, result[OFFSET(9)].version, result[OFFSET(9)].user_disabled, result[OFFSET(9)].foreign_install)),
-  assert.all_fields_null((SELECT AS STRUCT result[OFFSET(9)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
-  assert.equals(('l', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(10)]),
-  assert.equals(('m', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(11)]),
-  assert.equals('n', result[OFFSET(12)].addon_id),
-  assert.all_fields_null((SELECT AS STRUCT result[OFFSET(12)].* EXCEPT (addon_id))),
+  mozfun.assert.equals(13, ARRAY_LENGTH(result)),
+  mozfun.assert.equals(('a', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(0)]),
+  mozfun.assert.equals(('b', FALSE, '', TRUE, FALSE, 'version', 0, '', TRUE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(1)]),
+  mozfun.assert.equals(('c', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(2)]),
+  mozfun.assert.equals(('d', TRUE, 'name', FALSE, TRUE, '', 1, 'type', FALSE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(3)]),
+  mozfun.assert.equals(('e', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(4)]),
+  mozfun.assert.equals(('f', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(5)]),
+  mozfun.assert.equals('g', result[OFFSET(6)].addon_id),
+  mozfun.assert.all_fields_null((SELECT AS STRUCT result[OFFSET(6)].* EXCEPT (addon_id))),
+  mozfun.assert.equals('h', result[OFFSET(7)].addon_id),
+  mozfun.assert.all_fields_null((SELECT AS STRUCT result[OFFSET(7)].* EXCEPT (addon_id))),
+  mozfun.assert.equals(('i', "version", TRUE, TRUE), STRUCT(result[OFFSET(8)].addon_id, result[OFFSET(8)].version, result[OFFSET(8)].user_disabled, result[OFFSET(8)].foreign_install)),
+  mozfun.assert.all_fields_null((SELECT AS STRUCT result[OFFSET(8)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
+  mozfun.assert.equals(('j', "", FALSE, FALSE), STRUCT(result[OFFSET(9)].addon_id, result[OFFSET(9)].version, result[OFFSET(9)].user_disabled, result[OFFSET(9)].foreign_install)),
+  mozfun.assert.all_fields_null((SELECT AS STRUCT result[OFFSET(9)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
+  mozfun.assert.equals(('l', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(10)]),
+  mozfun.assert.equals(('m', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(11)]),
+  mozfun.assert.equals('n', result[OFFSET(12)].addon_id),
+  mozfun.assert.all_fields_null((SELECT AS STRUCT result[OFFSET(12)].* EXCEPT (addon_id))),
   null
 FROM
   result,

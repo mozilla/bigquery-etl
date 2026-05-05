@@ -7,12 +7,13 @@ labels:
   application: desktop
   incremental: true
   schedule: daily
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_gud
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: null
   clustering:
     fields:

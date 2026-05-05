@@ -20,7 +20,7 @@ WITH client_first_seen AS (
     country,
     first_seen_date
   FROM
-    mozdata.fenix.baseline_clients_first_seen
+    `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 ),
@@ -29,16 +29,15 @@ client_search AS (
     client_id,
     SUM(search_count) AS search_count
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   JOIN
     client_first_seen
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    AND normalized_app_name = 'Fenix'
+    AND normalized_app_name_os = "Firefox Android"
   GROUP BY
-    1
+    client_id
 ),
 dou AS (
   SELECT
@@ -48,11 +47,10 @@ dou AS (
       mozfun.bits28.to_dates(mozfun.bits28.range(days_seen_bits, -5, 6), submission_date)
     ) AS days_2_7,
   FROM
-    `mozdata.fenix.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
-    AND date_diff(submission_date, first_seen_date, DAY) = 6
-    AND normalized_channel = 'release'
+    AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
 ),
 adjust_client AS (
   SELECT
@@ -63,7 +61,7 @@ adjust_client AS (
     ARRAY_AGG(metrics.string.first_session_creative)[SAFE_OFFSET(0)] AS adjust_creative,
     MIN(DATE(submission_timestamp)) AS first_session_date
   FROM
-    `mozdata.fenix.first_session`
+    `moz-fx-data-shared-prod.fenix.first_session`
   WHERE
     (
       DATE(submission_timestamp)
@@ -73,7 +71,7 @@ adjust_client AS (
     AND metrics.string.first_session_network IS NOT NULL
     AND metrics.string.first_session_network <> ''
   GROUP BY
-    1
+    client_id
 )
 SELECT
   client_id,
@@ -95,18 +93,15 @@ SELECT
   first_seen_date,
   submission_date,
   1 AS new_profile,
-  CAST(days_2_7 > 1 AND coalesce(search_count, 0) > 0 AS integer) AS activated
+  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS INTEGER) AS activated
 FROM
   dou
 INNER JOIN
   client_first_seen
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   client_search
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   adjust_client
-USING
-  (client_id)
+  USING (client_id)

@@ -1,0 +1,8 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE

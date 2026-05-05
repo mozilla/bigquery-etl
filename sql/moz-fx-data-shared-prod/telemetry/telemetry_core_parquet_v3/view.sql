@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.telemetry_core_parquet_v3` AS
+  `moz-fx-data-shared-prod.telemetry.telemetry_core_parquet_v3`
+AS
 SELECT
   DATE(submission_timestamp) AS submission_date_s3,
   DATE(submission_timestamp) AS submission_date,
@@ -14,9 +15,7 @@ SELECT
     metadata.uri.app_build_id AS app_build_id,
     normalized_channel
   ) AS metadata,
-  STRUCT(
-    metadata.uri.app_name AS name
-  ) AS application,
+  STRUCT(metadata.uri.app_name AS name) AS application,
   v,
   client_id,
   seq,

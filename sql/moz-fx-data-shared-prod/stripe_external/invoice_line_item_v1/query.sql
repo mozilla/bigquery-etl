@@ -1,0 +1,22 @@
+SELECT
+  invoice_id,
+  unique_id,
+  _fivetran_synced,
+  amount,
+  currency,
+  description,
+  discountable,
+  id,
+  metadata,
+  period_end,
+  period_start,
+  plan_id,
+  price_id,
+  proration,
+  quantity,
+  subscription_id,
+  subscription_item_id,
+  type,
+  invoice_item_id,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.invoice_line_item

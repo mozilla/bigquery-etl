@@ -9,13 +9,15 @@ from tempfile import TemporaryFile
 from time import sleep
 from typing import Any, Dict, List, Optional
 
-import click
 import requests
+import rich_click as click
 import stripe
 import ujson
 from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from requests.auth import HTTPBasicAuth
+
+from bigquery_etl.util.common import block_coding_agents
 
 
 def _get_report_rows(
@@ -69,7 +71,14 @@ def stripe_():
     pass
 
 
-@stripe_.command("import", help=__doc__)
+@stripe_.command(
+    "import",
+    help="""Import Stripe reports into BigQuery.
+
+    Coding agents aren't allowed to run this command.
+    """,
+)
+@block_coding_agents
 @click.option(
     "--api-key",
     help="Stripe API key to use for authentication; If not set resources will be read "
@@ -165,7 +174,7 @@ def stripe_import(
     elif quiet:
         handle = open(os.devnull, "w+b")
     else:
-        handle = sys.stdout.buffer
+        handle = sys.stdout.buffer  # type: ignore
     with handle as file_obj:
         path = Path(__file__).parent / f"{report_type}.schema.json"
         root = bigquery.SchemaField.from_api_repr(

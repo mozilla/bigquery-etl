@@ -8,16 +8,16 @@ WITH pop AS (
     normalized_os AS os,
     environment.settings.attribution.source AS attribution_source,
     environment.partner.distribution_id AS distribution_id,
-    coalesce(environment.settings.attribution.ua, '') AS attribution_ua,
+    COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
     DATE(submission_timestamp) AS date
   FROM
-    telemetry.new_profile
+    `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 )
 SELECT
-  date,
+  `date`,
   channel,
   build_id,
   os,
@@ -25,17 +25,16 @@ SELECT
   distribution_id,
   attribution_ua,
   country_codes.name AS country_name,
-  count(client_id) AS new_profiles
+  COUNT(client_id) AS new_profiles
 FROM
   pop
 LEFT JOIN
-  mozdata.static.country_codes_v1 country_codes
-ON
-  (country_codes.code = country_code)
+  `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
+  ON (country_codes.code = country_code)
 WHERE
   rn = 1
 GROUP BY
-  date,
+  `date`,
   country_name,
   channel,
   build_id,

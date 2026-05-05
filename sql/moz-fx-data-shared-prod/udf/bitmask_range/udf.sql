@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION udf.bitmask_range(start_ordinal INT64, _length INT64)
 
 -- Tests
 SELECT
-  assert.equals(1, udf.bitmask_range(1, 1)),
-  assert.equals(30, udf.bitmask_range(2, 4)),
+  mozfun.assert.equals(1, udf.bitmask_range(1, 1)),
+  mozfun.assert.equals(30, udf.bitmask_range(2, 4)),
   -- Taking just the second and third bits (from the right) of binary 11011 should give us 00010 (decimal 2)
-  assert.equals(2, ((1 << 4) + (1 << 3) + (1 << 1) + (1 << 0)) & udf.bitmask_range(2, 2))
+  mozfun.assert.equals(2, ((1 << 4) + (1 << 3) + (1 << 1) + (1 << 0)) & udf.bitmask_range(2, 2))

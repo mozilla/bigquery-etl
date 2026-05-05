@@ -64,18 +64,18 @@ WITH examples AS (
     ) AS empty_indices,
 )
 SELECT
-  assert.equals('""', udf.pack_event_properties(null_property, indices)),
-  assert.equals('""', udf.pack_event_properties(no_property, indices)),
-  assert.equals('"b', udf.pack_event_properties(single_property, indices)),
-  assert.equals('"a', udf.pack_event_properties(duplicate_property, indices)),
-  assert.equals('a"', udf.pack_event_properties(secondary_property, indices)),
+  mozfun.assert.equals('""', udf.pack_event_properties(null_property, indices)),
+  mozfun.assert.equals('""', udf.pack_event_properties(no_property, indices)),
+  mozfun.assert.equals('"b', udf.pack_event_properties(single_property, indices)),
+  mozfun.assert.equals('"a', udf.pack_event_properties(duplicate_property, indices)),
+  mozfun.assert.equals('a"', udf.pack_event_properties(secondary_property, indices)),
   -- We specifically ignore unknown properties, this gives us flexibility during encoding
-  assert.equals('""', udf.pack_event_properties(unknown_property, indices)),
-  assert.equals('', udf.pack_event_properties(null_property, empty_indices)),
-  assert.equals('', udf.pack_event_properties(no_property, empty_indices)),
-  assert.equals('', udf.pack_event_properties(single_property, empty_indices)),
-  assert.equals('', udf.pack_event_properties(duplicate_property, empty_indices)),
-  assert.equals('', udf.pack_event_properties(secondary_property, empty_indices)),
-  assert.equals('', udf.pack_event_properties(unknown_property, empty_indices)),
+  mozfun.assert.equals('""', udf.pack_event_properties(unknown_property, indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(null_property, empty_indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(no_property, empty_indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(single_property, empty_indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(duplicate_property, empty_indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(secondary_property, empty_indices)),
+  mozfun.assert.equals('', udf.pack_event_properties(unknown_property, empty_indices)),
 FROM
   examples

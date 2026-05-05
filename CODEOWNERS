@@ -1,4 +1,34 @@
+# require @mozilla/dataplatform-wg review for everything else
+* @mozilla/dataplatform-wg
+
+# do not require review from data platform for the following files and directories
+/sql/
+/tests/sql/
+dags.yaml
+
+# require review on datasets, otherwise permissions could be changed without review
+**/dataset_metadata.yaml @mozilla/dataplatform-wg
+
 # These datasets are subject to the additional change control procedures
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
+# Active Users
+/sql_generators/active_users_aggregates_v3/templates/ @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_v3 @mozilla/kpi_table_reviewers
+/sql_generators/active_users_aggregates_v4/templates/ @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_v4 @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/telemetry/active_users_aggregates @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_tou_mobile_v1 @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_tou_desktop_v1 @mozilla/kpi_table_reviewers
+# Search
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/search_derived/search_revenue_levers_daily_v1/ @mozilla/revenue_forecasting_data_reviewers
+/sql/moz-fx-data-shared-prod/search_derived/search_dau_aggregates_v1/ @mozilla/revenue_forecasting_data_reviewers
+# Contextual Services
+/sql/**/request_payload_suggest_v2 @mozilla/request_payload_reviewers
+/sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers
+/sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1 @mozilla/revenue_forecasting_data_reviewers
+# https://mozilla-hub.atlassian.net/browse/DSRE-1106
+/sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1 @mozilla/gcp-wg
+# OKR
+/sql/moz-fx-data-shared-prod/firefox_desktop_derived/resurrection_week_2_retention_v1 @mozilla/kpi_table_reviewers

@@ -1,0 +1,5 @@
+---
+friendly_name: Remove label from metric path
+description: >
+  Removes the label name from the column path of a Glean labeled metric.
+  e.g. metric.labeled_counter.name.label -> metric.labeled_counter.name

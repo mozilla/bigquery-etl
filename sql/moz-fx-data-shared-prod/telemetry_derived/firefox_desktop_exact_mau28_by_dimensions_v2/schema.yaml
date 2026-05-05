@@ -2,45 +2,60 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: Submission Date
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: Monthly Active Users
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: Weekly Active Users
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: Daily Active Users
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: New Profiles
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
+  description: ID Bucket
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+  description: Activity Segment
 - mode: NULLABLE
   name: os
   type: STRING
+  description: Operating System
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: Channel
 - mode: NULLABLE
   name: source
   type: STRING
+  description: Source
 - mode: NULLABLE
   name: medium
   type: STRING
+  description: Medium
 - mode: NULLABLE
   name: campaign
   type: STRING
+  description: Campaign
 - mode: NULLABLE
   name: content
   type: STRING
+  description: Content
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Country
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: Distribution ID

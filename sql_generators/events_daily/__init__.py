@@ -1,4 +1,5 @@
 """Generate query directories."""
+
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,16 +9,16 @@ import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from bigquery_etl.cli.utils import is_valid_project
+from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 
 TEMPLATED_FILES = {
-    "init.sql",
     "metadata.yaml",
     "query.sql",
     "stored_procedure.sql",
     "udf.sql",
     "view.sql",
+    "schema.yaml",
 }
 
 
@@ -112,7 +113,7 @@ class TemplatedDir:
 
 def get_query_dirs(path):
     """Walk a path to get all templated query dirs."""
-    for directory, sub_dirs, files in os.walk(path):
+    for directory, sub_dirs, files in os.walk(path, followlinks=True):
         non_hidden = {f for f in files if not f.startswith(".")}
         if non_hidden and non_hidden.issubset(ALLOWED_FILES):
             dir_path = Path(directory)
@@ -145,7 +146,8 @@ def get_query_dirs(path):
     type=click.Path(file_okay=False),
     default="sql",
 )
-def generate(target_project, path, dataset, output_dir):
+@use_cloud_function_option
+def generate(target_project, path, dataset, output_dir, use_cloud_function):
     """Generate queries at the path for project."""
     write_path = Path(output_dir) / target_project
     for query_dir in get_query_dirs(path):

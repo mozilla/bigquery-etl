@@ -4,31 +4,31 @@ CREATE OR REPLACE FUNCTION udf.combine_adjacent_days_365_bits(prev BYTES, curr B
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits(),
     udf.combine_adjacent_days_365_bits(udf.zero_as_365_bits(), udf.one_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 364 | udf.one_as_365_bits(),
     udf.combine_adjacent_days_365_bits(udf.one_as_365_bits() << 363, udf.one_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits(),
     udf.combine_adjacent_days_365_bits(udf.one_as_365_bits() << 364, udf.one_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 1,
     udf.combine_adjacent_days_365_bits(udf.one_as_365_bits(), udf.zero_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 1,
     udf.combine_adjacent_days_365_bits(udf.one_as_365_bits(), NULL)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits(),
     udf.combine_adjacent_days_365_bits(NULL, udf.one_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 1 | udf.one_as_365_bits(),
     udf.combine_adjacent_days_365_bits(udf.one_as_365_bits(), udf.one_as_365_bits())
   );

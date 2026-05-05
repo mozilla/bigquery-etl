@@ -7,10 +7,14 @@ fields:
   mode: NULLABLE
   name: task_id
   type: STRING
-- description: Execution date of the DAG Run instance
+- description: Unique identifier of the task run instance
   mode: NULLABLE
-  name: execution_date
-  type: TIMESTAMP
+  name: run_id
+  type: STRING
+- description: Attempt number to execute the task
+  mode: NULLABLE
+  name: try_number
+  type: INTEGER
 - description: Datetime when task has been rescheduled
   mode: NULLABLE
   name: reschedule_date

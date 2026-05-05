@@ -61,7 +61,7 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.fog_initialization.value AS INT64))
+        AVG(CAST(metrics.timespan.fog_initialization.value AS INT64))
       ),
       (
         'fog_initialization',
@@ -75,28 +75,28 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.fog_initialization.value AS INT64))
+        MAX(CAST(metrics.timespan.fog_initialization.value AS INT64))
       ),
       (
         'fog_initialization',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.fog_initialization.value AS INT64))
+        MIN(CAST(metrics.timespan.fog_initialization.value AS INT64))
       ),
       (
         'fog_initialization',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.fog_initialization.value AS INT64))
+        SUM(CAST(metrics.timespan.fog_initialization.value AS INT64))
       ),
       (
         'fog_ipc_replay_failures',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
+        AVG(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
       ),
       (
         'fog_ipc_replay_failures',
@@ -110,21 +110,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
+        MAX(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
       ),
       (
         'fog_ipc_replay_failures',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
+        MIN(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
       ),
       (
         'fog_ipc_replay_failures',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
+        SUM(CAST(metrics.counter.fog_ipc_replay_failures AS INT64))
       ),
       (
         'glean_core_migration_successful',
@@ -140,7 +140,7 @@ unlabeled_metrics AS (
         'true',
         SUM(CAST(metrics.boolean.glean_core_migration_successful AS INT64))
       ),
-      ('glean_error_io', 'counter', '', 'avg', avg(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'avg', AVG(CAST(metrics.counter.glean_error_io AS INT64))),
       (
         'glean_error_io',
         'counter',
@@ -148,15 +148,15 @@ unlabeled_metrics AS (
         'count',
         IF(MIN(metrics.counter.glean_error_io) IS NULL, NULL, COUNT(*))
       ),
-      ('glean_error_io', 'counter', '', 'max', max(CAST(metrics.counter.glean_error_io AS INT64))),
-      ('glean_error_io', 'counter', '', 'min', min(CAST(metrics.counter.glean_error_io AS INT64))),
-      ('glean_error_io', 'counter', '', 'sum', sum(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'max', MAX(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'min', MIN(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'sum', SUM(CAST(metrics.counter.glean_error_io AS INT64))),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        AVG(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
@@ -170,21 +170,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        MAX(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        MIN(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        SUM(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_timeout',
@@ -205,7 +205,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+        AVG(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
       ),
       (
         'glean_time_invalid_timezone_offset',
@@ -219,28 +219,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+        MAX(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
       ),
       (
         'glean_time_invalid_timezone_offset',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+        MIN(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
       ),
       (
         'glean_time_invalid_timezone_offset',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+        SUM(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        AVG(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
@@ -254,28 +254,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        MAX(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        MIN(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        SUM(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        AVG(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
@@ -289,28 +289,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        MAX(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        MIN(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        SUM(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
@@ -324,28 +324,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
@@ -359,28 +359,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
@@ -394,28 +394,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'power_total_cpu_time_ms',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
+        AVG(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
       ),
       (
         'power_total_cpu_time_ms',
@@ -429,21 +429,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
+        MAX(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
       ),
       (
         'power_total_cpu_time_ms',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
+        MIN(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
       ),
       (
         'power_total_cpu_time_ms',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
+        SUM(CAST(metrics.counter.power_total_cpu_time_ms AS INT64))
       )
     ] AS scalar_aggregates
   FROM

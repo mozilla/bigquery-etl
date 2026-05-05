@@ -1,0 +1,6 @@
+friendly_name: Adjust contact data
+description: |-
+  Adjust contact data.
+
+labels:
+  authorized: true

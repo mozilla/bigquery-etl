@@ -6,9 +6,9 @@ RETURNS ARRAY<DATE> AS (
 
 -- Tests
 SELECT
-  assert.array_empty(udf.bits28_to_dates(0, '2020-01-28')),
-  assert.array_equals([DATE('2020-01-28')], udf.bits28_to_dates(1, '2020-01-28')),
-  assert.array_equals(
+  mozfun.assert.array_empty(udf.bits28_to_dates(0, '2020-01-28')),
+  mozfun.assert.array_equals([DATE('2020-01-28')], udf.bits28_to_dates(1, '2020-01-28')),
+  mozfun.assert.array_equals(
     [DATE('2020-01-01'), DATE('2020-01-28')],
     udf.bits28_to_dates(1 | (1 << 27), '2020-01-28')
   ),

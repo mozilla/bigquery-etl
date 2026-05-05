@@ -33,7 +33,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
+        AVG(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
       ),
       (
         'logins_sync_outgoing_batches',
@@ -47,21 +47,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
+        MAX(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
       ),
       (
         'logins_sync_outgoing_batches',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
+        MIN(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
       ),
       (
         'logins_sync_outgoing_batches',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
+        SUM(CAST(metrics.counter.logins_sync_outgoing_batches AS INT64))
       )
     ] AS scalar_aggregates
   FROM

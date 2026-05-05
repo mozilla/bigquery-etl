@@ -1,0 +1,11 @@
+friendly_name: |-
+  Firefox Public Data Report User Activity
+description: |-
+  Data used to populate https://data.firefox.com/dashboard/user-activity.
+  A row for every country in static.country_names_v1 is created, including duplicates if
+  a country code has multiple associated names.
+
+  Code to parse and format this data as well as the country allowlist is in the
+  [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl/tree/main/public_data_report/user_activity).
+owners:
+- bewu@mozilla.com

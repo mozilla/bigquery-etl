@@ -24,28 +24,33 @@ sample AS (
     UNNEST([country, 'Worldwide']) AS country_group
   LEFT JOIN
     countries AS cn
-  ON
-    cn.code = country_group
+    ON cn.code = country_group
   WHERE
-    COALESCE(cn.name, country_group) IN (
-      'Worldwide',
-      'Brazil',
-      'China',
-      'France',
-      'Germany',
-      'India',
-      'Indonesia',
-      'Italy',
-      'Poland',
-      'Russia',
-      'United States'
-    )
     -- we need the whole week for daily_usage metric
     -- others can look at just the last day (Sunday, see `is_last_day_of_week` above)
-    AND submission_date >= @submission_date
+    submission_date >= @submission_date
     AND submission_date < DATE_ADD(@submission_date, INTERVAL 7 DAY)
     AND subsession_hours_sum < 24 --remove outliers
     AND sample_id = 1
+),
+-- active_users_aggregates is used for canonical usage calculations
+active_users_aggregates AS (
+  SELECT
+    DATE_TRUNC(submission_date, WEEK(MONDAY)) AS week_start,
+    COALESCE(cn.name, country_group) AS country_name,
+    mau,
+    wau,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
+  CROSS JOIN
+    -- add "Worldwide" row for every row to get totals
+    UNNEST([country, 'Worldwide']) AS country_group
+  LEFT JOIN
+    countries AS cn
+    ON cn.code = country_group
+  WHERE
+    submission_date = @submission_date
+    AND app_name IN ('Firefox Desktop', 'Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
 ),
 sample_addons AS (
   SELECT
@@ -64,7 +69,7 @@ sample_addons AS (
       IF(
         ARRAY_LENGTH(active_addons) > 0,
         active_addons,
-            -- include a null addon if there were none (either null or an empty list)
+        -- include a null addon if there were none (either null or an empty list)
         [active_addons[SAFE_OFFSET(0)]]
       )
     ) AS addons
@@ -72,12 +77,23 @@ sample_addons AS (
     days_since_seen < 7
     AND is_last_day_of_week
 ),
-mau_wau AS (
+aggregate_mau AS (
   SELECT
     week_start,
     country_name,
-    COUNT(DISTINCT IF(days_since_seen < 28, client_id, NULL)) AS mau,
-    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau
+    SUM(mau) AS mau,
+  FROM
+    active_users_aggregates
+  GROUP BY
+    week_start,
+    country_name
+),
+-- used to calculate ratios
+legacy_wau AS (
+  SELECT
+    week_start,
+    country_name,
+    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   FROM
     sample
   WHERE
@@ -90,7 +106,7 @@ avg_daily_usage_by_user AS (
   SELECT
     client_id,
     country_name,
-    avg(subsession_hours_sum) AS avg_hours_usage_daily_per_user,
+    AVG(subsession_hours_sum) AS avg_hours_usage_daily_per_user,
     week_start
   FROM
     sample
@@ -106,7 +122,7 @@ avg_daily_usage_by_user AS (
 daily_usage AS (
   SELECT
     country_name,
-    avg(avg_hours_usage_daily_per_user) AS avg_hours_usage_daily,
+    AVG(avg_hours_usage_daily_per_user) AS avg_hours_usage_daily,
     week_start
   FROM
     avg_daily_usage_by_user
@@ -120,7 +136,7 @@ intensity AS (
     country_name,
     SAFE_DIVIDE(
       SUM(`moz-fx-data-shared-prod.udf.bitcount_lowest_7`(days_seen_bits)),
-      count(*)
+      COUNT(*)
     ) AS intensity
   FROM
     sample
@@ -153,8 +169,8 @@ active_clients_weekly AS (
   SELECT
     country_name,
     client_id,
-    split(app_version, '.')[offset(0)] AS major_version,
-    date_sub(submission_date, INTERVAL days_since_seen DAY) AS last_day_seen,
+    `mozfun.norm.truncate_version`(app_version, "major") AS major_version,
+    DATE_SUB(submission_date, INTERVAL days_since_seen DAY) AS last_day_seen,
     week_start
   FROM
     sample
@@ -164,7 +180,7 @@ active_clients_weekly AS (
 ),
 latest_releases AS (
   SELECT
-    MAX(SPLIT(build.target.version, '.')[OFFSET(0)]) AS latest_major_version,
+    MAX(`mozfun.norm.truncate_version`(build.target.version, "major")) AS latest_major_version,
     DATE(build.build.date) AS day
   FROM
     `moz-fx-data-shared-prod.telemetry.buildhub2`
@@ -172,21 +188,20 @@ latest_releases AS (
     build.target.channel = 'release'
     AND DATE(build.build.date) >= '2018-12-01'
   GROUP BY
-    day
+    `day`
 ),
 active_clients_with_latest_releases AS (
   SELECT
     client_id,
     country_name,
     major_version,
-    max(latest_major_version) AS latest_major_version,
+    MAX(latest_major_version) AS latest_major_version,
     week_start
   FROM
     active_clients_weekly
   JOIN
     latest_releases
-  ON
-    latest_releases.day <= active_clients_weekly.last_day_seen
+    ON latest_releases.day <= active_clients_weekly.last_day_seen
   WHERE
     client_id IS NOT NULL
   GROUP BY
@@ -198,7 +213,7 @@ active_clients_with_latest_releases AS (
 latest_version_ratio AS (
   SELECT
     country_name,
-    SAFE_DIVIDE(COUNTIF(major_version = latest_major_version), count(*)) AS latest_version_ratio,
+    SAFE_DIVIDE(COUNTIF(major_version = latest_major_version), COUNT(*)) AS latest_version_ratio,
     week_start
   FROM
     active_clients_with_latest_releases
@@ -249,9 +264,8 @@ addon_ratios AS (
   FROM
     addon_counts
   JOIN
-    mau_wau
-  USING
-    (week_start, country_name)
+    legacy_wau
+    USING (week_start, country_name)
 ),
 top_addons AS (
   SELECT
@@ -319,9 +333,8 @@ locale_ratios AS (
   FROM
     locale_counts
   JOIN
-    mau_wau
-  USING
-    (week_start, country_name)
+    legacy_wau
+    USING (week_start, country_name)
 ),
 top_locales AS (
   SELECT
@@ -335,9 +348,9 @@ top_locales AS (
     country_name
 )
 SELECT
-  mau_wau.week_start AS submission_date,
-  mau_wau.country_name,
-  mau_wau.mau,
+  aggregate_mau.week_start AS submission_date,
+  aggregate_mau.country_name,
+  aggregate_mau.mau,
   daily_usage.avg_hours_usage_daily,
   intensity.intensity,
   new_profile_rate.new_profile_rate,
@@ -346,32 +359,25 @@ SELECT
   has_addon.has_addon_ratio,
   top_locales.top_locales
 FROM
-  mau_wau
+  aggregate_mau
 JOIN
   daily_usage
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   intensity
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   new_profile_rate
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   latest_version_ratio
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_addons
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_locales
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   has_addon
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)

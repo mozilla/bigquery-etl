@@ -1,11 +1,8 @@
 CREATE TEMP FUNCTION isoEngine(engine STRING, s STRING, v INT64) AS (
   CASE
-  WHEN
-    engine = s
-  THEN
-    v
-  ELSE
-    0
+    WHEN engine = s
+      THEN v
+    ELSE 0
   END
 );
 
@@ -35,31 +32,19 @@ WITH client_searches AS (
       SELECT
         client_id,
         CASE
-        WHEN
-          STARTS_WITH(engine, 'google')
-        THEN
-          'google'
-        WHEN
-          STARTS_WITH(engine, 'ddg')
-          OR STARTS_WITH(engine, 'duckduckgo')
-        THEN
-          'ddg'
-        WHEN
-          STARTS_WITH(engine, 'bing')
-        THEN
-          'bing'
-        WHEN
-          STARTS_WITH(engine, 'yandex')
-        THEN
-          'yandex'
-        WHEN
-          engine LIKE '%mazon%'
-        THEN
-          'amazon'
-        ELSE
-          'other'
-        END
-        AS engine,
+          WHEN STARTS_WITH(engine, 'google')
+            THEN 'google'
+          WHEN STARTS_WITH(engine, 'ddg')
+            OR STARTS_WITH(engine, 'duckduckgo')
+            THEN 'ddg'
+          WHEN STARTS_WITH(engine, 'bing')
+            THEN 'bing'
+          WHEN STARTS_WITH(engine, 'yandex')
+            THEN 'yandex'
+          WHEN engine LIKE '%mazon%'
+            THEN 'amazon'
+          ELSE 'other'
+        END AS engine,
         SUM(COALESCE(sap, 0)) AS sap,
         SUM(COALESCE(tagged_sap)) AS tagged_sap,
         SUM(COALESCE(tagged_follow_on)) AS tagged_follow_on,
@@ -103,8 +88,7 @@ client_meta AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
   LEFT JOIN
     client_searches
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     submission_date = @submission_date
 ),
@@ -240,21 +224,16 @@ FROM
   (SELECT * EXCEPT (rank) FROM names WHERE rank = 1)
 JOIN
   (SELECT * EXCEPT (rank) FROM default_search_engines WHERE rank = 1)
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   daut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   waut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   maut
-USING
-  (addon_id)
+  USING (addon_id)
 JOIN
   engagement
-USING
-  (addon_id)
+  USING (addon_id)

@@ -8,9 +8,10 @@ WITH histogram_data AS (
     process,
     key,
     h1.agg_type,
-    h1.aggregates
+    h1.aggregates,
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
-    telemetry_derived.clients_histogram_aggregates_v1,
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`,
     UNNEST(histogram_aggregates) h1
   WHERE
     submission_date = @submission_date
@@ -21,9 +22,10 @@ scalars_data AS (
     app_version,
     app_build_id,
     channel,
-    scalar_aggregates
+    scalar_aggregates,
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
-    telemetry_derived.clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
 )
@@ -36,7 +38,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -59,7 +61,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -81,7 +83,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -103,7 +105,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -125,14 +127,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value) * MAX(sample_mult)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -156,14 +154,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value) * MAX(sample_mult)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates) s1
@@ -186,14 +180,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value) * MAX(sample_mult)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -216,14 +206,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value) * MAX(sample_mult)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)

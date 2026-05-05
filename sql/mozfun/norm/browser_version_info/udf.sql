@@ -9,7 +9,7 @@ RETURNS STRUCT<
   STRUCT(
     version_string AS version,
     norm.truncate_version(version_string, 'major') AS major_version,
-    norm.truncate_version(version_string, 'minor') AS minor_version,
+    norm.extract_version(version_string, 'minor') AS minor_version,
     norm.extract_version(version_string, 'patch') AS patch_revision,
     (
       ARRAY_LENGTH(SPLIT(version_string, '.')) = 2
@@ -26,7 +26,7 @@ WITH browser_info AS (
 SELECT
   assert.equals('45.9.0', browser_info.version),
   assert.equals(45, browser_info.major_version),
-  assert.equals(45.9, browser_info.minor_version),
+  assert.equals(9, browser_info.minor_version),
   assert.equals(0, browser_info.patch_revision),
   assert.false(browser_info.is_major_release)
 FROM
@@ -39,7 +39,7 @@ WITH browser_info AS (
 SELECT
   assert.equals('96.0', browser_info.version),
   assert.equals(96, browser_info.major_version),
-  assert.equals(96, browser_info.minor_version),
+  assert.equals(0, browser_info.minor_version),
   assert.null(browser_info.patch_revision),
   assert.true(browser_info.is_major_release)
 FROM
@@ -52,7 +52,7 @@ WITH browser_info AS (
 SELECT
   assert.equals('73.0.1', browser_info.version),
   assert.equals(73, browser_info.major_version),
-  assert.equals(73.0, browser_info.minor_version),
+  assert.equals(0, browser_info.minor_version),
   assert.equals(1, browser_info.patch_revision),
   assert.false(browser_info.is_major_release)
 FROM
@@ -91,7 +91,33 @@ WITH browser_info AS (
 SELECT
   assert.equals('101.0a1', browser_info.version),
   assert.equals(101, browser_info.major_version),
-  assert.equals(101, browser_info.minor_version),
+  assert.equals(0, browser_info.minor_version),
+  assert.null(browser_info.patch_revision),
+  assert.false(browser_info.is_major_release)
+FROM
+  browser_info;
+
+WITH browser_info AS (
+  SELECT AS VALUE
+    norm.browser_version_info('101.10')
+)
+SELECT
+  assert.equals('101.10', browser_info.version),
+  assert.equals(101, browser_info.major_version),
+  assert.equals(10, browser_info.minor_version),
+  assert.null(browser_info.patch_revision),
+  assert.false(browser_info.is_major_release)
+FROM
+  browser_info;
+
+WITH browser_info AS (
+  SELECT AS VALUE
+    norm.browser_version_info('101.01')
+)
+SELECT
+  assert.equals('101.01', browser_info.version),
+  assert.equals(101, browser_info.major_version),
+  assert.equals(1, browser_info.minor_version),
   assert.null(browser_info.patch_revision),
   assert.false(browser_info.is_major_release)
 FROM

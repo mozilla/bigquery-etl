@@ -1,6 +1,11 @@
 fields:
 
 - mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The date when data was captured
+
+- mode: NULLABLE
   name: creation_date
   type: DATE
   description: The table's creation date
@@ -24,3 +29,28 @@ fields:
   name: table_type
   type: STRING
   description: The table type
+
+- mode: NULLABLE
+  name: last_modified_date
+  type: DATE
+  description: The table's last modified date
+
+- mode: REPEATED
+  name: owners
+  type: STRING
+  description: The owner of the table listed in metadata yaml file
+
+- mode: NULLABLE
+  name: deprecated
+  type: BOOLEAN
+  description: Whether the table has been deprecated and pending deletion
+
+- mode: NULLABLE
+  name: deletion_date
+  type: DATE
+  description: The date when the tables was scheduled for deletion
+
+- mode: NULLABLE
+  name: last_used_date
+  type: DATE
+  description: The date when the tables was last queried

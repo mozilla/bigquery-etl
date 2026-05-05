@@ -1,0 +1,24 @@
+---
+- client_id: client-2
+  sample_id: 20
+  submission_timestamp: '2022-07-01 00:02:00'
+  profile_group_id: profile-group-id-2
+  environment:
+    settings:
+      attribution:
+        source: source2
+- client_id: client-2
+  sample_id: 20
+  submission_timestamp: '2022-07-01 01:02:00'
+  profile_group_id: profile-group-id-2
+  environment:
+    settings:
+      attribution:
+        campaign: campaign2
+- client_id: client-5
+  sample_id: 50
+  profile_group_id: profile-group-id-5
+  submission_timestamp: '2022-07-01 01:00:00'
+  environment:
+    build:
+      build_id: build5

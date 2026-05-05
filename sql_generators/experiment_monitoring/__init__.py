@@ -1,11 +1,14 @@
 """Experiment monitoring materialized view generation."""
+
 import os
 from pathlib import Path
 
 import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
+from fnmatch import fnmatchcase
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 
@@ -35,6 +38,10 @@ def generate_queries(project, path, write_dir):
         if args["per_app"]:
             # generate a separate query for each application dataset
             for dataset in template_config["applications"]:
+                if "skip_applications" in args:
+                    if any(fnmatchcase(dataset, skip_app) for skip_app in args["skip_applications"]):
+                        continue
+
                 args["dataset"] = dataset
 
                 write_sql(
@@ -53,14 +60,23 @@ def generate_queries(project, path, write_dir):
             # these queries are written to `telemetry`
             args["applications"] = template_config["applications"]
 
+            if "skip_applications" in args:
+                args["applications"] = [
+                    app
+                    for app in args["applications"]
+                    if not any(fnmatchcase(app, skip_app) for skip_app in args["skip_applications"])
+                ]
+
+            destination_dataset = args.get("destination_dataset", "telemetry_derived")
+
             write_sql(
                 write_dir / project,
-                f"{project}.telemetry_derived.{query}",
+                f"{project}.{destination_dataset}.{query}",
                 sql_template_file,
                 reformat(sql_template.render(**args)),
             )
 
-            write_path = Path(write_dir) / project / "telemetry_derived" / query
+            write_path = Path(write_dir) / project / destination_dataset / query
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
 
 
@@ -85,7 +101,8 @@ def generate_queries(project, path, write_dir):
     default=Path("sql"),
     type=click.Path(file_okay=False),
 )
-def generate(target_project, path, output_dir):
+@use_cloud_function_option
+def generate(target_project, path, output_dir, use_cloud_function):
     """Generate the experiment monitoring views."""
     output_dir = Path(output_dir)
     generate_queries(target_project, path, output_dir)

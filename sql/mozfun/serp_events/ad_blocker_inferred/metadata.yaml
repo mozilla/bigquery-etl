@@ -1,0 +1,4 @@
+friendly_name: Ad Blocker Inferred
+description: |
+  Determine whether an ad blocker is inferred to be in use on a SERP. True if
+  all loaded ads are blocked.

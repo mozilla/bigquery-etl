@@ -16,24 +16,16 @@ RETURNS ARRAY<
         agg_type,
         CASE
           agg_type
-        WHEN
-          'true'
-        THEN
-          value
-        ELSE
-          0
-        END
-        AS bool_true,
+          WHEN 'true'
+            THEN value
+          ELSE 0
+        END AS bool_true,
         CASE
           agg_type
-        WHEN
-          'false'
-        THEN
-          value
-        ELSE
-          0
-        END
-        AS bool_false
+          WHEN 'false'
+            THEN value
+          ELSE 0
+        END AS bool_false
       FROM
         UNNEST(scalar_aggs)
       WHERE
@@ -59,23 +51,16 @@ RETURNS ARRAY<
       SELECT
         * EXCEPT (bool_true, bool_false),
         CASE
-        WHEN
-          bool_true > 0
-          AND bool_false > 0
-        THEN
-          "sometimes"
-        WHEN
-          bool_true > 0
-          AND bool_false = 0
-        THEN
-          "always"
-        WHEN
-          bool_true = 0
-          AND bool_false > 0
-        THEN
-          "never"
-        END
-        AS bucket
+          WHEN bool_true > 0
+            AND bool_false > 0
+            THEN "sometimes"
+          WHEN bool_true > 0
+            AND bool_false = 0
+            THEN "always"
+          WHEN bool_true = 0
+            AND bool_false > 0
+            THEN "never"
+        END AS bucket
       FROM
         summed_bools
       WHERE
@@ -119,7 +104,7 @@ all_combos AS (
     COALESCE(combo.os, table.os) AS os,
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
-    glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1 table
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1` table
   CROSS JOIN
     static_combos combo
 ),
@@ -206,8 +191,7 @@ bucketed_scalars AS (
     UNNEST(scalar_aggregates)
   LEFT JOIN
     buckets_by_metric
-  USING
-    (metric, key)
+    USING (metric, key)
   WHERE
     metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
 ),
@@ -257,8 +241,7 @@ valid_booleans_scalars AS (
     booleans_and_scalars
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 )
 SELECT
   ping_type,

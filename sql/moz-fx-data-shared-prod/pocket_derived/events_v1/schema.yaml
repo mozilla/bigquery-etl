@@ -1,0 +1,65 @@
+fields:
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: normalized_app_id
+  type: STRING
+- mode: NULLABLE
+  name: metadata
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: geo
+    type: RECORD
+    fields:
+    - mode: NULLABLE
+      name: city
+      type: STRING
+    - mode: NULLABLE
+      name: country
+      type: STRING
+  - mode: NULLABLE
+    name: user_agent
+    type: RECORD
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+- mode: NULLABLE
+  name: client_info
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: client_id
+    type: STRING
+  - mode: NULLABLE
+    name: user_id
+    type: STRING
+  - mode: NULLABLE
+    name: app_build
+    type: STRING
+  - mode: NULLABLE
+    name: locale
+    type: STRING
+  - mode: NULLABLE
+    name: os
+    type: STRING
+  - mode: NULLABLE
+    name: os_version
+    type: STRING
+- mode: NULLABLE
+  name: event
+  type: STRING
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: event_extra
+  type: JSON

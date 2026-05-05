@@ -9,11 +9,20 @@ CREATE OR REPLACE FUNCTION udf.shift_365_bits_one_day(x BYTES) AS (
 
 -- Tests
 SELECT
-  assert.equals(udf.one_as_365_bits() << 1, udf.shift_365_bits_one_day(udf.one_as_365_bits())),
-  assert.equals(udf.one_as_365_bits() << 8, udf.shift_365_bits_one_day(udf.one_as_365_bits() << 7)),
-  assert.equals(
+  mozfun.assert.equals(
+    udf.one_as_365_bits() << 1,
+    udf.shift_365_bits_one_day(udf.one_as_365_bits())
+  ),
+  mozfun.assert.equals(
+    udf.one_as_365_bits() << 8,
+    udf.shift_365_bits_one_day(udf.one_as_365_bits() << 7)
+  ),
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 364,
     udf.shift_365_bits_one_day(udf.one_as_365_bits() << 363)
   ),
-  assert.equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(udf.one_as_365_bits() << 364)),
-  assert.equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(NULL));
+  mozfun.assert.equals(
+    udf.zero_as_365_bits(),
+    udf.shift_365_bits_one_day(udf.one_as_365_bits() << 364)
+  ),
+  mozfun.assert.equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(NULL));

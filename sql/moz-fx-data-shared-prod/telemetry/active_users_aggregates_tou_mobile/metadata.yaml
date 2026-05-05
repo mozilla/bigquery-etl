@@ -1,0 +1,19 @@
+friendly_name: Active Users Aggregates ToU Mobile
+description: |-
+  Aggregated view of daily, weekly, and monthly active mobile users segmented by Terms of Use
+  acceptance status, built to support the Terms of Use acceptance rate dashboard. This
+  derived table replaces a Looker PDT that was causing inflated aggregates, providing
+  performant, pre-aggregated data without relying on Looker-side caching.
+
+  As of 2026-03-09, this table only looks at the fenix and ios apps for mobile.
+  Focus and klar are not in scope as of this date.
+
+  Jira ticket: https://mozilla-hub.atlassian.net/browse/DO-2122
+owners:
+- rbaffourawuah@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  shredder_mitigation: true
+  owner1: rbaffourawuah
+  owner2: mhirose

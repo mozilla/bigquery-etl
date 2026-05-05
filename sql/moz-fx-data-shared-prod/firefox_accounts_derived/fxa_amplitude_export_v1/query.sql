@@ -14,7 +14,7 @@ base_events AS (
   SELECT
     *
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
   WHERE
     -- @submission_date is PDT, so we need two days of UTC-based
     -- data. We assume that we run immediately at the end of
@@ -22,8 +22,8 @@ base_events AS (
     -- submission date.
     -- See https://console.cloud.google.com/bigquery?sq=768515352537:e63d2d2faa85431dbf0e5440021af837
     (
-      _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
-      OR _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
+      DATE(`timestamp`) = @submission_date
+      OR DATE(`timestamp`) = DATE_ADD(@submission_date, INTERVAL 1 DAY)
     )
     AND DATE(`timestamp`, "America/Los_Angeles") = @submission_date
     AND jsonPayload.fields.event_type IN (
@@ -39,7 +39,10 @@ grouped_by_user AS (
     -- to prevent weirdness from timestamp field, use provided
     -- submission date parameter as timestamp
     TO_HEX(
-      udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
+      `moz-fx-data-shared-prod.udf.hmac_sha256`(
+        (SELECT * FROM hmac_key),
+        CAST(jsonPayload.fields.user_id AS BYTES)
+      )
     ) AS user_id,
     MIN(CONCAT(insertId, '-user')) AS insert_id,
     -- Amplitude properties, scalars
@@ -114,20 +117,20 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date_pacific)
   FROM
-    firefox_accounts_derived.fxa_amplitude_export_v1
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_amplitude_export_v1`
   WHERE
     submission_date_pacific = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_seen_bits) > 0
 )
 SELECT
   @submission_date AS submission_date_pacific,
   _current.* REPLACE (
     COALESCE(_current.user_id, _previous.user_id) AS user_id,
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
-    udf.combine_days_seen_maps(
+    `moz-fx-data-shared-prod.udf.combine_days_seen_maps`(
       _previous.os_used_month,
       ARRAY(SELECT STRUCT(key, CAST(TRUE AS INT64) AS value) FROM _current.os_used_month AS key)
     ) AS os_used_month
@@ -136,5 +139,4 @@ FROM
   grouped_by_user _current
 FULL OUTER JOIN
   _previous
-USING
-  (user_id)
+  USING (user_id)

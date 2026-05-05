@@ -1,0 +1,26 @@
+fields:
+- mode: NULLABLE
+  name: destination_id
+  type: STRING
+  description: |
+    Unique ID of the destination warehouse.
+- mode: NULLABLE
+  name: destination_name
+  type: STRING
+  description: |
+    Name of the destination warehouse.
+- mode: NULLABLE
+  name: account_id
+  type: STRING
+  description: |
+    Foreign key referencing the Fivetran account associated with the destination.
+- mode: NULLABLE
+  name: created_at
+  type: TIMESTAMP
+  description: |
+    Timestamp of when the destination was set up.
+- mode: NULLABLE
+  name: region
+  type: STRING
+  description: |
+    Geographical region of the destination.

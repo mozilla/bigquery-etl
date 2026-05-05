@@ -1,0 +1,13 @@
+SELECT
+  id,
+  name,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
+    """SELECT
+         id,
+         name
+       FROM
+         fxa.securityEventNames
+    """
+  )

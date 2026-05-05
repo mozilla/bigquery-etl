@@ -1,0 +1,358 @@
+fields:
+- name: logName
+  type: STRING
+  mode: NULLABLE
+- name: resource
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: labels
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: instance_id
+      type: STRING
+      mode: NULLABLE
+    - name: zone
+      type: STRING
+      mode: NULLABLE
+    - name: project_id
+      type: STRING
+      mode: NULLABLE
+- name: textPayload
+  type: STRING
+  mode: NULLABLE
+- name: jsonPayload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: fields
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: client_id
+      type: STRING
+      mode: NULLABLE
+    - name: scope
+      type: STRING
+      mode: NULLABLE
+    - name: user
+      type: STRING
+      mode: NULLABLE
+    - name: path
+      type: STRING
+      mode: NULLABLE
+    - name: method
+      type: STRING
+      mode: NULLABLE
+    - name: auth
+      type: STRING
+      mode: NULLABLE
+    - name: remoteaddresschain
+      type: STRING
+      mode: NULLABLE
+    - name: t
+      type: FLOAT
+      mode: NULLABLE
+    - name: code
+      type: FLOAT
+      mode: NULLABLE
+    - name: errno
+      type: FLOAT
+      mode: NULLABLE
+    - name: payload
+      type: STRING
+      mode: NULLABLE
+    - name: agent
+      type: STRING
+      mode: NULLABLE
+    - name: created_at
+      type: STRING
+      mode: NULLABLE
+    - name: expires_at
+      type: STRING
+      mode: NULLABLE
+    - name: ms
+      type: FLOAT
+      mode: NULLABLE
+    - name: uid
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: request
+      type: STRING
+      mode: NULLABLE
+    - name: response
+      type: STRING
+      mode: NULLABLE
+    - name: msg
+      type: STRING
+      mode: NULLABLE
+    - name: val
+      type: STRING
+      mode: NULLABLE
+    - name: assertion
+      type: STRING
+      mode: NULLABLE
+    - name: queuelength
+      type: FLOAT
+      mode: NULLABLE
+    - name: options
+      type: STRING
+      mode: NULLABLE
+    - name: user_properties
+      type: STRING
+      mode: NULLABLE
+    - name: event_properties
+      type: STRING
+      mode: NULLABLE
+    - name: op
+      type: STRING
+      mode: NULLABLE
+    - name: event_type
+      type: STRING
+      mode: NULLABLE
+    - name: time
+      type: FLOAT
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    - name: profile_changed_at
+      type: FLOAT
+      mode: NULLABLE
+    - name: stack
+      type: STRING
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: client
+      type: STRING
+      mode: NULLABLE
+    - name: query
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: params
+      type: STRING
+      mode: NULLABLE
+    - name: warning
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+  - name: pid
+    type: FLOAT
+    mode: NULLABLE
+  - name: envversion
+    type: STRING
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: FLOAT
+    mode: NULLABLE
+  - name: severity
+    type: FLOAT
+    mode: NULLABLE
+  - name: logger
+    type: STRING
+    mode: NULLABLE
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: receiveTimestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: severity
+  type: STRING
+  mode: NULLABLE
+- name: insertId
+  type: STRING
+  mode: NULLABLE
+- name: httpRequest
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: requestMethod
+    type: STRING
+    mode: NULLABLE
+  - name: requestUrl
+    type: STRING
+    mode: NULLABLE
+  - name: requestSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: status
+    type: INTEGER
+    mode: NULLABLE
+  - name: responseSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: userAgent
+    type: STRING
+    mode: NULLABLE
+  - name: remoteIp
+    type: STRING
+    mode: NULLABLE
+  - name: serverIp
+    type: STRING
+    mode: NULLABLE
+  - name: referer
+    type: STRING
+    mode: NULLABLE
+  - name: cacheLookup
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheHit
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheValidatedWithOriginServer
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheFillBytes
+    type: INTEGER
+    mode: NULLABLE
+  - name: protocol
+    type: STRING
+    mode: NULLABLE
+- name: labels
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: compute_googleapis_com_resource_name
+    type: STRING
+    mode: NULLABLE
+  - name: stack
+    type: STRING
+    mode: NULLABLE
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: env
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_
+    type: STRING
+    mode: NULLABLE
+  - name: pro
+    type: STRING
+    mode: NULLABLE
+  - name: defau
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______n_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______i_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______w_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa________
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______u_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______d
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______k
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______y_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______qa
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______wf
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______wm
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______m
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______oh
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______j
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______g_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______l
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______g
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______e
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______7c
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______4
+    type: STRING
+    mode: NULLABLE
+- name: operation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+  - name: producer
+    type: STRING
+    mode: NULLABLE
+  - name: first
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: last
+    type: BOOLEAN
+    mode: NULLABLE
+- name: trace
+  type: STRING
+  mode: NULLABLE
+- name: spanId
+  type: STRING
+  mode: NULLABLE
+- name: traceSampled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: sourceLocation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: file
+    type: STRING
+    mode: NULLABLE
+  - name: line
+    type: INTEGER
+    mode: NULLABLE
+  - name: function
+    type: STRING
+    mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: DO NOT USE! This column was added accidentally and isn't populated.

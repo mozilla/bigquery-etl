@@ -5,7 +5,7 @@ RETURNS ARRAY<STRUCT<index STRING, count INT64>> AS (
       index,
       COUNT(*) AS count
     FROM
-      UNNEST(regexp_extract_all(events, r'(.),')) AS index
+      UNNEST(REGEXP_EXTRACT_ALL(events, r'(.),')) AS index
     GROUP BY
       index
     ORDER BY

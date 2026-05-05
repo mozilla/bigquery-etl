@@ -11,6 +11,7 @@ from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
+from ..config import ConfigLoader
 from ..util import standard_args
 from ..util.bigquery_tables import get_tables_matching_patterns
 
@@ -20,7 +21,7 @@ DEFAULT_PATTERN = "mozilla-public-data:*.*"
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--target-project",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
     help="Create views in the target project",
 )
 parser.add_argument(

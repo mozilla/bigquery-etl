@@ -9,12 +9,31 @@ description: |-
     metrics pings
 owners:
   - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+{%- if not deprecated_app %}
+scheduling:
+  dag_name: bqetl_glean_usage
+  depends_on_past: true
+  task_group: {{ app_name }}
+{%- endif %}
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
+    expiration_days: 775
   clustering:
     fields:
       - normalized_channel
       - sample_id
+monitoring:
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+schema:
+  derived_from:
+  - table: ['moz-fx-data-shared-prod', '{{ app_name }}_derived', 'metrics_clients_daily_v1']
+{%- if deprecated_app %}
+deprecated: true
+{%- endif -%}

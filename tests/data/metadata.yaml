@@ -3,6 +3,7 @@ friendly_name: "Test metadata file"
 owners:
   - test1@mozilla.com
   - test2@example.com
+  - mozilla/test_group
 labels:
   schedule: daily
   public_json: true

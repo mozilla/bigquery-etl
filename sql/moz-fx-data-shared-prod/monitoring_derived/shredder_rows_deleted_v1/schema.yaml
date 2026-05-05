@@ -1,0 +1,22 @@
+fields:
+- name: end_time
+  type: TIMESTAMP
+  mode: REQUIRED
+- name: job_id
+  type: STRING
+  mode: REQUIRED
+- name: project_id
+  type: STRING
+  mode: REQUIRED
+- name: dataset_id
+  type: STRING
+  mode: REQUIRED
+- name: table_id
+  type: STRING
+  mode: REQUIRED
+- name: partition_id
+  type: STRING
+  mode: NULLABLE
+- name: deleted_row_count
+  type: INT64
+  mode: REQUIRED

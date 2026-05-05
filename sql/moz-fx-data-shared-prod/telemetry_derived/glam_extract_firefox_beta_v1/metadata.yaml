@@ -1,0 +1,7 @@
+friendly_name: |-
+  GLAM Firefox Beta Extracts
+description: |-
+  Holds the data that is surfaced on the GLAM frontend for Firefox Beta.
+  Populated via: https://github.com/mozilla/telemetry-airflow/blob/4050697bd2e283864a9013bd48d439eb66f6d581/utils/glam_subdags/extract.py#L40
+owners:
+- efilho@mozilla.com

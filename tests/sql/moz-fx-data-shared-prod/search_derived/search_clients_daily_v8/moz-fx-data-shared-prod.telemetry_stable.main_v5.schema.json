@@ -1,0 +1,61 @@
+[
+   
+    {
+        "mode": "NULLABLE",
+        "name": "client_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "submission_date",
+        "type": "DATE"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_app_name",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "document_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "submission_timestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "payload",
+        "type": "RECORD",
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "processes",
+                "type": "RECORD",
+                "fields": [
+                    {
+                        "mode": "NULLABLE",
+                        "name": "parent",
+                        "type": "RECORD",
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "scalars",
+                                "type": "RECORD",
+                                "fields": [
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "policies_is_enterprise",
+                                        "type": "BOOLEAN"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

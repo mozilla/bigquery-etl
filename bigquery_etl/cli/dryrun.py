@@ -5,15 +5,16 @@ import glob
 import os
 import re
 import sys
+import time
 from functools import partial
 from multiprocessing.pool import Pool
-from typing import Set
+from typing import List, Set, Tuple
 
-import click
-from google.cloud import bigquery
+import rich_click as click
 
-from ..cli.utils import is_authenticated
-from ..dryrun import SKIP, DryRun
+from ..cli.utils import billing_project_option, is_authenticated
+from ..config import ConfigLoader
+from ..dryrun import DryRun, get_credentials, get_id_token
 
 
 @click.command(
@@ -55,17 +56,31 @@ from ..dryrun import SKIP, DryRun
 )
 @click.option(
     "--respect-skip/--ignore-skip",
-    help="Respect or ignore query SKIP configuration. Default is --respect-skip.",
+    help="Respect or ignore query skip configuration. Default is --respect-skip.",
     default=True,
 )
 @click.option(
     "--project",
     help="GCP project to perform dry run in when --use_cloud_function=False",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
 )
-def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
+@billing_project_option()
+def dryrun(
+    paths: List[str],
+    use_cloud_function: bool,
+    validate_schemas: bool,
+    respect_skip: bool,
+    project: str,
+    billing_project: str,
+):
     """Perform a dry run."""
-    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
+    file_names = (
+        "query.sql",
+        "view.sql",
+        "part*.sql",
+        "init.sql",
+        "materialized_view.sql",
+    )
     file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
 
     sql_files: Set[str] = set()
@@ -83,41 +98,69 @@ def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
             click.echo(f"Invalid path {path}", err=True)
             sys.exit(1)
     if respect_skip:
-        sql_files -= SKIP
+        sql_files -= DryRun.skipped_files()
 
     if not sql_files:
-        print("Skipping dry run because no queries matched")
-        sys.exit(0)
+        click.echo("Skipping dry run because no queries matched")
+        return
 
     if not use_cloud_function and not is_authenticated():
-        click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
+        click.echo(
+            "Not authenticated to GCP. Run `gcloud auth login  --update-adc` to login."
+        )
         sys.exit(1)
 
-    sql_file_valid = partial(
-        _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas
-    )
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
+    sql_file_valid = partial(
+        _sql_file_valid,
+        use_cloud_function,
+        respect_skip,
+        validate_schemas,
+        credentials=credentials,
+        id_token=id_token,
+        billing_project=billing_project,
+    )
+    start_time = time.time()
     with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
-    if not all(result):
+    print(f"Total dryrun time: {time.time() - start_time:.2f}s")
+
+    failures = sorted([r[1] for r in result if not r[0]])
+    if len(failures) > 0:
+        click.echo(
+            f"Failed to validate {len(failures)} queries (see above for error messages):",
+            err=True,
+        )
+        click.echo("\n".join(failures), err=True)
         sys.exit(1)
 
 
 def _sql_file_valid(
-    use_cloud_function, project, respect_skip, validate_schemas, sqlfile
-):
-    if not use_cloud_function:
-        client = bigquery.Client(project=project)
-    else:
-        client = None
-
+    use_cloud_function,
+    respect_skip,
+    validate_schemas,
+    sqlfile,
+    credentials,
+    id_token,
+    billing_project=None,
+) -> Tuple[bool, str]:
     """Dry run the SQL file."""
     result = DryRun(
         sqlfile,
         use_cloud_function=use_cloud_function,
-        client=client,
+        credentials=credentials,
         respect_skip=respect_skip,
+        id_token=id_token,
+        billing_project=billing_project,
     )
     if validate_schemas:
-        return result.validate_schema()
-    return result.is_valid()
+        try:
+            success = result.validate_schema()
+        except Exception as e:  # validate_schema raises base exception
+            click.echo(e, err=True)
+            success = False
+        return success, sqlfile
+
+    return result.is_valid(), sqlfile

@@ -9,9 +9,15 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_monitoring
-  # Delay by 1 day to allow all derived tables to get populated for the date.
-  arguments: ["--date", "{{ macros.ds_add(ds, -1) }}"]
+  # Each run will process ds to ds-2 to get derived tables that may take more time to populate
+  # adjustable via --lookback-days argument
+  arguments: ["--date", "{{ ds }}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', '*_stable', '*']
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v5']
     - ['moz-fx-data-shared-prod', '*_derived', '*']
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

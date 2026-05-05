@@ -1,0 +1,6 @@
+friendly_name: Stripe Subscriptions
+description: >
+  Stripe subscriptions.
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com

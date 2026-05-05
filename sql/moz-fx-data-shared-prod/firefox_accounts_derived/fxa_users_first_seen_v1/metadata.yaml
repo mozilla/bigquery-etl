@@ -8,6 +8,9 @@ labels:
   application: firefox_accounts
   incremental: true
   schedule: daily
+  table_type: client_level
+# TODO: Once fxa_users_first_seen_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: '2021-07-09'
@@ -21,9 +24,10 @@ scheduling:
   - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
-    field: first_seen_date
     type: day
+    field: first_seen_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - user_id

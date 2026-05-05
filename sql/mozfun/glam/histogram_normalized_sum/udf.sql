@@ -11,7 +11,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   (
     WITH total_counts AS (
       SELECT
-        sum(a.value) AS total_count
+        SUM(a.value) AS total_count
       FROM
         UNNEST(arrs) AS a
     ),

@@ -3,7 +3,7 @@ WITH filtered_date_channel AS (
     * EXCEPT (app_version),
     CAST(app_version AS INT64) AS app_version
   FROM
-    telemetry_derived.clients_daily_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -45,9 +45,8 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
-    latest_versions
-  USING
-    (channel)
+    `moz-fx-data-shared-prod.telemetry_derived.latest_versions` AS latest_versions
+    USING (channel)
   WHERE
     app_version >= (latest_version - 2)
 ),
@@ -113,11 +112,10 @@ filtered_old AS (
     scalar_aggs.channel,
     scalar_aggregates
   FROM
-    telemetry_derived.clients_scalar_aggregates_v1 AS scalar_aggs
+    `moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1` AS scalar_aggs
   LEFT JOIN
-    latest_versions
-  USING
-    (channel)
+    `moz-fx-data-shared-prod.telemetry_derived.latest_versions` AS latest_versions
+    USING (channel)
   WHERE
     app_version >= (latest_version - 2)
     AND submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
@@ -135,8 +133,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  USING
-    (client_id, os, app_version, app_build_id, channel)
+    USING (client_id, os, app_version, app_build_id, channel)
 )
 SELECT
   @submission_date AS submission_date,
@@ -145,6 +142,8 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf.merge_scalar_user_data(ARRAY_CONCAT(old_aggs, new_aggs)) AS scalar_aggregates
+  `moz-fx-data-shared-prod`.udf.merge_scalar_user_data(
+    ARRAY_CONCAT(old_aggs, new_aggs)
+  ) AS scalar_aggregates
 FROM
   joined_new_old

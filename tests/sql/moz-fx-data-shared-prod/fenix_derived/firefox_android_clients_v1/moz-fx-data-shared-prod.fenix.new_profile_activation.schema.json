@@ -1,0 +1,14 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "activated"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  }
+]

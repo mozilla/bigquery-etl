@@ -9,11 +9,11 @@ import urllib.request
 from pathlib import Path
 from time import sleep
 
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import probe_filters
+from bigquery_etl.util.common import snake_case
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
-from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import snake_case
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"
@@ -28,7 +28,7 @@ p.add_argument(
 )
 p.add_argument(
     "--json-output",
-    action='store_true',
+    action="store_true",
     help="Output the result wrapped in json parseable as an XCOM",
 )
 p.add_argument(
@@ -65,7 +65,7 @@ def generate_sql(
                 normalized_os as os,
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v5`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
             WHERE DATE(submission_timestamp) = @submission_date
@@ -92,6 +92,7 @@ def generate_sql(
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -102,6 +103,7 @@ def generate_sql(
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -134,6 +136,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
           (SELECT
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -152,6 +155,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             (SELECT
               sample_id,
               client_id,
+              profile_group_id,
               submission_date,
               os,
               app_version,
@@ -200,6 +204,7 @@ def get_keyed_boolean_probes_sql_string(probes):
         SELECT
               sample_id,
               client_id,
+              profile_group_id,
               submission_date,
               os,
               app_version,
@@ -222,6 +227,7 @@ def get_keyed_boolean_probes_sql_string(probes):
         GROUP BY
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -253,6 +259,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         SELECT
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -278,6 +285,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         GROUP BY
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -298,21 +306,29 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
     probe_structs = []
     for probe, processes in probes["scalars"].items():
         for process in processes:
-            probe_structs.append((
-                f"('{probe}', 'scalar', '', '{process}', 'max', "
-                f"max(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            probe_structs.append(
+                (
+                    f"('{probe}', 'scalar', '', '{process}', 'max', "
+                    f"max(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))"
+                )
             )
-            probe_structs.append((
-                f"('{probe}', 'scalar', '', '{process}', 'avg', "
-                f"avg(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            probe_structs.append(
+                (
+                    f"('{probe}', 'scalar', '', '{process}', 'avg', "
+                    f"avg(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))"
+                )
             )
-            probe_structs.append((
-                f"('{probe}', 'scalar', '', '{process}', 'min', "
-                f"min(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            probe_structs.append(
+                (
+                    f"('{probe}', 'scalar', '', '{process}', 'min', "
+                    f"min(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))"
+                )
             )
-            probe_structs.append((
-                f"('{probe}', 'scalar', '', '{process}', 'sum', "
-                f"sum(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            probe_structs.append(
+                (
+                    f"('{probe}', 'scalar', '', '{process}', 'sum', "
+                    f"sum(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))"
+                )
             )
             probe_structs.append(
                 f"('{probe}', 'scalar', '', '{process}', 'count', IF(MIN(payload.processes.{process}.scalars.{probe}) IS NULL, NULL, COUNT(*)))"
@@ -350,7 +366,7 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
             ] AS scalar_aggregates
     """
 
-    select_clause = f"""
+    select_clause = """
         SELECT *
         FROM aggregated
     """
@@ -359,6 +375,7 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
 
 
 def save_scalars_by_type(scalars_dict, scalar, process):
+    """Add scalars to scalars_dict based on their type."""
     if scalars_dict is None:
         return
 
@@ -368,9 +385,13 @@ def save_scalars_by_type(scalars_dict, scalar, process):
 
 
 def filter_scalars_dict(scalars_dict, required_probes):
+    """Filter out scalars that are not required."""
     return {
-        scalar: process for scalar, process in scalars_dict.items() if scalar in required_probes
+        scalar: process
+        for scalar, process in scalars_dict.items()
+        if scalar in required_probes
     }
+
 
 def get_scalar_probes(scalar_type):
     """Find all scalar probes in main summary.
@@ -389,7 +410,7 @@ def get_scalar_probes(scalar_type):
             "show",
             "--schema",
             "--format=json",
-            f"{project}:telemetry_stable.main_v4",
+            f"{project}:telemetry_stable.main_v5",
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -413,7 +434,9 @@ def get_scalar_probes(scalar_type):
                         process_field = processes_field["name"]
                         for type_field in processes_field["fields"]:
                             if type_field["name"] == scalar_type:
-                                scalars_fields.append({"scalars": type_field, "process": process_field})
+                                scalars_fields.append(
+                                    {"scalars": type_field, "process": process_field}
+                                )
                                 break
 
     if len(scalars_fields) == 0:
@@ -436,9 +459,7 @@ def get_scalar_probes(scalar_type):
                     scalars_dict = main_summary_record_scalars
 
             save_scalars_by_type(
-                scalars_dict,
-                scalar["name"],
-                scalars_and_process["process"]
+                scalars_dict, scalar["name"], scalars_and_process["process"]
             )
 
     # Find the intersection between relevant scalar probes
@@ -446,19 +467,26 @@ def get_scalar_probes(scalar_type):
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(url.read())
         excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
-        scalar_probes = set(
-            [
-                snake_case(x.replace("scalar/", ""))
-                for x in data.keys()
-                if x.startswith("scalar/")
-            ]
-        ) - excluded_probes
+        scalar_probes = (
+            set(
+                [
+                    snake_case(x.replace("scalar/", ""))
+                    for x in data.keys()
+                    if x.startswith("scalar/")
+                ]
+            )
+            - excluded_probes
+        )
 
         return {
             "scalars": filter_scalars_dict(main_summary_scalars, scalar_probes),
-            "booleans": filter_scalars_dict(main_summary_boolean_scalars, scalar_probes),
+            "booleans": filter_scalars_dict(
+                main_summary_boolean_scalars, scalar_probes
+            ),
             "keyed": filter_scalars_dict(main_summary_record_scalars, scalar_probes),
-            "keyed_boolean": filter_scalars_dict(main_summary_boolean_record_scalars, scalar_probes),
+            "keyed_boolean": filter_scalars_dict(
+                main_summary_boolean_record_scalars, scalar_probes
+            ),
         }
 
 
@@ -478,7 +506,7 @@ def main(argv, out=print):
             "agg-type must be one of scalars, keyed_scalars, keyed_booleans"
         )
 
-    sleep(opts['wait_seconds'])
+    sleep(opts["wait_seconds"])
     out(
         reformat(
             generate_sql(

@@ -15,7 +15,9 @@ WITH base AS (
     jsonPayload.utm_medium,
     jsonPayload.utm_source,
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_content_19700101`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_content`
+  WHERE
+    DATE(`timestamp`) = "1970-01-01"
 )
 SELECT
   *

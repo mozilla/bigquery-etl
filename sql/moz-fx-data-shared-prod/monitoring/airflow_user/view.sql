@@ -23,7 +23,6 @@ FROM
   `moz-fx-data-shared-prod.monitoring_derived.airflow_user_v1` AS users
 LEFT JOIN
   user_role_mapping
-USING
-  (role_id)
+  USING (role_id)
 WHERE
   active

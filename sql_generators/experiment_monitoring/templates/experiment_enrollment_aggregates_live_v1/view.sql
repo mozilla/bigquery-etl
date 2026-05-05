@@ -7,6 +7,7 @@ AS
     type,
     experiment,
     branch,
+    normalized_channel,
     window_start,
     window_end,
     enroll_count,
@@ -17,7 +18,8 @@ AS
     unenroll_failed_count,
     update_failed_count,
     disqualification_count,
-    exposure_count
+    exposure_count,
+    validation_failed_count
   FROM
     `moz-fx-data-shared-prod.{{ app_dataset }}_derived.experiment_events_live_v1`
   WHERE
@@ -28,6 +30,7 @@ SELECT
   type,
   experiment,
   branch,
+  normalized_channel,
   window_start,
   window_end,
   enroll_count,
@@ -38,7 +41,8 @@ SELECT
   unenroll_failed_count,
   update_failed_count,
   disqualification_count,
-  exposure_count
+  exposure_count,
+  validation_failed_count
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
 WHERE

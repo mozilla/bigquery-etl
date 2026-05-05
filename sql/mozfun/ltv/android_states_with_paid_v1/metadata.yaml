@@ -1,0 +1,6 @@
+description: |
+  LTV states for Android. Results in strings like:
+  "1_dow3_organic_2_1" and "0_dow1_paid_1_1"
+
+  These states include whether a client was paid or organic.
+friendly_name: Android States With Paid V1

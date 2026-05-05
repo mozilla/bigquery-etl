@@ -27,12 +27,12 @@ WITH compressed AS (
       country,
       NULL
     ) AS country,
-    substr(locale, 0, 2) AS locale,
+    SUBSTR(locale, 0, 2) AS locale,
     IF(os IN ('Windows_NT', 'Darwin', 'Linux'), os, 'Other') AS os,
     channel,
     attributed,
   FROM
-    smoot_usage_new_profiles_v2
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_new_profiles_v2`
 )
 SELECT
   submission_date,

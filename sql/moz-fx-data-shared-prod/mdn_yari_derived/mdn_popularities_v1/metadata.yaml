@@ -1,0 +1,16 @@
+friendly_name: MDN Popularities
+description: |-
+  Used for monthly data exports of MDN 'Popularities'
+  This aggregates and total page visits counts
+  and normalizes them agains the total found during the run.
+
+owners:
+- fmerz@mozilla.com
+labels:
+  incremental: false
+bigquery: {}
+scheduling:
+  dag_name: bqetl_mdn_yari
+  arguments: ["--date", "{{ ds }}"]
+  date_partition_parameter: null
+  referenced_tables: []

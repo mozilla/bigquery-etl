@@ -6,14 +6,17 @@ owners:
 labels:
   application: experiments
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_experiments_daily
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: null
   clustering:
     fields:
     - experiment_id
     - branch
+    - normalized_channel

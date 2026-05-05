@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION glean.legacy_compatible_experiments(
   ping_info__experiments ARRAY<
-    STRUCT<key STRING, value STRUCT<branch STRING, extra STRUCT<type STRING>>>
+    STRUCT<key STRING, value STRUCT<branch STRING, extra STRUCT<type STRING, enrollment_id STRING>>>
   >
 )
 RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
@@ -13,11 +13,17 @@ WITH ping_info AS (
     [
       STRUCT(
         "experiment_a" AS key,
-        STRUCT("control" AS branch, STRUCT("firefox" AS type) AS extra) AS value
+        STRUCT(
+          "control" AS branch,
+          STRUCT("firefox" AS type, "123" AS enrollment_id) AS extra
+        ) AS value
       ),
       STRUCT(
         "experiment_b" AS key,
-        STRUCT("treatment" AS branch, STRUCT("firefoxOS" AS type) AS extra) AS value
+        STRUCT(
+          "treatment" AS branch,
+          STRUCT("firefoxOS" AS type, "456" AS enrollment_id) AS extra
+        ) AS value
       )
     ] AS experiments
 ),

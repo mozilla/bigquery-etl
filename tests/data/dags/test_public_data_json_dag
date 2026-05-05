@@ -4,18 +4,21 @@ from airflow import DAG
 from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
-from operators.task_sensor import ExternalTaskSensor
+from airflow.sensors.external_task import ExternalTaskSensor
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import gke_command
 
 docs = """
 ### bqetl_public_data_json
 
-Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_public_data_json.py)
+Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_public_data_json.py)
 
 #### Owner
 
 test@example.org
+
+#### Tags
+
+* repo/bigquery-etl
 """
 
 
@@ -23,12 +26,13 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["test@example.org"],
+    "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
+    "max_active_tis_per_dag": None,
 }
 
 tags = ["repo/bigquery-etl"]
@@ -40,7 +44,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+    docker_image = (
+        "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
+    )
 
     export_public_data_json_test__non_incremental_query__v1 = GKEPodOperator(
         task_id="export_public_data_json_test__non_incremental_query__v1",
@@ -56,10 +62,10 @@ with DAG(
         image=docker_image,
     )
 
-    public_data_gcs_metadata = gke_command(
+    public_data_gcs_metadata = GKEPodOperator(
         task_id="public_data_gcs_metadata",
-        command=["script/publish_public_data_gcs_metadata"],
-        docker_image=docker_image,
+        arguments=["script/publish_public_data_gcs_metadata"],
+        image=docker_image,
     )
 
     public_data_gcs_metadata.set_upstream(

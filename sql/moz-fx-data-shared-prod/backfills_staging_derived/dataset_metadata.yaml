@@ -1,0 +1,14 @@
+friendly_name: Backfills Staging
+description: |-
+  Temporary staging location for backfill data before it replaces production data.
+dataset_base_acl: derived
+user_facing: false
+default_table_expiration_ms: "2592000000"  # 30 days
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/backfill

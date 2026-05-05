@@ -1,0 +1,41 @@
+fields:
+- description:
+  mode: NULLABLE
+  name: id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: dag_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: executor_class
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: hostname
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: job_type
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: state
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: unixname
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: start_date
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: end_date
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: latest_heartbeat
+  type: TIMESTAMP

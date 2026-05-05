@@ -12,34 +12,20 @@ RETURNS INT64 AS (
     FLOOR(
       CASE
         timespan.time_unit
-      WHEN
-        'nanosecond'
-      THEN
-        timespan.value / 1000 / 1000 / 1000
-      WHEN
-        'microsecond'
-      THEN
-        timespan.value / 1000 / 1000
-      WHEN
-        'millisecond'
-      THEN
-        timespan.value / 1000
-      WHEN
-        'second'
-      THEN
-        timespan.value
-      WHEN
-        'minute'
-      THEN
-        timespan.value * 60
-      WHEN
-        'hour'
-      THEN
-        timespan.value * 60 * 60
-      WHEN
-        'day'
-      THEN
-        timespan.value * 60 * 60 * 24
+        WHEN 'nanosecond'
+          THEN timespan.value / 1000 / 1000 / 1000
+        WHEN 'microsecond'
+          THEN timespan.value / 1000 / 1000
+        WHEN 'millisecond'
+          THEN timespan.value / 1000
+        WHEN 'second'
+          THEN timespan.value
+        WHEN 'minute'
+          THEN timespan.value * 60
+        WHEN 'hour'
+          THEN timespan.value * 60 * 60
+        WHEN 'day'
+          THEN timespan.value * 60 * 60 * 24
       END
     ) AS INT64
   )

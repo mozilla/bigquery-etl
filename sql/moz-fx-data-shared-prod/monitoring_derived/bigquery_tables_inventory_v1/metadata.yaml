@@ -1,5 +1,5 @@
-friendly_name: Bigquery Query Tables Inventory
-description: Inventory of big query tables.
+friendly_name: BigQuery Tables Inventory
+description: Inventory of BigQuery tables.
 owners:
 - wichan@mozilla.com
 labels:
@@ -7,3 +7,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date

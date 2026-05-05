@@ -58,8 +58,8 @@ CREATE OR REPLACE FUNCTION udf.add_monthly_engine_searches(
 WITH examples AS (
   SELECT
     STRUCT(
-      generate_array(11, 0, -1) AS total_searches,
-      generate_array(12, 1, -1) AS tagged_searches,
+      GENERATE_ARRAY(11, 0, -1) AS total_searches,
+      GENERATE_ARRAY(12, 1, -1) AS tagged_searches,
       udf.zeroed_array(12) AS search_with_ads,
       udf.zeroed_array(12) AS ad_click
     ) AS prev,
@@ -85,17 +85,17 @@ oct_second AS (
     examples
 )
 SELECT
-  assert.array_equals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
-  assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  mozfun.assert.array_equals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
+  mozfun.assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_first
 UNION ALL
 SELECT
-  assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
-  assert.array_equals([12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  mozfun.assert.array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
+  mozfun.assert.array_equals([12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  mozfun.assert.array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_second

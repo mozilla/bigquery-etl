@@ -26,6 +26,9 @@ fields:
       - mode: NULLABLE
         name: type
         type: STRING
+      - mode: NULLABLE
+        name: enrollment_id
+        type: STRING
       mode: NULLABLE
       name: extra
       type: RECORD
@@ -161,3 +164,25 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+- mode: NULLABLE
+  name: topsites_rows
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: topsite_dismissals
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_topsite_dismissals
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_dismissals
+  type: INTEGER
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data

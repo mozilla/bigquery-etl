@@ -7,9 +7,13 @@ AS
 UNION ALL
 {% endif -%}
 {% if app_name == "fenix" -%}
-SELECT * REPLACE(mozfun.norm.fenix_app_info("{{ dataset }}", app_build).channel AS normalized_channel)
+SELECT 
+    "{{ dataset }}" AS normalized_app_id,
+    * REPLACE(mozfun.norm.fenix_app_info("{{ dataset }}", app_build).channel AS normalized_channel),
 {% else -%}
-SELECT * REPLACE("{{ channel }}" AS normalized_channel)
+SELECT 
+    "{{ dataset }}" AS normalized_app_id,
+    * REPLACE("{{ channel }}" AS normalized_channel)
 {% endif -%}
 FROM `{{ project_id }}.{{ dataset }}.{{ table }}`
 {% endfor %}

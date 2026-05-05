@@ -18,27 +18,23 @@ WITH fxa_events AS (
     ua_version,
     ua_browser,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events` -- TODO: this will need updated to fxa_all_events once unified
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     DATE(`timestamp`)
+    -- 2 day time window used to make sure we can get user session attribution information
+    -- which will not always be available in the same partition as active user activity
+    -- ('fxa_login - complete', 'fxa_reg - complete').
+    -- this includes fields such as entrypoint, utm's etc.
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
-    -- re-using the filter from users_services_daily_v1 for consistency across the models
-    -- at some point in the future we should re-evaluate this list
-    AND event_type NOT IN ( --
-      'fxa_email - bounced',
-      'fxa_email - click',
-      'fxa_email - sent',
-      'fxa_reg - password_blocked',
-      'fxa_reg - password_common',
-      'fxa_reg - password_enrolled',
-      'fxa_reg - password_missing',
-      'fxa_sms - sent',
-      'mktg - email_click',
-      'mktg - email_open',
-      'mktg - email_sent',
-      'sync - repair_success',
-      'sync - repair_triggered'
+    AND fxa_log IN ('content', 'auth', 'oauth')
+    AND event_type IN (
+      'fxa_activity - access_token_checked',
+      'fxa_activity - access_token_created',
+      'fxa_activity - cert_signed',
+      -- registration and login events used when deriving the first_seen table
+      'fxa_reg - complete',
+      'fxa_login - complete'
     )
 ),
 entrypoints AS (
@@ -52,6 +48,8 @@ entrypoints AS (
     -- cannot be used for mapping
     flow_id IS NOT NULL
     AND entrypoint IS NOT NULL
+  -- in case we find multiple entrypoints for a single flow_id
+  -- we only keep the first one
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY flow_id ORDER BY `timestamp` ASC) = 1
 ),
@@ -94,6 +92,7 @@ device_service_users_entries AS (
   FROM
     fxa_events
   WHERE
+    -- we only want to identify active users for the current partition.
     DATE(`timestamp`) = @submission_date
     -- Filtering out for these specific events to be consistent with the logic used by
     -- fxa_users_daily_v1 and fxa_users_services_daily_v1
@@ -124,12 +123,10 @@ FROM
   device_service_users_entries
 LEFT JOIN
   entrypoints
-USING
-  (flow_id)
+  USING (flow_id)
 LEFT JOIN
   utms
-USING
-  (flow_id)
+  USING (flow_id)
 WHERE
   -- making sure the user is registered
   user_id IS NOT NULL

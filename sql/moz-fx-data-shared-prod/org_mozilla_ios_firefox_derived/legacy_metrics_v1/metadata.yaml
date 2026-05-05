@@ -1,6 +1,0 @@
-description: Glean-ified legacy mobile metrics
-friendly_name: legacy metrics
-labels:
-  incremental: true
-owners:
-  - amiyaguchi@mozilla.com

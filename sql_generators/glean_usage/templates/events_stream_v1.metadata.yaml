@@ -1,0 +1,45 @@
+{{ header_yaml }}
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+  Clients that don't send events on a particular day
+  won't be included on that day.
+owners:
+  - jrediger@mozilla.com
+  - wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+  # Use backfill-2 project for on-demand query billing
+  arguments: [
+    "--billing-project", "moz-fx-data-backfill-2",
+    {%- if metrics_as_struct %}
+    "--schema_update_option", "ALLOW_FIELD_ADDITION",
+    {%- endif %}
+    {%- if slice_by_sample_id %}
+    # slice_by_sample_id will run as a python script
+    "--slices", "10",
+    "--submission-date", {% raw %}"{{ ds }}"{% endraw %},
+    "--destination-table", "{{ project_id }}.{{ derived_dataset }}.{{ target_table }}",
+    {%- endif %}
+  ]
+  {%- if slice_by_sample_id %}
+  referenced_tables:
+    - [ "{{ project_id }}", "{{ app_name }}_stable", "events_v1" ]
+  {%- endif %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - sample_id
+    - event_category
+    - event_name

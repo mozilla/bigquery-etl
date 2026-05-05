@@ -27,8 +27,8 @@ WITH histograms AS (
     ]
 )
 SELECT
-  assert.null(udf.keyed_histogram_get_sum(ARRAY<STRUCT<key STRING, value STRING>>[], 'dne')),
-  assert.null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'dne')),
-  assert.equals(1, udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key1')),
-  assert.equals(2, udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key2')),
-  assert.null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key3'))
+  mozfun.assert.null(udf.keyed_histogram_get_sum(ARRAY<STRUCT<key STRING, value STRING>>[], 'dne')),
+  mozfun.assert.null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'dne')),
+  mozfun.assert.equals(1, udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key1')),
+  mozfun.assert.equals(2, udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key2')),
+  mozfun.assert.null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key3'))

@@ -3,6 +3,12 @@
 import re
 from datetime import datetime
 
+TIMEDELTA_RE = re.compile(
+    r"^-?((?P<weeks>\d+)w)?((?P<days>\d+)d)?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
+)
+
+TELEMETRY_ALERTS_EMAIL = "telemetry-alerts@mozilla.com"
+
 
 def is_timedelta_string(s):
     """
@@ -10,8 +16,21 @@ def is_timedelta_string(s):
 
     Timedeltas in configs are specified like: 1h, 30m, 1h15m, ...
     """
-    timedelta_regex = re.compile(r"^-?(\d+h)?(\d+m)?(\d+s)?$")
-    return timedelta_regex.match(s)
+    return TIMEDELTA_RE.match(s)
+
+
+def validate_timedelta_string(s):
+    """Raise an error if the provided string is not in a valid timedelta format."""
+    if not is_timedelta_string(s):
+        raise ValueError(
+            f"Invalid timedelta value '{s}'."
+            " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
+        )
+
+
+def negate_timedelta_string(s: str) -> str:
+    """Negate the provided timedelta string."""
+    return s[1:] if s.startswith("-") else ("-" + s)
 
 
 def is_date_string(s):
@@ -28,6 +47,25 @@ def is_email(s):
     """Check whether the provided string is a valid email address."""
     # https://stackoverflow.com/questions/8022530/how-to-check-for-valid-email-address
     return re.match(r"[^@]+@[^@]+\.[^@]+", s)
+
+
+def is_github_identity(s):
+    """Check if the given string matches the format of a Github identity."""
+    return re.match(r"[@mozilla]+\/[a-zA-Z0-9]+", s)
+
+
+def is_email_or_github_identity(s):
+    """Check if the given string is either an email or a Github identity."""
+    return is_email(s) or is_github_identity(s)
+
+
+def ensure_telemetry_alerts_email(emails: list[str], no_triage: bool) -> list[str]:
+    """Ensure the telemetry alerts email is included or excluded depending on the `no_triage` setting."""
+    if TELEMETRY_ALERTS_EMAIL not in emails and not no_triage:
+        return emails + [TELEMETRY_ALERTS_EMAIL]
+    elif TELEMETRY_ALERTS_EMAIL in emails and no_triage:
+        return [email for email in emails if email != TELEMETRY_ALERTS_EMAIL]
+    return emails
 
 
 DAG_NAME_RE = re.compile("^(private_)?bqetl_.+$")

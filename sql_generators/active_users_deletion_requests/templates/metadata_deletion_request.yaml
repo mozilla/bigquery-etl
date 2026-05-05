@@ -1,0 +1,36 @@
+friendly_name: {{ app_value }} Active Users Aggregates for deletion requests
+description: |-
+  Prototype.
+
+  KPIs calculated for deletion requests.
+
+  Deprecation decision https://mozilla-hub.atlassian.net/browse/DENG-3998.
+  This table will be used for validation purposes and should not be deleted.
+owners:
+  - lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+#  dag_name: bqetl_kpis_shredder
+  task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests
+  date_partition_parameter: partition_date
+  parameters: {{ parameters }}
+  depends_on:
+    - task_id: copy_deduplicate_all
+      dag_name: copy_deduplicate
+      execution_delta: 1h
+    - task_id: search_derived__mobile_search_clients_daily__v1
+      dag_name: bqetl_mobile_search
+      execution_delta: 0h
+bigquery:
+  time_partitioning:
+    type: day
+    field: partition_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - country
+      - app_name
+      - attribution_medium
+      - channel
+deprecated: true

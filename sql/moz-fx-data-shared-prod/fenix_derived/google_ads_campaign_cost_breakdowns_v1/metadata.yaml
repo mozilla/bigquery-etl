@@ -1,0 +1,14 @@
+---
+friendly_name: 'Google Ad Campaign Cost Breakdown'
+description: >
+  A breakdown of google ad campaign costs per click, install, and DOU.
+owners:
+  - ctroy@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: bqetl_campaign_cost_breakdowns
+  date_partition_parameter: null
+  depends_on_past: false

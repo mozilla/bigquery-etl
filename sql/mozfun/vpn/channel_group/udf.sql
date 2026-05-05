@@ -6,74 +6,63 @@ CREATE OR REPLACE FUNCTION vpn.channel_group(
 )
 RETURNS STRING AS (
   CASE
-  WHEN
-    (
-      (
+    WHEN (
+        (
+          utm_medium = "referral"
+          AND utm_source = "www.mozilla.org-vpn-product-page"
+          AND utm_campaign = "vpn-product-page"
+        )
+        OR (utm_medium = "organic" AND utm_source = "google-play")
+      )
+      THEN "Direct"
+    WHEN (
+        utm_medium LIKE "firefox%"
+        OR utm_medium LIKE "android%"
+        OR utm_medium IN ("ios", "monitor", "secure-proxy")
+        OR (utm_medium = "tbwnp" AND utm_source = "thunderbird")
+        OR utm_medium LIKE "pkt%"
+        OR utm_source LIKE "%firefox%"
+        OR utm_source LIKE "%fx-%"
+        OR utm_source IN (
+          "developer.mozilla.org",
+          "addons.mozilla.org",
+          "activity-stream",
+          "accounts.firefox.com.cn",
+          "accounts.firefox.com",
+          "about-home"
+        )
+      )
+      THEN "Product Owned"
+    WHEN (utm_medium LIKE "paid%" OR utm_medium IN ("cpc", "display") OR utm_content LIKE "A144%")
+      THEN "Marketing Paid"
+    WHEN (
         utm_medium = "referral"
-        AND utm_source = "www.mozilla.org-vpn-product-page"
-        AND utm_campaign = "vpn-product-page"
+        OR utm_medium IN (
+          "email",
+          "mozilla-websites",
+          "partnership",
+          "snippet",
+          "social",
+          "organicsocial",
+          "mozillaVPN",
+          "featuredpages"
+        )
+        OR utm_source IN ("getpocket.com", "blog.mozilla.org", "www.mozilla.org")
+        OR utm_source LIKE "mozilla.org-whatsnew%"
+        OR utm_source LIKE "mozilla.org-welcome%"
+        OR utm_campaign LIKE "%whatsnew%"
+        OR utm_campaign LIKE "%welcome%"
       )
-      OR (utm_medium = "organic" AND utm_source = "google-play")
-    )
-  THEN
-    "Direct"
-  WHEN
-    (
-      utm_medium LIKE "firefox%"
-      OR utm_medium LIKE "android%"
-      OR utm_medium IN ("ios", "monitor", "secure-proxy")
-      OR (utm_medium = "tbwnp" AND utm_source = "thunderbird")
-      OR utm_medium LIKE "pkt%"
-      OR utm_source LIKE "%firefox%"
-      OR utm_source LIKE "%fx-%"
-      OR utm_source IN (
-        "developer.mozilla.org",
-        "addons.mozilla.org",
-        "activity-stream",
-        "accounts.firefox.com.cn",
-        "accounts.firefox.com",
-        "about-home"
+      THEN "Marketing Owned"
+    WHEN vpn.normalize_utm_parameters(utm_campaign, utm_content, utm_medium, utm_source) = (
+        "(not set)",
+        "(not set)",
+        "(none)",
+        "(direct)"
       )
-    )
-  THEN
-    "Product Owned"
-  WHEN
-    (utm_medium LIKE "paid%" OR utm_medium IN ("cpc", "display") OR utm_content LIKE "A144%")
-  THEN
-    "Marketing Paid"
-  WHEN
-    (
-      utm_medium = "referral"
-      OR utm_medium IN (
-        "email",
-        "mozilla-websites",
-        "partnership",
-        "snippet",
-        "social",
-        "organicsocial",
-        "mozillaVPN",
-        "featuredpages"
-      )
-      OR utm_source IN ("getpocket.com", "blog.mozilla.org", "www.mozilla.org")
-      OR utm_source LIKE "mozilla.org-whatsnew%"
-      OR utm_source LIKE "mozilla.org-welcome%"
-      OR utm_campaign LIKE "%whatsnew%"
-      OR utm_campaign LIKE "%welcome%"
-    )
-  THEN
-    "Marketing Owned"
-  WHEN
-    vpn.normalize_utm_parameters(utm_campaign, utm_content, utm_medium, utm_source) = (
-      "(not set)",
-      "(not set)",
-      "(none)",
-      "(direct)"
-    )
-    OR utm_medium = "unknown"
-  THEN
-    "Unattributed"
-  ELSE
-    "Miscellaneous"
+      OR utm_medium = "unknown"
+      THEN "Unattributed"
+    ELSE "Miscellaneous"
   END
 );
 

@@ -1,4 +1,4 @@
--- Note: udf.udf_json_extract_int_map map doesn't work in this case as it expects an INT -> INT
+-- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
 -- map, while we have a STRING->int map
 CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   ARRAY(
@@ -20,7 +20,7 @@ WITH DAUs AS (
     submission_date AS date,
     COUNT(*) AS client_count
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date >= '2020-01-01'
     AND submission_date <= '2020-03-31'
@@ -37,43 +37,43 @@ health_data_sample AS (
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS date,
     client_id,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
         0
       )
     ) AS eUndefined,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
         0
       )
     ) AS eTimeOut,
     SUM(
-      coalesce(CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64), 0)
+      COALESCE(CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64), 0)
     ) AS eAbort,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64),
         0
       )
     ) AS eUnreachable,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64),
         0
       )
     ) AS eTerminated,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64),
         0
       )
     ) AS eChannelOpen,
   FROM
-    telemetry.health
+    `moz-fx-data-shared-prod.telemetry.health`
   WHERE
-    date(submission_timestamp) >= '2020-01-01'
-    AND date(submission_timestamp) <= '2020-03-31'
+    DATE(submission_timestamp) >= '2020-01-01'
+    AND DATE(submission_timestamp) <= '2020-03-31'
     AND normalized_country_code = 'IT'
   GROUP BY
     1,
@@ -81,7 +81,7 @@ health_data_sample AS (
 ),
 health_data_aggregates AS (
   SELECT
-    date,
+    `date`,
     COUNTIF(eUndefined > 0) AS num_clients_eUndefined,
     COUNTIF(eTimeOut > 0) AS num_clients_eTimeOut,
     COUNTIF(eAbort > 0) AS num_clients_eAbort,
@@ -91,7 +91,7 @@ health_data_aggregates AS (
   FROM
     health_data_sample
   GROUP BY
-    date
+    `date`
   HAVING
     COUNT(*) > 5000
 ),
@@ -108,8 +108,7 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-  ON
-    DAUs.date = h.date
+    ON DAUs.date = h.date
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
@@ -123,7 +122,7 @@ histogram_data_sample AS (
       payload.processes.content.histograms.http_page_tls_handshake
     ).values AS tls_handshake,
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     DATE(submission_timestamp) >= '2020-01-01'
     AND DATE(submission_timestamp) <= '2020-03-31'
@@ -140,14 +139,14 @@ histogram_data_sample AS (
 dns_success_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
         key,
-        sum(value) AS count
+        SUM(value) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -162,7 +161,7 @@ dns_success_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
@@ -170,7 +169,7 @@ dns_failure_src AS (
     client_id,
     time_slot,
     key,
-    sum(value) AS count
+    SUM(value) AS count
   FROM
     histogram_data_sample
   CROSS JOIN
@@ -184,7 +183,7 @@ dns_failure_src AS (
 dns_failure_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     dns_failure_src
   WHERE
@@ -192,19 +191,19 @@ dns_failure_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
   SELECT
     time_slot AS date,
-    avg(count) AS value
+    AVG(count) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
-        sum(count) AS count
+        SUM(count) AS count
       FROM
         dns_failure_src
       GROUP BY
@@ -214,20 +213,20 @@ dns_failure_counts AS (
   GROUP BY
     time_slot
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
         key,
-        sum(value) AS count
+        SUM(value) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -242,11 +241,11 @@ tls_handshake_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 )
 SELECT
   DAUs.date AS date,
-  hd.* EXCEPT (date),
+  hd.* EXCEPT (`date`),
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,
@@ -255,23 +254,18 @@ FROM
   final_health_data AS hd
 FULL OUTER JOIN
   DAUs
-ON
-  DAUs.date = hd.date
+  ON DAUs.date = hd.date
 FULL OUTER JOIN
   dns_success_time AS ds
-ON
-  DAUs.date = ds.date
+  ON DAUs.date = ds.date
 FULL OUTER JOIN
   dns_failure_time AS df
-ON
-  DAUs.date = df.date
+  ON DAUs.date = df.date
 FULL OUTER JOIN
   dns_failure_counts AS dfc
-ON
-  DAUs.date = dfc.date
+  ON DAUs.date = dfc.date
 FULL OUTER JOIN
   tls_handshake_time AS tls
-ON
-  DAUs.date = tls.date
+  ON DAUs.date = tls.date
 ORDER BY
   1

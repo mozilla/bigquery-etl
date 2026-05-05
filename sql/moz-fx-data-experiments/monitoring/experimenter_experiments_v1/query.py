@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
-from typing import Any, Dict, List, Optional, Union
+from pathlib import Path
 
 import attr
 import cattrs
@@ -15,13 +15,11 @@ import pytz
 import requests
 from google.cloud import bigquery
 
-EXPERIMENTER_API_URL_V1 = (
-    "https://experimenter.services.mozilla.com/api/v1/experiments/"
-)
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 # for nimbus experiments
-EXPERIMENTER_API_URL_V6 = (
-    "https://experimenter.services.mozilla.com/api/v6/experiments/"
+EXPERIMENTER_API_URL_V8 = (
+    "https://experimenter.services.mozilla.com/api/v8/experiments/"
 )
 
 parser = ArgumentParser(description=__doc__)
@@ -38,133 +36,80 @@ class Branch:
 
     slug: str
     ratio: int
-    value: Union[str, Dict[Any, Any]]
+    features: dict | None
+
+
+@attr.s(auto_attribs=True, kw_only=True, slots=True, frozen=True)
+class Outcome:
+    """Defines an Outcome."""
+
+    slug: str
+
+
+@attr.s(auto_attribs=True, kw_only=True, slots=True, frozen=True)
+class Segment:
+    """Defines a Segment."""
+
+    slug: str
 
 
 @attr.s(auto_attribs=True)
 class Experiment:
     """Defines an Experiment."""
 
-    experimenter_slug: Optional[str]
-    normandy_slug: Optional[str]
+    experimenter_slug: str | None
+    normandy_slug: str | None
     type: str
-    status: Optional[str]
-    branches: List[Branch]
-    start_date: Optional[datetime.datetime]
-    end_date: Optional[datetime.datetime]
-    enrollment_end_date: Optional[datetime.datetime]
-    proposed_enrollment: Optional[int]
-    reference_branch: Optional[str]
+    status: str | None
+    branches: list[Branch]
+    start_date: datetime.datetime | None
+    end_date: datetime.datetime | None
+    enrollment_end_date: datetime.datetime | None
+    proposed_enrollment: int | None
+    reference_branch: str | None
     is_high_population: bool
     app_name: str
     app_id: str
     channel: str
+    channels: list[str]
     targeting: str
     targeted_percent: float
-    namespace: Optional[str]
-
-
-def _coerce_none_to_zero(x: Optional[int]) -> int:
-    return 0 if x is None else x
-
-
-@attr.s(auto_attribs=True)
-class Variant:
-    """Defines a Variant."""
-
-    is_control: bool
-    slug: str
-    ratio: int
-    value: str
+    namespace: str | None
+    feature_ids: list[str]
+    is_rollout: bool
+    outcomes: list[str]
+    segments: list[str]
+    randomization_unit: str
+    is_enrollment_paused: bool
+    is_firefox_labs_opt_in: bool
 
 
 @attr.s(auto_attribs=True)
-class ExperimentV1:
-    """Experimenter v1 experiment."""
-
-    slug: str  # experimenter slug
-    type: str
-    status: str
-    start_date: Optional[datetime.datetime]
-    end_date: Optional[datetime.datetime]
-    variants: List[Variant]
-    proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
-    firefox_channel: str
-    population_percent: float
-    normandy_slug: Optional[str] = None
-    is_high_population: Optional[bool] = None
-
-    @staticmethod
-    def _unix_millis_to_datetime(num: Optional[float]) -> Optional[datetime.datetime]:
-        """Convert unix milliseconds to datetime."""
-        if num is None:
-            return None
-        return datetime.datetime.fromtimestamp(num / 1e3, pytz.utc)
-
-    @classmethod
-    def from_dict(cls, d) -> "ExperimentV1":
-        """Load an experiment from dict."""
-        converter = cattrs.BaseConverter()
-        converter.register_structure_hook(
-            datetime.datetime,
-            lambda num, _: cls._unix_millis_to_datetime(num),
-        )
-        return converter.structure(d, cls)
-
-    def to_experiment(self) -> "Experiment":
-        """Convert to Experiment."""
-        branches = [
-            Branch(slug=variant.slug, ratio=variant.ratio, value=variant.value)
-            for variant in self.variants
-        ]
-        control_slug = None
-
-        control_slugs = [
-            variant.slug for variant in self.variants if variant.is_control
-        ]
-        if len(control_slugs) == 1:
-            control_slug = control_slugs[0]
-
-        return Experiment(
-            normandy_slug=self.normandy_slug,
-            experimenter_slug=self.slug,
-            type=self.type,
-            status=self.status,
-            start_date=self.start_date,
-            end_date=self.end_date,
-            enrollment_end_date=None,
-            branches=branches,
-            proposed_enrollment=self.proposed_enrollment,
-            reference_branch=control_slug,
-            is_high_population=self.is_high_population or False,
-            app_name="firefox_desktop",
-            app_id="firefox-desktop",
-            channel=self.firefox_channel.lower(),
-            targeting="",
-            targeted_percent=float(self.population_percent) / 100.0,
-            namespace=None,
-        )
-
-
-@attr.s(auto_attribs=True)
-class ExperimentV6:
-    """Represents a v6 experiment from Experimenter."""
+class NimbusExperiment:
+    """Represents a v8 Nimbus experiment from Experimenter."""
 
     slug: str  # Normandy slug
-    startDate: Optional[datetime.datetime]
-    endDate: Optional[datetime.datetime]
-    enrollmentEndDate: Optional[datetime.datetime]
+    startDate: datetime.datetime | None
+    endDate: datetime.datetime | None
+    enrollmentEndDate: datetime.datetime | None
     proposedEnrollment: int
-    branches: List[Branch]
-    referenceBranch: Optional[str]
+    branches: list[Branch]
+    referenceBranch: str | None
     appName: str
     appId: str
     channel: str
+    channels: list[str]
     targeting: str
     bucketConfig: dict
+    featureIds: list[str]
+    isRollout: bool
+    outcomes: list[Outcome] | None = None
+    segments: list[Segment] | None = None
+    isEnrollmentPaused: bool | None = None
+    isFirefoxLabsOptIn: bool = False
 
     @classmethod
-    def from_dict(cls, d) -> "ExperimentV6":
+    def from_dict(cls, d) -> "NimbusExperiment":
         """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
@@ -176,7 +121,7 @@ class ExperimentV6:
         converter.register_structure_hook(
             Branch,
             lambda b, _: Branch(
-                slug=b["slug"], ratio=b["ratio"], value=b["feature"]["value"]
+                slug=b["slug"], ratio=b["ratio"], features=b["features"]
             ),
         )
         return converter.structure(d, cls)
@@ -187,15 +132,17 @@ class ExperimentV6:
             normandy_slug=self.slug,
             experimenter_slug=None,
             type="v6",
-            status="Live"
-            if (
-                self.endDate is None
-                or (
-                    self.endDate
-                    and self.endDate > pytz.utc.localize(datetime.datetime.now())
+            status=(
+                "Live"
+                if (
+                    self.endDate is None
+                    or (
+                        self.endDate
+                        and self.endDate > pytz.utc.localize(datetime.datetime.now())
+                    )
                 )
-            )
-            else "Complete",
+                else "Complete"
+            ),
             start_date=self.startDate,
             end_date=self.endDate,
             enrollment_end_date=self.enrollmentEndDate,
@@ -206,9 +153,17 @@ class ExperimentV6:
             app_name=self.appName,
             app_id=self.appId,
             channel=self.channel,
+            channels=self.channels,
             targeting=self.targeting,
             targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
             namespace=self.bucketConfig["namespace"],
+            feature_ids=self.featureIds,
+            is_rollout=self.isRollout,
+            outcomes=[o.slug for o in self.outcomes] if self.outcomes else [],
+            segments=[s.slug for s in self.segments] if self.segments else [],
+            randomization_unit=self.bucketConfig["randomizationUnit"],
+            is_firefox_labs_opt_in=self.isFirefoxLabsOptIn,
+            is_enrollment_paused=self.isEnrollmentPaused,
         )
 
 
@@ -227,32 +182,20 @@ def fetch(url):
     raise last_exception
 
 
-def get_experiments() -> List[Experiment]:
+def get_experiments() -> list[Experiment]:
     """Fetch experiments from Experimenter."""
-    legacy_experiments_json = fetch(EXPERIMENTER_API_URL_V1)
-    legacy_experiments = []
-
-    for experiment in legacy_experiments_json:
-        if experiment["type"] != "rapid":
-            try:
-                legacy_experiments.append(
-                    ExperimentV1.from_dict(experiment).to_experiment()
-                )
-            except Exception as e:
-                print(f"Cannot import experiment: {experiment}: {e}")
-
-    nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V6)
+    nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V8)
     nimbus_experiments = []
 
     for experiment in nimbus_experiments_json:
         try:
             nimbus_experiments.append(
-                ExperimentV6.from_dict(experiment).to_experiment()
+                NimbusExperiment.from_dict(experiment).to_experiment()
             )
         except Exception as e:
             print(f"Cannot import experiment: {experiment}: {e}")
 
-    return nimbus_experiments + legacy_experiments
+    return nimbus_experiments
 
 
 def main():
@@ -264,39 +207,12 @@ def main():
         f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     )
 
-    bq_schema = (
-        bigquery.SchemaField("experimenter_slug", "STRING"),
-        bigquery.SchemaField("normandy_slug", "STRING"),
-        bigquery.SchemaField("type", "STRING"),
-        bigquery.SchemaField("status", "STRING"),
-        bigquery.SchemaField("start_date", "DATE"),
-        bigquery.SchemaField("end_date", "DATE"),
-        bigquery.SchemaField("enrollment_end_date", "DATE"),
-        bigquery.SchemaField("proposed_enrollment", "INTEGER"),
-        bigquery.SchemaField("reference_branch", "STRING"),
-        bigquery.SchemaField("is_high_population", "BOOL"),
-        bigquery.SchemaField(
-            "branches",
-            "RECORD",
-            mode="REPEATED",
-            fields=[
-                bigquery.SchemaField("slug", "STRING"),
-                bigquery.SchemaField("ratio", "INTEGER"),
-                bigquery.SchemaField("value", "JSON"),
-            ],
-        ),
-        bigquery.SchemaField("app_id", "STRING"),
-        bigquery.SchemaField("app_name", "STRING"),
-        bigquery.SchemaField("channel", "STRING"),
-        bigquery.SchemaField("targeting", "STRING"),
-        bigquery.SchemaField("targeted_percent", "FLOAT"),
-        bigquery.SchemaField("namespace", "STRING"),
-    )
+    schema = Schema.from_schema_file(Path(__file__).parent / SCHEMA_FILE)
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
     )
-    job_config.schema = bq_schema
+    job_config.schema = schema.to_bigquery_schema()
 
     converter = cattrs.BaseConverter()
     converter.register_unstructure_hook(

@@ -1,0 +1,12 @@
+SELECT
+  id,
+  subscription_id,
+  _fivetran_synced,
+  billing_thresholds_amount_gte,
+  billing_thresholds_reset_billing_cycle_anchor,
+  created,
+  metadata,
+  plan_id,
+  quantity,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.subscription_item

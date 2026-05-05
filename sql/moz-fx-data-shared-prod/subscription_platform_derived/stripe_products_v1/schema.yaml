@@ -1,0 +1,38 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: Unique identifier for the product.
+- name: created
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time at which the product was created.
+- name: updated
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time at which the product was last updated.
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the product is deleted.
+- name: active
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the product is currently available for purchase.
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: The product's description, meant to be displayable to the customer.
+- name: metadata
+  type: JSON
+  mode: NULLABLE
+  description: Set of key-value pairs attached to the product, stored as a JSON object.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: The product's name, meant to be displayable to the customer.
+- name: statement_descriptor
+  type: STRING
+  mode: NULLABLE
+  description: Extra information about a product which will appear on your customer's
+    credit card statement.

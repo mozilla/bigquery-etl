@@ -23,11 +23,10 @@ SELECT
   COALESCE(cc.name, cls.country) AS country_name,
   distribution_id
 FROM
-  telemetry.clients_last_seen_v1 cls
+  `moz-fx-data-shared-prod.telemetry.clients_last_seen_v1` cls
 LEFT JOIN
-  static.country_codes_v1 cc
-ON
-  (cls.country = cc.code)
+  `moz-fx-data-shared-prod.static.country_codes_v1` cc
+  ON (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

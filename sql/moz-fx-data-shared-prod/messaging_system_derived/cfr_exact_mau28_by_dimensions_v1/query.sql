@@ -12,11 +12,10 @@ SELECT
   COUNTIF(days_since_seen_whats_new < 7) AS whats_new_wau,
   COUNTIF(days_since_seen_whats_new < 1) AS whats_new_dau
 FROM
-  messaging_system.cfr_users_last_seen AS culs
+  `moz-fx-data-shared-prod.messaging_system.cfr_users_last_seen` AS culs
 LEFT JOIN
-  static.country_codes_v1 AS cc
-ON
-  (culs.country = cc.code)
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
+  ON (culs.country = cc.code)
 WHERE
   (client_id IS NOT NULL OR impression_id IS NOT NULL)
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

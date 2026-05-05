@@ -6,7 +6,6 @@ description: >
   This table stores all of history, partitioned by
   submission_date.
 owners:
-  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: {{ dataset }}
@@ -15,4 +14,13 @@ labels:
 scheduling:
   dag_name: {{ dag_name }}
   depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - category
+      - event
 

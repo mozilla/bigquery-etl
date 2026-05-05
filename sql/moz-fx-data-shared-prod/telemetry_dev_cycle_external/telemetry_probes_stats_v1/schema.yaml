@@ -1,0 +1,36 @@
+fields:
+
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Firefox channel for the probe. [release, beta, nightly]
+
+- name: probe
+  type: STRING
+  mode: NULLABLE
+  description: Name of the telemetry probe.
+
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Type of the telemetry probe.
+
+- name: release_version
+  type: INT64
+  mode: NULLABLE
+  description: Major version number for the release that first included this probe in the channel.
+
+- name: last_version
+  type: INT64
+  mode: NULLABLE
+  description: Last version the probe was seen in the data.
+
+- name: expiry_version
+  type: STRING
+  mode: NULLABLE
+  description: When this probe will expire. Can be "never" or a version number.
+
+- name: first_added_date
+  type: DATE
+  mode: NULLABLE
+  description: First date the metric shows up in the data.

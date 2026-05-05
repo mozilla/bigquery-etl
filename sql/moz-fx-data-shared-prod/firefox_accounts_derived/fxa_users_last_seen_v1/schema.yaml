@@ -1,0 +1,79 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: 'Corresponds to ETL processing date.
+
+    Also, used for partitioning the table.
+
+    '
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: 'No. of days since the user had activity event.
+
+    '
+- mode: NULLABLE
+  name: days_seen_in_tier1_country_bits
+  type: INTEGER
+  description: 'No. of days since seen_in_tier1_country was last True.
+
+    '
+- mode: NULLABLE
+  name: days_registered_bits
+  type: INTEGER
+  description: 'No. of days since registration event.
+
+    '
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: 'A 36 char long hash value representing
+
+    User ID (registered user).
+
+    '
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: 'User''s country where activity took place.
+
+    See: UDF mozdata.stats.mode_last for more
+
+    info on how the function operates.
+
+    '
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: 'Most recently used language.
+
+    '
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: 'Mozilla app version most recently used,
+
+    follows format: major.minor.patch (e.g. 99.3.3).
+
+    '
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: 'OS on which the app was most recently running.
+
+    For example: Android.
+
+    '
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: 'Version of the OS the device was most recently using.
+
+    '
+- mode: NULLABLE
+  name: days_seen_no_monitor_bits
+  type: INTEGER
+  description: 'No. of days since monitor flag was last True.
+
+    '

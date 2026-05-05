@@ -12,5 +12,5 @@ CREATE TEMP FUNCTION
 
 -- Tests
 SELECT
-  assert.true(udf_legacy_contains([1, 2, 3], 1)),
-  assert.false(udf_legacy_contains([1, 2, 3], 5))
+  mozfun.assert.true(udf_legacy_contains([1, 2, 3], 1)),
+  mozfun.assert.false(udf_legacy_contains([1, 2, 3], 5))

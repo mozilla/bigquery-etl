@@ -1,0 +1,7 @@
+fields:
+- mode: NULLABLE
+  name: UPDATED_AT
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: EXTERNAL_ID
+  type: STRING

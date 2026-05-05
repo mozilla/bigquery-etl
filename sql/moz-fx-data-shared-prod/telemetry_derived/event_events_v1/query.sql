@@ -18,18 +18,20 @@ WITH base AS (
     SAFE.TIMESTAMP_MILLIS(payload.process_start_timestamp) AS session_start_time,
     payload.subsession_id AS subsession_id,
     submission_timestamp AS `timestamp`,
-    udf.deanonymize_event(e).*,
+    `moz-fx-data-shared-prod.udf.deanonymize_event`(e).*,
     event_process,
     application.build_id,
     environment.build.architecture AS build_architecture,
     environment.profile.creation_date AS profile_creation_date,
     environment.settings.is_default_browser,
     environment.settings.attribution.source AS attribution_source,
+    environment.settings.attribution.dltoken AS attribution_dltoken,
     environment.system.is_wow64 AS system_is_wow64,
     environment.system.memory_mb AS system_memory_mb,
-    metadata.geo.city
+    metadata.geo.city,
+    profile_group_id
   FROM
-    telemetry.event
+    `moz-fx-data-shared-prod.telemetry.event`
   CROSS JOIN
     UNNEST(
       [
@@ -51,20 +53,36 @@ FROM
   base
 WHERE
   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1703362
-  NOT (
+  (
     event_category = 'security'
     AND event_method = 'unexpectedload'
     AND mozfun.map.get_key(event_map_values, 'contenttype') = 'TYPE_STYLESHEET'
-    AND mozfun.norm.truncate_version(app_version, 'major')
+    AND mozfun.norm.extract_version(app_version, 'major')
     BETWEEN 84
     AND 87
-  )
-  AND
+  ) IS NOT TRUE
   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1803833
-  NOT (
+  AND (
     event_category = 'normandy'
     AND event_method = 'validationFailed'
     AND mozfun.map.get_key(event_map_values, 'reason') = 'invalid-feature'
     AND mozfun.map.get_key(event_map_values, 'feature') IN ('nimbus-qa-1', 'nimbus-qa-2')
-    AND mozfun.norm.truncate_version(app_version, 'major') <= 108
-  )
+    AND mozfun.norm.extract_version(app_version, 'major') <= 108
+  ) IS NOT TRUE
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
+  AND (
+    event_category = 'security'
+    AND event_method = 'unexpectedload'
+    AND normalized_channel = 'release'
+    AND mozfun.norm.extract_version(app_version, 'major')
+    BETWEEN 133
+    AND 135
+  ) IS NOT TRUE
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+  AND (
+    event_category = "uptake.remotecontent.result"
+    AND event_method = "uptake"
+    AND normalized_channel = 'release'
+    AND mozfun.norm.extract_version(app_version, 'major') >= 143
+    AND sample_id != 0
+  ) IS NOT TRUE

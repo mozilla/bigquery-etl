@@ -61,26 +61,26 @@ try {
 -- Tests
 -- format:off
 SELECT
-  assert.equals(2, ARRAY_LENGTH(keyed_boolean_addon_scalars)),
-  assert.equals("foo1", keyed_boolean_addon_scalars[OFFSET(0)].key),
-  assert.array_equals([STRUCT("a" as key, true as value), STRUCT("b" as key, false as value)], keyed_boolean_addon_scalars[OFFSET(0)].value),
-  assert.equals("foo7", keyed_boolean_addon_scalars[OFFSET(1)].key),
-  assert.array_equals([STRUCT("c", false), STRUCT("d", true)], keyed_boolean_addon_scalars[OFFSET(1)].value),
-  assert.equals(1, ARRAY_LENGTH(keyed_uint_addon_scalars)),
-  assert.equals("foo2", keyed_uint_addon_scalars[OFFSET(0)].key),
-  assert.array_equals([STRUCT("a", 17), STRUCT("b", 42)], keyed_uint_addon_scalars[OFFSET(0)].value),
-  assert.equals(1, ARRAY_LENGTH(string_addon_scalars)),
-  assert.equals("foo3", string_addon_scalars[OFFSET(0)].key),
-  assert.equals("blee", string_addon_scalars[OFFSET(0)].value),
-  assert.equals(1, ARRAY_LENGTH(keyed_string_addon_scalars)),
-  assert.equals("foo4", keyed_string_addon_scalars[OFFSET(0)].key),
-  assert.array_equals([STRUCT("a", "yes"), STRUCT("b", "no")], keyed_string_addon_scalars[OFFSET(0)].value),
-  assert.equals(1, ARRAY_LENGTH(uint_addon_scalars)),
-  assert.equals("foo5", uint_addon_scalars[OFFSET(0)].key),
-  assert.equals(17, uint_addon_scalars[OFFSET(0)].value),
-  assert.equals(1, ARRAY_LENGTH(boolean_addon_scalars)),
-  assert.equals("foo6", boolean_addon_scalars[OFFSET(0)].key),
-  assert.equals(false, boolean_addon_scalars[OFFSET(0)].value)
+  mozfun.assert.equals(2, ARRAY_LENGTH(keyed_boolean_addon_scalars)),
+  mozfun.assert.equals("foo1", keyed_boolean_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.array_equals([STRUCT("a" as key, true as value), STRUCT("b" as key, false as value)], keyed_boolean_addon_scalars[OFFSET(0)].value),
+  mozfun.assert.equals("foo7", keyed_boolean_addon_scalars[OFFSET(1)].key),
+  mozfun.assert.array_equals([STRUCT("c", false), STRUCT("d", true)], keyed_boolean_addon_scalars[OFFSET(1)].value),
+  mozfun.assert.equals(1, ARRAY_LENGTH(keyed_uint_addon_scalars)),
+  mozfun.assert.equals("foo2", keyed_uint_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.array_equals([STRUCT("a", 17), STRUCT("b", 42)], keyed_uint_addon_scalars[OFFSET(0)].value),
+  mozfun.assert.equals(1, ARRAY_LENGTH(string_addon_scalars)),
+  mozfun.assert.equals("foo3", string_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.equals("blee", string_addon_scalars[OFFSET(0)].value),
+  mozfun.assert.equals(1, ARRAY_LENGTH(keyed_string_addon_scalars)),
+  mozfun.assert.equals("foo4", keyed_string_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.array_equals([STRUCT("a", "yes"), STRUCT("b", "no")], keyed_string_addon_scalars[OFFSET(0)].value),
+  mozfun.assert.equals(1, ARRAY_LENGTH(uint_addon_scalars)),
+  mozfun.assert.equals("foo5", uint_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.equals(17, uint_addon_scalars[OFFSET(0)].value),
+  mozfun.assert.equals(1, ARRAY_LENGTH(boolean_addon_scalars)),
+  mozfun.assert.equals("foo6", boolean_addon_scalars[OFFSET(0)].key),
+  mozfun.assert.equals(false, boolean_addon_scalars[OFFSET(0)].value)
 FROM (
   SELECT
     udf_js.main_summary_addon_scalars(

@@ -11,7 +11,7 @@ WITH unnested_events AS (
     client_info.windows_build_number,
     events
   FROM
-    `mozdata.firefox_desktop.profile_restore` AS restored_profile,
+    `moz-fx-data-shared-prod.firefox_desktop.profile_restore` AS restored_profile,
     UNNEST(restored_profile.events) AS events
   WHERE
     DATE(submission_timestamp) = @submission_date

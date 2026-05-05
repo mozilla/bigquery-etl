@@ -115,6 +115,13 @@ class SqlTest(pytest.Item, pytest.File):
         elif test_name == "test_script":
             script_test = True
             query = render("script.sql", template_folder=path)
+        elif os.path.exists(os.path.join(path, "view.sql")):
+            query = re.sub(
+                "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                render("view.sql", template_folder=path),
+                flags=re.DOTALL,
+            )
         else:
             query = render("query.sql", template_folder=path)
 
@@ -191,8 +198,8 @@ class SqlTest(pytest.Item, pytest.File):
         )
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        if "CI_RUN_ID" in os.environ:
+            dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:

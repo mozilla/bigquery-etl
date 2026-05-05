@@ -10,4 +10,5 @@ description: "History of changes to Stripe subscriptions as recorded by Fivetran
   \ a Mozilla-confidential dataset.\n\nSome caveats:\n  * We only have partial data\
   \ for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754)."
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

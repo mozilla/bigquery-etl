@@ -69,6 +69,7 @@ WITH base AS (
     JSON_VALUE(metrics.object.glean_distribution_ext.distributor) AS distributor,
     JSON_VALUE(metrics.object.glean_distribution_ext.distributorChannel) AS distributor_channel,
     JSON_VALUE(metrics.object.glean_distribution_ext.partnerId) AS distribution_partner_id,
+    metrics.boolean.policies_is_enterprise AS policies_is_enterprise,
     {% else %}
     CAST(NULL AS STRING) AS attribution_msclkid,
     CAST(NULL AS STRING) AS attribution_dltoken,
@@ -81,6 +82,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS distributor,
     CAST(NULL AS STRING) AS distributor_channel,
     CAST(NULL AS STRING) AS distribution_partner_id,
+    CAST(NULL AS BOOLEAN) AS policies_is_enterprise,
     {% endif %}
     ping_info.experiments AS experiments
   FROM
@@ -201,6 +203,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(distributor_channel) OVER w1) AS distributor_channel,
     udf.mode_last(ARRAY_AGG(distribution_partner_id) OVER w1) AS distribution_partner_id,
     udf.mode_last(ARRAY_AGG(attribution_msclkid) OVER w1) AS attribution_msclkid,
+    udf.mode_last(ARRAY_AGG(policies_is_enterprise) OVER w1) AS policies_is_enterprise,
   FROM
     with_date_offsets
   LEFT JOIN

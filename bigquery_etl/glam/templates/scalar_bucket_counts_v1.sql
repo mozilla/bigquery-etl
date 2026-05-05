@@ -15,6 +15,27 @@ build_ids AS (
   HAVING
     COUNT(DISTINCT client_id) > {{ minimum_client_count }}
 ),
+-- Compute log_min_max on the full source table (before any sample_id filtering)
+-- to ensure consistent bucket boundaries across all sample splits.
+log_min_max AS (
+  SELECT
+    metric,
+    key,
+    LOG(IF(MIN(value) <= 0, 1, MIN(value)), 2) as range_min,
+    LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) as range_max,
+    100 as bucket_count
+  FROM
+    {{ source_table }}
+  INNER JOIN
+    build_ids
+    USING (app_build_id, channel)
+  CROSS JOIN UNNEST(scalar_aggregates)
+  WHERE
+    metric_type NOT IN ({{ boolean_metric_types }})
+  GROUP BY
+    metric,
+    key
+),
 valid_clients_scalar_aggregates AS (
   SELECT
     *
@@ -23,6 +44,10 @@ valid_clients_scalar_aggregates AS (
   INNER JOIN
     build_ids
     USING (app_build_id, channel)
+  {% if use_sample_id %}
+  WHERE
+    `moz-fx-data-shared-prod`.udf.safe_sample_id(client_id) BETWEEN @min_sample_id AND @max_sample_id
+  {% endif %}
 ),
 bucketed_booleans AS (
   SELECT
@@ -34,22 +59,6 @@ bucketed_booleans AS (
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
     valid_clients_scalar_aggregates
-),
-log_min_max AS (
-  SELECT
-    metric,
-    key,
-    LOG(IF(MIN(value) <= 0, 1, MIN(value)), 2) as range_min,
-    LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) as range_max,
-    100 as bucket_count
-  FROM
-    valid_clients_scalar_aggregates
-    CROSS JOIN UNNEST(scalar_aggregates)
-  WHERE
-    metric_type NOT IN ({{ boolean_metric_types }})
-  GROUP BY
-    metric,
-    key
 ),
 buckets_by_metric AS (
   SELECT

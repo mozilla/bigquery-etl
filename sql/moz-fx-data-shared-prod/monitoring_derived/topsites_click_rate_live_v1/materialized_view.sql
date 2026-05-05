@@ -4,7 +4,7 @@ OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
 SELECT
-  TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
+  TIMESTAMP_TRUNC(submission_timestamp, MINUTE) AS submission_minute,
   COUNT(*) AS n,
   COUNT(reporting_url) AS n_contile,
   -- Yandex pings are not included in this monitor

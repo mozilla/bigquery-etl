@@ -9,8 +9,8 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
+from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
-    NBR_DAYS_RETAINED,
     _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,

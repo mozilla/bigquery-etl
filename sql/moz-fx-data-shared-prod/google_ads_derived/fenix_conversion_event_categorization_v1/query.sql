@@ -33,7 +33,7 @@ marketing_card_optin_clients AS (
     )
     AND (
       event_name = 'marketing_data_continue_clicked'
-      OR JSON_VALUE(event_extra, '$.opt_in') = 'true'
+      AND JSON_VALUE(event_extra, '$.opt_in') = 'true'
     )
 ),
 -- Get clients activity 9 days after they were seen for the first time.

@@ -1,7 +1,8 @@
 friendly_name: Backfills Staging
 description: |-
   Temporary staging location for backfill data before it replaces production data.
-dataset_base_acl: derived
+  Permissions on tables match the destination tables in production.
+dataset_base_acl: backfill
 user_facing: false
 default_table_expiration_ms: "2592000000"  # 30 days
 labels: {}
@@ -9,7 +10,3 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataplatform/backfill
-# Give data owner so airflow can set IAM policy
-- role: roles/bigquery.dataOwner
-  members:
-  - workgroup:dataplatform/airflow

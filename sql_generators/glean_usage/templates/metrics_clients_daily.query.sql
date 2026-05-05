@@ -21,6 +21,12 @@
         {{ metrics[app_name][metric].sql }} AS {{ metric }},
       {% endfor -%}
     {% endif -%}
+    {% if app_name == "fenix" -%}
+      ANY_VALUE(client_info.device_manufacturer) AS device_manufacturer,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp)
+      ) AS isp_name,
+    {% endif -%}
     {% if app_name == "firefox_desktop" -%}
       ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
       SUM(

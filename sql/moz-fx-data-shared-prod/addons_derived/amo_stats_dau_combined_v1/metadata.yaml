@@ -5,8 +5,7 @@ description: |-
   See bug 1572873.
 
   Each row in this table represents a particular addon on a particular day
-  and provides all the information needed to populate the various
-  "Daily Users" plots for the AMO stats dashboard.
+  and provides all the information needed to populate the various "Daily Users" plots for the AMO stats dashboard.
 
   NOTE: Includes BOTH clients that reported major app_version older than 148 using legacy source
         and clients that reported major app version 148 and above using the new addons ping.

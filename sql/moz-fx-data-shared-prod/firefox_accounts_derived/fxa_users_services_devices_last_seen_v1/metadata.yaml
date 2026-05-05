@@ -1,0 +1,27 @@
+---
+
+friendly_name: FxA Users Services Devices Last Seen
+description: |
+  Usage aggregations describing FxA user, service, device_id combination
+  activity in the last 28 days.
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+  depends_on_past: true
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - service
+      - os_name
+      - country

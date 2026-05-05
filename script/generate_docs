@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Generate documentation for projects.
-
-
-cd "$(dirname "$0")/.."
-
-exec python3 -m bigquery_etl.docs.generate_docs "$@"

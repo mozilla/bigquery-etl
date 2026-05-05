@@ -89,7 +89,7 @@ WITH filtered_date_channel AS (
   SELECT
     *
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -131,17 +131,16 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),
@@ -169,6 +168,9 @@ scalar_aggregates_new AS (
     --format:on
   FROM
     version_filtered_new
+  WHERE
+    -- avoid overflows from very large numbers that are typically anomalies
+    value <= POW(2, 40)
   GROUP BY
     client_id,
     ping_type,
@@ -210,19 +212,18 @@ filtered_old AS (
     scalar_aggs.channel,
     scalar_aggregates
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1 AS scalar_aggs
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1` AS scalar_aggs
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),
@@ -240,8 +241,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  USING
-    (client_id, ping_type, os, app_version, app_build_id, channel)
+    USING (client_id, ping_type, os, app_version, app_build_id, channel)
 )
 SELECT
   client_id,

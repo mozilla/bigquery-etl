@@ -1,0 +1,16 @@
+---
+- destination_id: destination_1_id
+  measured_month: 2022-01
+  credits_consumed: 5
+- destination_id: destination_2_id
+  measured_month: 2022-01
+  credits_consumed: 10
+- destination_id: destination_1_id
+  measured_month: 2022-02
+  credits_consumed: 10
+- destination_id: destination_2_id
+  measured_month: 2022-02
+  credits_consumed: 20
+- destination_id: destination_overlap
+  measured_month: 2022-09
+  credits_consumed: 100

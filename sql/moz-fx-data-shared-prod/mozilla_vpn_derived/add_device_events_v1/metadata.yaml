@@ -2,10 +2,15 @@ friendly_name: Mozilla VPN add device events
 description: >
   Event timestamps where accounts added a device
 owners:
-  - dthorn@mozilla.com
+  - phlee@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
-  dag_name: bqetl_mozilla_vpn
-  referenced_tables: []
+  dag_name: bqetl_subplat
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false

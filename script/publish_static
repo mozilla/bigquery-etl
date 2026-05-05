@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Publish csv files as BigQuery tables.
-
-cd "$(dirname "$0")/.."
-
-exec python3 -m bigquery_etl.publish_static "$@"

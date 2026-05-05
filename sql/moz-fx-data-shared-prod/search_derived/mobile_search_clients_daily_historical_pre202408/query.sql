@@ -1,0 +1,37 @@
+SELECT
+  submission_date,
+  client_id,
+  engine,
+  source,
+  app_name,
+  normalized_app_name,
+  search_count,
+  organic,
+  tagged_sap,
+  tagged_follow_on,
+  ad_click,
+  search_with_ads,
+  unknown,
+  country,
+  locale,
+  app_version,
+  channel,
+  os,
+  os_version,
+  default_search_engine,
+  default_search_engine_submission_url,
+  distribution_id,
+  profile_creation_date,
+  profile_age_in_days,
+  sample_id,
+  experiments,
+  total_uri_count,
+  normalized_engine,
+  ad_click_organic,
+  search_with_ads_organic,
+  os_version_major,
+  os_version_minor
+FROM
+  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+WHERE
+  submission_date <= '2024-07-31'

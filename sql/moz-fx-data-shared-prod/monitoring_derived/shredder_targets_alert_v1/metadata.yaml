@@ -1,0 +1,14 @@
+friendly_name: Shredder Targets Alert
+description: |-
+  Fails when there is a new table that may have a missing or incorrect shredder configuration based
+  on moz-fx-data-shared-prod.monitoring_derived.shredder_targets_new_mismatched_v1.
+  Does not write to a destination table.
+owners:
+  - bewu@mozilla.com
+labels:
+  owner1: benwu
+scheduling:
+  dag_name: bqetl_shredder_monitoring
+  arguments: ["--run-date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'monitoring_derived', 'shredder_targets_new_mismatched_v1']

@@ -1,0 +1,25 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: email
+  type: STRING
+  mode: NULLABLE
+- name: fxa_uid
+  type: STRING
+  mode: NULLABLE
+- name: fxa_profile_json
+  type: STRING
+  mode: NULLABLE
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: display_name
+  type: STRING
+  mode: NULLABLE
+- name: avatar
+  type: STRING
+  mode: NULLABLE

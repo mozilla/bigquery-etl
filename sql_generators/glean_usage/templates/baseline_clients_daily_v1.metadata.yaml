@@ -1,0 +1,34 @@
+{{ header_yaml }}
+friendly_name: Baseline Clients Daily
+description: |-
+  A daily aggregate of baseline pings per `client_id`.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `baseline_clients_last_seen`
+owners:
+  - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+{%- if not deprecated_app %}
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+{%- endif %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+monitoring:
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+{%- if deprecated_app %}
+deprecated: true
+{%- endif -%}

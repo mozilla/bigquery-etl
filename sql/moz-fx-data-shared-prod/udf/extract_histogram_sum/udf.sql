@@ -42,10 +42,10 @@ extracted AS (
 )
 --
 SELECT
-  assert.equals(7, hsum)
+  mozfun.assert.equals(7, hsum)
 FROM
   extracted;
 
 --
 SELECT
-  assert.null(udf.extract_histogram_sum('foo'));
+  mozfun.assert.null(udf.extract_histogram_sum('foo'));

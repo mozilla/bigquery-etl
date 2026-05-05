@@ -1,0 +1,22 @@
+friendly_name: (DEPRECATED) Firefox iOS New Profile Activation
+description: |-
+  DEPRECATED, please use `new_profile_activation_clients` instead.
+
+  Mobile activation metric used for Marketing campaign performance
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  table_type: client_level
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields: [sample_id, country]
+scheduling:
+  dag_name: bqetl_mobile_activation
+  date_partition_parameter: submission_date
+deprecated: true

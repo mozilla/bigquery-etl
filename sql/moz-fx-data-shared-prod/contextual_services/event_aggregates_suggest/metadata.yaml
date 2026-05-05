@@ -1,0 +1,5 @@
+friendly_name: Contextual Services Event Aggregates for Suggest
+description: |-
+  Aggregated event counts for suggest
+owners:
+  - rburwei@mozilla.com

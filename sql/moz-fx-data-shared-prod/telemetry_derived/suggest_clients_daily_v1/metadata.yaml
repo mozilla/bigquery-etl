@@ -1,0 +1,24 @@
+friendly_name: Suggest Clients Daily
+description: |-
+  daily client-level aggregates of Suggest-related fields
+owners:
+- rburwei@mozilla.com
+labels:
+  incremental: true
+  table_type: client_level
+  dag: bqetl_main_summary
+  owner1: rburwei
+scheduling:
+  dag_name: bqetl_main_summary
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+require_column_descriptions: false

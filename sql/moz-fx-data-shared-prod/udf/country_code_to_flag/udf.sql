@@ -12,9 +12,7 @@ See:
 - https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
 
 */
-CREATE OR REPLACE FUNCTION udf.country_code_to_flag(
-  country_code string
-) AS ( --
+CREATE OR REPLACE FUNCTION udf.country_code_to_flag(country_code STRING) AS ( --
   CODE_POINTS_TO_STRING(
     ARRAY(
       SELECT
@@ -31,4 +29,4 @@ CREATE OR REPLACE FUNCTION udf.country_code_to_flag(
 -- Tests
 SELECT
   -- The emoji below may not be visible in your code editor.
-  assert.equals('🇫🇮', udf.country_code_to_flag('FI'));
+  mozfun.assert.equals('🇫🇮', udf.country_code_to_flag('FI'));

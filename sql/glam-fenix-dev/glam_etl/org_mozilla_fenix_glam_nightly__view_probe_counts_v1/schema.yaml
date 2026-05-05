@@ -1,3 +1,4 @@
+fields:
 - name: ping_type
   type: STRING
 - name: os

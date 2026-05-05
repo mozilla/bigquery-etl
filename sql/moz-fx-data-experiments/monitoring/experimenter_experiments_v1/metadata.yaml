@@ -7,3 +7,5 @@ labels:
   schedule: ten-minute
 owners:
   - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_experimenter_experiments_import

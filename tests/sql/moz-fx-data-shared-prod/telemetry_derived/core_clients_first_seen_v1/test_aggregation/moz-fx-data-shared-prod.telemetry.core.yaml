@@ -1,0 +1,7 @@
+---
+- sample_id: 0
+  client_id: new-instance
+  submission_timestamp: 2021-03-02T00:00:00
+- sample_id: 0
+  client_id: existing-instance-with-new-ping
+  submission_timestamp: 2021-03-02T00:00:00

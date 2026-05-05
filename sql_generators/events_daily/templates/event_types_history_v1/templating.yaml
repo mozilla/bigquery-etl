@@ -1,0 +1,15 @@
+mozilla_vpn_derived:
+  name: Mozilla VPN
+  dataset: mozilla_vpn
+  events_table_name: main
+  glean: True
+  glean_app_ids:
+    - mozillavpn
+    - org_mozilla_firefox_vpn
+    - org_mozilla_ios_firefoxvpn
+    - org_mozilla_ios_firefoxvpn_network_extension
+  start_date: 2021-10-01
+  skipped_properties:
+    - time_ms
+  max_property_values: 1000
+  dag_name: bqetl_event_rollup

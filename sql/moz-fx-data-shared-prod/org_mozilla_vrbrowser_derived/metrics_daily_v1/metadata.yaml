@@ -1,13 +1,15 @@
----
-friendly_name: VR Browser Metrics Daily
-description: >
-  A daily aggregate of metrics pings from each Firefox Reality client,
-  partitioned by day
+friendly_name: vrbrowswer derived metrics daily
+description: |-
+  vrbrowswer derived metrics daily
 owners:
-  - jklukas@mozilla.com
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  application: firefox-reality
-  schedule: daily
-scheduling:
-  dag_name: bqetl_vrbrowser
+  incremental: false
+  table_type: client_level
+  shredder_mitigation: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

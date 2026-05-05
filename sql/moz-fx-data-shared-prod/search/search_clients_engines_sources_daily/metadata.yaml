@@ -1,0 +1,6 @@
+---
+friendly_name: Search Clients Engines Sources Daily
+description: |
+  A daily aggregate of desktop searches per (client_id, engine, source).
+owners:
+  - akomar@mozilla.com

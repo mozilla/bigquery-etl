@@ -1,0 +1,133 @@
+---
+- &base
+  submission_date: "2021-09-01"
+  client_id: "client_1"
+  default_search_engine: "engine_1"
+  app_version: "one"
+  normalized_channel: "nightly"
+  locale: "en-US"
+  search_region: "US"
+  country: "US"
+  profile_group_id: "profile_group_id_1"
+  suggest_enabled: true
+  in_navbar: true
+  suggest_searches: true
+  show_search_suggestions_first: true
+  count_picked_total: 20
+  count_picked_by_type:
+    - key: "autofill"
+      value: 5
+    - key: "bookmark"
+      value: 5
+    - key: "history"
+      value: 5
+    - key: "searchengine"
+      value: 5
+  count_picked_by_position:
+    - key: 1
+      value: 10
+    - key: 2
+      value: 10
+  urlbar_picked_by_type_by_position:
+    - type: "autofill"
+      position:
+        - key: 1
+          value: 5
+    - type: "bookmark"
+      position:
+        - key: 1
+          value: 5
+    - type: "dynamic"
+      position: []
+    - type: "extension"
+      position: []
+    - type: "formhistory"
+      position: []
+    - type: "history"
+      position:
+        - key: 2
+          value: 5
+    - type: "keyword"
+      position: []
+    - type: "remotetab"
+      position: []
+    - type: "searchengine"
+      position:
+        - key: 2
+          value: 5
+    - type: "searchsuggestion"
+      position: []
+    - type: "switchtab"
+      position: []
+    - type: "tabtosearch"
+      position: []
+    - type: "tip"
+      position: []
+    - type: "topsite"
+      position: []
+    - type: "unknown"
+      position: []
+    - type: "visiturl"
+      position: []
+  experiments:
+    - key: "experiment_key"
+      value: "experiment_value"
+- <<: *base
+  client_id: "client_2"
+  profile_group_id: "profile_group_id_2"
+  count_picked_total: 21
+  count_picked_by_type:
+    - key: "autofill"
+      value: 6
+    - key: "bookmark"
+      value: 5
+    - key: "history"
+      value: 5
+    - key: "searchengine"
+      value: 5
+  count_picked_by_position:
+    - key: 1
+      value: 11
+    - key: 2
+      value: 10
+  urlbar_picked_by_type_by_position:
+    - type: "autofill"
+      position:
+        - key: 1
+          value: 6
+    - type: "bookmark"
+      position:
+        - key: 1
+          value: 5
+    - type: "dynamic"
+      position: []
+    - type: "extension"
+      position: []
+    - type: "formhistory"
+      position: []
+    - type: "history"
+      position:
+        - key: 2
+          value: 5
+    - type: "keyword"
+      position: []
+    - type: "remotetab"
+      position: []
+    - type: "searchengine"
+      position:
+        - key: 2
+          value: 5
+    - type: "searchsuggestion"
+      position: []
+    - type: "switchtab"
+      position: []
+    - type: "tabtosearch"
+      position: []
+    - type: "tip"
+      position: []
+    - type: "topsite"
+      position: []
+    - type: "unknown"
+      position: []
+    - type: "visiturl"
+      position: []

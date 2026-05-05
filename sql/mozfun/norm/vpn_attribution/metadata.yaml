@@ -1,0 +1,4 @@
+---
+description: Accepts vpn attribution fields as input and
+  returns a struct of normalized fields.
+friendly_name: Normalize VPN Attribution

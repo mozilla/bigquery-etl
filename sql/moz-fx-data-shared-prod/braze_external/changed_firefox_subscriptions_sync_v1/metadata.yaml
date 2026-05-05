@@ -1,0 +1,25 @@
+friendly_name: Braze Changed Subscriptions Sync | Firefox Workspace
+description: |-
+  Changes in subscriptions in Braze from the previous day - mapped to the Firefox workspace.
+  In order to consume the least amount of data points, we only want to sync rows changed
+  since the last sync. This table holds all of the changed subscription data that syncs to braze.
+
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  owner: cbeck
+bigquery:
+  time_partitioning:
+  type: day
+  field: updated_at
+  require_partition_filter: false
+  expiration_days: 7
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace

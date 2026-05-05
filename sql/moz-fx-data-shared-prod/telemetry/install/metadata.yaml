@@ -1,0 +1,17 @@
+friendly_name: Install
+description: |-
+  View based on firefox_installer.install table.  The attribution column in that table is a URL encoded string.  This
+  view extracts the fields in the attribution column into
+  STRUCT<
+  campaign STRING,
+  content STRING,
+  dlsource STRING,
+  dltoken STRING,
+  experiment STRING,
+  medium STRING,
+  source STRING,
+  ua STRING,
+  variation STRING
+  >
+owners:
+- gleonard@mozilla.com

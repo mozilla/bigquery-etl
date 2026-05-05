@@ -1,7 +1,0 @@
-#!/bin/bash
-
-## Does dry runs of all views in the configured project and reports on broken ones.
-## Example:
-##   ./script/list_broken_views --project-id moz-fx-data-shared-prod
-
-exec python3 -m bigquery_etl.broken_views "$@"

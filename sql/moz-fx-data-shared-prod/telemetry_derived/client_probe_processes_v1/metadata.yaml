@@ -1,0 +1,17 @@
+friendly_name: Client Probe Processes
+description: |-
+  Processes that legacy telemetry probes are observed to be in.
+
+  Used by the Glean Dictionary's search service to index legacy Firefox data.
+owners:
+- wlachance@mozilla.com
+labels:
+  public_json: true
+  public_bigquery: true
+  review_bugs:
+  - '1744840'
+scheduling:
+  dag_name: bqetl_main_summary
+  task_name: client_probe_processes__v1
+  date_partition_parameter: null
+bigquery: null

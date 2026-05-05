@@ -1,0 +1,5 @@
+friendly_name: Blog Performance
+description: |-
+  Blog page engagement metrics by page title and date for blog.mozilla.org pages.
+owners:
+- kwindau@mozilla.com

@@ -1,0 +1,54 @@
+"""Generate unnested events queries for Glean apps."""
+
+from sql_generators.glean_usage.common import GleanTable, ping_has_metrics
+
+TARGET_TABLE_ID = "events_unnested_v1"
+PREFIX = "events_unnested"
+DATASET_SKIP = {
+    # VPN events are in main pings
+    "mozilla_vpn",
+    "mozilla_vpn_android",
+}
+
+
+class EventsUnnestedTable(GleanTable):
+    """Represents generated events_unnested table."""
+
+    def __init__(self):
+        """Initialize events_unnested table."""
+        GleanTable.__init__(self)
+        self.target_table_id = TARGET_TABLE_ID
+        self.prefix = PREFIX
+        self.per_app_id_enabled = False
+        self.cross_channel_template = "cross_channel_events_unnested.view.sql"
+
+    def generate_per_app(
+        self,
+        project_id,
+        app_name,
+        app_ids_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
+        id_token=None,
+        all_base_tables_exist=None,
+    ):
+        """Generate the events_unnested table query per app_name."""
+        target_dataset = app_name
+        if target_dataset not in DATASET_SKIP:
+            custom_render_kwargs = {
+                "has_metrics": ping_has_metrics(
+                    app_ids_info[0]["bq_dataset_family"], "events"
+                )
+            }
+            super().generate_per_app(
+                project_id,
+                app_name,
+                app_ids_info,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
+                id_token=id_token,
+                all_base_tables_exist=all_base_tables_exist,
+                custom_render_kwargs=custom_render_kwargs,
+            )

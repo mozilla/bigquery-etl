@@ -1,6 +1,6 @@
 ---
 description: 'Add fields from additional_attributes to active_addons
-  in main_v4.  Return an array instead of a "map" for backwards
+  in main pings.  Return an array instead of a "map" for backwards
   compatibility.  The INT64 columns from BigQuery may be passed as
   strings, so parseInt before returning them if they will be coerced to
   BOOL.  The fields from additional_attributes due to union types: integer

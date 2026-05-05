@@ -1,0 +1,8 @@
+fields:
+- name: userId
+  type: STRING
+  mode: NULLABLE
+  description: userId in hexadecimal format.
+- name: displayName
+  type: STRING
+  mode: NULLABLE

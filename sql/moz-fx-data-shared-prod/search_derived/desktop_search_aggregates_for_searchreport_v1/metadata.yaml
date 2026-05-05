@@ -1,15 +1,32 @@
+friendly_name: Desktop Search Aggregates For Search Report
 description: |-
   This query creates a table based on search_aggregate containing
   search metrics aggregated by geo, locale, os, engine, app_version,
   submission_date.
   Originally created for the search report dashboard.
-friendly_name: Desktop Search Aggregates For Search Report
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com
 labels:
   incremental: true
   schedule: daily
-owners:
-- xluo@mozilla.com
-- ssuh@mozilla.com
+  dag: bqetl_search_dashboard
+  owner1: cmorales
+  owner2: akommasani
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - geo
+    - locale
+    - engine
+    - app_version

@@ -1,0 +1,46 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Airflow submission date.
+
+- mode: NULLABLE
+  name: tranco_host_rank
+  type: INTEGER
+  description: Rank from the tranco list when the hostnames match exactly\
+    with CrUX data. Hostnames include sub-domains (i.e. docs.google.com)
+
+- mode: NULLABLE
+  name: tranco_domain_rank
+  type: INTEGER
+  description: Rank from the tranco list when the domain names match exactly\
+    with CrUX data. Domain names do not include sub-domains.\
+    (i.e. google.com)
+
+- mode: NULLABLE
+  name: domain
+  type: STRING
+  description: Registerable domain name. Parsed with the URL.REG_DOMAIN udf.\
+    Domain names do not include sub-domains. (i.e. google.com)
+
+- mode: NULLABLE
+  name: host
+  type: STRING
+  description: Hostname is parsed from the origin with the URL.HOST udf.\
+    Hostnames can include sub-domains. (i.e. docs.google.com)
+
+- mode: NULLABLE
+  name: origin
+  type: STRING
+  description: Fully qualified origin URL. Includes scheme and hostname
+
+- mode: NULLABLE
+  name: suffix
+  type: STRING
+  description: Top level domain name. Comes from CrUX data.
+
+- mode: NULLABLE
+  name: country_code
+  type: STRING
+  description: 2 character country code. Comes from CrUX data.

@@ -1,0 +1,26 @@
+---
+friendly_name: '{{ name }} Event Types History'
+description: >
+  Retrieve the set of [events, event_properties]
+  and record them in a table.
+  This table stores all of history, partitioned by
+  submission_date.
+owners:
+  - akomar@mozilla.com
+labels:
+  application: {{ dataset }}
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: {{ dag_name }}
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - category
+      - event
+

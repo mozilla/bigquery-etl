@@ -1,0 +1,2 @@
+description: Extract Segments from a campaign name. Includes region, country_code, and language.
+friendly_name: Extract Segments From Campaign Name

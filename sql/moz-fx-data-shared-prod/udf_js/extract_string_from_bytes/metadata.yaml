@@ -1,0 +1,3 @@
+---
+description: Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function extracts string data from `payload` which is in bytes.
+friendly_name: Extract string from bytes

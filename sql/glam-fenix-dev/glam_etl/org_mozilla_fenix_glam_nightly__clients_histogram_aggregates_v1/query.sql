@@ -38,11 +38,29 @@ RETURNS ARRAY<
   )
 );
 
+CREATE TEMP FUNCTION filter_values(aggs ARRAY<STRUCT<key STRING, value INT64>>)
+RETURNS ARRAY<STRUCT<key STRING, value INT64>> AS (
+  ARRAY(
+    SELECT AS STRUCT
+      agg.key,
+      SUM(agg.value) AS value
+    FROM
+      UNNEST(aggs) agg
+    -- Prevent overflows by only keeping buckets where value is less than 2^40
+    -- allowing 2^24 entries. This value was chosen somewhat abitrarily, typically
+    -- the max histogram value is somewhere on the order of ~20 bits.
+    WHERE
+      agg.value <= POW(2, 40)
+    GROUP BY
+      agg.key
+  )
+);
+
 WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1`
   WHERE
     sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
@@ -60,17 +78,16 @@ filtered_accumulated AS (
   FROM
     extracted_accumulated
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),
@@ -81,7 +98,7 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     unnested_histogram_aggregates AS histogram_aggregates
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1,
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1`,
     UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     submission_date = @submission_date
@@ -101,17 +118,16 @@ filtered_daily AS (
   FROM
     extracted_daily
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),
@@ -129,7 +145,7 @@ aggregated_daily AS (
     metric_type,
     key,
     agg_type,
-    mozfun.map.sum(ARRAY_CONCAT_AGG(value)) AS value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(filter_values(value))) AS value
   FROM
     filtered_daily
   GROUP BY
@@ -190,5 +206,4 @@ FROM
   filtered_accumulated AS accumulated
 FULL OUTER JOIN
   transformed_daily AS daily
-USING
-  (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)
+  USING (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)

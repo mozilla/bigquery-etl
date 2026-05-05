@@ -1,0 +1,8 @@
+friendly_name: Glam Desktop Beta Aggregates
+description: |-
+  Refresh glam_desktop_beta_aggregates which contains data served by GLAM
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: false
+  owner1: efilho@mozilla.com

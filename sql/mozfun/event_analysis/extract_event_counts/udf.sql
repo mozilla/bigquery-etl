@@ -5,7 +5,7 @@ RETURNS ARRAY<STRUCT<index STRING, count INT64>> AS (
       index,
       COUNT(*) AS count
     FROM
-      UNNEST(regexp_extract_all(events, r'(.),')) AS index
+      UNNEST(REGEXP_EXTRACT_ALL(events, r'(.),')) AS index
     GROUP BY
       index
     ORDER BY
@@ -18,9 +18,7 @@ WITH results AS (
   SELECT
     event_analysis.extract_event_counts('a,a,b,') AS multi,
     event_analysis.extract_event_counts('b,b,b,') AS single,
-    event_analysis.extract_event_counts('aa,ab,ac,')
-  AS
-    with_event_props
+    event_analysis.extract_event_counts('aa,ab,ac,') AS with_event_props
 )
 SELECT
   assert.equals('a', multi[OFFSET(0)].index),

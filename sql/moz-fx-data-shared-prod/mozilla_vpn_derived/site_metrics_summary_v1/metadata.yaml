@@ -1,0 +1,26 @@
+friendly_name: GA Site Metrics Summary for Mozilla VPN
+description: >
+  GA Site Metrics Summary for Mozilla VPN
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+  table_type: aggregate
+scheduling:
+  # No longer scheduled because we're no longer getting GA3 data from Google.
+  # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989
+  #dag_name: bqetl_mozilla_vpn_site_metrics
+  date_partition_parameter: date
+  depends_on:
+    - task_id: mozilla_vpn_derived__site_metrics_empty_check__v1
+      dag_name: bqetl_mozilla_vpn_site_metrics
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - site

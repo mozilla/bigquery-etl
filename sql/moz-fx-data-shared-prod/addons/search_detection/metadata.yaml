@@ -1,0 +1,11 @@
+---
+friendly_name: Addon - Search Detection
+description: |
+  A view for accessing the addons search detection aggregate.
+
+  Addon event specific data documentation:
+  https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml#174-336
+owners:
+  - kik@mozilla.com
+labels:
+  application: amo

@@ -2,9 +2,19 @@
 friendly_name: Impression Stats Flat
 description: Unnested representation of tile impression statistics
 owners:
-  - jklukas@mozilla.com
+  - mbowerman@mozilla.com
 labels:
   application: activity_stream
   schedule: daily
 scheduling:
   dag_name: bqetl_activity_stream
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 180
+  clustering:
+    fields:
+      - release_channel
+      - sample_id

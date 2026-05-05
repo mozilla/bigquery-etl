@@ -1,0 +1,91 @@
+fields:
+
+- mode: NULLABLE
+  name: cohort_start_month
+  type: DATE
+  description: first day of the month when cohort starts being recorded
+
+- mode: NULLABLE
+  name: period_length
+  type: STRING
+  description: length of period - in this table period is set to month
+
+- mode: NULLABLE
+  name: period
+  type: INTEGER
+  description: period number - number of period(months) between cohort start month and date data is recorded
+
+- mode: NULLABLE
+  name: app
+  type: STRING
+  description: application name ex. Firefox iOS and Android, pocket
+
+- mode: NULLABLE
+  name: app_token
+  type: STRING
+  description: unique token for the application
+
+- mode: NULLABLE
+  name: network
+  type: STRING
+  description: name of network ex. Google Ads ACI
+
+- mode: NULLABLE
+  name: network_token
+  type: STRING
+  description: unique token for the network
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: country 2 letter abbreviation
+
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: name of os ex. android, iOS
+
+- mode: NULLABLE
+  name: cohort_size
+  type: INTEGER
+  description: number of member in the cohort
+
+- mode: NULLABLE
+  name: retained_users
+  type: INTEGER
+  description: number of users retained
+
+- mode: NULLABLE
+  name: retention_rate
+  type: FLOAT
+  description: number of retained users/total number of users in cohort
+
+- mode: NULLABLE
+  name: time_spent_per_user
+  type: INTEGER
+  description: how much time each user in cohort spends
+
+- mode: NULLABLE
+  name: time_spent_per_session
+  type: INTEGER
+  description: how much time is spent per session by cohort
+
+- mode: NULLABLE
+  name: time_spent
+  type: INTEGER
+  description: amount of time spent by the cohort
+
+- mode: NULLABLE
+  name: sessions_per_user
+  type: FLOAT
+  description: number of sessions divided by number of users in cohort
+
+- mode: NULLABLE
+  name: sessions
+  type: INTEGER
+  description: number of sessions
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: date when the data is recorded, also the field the table is partioned by

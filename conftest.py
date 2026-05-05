@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from google.cloud import bigquery, storage
 
-TEST_BUCKET = "bigquery-etl-integration-test-bucket"
+TEST_BUCKET = "moz-fx-data-integration-tests-bigquery-etl"
 
 
 pytest_plugins = [
@@ -29,18 +29,10 @@ def pytest_collection_modifyitems(config, items):
         return
 
     skip_integration = pytest.mark.skip(reason="integration marker not selected")
-    requires_java = pytest.mark.skipif(
-        subprocess.call(["which", "javac"], stdout=subprocess.DEVNULL) != 0
-        or len(list(Path(__file__).parent.glob("target/dependency/*.jar"))) == 0,
-        reason="requires javac and target/dependency/*.jar from "
-        "`mvn dependency:copy-dependencies`",
-    )
 
     for item in items:
         if "integration" in item.keywords:
             item.add_marker(skip_integration)
-        if "java" in item.keywords:
-            item.add_marker(requires_java)
 
 
 @pytest.fixture

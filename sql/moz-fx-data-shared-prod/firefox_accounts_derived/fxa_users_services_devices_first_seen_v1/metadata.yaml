@@ -1,0 +1,46 @@
+---
+
+friendly_name: FxA Users Services Devices First Seen
+description: |
+  Usage aggregations describing when each FxA user, service,
+  device_id combination was first seen by us and some
+  attributes associated with this first session.
+  Note: registration or login events are used to
+  determine the first session.
+
+  Additional attributes get captured to provide insight into
+  what os and browser is used by the new device, as well as,
+  the device's entrypoint and utm information.
+  This information is static and represents as was at the time
+  (does not change).
+
+  Lowest granularity field: device_id
+
+  Notes:
+    - There are very few cases when a single flow_id
+      can contain multiple device_ids.
+    - utm fields contain very high levels of null values.
+
+  More information about fxa data can be found here:
+  https://docs.telemetry.mozilla.org/datasets/fxa.html
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+  depends_on_past: true
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - service
+      - os_name
+      - country

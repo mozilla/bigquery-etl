@@ -1,0 +1,4 @@
+friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
+description: Aggregate table for clients daily by default browser lifecycle stage
+owners:
+- wichan@mozilla.com

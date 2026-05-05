@@ -1,0 +1,2 @@
+description: Sum of a keyed histogram, across all keys it contains.
+friendly_name: Extract Keyed Histogram Sum

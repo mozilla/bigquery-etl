@@ -1,12 +1,29 @@
----
 friendly_name: Mobile Search Clients Last Seen
-description: |-
-  Captures search activity of a single mobile client in the past 365 days
-  for each submission date.
+description: |
+  Captures search activity of each mobile client
+  in the past 365 days for each submission date.
+
+  Exposed to users as view `search.mobile_search_clients_last_seen` and used
+  as the basis for mobile LTV calculations.
 owners:
-  - bewu@mozilla.com
+- akommasani@mozilla.com
+- cmorales@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_mobile_search
+  owner1: akommasani
+  owner2: cmorales
+  table_type: client_level
 scheduling:
   dag_name: bqetl_mobile_search
   depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - sample_id
+    - client_id

@@ -1,0 +1,33 @@
+---
+friendly_name: Stripe itemized tax transactions report
+description: >
+  Import itemized tax transactions report from the Stripe API.
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  # Unscheduled because this specific report type can no longer be retrieved from the Stripa API as of 2026-02-11.
+  # This report type has been superseded by a newer version being retrieved by the `itemized_tax_transactions_v2` ETL.
+  # See https://bugzilla.mozilla.org/show_bug.cgi?id=2016156.
+  #dag_name: bqetl_subplat
+  arguments:
+    - --date={{ ds }}
+    - --api-key={{ var.value.stripe_api_key }}
+    - --report-type=tax.transactions.itemized.1
+    - --table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
+    - --time-partitioning-field=transaction_date_utc
+  # report data isn't generally ready when the dag starts, so retry for a while
+  retry_delay: 30m
+  retries: 47
+  email_on_retry: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: transaction_date_utc
+    require_partition_filter: false
+  clustering:
+    fields:
+      - transaction_date_utc

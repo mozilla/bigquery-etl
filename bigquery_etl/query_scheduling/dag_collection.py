@@ -1,15 +1,43 @@
 """Represents a collection of configured Airflow DAGs."""
 
+from collections import defaultdict
 from functools import partial
 from itertools import groupby
-from multiprocessing.pool import ThreadPool
+from multiprocessing import get_context, set_start_method
 from operator import attrgetter
 from pathlib import Path
 
 import yaml
 from black import FileMode, format_file_contents
 
+from bigquery_etl.dependency import extract_table_references_without_views
+from bigquery_etl.query_scheduling.copy_deduplicate_task_markers import (
+    write_task_markers_dag,
+)
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
+from bigquery_etl.query_scheduling.utils import negate_timedelta_string
+from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+
+
+def _precompute_task_references(task):
+    """Pre-compute expensive table references parsing and return result."""
+    if (
+        task.is_python_script
+        or task.is_bigeye_check
+        or task.referenced_tables is not None
+    ):
+        return (task.task_key, task.referenced_tables or [])
+
+    query_files = [Path(task.query_file)]
+    if task.multipart:
+        query_files = list(Path(task.query_file_path).glob("*.sql"))
+
+    table_names = {
+        tuple(table.split("."))
+        for query_file in query_files
+        for table in extract_table_references_without_views(query_file)
+    }
+    return (task.task_key, sorted(table_names))
 
 
 class DagCollection:
@@ -71,6 +99,37 @@ class DagCollection:
                     project == task.project
                     and dataset == task.dataset
                     and table == f"{task.table}_{task.version}"
+                    and not task.is_dq_check
+                    and not task.is_bigeye_check
+                ):
+                    return task
+
+        return None
+
+    def fail_checks_task_for_table(self, project, dataset, table):
+        """Return the task that schedules the checks for the provided table."""
+        for dag in self.dags:
+            for task in dag.tasks:
+                if (
+                    project == task.project
+                    and dataset == task.dataset
+                    and table == f"{task.table}_{task.version}"
+                    and task.is_dq_check
+                    and task.is_dq_check_fail
+                ):
+                    return task
+
+        return None
+
+    def fail_bigeye_checks_task_for_table(self, project, dataset, table):
+        """Return the task that schedules the BigEye checks for the provided table."""
+        for dag in self.dags:
+            for task in dag.tasks:
+                if (
+                    project == task.project
+                    and dataset == task.dataset
+                    and table == f"{task.table}_{task.version}"
+                    and task.is_bigeye_check
                 ):
                     return task
 
@@ -85,12 +144,16 @@ class DagCollection:
             dag = self.dag_by_name(dag_name)
             if dag is None:
                 raise InvalidDag(
-                    f"DAG {dag_name} does not exist in dags.yaml"
-                    "but used in task definition {next(group).task_name}."
+                    f"DAG {dag_name} does not exist in dags.yaml "
+                    f"but used in task definition {next(group).task_name}."
                 )
             dag.add_tasks(list(group))
 
-        public_json_tasks = [task for task in tasks if task.public_json]
+        public_json_tasks = [
+            task
+            for task in tasks
+            if task.public_json and not (task.is_dq_check or task.is_bigeye_check)
+        ]
         if public_json_tasks:
             for dag in self.dags:
                 if dag.__class__ == PublicDataJsonDag:
@@ -100,18 +163,90 @@ class DagCollection:
 
         return self
 
+    def get_task_downstream_dependencies(self, task):
+        """Return all direct downstream dependencies of the task."""
+        # Cache the downstream dependencies for faster lookups.
+        if not hasattr(self, "_downstream_dependencies"):
+            downstream_dependencies = defaultdict(list)
+            for dag in self.dags:
+                for _task in dag.tasks:
+                    _task.with_upstream_dependencies(self)
+                    for upstream_dependency in (
+                        _task.depends_on + _task.upstream_dependencies
+                    ):
+                        execution_delta = None
+                        if upstream_dependency.execution_delta:
+                            # Make the execution delta relative to the upstream dependency.
+                            execution_delta = negate_timedelta_string(
+                                upstream_dependency.execution_delta
+                            )
+                        downstream_dependencies[upstream_dependency.task_key].append(
+                            _task.to_ref(self, execution_delta=execution_delta)
+                        )
+            self._downstream_dependencies = downstream_dependencies
+
+        return self._downstream_dependencies[task.task_key]
+
     def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = Path(output_dir) / (dag.name + ".py")
-        formatted_dag = format_file_contents(
-            dag.to_airflow_dag(self), fast=False, mode=FileMode()
-        )
-        output_file.write_text(formatted_dag)
+
+        try:
+            formatted_dag = format_file_contents(
+                dag.to_airflow_dag(), fast=False, mode=FileMode()
+            )
+            output_file.write_text(formatted_dag)
+        except InvalidDag as e:
+            print(e)
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
-        if dag_to_generate is None:
-            with ThreadPool(8) as p:
-                p.map(partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1)
-        else:
-            self.dag_to_airflow(output_dir, self.dag_by_name(dag_to_generate))
+        # https://pythonspeed.com/articles/python-multiprocessing/
+        # when running tests on CI that call this function, we need
+        # to create a custom pool to prevent processes from getting stuck
+
+        # Generate a single DAG:
+        if dag_to_generate is not None:
+            dag_to_generate.with_upstream_dependencies(self)
+            dag_to_generate.with_downstream_dependencies(self)
+            self.dag_to_airflow(output_dir, dag_to_generate)
+            return
+
+        # Generate all DAGs:
+        try:
+            set_start_method("spawn")
+        except Exception:
+            pass
+
+        # Pre-load stable table schemas before spawning workers to avoid loading multiple times
+        # This downloads and caches schemas once in the main process
+        try:
+            get_stable_table_schemas()
+        except Exception:
+            # If schema loading fails, continue anyway (some tasks may not need them)
+            pass
+
+        # Pre-compute referenced tables for all tasks in parallel
+        # This is the expensive I/O-heavy part (SQL parsing via extract_table_references_without_views)
+        all_tasks = [task for dag in self.dags for task in dag.tasks]
+
+        with get_context("spawn").Pool(8) as p:
+            task_references = p.map(_precompute_task_references, all_tasks)
+
+        # Update tasks with precomputed references
+        task_map = {task.task_key: task for task in all_tasks}
+        for task_key, referenced_tables in task_references:
+            task_map[task_key].referenced_tables = referenced_tables
+
+        # Resolve dependencies sequentially
+        for dag in self.dags:
+            dag.with_upstream_dependencies(self)
+            dag.with_downstream_dependencies(self)
+
+        # Create copy_deduplicate_task_markers DAG to support task state propagation
+        write_task_markers_dag(self, output_dir)
+
+        # Finally, parallelize DAG-to-Airflow conversion
+        to_airflow_dag = partial(self.dag_to_airflow, output_dir)
+        with get_context("spawn").Pool(8) as p:
+            p.map(to_airflow_dag, self.dags)

@@ -22,6 +22,8 @@ CREATE OR REPLACE FUNCTION hist.merge(histogram_list ANY TYPE) AS (
         UNNEST(VALUES)
       GROUP BY
         key
+      ORDER BY
+        key
     ) AS values
   )
 );

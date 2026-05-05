@@ -47,7 +47,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
+        AVG(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
       ),
       (
         'migration_addons_failed_addons',
@@ -61,28 +61,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
+        MAX(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
       ),
       (
         'migration_addons_failed_addons',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
+        MIN(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
       ),
       (
         'migration_addons_failed_addons',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
+        SUM(CAST(metrics.counter.migration_addons_failed_addons AS INT64))
       ),
       (
         'migration_addons_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
       ),
       (
         'migration_addons_failure_reason',
@@ -96,28 +96,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
       ),
       (
         'migration_addons_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
       ),
       (
         'migration_addons_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_addons_failure_reason AS INT64))
       ),
       (
         'migration_addons_migrated_addons',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
+        AVG(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
       ),
       (
         'migration_addons_migrated_addons',
@@ -131,28 +131,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
+        MAX(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
       ),
       (
         'migration_addons_migrated_addons',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
+        MIN(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
       ),
       (
         'migration_addons_migrated_addons',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
+        SUM(CAST(metrics.counter.migration_addons_migrated_addons AS INT64))
       ),
       (
         'migration_addons_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_addons_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_addons_success_reason AS INT64))
       ),
       (
         'migration_addons_success_reason',
@@ -166,28 +166,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_addons_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_addons_success_reason AS INT64))
       ),
       (
         'migration_addons_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_addons_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_addons_success_reason AS INT64))
       ),
       (
         'migration_addons_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_addons_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_addons_success_reason AS INT64))
       ),
       (
         'migration_addons_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
       ),
       (
         'migration_addons_total_duration',
@@ -201,21 +201,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
       ),
       (
         'migration_addons_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
       ),
       (
         'migration_addons_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_any_failures',
@@ -236,7 +236,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
+        AVG(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
       ),
       (
         'migration_bookmarks_detected',
@@ -250,28 +250,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
+        MAX(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
       ),
       (
         'migration_bookmarks_detected',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
+        MIN(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
       ),
       (
         'migration_bookmarks_detected',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
+        SUM(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
       ),
       (
         'migration_bookmarks_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_duration',
@@ -285,28 +285,28 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
       ),
       (
         'migration_bookmarks_failure_reason',
@@ -320,28 +320,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
       ),
       (
         'migration_bookmarks_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
       ),
       (
         'migration_bookmarks_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_bookmarks_failure_reason AS INT64))
       ),
       (
         'migration_bookmarks_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
       ),
       (
         'migration_bookmarks_success_reason',
@@ -355,28 +355,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
       ),
       (
         'migration_bookmarks_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
       ),
       (
         'migration_bookmarks_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
       ),
       (
         'migration_bookmarks_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_total_duration',
@@ -390,21 +390,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
       ),
       (
         'migration_fxa_any_failures',
@@ -425,7 +425,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
       ),
       (
         'migration_fxa_failure_reason',
@@ -439,21 +439,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
       ),
       (
         'migration_fxa_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
       ),
       (
         'migration_fxa_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_fxa_failure_reason AS INT64))
       ),
       (
         'migration_fxa_has_custom_idp_server',
@@ -488,7 +488,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
       ),
       (
         'migration_fxa_success_reason',
@@ -502,28 +502,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
       ),
       (
         'migration_fxa_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
       ),
       (
         'migration_fxa_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
       ),
       (
         'migration_fxa_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
       ),
       (
         'migration_fxa_total_duration',
@@ -537,21 +537,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
       ),
       (
         'migration_fxa_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
       ),
       (
         'migration_fxa_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
       ),
       (
         'migration_gecko_any_failures',
@@ -572,7 +572,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
       ),
       (
         'migration_gecko_failure_reason',
@@ -586,28 +586,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
       ),
       (
         'migration_gecko_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
       ),
       (
         'migration_gecko_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_gecko_failure_reason AS INT64))
       ),
       (
         'migration_gecko_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
       ),
       (
         'migration_gecko_success_reason',
@@ -621,28 +621,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
       ),
       (
         'migration_gecko_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
       ),
       (
         'migration_gecko_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
       ),
       (
         'migration_gecko_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
       ),
       (
         'migration_gecko_total_duration',
@@ -656,21 +656,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
       ),
       (
         'migration_gecko_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
       ),
       (
         'migration_gecko_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
       ),
       (
         'migration_history_any_failures',
@@ -691,7 +691,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_history_detected AS INT64))
+        AVG(CAST(metrics.counter.migration_history_detected AS INT64))
       ),
       (
         'migration_history_detected',
@@ -705,28 +705,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_history_detected AS INT64))
+        MAX(CAST(metrics.counter.migration_history_detected AS INT64))
       ),
       (
         'migration_history_detected',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_history_detected AS INT64))
+        MIN(CAST(metrics.counter.migration_history_detected AS INT64))
       ),
       (
         'migration_history_detected',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_history_detected AS INT64))
+        SUM(CAST(metrics.counter.migration_history_detected AS INT64))
       ),
       (
         'migration_history_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_history_duration.value AS INT64))
       ),
       (
         'migration_history_duration',
@@ -740,28 +740,28 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_history_duration.value AS INT64))
       ),
       (
         'migration_history_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_history_duration.value AS INT64))
       ),
       (
         'migration_history_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_history_duration.value AS INT64))
       ),
       (
         'migration_history_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_history_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_history_failure_reason AS INT64))
       ),
       (
         'migration_history_failure_reason',
@@ -775,28 +775,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_history_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_history_failure_reason AS INT64))
       ),
       (
         'migration_history_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_history_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_history_failure_reason AS INT64))
       ),
       (
         'migration_history_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_history_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_history_failure_reason AS INT64))
       ),
       (
         'migration_history_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_history_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_history_success_reason AS INT64))
       ),
       (
         'migration_history_success_reason',
@@ -810,28 +810,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_history_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_history_success_reason AS INT64))
       ),
       (
         'migration_history_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_history_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_history_success_reason AS INT64))
       ),
       (
         'migration_history_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_history_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_history_success_reason AS INT64))
       ),
       (
         'migration_history_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
       ),
       (
         'migration_history_total_duration',
@@ -845,21 +845,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
       ),
       (
         'migration_history_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
       ),
       (
         'migration_history_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
       ),
       (
         'migration_logins_any_failures',
@@ -880,7 +880,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_logins_detected AS INT64))
+        AVG(CAST(metrics.counter.migration_logins_detected AS INT64))
       ),
       (
         'migration_logins_detected',
@@ -894,28 +894,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_logins_detected AS INT64))
+        MAX(CAST(metrics.counter.migration_logins_detected AS INT64))
       ),
       (
         'migration_logins_detected',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_logins_detected AS INT64))
+        MIN(CAST(metrics.counter.migration_logins_detected AS INT64))
       ),
       (
         'migration_logins_detected',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_logins_detected AS INT64))
+        SUM(CAST(metrics.counter.migration_logins_detected AS INT64))
       ),
       (
         'migration_logins_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
       ),
       (
         'migration_logins_failure_reason',
@@ -929,28 +929,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
       ),
       (
         'migration_logins_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
       ),
       (
         'migration_logins_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_logins_failure_reason AS INT64))
       ),
       (
         'migration_logins_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_logins_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_logins_success_reason AS INT64))
       ),
       (
         'migration_logins_success_reason',
@@ -964,28 +964,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_logins_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_logins_success_reason AS INT64))
       ),
       (
         'migration_logins_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_logins_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_logins_success_reason AS INT64))
       ),
       (
         'migration_logins_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_logins_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_logins_success_reason AS INT64))
       ),
       (
         'migration_logins_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
       ),
       (
         'migration_logins_total_duration',
@@ -999,28 +999,28 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
       ),
       (
         'migration_logins_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
       ),
       (
         'migration_logins_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
       ),
       (
         'migration_logins_unsupported_db_version',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
+        AVG(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
       ),
       (
         'migration_logins_unsupported_db_version',
@@ -1034,21 +1034,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
+        MAX(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
       ),
       (
         'migration_logins_unsupported_db_version',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
+        MIN(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
       ),
       (
         'migration_logins_unsupported_db_version',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
+        SUM(CAST(metrics.counter.migration_logins_unsupported_db_version AS INT64))
       ),
       (
         'migration_open_tabs_any_failures',
@@ -1069,7 +1069,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
+        AVG(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
       ),
       (
         'migration_open_tabs_detected',
@@ -1083,28 +1083,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
+        MAX(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
       ),
       (
         'migration_open_tabs_detected',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
+        MIN(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
       ),
       (
         'migration_open_tabs_detected',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
+        SUM(CAST(metrics.counter.migration_open_tabs_detected AS INT64))
       ),
       (
         'migration_open_tabs_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
       ),
       (
         'migration_open_tabs_failure_reason',
@@ -1118,28 +1118,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
       ),
       (
         'migration_open_tabs_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
       ),
       (
         'migration_open_tabs_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_open_tabs_failure_reason AS INT64))
       ),
       (
         'migration_open_tabs_migrated',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
+        AVG(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
       ),
       (
         'migration_open_tabs_migrated',
@@ -1153,28 +1153,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
+        MAX(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
       ),
       (
         'migration_open_tabs_migrated',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
+        MIN(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
       ),
       (
         'migration_open_tabs_migrated',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
+        SUM(CAST(metrics.counter.migration_open_tabs_migrated AS INT64))
       ),
       (
         'migration_open_tabs_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
       ),
       (
         'migration_open_tabs_success_reason',
@@ -1188,28 +1188,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
       ),
       (
         'migration_open_tabs_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
       ),
       (
         'migration_open_tabs_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
       ),
       (
         'migration_open_tabs_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
       ),
       (
         'migration_open_tabs_total_duration',
@@ -1223,21 +1223,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
       ),
       (
         'migration_open_tabs_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
       ),
       (
         'migration_open_tabs_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
       ),
       (
         'migration_pinned_sites_any_failures',
@@ -1258,7 +1258,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+        AVG(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_detected_pinned_sites',
@@ -1276,28 +1276,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+        MAX(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_detected_pinned_sites',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+        MIN(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_detected_pinned_sites',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+        SUM(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_failure_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
       ),
       (
         'migration_pinned_sites_failure_reason',
@@ -1311,28 +1311,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
       ),
       (
         'migration_pinned_sites_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
       ),
       (
         'migration_pinned_sites_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
       ),
       (
         'migration_pinned_sites_migrated_pinned_sites',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+        AVG(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_migrated_pinned_sites',
@@ -1350,28 +1350,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+        MAX(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_migrated_pinned_sites',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+        MIN(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_migrated_pinned_sites',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+        SUM(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
       ),
       (
         'migration_pinned_sites_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
       ),
       (
         'migration_pinned_sites_success_reason',
@@ -1385,28 +1385,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
       ),
       (
         'migration_pinned_sites_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
       ),
       (
         'migration_pinned_sites_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
       ),
       (
         'migration_pinned_sites_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
       ),
       (
         'migration_pinned_sites_total_duration',
@@ -1424,21 +1424,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
       ),
       (
         'migration_pinned_sites_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
       ),
       (
         'migration_pinned_sites_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
       ),
       (
         'migration_search_any_failures',
@@ -1459,7 +1459,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_search_failure_reason AS INT64))
       ),
       (
         'migration_search_failure_reason',
@@ -1473,28 +1473,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_search_failure_reason AS INT64))
       ),
       (
         'migration_search_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_search_failure_reason AS INT64))
       ),
       (
         'migration_search_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_search_failure_reason AS INT64))
       ),
       (
         'migration_search_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_search_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_search_success_reason AS INT64))
       ),
       (
         'migration_search_success_reason',
@@ -1508,28 +1508,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_search_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_search_success_reason AS INT64))
       ),
       (
         'migration_search_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_search_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_search_success_reason AS INT64))
       ),
       (
         'migration_search_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_search_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_search_success_reason AS INT64))
       ),
       (
         'migration_search_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
       ),
       (
         'migration_search_total_duration',
@@ -1543,21 +1543,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
       ),
       (
         'migration_search_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
       ),
       (
         'migration_search_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
       ),
       (
         'migration_settings_any_failures',
@@ -1578,7 +1578,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
       ),
       (
         'migration_settings_failure_reason',
@@ -1592,28 +1592,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
       ),
       (
         'migration_settings_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
       ),
       (
         'migration_settings_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_settings_failure_reason AS INT64))
       ),
       (
         'migration_settings_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_settings_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_settings_success_reason AS INT64))
       ),
       (
         'migration_settings_success_reason',
@@ -1627,21 +1627,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_settings_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_settings_success_reason AS INT64))
       ),
       (
         'migration_settings_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_settings_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_settings_success_reason AS INT64))
       ),
       (
         'migration_settings_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_settings_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_settings_success_reason AS INT64))
       ),
       (
         'migration_settings_telemetry_enabled',
@@ -1662,7 +1662,7 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
       ),
       (
         'migration_settings_total_duration',
@@ -1676,21 +1676,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
       ),
       (
         'migration_settings_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
       ),
       (
         'migration_settings_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
       ),
       (
         'migration_telemetry_identifiers_any_failures',
@@ -1711,7 +1711,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_failure_reason',
@@ -1729,28 +1729,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_failure_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_failure_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_telemetry_identifiers_failure_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_success_reason',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
+        AVG(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_success_reason',
@@ -1768,28 +1768,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
+        MAX(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_success_reason',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
+        MIN(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_success_reason',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
+        SUM(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
       ),
       (
         'migration_telemetry_identifiers_total_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
       ),
       (
         'migration_telemetry_identifiers_total_duration',
@@ -1807,21 +1807,21 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
       ),
       (
         'migration_telemetry_identifiers_total_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
       ),
       (
         'migration_telemetry_identifiers_total_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
       )
     ] AS scalar_aggregates
   FROM

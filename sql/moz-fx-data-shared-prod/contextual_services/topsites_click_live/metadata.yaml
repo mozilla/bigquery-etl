@@ -1,0 +1,9 @@
+---
+# yamllint disable rule:line-length
+friendly_name: Live Pings for `contextual-services/topsites-click`
+description: |-
+  A live view of pings sent for the
+  `contextual-services/topsites-click`
+  document type.
+
+  Clustering fields: `submission_timestamp`

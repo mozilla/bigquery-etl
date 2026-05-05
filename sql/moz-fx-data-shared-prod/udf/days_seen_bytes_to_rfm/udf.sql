@@ -16,4 +16,7 @@ CREATE OR REPLACE FUNCTION udf.days_seen_bytes_to_rfm(days_seen_bytes BYTES) AS 
 
 -- Tests
 SELECT
-  assert.equals(STRUCT(2 AS frequency, 4 AS T, 2 AS recency), udf.days_seen_bytes_to_rfm(b'\x14'))
+  mozfun.assert.equals(
+    STRUCT(2 AS frequency, 4 AS T, 2 AS recency),
+    udf.days_seen_bytes_to_rfm(b'\x14')
+  )

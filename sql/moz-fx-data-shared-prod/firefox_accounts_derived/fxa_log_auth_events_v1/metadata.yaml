@@ -6,11 +6,21 @@ description: |-
 
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1628708
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
-  referenced_tables: []
+  table_type: client_level
+# Query descheduled as a direct result of AWS migration to GCP
+# on 27th September 2023 the last AWS instances were spun down.
+# scheduling:
+#   dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+  clustering:
+    fields:
+      - event

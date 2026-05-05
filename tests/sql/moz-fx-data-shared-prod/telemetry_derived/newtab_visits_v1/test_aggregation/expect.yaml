@@ -1,0 +1,90 @@
+---
+- submission_date: 2021-09-01
+  newtab_visit_id: visit_id_1
+  newtab_open_source: about:newtab
+  client_id: client_id_1
+  legacy_telemetry_client_id: legacy_id_1
+  experiments: []
+  newtab_blocked_sponsors: []
+  newtab_selected_topics: []
+  is_new_profile: true
+  activity_segment: lots_of_activity
+  browser_name: Firefox Desktop
+  had_non_impression_engagement: true
+  had_non_search_engagement: true
+  newtab_default_ui: default
+  newtab_newtab_category: enabled
+  profile_group_id: profile_group_id_1
+  topsites_sponsored_tiles_configured: 2
+  search_interactions:
+    - search_engine: Engine1
+      search_access_point: urlbar
+      searches: 1
+      follow_on_search_ad_clicks: 0
+      follow_on_search_ad_impressions: 0
+      tagged_follow_on_search_ad_clicks: 0
+      tagged_follow_on_search_ad_impressions: 0
+      tagged_search_ad_clicks: 1
+      tagged_search_ad_impressions: 0
+  topsite_tile_interactions:
+    - topsite_tile_advertiser_name: advertiser_1
+      topsite_tile_position: 1
+      topsite_tile_id: tile_1
+      topsite_tile_clicks: 1
+      sponsored_topsite_tile_clicks: 1
+      organic_topsite_tile_clicks: 0
+      topsite_tile_impressions: 0
+      sponsored_topsite_tile_impressions: 0
+      organic_topsite_tile_impressions: 0
+      topsite_tile_dismissals: 0
+      sponsored_topsite_tile_dismissals: 0
+      organic_topsite_tile_dismissals: 0
+  pocket_interactions:
+    - pocket_story_position: 1
+      pocket_impressions: 1
+      sponsored_pocket_impressions: 0
+      organic_pocket_impressions: 1
+      pocket_clicks: 0
+      sponsored_pocket_clicks: 0
+      organic_pocket_clicks: 0
+      pocket_saves: 0
+      sponsored_pocket_saves: 0
+      organic_pocket_saves: 0
+      sponsored_pocket_dismissals: 0
+      organic_pocket_dismissals: 0
+      pocket_thumbs_up: 0
+      pocket_thumbs_down: 0
+      list_card_clicks: 0
+      organic_list_card_clicks: 0
+      sponsored_list_card_clicks: 0
+      list_card_impressions: 0
+      organic_list_card_impressions: 0
+      sponsored_list_card_impressions: 0
+      list_card_saves: 0
+      organic_list_card_saves: 0
+      sponsored_list_card_saves: 0
+      list_card_dismissals: 0
+      organic_list_card_dismissals: 0
+      sponsored_list_card_dismissals: 0
+  wallpaper_interactions:
+    - wallpaper_selected_wallpaper: wallpaper_1
+      wallpaper_clicks: 1
+      wallpaper_clicks_had_previous_wallpaper: 0
+      wallpaper_clicks_first_selected_wallpaper: 1
+      wallpaper_category_clicks: 0
+      wallpaper_highlight_dismissals: 0
+      wallpaper_highlight_cta_clicks: 0
+  weather_interactions:
+    - weather_widget_impressions: 1
+      weather_widget_clicks: 0
+      weather_widget_load_errors: 0
+      weather_widget_change_display_to_detailed: 0
+      weather_widget_change_display_to_simple: 0
+      weather_widget_location_selected: 0
+  topic_selection_interactions:
+    - previous_topics: "[topic_1]"
+      topics: "[topic_1, topic_2]"
+      topic_selection_open: 0
+      topic_selection_dismiss: 0
+      topic_selection_topics_first_saved: 0
+      topic_selection_topics_updated: 1

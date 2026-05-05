@@ -1,0 +1,5 @@
+---
+- client_id: core-id
+  first_seen_date: 2021-02-01
+- client_id: some-other-id
+  first_seen_date: 2019-01-01

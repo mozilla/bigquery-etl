@@ -1,0 +1,89 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Upload date for adspend data compared to previous report
+- mode: NULLABLE
+  name: has_30_days_of_data
+  type: BOOLEAN
+  description: Adspend data contains data for past 30 days
+- mode: NULLABLE
+  name: has_missing_data
+  type: BOOLEAN
+  description: Indicates whether data has been uploaded for this date
+- mode: NULLABLE
+  name: new_row_count
+  type: INTEGER
+  description: Number of new rows added compared to previous report
+- mode: NULLABLE
+  name: client_cost_nonzero_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where client_cost changed from nonzero to
+    different nonzero value compared to previous report
+- mode: NULLABLE
+  name: imps_vendor_nonzero_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where imps_vendor changed from nonzero to
+    different nonzero value compared to previous report
+- mode: NULLABLE
+  name: clicks_vendor_nonzero_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where clicks_vendor changed from nonzero to
+    different nonzero value compared to previous report
+- mode: NULLABLE
+  name: client_cost_null_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where client_cost changed from null to
+    nonzero value compared to previous report
+- mode: NULLABLE
+  name: imps_vendor_null_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where imps_vendor changed from null to
+    nonzero value compared to previous report
+- mode: NULLABLE
+  name: clicks_vendor_null_changed_count
+  type: INTEGER
+  description: |-
+    Number of rows where clicks_vendor changed from null to
+    nonzero value compared to previous report
+- mode: NULLABLE
+  name: client_cost_nonzero_difference
+  type: FLOAT
+  description: |-
+    Sum of change for clicks_vendor value for rows that when from
+    nonzero to different nonzero value (total difference)
+- mode: NULLABLE
+  name: imps_vendor_nonzero_difference
+  type: INTEGER
+  description: |-
+    Sum of change for imps_vendor value for rows that when from
+    nonzero to different nonzero value (total difference)
+- mode: NULLABLE
+  name: clicks_vendor_nonzero_difference
+  type: INTEGER
+  description: |-
+    Sum of change for clicks_vendor value for rows that when from
+    nonzero to different nonzero value (total difference)
+- mode: NULLABLE
+  name: client_cost_null_difference
+  type: FLOAT
+  description: |-
+    Sum of change for client_cost value for rows that when from
+    null to nonzero value (total difference)
+- mode: NULLABLE
+  name: imps_vendor_null_difference
+  type: INTEGER
+  description: |-
+    Sum of change for imps_vendor value for rows that when from
+    null to nonzero value (total difference)
+- mode: NULLABLE
+  name: clicks_vendor_null_difference
+  type: INTEGER
+  description: |-
+    Sum of change for clicks_vendor value for rows that when from
+    null to nonzero value (total difference)

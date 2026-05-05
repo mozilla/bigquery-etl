@@ -1,0 +1,18 @@
+friendly_name: |-
+  Glam Etl - Org Mozilla Fenix Glam Nightly - Clients Histogram Aggregates
+description: |-
+  [DESCRIPTION_MISSING]
+owners:
+- efilho@mozilla.com
+bigquery:
+  range_partitioning:
+    field: sample_id
+    range:
+      start: 0
+      end: 100
+      interval: 1
+  clustering:
+    fields:
+    - app_version
+    - channel
+    - client_id

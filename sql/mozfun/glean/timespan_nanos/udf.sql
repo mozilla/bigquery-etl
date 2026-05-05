@@ -9,34 +9,20 @@ CREATE OR REPLACE FUNCTION glean.timespan_nanos(timespan STRUCT<time_unit STRING
 RETURNS INT64 AS (
   CASE
     timespan.time_unit
-  WHEN
-    'nanosecond'
-  THEN
-    timespan.value
-  WHEN
-    'microsecond'
-  THEN
-    timespan.value * 1000
-  WHEN
-    'millisecond'
-  THEN
-    timespan.value * 1000 * 1000
-  WHEN
-    'second'
-  THEN
-    timespan.value * 1000 * 1000 * 1000
-  WHEN
-    'minute'
-  THEN
-    timespan.value * 1000 * 1000 * 1000 * 60
-  WHEN
-    'hour'
-  THEN
-    timespan.value * 1000 * 1000 * 1000 * 60 * 60
-  WHEN
-    'day'
-  THEN
-    timespan.value * 1000 * 1000 * 1000 * 60 * 60 * 24
+    WHEN 'nanosecond'
+      THEN timespan.value
+    WHEN 'microsecond'
+      THEN timespan.value * 1000
+    WHEN 'millisecond'
+      THEN timespan.value * 1000 * 1000
+    WHEN 'second'
+      THEN timespan.value * 1000 * 1000 * 1000
+    WHEN 'minute'
+      THEN timespan.value * 1000 * 1000 * 1000 * 60
+    WHEN 'hour'
+      THEN timespan.value * 1000 * 1000 * 1000 * 60 * 60
+    WHEN 'day'
+      THEN timespan.value * 1000 * 1000 * 1000 * 60 * 60 * 24
   END
 );
 

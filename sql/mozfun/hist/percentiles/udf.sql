@@ -22,8 +22,7 @@ RETURNS ARRAY<STRUCT<percentile FLOAT64, value INT64>> AS (
       )
     INNER JOIN
       UNNEST(percentiles) AS percentile
-    ON
-      cumulative_fraction >= percentile
+      ON cumulative_fraction >= percentile
     GROUP BY
       percentile
     ORDER BY
@@ -45,7 +44,7 @@ SELECT
                 SELECT
                   STRUCT(v AS key, 1 AS value)
                 FROM
-                  UNNEST(generate_array(1, 100)) AS v
+                  UNNEST(GENERATE_ARRAY(1, 100)) AS v
               ) AS values
             ),
             [.1, .5, .9]

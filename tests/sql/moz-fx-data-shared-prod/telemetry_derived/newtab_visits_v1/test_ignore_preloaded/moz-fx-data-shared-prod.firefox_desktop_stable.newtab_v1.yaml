@@ -1,0 +1,10 @@
+---
+- submission_timestamp: 2021-09-01 22:09:03.243074 UTC
+  client_info:
+    client_id: client_id_1
+  events:
+    - category: newtab
+      name: closed
+      extra:
+        - key: newtab_visit_id
+          value: preloaded_visit_id

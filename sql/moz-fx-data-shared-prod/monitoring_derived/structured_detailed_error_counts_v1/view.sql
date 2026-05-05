@@ -9,14 +9,17 @@ WITH error_examples AS (
     document_version,
     error_type,
     error_message,
-    `moz-fx-data-shared-prod.udf_js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
+    -- As of September 2021, payloads in the structured error table are no longer
+    -- accessible to all users, so we inject NULL to keep the interface here.
+    -- `moz-fx-data-shared-prod.udf_js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
+    CAST(NULL AS STRING) AS sample_payload,
     COUNT(*) AS error_count
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.structured`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
   WHERE
-    submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
+    submission_timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL (28 * 24) HOUR)
   GROUP BY
-    hour,
+    `hour`,
     document_namespace,
     document_type,
     document_version,
@@ -25,7 +28,7 @@ WITH error_examples AS (
 ),
 structured_detailed_hourly_errors AS (
   SELECT
-    hour,
+    `hour`,
     document_namespace,
     document_type,
     document_version,
@@ -35,11 +38,10 @@ structured_detailed_hourly_errors AS (
     error_message,
     sample_payload
   FROM
-    `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v1` structured_hourly_errors
+    `moz-fx-data-shared-prod.monitoring.structured_error_counts` structured_hourly_errors
   FULL OUTER JOIN
     error_examples
-  USING
-    (hour, document_namespace, document_type, document_version, error_type)
+    USING (`hour`, document_namespace, document_type, document_version, error_type)
 ),
 with_ratio AS (
   SELECT

@@ -1,0 +1,49 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Partition field, also corresponds to internal execution date of the job. submision_date - 7 days gives us the same date as the date field.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Date of when the user was first seen.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    Dimension by which the numeric values are grouped.
+
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app unique impressions in the Apple Store.
+
+- mode: NULLABLE
+  name: total_downloads
+  type: INTEGER
+  description: |
+    Total number of downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: first_time_downloads
+  type: INTEGER
+  description: |
+    Number of first time downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: redownloads
+  type: INTEGER
+  description: |
+    Number of redownloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: new_profiles
+  type: INTEGER
+  description: |
+    Number of new profiles on the date.

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """clients_daily_histogram_aggregates query generator."""
 import argparse
-import gzip
 import json
 import sys
 import textwrap
@@ -11,8 +10,10 @@ from time import sleep
 
 from google.cloud import bigquery
 
-sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util import probe_filters
+
+sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"
@@ -20,11 +21,14 @@ PROBE_INFO_SERVICE = (
 
 p = argparse.ArgumentParser()
 p.add_argument(
-    "--agg-type", type=str, help="One of histograms/keyed_histograms", required=True,
+    "--agg-type",
+    type=str,
+    help="One of histograms/keyed_histograms",
+    required=True,
 )
 p.add_argument(
     "--json-output",
-    action='store_true',
+    action="store_true",
     help="Output the result wrapped in json parseable as an XCOM",
 )
 p.add_argument(
@@ -76,7 +80,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 normalized_os as os,
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v5`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
             WHERE DATE(submission_timestamp) = @submission_date
@@ -159,6 +163,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             DATE(submission_timestamp) as submission_date,
             sample_id,
             client_id,
+            profile_group_id,
             normalized_os as os,
             SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
             application.build_id AS app_build_id,
@@ -179,6 +184,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
               submission_date,
               sample_id,
               client_id,
+              profile_group_id,
               os,
               app_version,
               app_build_id,
@@ -199,6 +205,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             submission_date,
             sample_id,
             client_id,
+            profile_group_id,
             os,
             app_version,
             app_build_id,
@@ -209,6 +216,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             GROUP BY
                 sample_id,
                 client_id,
+                profile_group_id,
                 submission_date,
                 os,
                 app_version,
@@ -225,6 +233,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             submission_date,
             sample_id,
             client_id,
+            profile_group_id,
             os,
             app_version,
             app_build_id,
@@ -254,6 +263,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
         GROUP BY
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -317,10 +327,11 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
 
     sql_strings[
         "select_clause"
-    ] = f"""
+    ] = """
         SELECT
           sample_id,
           client_id,
+          profile_group_id,
           submission_date,
           os,
           app_version,
@@ -343,7 +354,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             udf_aggregate_json_sum(value))) AS histogram_aggregates
         FROM aggregated
         GROUP BY
-          1, 2, 3, 4, 5, 6, 7
+          1, 2, 3, 4, 5, 6, 7, 8
 
     """
 
@@ -355,6 +366,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -367,6 +379,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             submission_date,
             sample_id,
             client_id,
+            profile_group_id,
             os,
             app_version,
             app_build_id,
@@ -385,10 +398,11 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
 
     sql_strings[
         "windowed_clause"
-    ] = f"""
+    ] = """
       SELECT
         sample_id,
         client_id,
+        profile_group_id,
         submission_date,
         os,
         app_version,
@@ -401,7 +415,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         ARRAY_AGG(value) AS value
       FROM filtered_aggregates
       GROUP BY
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
     """
 
     return sql_strings
@@ -413,7 +427,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
     main_summary_histograms = {}
 
     client = bigquery.Client(project)
-    table = client.get_table("telemetry_stable.main_v4")
+    table = client.get_table("telemetry_stable.main_v5")
     main_summary_schema = [field.to_api_repr() for field in table.schema]
 
     # Fetch the histograms field
@@ -431,7 +445,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
             if payload_field["name"] == "processes":
                 for processes_field in payload_field["fields"]:
-                    if processes_field["name"] == "content":
+                    if processes_field["name"] in ["content", "gpu"]:
                         process_field = processes_field["name"]
                         for type_field in processes_field["fields"]:
                             if type_field["name"] == histogram_type:
@@ -445,17 +459,20 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
     for histograms_and_process in histograms_field:
         for histogram in histograms_and_process["histograms"].get("fields", {}):
-            histograms_dict = None
             if "name" not in histogram:
                 continue
 
             processes = main_summary_histograms.setdefault(histogram["name"], set())
-            if processes_to_output is None or histograms_and_process["process"] in processes_to_output:
+            if (
+                processes_to_output is None
+                or histograms_and_process["process"] in processes_to_output
+            ):
                 processes.add(histograms_and_process["process"])
             main_summary_histograms[histogram["name"]] = processes
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
-        data = json.loads(gzip.decompress(url.read()).decode())
+        data = json.loads(url.read())
+        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
         histogram_probes = {
             x.replace("histogram/", "").replace(".", "_").lower()
             for x in data.keys()
@@ -466,7 +483,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
         relevant_probes = {
             histogram: {"processes": process}
             for histogram, process in main_summary_histograms.items()
-            if histogram in histogram_probes
+            if histogram in histogram_probes and histogram not in excluded_probes
         }
         for key in data.keys():
             if not key.startswith("histogram/"):
@@ -481,6 +498,16 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
             data_details = data[key]["history"][channel][0]["details"]
             probe = key.replace("histogram/", "").replace(".", "_").lower()
+
+            # Some keyed GPU metrics aren't correctly flagged as type
+            # "keyed_histograms", so we filter those out here.
+            if processes_to_output is None or "gpu" in processes_to_output:
+                if data_details["keyed"] == (histogram_type == "histograms"):
+                    try:
+                        del relevant_probes[probe]
+                    except KeyError:
+                        pass
+                    continue
 
             if probe in relevant_probes:
                 relevant_probes[probe]["type"] = data_details["kind"]
@@ -503,14 +530,16 @@ def main(argv, out=print):
     sql_string = ""
 
     if opts["agg_type"] in ("histograms", "keyed_histograms"):
-        probes_and_buckets = get_histogram_probes_and_buckets(opts["agg_type"], opts["processes"])
+        probes_and_buckets = get_histogram_probes_and_buckets(
+            opts["agg_type"], opts["processes"]
+        )
         sql_string = get_histogram_probes_sql_strings(
             probes_and_buckets, opts["agg_type"]
         )
     else:
         raise ValueError("agg-type must be one of histograms, keyed_histograms")
 
-    sleep(opts['wait_seconds'])
+    sleep(opts["wait_seconds"])
     out(
         reformat(
             generate_sql(

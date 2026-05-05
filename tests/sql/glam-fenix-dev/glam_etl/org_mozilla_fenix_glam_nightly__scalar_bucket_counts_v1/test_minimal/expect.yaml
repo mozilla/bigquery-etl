@@ -1,240 +1,112 @@
 - agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
   app_build_id: '*'
   app_version: 84
-  bucket: '4.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: '*'
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: '*'
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '4.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
+  count: 900
   key: ''
   metric: places_manager_write_query_count
   metric_type: counter
   os: '*'
   ping_type: '*'
-  range_max: 3.0
+  range_max: 2.0
   range_min: 2.0
 - agg_type: histogram
   app_build_id: '*'
   app_version: 84
-  bucket: '4.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '8.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket: '8.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: metrics
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '8.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
+  count: 900
   key: ''
   metric: places_manager_write_query_count
   metric_type: counter
   os: '*'
   ping_type: metrics
-  range_max: 3.0
+  range_max: 2.0
   range_min: 2.0
 - agg_type: histogram
   app_build_id: '*'
   app_version: 84
-  bucket: '8.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
-  count: 1
+  count: 900
+  key: ''
+  metric: places_manager_write_query_count
+  metric_type: counter
+  os: Android
+  ping_type: '*'
+  range_max: 2.0
+  range_min: 2.0
+- agg_type: histogram
+  app_build_id: '*'
+  app_version: 84
+  bucket_count: 100
+  channel: '*'
+  client_agg_type: count
+  count: 900
+  key: ''
+  metric: places_manager_write_query_count
+  metric_type: counter
+  os: Android
+  ping_type: metrics
+  range_max: 2.0
+  range_min: 2.0
+- agg_type: histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  bucket_count: 100
+  channel: '*'
+  client_agg_type: count
+  count: 900
+  key: ''
+  metric: places_manager_write_query_count
+  metric_type: counter
+  os: '*'
+  ping_type: '*'
+  range_max: 2.0
+  range_min: 2.0
+- agg_type: histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  bucket_count: 100
+  channel: '*'
+  client_agg_type: count
+  count: 900
   key: ''
   metric: places_manager_write_query_count
   metric_type: counter
   os: '*'
   ping_type: metrics
-  range_max: 3.0
+  range_max: 2.0
   range_min: 2.0
 - agg_type: histogram
   app_build_id: '2020100100'
   app_version: 84
-  bucket: '8.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
-  count: 1
+  count: 900
   key: ''
   metric: places_manager_write_query_count
   metric_type: counter
   os: Android
   ping_type: '*'
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket: '8.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: Android
-  ping_type: '*'
-  range_max: 3.0
+  range_max: 2.0
   range_min: 2.0
 - agg_type: histogram
   app_build_id: '2020100100'
   app_version: 84
-  bucket: '8.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
-  count: 1
+  count: 900
   key: ''
   metric: places_manager_write_query_count
   metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 3.0
-  range_min: 2.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket: '8.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 3.0
+  os: Android
+  ping_type: metrics
+  range_max: 2.0
   range_min: 2.0

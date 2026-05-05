@@ -1,0 +1,22 @@
+friendly_name: Fog Decision Support Percentiles
+description: |-
+  Calculates several important metrics for FOG (Firefox on Glean) decision
+  support
+
+  Percentiles, means and medians are calculated for each release channel
+  and each ping source
+
+  see: https://bugzilla.mozilla.org/show_bug.cgi?id=1761567
+owners:
+- pmcmanis@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_fog_decision_support
+  task_name: fog_decision_support_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

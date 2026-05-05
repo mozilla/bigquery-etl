@@ -29,9 +29,21 @@ all_combos AS (
     COALESCE(combo.os, table.os) AS os,
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1 table
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1` table
   CROSS JOIN
     static_combos combo
+),
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    all_combos
+  GROUP BY
+    1,
+    2
+  HAVING
+    COUNT(DISTINCT client_id) > 800
 ),
 normalized_histograms AS (
   SELECT
@@ -70,6 +82,9 @@ unnested AS (
     normalized_histograms,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
+  INNER JOIN
+    build_ids
+    USING (app_build_id, channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the
@@ -82,6 +97,14 @@ distribution_metadata AS (
   FROM
     UNNEST(
       [
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "search_terms_group_size_distribution" AS metric,
+          1 AS range_min,
+          4 AS range_max,
+          5 AS bucket_count,
+          "linear" AS histogram_type
+        ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "geckoview_document_site_origins" AS metric,
@@ -185,6 +208,14 @@ distribution_metadata AS (
           100 AS range_max,
           20 AS bucket_count,
           "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "performance_clone_deserialize_items" AS metric,
+          1 AS range_min,
+          2147483646 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
         )
       ]
     )
@@ -242,5 +273,4 @@ FROM
   records
 LEFT OUTER JOIN
   distribution_metadata
-USING
-  (metric_type, metric)
+  USING (metric_type, metric)

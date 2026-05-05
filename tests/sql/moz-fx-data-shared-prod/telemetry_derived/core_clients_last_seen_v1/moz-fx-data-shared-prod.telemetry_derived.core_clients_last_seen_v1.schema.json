@@ -1,0 +1,47 @@
+[
+  {
+    "name": "days_seen_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_created_profile_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "submission_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "client_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "profile_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "app_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "first_seen_date",
+    "type": "DATE"
+  }
+]

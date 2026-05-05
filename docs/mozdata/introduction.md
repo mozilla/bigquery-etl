@@ -1,2 +1,0 @@
-`mozdata` is the main GCP project that includes datasets for user analysis as of February 2021. This project is filled with views that reference underlying tables in `moz-fx-data-shared-prod`. Users can use data tools like [STMO](https://sql.telemetry.mozilla.org/) to issue queries in this project.
-For more context, see the [Projects, Datasets, and Tables in BigQuery](https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html#projects-datasets-and-tables-in-bigquery) article on [docs.telemetry.mozilla.org.](https://docs.telemetry.mozilla.org/)

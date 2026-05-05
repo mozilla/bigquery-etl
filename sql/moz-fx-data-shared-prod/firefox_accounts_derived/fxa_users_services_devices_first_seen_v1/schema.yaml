@@ -1,0 +1,131 @@
+fields:
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: TIMESTAMP
+  description: |
+    Datetime value when the user, service, device_id
+    was seen for the first time.
+
+- mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: |
+    The flow associated with the first seen session.
+    The flow identifier is a hash value representing
+    a registration and login sessions.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    Unique identifier of a registered user.
+
+- mode: NULLABLE
+  name: service
+  type: STRING
+  description: |
+    The service identifier. For Sync it may be empty or sync.
+    For OAuth reliers it is their hex client id.
+    A service corresponds to a specific application,
+    for example: "sync".
+
+- mode: NULLABLE
+  name: device_id
+  type: STRING
+  description: |
+    This DOES NOT correspond to a physical device! Everytime a user logs out and back
+    in will have a different value for device_id. This should be treated more like
+    a session identified (in our case, session does not expire).
+    There are two ways in which device_id field value gets populated/generated:
+    1. If the current flow session does not have a device_id associated with it we set
+    it to the device_id/deviceId value found inside urlParams object.
+    2. If during the above process we find urlParams object to not have this attribute set,
+    then we use uuid.v4() to generate a new unique value and assign it to deviceId flow session.
+    _devide_id generation: https://github.com/mozilla/fxa/blob/main/packages/fxa-content-server/app/scripts/models/flow.js#L61-L69_
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: |
+    Type of the FxA event recorded.
+    `fxa_login - complete' and 'fxa_reg - complete`
+    are the events used to create this table.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    Name of the operating system the device was using.
+    E.g. Android
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    2 char string representing the country where the device was located.
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: |
+    Language settings used by the device.
+
+- mode: NULLABLE
+  name: entrypoint
+  type: STRING
+  description: |
+    The entrypoint of the flow session.
+    How a user begins their registration or login flow.
+    Typically a UI touchpoint like "preferences".
+
+- mode: NULLABLE
+  name: utm_term
+  type: STRING
+  description: |
+    Marketing campaign search term
+    for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_medium
+  type: STRING
+  description: |
+    Marketing campaign medium for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_source
+  type: STRING
+  description: |
+    Marketing campaign source for
+    the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_campaign
+  type: STRING
+  description: |
+    Marketing campaign identifier
+    for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_content
+  type: STRING
+  description: |
+    Marketing campaign content identifier
+    for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.

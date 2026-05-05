@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Run a SQL query.
-
-exec python3 -m bigquery_etl.run_query "$@"

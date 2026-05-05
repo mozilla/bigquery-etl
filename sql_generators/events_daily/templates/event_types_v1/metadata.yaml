@@ -1,0 +1,15 @@
+---
+friendly_name: {{ name }} Event Types
+description: >
+  A materialized view of the most recent day of event_types data
+owners:
+  - akomar@mozilla.com
+labels:
+  application: {{ dataset }}
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: {{ dag_name }}
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
+

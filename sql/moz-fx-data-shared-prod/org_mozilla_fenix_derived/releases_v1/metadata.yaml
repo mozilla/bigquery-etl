@@ -1,0 +1,18 @@
+friendly_name: Releases
+description: |-
+  Fenix release information imported from
+  https://product-details.mozilla.org/1.0/mobile_android.json
+
+  For more context, see
+  https://wiki.mozilla.org/Release_Management/Product_details
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  table_type: aggregate
+  shredder_mitigation: false
+scheduling:
+  dag_name: bqetl_releases
+monitoring:
+  enabled: true
+  collection: Test

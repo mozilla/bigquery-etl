@@ -1,0 +1,97 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The day on which the search occurred (Pacific Time).
+- name: site_url
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    For domain properties, this will be `sc-domain:` followed by the domain name.
+    For URL-prefix properties, it will be the full URL of the property definition.
+- name: site_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: Domain name of the site.
+- name: page_url
+  type: STRING
+  mode: NULLABLE
+  description: The final page URL linked by a search result after any skip redirects.
+- name: page_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: Domain name of the page URL.
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: The path part of the page URL.
+- name: localized_site_code
+  type: STRING
+  mode: NULLABLE
+  description: Localized site code such as `en-US` or `de` found in the first segment of the page URL path (if any).
+- name: localized_site
+  type: STRING
+  mode: NULLABLE
+  description: Description of the localized site language and/or country based on `localized_site_code` (if any).
+- name: localized_site_language_code
+  type: STRING
+  mode: NULLABLE
+  description: Localized site language code in ISO-639-alpha-2 format found in the first segment of the page URL path (if any).
+- name: localized_site_language
+  type: STRING
+  mode: NULLABLE
+  description: Localized site language based on `localized_site_language_code` (if any).
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: The search query.
+- name: query_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of search query:
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
+      * Unknown: Query couldn't be classified.
+- name: search_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Where the link was seen by the user:
+      * Web: In Google Search's default "All" tab.
+      * Image: In Google Search's "Images" tab.
+      * Video: In Google Search's "Videos" tab.
+      * News: In Google Search's "News" tab.
+- name: user_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the user was searching, in ISO-3166-1-alpha-3 format.
+- name: user_country
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the user was searching.
+- name: user_region
+  type: STRING
+  mode: NULLABLE
+  description: Region from which the user was searching.
+- name: user_subregion
+  type: STRING
+  mode: NULLABLE
+  description: Sub-region from which the user was searching.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The type of device on which the user was searching: Desktop, Mobile, or Tablet.
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times that search results with a link to the page were shown to a user.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times a user clicked a search result link to the page.
+- name: average_position
+  type: FLOAT
+  mode: NULLABLE
+  description: The average position of the page in the search results, where `1` is the topmost position.

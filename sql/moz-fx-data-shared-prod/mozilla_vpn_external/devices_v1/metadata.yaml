@@ -7,12 +7,13 @@ description: >
   made are not destructive, except in the case of self-serve
   data deletion.
 owners:
-  - dthorn@mozilla.com
+  - phlee@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
-  dag_name: bqetl_mozilla_vpn
+  dag_name: bqetl_subplat
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
@@ -23,6 +24,28 @@ scheduling:
     # at runtime using function calls like CONCAT or FORMAT, so the
     # entire value must be provided as a STRING query parameter to
     # handle specific dates:
-    - "external_database_query:STRING:SELECT * FROM devices
-  WHERE DATE(updated_at) = DATE '{{ds}}'"
-  referenced_tables: []
+    - >-
+      external_database_query:STRING:
+      SELECT
+        id,
+        user_id,
+        name,
+        mullvad_id,
+        pubkey,
+        ipv4_address,
+        ipv6_address,
+        created_at,
+        updated_at,
+        uid,
+        platform,
+        useragent,
+        unique_id
+      FROM devices
+      WHERE DATE(updated_at) = DATE '{{ds}}'
+bigquery:
+  # Use clustering rather than partitioning because the whole table is being overwritten every time
+  # and BigQuery has a limit of 30,000 partition modifications per column-partitioned table per day.
+  time_partitioning: null
+  clustering:
+    fields:
+      - updated_at

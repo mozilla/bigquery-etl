@@ -1,4 +1,5 @@
 """Testing data for query."""
+
 from pathlib import Path
 
 import yaml

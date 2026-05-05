@@ -1,0 +1,37 @@
+# This file specifies metrics for metrics_clients_daily and
+# metrics_clients_last_seen tables per application.
+#
+# Metrics can't be removed from this file once they get propagated
+# to BigQuery tables.
+fenix:
+  uri_count:
+    sql: "SUM(metrics.counter.events_normal_and_private_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.boolean.metrics_default_browser)"
+  is_large_device:
+    sql: "LOGICAL_OR(metrics.boolean.metrics_is_large_device)"
+firefox_ios:
+  uri_count:
+    sql: "SUM(metrics.counter.tabs_normal_and_private_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"
+focus_ios:
+  uri_count:
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"
+focus_android:
+  uri_count:
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.boolean.browser_is_default)"
+klar_ios:
+  uri_count:
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"

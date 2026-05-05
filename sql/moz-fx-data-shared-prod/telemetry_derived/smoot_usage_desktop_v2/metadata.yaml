@@ -1,11 +1,26 @@
----
 friendly_name: Smoot Usage Desktop
-description: Usage metrics for desktop clients.
+description: |-
+  Usage metrics for desktop clients.
 owners:
-  - jklukas@mozilla.com
+- jklukas@mozilla.com
 labels:
   application: desktop
   incremental: true
   schedule: daily
+  table_type: aggregate
+  dag: bqetl_gud
+  owner1: jklukas
 scheduling:
   dag_name: bqetl_gud
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - usage
+    - id_bucket
+require_column_descriptions: false

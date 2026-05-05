@@ -1,0 +1,13 @@
+---
+friendly_name: Sanitization Job Languages
+description: |-
+  How many search terms got each language tag, by job.
+
+  We use this + other metrics to assess
+  whether the constituency using our search features is changing.
+owners:
+  - ctroy@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated

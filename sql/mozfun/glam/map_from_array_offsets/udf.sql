@@ -36,9 +36,9 @@ SELECT
       [25.0, 50.0, 75.0],
       (
         SELECT
-          array_agg(CAST(y * 1.0 AS FLOAT64) ORDER BY i)
+          ARRAY_AGG(CAST(y * 1.0 AS FLOAT64) ORDER BY i)
         FROM
-          UNNEST((SELECT approx_quantiles(x, 100) FROM UNNEST([1, 2, 3]) AS x)) AS y
+          UNNEST((SELECT APPROX_QUANTILES(x, 100) FROM UNNEST([1, 2, 3]) AS x)) AS y
           WITH OFFSET i
       )
     )

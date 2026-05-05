@@ -1,0 +1,41 @@
+fields: !include-fields
+  file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+  field_replacements:
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+    field: subscription
+    new_fields: !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider
+        new_description: |-
+          Provider of the subscription ("Stripe").
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.payment_provider
+        append_description: |-
+          For Stripe subscriptions this will be "Stripe" or "PayPal".
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_subscription_item_id
+        new_description: |-
+          Provider subscription item ID.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_customer_id
+        new_description: |-
+          Provider customer ID.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.mozilla_account_id
+        new_description: |-
+          ID of the Mozilla Account associated with the subscription (if any) as a hexadecimal string.
+          This may be missing for some subscriptions, particularly older subscriptions when we were only recording hashed Mozilla Account IDs.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_plan_id
+        append_description: |-
+          For Stripe subscriptions this will be the plan/price ID.

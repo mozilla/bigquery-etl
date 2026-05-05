@@ -1,0 +1,109 @@
+fields:
+- description:
+  mode: NULLABLE
+  name: dag_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: run_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: task_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: state
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: try_number
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: start_date
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: end_date
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: duration
+  type: FLOAT
+- description:
+  mode: NULLABLE
+  name: job_id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: executor_config
+  type: BYTES
+- description:
+  mode: NULLABLE
+  name: external_executor_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: hostname
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: max_tries
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: next_kwargs
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: next_method
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: operator
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: pid
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: pool
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: pool_slots
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: priority_weight
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: queue
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: queued_by_job_id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: queued_dttm
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: trigger_id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: trigger_timeout
+  type: DATETIME
+- description:
+  mode: NULLABLE
+  name: unixname
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: map_index
+  type: INTEGER

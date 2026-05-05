@@ -3,7 +3,7 @@ WITH base AS (
     *,
     EXTRACT(YEAR FROM submission_date) AS submission_year,
   FROM
-    telemetry_derived.firefox_nondesktop_exact_mau28_v1
+    `moz-fx-data-shared-prod.telemetry_derived.firefox_nondesktop_exact_mau28_v1`
   WHERE
     -- We completely recreate this table every night since the source table
     -- is small and this query windows over a large time range.
@@ -36,7 +36,7 @@ nested_counts_by_slice_year_sparse AS (
     campaign,
     country,
     distribution_id,
-    ARRAY_AGG(STRUCT(submission_date, dau, wau, mau)) AS counts_array,
+    ARRAY_AGG(STRUCT(submission_date, dau, wau, mau, new_profiles)) AS counts_array,
   FROM
     base
   GROUP BY
@@ -56,7 +56,7 @@ nested_counts_by_slice_year_dense AS (
     * REPLACE (
       ARRAY(
         SELECT
-          STRUCT(submission_date, c.dau, c.mau, c.wau)
+          STRUCT(submission_date, c.dau, c.mau, c.wau, c.new_profiles)
         FROM
           UNNEST(counts_array) AS c
         FULL JOIN
@@ -70,8 +70,7 @@ nested_counts_by_slice_year_dense AS (
             WHERE
               submission_year = nested_counts_by_slice_year_sparse.submission_year
           )
-        USING
-          (submission_date)
+          USING (submission_date)
       ) AS counts_array
     )
   FROM
@@ -92,7 +91,13 @@ exploded AS (
 --
 -- Finally, we can do our windowed SUM to materialize CDOU.
 SELECT
-  SUM(dau) OVER (
+  SUM(dau) OVER year_slice AS cdou,
+  SUM(new_profiles) OVER (year_slice) AS cumulative_new_profiles,
+  *
+FROM
+  exploded
+WINDOW
+  year_slice AS (
     PARTITION BY
       submission_year,
       id_bucket,
@@ -103,7 +108,4 @@ SELECT
       distribution_id
     ORDER BY
       submission_date
-  ) AS cdou,
-  *
-FROM
-  exploded
+  )

@@ -3,21 +3,21 @@
 CREATE OR REPLACE FUNCTION udf.array_slice(arr ANY TYPE, start_index INT64, end_index INT64) AS (
   ARRAY(
     SELECT
-      * EXCEPT (offset)
+      * EXCEPT (offset_)
     FROM
       UNNEST(arr)
-      WITH OFFSET
+      WITH OFFSET AS offset_
     WHERE
-      offset
+      offset_
       BETWEEN start_index
       AND end_index
     ORDER BY
-      offset
+      offset_
   )
 );
 
 -- Test
 SELECT
-  assert.array_equals([1, 2, 3], udf.array_slice([1, 2, 3], 0, 2)),
-  assert.array_equals([1, 2], udf.array_slice([1, 2, 3], 0, 1)),
-  assert.array_equals(['2'], udf.array_slice(['1', '2', '3'], 1, 1)),
+  mozfun.assert.array_equals([1, 2, 3], udf.array_slice([1, 2, 3], 0, 2)),
+  mozfun.assert.array_equals([1, 2], udf.array_slice([1, 2, 3], 0, 1)),
+  mozfun.assert.array_equals(['2'], udf.array_slice(['1', '2', '3'], 1, 1)),

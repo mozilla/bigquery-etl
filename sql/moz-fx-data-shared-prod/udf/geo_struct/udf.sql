@@ -29,11 +29,11 @@ CREATE OR REPLACE FUNCTION udf.geo_struct(
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     STRUCT('a' AS country, 'b' AS city, 'c' AS geo_subdivision1, 'd' AS geo_subdivision2),
     udf.geo_struct('a', 'b', 'c', 'd')
   ),
-  assert.null(udf.geo_struct('??', 'b', 'c', 'd')),
-  assert.null(udf.geo_struct('a', '??', 'c', 'd').city),
-  assert.null(udf.geo_struct('a', 'b', '??', 'd').geo_subdivision1),
-  assert.null(udf.geo_struct('a', 'b', 'c', '??').geo_subdivision2)
+  mozfun.assert.null(udf.geo_struct('??', 'b', 'c', 'd')),
+  mozfun.assert.null(udf.geo_struct('a', '??', 'c', 'd').city),
+  mozfun.assert.null(udf.geo_struct('a', 'b', '??', 'd').geo_subdivision1),
+  mozfun.assert.null(udf.geo_struct('a', 'b', 'c', '??').geo_subdivision2)

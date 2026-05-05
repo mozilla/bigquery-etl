@@ -1,0 +1,15 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date for which deletion request pings were counted
+
+- mode: NULLABLE
+  name: dataset_id
+  type: STRING
+  description: Dataset for which deletion request pings were counted
+
+- mode: NULLABLE
+  name: num_rows
+  type: INTEGER
+  description: Total number of deletion request pings

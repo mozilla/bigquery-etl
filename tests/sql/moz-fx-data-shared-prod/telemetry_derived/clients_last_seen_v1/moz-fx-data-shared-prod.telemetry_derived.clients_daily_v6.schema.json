@@ -1,0 +1,80 @@
+[
+  {
+    "name": "submission_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "time_partitioning_field"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sample_id",
+    "type": "INT64",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "active_hours_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "devtools_toolbox_opened_count_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "profile_creation_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "attribution",
+    "type": "RECORD",
+    "mode": "REQUIRED",
+    "fields": [
+      {
+        "name": "source",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      }
+    ]
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_sum",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
+    "name": "fxa_configured",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "app_display_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  }
+]

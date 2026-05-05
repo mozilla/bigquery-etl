@@ -1,0 +1,28 @@
+friendly_name: Event Aggregates Check
+description: |-
+  This query checks whether there are any empty partitions in
+  contextual_services_derived.event_aggregates_check_v1 which might
+  indicate that data is missing.
+owners:
+- wstuckey@mozilla.com
+email:
+- rburwei@mozilla.com
+- ctroy@mozilla.com
+- wstuckey@mozilla.com
+- skahmann@mozilla.com
+- xluo@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+  destination_table: null
+  query_file_path:
+    sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_check_v1/query.sql
+  parameters: ['submission_date:DATE:{{ds}}']
+  depends_on:
+  - task_id: contextual_services_derived__event_aggregates__v1
+    dag_name: bqetl_ctxsvc_derived
+  - task_id: contextual_services_derived__event_aggregates_spons_tiles__v1
+    dag_name: bqetl_ctxsvc_derived
+  - task_id: contextual_services_derived__event_aggregates_suggest__v1
+    dag_name: bqetl_ctxsvc_derived

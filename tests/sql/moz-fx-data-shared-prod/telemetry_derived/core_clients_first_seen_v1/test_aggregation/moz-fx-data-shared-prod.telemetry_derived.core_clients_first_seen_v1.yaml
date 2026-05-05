@@ -1,0 +1,5 @@
+---
+- client_id: existing-instance
+  first_seen_date: 2021-03-01
+- client_id: existing-instance-with-new-ping
+  first_seen_date: 2021-03-01

@@ -1,0 +1,25 @@
+fields:
+- description: Airflow user id
+  mode: NULLABLE
+  name: user_id
+  type: INTEGER
+- description: Airflow role id
+  mode: NULLABLE
+  name: role_id
+  type: INTEGER
+- description: Indicates if a user is active
+  mode: NULLABLE
+  name: active
+  type: BOOLEAN
+- description: Datetime when a user was created
+  mode: NULLABLE
+  name: created_on
+  type: DATETIME
+- description: Datetime when a user was last modified
+  mode: NULLABLE
+  name: changed_on
+  type: DATETIME
+- description: Datetime when a user last logged in
+  mode: NULLABLE
+  name: last_login
+  type: DATETIME

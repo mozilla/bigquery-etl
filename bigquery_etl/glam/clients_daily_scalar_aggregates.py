@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
+
 import argparse
 import sys
-from typing import Dict, List
+from collections import defaultdict
+from typing import Dict, List, Tuple
 
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
+from .client_side_sampled_metrics import get as get_sampled_metrics
 from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(
@@ -30,16 +34,22 @@ def render_main(**kwargs):
     return reformat(main_sql.render(**kwargs))
 
 
-def get_labeled_metrics_sql(
-    probes: Dict[str, List[str]], value_type: str = "INT64"
-) -> str:
+def get_labeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     """Get the SQL for labeled scalar metrics."""
     probes_struct = []
     for metric_type, _probes in probes.items():
         for probe in _probes:
-            probes_struct.append(
-                f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
-            )
+            if metric_type == "labeled_boolean":
+                probes_struct.append(
+                    (
+                        f"('{probe}', '{metric_type}', "
+                        f"cast_labeled_boolean(metrics.{metric_type}.{probe}))"
+                    )
+                )
+            else:
+                probes_struct.append(
+                    f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
+                )
 
     probes_struct.sort()
     probes_arr = ",\n".join(probes_struct)
@@ -72,7 +82,7 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
                 probe_structs.append(
                     (
                         f"('{probe}', '{metric_type}', '', '{agg_func}', "
-                        f"{agg_func}(CAST(metrics.{metric_type}.{probe}{suffix} AS INT64)))"
+                        f"{agg_func}(CAST(metrics.{metric_type}.{probe}{suffix} AS NUMERIC)))"
                     )
                 )
             probe_structs.append(
@@ -85,20 +95,28 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     return probes_arr
 
 
-def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
+def get_scalar_metrics(
+    schema: Dict, scalar_type: str
+) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all scalar probes in a Glean table.
 
     Metric types are defined in the Glean documentation found here:
     https://mozilla.github.io/glean/book/user/metrics/index.html
     """
-    assert scalar_type in ("unlabeled", "labeled")
+    assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
-        "labeled": ["labeled_counter"],
+        "labeled": ["labeled_counter", "labeled_boolean"],
+        "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {
         metric_type: [] for metric_type in metric_type_set[scalar_type]
     }
+    excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
+
+    # Metrics that are already sampled
+    sampled_metrics = get_sampled_metrics(metric_type_set[scalar_type])
+    found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -110,8 +128,12 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
-                scalars[metric_type].append(field["name"])
-    return scalars
+                if field["name"] in sampled_metrics.get(metric_type, []):
+                    found_sampled_metrics[metric_type].append(field["name"])
+                elif field["name"] not in excluded_metrics:
+                    scalars[metric_type].append(field["name"])
+
+    return scalars, found_sampled_metrics
 
 
 def main():
@@ -123,6 +145,11 @@ def main():
         help="Generate a query without parameters",
     )
     parser.add_argument("--source-table", type=str, help="Name of Glean table")
+    parser.add_argument(
+        "--product",
+        type=str,
+        default="org_mozilla_fenix",
+    )
     args = parser.parse_args()
 
     # If set to 1 day, then runs of copy_deduplicate may not be done yet
@@ -139,11 +166,25 @@ def main():
     )
 
     schema = get_schema(args.source_table)
-    unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
-    labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    unlabeled_metric_names, unlabeled_sampled_metric_names = get_scalar_metrics(
+        schema, "unlabeled"
+    )
+    labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
+    dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
+    dual_labeled_metric_names["dual_labeled_counter"] = [
+        name
+        for name in dual_labeled_metric_names["dual_labeled_counter"]
+        if name not in metrics_with_too_many_labels
+    ]
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
-
+    dual_labeled_metrics = get_labeled_metrics_sql(dual_labeled_metric_names).strip()
+    client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
+    if args.product == "firefox_desktop":
+        client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
+            unlabeled_sampled_metric_names
+        ).strip()
     if not unlabeled_metrics and not labeled_metrics:
         print(header)
         print("-- Empty query: no probes found!")
@@ -156,7 +197,13 @@ def main():
             attributes=ATTRIBUTES,
             unlabeled_metrics=unlabeled_metrics,
             labeled_metrics=labeled_metrics,
+            dual_labeled_metrics=dual_labeled_metrics,
             ping_type=ping_type_from_table(args.source_table),
+            client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
+            client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],
+            client_sampled_channel="release",
+            client_sampled_os="Windows",
+            client_sampled_max_sample_id=100,
         )
     )
 

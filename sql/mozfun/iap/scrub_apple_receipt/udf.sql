@@ -1,72 +1,65 @@
 CREATE OR REPLACE FUNCTION iap.scrub_apple_receipt(apple_receipt ANY TYPE)
 RETURNS STRUCT<
   environment STRING,
-  active_periods ARRAY<STRUCT<start_date DATE, end_date DATE>>
+  active_period STRUCT<
+    -- *_date fields deprecated in favor of TIMESTAMP fields
+    start_date DATE,
+    end_date DATE,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    `interval` STRING,
+    interval_count INT64
+  >,
+  trial_period STRUCT<start_time TIMESTAMP, end_time TIMESTAMP>
 > AS (
   STRUCT(
     apple_receipt.environment,
-    -- extract a list of start and end dates that doesn't overlap or repeat
-    ARRAY(
-      WITH exploded AS (
-        SELECT DISTINCT
-          date,
-          IF(
-            -- TRUE when date - 1 is missing
-            ANY_VALUE(date) OVER (
-              ORDER BY
-                UNIX_DATE(date)
-              RANGE BETWEEN
-                1 PRECEDING
-                AND 1 PRECEDING
-            ) IS NULL,
-            date,
-            NULL
-          ) AS start_date,
-          IF(
-            -- TRUE when date + 1 is missing
-            ANY_VALUE(date) OVER (
-              ORDER BY
-                UNIX_DATE(date)
-              RANGE BETWEEN
-                1 FOLLOWING
-                AND 1 FOLLOWING
-            ) IS NULL,
-            date,
-            NULL
-          ) AS end_date,
-        FROM
-          UNNEST(apple_receipt.receipt.in_app)
-        CROSS JOIN
-          UNNEST(
-            GENERATE_DATE_ARRAY(
-              DATE(TIMESTAMP_MILLIS(SAFE_CAST(purchase_date_ms AS INT64))),
-              DATE(TIMESTAMP_MILLIS(SAFE_CAST(expires_date_ms AS INT64)))
-            )
-          ) AS date
-        WHERE
-          is_trial_period = "false"
-      ),
-      matched AS (
-        SELECT
-          start_date,
-          -- MIN(end_date) where end_date >= start_date
-          MIN(end_date) OVER (
-            ORDER BY
-              date
-            ROWS BETWEEN
-              CURRENT ROW
-              AND UNBOUNDED FOLLOWING
-          ) AS end_date,
-        FROM
-          exploded
-      )
+    (
       SELECT AS STRUCT
-        *
+        DATE(TIMESTAMP_MILLIS(original_purchase_date_ms)) AS start_date,
+        DATE(TIMESTAMP_MILLIS(expires_date_ms)) AS end_date,
+        TIMESTAMP_MILLIS(original_purchase_date_ms) AS start_time,
+        TIMESTAMP_MILLIS(expires_date_ms) AS end_time,
+        iap.derive_apple_subscription_interval(
+          DATETIME(TIMESTAMP_MILLIS(purchase_date_ms), "America/Los_Angeles"),
+          DATETIME(TIMESTAMP_MILLIS(expires_date_ms), "America/Los_Angeles")
+        ).*,
       FROM
-        matched
+        UNNEST(apple_receipt.latest_receipt_info)
       WHERE
-        start_date IS NOT NULL
-    ) AS active_periods
+        is_trial_period = "false"
+      ORDER BY
+        expires_date_ms DESC
+      LIMIT
+        1
+    ) AS active_period,
+    (
+      SELECT AS STRUCT
+        TIMESTAMP_MILLIS(purchase_date_ms) AS start_time,
+        TIMESTAMP_MILLIS(expires_date_ms) AS end_time
+      FROM
+        (
+          SELECT
+            purchase_date_ms,
+            expires_date_ms
+          FROM
+            UNNEST(apple_receipt.latest_receipt_info)
+          WHERE
+            is_trial_period = "true"
+          UNION ALL
+          SELECT
+            purchase_date_ms,
+            expires_date_ms
+          FROM
+            UNNEST(apple_receipt.receipt.in_app)
+          WHERE
+            is_trial_period = "true"
+        )
+      ORDER BY
+        expires_date_ms DESC
+      LIMIT
+        1
+    ) AS trial_period
   )
 );
 
@@ -74,41 +67,36 @@ SELECT
   assert.json_equals(
     STRUCT(
       "Production" AS environment,
-      [
-        STRUCT(DATE "2020-01-01" AS start_date, "2020-01-03" AS end_date),
-        ("2020-01-05", "2020-01-05"),
-        ("2020-01-07", "2020-01-08")
-      ] AS active_periods
+      STRUCT(
+        DATE "2020-01-01" AS start_date,
+        DATE "2020-01-08" AS end_date,
+        TIMESTAMP "2020-01-01" AS start_time,
+        TIMESTAMP "2020-01-08" AS end_time,
+        "day" AS `interval`,
+        1 AS interval_count
+      ) AS active_period,
+      STRUCT(
+        TIMESTAMP "2020-01-01" AS start_time,
+        TIMESTAMP "2020-01-07" AS end_time
+      ) AS trial_period
     ),
     iap.scrub_apple_receipt(
       STRUCT(
         "Production" AS environment,
+        [
+          STRUCT(
+            UNIX_MILLIS(TIMESTAMP "2020-01-01") AS original_purchase_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-07") AS purchase_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-08") AS expires_date_ms,
+            "false" AS is_trial_period
+          )
+        ] AS latest_receipt_info,
         STRUCT(
           [
             STRUCT(
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-01") AS STRING) AS purchase_date_ms,
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-01T8:00:00") AS STRING) AS expires_date_ms,
-              "false" AS is_trial_period
-            ),
-            (
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-01T12:00:00") AS STRING),
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-01T20:00:00") AS STRING),
-              "false"
-            ),
-            (
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-02") AS STRING),
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-03") AS STRING),
-              "false"
-            ),
-            (
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-05") AS STRING),
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-05") AS STRING),
-              "false"
-            ),
-            (
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-07") AS STRING),
-              CAST(UNIX_MILLIS(TIMESTAMP "2020-01-08") AS STRING),
-              "false"
+              UNIX_MILLIS(TIMESTAMP "2020-01-01") AS purchase_date_ms,
+              UNIX_MILLIS(TIMESTAMP "2020-01-07") AS expires_date_ms,
+              "true" AS is_trial_period
             )
           ] AS in_app
         ) AS receipt

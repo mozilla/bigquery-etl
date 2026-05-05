@@ -1,0 +1,9 @@
+friendly_name: Releases
+description: |-
+  Firefox release information imported from
+  https://product-details.mozilla.org/1.0/firefox.json
+
+  For more context, see
+  https://wiki.mozilla.org/Release_Management/Product_details
+owners:
+- ascholtz@mozilla.com

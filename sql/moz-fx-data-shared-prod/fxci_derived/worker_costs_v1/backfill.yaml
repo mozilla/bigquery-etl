@@ -1,0 +1,8 @@
+2024-10-15:
+  start_date: 2024-09-01
+  end_date: 2024-10-12
+  reason: Bug 1923976 - Data missing from base table due to derived job running too early
+  watchers:
+  - ahalberstadt@mozilla.com
+  status: Complete
+  shredder_mitigation: false

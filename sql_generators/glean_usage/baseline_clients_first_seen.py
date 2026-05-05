@@ -1,0 +1,57 @@
+"""Generate and run baseline_clients_first_seen queries for Glean apps."""
+
+from sql_generators.glean_usage.common import GleanTable
+
+TARGET_TABLE_ID = "baseline_clients_first_seen_v1"
+PREFIX = "first_seen"
+
+
+class BaselineClientsFirstSeenTable(GleanTable):
+    """Represents generated baseline_clients_first_seen table."""
+
+    def __init__(self):
+        """Initialize baseline_clients_first_seen table."""
+        GleanTable.__init__(self)
+        self.target_table_id = TARGET_TABLE_ID
+        self.prefix = PREFIX
+        self.common_render_kwargs = {}
+        self.per_app_requires_all_base_tables = True
+
+    def generate_per_app_id(
+        self,
+        project_id,
+        baseline_table,
+        app_name,
+        app_id_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
+        id_token=None,
+    ):
+        """Generate per-app_id datasets."""
+        custom_render_kwargs = dict(
+            # do not match on org_mozilla_firefoxreality
+            fennec_id=(
+                app_id_info["bq_dataset_family"]
+                in [
+                    "org_mozilla_firefox",
+                    "org_mozilla_fenix_nightly",
+                    "org_mozilla_fennec_aurora",
+                    "org_mozilla_firefox_beta",
+                    "org_mozilla_fenix",
+                ]
+            )
+        )
+
+        GleanTable.generate_per_app_id(
+            self,
+            project_id,
+            baseline_table,
+            app_name,
+            app_id_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
+            custom_render_kwargs=custom_render_kwargs,
+        )

@@ -11,8 +11,7 @@ description: |
   and the mapping of appId to logical app names
   (Firefox vs. Firefox Preview) and channel names
    (nightly, beta, or release) has changed over time; see the
-  [spreadsheet of naming history for Mozilla's mobile browsers](
-    https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0).
+  [spreadsheet of naming history for Mozilla's mobile browsers](https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0).
 
   This function is intended as the source of truth for how to map a
   specific ping in BigQuery to a logical app names and channel.

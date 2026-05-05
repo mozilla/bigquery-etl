@@ -1,0 +1,15 @@
+---
+friendly_name: Notes for monitoring missing columns
+description: >
+  This table is connected to a spreadsheet that contains notes about
+  missing columns. The notes are displayed on Looker dashboards.
+owners:
+  - ascholtz@mozilla.com
+labels:
+  incremental: false
+external_data:
+  format: google_sheets
+  source_uris:
+    - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA
+  options:
+    skip_leading_rows: 2

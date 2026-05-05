@@ -1,0 +1,13 @@
+friendly_name: Stripe External
+description: |-
+  API extracts from Stripe, a payments partner
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers

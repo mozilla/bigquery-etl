@@ -14,33 +14,28 @@ https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-ref
 CREATE OR REPLACE FUNCTION bits28.active_in_range(bits INT64, start_offset INT64, n_bits INT64)
 RETURNS BOOLEAN AS (
   CASE
-  WHEN
-    start_offset > 0
-  THEN
-    ERROR(
-      FORMAT(
-        'start_offset must be <= 0 but was %i in call bits28_active_in_range(%i, %i, %i)',
-        start_offset,
-        bits,
-        start_offset,
-        n_bits
-      )
-    )
-  WHEN
-    n_bits > (1 - start_offset)
-  THEN
-    ERROR(
-      FORMAT(
-        'Reading %i bits from starting_offset %i exceeds end of bit pattern in call bits28_active_in_range(%i, %i, %i)',
-        n_bits,
-        start_offset,
-        bits,
-        start_offset,
-        n_bits
-      )
-    )
-  ELSE
-    BIT_COUNT(bits28.range(bits, start_offset, n_bits)) > 0
+    WHEN start_offset > 0
+      THEN ERROR(
+          FORMAT(
+            'start_offset must be <= 0 but was %i in call bits28_active_in_range(%i, %i, %i)',
+            start_offset,
+            bits,
+            start_offset,
+            n_bits
+          )
+        )
+    WHEN n_bits > (1 - start_offset)
+      THEN ERROR(
+          FORMAT(
+            'Reading %i bits from starting_offset %i exceeds end of bit pattern in call bits28_active_in_range(%i, %i, %i)',
+            n_bits,
+            start_offset,
+            bits,
+            start_offset,
+            n_bits
+          )
+        )
+    ELSE BIT_COUNT(bits28.range(bits, start_offset, n_bits)) > 0
   END
 );
 

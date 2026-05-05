@@ -1,0 +1,19 @@
+friendly_name: Contextual Services Event Aggregates for Sponsored tiles
+description: |-
+  Aggregated event counts for sponsored tiles
+owners:
+- rburwei@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_ctxsvc_derived
+  owner1: rburwei
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null

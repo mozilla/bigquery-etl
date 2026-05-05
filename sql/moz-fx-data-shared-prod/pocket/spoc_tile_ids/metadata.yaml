@@ -1,0 +1,10 @@
+friendly_name: Sponsored Content (Spoc) Tile IDs
+description: |-
+  Lookup table of the currently registered tile IDs for Pocket sponsored content
+owners:
+  - jklukas@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/prefect
+deprecated: true

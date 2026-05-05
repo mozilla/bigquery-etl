@@ -36,17 +36,17 @@ WITH parquet_events AS (
       ) AS experiments,
       -- Bug 1525620: fix inconsistencies in timestamp resolution for main vs event events
       CASE
-      WHEN
-        doc_type = 'main'
-      THEN
-        SAFE.TIMESTAMP_MICROS(CAST(`timestamp` / 1000 AS INT64))
-      ELSE
-        SAFE.TIMESTAMP_SECONDS(`timestamp`)
-      END
-      AS `timestamp`,
+        WHEN doc_type = 'main'
+          THEN SAFE.TIMESTAMP_MICROS(CAST(`timestamp` / 1000 AS INT64))
+        ELSE SAFE.TIMESTAMP_SECONDS(`timestamp`)
+      END AS `timestamp`,
       SAFE.TIMESTAMP_MILLIS(session_start_time) AS session_start_time
     ),
-    CAST(NULL AS STRING) AS build_id
+    CAST(NULL AS STRING) AS build_id,
+    `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
+    CAST(
+      NULL AS STRING
+    ) AS profile_group_id --this table is deprecated and no longer updating, so is not receiving the new field profile group id
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.events_v1`
   WHERE
@@ -78,7 +78,9 @@ main_events AS (
     subsession_id,
     session_start_time,
     session_id,
-    build_id
+    build_id,
+    `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
+    profile_group_id
   FROM
     `moz-fx-data-shared-prod`.telemetry_derived.main_events_v1
   WHERE
@@ -110,7 +112,9 @@ event_events AS (
     subsession_id,
     session_start_time,
     session_id,
-    build_id
+    build_id,
+    `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
+    profile_group_id
   FROM
     `moz-fx-data-shared-prod`.telemetry_derived.event_events_v1
   WHERE

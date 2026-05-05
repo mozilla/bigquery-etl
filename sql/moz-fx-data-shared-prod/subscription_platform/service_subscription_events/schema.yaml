@@ -1,0 +1,19 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+  field_replacements:
+  - !include-field
+    table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+    field: subscription
+    new_fields: !include-fields
+      table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+      parent_field: subscription
+      exclude_field_names:
+      - first_touch_attribution
+  - !include-field
+    table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+    field: old_subscription
+    new_fields: !include-fields
+      table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscription_events_v1
+      parent_field: old_subscription
+      exclude_field_names:
+      - first_touch_attribution

@@ -25,8 +25,8 @@ try {
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     udf_js.main_summary_disabled_addons(["foo", "baz", "buz"], '{"foo":{}, "buz":{}, "blee":{}}'),
     ["blee"]
   ),
-  assert.array_equals(udf_js.main_summary_disabled_addons(NULL, '{"foo":{}}'), ["foo"])
+  mozfun.assert.array_equals(udf_js.main_summary_disabled_addons(NULL, '{"foo":{}}'), ["foo"])

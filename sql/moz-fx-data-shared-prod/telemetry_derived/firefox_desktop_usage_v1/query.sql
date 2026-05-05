@@ -3,7 +3,7 @@ WITH base AS (
     *,
     EXTRACT(YEAR FROM submission_date) AS submission_year,
   FROM
-    telemetry_derived.firefox_desktop_exact_mau28_by_dimensions_v2
+    `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_exact_mau28_by_dimensions_v2`
   WHERE
     -- We completely recreate this table every night since the source table
     -- is small and this query windows over a large time range.
@@ -78,8 +78,7 @@ nested_counts_by_slice_year_dense AS (
             WHERE
               submission_year = nested_counts_by_slice_year_sparse.submission_year
           )
-        USING
-          (submission_date)
+          USING (submission_date)
       ) AS counts_array
     )
   FROM
@@ -102,9 +101,14 @@ exploded AS (
 SELECT
   SUM(dau) OVER (year_slice) AS cdou,
   SUM(new_profiles) OVER (year_slice) AS cumulative_new_profiles,
-  *
+  (source IS NOT NULL OR campaign IS NOT NULL) AS attributed,
+  exploded.*,
+  cc.name AS country_name,
 FROM
   exploded
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
+  ON (exploded.country = cc.code)
 WINDOW
   year_slice AS (
     PARTITION BY

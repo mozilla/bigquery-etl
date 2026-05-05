@@ -9,4 +9,4 @@
 
 cd "$(dirname "$0")/.."
 
-exec python3 -m bigquery_etl.view.generate_stable_views "$@"
+./script/bqetl generate stable_views "$@"

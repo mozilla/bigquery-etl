@@ -1,0 +1,31 @@
+friendly_name: Android App Campaign Stats
+description: |-
+  Daily stats for Android Performance campaigns.
+
+  Grain is date, campaign, ad_group. This means that
+  for a single date, a campaign can be present multiple
+  times (onces for each ad group). The metrics in this
+  model can be summed to get information for
+  just that campaign on that date.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  owner1: kik@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+monitoring:
+  enabled: false
+deprecated: true

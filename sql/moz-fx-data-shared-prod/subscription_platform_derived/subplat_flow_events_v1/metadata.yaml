@@ -1,0 +1,29 @@
+friendly_name: SubPlat flow events
+description: |-
+  Subscription service flow events from SubPlat logs.
+owners:
+- phlee@mozilla.com
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+  # Override `referenced_tables` to ignore the references to `fxa_gcp_stderr_events_v1`, `fxa_gcp_stdout_events_v1`,
+  # and `fxa_stdout_events_v1` because DAG generation would otherwise output external task sensors for those
+  # which would only work for one bqetl_subplat_hourly DAG run per day.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'firefox_accounts_derived', 'recent_fxa_gcp_stderr_events_v1']
+  - ['moz-fx-data-shared-prod', 'firefox_accounts_derived', 'recent_fxa_gcp_stdout_events_v1']
+  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'services_v1']
+bigquery:
+  time_partitioning:
+    type: day
+    field: log_timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - flow_id

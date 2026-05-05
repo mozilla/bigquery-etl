@@ -28,4 +28,4 @@ SELECT
   (SELECT ARRAY_AGG(STRUCT(key, value.branch AS value)) FROM UNNEST(experiments)) AS experiments,
   * EXCEPT (experiments)
 FROM
-  `moz-fx-data-shared-prod.messaging_system_stable.onboarding_v1`
+  `moz-fx-data-shared-prod.firefox_desktop.onboarding`

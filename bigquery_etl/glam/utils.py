@@ -1,4 +1,5 @@
 """Utilities for the GLAM module."""
+
 import json
 import subprocess
 from collections import namedtuple
@@ -9,7 +10,7 @@ from mozilla_schema_generator.glean_ping import GleanPing
 
 CustomDistributionMeta = namedtuple(
     "CustomDistributionMeta",
-    ["name", "range_min", "range_max", "bucket_count", "histogram_type"],
+    ["name", "type", "range_min", "range_max", "bucket_count", "histogram_type"],
 )
 
 
@@ -66,15 +67,17 @@ def ping_type_from_table(qualified_table):
 def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMeta]:
     """Get metadata for reconstructing custom distribution buckets in Glean metrics."""
     # GleanPing.get_repos -> List[Tuple[name: str, app_id: str]]
-    glean = GleanPing(product_name)
+    glean = GleanPing(dict(name=product_name, app_id=product_name))
     probes = glean.get_probes()
 
     custom = []
     for probe in probes:
-        if probe.get_type() != "custom_distribution":
+        # We use endswith here to accommodate for types prefixed with "labeled"
+        if not probe.get_type().endswith("custom_distribution"):
             continue
         meta = CustomDistributionMeta(
             probe.get_name(),
+            probe.get_type(),
             probe.get("range_min"),
             probe.get("range_max"),
             probe.get("bucket_count"),

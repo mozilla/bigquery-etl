@@ -1,0 +1,67 @@
+---
+- &base
+  submission_timestamp: "2030-01-01 01:00:00"
+  context_id: a
+  metadata:
+    geo:
+      subdivision1: AZ
+    user_agent:
+      os: "Windows 11"
+      version: "116.0.0"
+  normalized_country_code: US
+  advertiser: ad1
+  release_channel: release
+  position: 1
+  reporting_url: "http://foo.com"
+- <<: *base
+  context_id: b
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base
+- <<: *base

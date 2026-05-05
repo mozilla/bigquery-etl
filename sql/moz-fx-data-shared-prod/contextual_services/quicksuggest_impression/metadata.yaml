@@ -1,0 +1,13 @@
+---
+# yamllint disable rule:line-length
+friendly_name: Historical Pings for `contextual-services/quicksuggest-impression`
+description: |-
+  A historical view of pings sent for the
+  `contextual-services/quicksuggest-impression`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`

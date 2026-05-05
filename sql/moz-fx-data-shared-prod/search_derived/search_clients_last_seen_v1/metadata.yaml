@@ -1,12 +1,35 @@
----
 friendly_name: Search Clients Last Seen
-description: |-
-  Captures history of activity of each search client in 28 day
-  windows for each submission date.
+description: |
+  Captures search activity of each desktop client
+  in the past 365 days for each submission date.
+
+  Exposed to users as view `search.search_clients_last_seen` and used
+  as the basis for LTV calculations.
 owners:
-  - frank@mozilla.com
+- akommasani@mozilla.com
+- cmorales@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_search
+  owner1: akommasani
+  owner2: cmorales
+  table_type: client_level
 scheduling:
   dag_name: bqetl_search
   depends_on_past: true
+  external_downstream_tasks:
+  - task_id: wait_for_search_clients_last_seen
+    dag_name: ltv_daily
+    execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+    - client_id
+require_column_descriptions: false

@@ -1,7 +1,8 @@
 SELECT
-  timestamp,
+  `timestamp`,
   jsonPayload.fields.event,
   jsonPayload.fields.flow_id,
+  TO_HEX(SHA256(COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid))) AS device_id,
   jsonPayload.fields.entrypoint,
   jsonPayload.fields.service,
   jsonPayload.fields.useragent,
@@ -12,7 +13,7 @@ SELECT
   jsonPayload.fields.utm_medium,
   jsonPayload.fields.utm_term
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
 WHERE
   -- We exclude event types that are Amplitude events;
   -- these are already captured in the fxa_auth_events_v1 table.
@@ -32,4 +33,4 @@ WHERE
       'sms.installFirefox.sent'
     )
   )
-  AND _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+  AND DATE(`timestamp`) = @submission_date

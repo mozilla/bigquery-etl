@@ -17,7 +17,7 @@ WITH _current AS (
       IF(submission_date < '2019-11-25', TRUE, monitor_only IS FALSE) AS INT64
     ) AS days_seen_no_monitor_bits
   FROM
-    fxa_users_daily_v1
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_daily`
   WHERE
     submission_date = @submission_date
 ),
@@ -31,32 +31,28 @@ _previous AS (
       ) AS days_seen_no_monitor_bits
     )
   FROM
-    fxa_users_last_seen_v1
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_seen_bits) > 0
 )
 SELECT
   @submission_date AS submission_date,
-  IF(
-    _current.user_id IS NOT NULL,
-    _current,
-    _previous
-  ).* REPLACE ( --
-    udf.combine_adjacent_days_28_bits(
+  IF(_current.user_id IS NOT NULL, _current, _previous).* REPLACE ( --
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_in_tier1_country_bits,
       _current.days_seen_in_tier1_country_bits
     ) AS days_seen_in_tier1_country_bits,
-    udf.coalesce_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.coalesce_adjacent_days_28_bits`(
       _previous.days_registered_bits,
       _current.days_registered_bits
     ) AS days_registered_bits,
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_no_monitor_bits,
       _current.days_seen_no_monitor_bits
     ) AS days_seen_no_monitor_bits
@@ -65,5 +61,4 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (user_id)
+  USING (user_id)

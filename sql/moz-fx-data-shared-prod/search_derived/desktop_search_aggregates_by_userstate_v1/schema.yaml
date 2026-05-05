@@ -1,0 +1,45 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: geo
+  type: STRING
+  description: Geographical Area
+- mode: NULLABLE
+  name: user_state
+  type: STRING
+  description: User State
+- mode: NULLABLE
+  name: client_count
+  type: INTEGER
+  description: Client Count
+- mode: NULLABLE
+  name: search_client_count
+  type: INTEGER
+  description: Search Client Count
+- mode: NULLABLE
+  name: sap
+  type: INTEGER
+  description: SAP
+- mode: NULLABLE
+  name: search_with_ads
+  type: INTEGER
+  description: Number of Searches with Ads
+- mode: NULLABLE
+  name: ad_clicks
+  type: INTEGER
+  description: Number of Ad Clicks
+- mode: NULLABLE
+  name: tagged_follow_on
+  type: INTEGER
+  description: Number of Tagged Follow-Ons
+- mode: NULLABLE
+  name: tagged_sap
+  type: INTEGER
+  description: Number of Tagged SAP
+- mode: NULLABLE
+  name: organic
+  type: INTEGER
+  description: Number of Organic Searches

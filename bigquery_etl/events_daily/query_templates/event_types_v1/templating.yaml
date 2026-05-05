@@ -1,9 +1,0 @@
-org_mozilla_firefox_derived:
-  app_id: org_mozilla_firefox
-  dag_name: bqetl_fenix_event_rollup
-telemetry_derived:
-  app_id: telemetry
-  dag_name: bqetl_event_rollup
-messaging_system_derived:
-  app_id: messaging_system
-  dag_name: bqetl_event_rollup

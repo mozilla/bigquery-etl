@@ -1,0 +1,36 @@
+---
+# simple case
+- &ping
+  submission_timestamp: 2021-04-01T00:00:00
+  sample_id: 0
+  client_info: &client_info
+    client_id: client-1
+    first_run_date: 2021-03-01T00:00:00
+    # note, we can leave most of the metadata fields out, so we'll include the
+    # channel for testing the window function.
+    app_channel: release
+  ping_info:
+    end_time: 2021-04-01T01:00:00
+  metrics:
+    timespan:
+      glean_baseline_duration:
+        time_unit: second
+        value: 60
+# multiple pings
+- <<: *ping
+  client_info:
+    <<: *client_info
+    client_id: client-2
+# the channel changes
+- <<: *ping
+  client_info:
+    <<: *client_info
+    client_id: client-2
+    app_channel: not-release
+# on another date, to test init
+- <<: *ping
+  submission_timestamp: 2021-04-02T00:00:00
+  client_info:
+    <<: *client_info
+    client_id: client-3
+    first_run_date: 2021-04-02T00:00:00

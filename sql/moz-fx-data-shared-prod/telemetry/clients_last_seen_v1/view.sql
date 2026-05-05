@@ -13,6 +13,15 @@ WITH days_since AS (
     mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
     mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
     mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_bits & days_interacted_bits
+    ) AS days_since_qualified_use_v1,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_normal_mode_bits
+    ) AS days_since_visited_1_uri_normal_mode,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_private_mode_bits
+    ) AS days_since_visited_1_uri_private_mode,
     *
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
@@ -74,32 +83,22 @@ SELECT
   ) AS is_allweek_regular_v1,
   BIT_COUNT(days_visited_1_uri_bits) >= 21 AS is_core_active_v1,
   CASE
-  WHEN
-    BIT_COUNT(days_visited_1_uri_bits)
-    BETWEEN 1
-    AND 6
-  THEN
-    'infrequent_user'
-  WHEN
-    BIT_COUNT(days_visited_1_uri_bits)
-    BETWEEN 7
-    AND 13
-  THEN
-    'casual_user'
-  WHEN
-    BIT_COUNT(days_visited_1_uri_bits)
-    BETWEEN 14
-    AND 20
-  THEN
-    'regular_user'
-  WHEN
-    BIT_COUNT(days_visited_1_uri_bits) >= 21
-  THEN
-    'core_user'
-  ELSE
-    'other'
-  END
-  AS activity_segments_v1,
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 1
+      AND 6
+      THEN 'infrequent_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 7
+      AND 13
+      THEN 'casual_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 14
+      AND 20
+      THEN 'regular_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits) >= 21
+      THEN 'core_user'
+    ELSE 'other'
+  END AS activity_segments_v1,
   (
     days_since_first_seen = 6
     -- 0x7F = mozfun.bits28.from_string('0000000000000000000001111111')
@@ -115,6 +114,7 @@ SELECT
     -- 0x1FFFFF = mozfun.bits28.from_string('0000000111111111111111111111')
     AND BIT_COUNT(days_seen_bits & 0x1FFFFF) >= 12
   ) AS new_profile_21_day_activated_v1,
+  first_seen_date AS first_run_date,  -- required by Looker for client_count views
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

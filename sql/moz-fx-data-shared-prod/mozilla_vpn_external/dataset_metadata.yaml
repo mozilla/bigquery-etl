@@ -1,0 +1,10 @@
+friendly_name: Mozilla VPN External
+description: |-
+  Data extracted from the Mozilla VPN service database.
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/developers

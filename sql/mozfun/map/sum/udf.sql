@@ -8,7 +8,7 @@ INT64, NUMERIC, and FLOAT64.
 
 */
 CREATE OR REPLACE FUNCTION map.sum(entries ANY TYPE) AS (
-  ARRAY(SELECT AS STRUCT key, SUM(value) AS value FROM UNNEST(entries) GROUP BY key)
+  ARRAY(SELECT AS STRUCT key, SUM(value) AS value FROM UNNEST(entries) GROUP BY key ORDER BY key)
 );
 
 -- Tests
@@ -31,5 +31,5 @@ SELECT
         (NULL, 1)
       ]
     ),
-    ARRAY<STRUCT<key BOOL, value INT64>>[(TRUE, 3), (FALSE, NULL), (NULL, 1)]
+    ARRAY<STRUCT<key BOOL, value INT64>>[(NULL, 1), (FALSE, NULL), (TRUE, 3)]
   );

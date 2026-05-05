@@ -1,0 +1,6 @@
+friendly_name: Shredder Rows Deleted
+description: 'Record of rows deleted by shredder.
+
+  '
+owners:
+- akomar@mozilla.com

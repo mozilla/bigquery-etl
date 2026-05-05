@@ -10,4 +10,4 @@ description: |-
 labels:
   application: firefox
 owners:
-  - dthorn@mozilla.com
+  - ascholtz@mozilla.com

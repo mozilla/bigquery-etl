@@ -1,4 +1,4 @@
--- Note: udf.udf_json_extract_int_map map doesn't work in this case as it expects an INT -> INT
+-- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
 -- map, while we have a STRING->int map
 CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   ARRAY(
@@ -19,7 +19,7 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
     WITH a AS (
       SELECT
-        IF(array_length(x) > 0, 1, 0) AS isPres1
+        IF(ARRAY_LENGTH(x) > 0, 1, 0) AS isPres1
     ),
     b AS (
       SELECT
@@ -32,7 +32,7 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
         key > 0
     )
     SELECT
-      coalesce(isPres1 * t, 0)
+      COALESCE(isPres1 * t, 0)
     FROM
       a,
       b
@@ -46,11 +46,11 @@ CREATE TEMP FUNCTION empty(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
     WITH a AS (
       SELECT
-        IF(array_length(x) = 0, 1, 0) AS isEmpty1
+        IF(ARRAY_LENGTH(x) = 0, 1, 0) AS isEmpty1
     ),
     b AS (
       SELECT
-        IF(max(value) = 0, 1, 0) isEmpty2
+        IF(MAX(value) = 0, 1, 0) isEmpty2
       FROM
         UNNEST(x)
     ),
@@ -84,7 +84,7 @@ WITH DAUs AS (
     TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS datetime,
     COUNT(*) AS client_count
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
     -- Country can be null if geoip lookup failed.
@@ -107,32 +107,34 @@ WITH DAUs AS (
 health_data_sample AS (
   SELECT
     -- `city` is processed in `health_data_aggregates`.
-    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).* EXCEPT (
-      geo_subdivision1,
-      geo_subdivision2
-    ),
+    `moz-fx-data-shared-prod.udf.geo_struct`(
+      metadata.geo.country,
+      metadata.geo.city,
+      NULL,
+      NULL
+    ).* EXCEPT (geo_subdivision1, geo_subdivision2),
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS datetime,
     client_id,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
         0
       )
     ) AS e_undefined,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
         0
       )
     ) AS e_timeout,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64),
         0
       )
     ) AS e_abort,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64
         ),
@@ -140,7 +142,7 @@ health_data_sample AS (
       )
     ) AS e_unreachable,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64
         ),
@@ -148,7 +150,7 @@ health_data_sample AS (
       )
     ) AS e_terminated,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64
         ),
@@ -156,9 +158,9 @@ health_data_sample AS (
       )
     ) AS e_channel_open,
   FROM
-    telemetry.health
+    `moz-fx-data-shared-prod.telemetry.health`
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2,
@@ -171,7 +173,7 @@ health_data_aggregates AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    datetime,
+    `datetime`,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
     COUNTIF(e_abort > 0) AS num_clients_e_abort,
@@ -187,7 +189,7 @@ health_data_aggregates AS (
   GROUP BY
     country,
     city,
-    datetime
+    `datetime`
   HAVING
     COUNT(*) > 50
 ),
@@ -206,13 +208,12 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-  USING
-    (datetime, country, city)
+    USING (`datetime`, country, city)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
-    -- We don't need to use udf.geo_struct here since `telemetry.main` won't
+    -- We don't need to use `moz-fx-data-shared-prod.udf.geo_struct` here since `telemetry.main` won't
     -- have '??' values. It only has nulls, which we can handle.
     metadata.geo.country AS country,
     -- If cities are NULL then it's from cities we either don't
@@ -229,7 +230,7 @@ histogram_data_sample AS (
       payload.processes.content.histograms.http_page_tls_handshake
     ).values AS tls_handshake,
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     DATE(submission_timestamp) = @submission_date
     -- Restrict to Firefox.
@@ -246,7 +247,7 @@ dns_success_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
@@ -255,7 +256,7 @@ dns_success_time AS (
         client_id,
         time_slot,
         key,
-        sum(LEAST(2147483648, value)) AS count
+        SUM(LEAST(2147483648, value)) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -330,7 +331,7 @@ dns_failure_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     dns_failure_src
   WHERE
@@ -348,7 +349,7 @@ dns_failure_counts AS (
     country,
     city,
     time_slot AS datetime,
-    avg(count) AS value
+    AVG(count) AS value
   FROM
     (
       SELECT
@@ -356,7 +357,7 @@ dns_failure_counts AS (
         city,
         client_id,
         time_slot,
-        sum(count) AS count
+        SUM(count) AS count
       FROM
         dns_failure_src
       GROUP BY
@@ -426,8 +427,7 @@ ssl_error_prop AS (
   GROUP BY
     country,
     city,
-    time_slot,
-    client_id
+    time_slot
   HAVING
     COUNT(*) > 50
 ),
@@ -437,7 +437,7 @@ tls_handshake_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
@@ -471,7 +471,7 @@ SELECT
   DAUs.country AS country,
   DAUs.city AS city,
   DAUs.datetime AS datetime,
-  hd.* EXCEPT (datetime, country, city),
+  hd.* EXCEPT (`datetime`, country, city),
   ds.value AS avg_dns_success_time,
   ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,
@@ -487,36 +487,28 @@ FROM
 -- with whatever we pass on the RIGHT.
 -- When doing a FULL OUTER JOIN, we end up sometimes with nulls on the
 -- left because there are a few samples coming from telemetry.main that
--- are not accounted for in telemetry.clients_daily
+-- are not accounted for in `moz-fx-data-shared-prod.telemetry.clients_daily`
 LEFT JOIN
   DAUs
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_success_time AS ds
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_no_dns_lookup_time AS ds_missing
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_failure_time AS df
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   dns_no_dns_failure_time AS df_missing
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)
 LEFT JOIN
   ssl_error_prop AS ssl
-USING
-  (datetime, country, city)
+  USING (`datetime`, country, city)

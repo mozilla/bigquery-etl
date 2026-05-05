@@ -1,0 +1,7 @@
+# Firefox for Android (all channels)
+fenix:
+  base_dataset: fenix_derived
+  view_dataset: fenix
+mozilla_vpn:
+  base_dataset: mozilla_vpn_derived
+  view_dataset: mozilla_vpn

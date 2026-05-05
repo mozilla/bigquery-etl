@@ -1,0 +1,9 @@
+---
+friendly_name: Search Clients Last Seen
+description: |
+  Captures search activity of each desktop client
+  in the past 365 days for each submission date.
+
+  Used as the basis for LTV calculations.
+owners:
+  - frank@mozilla.com

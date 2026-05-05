@@ -1,0 +1,5 @@
+description: >
+  Extract UTM parameters from URL.
+  Returns a STRUCT<utm_source STRING, utm_medium STRING, utm_campaign STRING, utm_content STRING, utm_term STRING>
+  UTM (Urchin Tracking Module) parameters are URL parameters used by marketing to track the effectiveness of online marketing campaigns.
+friendly_name: Extract UTM From URL

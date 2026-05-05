@@ -57,53 +57,33 @@ WITH topsites_temp AS (
     country,
     -- for phase 2, the events were structured differently. info contained in map
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      udf.get_key(event_map_values, 'source')
-    ELSE
-      event_object
-    END
-    AS placement,
+      WHEN contains_phase_2_experiment(experiments)
+        THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'source')
+      ELSE event_object
+    END AS placement,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      udf.get_key(event_map_values, 'partner')
-    ELSE
-      event_string_value
-    END
-    AS partner,
+      WHEN contains_phase_2_experiment(experiments)
+        THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'partner')
+      ELSE event_string_value
+    END AS partner,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      event_object
-    ELSE
-      event_method
-    END
-    AS interaction,
+      WHEN contains_phase_2_experiment(experiments)
+        THEN event_object
+      ELSE event_method
+    END AS interaction,
     SPLIT(app_version, '.')[OFFSET(0)] AS version,
     normalized_channel,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      'phase2'
-    WHEN
-      contains_phase_3_experiment(experiments)
-    THEN
-      'phase3'
-    WHEN
-      contains_rollout_experiment(experiments)
-    THEN
-      'rollout'
-    ELSE
-      NULL
-    END
-    AS phase
+      WHEN contains_phase_2_experiment(experiments)
+        THEN 'phase2'
+      WHEN contains_phase_3_experiment(experiments)
+        THEN 'phase3'
+      WHEN contains_rollout_experiment(experiments)
+        THEN 'rollout'
+      ELSE NULL
+    END AS phase
   FROM
-    telemetry.events
+    `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     submission_date = @submission_date
     AND event_category = 'partner_link'
@@ -121,24 +101,16 @@ searchmode_temp AS (
     SPLIT(app_version, '.')[OFFSET(0)] AS version,
     channel AS normalized_channel,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      'phase2'
-    WHEN
-      contains_phase_3_experiment(experiments)
-    THEN
-      'phase3'
-    WHEN
-      contains_rollout_experiment(experiments)
-    THEN
-      'rollout'
-    ELSE
-      NULL
-    END
-    AS phase
+      WHEN contains_phase_2_experiment(experiments)
+        THEN 'phase2'
+      WHEN contains_phase_3_experiment(experiments)
+        THEN 'phase3'
+      WHEN contains_rollout_experiment(experiments)
+        THEN 'rollout'
+      ELSE NULL
+    END AS phase
   FROM
-    search.search_clients_daily
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     -- looks as though search engine replacement is only for amazon

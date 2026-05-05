@@ -1,0 +1,4 @@
+friendly_name: Extract Version
+description: |
+  Extracts numeric version data from a version string like
+  `<major>.<minor>.<patch>`.

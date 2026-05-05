@@ -6,12 +6,14 @@ description: >
 friendly_name: Firefox Desktop New Profiles
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
 owners:
   - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_desktop_funnel
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: false

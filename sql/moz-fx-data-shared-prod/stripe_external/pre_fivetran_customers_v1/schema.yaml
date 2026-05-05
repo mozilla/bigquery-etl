@@ -1,0 +1,22 @@
+fields:
+- mode: NULLABLE
+  name: id
+  type: STRING
+- mode: NULLABLE
+  name: address_country
+  type: STRING
+- mode: NULLABLE
+  name: address_postal_code
+  type: STRING
+- mode: NULLABLE
+  name: address_state
+  type: STRING
+- mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+- mode: NULLABLE
+  name: metadata
+  type: STRING

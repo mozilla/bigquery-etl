@@ -1,0 +1,4 @@
+name,code
+{%- for alias, country_code in aliases_to_code %}
+{{alias}},{{country_code}}
+{%- endfor %}

@@ -1,0 +1,19 @@
+fields:
+- name: ping_type
+  type: STRING
+- name: os
+  type: STRING
+- name: app_version
+  type: INTEGER
+- name: app_build_id
+  type: STRING
+- name: channel
+  type: STRING
+- name: metric
+  type: STRING
+- name: key
+  type: STRING
+- name: agg_type
+  type: STRING
+- name: total_sample
+  type: FLOAT

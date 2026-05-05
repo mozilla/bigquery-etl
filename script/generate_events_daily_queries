@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Generate Queries.
-
-cd "$(dirname "$0")/.."
-
-python3 -m bigquery_etl.events_daily.generate_queries "$@"

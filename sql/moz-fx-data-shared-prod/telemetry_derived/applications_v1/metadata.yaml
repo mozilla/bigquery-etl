@@ -1,0 +1,9 @@
+friendly_name: Applications
+description: |-
+  Information about existing applications.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_releases

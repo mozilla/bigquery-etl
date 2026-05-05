@@ -1,20 +1,23 @@
 """Delete user data from long term storage."""
 
 import logging
+import re
 import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from functools import partial
-from itertools import chain
 from multiprocessing.pool import ThreadPool
 from operator import attrgetter
 from textwrap import dedent
-from typing import Callable, Iterable, Optional, Tuple
+from typing import Callable, Iterable, Optional, Tuple, Union
 
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
+from google.cloud.bigquery import CopyJob, QueryJob
+
+from bigquery_etl.schema import generate_compatible_select_expression
 
 from ..format_sql.formatter import reformat
 from ..util import standard_args
@@ -24,6 +27,7 @@ from ..util.exceptions import BigQueryInsertError
 from .config import (
     DELETE_TARGETS,
     DeleteSource,
+    DeleteTarget,
     find_experiment_analysis_targets,
     find_glean_targets,
     find_pioneer_targets,
@@ -39,10 +43,11 @@ parser.add_argument(
     default="telemetry",
     const="telemetry",
     nargs="?",
-    choices=["telemetry", "pioneer"],
-    help="environment to run in (dictates the choice of source and target tables):"
-    "telemetry - standard environment"
-    "pioneer - restricted pioneer environment",
+    choices=["telemetry", "pioneer", "experiments"],
+    help="environment to run in (dictates the choice of source and target tables): "
+    "telemetry - standard environment, "
+    "pioneer - restricted pioneer environment, "
+    "experiments - experiment analysis tables",
 )
 parser.add_argument(
     "--pioneer-study-projects",
@@ -59,11 +64,13 @@ parser.add_argument(
     help="Only use the first N partitions per table; requires --dry-run",
 )
 parser.add_argument(
-    "--read_only",
-    "--read-only",
-    action="store_true",
-    help="Use SELECT * FROM instead of DELETE with dry run queries to prevent errors "
-    "due to read-only permissions being insufficient to dry run DELETE dml",
+    "--no-use-dml",
+    "--no_use_dml",
+    action="store_false",
+    dest="use_dml",
+    help="Use SELECT * FROM instead of DELETE in queries to avoid concurrent DML limit "
+    "or errors due to read-only permissions being insufficient to dry run DML; unless "
+    "used with --dry-run, DML will still be used for special partitions like __NULL__",
 )
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
@@ -98,7 +105,7 @@ parser.add_argument(
 parser.add_argument(
     "--max-single-dml-bytes",
     "--max_single_dml_bytes",
-    default=10 * 2 ** 40,
+    default=10 * 2**40,
     type=int,
     help="Maximum number of bytes in a table that should be processed using a single "
     "DML query; tables above this limit will be processed using per-partition "
@@ -121,6 +128,64 @@ parser.add_argument(
     "progress; Create it if it does not exist; By default tasks are not recorded",
 )
 standard_args.add_table_filter(parser)
+parser.add_argument(
+    "--sampling-tables",
+    "--sampling_tables",
+    nargs="+",
+    metavar="DATASET.TABLE",
+    dest="sampling_tables",
+    help="Create tasks per sample id for the given table(s).  Table format is dataset.table_name.",
+    default=[],
+)
+parser.add_argument(
+    "--sampling-parallelism",
+    "--sampling_parallelism",
+    type=int,
+    default=10,
+    help="Number of concurrent queries to run per partition when shredding per sample id",
+)
+parser.add_argument(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    type=int,
+    default=1,
+    help="Number of sample ids per query in sample id shredding",
+)
+parser.add_argument(
+    "--temp-dataset",
+    "--temp_dataset",
+    metavar="PROJECT.DATASET",
+    help="Dataset (project.dataset format) to write intermediate results of sampled queries to. "
+    "Must be specified when --sampling-tables is set.",
+)
+parser.add_argument(
+    "--reservation-override",
+    "--reservation_override",
+    metavar="projects/{project}/locations/{location}/reservations/{reservation}",
+    help="Override the reservation assigned to the billing projects, e.g. "
+    "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
+# Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+parser.add_argument(
+    "--column-removal-backfill-tables",
+    "--column_removal_backfill_tables",
+    nargs="+",
+    metavar="DATASET.TABLE",
+    help="List of tables (dataset.table format) on which to run a modified query to remove "
+    "fields and backfill to another table. "
+    "Tables are expected to be in a *_stable dataset and have a _v1 prefix.",
+    default=[],
+)
+
+
+@dataclass
+class DeleteJobResults:
+    """Subset of a bigquery job object retaining only fields that are needed."""
+
+    job_id: str
+    total_bytes_processed: Optional[int]
+    num_dml_affected_rows: Optional[int]
+    destination: str
 
 
 def record_state(client, task_id, job, dry_run, start_date, end_date, state_table):
@@ -147,16 +212,33 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
             )
 
 
-def wait_for_job(client, states, task_id, dry_run, create_job, **state_kwargs):
+def wait_for_job(
+    client,
+    states,
+    task_id,
+    dry_run,
+    create_job,
+    check_table_existence=False,
+    **state_kwargs,
+) -> DeleteJobResults:
     """Get a job from state or create a new job, and wait for the job to complete."""
     job = None
     if task_id in states:
-        job = client.get_job(**FULL_JOB_ID_RE.fullmatch(states[task_id]).groupdict())
+        job = client.get_job(**FULL_JOB_ID_RE.fullmatch(states[task_id]).groupdict())  # type: ignore[union-attr]
         if job.errors:
             logging.info(f"Previous attempt failed, retrying for {task_id}")
             job = None
         elif job.ended:
-            logging.info(f"Previous attempt succeeded, reusing result for {task_id}")
+            # if destination table no longer exists (temp table expired), rerun job
+            try:
+                if check_table_existence:
+                    client.get_table(job.destination)
+                logging.info(
+                    f"Previous attempt succeeded, reusing result for {task_id}"
+                )
+            except NotFound:
+                logging.info(f"Previous result expired, retrying for {task_id}")
+                job = None
         else:
             logging.info(f"Previous attempt still running for {task_id}")
     if job is None:
@@ -164,10 +246,23 @@ def wait_for_job(client, states, task_id, dry_run, create_job, **state_kwargs):
         record_state(
             client=client, task_id=task_id, dry_run=dry_run, job=job, **state_kwargs
         )
-    if not dry_run and not job.ended:
+    if not dry_run and (not job.ended or isinstance(job, CopyJob)):
         logging.info(f"Waiting on {full_job_id(job)} for {task_id}")
         job.result()
-    return job
+
+    try:
+        bytes_processed = job.total_bytes_processed
+    except AttributeError:
+        bytes_processed = 0
+
+    return DeleteJobResults(
+        job_id=job.job_id,
+        total_bytes_processed=bytes_processed,
+        num_dml_affected_rows=(
+            job.num_dml_affected_rows if isinstance(job, QueryJob) else None
+        ),
+        destination=job.destination,
+    )
 
 
 def get_task_id(target, partition_id):
@@ -178,50 +273,318 @@ def get_task_id(target, partition_id):
     return task_id
 
 
+@dataclass
+class Partition:
+    """Return type for get_partition."""
+
+    condition: str
+    id: Optional[str] = None
+    is_special: bool = False
+
+
+def _override_query_with_fxa_id_in_extras(
+    field_condition: str,
+    target: DeleteTarget,
+    sources: Iterable[DeleteSource],
+    source_condition: str,
+) -> str:
+    """Override query to handle fxa_id nested in event extras in relay_backend_stable.events_v1."""
+    sources = list(sources)
+    if (
+        target.table == "relay_backend_stable.events_v1"
+        and len(target.fields) == 1
+        and target.fields[0] == "events[*].extra.fxa_id"
+        and len(sources) == 1
+        and sources[0].table == "firefox_accounts.fxa_delete_events"
+        and sources[0].field == "user_id"
+    ):
+        field_condition = (
+            """
+                EXISTS (
+                  WITH user_ids AS (
+                  SELECT
+                    user_id_unhashed AS user_id
+                  FROM
+                  `moz-fx-data-shared-prod.firefox_accounts.fxa_delete_events`
+                  WHERE """
+            + " AND ".join((source_condition, *sources[0].conditions))
+            + """)
+                  SELECT 1
+                  FROM UNNEST(events) AS e
+                  JOIN UNNEST(e.extra) AS ex
+                  JOIN user_ids u
+                  ON ex.value = u.user_id
+                  WHERE ex.key = 'fxa_id'
+                )
+                """
+        )
+    return field_condition
+
+
 def delete_from_partition(
-    dry_run,
-    partition_condition,
-    priority,
-    read_only,
-    sources,
-    source_condition,
-    target,
+    dry_run: bool,
+    partition: Partition,
+    priority: str,
+    source_condition: str,
+    sources: Iterable[DeleteSource],
+    target: DeleteTarget,
+    use_dml: bool,
+    sample_id_range: Optional[Tuple[int, int]] = None,
+    temp_dataset: Optional[str] = None,
+    clustering_fields: Optional[Iterable[str]] = None,
+    reservation_override: Optional[str] = None,
+    column_removal_backfill: Optional[bool] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
-    # noqa: D202
+    job_config = bigquery.QueryJobConfig(
+        dry_run=dry_run,
+        priority=priority,
+        reservation=reservation_override,
+        labels={
+            "type": "shredder",
+        },
+    )
+    # The event_id backfill logic in this function is just temporary for https://mozilla-hub.atlassian.net/browse/DENG-9800.
+    event_id_backfill = target.table_id == "events_stream_v1" and target.dataset_id in (
+        "firefox_desktop_derived",
+        "org_mozilla_firefox_derived",
+    )
+    # whole table operations must use DML to protect against dropping partitions in the
+    # case of conflicting write operations in ETL, and special partitions must use DML
+    # because they can't be set as a query destination.
+    if partition.id is None or partition.is_special:
+        use_dml = True
+    elif sample_id_range is not None:
+        # sample_id shredding can't use DML because of performance, and it will result in
+        # partially shredded partitions
+        use_dml = False
+        job_config.destination = (
+            f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
+            f"{partition.id}__sample_{sample_id_range[0]}_{sample_id_range[1]}"
+        )
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+        job_config.clustering_fields = clustering_fields
+    elif not use_dml or column_removal_backfill or event_id_backfill:
+        destination_table = f"{sql_table_id(target)}${partition.id}"
+        if column_removal_backfill:
+            # column removal requires a transformation using a SELECT query
+            use_dml = False
+            destination_table = destination_table.replace("_v1$", "_v2$")
+        elif event_id_backfill:
+            use_dml = False
+        job_config.destination = destination_table
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
-    def create_job(client):
-        field_condition = " OR ".join(
-            f"""
-             {field} IN (
-               SELECT
-                 {source.field}
-               FROM
-                 `{sql_table_id(source)}`
-               WHERE
-                 {source_condition}
-             )
-            """
-            for field, source in zip(target.fields, sources)
-        )
-        query = reformat(
-            f"""
-            {"SELECT * FROM" if dry_run and read_only else "DELETE"}
-              `{sql_table_id(target)}`
-            WHERE
-              ({field_condition})
-              AND {partition_condition}
-            """
-        )
+    def create_job(client) -> bigquery.QueryJob:
+        def normalized_expr(expr: str) -> str:
+            if (
+                expr == "context_id"
+                or expr == "payload.scalars.parent.deletion_request_context_id"
+            ):
+                return f"REPLACE(REPLACE({expr}, '{{', ''), '}}', '')"
+            return expr
+
+        if use_dml:
+            field_condition = " OR ".join(f"""
+                {normalized_expr(field)} IN (
+                  SELECT
+                    {normalized_expr(source.field)}
+                  FROM
+                    `{sql_table_id(source)}`
+                  WHERE
+                    {" AND ".join((source_condition, *source.conditions))}
+                )
+                """ for field, source in zip(target.fields, sources))
+
+            # Temporary workaround for fxa_id nested in event extras in relay_backend_stable.events_v1
+            # We'll be able to remove this once fxa_id is migrated to string metric
+            # See https://mozilla-hub.atlassian.net/browse/DENG-7965 and 7964
+            field_condition = _override_query_with_fxa_id_in_extras(
+                field_condition, target, sources, source_condition
+            )
+
+            query = reformat(f"""
+                DELETE
+                  `{sql_table_id(target)}`
+                WHERE
+                  ({field_condition})
+                  AND ({partition.condition})
+                """)
+        else:
+            field_joins = "".join(
+                (
+                    f"""
+                LEFT JOIN
+                  (
+                    SELECT
+                      {normalized_expr(source.field)} AS _source_{index}
+                    FROM
+                      `{sql_table_id(source)}`
+                    WHERE
+                """
+                    + " AND ".join((source_condition, *source.conditions))
+                    + (
+                        f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}"
+                        if sample_id_range is not None
+                        else ""
+                    )
+                    + f"""
+                  )
+                  ON {normalized_expr(field)} = _source_{index}
+                """
+                )
+                for index, (field, source) in enumerate(zip(target.fields, sources))
+            )
+            field_conditions = " AND ".join(
+                f"_source_{index} IS NULL" for index, _ in enumerate(sources)
+            )
+
+            if partition.id is None:
+                # only apply field conditions on partition.condition
+                field_conditions = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({field_conditions})
+                """
+                # always true partition condition to satisfy require_partition_filter
+                partition_condition = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({partition.condition})
+                """
+            else:
+                partition_condition = partition.condition
+
+            if column_removal_backfill:
+                select_expression = generate_compatible_select_expression(
+                    client,
+                    sql_table_id(target),
+                    re.sub("_v1$", "_v2", sql_table_id(target)),
+                )
+            elif event_id_backfill:
+                select_expression = """
+                    _target.* REPLACE (
+                      COALESCE(
+                        _target.event_id,
+                        CONCAT(_target.document_id, '-', _target.document_event_number),
+                        GENERATE_UUID()
+                      ) AS event_id
+                    )
+                """
+            else:
+                select_expression = "_target.*"
+
+            query = reformat(f"""
+                SELECT
+                  {select_expression},
+                FROM
+                  `{sql_table_id(target)}` AS _target
+                {field_joins}
+                WHERE
+                  {f"({field_conditions}) AND " if field_conditions else ""}
+                  ({partition_condition})
+                  {f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}" if sample_id_range is not None else ""}
+                """)
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
-        return client.query(
-            query, bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
-        )
+        return client.query(query, job_config=job_config)
 
     return partial(
         wait_for_job, create_job=create_job, dry_run=dry_run, **wait_for_job_kwargs
+    )
+
+
+def delete_from_partition_with_sampling(
+    dry_run: bool,
+    partition: Partition,
+    priority: str,
+    source_condition: str,
+    sources: Iterable[DeleteSource],
+    target: DeleteTarget,
+    use_dml: bool,
+    sampling_parallelism: int,
+    sampling_batch_size: int,
+    temp_dataset: str,
+    reservation_override: str,
+    column_removal_backfill: bool,
+    **wait_for_job_kwargs,
+):
+    """Return callable to delete from a partition of a target table per sample id."""
+    copy_job_config = bigquery.CopyJobConfig(
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
+    )
+    target_table = f"{sql_table_id(target)}${partition.id}"
+
+    def delete_by_sample(client) -> Union[bigquery.CopyJob, bigquery.QueryJob]:
+        intermediate_clustering_fields = client.get_table(
+            target_table
+        ).clustering_fields
+
+        tasks = [
+            delete_from_partition(
+                dry_run=dry_run,
+                partition=partition,
+                priority=priority,
+                source_condition=source_condition,
+                sources=sources,
+                target=target,
+                use_dml=use_dml,
+                temp_dataset=temp_dataset,
+                sample_id_range=(s, s + sampling_batch_size - 1),
+                clustering_fields=intermediate_clustering_fields,
+                check_table_existence=True,
+                reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
+                **{
+                    **wait_for_job_kwargs,
+                    # override task id with sample id suffix
+                    "task_id": f"{wait_for_job_kwargs['task_id']}__sample_{s}_{s + sampling_batch_size - 1}",
+                },
+            )
+            for s in range(0, 100, sampling_batch_size)
+        ]
+
+        # Run all 100 delete functions in parallel, exception is raised without retry if any fail
+        with ThreadPool(sampling_parallelism) as pool:
+            jobs = [
+                pool.apply_async(
+                    task,
+                    args=(client,),
+                )
+                for task in tasks
+            ]
+
+            results = [job.get() for job in jobs]
+
+        intermediate_tables = [result.destination for result in results]
+        run_tense = "Would copy" if dry_run else "Copying"
+        logging.debug(
+            f"{run_tense} {len(intermediate_tables)} "
+            f"{[str(t) for t in intermediate_tables]} to {target_table}"
+        )
+        if not dry_run:
+            copy_job = client.copy_table(
+                sources=intermediate_tables,
+                destination=target_table,
+                job_config=copy_job_config,
+            )
+            # simulate query job properties for logging
+            copy_job.total_bytes_processed = sum(
+                [r.total_bytes_processed or 0 for r in results]
+            )
+            return copy_job
+        else:
+            # copy job doesn't have dry runs so dry run base partition for byte estimate
+            return client.query(
+                f"SELECT * FROM `{sql_table_id(target)}` WHERE {partition.condition}",
+                job_config=bigquery.QueryJobConfig(dry_run=True),
+            )
+
+    return partial(
+        wait_for_job,
+        create_job=delete_by_sample,
+        dry_run=dry_run,
+        **wait_for_job_kwargs,
     )
 
 
@@ -233,24 +596,20 @@ def get_partition_expr(table):
         return f"CAST({table.time_partitioning.field or '_PARTITIONTIME'} AS DATE)"
 
 
-@dataclass
-class Partition:
-    """Return type for get_partition."""
-
-    condition: str
-    id: Optional[str] = None
-
-
 def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partition]:
     """Return a Partition for id_ unless it is a date on or after end_date."""
     if id_ is None:
         if table.time_partitioning:
-            return Partition(f"{partition_expr} < '{end_date}'")
-        return Partition("TRUE")
+            return Partition(condition=f"{partition_expr} < '{end_date}'")
+        return Partition(condition="TRUE")
     if id_ == NULL_PARTITION_ID:
         if table.time_partitioning:
-            return Partition(f"{table.time_partitioning.field} IS NULL", id_)
-        return Partition(f"{partition_expr} IS NULL", id_)
+            return Partition(
+                condition=f"{table.time_partitioning.field} IS NULL",
+                id=id_,
+                is_special=True,
+            )
+        return Partition(condition=f"{partition_expr} IS NULL", id=id_, is_special=True)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()
         if date < end_date:
@@ -259,17 +618,18 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
     if table.range_partitioning:
         if id_ == OUTSIDE_RANGE_PARTITION_ID:
             return Partition(
-                f"{partition_expr} < {table.range_partitioning.range_.start} "
+                condition=f"{partition_expr} < {table.range_partitioning.range_.start} "
                 f"OR {partition_expr} >= {table.range_partitioning.range_.end}",
-                id_,
+                id=id_,
+                is_special=True,
             )
         if table.range_partitioning.range_.interval > 1:
             return Partition(
-                f"{partition_expr} BETWEEN {id_} "
+                condition=f"{partition_expr} BETWEEN {id_} "
                 f"AND {int(id_) + table.range_partitioning.range_.interval - 1}",
-                id_,
+                id=id_,
             )
-    return Partition(f"{partition_expr} = {id_}", id_)
+    return Partition(condition=f"{partition_expr} = {id_}", id=id_)
 
 
 def list_partitions(
@@ -282,15 +642,15 @@ def list_partitions(
             [
                 get_partition(table, partition_expr, end_date, row["partition_id"])
                 for row in client.query(
-                    dedent(
-                        f"""
+                    dedent(f"""
                         SELECT
                           partition_id
                         FROM
-                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
-                        """
-                    ).strip(),
-                    bigquery.QueryJobConfig(use_legacy_sql=True),
+                          `{table.project}.{table.dataset_id}.INFORMATION_SCHEMA.PARTITIONS`
+                        WHERE
+                          table_name = '{table.table_id}'
+                          AND partition_id IS NOT NULL
+                        """).strip(),
                 ).result()
             ]
             if table.num_bytes > max_single_dml_bytes and partition_expr is not None
@@ -334,29 +694,64 @@ def delete_from_table(
     end_date,
     max_single_dml_bytes,
     partition_limit,
+    sampling_parallelism,
+    sampling_batch_size,
+    use_sampling,
+    temp_dataset,
+    reservation_override,
+    column_removal_backfill,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
+    if len(sources) == 0 and not column_removal_backfill:
+        logging.info(
+            f"Skipping {sql_table_id(target)} due to no deletion request sources"
+        )
+        return ()  # type: ignore
     try:
         table = client.get_table(sql_table_id(target))
     except NotFound:
         logging.warning(f"Skipping {sql_table_id(target)} due to NotFound exception")
-        return ()
+        return ()  # type: ignore
     partition_expr = get_partition_expr(table)
     for partition in list_partitions(
-        client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
+        client,
+        table,
+        partition_expr,
+        end_date,
+        # column removal cannot use DML
+        0 if column_removal_backfill else max_single_dml_bytes,
+        partition_limit,
     ):
+        # no sampling for __NULL__ partition
+        if use_sampling and not partition.is_special:
+            kwargs["sampling_parallelism"] = sampling_parallelism
+            kwargs["sampling_batch_size"] = sampling_batch_size
+            delete_func: Callable = delete_from_partition_with_sampling
+        else:
+            if use_sampling:
+                logging.warning(
+                    "Cannot use sampling on full table deletion, "
+                    f"{target.dataset_id}.{target.table_id} is too small to use sampling"
+                )
+            kwargs.pop("sampling_parallelism", None)
+            kwargs.pop("sampling_batch_size", None)
+            delete_func = delete_from_partition
+
         yield Task(
             table=table,
             sources=sources,
             partition_id=partition.id,
-            func=delete_from_partition(
+            func=delete_func(
                 dry_run=dry_run,
-                partition_condition=partition.condition,
+                partition=partition,
                 target=target,
                 sources=sources,
                 task_id=get_task_id(target, partition.id),
                 end_date=end_date,
+                temp_dataset=temp_dataset,
+                reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
                 **kwargs,
             ),
         )
@@ -367,14 +762,24 @@ def main():
     args = parser.parse_args()
     if args.partition_limit is not None and not args.dry_run:
         parser.print_help()
-        print("ERROR: --partition-limit specified without --dry-run")
+        logging.warning("ERROR: --partition-limit specified without --dry-run")
+    if len(args.sampling_tables) > 0 and args.temp_dataset is None:
+        parser.error("--temp-dataset must be specified when using --sampling-tables")
     if args.start_date is None:
         args.start_date = args.end_date - timedelta(days=14)
     source_condition = (
         f"DATE(submission_timestamp) >= '{args.start_date}' "
         f"AND DATE(submission_timestamp) < '{args.end_date}'"
     )
-    client_q = ClientQueue(args.billing_projects, args.parallelism)
+    client_q = ClientQueue(
+        args.billing_projects,
+        args.parallelism,
+        connection_pool_max_size=(
+            max(args.parallelism * args.sampling_parallelism, 12)
+            if len(args.sampling_tables) > 0
+            else None
+        ),
+    )
     client = client_q.default_client
     states = {}
     if args.state_table:
@@ -398,39 +803,47 @@ def main():
                 )
                 state_table_exists = True
         if state_table_exists:
-            states = dict(
-                client.query(
-                    reformat(
-                        f"""
+            states = dict(client.query(reformat(f"""
                         SELECT
                           task_id,
                           job_id,
                         FROM
                           `{args.state_table}`
                         WHERE
-                          start_date = '{args.start_date}'
-                          AND end_date = '{args.end_date}'
+                          end_date = '{args.end_date}'
                         ORDER BY
                           job_created
-                        """
-                    )
-                ).result()
-            )
+                        """)).result())
 
     if args.environment == "telemetry":
-        with ThreadPool(args.parallelism) as pool:
-            glean_targets = find_glean_targets(pool, client)
-            experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
-        targets_with_sources = chain(
-            DELETE_TARGETS.items(),
-            glean_targets.items(),
-            experiment_analysis_targets.items(),
+        with ThreadPool(6) as pool:
+            glean_targets = find_glean_targets(
+                pool,
+                client,
+                column_removal_backfill_tables=args.column_removal_backfill_tables,
+            )
+        targets_with_sources = (
+            *DELETE_TARGETS.items(),
+            *glean_targets.items(),
         )
+    elif args.environment == "experiments":
+        targets_with_sources = find_experiment_analysis_targets(client).items()
     elif args.environment == "pioneer":
         with ThreadPool(args.parallelism) as pool:
             targets_with_sources = find_pioneer_targets(
                 pool, client, study_projects=args.pioneer_study_projects
             ).items()
+
+    missing_sampling_tables = [
+        t
+        for t in args.sampling_tables
+        if t not in [target.table for target, _ in targets_with_sources]
+    ]
+    if len(missing_sampling_tables) > 0:
+        raise ValueError(
+            f"{len(missing_sampling_tables)} sampling tables not found in "
+            f"targets: {missing_sampling_tables}"
+        )
 
     tasks = [
         task
@@ -445,7 +858,7 @@ def main():
             ],
             source_condition=source_condition,
             dry_run=args.dry_run,
-            read_only=args.read_only,
+            use_dml=args.use_dml,
             priority=args.priority,
             start_date=args.start_date,
             end_date=args.end_date,
@@ -453,8 +866,15 @@ def main():
             partition_limit=args.partition_limit,
             state_table=args.state_table,
             states=states,
+            sampling_parallelism=args.sampling_parallelism,
+            sampling_batch_size=args.sampling_batch_size,
+            use_sampling=target.table in args.sampling_tables,
+            temp_dataset=args.temp_dataset,
+            reservation_override=args.reservation_override,
+            column_removal_backfill=target.table in args.column_removal_backfill_tables,
         )
     ]
+
     if not tasks:
         logging.error("No tables selected")
         parser.exit(1)
@@ -462,6 +882,7 @@ def main():
     # https://docs.python.org/3/howto/sorting.html#sort-stability-and-complex-sorts
     tasks.sort(key=lambda task: sql_table_id(task.table))
     tasks.sort(key=attrgetter("partition_sort_key"), reverse=True)
+
     with ThreadPool(args.parallelism) as pool:
         if args.task_table and not args.dry_run:
             # record task information
@@ -491,16 +912,14 @@ def main():
                         client.query,
                         [
                             (
-                                reformat(
-                                    f"""
+                                reformat(f"""
                                     SELECT
                                       {source.field}
                                     FROM
                                       `{sql_table_id(source)}`
                                     WHERE
                                       {source_condition}
-                                    """
-                                ),
+                                    """),
                                 bigquery.QueryJobConfig(dry_run=True),
                             )
                             for source in sources

@@ -57,11 +57,39 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.addons_has_installed_addons AS INT64))
       ),
       (
+        'android_autofill_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.android_autofill_enabled AS INT64))
+      ),
+      (
+        'android_autofill_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.android_autofill_enabled AS INT64))
+      ),
+      (
+        'android_autofill_supported',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.android_autofill_supported AS INT64))
+      ),
+      (
+        'android_autofill_supported',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.android_autofill_supported AS INT64))
+      ),
+      (
         'avif_aom_decode_error',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+        AVG(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
       ),
       (
         'avif_aom_decode_error',
@@ -75,28 +103,28 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+        MAX(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
       ),
       (
         'avif_aom_decode_error',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+        MIN(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
       ),
       (
         'avif_aom_decode_error',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+        SUM(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
       ),
       (
         'avif_dav1d_decode_error',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+        AVG(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
       ),
       (
         'avif_dav1d_decode_error',
@@ -110,21 +138,21 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+        MAX(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
       ),
       (
         'avif_dav1d_decode_error',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+        MIN(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
       ),
       (
         'avif_dav1d_decode_error',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+        SUM(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
       ),
       (
         'contextual_menu_long_press_tapped',
@@ -141,11 +169,361 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.contextual_menu_long_press_tapped AS INT64))
       ),
       (
+        'credit_cards_autofill_card',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.credit_cards_autofill_card AS INT64))
+      ),
+      (
+        'credit_cards_autofill_card',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_autofill_card) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_autofill_card',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.credit_cards_autofill_card AS INT64))
+      ),
+      (
+        'credit_cards_autofill_card',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.credit_cards_autofill_card AS INT64))
+      ),
+      (
+        'credit_cards_autofill_card',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.credit_cards_autofill_card AS INT64))
+      ),
+      (
+        'credit_cards_delete_card',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.credit_cards_delete_card AS INT64))
+      ),
+      (
+        'credit_cards_delete_card',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_delete_card) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_delete_card',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.credit_cards_delete_card AS INT64))
+      ),
+      (
+        'credit_cards_delete_card',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.credit_cards_delete_card AS INT64))
+      ),
+      (
+        'credit_cards_delete_card',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.credit_cards_delete_card AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_deleted) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_manual_save',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.credit_cards_manual_save AS INT64))
+      ),
+      (
+        'credit_cards_manual_save',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_manual_save) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_manual_save',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.credit_cards_manual_save AS INT64))
+      ),
+      (
+        'credit_cards_manual_save',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.credit_cards_manual_save AS INT64))
+      ),
+      (
+        'credit_cards_manual_save',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.credit_cards_manual_save AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_saved) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'customize_home_jump_back_in',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_jump_back_in AS INT64))
+      ),
+      (
+        'customize_home_jump_back_in',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_jump_back_in AS INT64))
+      ),
+      (
+        'customize_home_most_visited_sites',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_most_visited_sites AS INT64))
+      ),
+      (
+        'customize_home_most_visited_sites',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_most_visited_sites AS INT64))
+      ),
+      (
+        'customize_home_pocket',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_pocket AS INT64))
+      ),
+      (
+        'customize_home_pocket',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_pocket AS INT64))
+      ),
+      (
+        'customize_home_recently_saved',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_recently_saved AS INT64))
+      ),
+      (
+        'customize_home_recently_saved',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_recently_saved AS INT64))
+      ),
+      (
+        'customize_home_recently_visited',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_recently_visited AS INT64))
+      ),
+      (
+        'customize_home_recently_visited',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_recently_visited AS INT64))
+      ),
+      (
+        'engine_kill_background_age',
+        'timespan',
+        '',
+        'avg',
+        AVG(CAST(metrics.timespan.engine_kill_background_age.value AS INT64))
+      ),
+      (
+        'engine_kill_background_age',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.engine_kill_background_age.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'engine_kill_background_age',
+        'timespan',
+        '',
+        'max',
+        MAX(CAST(metrics.timespan.engine_kill_background_age.value AS INT64))
+      ),
+      (
+        'engine_kill_background_age',
+        'timespan',
+        '',
+        'min',
+        MIN(CAST(metrics.timespan.engine_kill_background_age.value AS INT64))
+      ),
+      (
+        'engine_kill_background_age',
+        'timespan',
+        '',
+        'sum',
+        SUM(CAST(metrics.timespan.engine_kill_background_age.value AS INT64))
+      ),
+      (
+        'engine_kill_foreground_age',
+        'timespan',
+        '',
+        'avg',
+        AVG(CAST(metrics.timespan.engine_kill_foreground_age.value AS INT64))
+      ),
+      (
+        'engine_kill_foreground_age',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.engine_kill_foreground_age.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'engine_kill_foreground_age',
+        'timespan',
+        '',
+        'max',
+        MAX(CAST(metrics.timespan.engine_kill_foreground_age.value AS INT64))
+      ),
+      (
+        'engine_kill_foreground_age',
+        'timespan',
+        '',
+        'min',
+        MIN(CAST(metrics.timespan.engine_kill_foreground_age.value AS INT64))
+      ),
+      (
+        'engine_kill_foreground_age',
+        'timespan',
+        '',
+        'sum',
+        SUM(CAST(metrics.timespan.engine_kill_foreground_age.value AS INT64))
+      ),
+      (
+        'events_normal_and_private_uri_count',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.events_normal_and_private_uri_count AS INT64))
+      ),
+      (
+        'events_normal_and_private_uri_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.events_normal_and_private_uri_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'events_normal_and_private_uri_count',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.events_normal_and_private_uri_count AS INT64))
+      ),
+      (
+        'events_normal_and_private_uri_count',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.events_normal_and_private_uri_count AS INT64))
+      ),
+      (
+        'events_normal_and_private_uri_count',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.events_normal_and_private_uri_count AS INT64))
+      ),
+      (
         'events_total_uri_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.events_total_uri_count AS INT64))
+        AVG(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
@@ -159,28 +537,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.events_total_uri_count AS INT64))
+        MAX(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.events_total_uri_count AS INT64))
+        MIN(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.events_total_uri_count AS INT64))
+        SUM(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'gfx_adapter_primary_ram',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
+        AVG(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
       ),
       (
         'gfx_adapter_primary_ram',
@@ -194,28 +572,28 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
+        MAX(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
       ),
       (
         'gfx_adapter_primary_ram',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
+        MIN(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
       ),
       (
         'gfx_adapter_primary_ram',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
+        SUM(CAST(metrics.quantity.gfx_adapter_primary_ram AS INT64))
       ),
       (
         'gfx_display_count',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.gfx_display_count AS INT64))
+        AVG(CAST(metrics.quantity.gfx_display_count AS INT64))
       ),
       (
         'gfx_display_count',
@@ -229,28 +607,28 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.gfx_display_count AS INT64))
+        MAX(CAST(metrics.quantity.gfx_display_count AS INT64))
       ),
       (
         'gfx_display_count',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.gfx_display_count AS INT64))
+        MIN(CAST(metrics.quantity.gfx_display_count AS INT64))
       ),
       (
         'gfx_display_count',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.gfx_display_count AS INT64))
+        SUM(CAST(metrics.quantity.gfx_display_count AS INT64))
       ),
       (
         'gfx_display_primary_height',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
+        AVG(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
       ),
       (
         'gfx_display_primary_height',
@@ -264,28 +642,28 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
+        MAX(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
       ),
       (
         'gfx_display_primary_height',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
+        MIN(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
       ),
       (
         'gfx_display_primary_height',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
+        SUM(CAST(metrics.quantity.gfx_display_primary_height AS INT64))
       ),
       (
         'gfx_display_primary_width',
         'quantity',
         '',
         'avg',
-        avg(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
+        AVG(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
       ),
       (
         'gfx_display_primary_width',
@@ -299,21 +677,21 @@ unlabeled_metrics AS (
         'quantity',
         '',
         'max',
-        max(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
+        MAX(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
       ),
       (
         'gfx_display_primary_width',
         'quantity',
         '',
         'min',
-        min(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
+        MIN(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
       ),
       (
         'gfx_display_primary_width',
         'quantity',
         '',
         'sum',
-        sum(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
+        SUM(CAST(metrics.quantity.gfx_display_primary_width AS INT64))
       ),
       (
         'gfx_status_headless',
@@ -343,7 +721,7 @@ unlabeled_metrics AS (
         'true',
         SUM(CAST(metrics.boolean.glean_core_migration_successful AS INT64))
       ),
-      ('glean_error_io', 'counter', '', 'avg', avg(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'avg', AVG(CAST(metrics.counter.glean_error_io AS INT64))),
       (
         'glean_error_io',
         'counter',
@@ -351,15 +729,15 @@ unlabeled_metrics AS (
         'count',
         IF(MIN(metrics.counter.glean_error_io) IS NULL, NULL, COUNT(*))
       ),
-      ('glean_error_io', 'counter', '', 'max', max(CAST(metrics.counter.glean_error_io AS INT64))),
-      ('glean_error_io', 'counter', '', 'min', min(CAST(metrics.counter.glean_error_io AS INT64))),
-      ('glean_error_io', 'counter', '', 'sum', sum(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'max', MAX(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'min', MIN(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'sum', SUM(CAST(metrics.counter.glean_error_io AS INT64))),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        AVG(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
@@ -373,21 +751,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        MAX(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        MIN(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
+        SUM(CAST(metrics.counter.glean_error_preinit_tasks_overflow AS INT64))
       ),
       (
         'glean_error_preinit_tasks_timeout',
@@ -404,11 +782,46 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.glean_error_preinit_tasks_timeout AS INT64))
       ),
       (
+        'glean_time_invalid_timezone_offset',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+      ),
+      (
+        'glean_time_invalid_timezone_offset',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.glean_time_invalid_timezone_offset) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'glean_time_invalid_timezone_offset',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+      ),
+      (
+        'glean_time_invalid_timezone_offset',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+      ),
+      (
+        'glean_time_invalid_timezone_offset',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.glean_time_invalid_timezone_offset AS INT64))
+      ),
+      (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        AVG(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
@@ -422,28 +835,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        MAX(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        MIN(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_deleted_pings_after_quota_hit',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+        SUM(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        AVG(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
@@ -457,28 +870,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        MAX(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        MIN(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_upload_pending_pings',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
+        SUM(CAST(metrics.counter.glean_upload_pending_pings AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
@@ -492,28 +905,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_app_forceclosed_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
@@ -527,28 +940,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_baseline_ping_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
@@ -562,28 +975,172 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
       ),
       (
         'glean_validation_foreground_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_failed) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_processed) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_succeeded) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'avg',
+        AVG(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(
+          MIN(metrics.timespan.logins_store_migration_total_duration.value) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'max',
+        MAX(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'min',
+        MIN(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'sum',
+        SUM(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
       ),
       (
         'logins_store_read_query_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.logins_store_read_query_count AS INT64))
+        AVG(CAST(metrics.counter.logins_store_read_query_count AS INT64))
       ),
       (
         'logins_store_read_query_count',
@@ -597,28 +1154,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.logins_store_read_query_count AS INT64))
+        MAX(CAST(metrics.counter.logins_store_read_query_count AS INT64))
       ),
       (
         'logins_store_read_query_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.logins_store_read_query_count AS INT64))
+        MIN(CAST(metrics.counter.logins_store_read_query_count AS INT64))
       ),
       (
         'logins_store_read_query_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.logins_store_read_query_count AS INT64))
+        SUM(CAST(metrics.counter.logins_store_read_query_count AS INT64))
       ),
       (
         'logins_store_unlock_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.logins_store_unlock_count AS INT64))
+        AVG(CAST(metrics.counter.logins_store_unlock_count AS INT64))
       ),
       (
         'logins_store_unlock_count',
@@ -632,28 +1189,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.logins_store_unlock_count AS INT64))
+        MAX(CAST(metrics.counter.logins_store_unlock_count AS INT64))
       ),
       (
         'logins_store_unlock_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.logins_store_unlock_count AS INT64))
+        MIN(CAST(metrics.counter.logins_store_unlock_count AS INT64))
       ),
       (
         'logins_store_unlock_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.logins_store_unlock_count AS INT64))
+        SUM(CAST(metrics.counter.logins_store_unlock_count AS INT64))
       ),
       (
         'logins_store_write_query_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.logins_store_write_query_count AS INT64))
+        AVG(CAST(metrics.counter.logins_store_write_query_count AS INT64))
       ),
       (
         'logins_store_write_query_count',
@@ -667,21 +1224,140 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.logins_store_write_query_count AS INT64))
+        MAX(CAST(metrics.counter.logins_store_write_query_count AS INT64))
       ),
       (
         'logins_store_write_query_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.logins_store_write_query_count AS INT64))
+        MIN(CAST(metrics.counter.logins_store_write_query_count AS INT64))
       ),
       (
         'logins_store_write_query_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.logins_store_write_query_count AS INT64))
+        SUM(CAST(metrics.counter.logins_store_write_query_count AS INT64))
+      ),
+      (
+        'metrics_activity_state_provider_error',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_activity_state_provider_error AS INT64))
+      ),
+      (
+        'metrics_activity_state_provider_error',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_activity_state_provider_error AS INT64))
+      ),
+      (
+        'metrics_credit_cards_autofill_count',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.metrics_credit_cards_autofill_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_autofill_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_credit_cards_autofill_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_credit_cards_autofill_count',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.metrics_credit_cards_autofill_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_autofill_count',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.metrics_credit_cards_autofill_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_autofill_count',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.metrics_credit_cards_autofill_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_deleted_count',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.metrics_credit_cards_deleted_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_deleted_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_credit_cards_deleted_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_credit_cards_deleted_count',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.metrics_credit_cards_deleted_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_deleted_count',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.metrics_credit_cards_deleted_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_deleted_count',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.metrics_credit_cards_deleted_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_saved_count',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.metrics_credit_cards_saved_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_saved_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_credit_cards_saved_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_credit_cards_saved_count',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.metrics_credit_cards_saved_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_saved_count',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.metrics_credit_cards_saved_count AS INT64))
+      ),
+      (
+        'metrics_credit_cards_saved_count',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.metrics_credit_cards_saved_count AS INT64))
       ),
       (
         'metrics_default_browser',
@@ -702,7 +1378,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+        AVG(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
       ),
       (
         'metrics_desktop_bookmarks_count',
@@ -716,21 +1392,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+        MAX(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
       ),
       (
         'metrics_desktop_bookmarks_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+        MIN(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
       ),
       (
         'metrics_desktop_bookmarks_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+        SUM(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
       ),
       (
         'metrics_has_desktop_bookmarks',
@@ -807,7 +1483,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+        AVG(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
       ),
       (
         'metrics_mobile_bookmarks_count',
@@ -821,28 +1497,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+        MAX(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
       ),
       (
         'metrics_mobile_bookmarks_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+        MIN(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
       ),
       (
         'metrics_mobile_bookmarks_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+        SUM(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
       ),
       (
         'metrics_recently_used_pwa_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+        AVG(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
       ),
       (
         'metrics_recently_used_pwa_count',
@@ -856,21 +1532,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+        MAX(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
       ),
       (
         'metrics_recently_used_pwa_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+        MIN(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
       ),
       (
         'metrics_recently_used_pwa_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+        SUM(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
       ),
       (
         'metrics_search_widget_installed',
@@ -887,11 +1563,39 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.metrics_search_widget_installed AS INT64))
       ),
       (
+        'metrics_start_reason_activity_error',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_start_reason_activity_error AS INT64))
+      ),
+      (
+        'metrics_start_reason_activity_error',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_start_reason_activity_error AS INT64))
+      ),
+      (
+        'metrics_start_reason_process_error',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_start_reason_process_error AS INT64))
+      ),
+      (
+        'metrics_start_reason_process_error',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_start_reason_process_error AS INT64))
+      ),
+      (
         'metrics_tabs_open_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+        AVG(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
       ),
       (
         'metrics_tabs_open_count',
@@ -905,28 +1609,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+        MAX(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
       ),
       (
         'metrics_tabs_open_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+        MIN(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
       ),
       (
         'metrics_tabs_open_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+        SUM(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
       ),
       (
         'metrics_top_sites_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+        AVG(CAST(metrics.counter.metrics_top_sites_count AS INT64))
       ),
       (
         'metrics_top_sites_count',
@@ -940,28 +1644,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+        MAX(CAST(metrics.counter.metrics_top_sites_count AS INT64))
       ),
       (
         'metrics_top_sites_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+        MIN(CAST(metrics.counter.metrics_top_sites_count AS INT64))
       ),
       (
         'metrics_top_sites_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+        SUM(CAST(metrics.counter.metrics_top_sites_count AS INT64))
       ),
       (
         'places_manager_read_query_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+        AVG(CAST(metrics.counter.places_manager_read_query_count AS INT64))
       ),
       (
         'places_manager_read_query_count',
@@ -975,28 +1679,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+        MAX(CAST(metrics.counter.places_manager_read_query_count AS INT64))
       ),
       (
         'places_manager_read_query_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+        MIN(CAST(metrics.counter.places_manager_read_query_count AS INT64))
       ),
       (
         'places_manager_read_query_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+        SUM(CAST(metrics.counter.places_manager_read_query_count AS INT64))
       ),
       (
         'places_manager_write_query_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+        AVG(CAST(metrics.counter.places_manager_write_query_count AS INT64))
       ),
       (
         'places_manager_write_query_count',
@@ -1010,21 +1714,259 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+        MAX(CAST(metrics.counter.places_manager_write_query_count AS INT64))
       ),
       (
         'places_manager_write_query_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+        MIN(CAST(metrics.counter.places_manager_write_query_count AS INT64))
       ),
       (
         'places_manager_write_query_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+        SUM(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+      ),
+      (
+        'preferences_bookmarks_suggestion',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_bookmarks_suggestion AS INT64))
+      ),
+      (
+        'preferences_bookmarks_suggestion',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_bookmarks_suggestion AS INT64))
+      ),
+      (
+        'preferences_browsing_history_suggestion',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_browsing_history_suggestion AS INT64))
+      ),
+      (
+        'preferences_browsing_history_suggestion',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_browsing_history_suggestion AS INT64))
+      ),
+      (
+        'preferences_clipboard_suggestions_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_clipboard_suggestions_enabled AS INT64))
+      ),
+      (
+        'preferences_clipboard_suggestions_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_clipboard_suggestions_enabled AS INT64))
+      ),
+      (
+        'preferences_open_links_in_app_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_open_links_in_app_enabled AS INT64))
+      ),
+      (
+        'preferences_open_links_in_app_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_open_links_in_app_enabled AS INT64))
+      ),
+      (
+        'preferences_open_links_in_private',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_open_links_in_private AS INT64))
+      ),
+      (
+        'preferences_open_links_in_private',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_open_links_in_private AS INT64))
+      ),
+      (
+        'preferences_private_search_suggestions',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_private_search_suggestions AS INT64))
+      ),
+      (
+        'preferences_private_search_suggestions',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_private_search_suggestions AS INT64))
+      ),
+      (
+        'preferences_remote_debugging_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_remote_debugging_enabled AS INT64))
+      ),
+      (
+        'preferences_remote_debugging_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_remote_debugging_enabled AS INT64))
+      ),
+      (
+        'preferences_search_shortcuts_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_search_shortcuts_enabled AS INT64))
+      ),
+      (
+        'preferences_search_shortcuts_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_search_shortcuts_enabled AS INT64))
+      ),
+      (
+        'preferences_search_suggestions_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_search_suggestions_enabled AS INT64))
+      ),
+      (
+        'preferences_search_suggestions_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_search_suggestions_enabled AS INT64))
+      ),
+      (
+        'preferences_signed_in_sync',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_signed_in_sync AS INT64))
+      ),
+      (
+        'preferences_signed_in_sync',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_signed_in_sync AS INT64))
+      ),
+      (
+        'preferences_telemetry_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_telemetry_enabled AS INT64))
+      ),
+      (
+        'preferences_telemetry_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_telemetry_enabled AS INT64))
+      ),
+      (
+        'preferences_voice_search_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.preferences_voice_search_enabled AS INT64))
+      ),
+      (
+        'preferences_voice_search_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.preferences_voice_search_enabled AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.recent_bookmarks_bookmark_clicked) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'avg',
+        AVG(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.recent_bookmarks_show_all_bookmarks) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'max',
+        MAX(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'min',
+        MIN(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'sum',
+        SUM(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
       )
     ] AS scalar_aggregates
   FROM
@@ -1048,9 +1990,16 @@ grouped_labeled_metrics AS (
     app_build_id,
     channel,
     ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+      ('avif_alpha', 'labeled_counter', metrics.labeled_counter.avif_alpha),
       ('avif_bit_depth', 'labeled_counter', metrics.labeled_counter.avif_bit_depth),
+      ('avif_cicp_cp', 'labeled_counter', metrics.labeled_counter.avif_cicp_cp),
+      ('avif_cicp_mc', 'labeled_counter', metrics.labeled_counter.avif_cicp_mc),
+      ('avif_cicp_tc', 'labeled_counter', metrics.labeled_counter.avif_cicp_tc),
+      ('avif_colr', 'labeled_counter', metrics.labeled_counter.avif_colr),
       ('avif_decode_result', 'labeled_counter', metrics.labeled_counter.avif_decode_result),
       ('avif_decoder', 'labeled_counter', metrics.labeled_counter.avif_decoder),
+      ('avif_ispe', 'labeled_counter', metrics.labeled_counter.avif_ispe),
+      ('avif_pixi', 'labeled_counter', metrics.labeled_counter.avif_pixi),
       ('avif_yuv_color_space', 'labeled_counter', metrics.labeled_counter.avif_yuv_color_space),
       (
         'browser_search_ad_clicks',
@@ -1072,6 +2021,7 @@ grouped_labeled_metrics AS (
         'labeled_counter',
         metrics.labeled_counter.crash_metrics_crash_count
       ),
+      ('engine_tab_kills', 'labeled_counter', metrics.labeled_counter.engine_tab_kills),
       (
         'gfx_content_frame_time_reason',
         'labeled_counter',
@@ -1103,6 +2053,11 @@ grouped_labeled_metrics AS (
         metrics.labeled_counter.glean_upload_ping_upload_failure
       ),
       (
+        'glean_validation_pings_submitted',
+        'labeled_counter',
+        metrics.labeled_counter.glean_validation_pings_submitted
+      ),
+      (
         'logins_store_read_query_error_count',
         'labeled_counter',
         metrics.labeled_counter.logins_store_read_query_error_count
@@ -1124,6 +2079,11 @@ grouped_labeled_metrics AS (
         metrics.labeled_counter.media_audio_init_failure
       ),
       ('metrics_search_count', 'labeled_counter', metrics.labeled_counter.metrics_search_count),
+      (
+        'perf_startup_startup_type',
+        'labeled_counter',
+        metrics.labeled_counter.perf_startup_startup_type
+      ),
       (
         'places_manager_read_query_error_count',
         'labeled_counter',

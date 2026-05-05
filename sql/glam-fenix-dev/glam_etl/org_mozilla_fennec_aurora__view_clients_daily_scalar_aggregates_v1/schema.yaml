@@ -1,3 +1,4 @@
+fields:
 - name: client_id
   type: STRING
 - name: ping_type

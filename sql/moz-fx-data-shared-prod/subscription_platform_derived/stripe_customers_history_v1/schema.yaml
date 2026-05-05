@@ -1,0 +1,27 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    History record ID.
+- name: valid_from
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+   Start of the time range this history record is considered valid for (inclusive).
+- name: valid_to
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31 23:59:59.999999).
+- name: stripe_customers_revised_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the `stripe_customers_revised_changelog_v1` record this history record was derived from.
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_revised_changelog_v1
+  field: customer
+  new_description: |-
+    Stripe customer record as it ostensibly was during the time range this history record is considered valid for.

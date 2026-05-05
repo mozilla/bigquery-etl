@@ -1,0 +1,5200 @@
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 607583cf-2edb-4c49-b653-eb64697e67e0
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6d621e4a-f9f4-40a2-a588-d21323d86705
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e337c00c-c4e8-4f85-ad2d-8e214547e884
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 31166a45-4673-4526-a16f-8759f61cc5bf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 55f558cd-2ba9-4ef0-bc51-4086a9dc9d85
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5721a8bb-cd45-4f76-be9b-46fe00767e1a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d882dfff-c584-4d0e-b7b6-3e40ab20cf1f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a747ac5f-da06-40ef-bfe2-744b253a3dba
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 89f089b5-6779-4502-9fe1-69b214974d42
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d6f09ecd-2963-462b-8fb6-2c6ecce71246
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 105c6847-ca59-4820-a247-9d9147cdf4a8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ebd6b7ac-43ab-4f27-8365-d0914b064ba2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e195382e-e338-48a7-9792-eaf7121f30d7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2f235600-b187-4525-8a64-c85416e1739e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 405ea46b-b22b-40e5-a24d-0c350b1b95e2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 80677faa-82d3-413b-b336-4faa125191e3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f7c8db39-e30f-4bc7-8426-9724537dc94b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 34ebd9c0-3496-4031-8889-3adcb0665544
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3de43c79-8d7a-4925-a179-aeddc4add17e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c47b108f-100b-4a78-a937-b1dce50cd12c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6b3f9675-8333-4aea-8f65-4892f96eec4f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5c42e856-b9c7-45d7-b43f-3590abf696f8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 43058570-bcbc-4bc9-8649-2e8eae870ef1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3987d5c2-bb82-4b9f-aa62-98379fd72fc1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3f881f22-1dcc-404c-8cf2-1bc41a000620
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7c66eedc-d196-4780-ab5f-cf500b3005b1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0be9f5b2-d351-4a27-9e11-0bcedaf78cb0
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6a24aae7-f40d-45e7-a612-362eaaebaa86
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 54daf1c9-a3bb-4fc4-bbfa-ad92fcdc1250
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bcdc9736-4b7b-4f8b-8d58-2b59b9bb71ec
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 741f0c7d-72e7-4f43-bcc8-1f90b38ecc16
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 94620d5b-5805-4b4f-a38c-65bcd483f993
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: df38526a-e3b9-45d2-b636-b1f3576cb6ac
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 57a9561f-bf19-4c61-91e8-8a0a5ceaecb8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cbc72c4d-112e-43ee-8c67-57816750ed7a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a76babd7-af07-4597-ad25-c7d7dc946c98
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1d98368a-fa0c-44e2-ba78-d3306b5037b1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 83e18418-d2a1-440a-af54-f4687b5233b9
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 78d3d6ea-3fed-477d-a121-a411917b3556
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8a6fe13c-219e-4d82-a298-ed9fd96be861
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bf0a73bf-c887-4b35-a32c-c8138ad61137
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8b08b311-2afe-453f-95db-28ec47d6aa8c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6d2a171b-2b17-4cb0-913f-1f86f7f2e0b2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: adafa6cf-eeaa-442c-a52c-e5e022c7c4d8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fde6c116-e8aa-4677-8857-232d7c861cee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: df7aeca0-41a1-4e9c-9f31-ef6825c18bae
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 273243c7-f76d-4007-9452-fb7188f905fe
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 879926b7-5850-465a-829b-585ff42d6b50
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cb8ac67b-f1d8-4adf-ae68-28f2055a84fa
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 45bcf2d6-f2dd-4003-8b9e-ff538adaef60
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 284b4bc6-aaf7-41a0-b6f6-522a9b6085dc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d57e342a-ae6e-4730-9d79-5d6a22260872
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 16ff691a-1fae-4835-aff1-4450cc23efa8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 623e8866-b37b-44b9-ae9c-80e9c0f97771
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1ca3e2b8-2bc8-411b-b625-00d9449f4ac3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 83e3d84b-fb89-4882-b351-8ec45b714d27
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8e272b20-6ea3-46b3-9711-67a35dc4abee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8cb24177-58bb-415d-97d5-660e4b722abc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3ed0ff8e-dd93-48c6-9861-5c67f1b89ce3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 13ae9945-6bfd-42ef-87c4-6b0559c097ee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 50e945eb-e4d9-47d6-a7e0-37cf31e3e9b4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fe32577b-b044-4acb-83a1-beab2e430ce8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b777b25d-672c-4b20-8302-94d0861f1bba
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2a186692-84d3-4c02-a44c-46e2cdc34686
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bd9b1c52-c57f-4637-963d-f355a8b66f1b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b2e4cb67-507e-4543-bf1b-59df5b035896
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a2c86214-21cc-4004-a781-e2e24f21cd71
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 68531a09-bc5e-4c08-aa7f-4c2cedd7c884
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 55932f6f-ea5d-41d0-9bf6-63746f7d87d6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b62fdc2d-74da-4ff0-86d4-22f3f70d00b8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 81f2d927-df3c-4106-9134-e1381a6898d2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 55dfde3c-e1d4-4faa-bc50-30657606f47e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: af77be18-4086-4431-9ecd-8312e1ab7a4e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d143fd71-4404-4f79-bdd0-68ff8f4957f3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 86a4255e-6ed6-4d8f-aadd-e903c650e096
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6d5641c7-bb89-4aa8-903f-e9d5d24561a6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6fffeb25-328e-47f9-899f-4679686f729b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 15464031-b616-4a9c-874a-3fed5245adb8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e3697627-1a91-420b-a447-9404c5cca121
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fdaf446f-3aa3-45f5-ac0a-d3cb2b4be405
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aeac7585-97d5-45fc-b79b-8d04d95798e1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1ef3643b-170c-4102-b835-ab1d0808dcb3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8e005530-7fc6-457c-8c49-11af9e1ce319
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 74e536c0-42ac-43c0-822c-c47d2a11150e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 966123a1-5d8b-4a7e-b43e-7fe5e305e80c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d9b2bbb5-0efe-4174-8c93-b6751168ca48
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ce5400d6-d91f-4c0f-8e88-03c65899fac5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f79b4320-719b-46e1-9f74-1983d48c58ff
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 69373ef7-0586-41f9-968e-c9076a5deedc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b6bfe776-3423-44a6-8d78-1161b2d37caf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4ae84e96-c334-4d33-af53-34e5f2d231dd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b9845c53-a792-4a22-bd42-2860485805ba
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f443d022-6b98-479f-b683-65b00315cbed
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6b0b888d-d466-418f-96ee-cf034151f638
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d861580b-9364-4b2a-bc42-1ee024748f5e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cf1cbb4e-8a98-4564-85c0-6b6908752d56
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 695ee027-eee9-4cba-abbb-dd96de132cc5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ac47beea-ae03-49cf-9fd4-16f1bdff79d3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e8780b06-e44d-4d8a-ad30-455f18e6ebdb
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d48f10b7-5d3f-461e-bba1-30c9cafdee8f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: abce1775-035a-4531-b726-09344a0cab75
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b03a276a-0463-47e8-a73f-4577d96c816a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a2aebc1e-9782-41b4-b669-27cfa9d2074a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f0089915-d210-4eb6-89f9-7e08b6581e9d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d85a7f96-53bb-420c-b620-b8428dc8679c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e9d35a58-4491-4d94-a6ec-3fe5b5277268
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 06edec56-7d3b-4222-a2a0-07d3db5792e2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 260504d0-3ae2-4bb6-8905-793a2d12b08a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8c78993e-523d-4e75-8d95-a8365c0f3883
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9bc87202-da95-468a-b7f5-76b75dca6061
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b0af4d04-7127-4c31-8b67-a849a71fa7cb
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 39ad8c0a-63a9-43e1-92a2-f9c5cbf47646
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c8b1c19b-f991-4333-81c2-a6376f53797b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d97a99c0-e8f3-4dff-b559-13affde8efd5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f673f039-1563-40ba-b90f-c4a7295fc4e5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7338f2b6-bc5a-45ad-b4e5-ef9a0794aa50
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 01d10d7b-51ea-41e3-8ec1-82b85cda66ed
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7fdaeece-c2ae-4979-928a-e6c61a55bb50
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2f3ea401-5122-4bea-98dc-ccab5025ebae
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e8765956-f573-4fd3-8fe5-23463e08d4fd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 63c711bc-4df1-4e01-920d-b87aef0b64b4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b3c42c8e-defe-4950-bd5c-61682073fcac
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f7abfd78-669d-4bf0-b333-4c55680f827e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 148f29ba-072c-49b0-9c5c-73d6c7d1f0f2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a635cae9-fdaa-416b-8340-2e700b972257
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 82f2342d-2dd3-41ab-b43f-6a6e9206f911
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 11082339-123c-466e-86f6-9e6b537cc5ea
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b5496700-919c-4243-b76e-f65faf0fd817
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aa33422b-ed92-4c7d-b42e-f13255445544
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8e0ada5e-4b22-4876-81e2-89e41ff3204d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b0397ad4-4725-4502-8e91-75dfa40bd046
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2ae40a33-dff3-4445-80ab-92310c802c22
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 390ab6b2-8ac2-42eb-b99f-286f25b3cbdf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 65ebddd0-55a2-434a-8245-c50eb1950dc5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 533deb6e-b07a-45d3-bf12-785eab09234b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3182e7a2-ffae-4255-ba33-9bda190bf19b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aa9c4af0-3916-46f7-93af-0a0350cfa3d3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e23127f2-a741-4898-8961-f6accc060e56
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c30c07a3-d833-41f1-a13f-50f50bae65ff
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3935812b-63b1-40a0-8d62-cd7efc241917
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6b88316d-05d9-4eeb-aa12-3576f477b542
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8df37d48-7a24-4451-9d24-22a8ed09bc6f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d99d68b9-a954-4266-a0c6-19897e3f3707
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 832bbba0-ac5a-4f04-8574-1251e7b1817b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 31801df4-cabb-4a20-820c-1597619cc6c7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 92f1fdc6-92a6-4ec9-a130-80d9ce0286a8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4a510d09-dda8-49d2-ad7b-c8564f0b111c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d980ca6f-9138-41b0-88e8-7dd2202bb7ee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d6088316-22dc-4c98-9e8f-c3b3aad6db8a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c22bd518-b891-48ff-9c64-e231bc1cb01a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 57879ef3-1e9a-4076-b19c-8c9cea49bb09
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 728c1059-b1ba-4224-9e56-0d27445e602d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8d6bc2c1-ec4c-45f9-bde1-18dc8a2eb0ee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ac627c60-d02a-4746-9c2e-dd33273bb13a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: de1c5d16-fafe-4d9d-b09b-f678dccbfbb4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 029534a5-c6e2-4e65-bb0b-ed3cf8e7bd03
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 026c12d2-c9a8-4f16-8225-a43735d86f04
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9e7267d8-b33d-4e86-bbdb-843c225b1a10
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 493fe27d-7c20-4a8e-a46e-73e3b77fdacc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 13886b6b-0e38-422b-bef5-721e9760588f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5608c243-eeac-4263-8073-e14f49b0af8b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a2986e6b-3b6f-446e-961a-cc0d296b0bef
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 67bfb3fa-4c77-4403-a313-6c1277d8a88b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: dd0f8234-234f-4bd7-b4c5-f283083956f3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d534937f-52c8-47ab-9f70-edca625c3003
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0d7053de-8509-4750-8a01-b6784c78a2da
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: dcc88ab1-61b0-49bb-a067-d2fca46bc80f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2a66bf93-35fa-4382-b9f1-aa359f8f6a44
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aef9f970-4d99-4285-9525-23b1735457d6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9414d45c-2422-4bf3-b531-4faa8c1d32e8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 18361eae-548e-42b3-94cf-4ee4530747e7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 89cafa0d-6759-451b-8866-b2d833f1e314
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ff9cde13-f12f-4741-9e76-668d56c1eae1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0e38cf58-8dc6-4eb0-a67c-a1d71b862430
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 881a0254-0b31-4060-b1a5-0f1c20d38b8f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bb428d49-1aba-493d-beb2-2e3f6d33ae0a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e37096b2-1db9-48d3-829b-80c7eed0aa3a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 13d8f8d6-a20f-4c7b-a79d-2e8b5c24c9fb
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1dcb876a-6772-4d49-a117-dc1bd0e422ce
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7733e80c-3186-423b-9a73-d26350a0518c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f5bf01d7-671b-45f5-89e4-74f57ec97a07
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 98616a80-f77e-4b07-aaae-ace610999c87
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 12348ace-dfc3-4f34-8ad1-747755e1d42a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5a6a3afc-fa00-424b-9f88-81dd9c6ee2f1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bdf0a3ad-b3dd-42e6-a86a-f0cc24959c13
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fa84b9ec-ae74-4fc2-bb1c-5087c6735ae2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c382c7fb-4d04-490d-8704-521a8aa77d91
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a3ed979e-bcd1-414c-a38d-acad06842ccc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 40544941-bbd8-4550-8c18-5e13046c7e61
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b5149823-5533-4afc-a8fb-9f45efff2454
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f427734d-73db-4ba4-9ad4-113eaf215271
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 761ca1ec-cf03-4779-9f2c-39fd29b64b00
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4499f2e0-1f97-4b10-90c1-0db3d90c492d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6bff5d5d-4947-45ab-807e-328b5979a50b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: abef68eb-2e03-4475-b705-4f9feea360c0
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6fbc6e00-42c6-45b2-bb45-b6b20e3c1cc4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: eb67c512-483d-4f6d-97df-0c76504cd359
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cc937295-6219-4ef5-8f86-f831b52ed802
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fa11bb32-6bae-4f23-a341-0cd4531e75c3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0121d3be-072b-4e7e-a410-2fa8b16c39a5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2f95ab2f-c161-465f-8d68-34694340ad28
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 913f6001-3cb9-4f68-b997-14a88804101a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 94d7b5d5-afde-4a6c-b003-52f04afc8754
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aa006ee4-1cf0-4685-adb7-c582808f0617
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fa464458-8c1d-4a79-a474-92ed2340ec22
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ee872c0b-7136-4e30-8f9f-f3af219713a8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ae2d1ed2-1d81-462b-b96d-309792d09673
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8c922ae7-3343-48e1-86f2-b8d4970d0751
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 585ebff1-58ec-4ceb-b290-03334c990c68
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c89798b3-1d51-4b48-b5d5-dec2f9094033
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2c4dece5-af24-4ef4-ac80-add92f2fcf69
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fe600a5e-9bca-46a9-baac-8d1db14e1643
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5707e1b5-1a71-40cb-9f25-629f950fecb8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b7693fb6-67c0-4519-934f-e41f02b06142
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3c256653-4315-496f-85b9-1c22b400d041
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d8f245d6-e085-4ede-86b9-a77f81102cec
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 832a05d8-4f7c-41d7-b4ad-c502e161639c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 45c1f7b6-8ace-46b0-8c44-d2ea0bda7203
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 22ce26dc-64a4-40ef-a0f6-7fea04126375
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3207a6f0-80f2-4d94-8c5b-cbdc89df0c51
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3dd13b5c-e34f-48cc-85be-2b2f877fad6b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7b970d81-7b3f-41e5-83ee-2d6f49ddf535
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 134731bf-e4a7-453a-8de6-c28143dc4373
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 689d3c5d-9ce9-41cc-a52f-8290ec96c763
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4f07302f-e04e-4f4a-9a42-f97be6c5c4bf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8d6db788-abb2-4014-9bd1-a00948b3972e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f03fc40f-d18c-4013-9204-e7709f944b0a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 50099d33-842e-4b63-8276-d5cb6a84c0ef
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 16f9103b-c19c-4766-a462-07538fd7d72e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f7fea5e1-0671-4932-89b1-d00f578f826a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 950de138-eca0-487b-bd2e-8a852938108a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a45ba16f-5826-4be5-8052-96daa92ca0c5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 90d165a9-d1cc-42ba-8516-c78cf0150d97
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5722f34d-9d66-4211-aa1d-2b3d7b4a98ea
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d1f71cc3-7dbe-40eb-959f-65c1910ad036
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d6707fc0-a201-47a9-8d5d-d4f2d61d483e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 78118e66-2c81-415c-97f3-c59232864975
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c0e7c280-9c47-481c-a5f5-033777087a4f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 62e4a1ab-2947-4105-9812-5b6f710bac87
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: dfc934ac-7d2f-4dfd-825b-f5a51597b2e2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 65b13836-10ad-467d-abb3-6dde6bc8775e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 91f7fcfc-a641-49b6-842f-8ccebc0695b9
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ebe580d9-4ac8-4a21-8b6a-f53b14901435
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 49e798cc-84f8-42c6-a2b5-b9f2590ad540
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ba1f601c-0b2b-42b8-ac82-70ecf0e75c40
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3f88f3a6-bce3-4e1c-ae98-d2a42a045121
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 58b17a65-21ac-42f6-8b05-65241626c042
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1f1053d9-43ef-4202-b67c-cdeee1cd8b12
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e9557649-1640-42e0-8684-b59a36a46aa6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 80965949-df00-4d9c-b7ba-674ee3779bf3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7f73cec4-33cb-489d-ac80-c9b857a47d9f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8d9119cd-c35e-4263-9181-f8317d484ffd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5eb3760a-403b-436e-9636-6c6d14ca20e0
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f631c3d6-c8f9-492e-899d-69f0cc90f84d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3f8f7466-f05c-4292-952a-d7c25d43ca09
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6a2d4587-f43c-4f2d-bd12-b2cd5038acd4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f8574e7c-0898-4a87-8b6a-05237246f5cc
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7e40e0c9-1323-442f-80c1-4a467e854aee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c3c593d7-0f71-4ca3-acd2-a1ea0e7dbf31
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 410e8895-02a3-4406-806a-392367c27a86
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a7b55b98-a713-4f03-9e3e-91e87a0457d1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bbbc06b7-7c11-4ced-8ca9-72eb45db5af4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bca227b5-bd62-4e87-9839-44a162855393
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 50934564-0e34-4462-bcf3-09fcc4a8be51
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: dc4eebdf-cbf8-47dc-a2c3-75730e3a70dd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e79a434e-b5ec-47d5-9cc5-de142a055c81
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: eb0933bc-d4db-4226-a72b-ae40fc082f5b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 93adaf93-467a-4dcf-bd97-386333b87498
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 07f00103-5974-4d12-8750-9f74af45e5a7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e3b2666d-6726-4f10-9280-813f42d7cfc8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f85cdb9d-009d-4f39-ab4d-c4761c7151cf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4fbe6565-4679-4de1-9254-812af21f7091
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 911ee3c4-093e-417d-bb92-1a07173d99b7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 62a4b9b0-9272-4fe1-b60a-f9ff3d1e44e4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 071701de-c104-47eb-b8bd-91d975d2e2d8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b0bfedd9-bbc7-4e0a-9cf7-aa41174a400d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 04bfcb5f-c953-4ec2-a4e9-b133ac87468e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 687e1d9a-b188-4c19-90f1-c9f361846a27
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: af8b4461-e08b-4ba2-a69e-0b00a485b6d3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f8bc7340-cfc2-4c15-8579-885024d6bc9d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c1aaa9c9-702f-41a6-a7a3-c2577e737644
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 462c46c2-9613-4a3c-b512-4250a4dcddf7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8e79cb9d-9d33-469b-bd31-4b5962032475
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 88f50279-9818-4bea-a4b5-c087841968e1
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0d5af2b4-11dd-4d05-bf03-d8c8be7e3136
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 44014720-d008-4fef-af15-23c1e1f191dd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 131bb194-53c2-43f1-953a-d52658901a87
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 74d569d0-ab74-41f4-babf-06926c4ec8a4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ee4b6463-9f97-4f97-9085-69b826f865ba
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 084a4a33-1a61-42c3-bacd-c0e0a8af6cd4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e6c8c9fb-4956-4d5c-aec9-adddc74fce24
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f860760b-df88-4081-b974-3a1c07fe896a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0fef171c-764c-4045-b85a-e8471e547108
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b1a9c720-5b39-4bfb-9209-848d5ad050dd
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9a974c69-ca27-43c7-8eb3-8d2887774f8c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fe85aac9-9e61-4336-b650-33ea4b501e99
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4eb646f9-6888-42e8-a88f-85c28739342e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ca34dd25-56fb-4508-b6a6-3105fa2d205f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 90b807a9-fe2f-42fd-931a-2d18d148c1da
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2668d612-0929-41c3-af2a-1b5d46ebf02a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c88e6a5f-1341-4c87-87c6-2a5d93156ce4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: bcd422af-16ad-42bc-9a3f-90ac79a753af
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 440d7749-e206-438e-858c-0373377d052e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d4025781-d3bb-429b-a672-a2a5931a913d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0d4575cb-a57d-4c68-bf83-f837c3930598
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 639af739-0cfb-4e44-b0ef-d35d3cf70bc5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3be337cb-b04e-47a4-8a4f-fd29264a8960
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: db0351f6-ad8d-47e8-9714-c3efe34b3e01
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 57a22b66-b8ef-4283-9abe-9f096a2abf15
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1be858c9-7746-4f40-bd98-3d80099b6963
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 71f9da26-a39e-402b-b9af-fb688d629d13
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0067d2f1-49d8-4993-8976-4d1a6245908b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ba0b804d-b432-4979-a272-072d915c3386
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 80831ba0-d401-4201-894b-1c3f41a06bba
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: edb240d1-37d2-4de1-9980-cf88efd4f898
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7f8fc833-c315-42ce-8cdf-c45708a9b8d6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e2ab8930-9b55-4d1f-885b-253966edae2f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3fd3ad60-d3a5-45ab-b16e-af24619cab1a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b0be7890-5b77-4d9d-96c1-7389f0f8865b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c9fff2fc-743f-4732-86e4-1a5bb2963884
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a2f50b23-7d8a-455a-b3f8-372296674647
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5a874152-4c06-4e5a-a421-e3ea03a95e38
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: fe3b9a2a-bb28-4f6a-8d35-7263b07ecb67
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8428f16a-cfef-4333-a92d-802180815b8a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 23566374-2f7d-47c8-ab2d-adb30183ef67
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 956b60de-b917-49fb-ab5d-6c212a4d50fa
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f475970e-1b1b-4bcc-9f63-f2ccf573e278
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: add607ce-6e43-4c68-aedb-50401b6d877a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 850dec53-c2d4-4270-903e-ecc6975f6fe6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 519ece6b-8e65-40e8-9cfe-c44a8da0dd42
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e61efa98-1f2f-42f0-98c8-ce001f709495
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 02f55624-c2cc-494b-8ed4-56ee0eef224b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c42781ac-4149-4a5c-8dbd-ad4b2c6769e3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ef944cee-2d20-4fe0-8b88-d9310d2bec74
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2e13c331-e1b4-4248-98e1-2854889554be
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cc7ede51-7649-4174-90cb-d867ec8cce38
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 7596b655-0521-4775-bc67-feded2fdb1b6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 77a02b8b-2dce-4a18-bcb8-c92c579a33ce
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cb2c81e3-2d68-42e2-be50-7640bf77e8d5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f90636d6-6115-402f-afe9-f8c5aed6fb61
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f557acab-ef86-4189-9435-9b3492a96461
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: dfcc8215-4273-4c6e-aa7e-c70fbdd4867f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 182a3a36-bc1f-4057-9c49-ff5b4936da1a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6bfa8b55-0875-401b-ac87-ace1766b39b2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 50f4813d-9f1a-43bb-8fe4-b3ff5c861d64
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d2166fd7-de7a-4e60-b24f-b813e4c66585
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6877fdd6-c788-4639-967c-4094b9fb5b91
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 34bd67a6-4ba2-4e19-9299-6251f8497f6d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 474e217f-558e-4d83-948e-346bbe7e83c8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 867e52e5-6391-45b9-9f23-85302a38f436
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 82ad4299-ed33-4922-bc9e-f450ab34db58
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 3be03099-c35d-410d-968b-13e62ed6f7e8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a303857b-96b2-4b20-b315-508ed4287b11
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a252fcc4-f8ed-4efa-97b9-44780f92ede7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5b2d0dea-ffd1-4367-9cbd-39acd208a455
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: cbd841fe-054e-4828-9527-90c3089d83e3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c94be4d4-3afa-488b-8893-cb24b5d018f2
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 06501c76-6d85-4419-a0f5-6c870d35ac7d
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 6bc0eab3-1327-4772-913d-5c98f0cd080a
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 366c4396-6e1f-4762-bfaa-93efc1f9f79f
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 95e624ba-6cea-410e-897a-ac0ccbe1b90b
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ee4b355c-9f88-4337-8dc3-a6081b45e8b3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 0437d255-1330-4a02-ad7d-c1ddc529d6d6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f5fa8dd7-1193-4a78-a20e-9e671662ff38
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 80363821-5330-4828-8f74-a4cee8cf1bcf
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a0e50a05-2ef5-4ef1-a33c-dc73a91c7f96
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5b5166e3-94aa-4dbe-859f-da77982bc0a4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: b3af6fde-6fa1-48d8-92b1-6ba1ce5c4222
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: ebbfb859-00ac-4ec9-ac97-cb4a4fe8daf9
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 06af2205-8316-4d57-b820-ddb6b043e1a8
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: a71cb0dc-a63f-43bb-b122-673ca309f89c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 135ae4b7-9a1c-4adc-96a7-baa8de2e23a7
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 861f29c1-d4f2-42fa-9c5d-dff5a8eb1c53
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9b939c63-da81-47e7-922d-64e6e1e7fc8e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8b3293d0-ffc9-4098-8482-8b8866690bd4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 2f13b842-f8d3-4be7-895a-26b1384f2525
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 05283c8a-80f5-43c5-bb80-c9301ad7c4eb
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 9994e3cc-af98-4be1-a783-10be13f598a9
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 4cff38fc-37dc-4c31-8c04-b9965685c359
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1cee1087-02a3-4de2-9349-e020eb56c004
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: df295cdc-f36f-4af3-bf14-5028f89a7407
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 611b5ed0-09ec-4b72-8109-6b982c6c5446
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 87beee01-6021-4ceb-a103-510b4b64b885
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 23a6cc3a-9dfd-4869-aa5c-2c62450cc674
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 1aad6105-f987-4f0f-b31f-32c54f49db47
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f1c6f888-a723-49d1-a265-630853443ba5
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5b3a0928-d76e-4bbe-b8bb-ef44c15fa177
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: aec55e57-d888-4b16-8fe2-4f651be29b58
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 71bc0640-4c92-4b11-91ee-305fff58ef7e
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5a379dd1-0b52-478b-a675-459a1b1d638c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 14cbd1e0-0d43-4e03-bec4-0d3257c3ac6c
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5681f6d8-88c9-4037-a2e7-ecd5109e84ee
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: d189c2b6-9ef9-4c24-a500-42fd34dcbae3
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 8dd06811-931f-4472-b242-3a80409fa8f6
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 5d4e16b0-0090-4e7e-9dc7-f038004b7418
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: f3ba0bdb-87a9-4cf3-bd10-cbfbb7f6d937
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: c175f81d-0c61-4857-bf27-86a171d3a4cb
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 546126c7-92d4-491e-9507-c4190738d4f4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: e3b1101b-b885-4dcb-aacb-cc726f3128d4
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'
+- app_build_id: first
+  app_version: 75
+  channel: nightly
+  client_id: 47225059-7bcf-499f-b3be-ab9595922517
+  os: first
+  scalar_aggregates:
+  - agg_type: min
+    key: ''
+    metric: some_metric
+    metric_type: scalar
+    process: parent
+    value: 10
+  submission_date: '2019-01-01'

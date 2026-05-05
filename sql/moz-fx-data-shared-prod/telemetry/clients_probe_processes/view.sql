@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.client_probe_processes`
+  `moz-fx-data-shared-prod.telemetry.clients_probe_processes`
 AS
 SELECT
   metric,

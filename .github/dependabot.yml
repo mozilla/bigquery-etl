@@ -5,12 +5,11 @@ updates:
     directory: /
     schedule:
       interval: daily
-    reviewers:
-      - relud
-      - jklukas
-  - package-ecosystem: maven
+    open-pull-requests-limit: 10
+  - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: daily
-    reviewers:
-      - relud
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]

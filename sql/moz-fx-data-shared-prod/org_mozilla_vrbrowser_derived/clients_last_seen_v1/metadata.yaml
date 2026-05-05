@@ -1,14 +1,18 @@
----
 friendly_name: VR Browser Clients Last Seen
-description: >
-  Captures history of activity of each Firefox Reality client in 28 day
-  windows for each submission date.
-owners:
-  - jklukas@mozilla.com
-  - ascholtz@mozilla.com
+description: |
+  Captures history of activity of each Firefox Reality client in 28 day windows for each submission date.
 labels:
-  application: firefox-reality
   schedule: daily
-scheduling:
-  dag_name: bqetl_vrbrowser
-  depends_on_past: true
+  application: firefox-reality
+  table_type: client_level
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+    - app_name
+    - os
+    - sample_id

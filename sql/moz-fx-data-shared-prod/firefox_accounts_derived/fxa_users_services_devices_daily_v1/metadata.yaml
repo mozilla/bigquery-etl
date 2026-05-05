@@ -1,0 +1,49 @@
+---
+
+friendly_name: FxA Users Services Devices Daily Events
+description: |
+  IMPORTANT: This table only contains data since 2022-11-29.
+
+  Contains entries for user, service, device combination observed
+  on daily basis.
+
+  Only 'fxa_login - complete' and 'fxa_reg - complete'
+  events are used to identify user activity on a specific day.
+
+  However, records for these events do not include any
+  attribution information. This data is retrieved from
+  records for other event types. Event for the previous
+  day are considered when retrieving this data.
+  Examples include: utm fields and entrypoint fields.
+
+  Table settings:
+  Day partitioned by the `timestamp` field.
+  Cluster fields: service, os_name, country.
+
+  This model also serves as the basis for:
+  - fxa_users_services_devices_first_seen_events_v1
+  - fxa_users_services_devices_last_seen_events_v1
+
+  For more info on FxA data check:
+  - https://docs.telemetry.mozilla.org/datasets/fxa.html
+  - https://mozilla.github.io/ecosystem-platform/
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_fxa_events
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+  clustering:
+    fields:
+      - service
+      - os_name
+      - country

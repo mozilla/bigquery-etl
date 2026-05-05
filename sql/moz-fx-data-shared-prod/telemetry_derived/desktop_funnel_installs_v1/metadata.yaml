@@ -4,12 +4,14 @@ description: >
 friendly_name: Desktop Funnel Installs
 labels:
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
 owners:
   - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_desktop_funnel
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: false

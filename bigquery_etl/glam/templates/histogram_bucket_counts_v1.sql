@@ -7,20 +7,48 @@ WITH
         source_table,
         "all_combos",
         cubed_attributes,
-        attribute_combinations
+        attribute_combinations,
+        add_windows_release_sample = channel == "release",
+        use_sample_id = use_sample_id
     )
 }},
-normalized_histograms AS (
+build_ids AS (
   SELECT
+    app_build_id,
+    channel,
+  FROM
+    sampled_source
+  GROUP BY
+    1,
+    2
+  HAVING
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }}
+  UNION ALL
+  SELECT
+    '*',
+    '*'
+),
+histograms_cte AS (
+  SELECT
+    {% if channel == "release" %}
+      sampled,
+    {% endif %}
     {{ attributes }},
     ARRAY(
       SELECT AS STRUCT
         {{metric_attributes}},
-        mozfun.glam.histogram_normalized_sum(value, 1.0) AS aggregates
+        {% if channel == "release" %}
+        -- Logic to count clients based on sampled windows release data, which started in v119.
+        -- If you're changing this, then you'll also need to change
+        -- clients_daily_[scalar | histogram]_aggregates
+          mozfun.glam.histogram_normalized_sum_with_original(value, IF(sampled, 10.0, 1.0)) AS aggregates,
+        {% else %}
+          mozfun.glam.histogram_normalized_sum_with_original(value, 1.0) AS aggregates,
+        {% endif %}
       FROM unnest(histogram_aggregates)
-    )AS histogram_aggregates
+    ) AS histogram_aggregates
   FROM
-    all_combos
+    sampled_source
 ),
 unnested AS (
   SELECT
@@ -29,9 +57,10 @@ unnested AS (
         histogram_aggregates.{{ metric_attribute }} AS {{ metric_attribute }},
     {% endfor %}
     aggregates.key AS bucket,
-    aggregates.value
+    aggregates.value AS value,
+    aggregates.non_norm_value AS non_norm_value
   FROM
-    normalized_histograms,
+    histograms_cte,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
 ),
@@ -46,7 +75,7 @@ distribution_metadata AS (
         [
             {% for meta in custom_distribution_metadata_list %}
                 STRUCT(
-                    "custom_distribution" as metric_type,
+                    "{{ meta.type }}" as metric_type,
                     "{{ meta.name.replace('.', '_') }}" as metric,
                     {{ meta.range_min }} as range_min,
                     {{ meta.range_max }} as range_max,
@@ -68,7 +97,7 @@ distribution_metadata AS (
     FROM
       unnested
     WHERE
-      metric_type <> "custom_distribution"
+      NOT ENDS_WITH(metric_type, "custom_distribution")
     GROUP BY
       metric_type,
       metric
@@ -77,14 +106,60 @@ records as (
     SELECT
         {{ attributes }},
         {{ metric_attributes }},
-        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record
+        CAST(bucket AS STRING) AS bucket,
+        1.0 * SUM(value) AS normalized_value,
+        1.0 * SUM(non_norm_value) AS non_norm_value,
     FROM
         unnested
     GROUP BY
         {{ attributes }},
         {{ metric_attributes }},
         bucket
+),
+with_combos AS (
+  SELECT
+    records.* REPLACE (
+      COALESCE(combo.ping_type, records.ping_type) AS ping_type,
+      COALESCE(combo.os, records.os) AS os,
+      COALESCE(combo.app_build_id, records.app_build_id) AS app_build_id
+    )
+  FROM
+    records
+  CROSS JOIN
+    static_combos AS combo
+),
+aggregated_combos AS (
+  SELECT
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    STRUCT<key STRING, value FLOAT64>(bucket, SUM(normalized_value)) AS record,
+    STRUCT<key STRING, value FLOAT64>(bucket, SUM(non_norm_value)) AS non_norm_record,
+  FROM
+    with_combos
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
+  GROUP BY
+      ping_type,
+      os,
+      app_version,
+      app_build_id,
+      channel,
+      metric,
+      metric_type,
+      key,
+      agg_type,
+      bucket
 )
+
 SELECT
     * EXCEPT(metric_type, histogram_type),
     -- Suffix `custom_distribution` with bucketing type
@@ -94,8 +169,7 @@ SELECT
       metric_type
     ) as metric_type
 FROM
-    records
+    aggregated_combos
 LEFT OUTER JOIN
     distribution_metadata
-USING
-    (metric_type, metric)
+    USING (metric_type, metric)

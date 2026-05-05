@@ -1,15 +1,16 @@
-# Generated via https://github.com/mozilla/bigquery-etl/blob/master/bigquery_etl/query_scheduling/generate_airflow_dags.py
+# Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
-from utils.gcp import gke_command
+from airflow.sensors.external_task import ExternalTaskSensor
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 
 docs = """
 ### {{ name }}
 
-Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/{{ name }}.py)
+Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/{% if repo == "private-bigquery-etl" %}private-{% endif %}generated-sql/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description
@@ -20,18 +21,40 @@ Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/
 #### Owner
 
 {{ default_args.owner }}
+
+#### Tags
+{% for tag in tags %}
+* {{ tag }}
+{%- endfor %}
 """
 
 
-default_args = {{ 
-    default_args.to_dict() | 
+default_args = {{
+    default_args.to_dict() |
     format_attr("start_date", "format_date") |
     format_attr("end_date", "format_date") |
-    format_attr("retry_delay", "format_timedelta") 
+    format_attr("retry_delay", "format_timedelta")
 }}
 
-with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs) as dag:
-    docker_image = "mozilla/bigquery-etl:latest"
+tags = {{ tags }}
+
+with DAG(
+    '{{ name }}',
+    default_args=default_args,
+    {% if schedule_interval != None -%}
+    schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }},
+    {%- endif %}
+    {% if max_active_runs -%}
+    max_active_runs={{ max_active_runs }},
+    {%- endif %}
+    doc_md=docs,
+    tags=tags,
+) as dag:
+    docker_image = "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
+{% for task_group in task_groups | sort %}
+    task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
+{% endfor %}
+
 {% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = GKEPodOperator(
         task_id="{{ task.task_name }}",
@@ -44,38 +67,88 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if task.date_partition_parameter -%}
         + ["--parameter={{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw -%}"]
         {%- endif -%},
+        {%+ if task.task_group != None -%}
+        task_group=task_group_{{ task.task_group}},
+        {%+ endif -%}
         image=docker_image,
-        dag=dag
     )
 {% endfor -%}
 
+{% set wait_for_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
-    {% for dependency in task.dependencies | sort(attribute='task_id') -%}
+    {% for dependency in task.upstream_dependencies | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% else -%}
+    {% if dependency.task_key not in wait_for_seen -%}
     wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
+        {% if dependency.task_group -%}
+        external_task_id='{{dependency.task_group}}.{{ dependency.task_id }}',
+        {% else -%}
         external_task_id='{{ dependency.task_id }}',
-        {% if dependency.execution_delta -%}
-        execution_delta={{ dependency.execution_delta | format_timedelta | format_repr }},
+        {% endif -%}
+        {% if dependency.get_execution_delta(schedule_interval) -%}
+        execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
-        
+    {% do wait_for_seen.append(dependency.task_key) %}
+    {% endif -%}
+
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})
     {% endif -%}
     {% endfor -%}
+
+    {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
+    {% set seenDownstreamDags = [] %}
+    with TaskGroup(
+        '{{ task.task_name }}_external',
+        {%+ if task.task_group != None -%}
+        parent_group=task_group_{{ task.task_group }}
+        {%+ endif -%}
+    ) as {{ task.task_name }}_external:
+        {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__wait_for_{{ task.task_name }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='wait_for_{{ task.task_name }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date - {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {% do seenDownstreamDags.append(downstream_task.dag_name) %}
+        {% endif -%}
+        {% endfor -%}
+        {% for downstream_task in task.external_downstream_tasks | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__{{ downstream_task.task_id }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='{{ downstream_task.task_id }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date + {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {% do seenDownstreamDags.append(downstream_task.dag_name) %}
+        {% endif -%}
+        {% endfor -%}
+
+        {{ task.task_name }}_external.set_upstream({{ task.task_name }})
+    {% endif -%}
 {% endfor %}
 
-    public_data_gcs_metadata = gke_command(
+    public_data_gcs_metadata = GKEPodOperator(
         task_id="public_data_gcs_metadata",
-        command=["script/publish_public_data_gcs_metadata"],
-        docker_image=docker_image,
-        dag=dag
+        arguments=["script/publish_public_data_gcs_metadata"],
+        image=docker_image,
     )
 
     public_data_gcs_metadata.set_upstream(

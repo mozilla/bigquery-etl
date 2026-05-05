@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Passes all queries to a Cloud Function that will run the
-# queries with the dry_run option enabled.
-
-cd "$(dirname "$0")/.."
-
-exec python3 -m bigquery_etl.dryrun "$@"

@@ -13,13 +13,13 @@ WITH unioned AS (
     *,
     'Desktop' AS app
   FROM
-    amo_prod.desktop_addons_by_client_v1
+    `moz-fx-data-shared-prod.amo_prod.desktop_addons_by_client_v1`
   UNION ALL
   SELECT
     *,
     'Fenix' AS app
   FROM
-    amo_prod.fenix_addons_by_client_v1
+    `moz-fx-data-shared-prod.amo_prod.fenix_addons_by_client_v1`
 ),
 unnested AS (
   SELECT
@@ -39,7 +39,7 @@ per_addon_version AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_addon_version
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_addon_version
   FROM
     (
       SELECT
@@ -62,7 +62,7 @@ per_app_version AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_version
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_version
   FROM
     (
       SELECT
@@ -87,7 +87,7 @@ per_fenix_build AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_fenix_build
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_fenix_build
   FROM
     (
       SELECT
@@ -112,7 +112,7 @@ per_locale AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_locale
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_locale
   FROM
     (
       SELECT
@@ -135,7 +135,7 @@ per_country AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_country
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_country
   FROM
     (
       SELECT
@@ -158,7 +158,7 @@ per_app_os AS (
   SELECT
     submission_date,
     addon_id,
-    array_agg(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_os
+    ARRAY_AGG(STRUCT(key, value) ORDER BY value DESC) AS dau_by_app_os
   FROM
     (
       SELECT
@@ -196,25 +196,19 @@ FROM
   total_dau
 LEFT JOIN
   per_addon_version
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_app_version
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_fenix_build
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_locale
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_country
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_app_os
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)

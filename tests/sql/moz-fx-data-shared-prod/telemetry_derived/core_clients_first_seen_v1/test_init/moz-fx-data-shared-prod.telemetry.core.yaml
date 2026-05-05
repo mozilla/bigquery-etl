@@ -1,0 +1,10 @@
+---
+- sample_id: 0
+  client_id: single-instance
+  submission_timestamp: 2021-03-01T00:00:00
+- sample_id: 0
+  client_id: multiple-instances
+  submission_timestamp: 2021-03-01T00:00:00
+- sample_id: 0
+  client_id: multiple-instances
+  submission_timestamp: 2021-03-02T00:00:00

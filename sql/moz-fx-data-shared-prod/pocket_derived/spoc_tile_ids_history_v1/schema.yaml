@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date of the tile ID export
+- mode: NULLABLE
+  name: tile_id
+  type: INTEGER
+  description: Numeric ID for the tile
+- mode: NULLABLE
+  name: type
+  type: STRING
+  description: Type of content (should always be 'spoc')

@@ -1,6 +1,7 @@
 friendly_name: Prod Stripe charge
 description: Production Stripe charge table from Fivetran
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: hourly

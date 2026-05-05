@@ -3,4 +3,5 @@ description: 'Hubs subscriptions.
 
   '
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com

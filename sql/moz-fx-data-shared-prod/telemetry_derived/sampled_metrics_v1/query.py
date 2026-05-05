@@ -122,14 +122,16 @@ def get_sampled_metrics_from_api():
         bucket_config = exp.get("bucketConfig", {})
         count = bucket_config.get("count", 0)
         total = bucket_config.get("total", 1)
-        sample_rate = count / total if total > 0 else 0.0
+        # The rollout disables metrics for count/total of clients,
+        # so the fraction that still sends the metric is 1 - count/total.
+        sample_rate = round(1 - (count / total), 4) if total > 0 else 1.0
 
         channel = parse_channel(targeting)
         min_version = parse_min_version(targeting)
         max_version = parse_max_version(targeting)
 
-        # Collect all metrics set to true across all branches
-        enabled_metrics = set()
+        # Collect metrics set to false (disabled for this population).
+        sampled_metrics = set()
         for branch in exp.get("branches", []):
             for feature in branch.get("features", []):
                 value = feature.get("value", {})
@@ -138,10 +140,10 @@ def get_sampled_metrics_from_api():
                 config = value.get("gleanMetricConfiguration", {})
                 metrics_enabled = config.get("metrics_enabled", {})
                 for metric, enabled in metrics_enabled.items():
-                    if enabled is True:
-                        enabled_metrics.add(metric)
+                    if enabled is False:
+                        sampled_metrics.add(metric)
 
-        for metric in sorted(enabled_metrics):
+        for metric in sorted(sampled_metrics):
             parts = metric.split(".", 1)
             if len(parts) == 2:
                 metric_type, metric_name = parts

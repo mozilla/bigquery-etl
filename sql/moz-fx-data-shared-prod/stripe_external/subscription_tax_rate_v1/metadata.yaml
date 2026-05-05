@@ -1,6 +1,7 @@
 friendly_name: Prod Stripe subscription_tax_rate
 description: Production Stripe subscription_tax_rate table from Fivetran
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: hourly

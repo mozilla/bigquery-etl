@@ -11,7 +11,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
     "Braze Firefox unsubscribe" AS suppression_source
   FROM
@@ -20,7 +20,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Firefox hard bounce" AS suppression_source
   FROM
@@ -31,7 +31,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Mozilla hard bounce" AS suppression_source
   FROM
@@ -40,7 +40,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
     "Braze Pocket unsubscribe" AS suppression_source
   FROM
@@ -49,7 +49,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Pocket hard bounce" AS suppression_source
   FROM

@@ -205,12 +205,15 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
     ):
+        query_args = (
+            [] if (Path(checks_file).parent / "query.py").exists() else ctx.args
+        )
         _run_check(
             checks_file,
             project_id,
             dataset_id,
             table,
-            ctx.args,
+            query_args,
             dry_run=dry_run,
             marker=marker,
         )

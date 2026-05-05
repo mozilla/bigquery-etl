@@ -56,8 +56,8 @@ def _make_experiment(
     """Build a mock experiment dict matching the Experimenter API shape."""
     if metrics_enabled is None:
         metrics_enabled = {
-            "timing_distribution.paint_build_displaylist_time": True,
-            "memory_distribution.heap_allocated": True,
+            "timing_distribution.paint_build_displaylist_time": False,
+            "memory_distribution.heap_allocated": False,
         }
     if feature_ids is None:
         feature_ids = ["gleanInternalSdk"]
@@ -202,7 +202,7 @@ class TestGetSampledMetricsFromApi:
 
         assert len(rows) == 2
         assert all(r["experimenter_slug"] == "test-sampling-rollout" for r in rows)
-        assert all(r["sample_rate"] == 0.1 for r in rows)
+        assert all(r["sample_rate"] == 0.9 for r in rows)
         assert all(r["channel"] == "release" for r in rows)
         assert all(r["min_version"] == "138.!" for r in rows)
         assert all(r["max_version"] is None for r in rows)
@@ -234,19 +234,19 @@ class TestGetSampledMetricsFromApi:
         assert rows == []
 
     @mock.patch.object(query_mod, "fetch")
-    def test_only_true_metrics_included(self, mock_fetch):
+    def test_only_false_metrics_included(self, mock_fetch):
         mock_fetch.return_value = [
             _make_experiment(
                 end_date=FUTURE_DATE,
                 metrics_enabled={
-                    "counter.enabled_metric": True,
-                    "counter.disabled_metric": False,
+                    "counter.sampled_metric": False,
+                    "counter.unsampled_metric": True,
                 },
             ),
         ]
         rows = get_sampled_metrics_from_api()
         assert len(rows) == 1
-        assert rows[0]["metric_name"] == "enabled_metric"
+        assert rows[0]["metric_name"] == "sampled_metric"
 
     @mock.patch.object(query_mod, "fetch")
     def test_unions_metrics_across_branches(self, mock_fetch):
@@ -260,7 +260,7 @@ class TestGetSampledMetricsFromApi:
                         "value": {
                             "gleanMetricConfiguration": {
                                 "metrics_enabled": {
-                                    "counter.metric_a": True,
+                                    "counter.metric_a": False,
                                 }
                             }
                         },
@@ -276,7 +276,7 @@ class TestGetSampledMetricsFromApi:
                         "value": {
                             "gleanMetricConfiguration": {
                                 "metrics_enabled": {
-                                    "counter.metric_b": True,
+                                    "counter.metric_b": False,
                                 }
                             }
                         },
@@ -299,7 +299,7 @@ class TestGetSampledMetricsFromApi:
         mock_fetch.return_value = [
             _make_experiment(
                 end_date=FUTURE_DATE,
-                metrics_enabled={"nodot": True},
+                metrics_enabled={"nodot": False},
             ),
         ]
         rows = get_sampled_metrics_from_api()

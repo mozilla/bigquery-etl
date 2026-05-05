@@ -1,6 +1,7 @@
 friendly_name: Non-Prod Stripe invoice
 description: Non-Prod Stripe invoice table from fivetran
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: daily

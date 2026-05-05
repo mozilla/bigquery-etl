@@ -1,14 +1,17 @@
 """bigquery-etl CLI view command."""
+
 import logging
+import multiprocessing
 import re
 import string
 import sys
 from fnmatch import fnmatchcase
-from graphlib import TopologicalSorter
+from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
 import rich_click as click
+from google.cloud import bigquery
 
 from ..cli.utils import (
     parallelism_option,
@@ -18,10 +21,12 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
+from ..util.common import block_coding_agents
+from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -78,15 +83,13 @@ def create(name, sql_dir, project_id, owner):
     click.echo(f"Created new view {view.path}")
 
 
-@view.command(
-    help="""Validate a view.
+@view.command(help="""Validate a view.
     Checks formatting, naming, references and dry runs the view.
 
     Examples:
 
     ./bqetl view validate telemetry.clients_daily
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -101,7 +104,8 @@ def validate(
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
-    views = [View.from_file(f) for f in view_files]
+    id_token = get_id_token()
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
 
     with Pool(parallelism) as p:
         result = p.map(_view_is_valid, views)
@@ -115,8 +119,10 @@ def _view_is_valid(v: View) -> bool:
     return v.is_valid()
 
 
-@view.command(
-    help="""Publish views.
+@view.command(help="""Publish views.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Publish all views
@@ -124,8 +130,8 @@ def _view_is_valid(v: View) -> bool:
 
     # Publish a specific view
     ./bqetl view publish telemetry.clients_daily
-    """
-)
+    """)
+@block_coding_agents
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -162,6 +168,12 @@ def _view_is_valid(v: View) -> bool:
     help="Don't publish views with labels: {authorized: true} in metadata.yaml",
 )
 @click.option(
+    "--authorized-only",
+    "--authorized_only",
+    is_flag=True,
+    help="Only publish views with labels: {authorized: true} in metadata.yaml",
+)
+@click.option(
     "--force",
     is_flag=True,
     help="Publish views even if there are no changes to the view query",
@@ -186,6 +198,7 @@ def publish(
     dry_run,
     user_facing_only,
     skip_authorized,
+    authorized_only,
     force,
     add_managed_label,
     respect_dryrun_skip,
@@ -197,16 +210,27 @@ def publish(
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
 
-    views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
+    if skip_authorized and authorized_only:
+        raise click.ClickException(
+            "Cannot use both --skip-authorized and --authorized-only"
+        )
+
+    credentials = get_credentials()
+
+    views = _collect_views(
+        name, sql_dir, project_id, user_facing_only, skip_authorized, authorized_only
+    )
     if respect_dryrun_skip:
         views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
     if not force:
+        has_changes = partial(_view_has_changes, target_project, credentials)
+
         # only views with changes
-        with ThreadPool(parallelism) as p:
-            changes = p.map(lambda v: v.has_changes(target_project), views, chunksize=1)
+        with Pool(parallelism) as p:
+            changes = p.map(has_changes, views)
         views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
@@ -217,29 +241,59 @@ def publish(
         for view in views
     }
 
-    view_id_order = TopologicalSorter(view_id_graph).static_order()
+    manager = multiprocessing.Manager()
+    results = manager.dict()
 
-    result = []
-    for view_id in view_id_order:
-        try:
-            result.append(views_by_id[view_id].publish(target_project, dry_run))
-        except Exception:
-            print(f"Failed to publish view: {view_id}")
-            print_exc()
-            result.append(False)
+    callback = partial(
+        _publish_view_callback,
+        views_by_id=views_by_id,
+        target_project=target_project,
+        dry_run=dry_run,
+        credentials=credentials,
+        results=results,
+    )
 
-    if not all(result):
+    ts = ParallelTopologicalSorter(view_id_graph, parallelism=parallelism)
+    ts.map(callback)
+
+    if not all(results.values()):
         sys.exit(1)
 
     click.echo("All have been published.")
 
 
-def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):
+def _view_has_changes(target_project, credentials, view):
+    return view.has_changes(target_project, credentials)
+
+
+def _publish_view_callback(
+    view_id,
+    followup_queue,
+    views_by_id,
+    target_project,
+    dry_run,
+    credentials,
+    results,
+):
+    try:
+        client = bigquery.Client(credentials=credentials)
+        success = views_by_id[view_id].publish(target_project, dry_run, client)
+        results[view_id] = success if success is not None else True
+    except Exception:
+        print(f"Failed to publish view: {view_id}")
+        print_exc()
+        results[view_id] = False
+
+
+def _collect_views(
+    name, sql_dir, project_id, user_facing_only, skip_authorized, authorized_only=False
+):
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
+    id_token = get_id_token()
 
-    views = [View.from_file(f) for f in view_files]
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
     if user_facing_only:
         views = [v for v in views if v.is_user_facing]
     if skip_authorized:
@@ -253,11 +307,24 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
                 and v.metadata.labels.get("authorized") == ""
             )
         ]
+    if authorized_only:
+        views = [
+            v
+            for v in views
+            if (
+                v.metadata
+                and v.metadata.labels
+                # labels with boolean true are translated to ""
+                and v.metadata.labels.get("authorized") == ""
+            )
+        ]
     return views
 
 
-@view.command(
-    help="""Remove managed views that are not present in the sql dir.
+@view.command(help="""Remove managed views that are not present in the sql dir.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Clean managed views in shared prod
@@ -265,8 +332,8 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
 
     # Clean managed user facing views in mozdata
     ./bqetl view clean --target-project=mozdata --user-facing-only --skip-authorized
-    """
-)
+    """)
+@block_coding_agents
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -300,7 +367,13 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     "--skip-authorized",
     "--skip_authorized",
     is_flag=True,
-    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+    help="Don't clean views with labels: {authorized: true} in metadata.yaml",
+)
+@click.option(
+    "--authorized-only",
+    "--authorized_only",
+    is_flag=True,
+    help="Only clean views with labels: {authorized: true} in metadata.yaml",
 )
 def clean(
     name,
@@ -312,6 +385,7 @@ def clean(
     dry_run,
     user_facing_only,
     skip_authorized,
+    authorized_only,
 ):
     """Clean managed views."""
     # set log level
@@ -320,13 +394,23 @@ def clean(
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
 
+    if skip_authorized and authorized_only:
+        raise click.ClickException(
+            "Cannot use both --skip-authorized and --authorized-only"
+        )
+
     if project_id is None and target_project is None:
         raise click.ClickException("command requires --project-id or --target-project")
 
     expected_view_ids = {
         view.target_view_identifier(target_project)
         for view in _collect_views(
-            name, sql_dir, project_id, user_facing_only, skip_authorized
+            name,
+            sql_dir,
+            project_id,
+            user_facing_only,
+            skip_authorized,
+            authorized_only,
         )
     }
 
@@ -344,16 +428,25 @@ def clean(
                 )
             )
         ]
+
     with ThreadPool(parallelism) as p:
         managed_view_ids = {
-            sql_table_id(view)
+            view
             for views in p.starmap(
                 client_q.with_client,
-                ((_list_managed_views, dataset, name) for dataset in datasets),
+                (
+                    (
+                        _list_managed_views,
+                        dataset,
+                        name,
+                        skip_authorized,
+                        authorized_only,
+                    )
+                    for dataset in datasets
+                ),
                 chunksize=1,
             )
             for view in views
-            if not skip_authorized or "authorized" not in view.labels
         }
 
         remove_view_ids = sorted(managed_view_ids - expected_view_ids)
@@ -364,13 +457,35 @@ def clean(
         )
 
 
-def _list_managed_views(client, dataset, pattern):
+def _list_managed_views(
+    client, dataset, pattern, skip_authorized, authorized_only=False
+):
+    query = f"""
+      SELECT
+        table_catalog || "." || table_schema || "." || table_name AS table_id,
+        CONTAINS_SUBSTR(option_value, 'STRUCT("authorized", "")') AS is_authorized
+      FROM
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+      INNER JOIN
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+      USING
+        (table_catalog,
+         table_schema,
+         table_name)
+      WHERE
+        option_name = "labels"
+      AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
+    """
+
+    # running a query against information schema instead of using the API to list tables is much faster
+    job = client.query(query)
+    result = list(job.result())
     return [
-        table
-        for table in client.list_tables(dataset)
-        if table.table_type == "VIEW"
-        and "managed" in table.labels
-        and (pattern is None or fnmatchcase(sql_table_id(table), f"*{pattern}"))
+        row.table_id
+        for row in result
+        if (pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}"))
+        and (not skip_authorized or not row.is_authorized)
+        and (not authorized_only or row.is_authorized)
     ]
 
 
@@ -382,8 +497,7 @@ def _remove_view(client, view_id, dry_run):
         client.delete_table(view_id)
 
 
-@view.command(
-    help="""List broken views.
+@view.command(help="""List broken views.
     Examples:
 
     # Publish all views
@@ -391,8 +505,7 @@ def _remove_view(client, view_id, dry_run):
 
     # Publish a specific view
     ./bqetl view list-broken --only telemetry
-    """
-)
+    """)
 @project_id_option()
 @parallelism_option()
 @click.option(

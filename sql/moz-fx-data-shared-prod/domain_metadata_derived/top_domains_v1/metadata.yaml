@@ -19,8 +19,3 @@ bigquery:
 
 scheduling:
   dag_name: bqetl_domain_meta
-
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozilla-confidential

@@ -17,8 +17,8 @@ CREATE TEMP FUNCTION udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (
 );
 
 WITH valid_build_ids AS (
-  SELECT
-    DISTINCT(build.build.id) AS build_id
+  SELECT DISTINCT
+    (build.build.id) AS build_id
   FROM
     `moz-fx-data-shared-prod.telemetry.buildhub2`
 ),

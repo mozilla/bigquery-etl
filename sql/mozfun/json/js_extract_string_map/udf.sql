@@ -1,20 +1,7 @@
 CREATE OR REPLACE FUNCTION json.js_extract_string_map(input STRING)
-RETURNS ARRAY<STRUCT<key STRING, value STRING>>
-LANGUAGE js
-AS
-  """
-const obj = JSON.parse(input)
-if (obj === null) {
-  return null;
-}
-return Object.entries(obj).map(([key, value]) => {
-  if (value === null || typeof value === 'string') {
-    return {key, value};
-  } else {
-    return {key, value: JSON.stringify(value)};
-  }
-});
-""";
+RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
+  json.extract_string_map(input)
+);
 
 -- Tests
 SELECT

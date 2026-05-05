@@ -15,6 +15,11 @@
           },
           {
             "mode": "NULLABLE",
+            "name": "client_id_ga4",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
             "name": "dltoken",
             "type": "STRING"
           },

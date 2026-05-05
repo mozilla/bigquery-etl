@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 """Generates the list of missing columns in structured datasets."""
+
 import datetime
 import json
 from argparse import ArgumentParser
-from collections import defaultdict
 
 from google.cloud import bigquery
 
@@ -58,6 +58,21 @@ transformed AS (
     document_type,
     document_version,
     path
+),
+row_counts AS (
+  SELECT
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version,
+    COUNT(*) AS total_row_count,
+  FROM
+    extracted
+  GROUP BY
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version
 )
 SELECT
   submission_date,
@@ -65,16 +80,25 @@ SELECT
   document_type,
   document_version,
   path,
-  path_count
+  path_count,
+  total_row_count,
 FROM
   transformed
+INNER JOIN
+  row_counts
+USING (submission_date, document_namespace, document_type, document_version)
 """
 
 
-def structured_missing_columns(
-    date, project, destination_dataset, destination_table, skip_exceptions
-):
+def structured_missing_columns():
     """Get missing columns for structured ingestion."""
+    args = parse_args()
+    date = args.date
+    project = args.project
+    destination_dataset = args.destination_dataset
+    destination_table = args.destination_table
+    skip_exceptions = args.skip_exceptions
+
     client = bigquery.Client(project=project)
     print("Getting the list of namespaces...")
     namespaces = [
@@ -107,7 +131,7 @@ def structured_missing_columns(
                 ),
             )
             job.result()
-            mb_processed[namespace] = round(job.total_bytes_processed / 1024 ** 2, 1)
+            mb_processed[namespace] = round(job.total_bytes_processed / 1024**2, 1)
         except Exception as e:
             if not skip_exceptions:
                 raise
@@ -133,11 +157,4 @@ def parse_args():
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    structured_missing_columns(
-        args.date,
-        args.project,
-        args.destination_dataset,
-        args.destination_table,
-        args.skip_exceptions,
-    )
+    structured_missing_columns()

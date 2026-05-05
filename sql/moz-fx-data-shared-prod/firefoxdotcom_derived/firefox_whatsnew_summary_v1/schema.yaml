@@ -1,0 +1,41 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the visit
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country - The country from which events were reported, based on IP address
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale - Sourced from page path level 1 (e.g. en-US, zh-CN, etc)
+- mode: NULLABLE
+  name: version
+  type: STRING
+  description: Version - Sourced from page level 2, e.g. /{locale}/firefox/{version}/whatsnew/...
+- mode: NULLABLE
+  name: major_version
+  type: NUMERIC
+  description: Major Version - The major release version number
+- mode: NULLABLE
+  name: minor_version
+  type: NUMERIC
+  description: Minor Version - The minor release version number
+- mode: NULLABLE
+  name: patch_revision
+  type: NUMERIC
+  description: Patch Revision - The patch revision version number
+- mode: NULLABLE
+  name: is_major_release
+  type: BOOLEAN
+  description: Is Major Release - Indicates if this is a new major release (i.e. minor version is 0)
+- mode: NULLABLE
+  name: visits
+  type: INT64
+  description: Visits - The number of unique visits, where a unique visit is the user_pseudo_id plus session ID
+- mode: NULLABLE
+  name: bounces
+  type: INT64
+  description: Bounces - The number of unique visits where the session was considered a bounce

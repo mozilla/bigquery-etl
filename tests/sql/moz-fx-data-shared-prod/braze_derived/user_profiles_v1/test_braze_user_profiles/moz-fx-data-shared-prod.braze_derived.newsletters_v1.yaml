@@ -1,0 +1,21 @@
+# braze newsletters
+---
+# user 1
+- external_id: user_1
+  newsletters:
+    - newsletter_name: newsletter_1
+      newsletter_lang: EN
+    - newsletter_name: newsletter_2
+      newsletter_lang: DE
+# user 2
+- external_id: user_2_only_newsletters
+  newsletters:
+    - newsletter_name: newsletter_1
+      newsletter_lang: EN
+# user 3
+# user 4
+# user 5 not in user list - should not show up
+- external_id: user_5_not_in_users
+  newsletters:
+    - newsletter_name: newsletter_1
+      newsletter_lang: EN

@@ -1,0 +1,5 @@
+friendly_name: Core Clients Daily V1
+description: |
+  A daily aggregate of baseline and metrics pings from each client sending core pings, partitioned by day
+owners:
+- ascholtz@mozilla.com

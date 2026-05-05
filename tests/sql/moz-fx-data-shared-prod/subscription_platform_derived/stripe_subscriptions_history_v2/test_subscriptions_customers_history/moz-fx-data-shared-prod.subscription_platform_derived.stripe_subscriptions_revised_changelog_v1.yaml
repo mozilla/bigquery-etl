@@ -1,0 +1,22 @@
+- id: sub_1-2000-01-01T00:00:00.000000
+  timestamp: 2000-01-01 00:00:00Z
+  subscription:
+    id: sub_1
+    customer_id: cus_1
+    start_date: 2000-01-01 00:00:00Z
+    status: active
+- id: sub_1-2000-02-01T00:00:00.000000
+  timestamp: 2000-02-01 00:00:00Z
+  subscription:
+    id: sub_1
+    customer_id: cus_1
+    start_date: 2000-01-01 00:00:00Z
+    status: active
+- id: sub_1-2000-03-01T00:00:00.000000
+  timestamp: 2000-03-01 00:00:00Z
+  subscription:
+    id: sub_1
+    customer_id: cus_1
+    ended_at: 2000-03-01 00:00:00Z
+    start_date: 2000-01-01 00:00:00Z
+    status: canceled

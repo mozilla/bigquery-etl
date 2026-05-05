@@ -1,9 +1,0 @@
----
-friendly_name: All Decoded Tables
-description: |-
-  A view on top of the `payload_bytes_decoded.*` tables that includes all
-  fields except the payload.
-
-  This view is useful for overall pipeline monitoring.
-
-  Clustering fields: `submission_timestamp`

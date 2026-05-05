@@ -61,7 +61,7 @@ WITH base AS (
     -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT
-        udf.extract_histogram_sum(mozfun.map.get_key(histogram, key))
+        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(mozfun.map.get_key(histogram, key))
       FROM
         UNNEST(
           [
@@ -101,7 +101,7 @@ WITH base AS (
     -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT
-        udf.extract_histogram_sum(histogram)
+        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(histogram)
       FROM
         UNNEST(
           [
@@ -147,7 +147,9 @@ WITH base AS (
         UNNEST(
           [
             -- We add a struct layer here b/c BQ doesn't allow nested arrays
-            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram), -- 0
+            STRUCT(
+              payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram
+            ), -- 0
             STRUCT(payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram), -- 1
             STRUCT(payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram) -- 2
           ]
@@ -161,8 +163,8 @@ WITH base AS (
     AND document_id IS NOT NULL
 ),
 overactive AS (
-  -- Find client_ids with over 150,000 pings in a day, which could errors in the
-  -- next step due to aggregation overflows.
+  -- Find client_ids with over 150 000 pings in a day or over 3 000 000 across all pings,
+  -- which could cause errors in the next step due to aggregation overflows.
   SELECT
     client_id
   FROM
@@ -171,12 +173,15 @@ overactive AS (
     client_id
   HAVING
     COUNT(*) > 150000
+    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 2000000
+    OR SUM(ARRAY_LENGTH(environment.experiments)) > 5000000
 ),
 clients_summary AS (
   SELECT
     submission_timestamp,
     client_id,
     sample_id,
+    profile_group_id,
     document_id,
     metadata.uri.app_update_channel AS channel,
     normalized_channel,
@@ -223,16 +228,18 @@ clients_summary AS (
     environment.partner.distributor_channel,
     IFNULL(
       environment.services.account_enabled,
-      udf.boolean_histogram_to_boolean(payload.histograms.fxa_configured)
+      `moz-fx-data-shared-prod.udf.boolean_histogram_to_boolean`(payload.histograms.fxa_configured)
     ) AS fxa_configured,
     IFNULL(
       environment.services.sync_enabled,
-      udf.boolean_histogram_to_boolean(payload.histograms.weave_configured)
+      `moz-fx-data-shared-prod.udf.boolean_histogram_to_boolean`(
+        payload.histograms.weave_configured
+      )
     ) AS sync_configured,
-    udf.histogram_max_key_with_nonzero_value(
+    `moz-fx-data-shared-prod.udf.histogram_max_key_with_nonzero_value`(
       payload.histograms.weave_device_count_desktop
     ) AS sync_count_desktop,
-    udf.histogram_max_key_with_nonzero_value(
+    `moz-fx-data-shared-prod.udf.histogram_max_key_with_nonzero_value`(
       payload.histograms.weave_device_count_mobile
     ) AS sync_count_mobile,
     application.build_id AS app_build_id,
@@ -356,16 +363,53 @@ clients_summary AS (
     ) AS places_pages_count,
     ARRAY(
       SELECT AS STRUCT
-        SUBSTR(_key, 0, pos - 2) AS engine,
-        SUBSTR(_key, pos) AS source,
-        udf.extract_histogram_sum(value) AS `count`
+        CASE
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN
+      -- Capture everything (greedily) until the last '.'
+      -- but do NOT include the '.' or anything after it in the capture
+              REGEXP_EXTRACT(_key, r'^(.*)\.[^.]+$')
+          ELSE _key
+        END AS engine,
+        CASE
+        -- Everything after the last period
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN REGEXP_EXTRACT(_key, r'\.([^.]+)$')
+          ELSE NULL
+        END AS source,
+        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(value) AS count
       FROM
-        UNNEST(payload.keyed_histograms.search_counts),
-        -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
-        UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
+        UNNEST(payload.keyed_histograms.search_counts) AS hist,
+        UNNEST([REPLACE(hist.key, 'in-content.', 'in-content:')]) AS _key
     ) AS search_counts,
-    udf_js.main_summary_active_addons(environment.addons.active_addons, NULL) AS active_addons,
+    -- A fixed list of fields is selected to maintain compatibility with the udf as fields are added
+    `moz-fx-data-shared-prod.udf_js.main_summary_active_addons`(
+      ARRAY(
+        SELECT AS STRUCT
+          addons.key,
+          STRUCT(
+            addons.value.app_disabled,
+            addons.value.blocklisted,
+            addons.value.description,
+            addons.value.foreign_install,
+            addons.value.has_binary_components,
+            addons.value.install_day,
+            addons.value.is_system,
+            addons.value.is_web_extension,
+            addons.value.multiprocess_compatible,
+            addons.value.name,
+            addons.value.scope,
+            addons.value.signed_state,
+            addons.value.type,
+            addons.value.update_day,
+            addons.value.user_disabled,
+            addons.value.version
+          ) AS value
+        FROM
+          UNNEST(environment.addons.active_addons) AS addons
+      ),
+      NULL
+    ) AS active_addons,
     ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
     environment.settings.blocklist_enabled,
     environment.settings.addon_compatibility_check_enabled,
@@ -633,6 +677,8 @@ clients_summary AS (
       payload.processes.parent.scalars.os_environment_is_taskbar_pinned_private,
       FALSE
     ) AS scalar_parent_os_environment_is_taskbar_pinned_private,
+    payload.processes.parent.scalars.browser_backup_scheduler_enabled AS browser_backup_scheduler_enabled,
+    payload.processes.parent.scalars.browser_backup_archive_enabled AS browser_backup_archive_enabled,
     -- Select out some individual userPrefs values; note that prefs are only available in
     -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
     -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
@@ -700,15 +746,11 @@ aggregates AS (
     SUM(aborts_gmplugin) AS aborts_gmplugin_sum,
     SUM(aborts_plugin) AS aborts_plugin_sum,
     AVG(active_addons_count) AS active_addons_count_mean,
-    udf.aggregate_active_addons(
+    `moz-fx-data-shared-prod.udf.aggregate_active_addons`(
       ARRAY_CONCAT_AGG(active_addons ORDER BY submission_timestamp)
     ) AS active_addons,
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_branch, -- deprecated
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_id, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_branch, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_id, -- deprecated
     SUM(active_ticks / (3600 / 5)) AS active_hours_sum,
     mozfun.stats.mode_last(
       ARRAY_AGG(addon_compatibility_check_enabled ORDER BY submission_timestamp)
@@ -783,9 +825,13 @@ aggregates AS (
       ARRAY_AGG(distribution_id ORDER BY submission_timestamp)
     ) AS distribution_id,
     mozfun.stats.mode_last(ARRAY_AGG(partner_id ORDER BY submission_timestamp)) AS partner_id,
-    mozfun.stats.mode_last(ARRAY_AGG(distribution_version ORDER BY submission_timestamp)) AS distribution_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distribution_version ORDER BY submission_timestamp)
+    ) AS distribution_version,
     mozfun.stats.mode_last(ARRAY_AGG(distributor ORDER BY submission_timestamp)) AS distributor,
-    mozfun.stats.mode_last(ARRAY_AGG(distributor_channel ORDER BY submission_timestamp)) AS distributor_channel,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distributor_channel ORDER BY submission_timestamp)
+    ) AS distributor_channel,
     mozfun.stats.mode_last(ARRAY_AGG(e10s_enabled ORDER BY submission_timestamp)) AS e10s_enabled,
     mozfun.stats.mode_last(
       ARRAY_AGG(env_build_arch ORDER BY submission_timestamp)
@@ -873,12 +919,14 @@ aggregates AS (
     mozfun.stats.mode_last(ARRAY_AGG(flash_version ORDER BY submission_timestamp)) AS flash_version,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        udf.geo_struct(country, city, geo_subdivision1, geo_subdivision2)
+        `moz-fx-data-shared-prod.udf.geo_struct`(country, city, geo_subdivision1, geo_subdivision2)
         ORDER BY
           submission_timestamp
       )
     ).*,
-    mozfun.stats.mode_last(ARRAY_AGG(geo_db_version ORDER BY submission_timestamp)) AS geo_db_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(geo_db_version ORDER BY submission_timestamp)
+    ) AS geo_db_version,
     mozfun.json.mode_last(
       ARRAY_AGG(
         IF(
@@ -999,7 +1047,9 @@ aggregates AS (
       ARRAY_AGG(is_default_browser ORDER BY submission_timestamp)
     ) AS is_default_browser,
     mozfun.stats.mode_last(ARRAY_AGG(is_wow64 ORDER BY submission_timestamp)) AS is_wow64,
-    mozfun.stats.mode_last(ARRAY_AGG(apple_model_id ORDER BY submission_timestamp)) AS apple_model_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(apple_model_id ORDER BY submission_timestamp)
+    ) AS apple_model_id,
     mozfun.stats.mode_last(ARRAY_AGG(locale ORDER BY submission_timestamp)) AS locale,
     mozfun.stats.mode_last(ARRAY_AGG(memory_mb ORDER BY submission_timestamp)) AS memory_mb,
     mozfun.stats.mode_last(
@@ -1154,11 +1204,13 @@ aggregates AS (
       scalar_parent_storage_sync_api_usage_extensions_using
     ) AS scalar_parent_storage_sync_api_usage_extensions_using_sum,
     mozfun.stats.mode_last(ARRAY_AGG(search_cohort ORDER BY submission_timestamp)) AS search_cohort,
-    udf.aggregate_search_counts(ARRAY_CONCAT_AGG(search_counts ORDER BY submission_timestamp)).*,
+    `moz-fx-data-shared-prod.udf.aggregate_search_counts`(
+      ARRAY_CONCAT_AGG(search_counts ORDER BY submission_timestamp)
+    ).*,
     AVG(session_restored) AS session_restored_mean,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
-    MAX(subsession_counter)AS max_subsession_counter,
-    MIN(subsession_counter)AS min_subsession_counter,
+    MAX(subsession_counter) AS max_subsession_counter,
+    MIN(subsession_counter) AS min_subsession_counter,
     SUM(shutdown_kill) AS shutdown_kill_sum,
     SUM(subsession_length / NUMERIC '3600') AS subsession_hours_sum,
     SUM(ssl_handshake_result_failure) AS ssl_handshake_result_failure_sum,
@@ -1378,9 +1430,13 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)), -- 96
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_dynamic_wikipedia)), -- 97
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored)), -- 98
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)), -- 99
+      STRUCT(
+        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)
+      ), -- 99
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored)), -- 100
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)), -- 101
+      STRUCT(
+        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)
+      ), -- 101
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_weather)), -- 102
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)), -- 103
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)), -- 104
@@ -1395,7 +1451,9 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_opened)), -- 113
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_search)) -- 114
     ] AS map_sum_aggregates,
-    udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
+    `moz-fx-data-shared-prod.udf.search_counts_map_sum`(
+      ARRAY_CONCAT_AGG(search_counts)
+    ) AS search_counts,
     mozfun.stats.mode_last(
       ARRAY_AGG(user_pref_browser_search_region ORDER BY submission_timestamp)
     ) AS user_pref_browser_search_region,
@@ -1453,8 +1511,15 @@ aggregates AS (
       OFFSET(0)
     ] AS startup_profile_selection_reason_first,
     mozfun.stats.mode_last(
-        ARRAY_AGG(IF(subsession_counter = 1, startup_profile_selection_reason, NULL) ORDER BY submission_timestamp ASC)
-    ) as startup_profile_selection_first_ping_only,
+      ARRAY_AGG(
+        IF(subsession_counter = 1, startup_profile_selection_reason, NULL)
+        ORDER BY
+          submission_timestamp ASC
+      )
+    ) AS startup_profile_selection_first_ping_only,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+    ) AS profile_group_id,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,
@@ -1505,6 +1570,12 @@ aggregates AS (
     SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
     SUM(media_play_time_ms_audio) AS media_play_time_ms_audio_sum,
     SUM(media_play_time_ms_video) AS media_play_time_ms_video_sum,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_scheduler_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_scheduler_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_archive_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_archive_enabled
   FROM
     clients_summary
   GROUP BY

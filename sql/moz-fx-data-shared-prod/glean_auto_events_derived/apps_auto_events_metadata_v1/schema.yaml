@@ -1,0 +1,10 @@
+fields:
+- name: app
+  type: STRING
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: count
+  type: INTEGER
+  mode: NULLABLE

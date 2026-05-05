@@ -11,26 +11,23 @@ WITH client_shares AS (
     COUNT(*) AS global_total,
     COUNT(
       CASE
-  -- SUGGEST DESKTOP ELIGIBILITY REQUIREMENTS
-      WHEN
-        normalized_app_name = "Firefox Desktop"
-        AND
-            -- desktop Suggest experiment start -- 12.5% exposure until 2022-09-21
-        (
-          submission_date >= "2022-06-07"
-          AND browser_version_info.major_version >= 92
-          AND browser_version_info.version NOT IN ('92', '92.', '92.0', '92.0.0')
-          AND country IN UNNEST(["US"])
-          AND locale LIKE "en%"
-        )
-      THEN
-        1
-      ELSE
-        NULL
+        -- SUGGEST DESKTOP ELIGIBILITY REQUIREMENTS
+        WHEN normalized_app_name = "Firefox Desktop"
+          AND
+          -- desktop Suggest experiment start -- 12.5% exposure until 2022-09-21
+          (
+            submission_date >= "2022-06-07"
+            AND browser_version_info.major_version >= 92
+            AND browser_version_info.version NOT IN ('92', '92.', '92.0', '92.0.0')
+            AND country IN UNNEST(["US"])
+            AND locale LIKE "en%"
+          )
+          THEN 1
+        ELSE NULL
       END
     ) AS eligible_clients
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date >= "2022-06-07"
@@ -58,7 +55,7 @@ suggest_clients AS (
     submission_date,
     COUNT(client_id) AS live_market_dau
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date >= "2022-06-07"
@@ -81,7 +78,7 @@ search_clients AS (
     SUM(CASE WHEN SOURCE LIKE "urlbar%" THEN sap ELSE 0 END) AS urlbar_search,
     MAX(COALESCE(SOURCE LIKE "urlbar%", FALSE)) AS did_urlbar_search,
   FROM
-    search.search_clients_engines_sources_daily
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date >= "2022-06-07"
     AND browser_version_info.major_version >= 92
@@ -116,20 +113,17 @@ desktop_population AS (
     "desktop" AS device,
     COUNT(
       CASE
-      WHEN
-        impression_sponsored_count > 0
-        OR impression_nonsponsored_count > 0
-      THEN
-        client_id
-      ELSE
-        NULL
+        WHEN impression_sponsored_count > 0
+          OR impression_nonsponsored_count > 0
+          THEN client_id
+        ELSE NULL
       END
     ) AS suggest_exposed_clients,
     SUM(impression_sponsored_count + impression_nonsponsored_count) AS total_impressions,
     SUM(impression_sponsored_count) AS spons_impressions,
     SUM(click_sponsored_count) AS spons_clicks
   FROM
-    telemetry.suggest_clients_daily
+    `moz-fx-data-shared-prod.telemetry.suggest_clients_daily`
   WHERE
     submission_date >= "2022-06-07"
   GROUP BY

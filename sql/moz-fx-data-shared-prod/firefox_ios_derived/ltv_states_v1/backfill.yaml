@@ -1,0 +1,7 @@
+2024-04-30:
+  start_date: 2022-01-01
+  end_date: 2024-04-29
+  reason: Need to backfill again after new column added; related to https://mozilla-hub.atlassian.net/browse/GROWTH-147
+  watchers:
+  - kwindau@mozilla.com
+  status: Complete

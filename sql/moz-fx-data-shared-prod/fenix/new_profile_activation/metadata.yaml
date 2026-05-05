@@ -1,0 +1,7 @@
+friendly_name: (DEPRECATED) Fenix New Profile Activation
+description: 'DEPRECATED, please use `new_profile_activation_clients` instead.
+
+
+  Mobile activation metric used for Marketing campaign performance'
+owners:
+- kik@mozilla.com

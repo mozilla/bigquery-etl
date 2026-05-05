@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 AS
 SELECT
-  clients.* EXCEPT(is_activated) REPLACE (
+  clients.* REPLACE (
     CASE
       WHEN adjust_network IS NULL
         THEN 'Unknown'
@@ -23,4 +23,4 @@ FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1` AS clients
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.clients_activation` AS activation
-USING(client_id, first_seen_date)
+  USING (client_id, first_seen_date)

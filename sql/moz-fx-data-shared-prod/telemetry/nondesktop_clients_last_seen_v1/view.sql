@@ -88,42 +88,6 @@ WITH glean_final AS (
     country,
     locale,
     app_display_version,
-    'Firefox TV Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_tv_firefox.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    submission_date,
-    client_id,
-    first_seen_date,
-    days_seen_bits,
-    days_since_seen,
-    days_created_profile_bits,
-    days_since_created_profile,
-    normalized_os,
-    normalized_os_version,
-    normalized_channel,
-    country,
-    locale,
-    app_display_version,
-    'VR Browser Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    submission_date,
-    client_id,
-    first_seen_date,
-    days_seen_bits,
-    days_since_seen,
-    days_created_profile_bits,
-    days_since_created_profile,
-    normalized_os,
-    normalized_os_version,
-    normalized_channel,
-    country,
-    locale,
-    app_display_version,
     'Firefox iOS Baseline' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline_clients_last_seen`

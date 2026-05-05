@@ -39,9 +39,7 @@ auth_bounce_events AS (
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
-    CAST(
-      NULL AS STRING
-    ) AS country,  -- No country field in auth_bounces
+    CAST(NULL AS STRING) AS country,  -- No country field in auth_bounces
     CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,

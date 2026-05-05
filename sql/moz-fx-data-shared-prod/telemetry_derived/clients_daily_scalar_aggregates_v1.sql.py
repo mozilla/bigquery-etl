@@ -92,6 +92,7 @@ def generate_sql(
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -102,6 +103,7 @@ def generate_sql(
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -134,6 +136,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
           (SELECT
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -152,6 +155,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             (SELECT
               sample_id,
               client_id,
+              profile_group_id,
               submission_date,
               os,
               app_version,
@@ -200,6 +204,7 @@ def get_keyed_boolean_probes_sql_string(probes):
         SELECT
               sample_id,
               client_id,
+              profile_group_id,
               submission_date,
               os,
               app_version,
@@ -222,6 +227,7 @@ def get_keyed_boolean_probes_sql_string(probes):
         GROUP BY
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -253,6 +259,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         SELECT
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,
@@ -278,6 +285,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         GROUP BY
             sample_id,
             client_id,
+            profile_group_id,
             submission_date,
             os,
             app_version,

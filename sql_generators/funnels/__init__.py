@@ -1,4 +1,5 @@
 """Funnel generation."""
+
 import os
 import re
 from pathlib import Path
@@ -39,6 +40,7 @@ def generate_funnels(target_project, path, output_dir):
                 steps=config.steps,
                 data_sources=config.data_sources,
                 dimensions=config.dimensions,
+                config=config,
             )
         )
         write_sql(

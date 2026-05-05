@@ -1,0 +1,5 @@
+friendly_name: Experiment Crash Rates Live
+description: >
+  View for live experiment crash rates.
+labels:
+  incremental: false

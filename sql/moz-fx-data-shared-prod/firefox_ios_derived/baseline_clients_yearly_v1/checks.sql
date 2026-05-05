@@ -12,4 +12,3 @@
 #fail
 -- Should have a bunch of new profiles each date
 {{ min_row_count(10000, "first_seen_date = @submission_date AND submission_date = @submission_date") }}
-

@@ -13,13 +13,13 @@ WITH unioned AS (
     *,
     'Desktop' AS app
   FROM
-    amo_prod.desktop_addons_by_client_v1
+    `moz-fx-data-shared-prod.amo_prod.desktop_addons_by_client_v1`
   UNION ALL
   SELECT
     *,
     'Fenix' AS app
   FROM
-    amo_prod.fenix_addons_by_client_v1
+    `moz-fx-data-shared-prod.amo_prod.fenix_addons_by_client_v1`
 ),
 unnested AS (
   SELECT

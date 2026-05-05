@@ -1,0 +1,47 @@
+fields:
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: scheduled_date
+    description: The date of the schedule
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_id
+    description: "
+      The curated rec destination where the corpus item is expected to appear (NEW_TAB_EN_INTL,
+      NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB)."
+  - mode: NULLABLE
+    type: INTEGER
+    name: approved_total
+    description: The number of items approved on this day
+  - mode: NULLABLE
+    type: INTEGER
+    name: removed_total
+    description: The number of items removed on this day
+  - mode: NULLABLE
+    type: INTEGER
+    name: rejected_total
+    description: The number of items rejected on this day
+  - mode: NULLABLE
+    type: INTEGER
+    name: manual_within_tool_total
+    description: The number of items added manually in the tool on this day
+  - mode: NULLABLE
+    type: INTEGER
+    name: manual_outside_tool_total
+    description: The number of items added manually outside of the tool on this day
+  - mode: NULLABLE
+    type: FLOAT
+    name: rejection_rate
+    description: The percentage of items rejected on this day.
+  - mode: NULLABLE
+    type: FLOAT
+    name: removal_rate
+    description: The percentage of items removed on this day.
+  - mode: NULLABLE
+    type: FLOAT
+    name: manual_outside_rate
+    description: The percentage of items added manually outside of the tool on this day.
+  - mode: NULLABLE
+    type: FLOAT
+    name: schedule_failure_rate
+    description: The percentage of total items rejected, removed, or added manually outside of the tool on this day.

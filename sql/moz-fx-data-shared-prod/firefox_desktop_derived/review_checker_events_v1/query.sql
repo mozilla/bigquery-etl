@@ -30,6 +30,9 @@ SELECT
   normalized_country_code,
   sample_id,
   mozfun.norm.truncate_version(client_info.app_display_version, "major") AS os_version,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp)
+  ) AS profile_group_id
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1` AS e,
   UNNEST(events)

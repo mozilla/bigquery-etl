@@ -6,7 +6,6 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import gke_command
 
 docs = """
 ### {{ name }}
@@ -39,8 +38,19 @@ default_args = {{
 
 tags = {{ tags }}
 
-with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
-    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+with DAG(
+    '{{ name }}',
+    default_args=default_args,
+    {% if schedule_interval != None -%}
+    schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }},
+    {%- endif %}
+    {% if max_active_runs -%}
+    max_active_runs={{ max_active_runs }},
+    {%- endif %}
+    doc_md=docs,
+    tags=tags,
+) as dag:
+    docker_image = "us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest"
 {% for task_group in task_groups | sort %}
     task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
 {% endfor %}
@@ -64,11 +74,13 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     )
 {% endfor -%}
 
+{% set wait_for_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
     {% for dependency in task.upstream_dependencies | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% else -%}
+    {% if dependency.task_key not in wait_for_seen -%}
     wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
@@ -82,10 +94,13 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        poke_interval=datetime.timedelta(minutes=5),
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
+    {% do wait_for_seen.append(dependency.task_key) %}
+    {% endif -%}
 
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})
     {% endif -%}
@@ -130,10 +145,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% endif -%}
 {% endfor %}
 
-    public_data_gcs_metadata = gke_command(
+    public_data_gcs_metadata = GKEPodOperator(
         task_id="public_data_gcs_metadata",
-        command=["script/publish_public_data_gcs_metadata"],
-        docker_image=docker_image,
+        arguments=["script/publish_public_data_gcs_metadata"],
+        image=docker_image,
     )
 
     public_data_gcs_metadata.set_upstream(

@@ -1,0 +1,381 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "submission_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "client_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "default_search_engine",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "app_version",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "normalized_channel",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "locale",
+    "type": "STRING"
+  },
+    {
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_search_region",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_search_suggest_enabled",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_widget_in_navbar",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_searches",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_show_search_suggestions_first",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_quicksuggest",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_quicksuggest_sponsored",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_quicksuggest_data_collection_enabled",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_autofill_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_bookmark_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_dynamic_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_extension_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_formhistory_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_history_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_keyword_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_remotetab_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_searchengine_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_searchsuggestion_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_switchtab_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_tabtosearch_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_tip_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_topsite_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_unknown_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "scalar_parent_urlbar_picked_visiturl_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "profile_group_id",
+    "type": "STRING"
+  }
+]

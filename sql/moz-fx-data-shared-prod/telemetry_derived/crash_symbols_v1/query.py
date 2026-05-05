@@ -1,4 +1,5 @@
 """Upload symbols used in crash pings."""
+
 from datetime import datetime
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool

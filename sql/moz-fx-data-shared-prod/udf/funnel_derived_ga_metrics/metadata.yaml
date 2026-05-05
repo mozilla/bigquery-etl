@@ -1,0 +1,4 @@
+description: >
+  This is a stub implementation for use with tests; real implementation is in
+  private-bigquery-etl
+friendly_name: Funnel Derived GA Metrics

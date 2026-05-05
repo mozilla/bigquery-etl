@@ -1,0 +1,66 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.firefox_desktop.composite_active_users`
+AS
+SELECT
+  submission_date,
+  client_id AS usage_profile_id,
+  first_seen_year,
+  first_seen_date,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  os_version_build,
+  distribution_id,
+  is_default_browser,
+  activity_segment,
+  is_dau,
+  is_wau,
+  is_mau,
+  is_daily_user,
+  is_weekly_user,
+  is_monthly_user,
+FROM
+  `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+WHERE
+  mozfun.norm.browser_version_info(app_version).major_version < 136
+UNION ALL
+SELECT
+  submission_date,
+  usage_profile_id,
+  first_seen_year,
+  first_seen_date,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  os_version_build,
+  distribution_id,
+  is_default_browser,
+  activity_segment,
+  is_dau,
+  is_wau,
+  is_mau,
+  is_daily_user,
+  is_weekly_user,
+  is_monthly_user,
+FROM
+  `moz-fx-data-shared-prod.firefox_desktop.usage_reporting_active_users`
+WHERE
+  mozfun.norm.browser_version_info(app_version).major_version >= 136

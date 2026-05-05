@@ -1,0 +1,13 @@
+fields: !flatten-lists
+- !include-field
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  field: subscription.id
+- name: service_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    ID of the service provided by the subscription, as defined in the `services_v1` ETL.
+- !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
+  parent_field: subscription
+  exclude_field_names: id

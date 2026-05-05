@@ -1,12 +1,22 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.smoot_usage_day_0`
-AS WITH
-  unioned AS (
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2`
+AS
+WITH unioned AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2`
   UNION ALL
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2`
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2`
   UNION ALL
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2` )
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2`
+)
   --
 SELECT
   submission_date AS `date`,

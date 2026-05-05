@@ -12,7 +12,7 @@ WITH new_clients AS (
     sample_id,
     channel,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 ),
@@ -26,7 +26,7 @@ new_clients_activity AS (
       mozfun.bits28.to_dates(mozfun.bits28.range(days_seen_bits, -5, 6), submission_date)
     ) AS days_2_7,
   FROM
-    firefox_ios.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
@@ -38,7 +38,7 @@ clients_search AS (
     channel,
     SUM(search_count) AS search_count
   FROM
-    search_derived.mobile_search_clients_daily_v1
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
     AND os = 'iOS'

@@ -71,7 +71,18 @@ RETURNS STRING AS (
 SELECT
   assert.equals(
     "0_dow1_organic_1_1",
-    ltv.android_states_with_paid_v2("abc", 0, 0, 100, DATE("2023-01-01"), DATE("2023-01-01"), 1, 1, 28, "US")
+    ltv.android_states_with_paid_v2(
+      "abc",
+      0,
+      0,
+      100,
+      DATE("2023-01-01"),
+      DATE("2023-01-01"),
+      1,
+      1,
+      28,
+      "US"
+    )
   ),
   assert.equals(
     "1_dow2_paid_1_0",

@@ -1,0 +1,25 @@
+friendly_name: Uninstalls By Download Source
+description: |-
+  Number of unique clients uninstalling by submission date and download source
+owners:
+- kik@mozilla.com
+labels:
+  level: bronze
+  incremental: true
+  owner1: kik
+  table_type: aggregate
+  shredder_mitigation: true
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - attribution_dlsource
+require_column_descriptions: true

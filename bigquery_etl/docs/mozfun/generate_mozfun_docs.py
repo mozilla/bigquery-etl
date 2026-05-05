@@ -1,4 +1,5 @@
 """Generate documentation for mozfun."""
+
 import itertools
 import os
 import re

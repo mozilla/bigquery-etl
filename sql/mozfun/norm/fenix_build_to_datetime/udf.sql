@@ -7,9 +7,7 @@ CREATE OR REPLACE FUNCTION norm.fenix_build_to_datetime(app_build STRING) AS (
       -- day of year (%j) or the custom single-character year used here.
       THEN DATETIME_ADD(
           DATETIME(
-            2018 + SAFE_CAST(
-              SUBSTR(app_build, 1, 1) AS INT64
-            ), -- year
+            2018 + SAFE_CAST(SUBSTR(app_build, 1, 1) AS INT64), -- year
             1, -- placeholder month
             1, -- placeholder year
             SAFE_CAST(SUBSTR(app_build, 5, 2) AS INT64),
@@ -21,7 +19,7 @@ CREATE OR REPLACE FUNCTION norm.fenix_build_to_datetime(app_build STRING) AS (
     WHEN LENGTH(app_build) = 10
       THEN DATETIME_ADD(
           DATETIME '2014-12-28 00:00:00',
-          INTERVAL(
+          INTERVAL (
             SAFE_CAST(app_build AS INT64)
             -- We shift left and then right again to erase all but the 20 rightmost bits
             << (64 - 20) >> (64 - 20)

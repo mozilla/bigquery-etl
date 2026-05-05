@@ -1,0 +1,17 @@
+fields:
+
+- name: suppression_reason
+  type: STRING
+  mode: NULLABLE
+
+- name: email
+  type: STRING
+  mode: NULLABLE
+
+- name: update_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+
+- name: state
+  type: STRING
+  mode: NULLABLE

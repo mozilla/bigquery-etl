@@ -1,0 +1,37 @@
+fields:
+  - name: dte
+    mode: NULLABLE
+    type: DATE
+    description: The date of the browser usage data
+  - name: device_type
+    mode: NULLABLE
+    type: STRING
+    description: The device type (desktop, mobile, other, or all)
+  - name: location
+    mode: NULLABLE
+    type: STRING
+    description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
+  - name: user_type
+    mode: NULLABLE
+    type: STRING
+    description: The user type; i.e. human (likely human) or bot (likely automated) or all
+  - name: browser
+    mode: NULLABLE
+    type: STRING
+    description: The type of browser
+  - name: operating_system
+    mode: NULLABLE
+    type: STRING
+    description: The type of operating system
+  - name: percent_share
+    mode: NULLABLE
+    type: NUMERIC
+    description: The percent share usage for this browser for this time range and location and device type
+  - name: normalization
+    mode: NULLABLE
+    type: STRING
+    description: The normalization type of the usage (i.e. percentage)
+  - name: last_updated_ts
+    mode: NULLABLE
+    type: TIMESTAMP
+    description: The timestamp this data was retrieved from the API

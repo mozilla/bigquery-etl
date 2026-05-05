@@ -1,14 +1,14 @@
-WITH
-  base AS (
+WITH base AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    * REPLACE(LOWER(client_id) AS client_id)
+    * REPLACE (LOWER(client_id) AS client_id)
   FROM
-    telemetry.core
+    `moz-fx-data-shared-prod.telemetry.core`
   WHERE
-    client_id IS NOT NULL ),
+    client_id IS NOT NULL
+),
   --
-  windowed AS (
+windowed AS (
   SELECT
     submission_date,
     client_id,
@@ -28,23 +28,42 @@ WITH
     SUM(IF(durations BETWEEN 0 AND 100000, durations, 0)) OVER w1 AS durations,
     SUM(IF(flash_usage BETWEEN 0 AND 100000, flash_usage, 0)) OVER w1 AS flash_usage,
     -- For all other dimensions, we use the mode of observed values in the day.
-    udf.mode_last(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
-    udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf.json_mode_last(ARRAY_AGG(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
-    udf.mode_last(ARRAY_AGG(metadata.uri.app_build_id) OVER w1) AS app_build_id,
-    udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
-    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf.mode_last(ARRAY_AGG(osversion) OVER w1) AS osversion,
-    udf.mode_last(ARRAY_AGG(device) OVER w1) AS device,
-    udf.mode_last(ARRAY_AGG(arch) OVER w1) AS arch,
-    udf.mode_last(ARRAY_AGG(default_search) OVER w1) AS default_search,
-    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf.mode_last(ARRAY_AGG(campaign) OVER w1) AS campaign,
-    udf.mode_last(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
-    udf.mode_last(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
-    udf.mode_last(ARRAY_AGG(show_tracker_stats_share) OVER w1) AS show_tracker_stats_share,
-    udf.mode_last(ARRAY_AGG(metadata.uri.app_version) OVER w1) AS metadata_app_version,
-    udf.mode_last(ARRAY_AGG(bug_1501329_affected) OVER w1) AS bug_1501329_affected
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os) OVER w1) AS os,
+    `moz-fx-data-shared-prod.udf.json_mode_last`(
+      ARRAY_AGG(
+        `moz-fx-data-shared-prod.udf.geo_struct`(
+          metadata.geo.country,
+          metadata.geo.city,
+          NULL,
+          NULL
+        )
+      ) OVER w1
+    ).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(metadata.uri.app_build_id) OVER w1
+    ) AS app_build_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(normalized_channel) OVER w1
+    ) AS normalized_channel,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale) OVER w1) AS locale,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(osversion) OVER w1) AS osversion,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(device) OVER w1) AS device,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(arch) OVER w1) AS arch,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(default_search) OVER w1) AS default_search,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(campaign) OVER w1) AS campaign,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(show_tracker_stats_share) OVER w1
+    ) AS show_tracker_stats_share,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(metadata.uri.app_version) OVER w1
+    ) AS metadata_app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(bug_1501329_affected) OVER w1
+    ) AS bug_1501329_affected
   FROM
     base
   WHERE
@@ -54,28 +73,33 @@ WITH
     AND (@submission_date IS NULL OR @submission_date = submission_date)
   WINDOW
     w1 AS (
-    PARTITION BY
-      client_id,
-      submission_date
-    ORDER BY
-      submission_timestamp
-    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    ),
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
-    PARTITION BY
-      client_id,
-      submission_date
-    ORDER BY
-      submission_timestamp) ),
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp
+    )
+),
   --
-  deduped AS (
-    SELECT
-      * EXCEPT (_n)
-    FROM
-      windowed
-    WHERE
-      _n = 1
-  )
+deduped AS (
+  SELECT
+    * EXCEPT (_n)
+  FROM
+    windowed
+  WHERE
+    _n = 1
+)
 --
 SELECT
   deduped.*,
@@ -84,5 +108,5 @@ SELECT
 FROM
   deduped
 LEFT JOIN
-  core_clients_first_seen_v1 AS cfs
+  `moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1` AS cfs
   USING (client_id)

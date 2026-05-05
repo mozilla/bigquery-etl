@@ -1,0 +1,71 @@
+fields:
+- description: Submission Timestamp
+  mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+- description: Normalized Country Code, Examples - US, AR, BR, etc.
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Normalized Channel, Examples - release, nightly, aurora, esr, beta
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: Document ID
+  mode: NULLABLE
+  name: document_id
+  type: STRING
+- description: Pocket Enabled
+  mode: NULLABLE
+  name: pocket_enabled
+  type: BOOLEAN
+- description: Pocket Sponsored Stories Enabled
+  mode: NULLABLE
+  name: pocket_sponsored_stories_enabled
+  type: BOOLEAN
+- description: Newtab Locale
+  mode: NULLABLE
+  name: newtab_locale
+  type: STRING
+- description: App Build
+  mode: NULLABLE
+  name: app_build
+  type: STRING
+- description: App Display Version
+  mode: NULLABLE
+  name: app_display_version
+  type: STRING
+- description: Client ID
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- name: events
+  type: RECORD
+  mode: REPEATED
+  description: Events
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+    description: Event Category
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    description: Extras
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+      description: Key
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: Value
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: Event Name
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+    description: Event Timestamp

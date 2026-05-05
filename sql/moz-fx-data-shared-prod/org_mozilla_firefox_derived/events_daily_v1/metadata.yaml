@@ -1,0 +1,11 @@
+friendly_name: Events Daily V1
+description: Events daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id

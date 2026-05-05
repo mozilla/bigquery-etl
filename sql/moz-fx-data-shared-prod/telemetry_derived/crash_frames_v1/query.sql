@@ -6,7 +6,8 @@ SELECT
   _module.debug_file,
   _module.debug_id,
   IF(
-    _frame.ip LIKE '0x%' AND _module.base_addr LIKE '0x%',
+    _frame.ip LIKE '0x%'
+    AND _module.base_addr LIKE '0x%',
     SAFE_CAST(_frame.ip AS INT64) - SAFE_CAST(_module.base_addr AS INT64),
     NULL
   ) AS module_offset,

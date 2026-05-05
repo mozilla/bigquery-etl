@@ -1,0 +1,6 @@
+friendly_name: WWW Site Hits
+description: |-
+  Normalized events from Google Analytics 4 (GA4) for www.firefox.com.
+  The events triggered at the same timestamp are given the same hit number.
+owners:
+- mhirose@mozilla.com

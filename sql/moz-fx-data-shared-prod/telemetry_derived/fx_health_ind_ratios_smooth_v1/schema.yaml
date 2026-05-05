@@ -1,0 +1,29 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: total_default
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Windows 10 clients with Firefox as default browser with days since seen = 0
+- name: default_new
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Windows 10 clients with Firefox as default browswer with days since seen = 0 and first seen < 28 days ago
+- name: default_old
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Windows 10 clients with Firefox as default browser with days since seen = 0 and first seen >= 28 days ago
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Windows 10 clients with days since seen = 0
+- name: share_new_default
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Windows 10 clients with a first seen date < 28 days ago with Firefox as default
+- name: share_old_default
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Windows 10 clients with a first seen date >= 28 days ago with Firefox as default browser

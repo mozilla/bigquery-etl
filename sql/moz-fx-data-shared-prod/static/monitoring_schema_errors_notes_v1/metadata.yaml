@@ -10,6 +10,6 @@ labels:
 external_data:
   format: google_sheets
   source_uris:
-    - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA]
+    - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA
   options:
     skip_leading_rows: 2

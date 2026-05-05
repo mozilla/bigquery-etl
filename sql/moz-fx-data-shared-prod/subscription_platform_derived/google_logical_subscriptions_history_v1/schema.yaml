@@ -1,0 +1,76 @@
+fields: !include-fields
+  file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+  field_replacements:
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+    field: subscription
+    new_fields: !include-fields
+      file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+      parent_field: subscription
+      field_replacements:
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider
+        new_description: |-
+          Provider of the subscription ("Google").
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.payment_provider
+        append_description: |-
+          For Google subscriptions this will be "Google".
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_subscription_id
+        append_description: |-
+          For Google subscriptions this will be the purchase token.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_subscription_item_id
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_customer_id
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_product_id
+        append_description: |-
+          For Google subscriptions this will be the package name.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.provider_plan_id
+        append_description: |-
+          For Google subscriptions this will be the SKU.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.current_period_started_at
+        new_description: |-
+          When the current subscription period started.
+          This will be null for inactive subscriptions and for all Google subcriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.initial_discount_name
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.current_period_discount_name
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.ongoing_discount_name
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.has_refunds
+        append_description: |-
+          This will be null for Google subscriptions.
+      - !include-field
+        file: /sql/moz-fx-data-shared-prod/subscription_platform_derived/provider_logical_subscriptions_history_v1_schema.yaml
+        field: subscription.has_fraudulent_charges
+        append_description: |-
+          This will be null for Google subscriptions.

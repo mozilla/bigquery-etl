@@ -27,6 +27,7 @@ labels:
   schedule: daily
   dag: bqetl_firefox_ios
   owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
@@ -44,4 +45,3 @@ bigquery:
     - sample_id
     - channel
     - first_reported_country
-references: {}

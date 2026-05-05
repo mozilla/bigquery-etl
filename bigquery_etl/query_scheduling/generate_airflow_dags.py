@@ -102,7 +102,9 @@ def get_dags(project_id, dags_config, sql_dir=None):
                                 dag_collection=dag_collection,
                             )
                         )
-                        tasks.append(bigeye_task)
+
+                        if bigeye_task.monitoring_enabled:
+                            tasks.append(bigeye_task)
 
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
@@ -133,14 +135,10 @@ def get_dags(project_id, dags_config, sql_dir=None):
 
                     tasks.append(task)
         else:
-            logging.error(
-                """
+            logging.error("""
                 Invalid project_dir: {}, project_dir must be a directory with
                 structure <sql>/<project>/<dataset>/<table>/metadata.yaml.
-                """.format(
-                    project_dir
-                )
-            )
+                """.format(project_dir))
 
     return dag_collection.with_tasks(tasks)
 

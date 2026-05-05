@@ -11,8 +11,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, bigquery_dq_check
-from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
+from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
 ### bqetl_test_dag
@@ -33,12 +32,13 @@ default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["test@example.org"],
+    "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
+    "max_active_tis_per_dag": None,
 }
 
 tags = ["repo/bigquery-etl"]
@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_foo_bar_baz = BigQueryTableExistenceSensor(
@@ -84,7 +85,7 @@ with DAG(
         dataset_id="test",
         project_id="moz-fx-data-test-project",
         owner="test@example.com",
-        email=["test@example.com"],
+        email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         arguments=["--append_table"],

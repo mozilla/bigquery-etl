@@ -6,7 +6,7 @@ fields:
   - name: ga_client_id
     mode: NULLABLE
     type: STRING
-    description: "Uniquely identifiers a GA client, using a cookie on moz.org."
+    description: "Uniquely identifiers a GA client, using a cookie on the website the download came from."
   - name: stub_session_id
     mode: NULLABLE
     type: STRING

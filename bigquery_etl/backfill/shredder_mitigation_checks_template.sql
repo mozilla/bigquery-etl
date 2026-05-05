@@ -27,8 +27,8 @@ SELECT
       CONCAT(
         ((SELECT COUNT(*) FROM previous_not_matching)),
         " rows in the previous data don't match backfilled data! Run auto-generated checks for ",
-        "all mismatches & search for rows missing or with differences in metrics. 5 sample rows: ",
-        (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM previous_not_matching LIMIT 5)))
+        "all mismatches & search for rows missing or with differences in metrics. Sample row in previous version: ",
+        (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM previous_not_matching LIMIT 1)))
       )
     ),
     NULL
@@ -61,8 +61,8 @@ SELECT
       CONCAT(
         ((SELECT COUNT(*) FROM backfilled_not_matching)),
         " rows in backfill don't match previous version of data! Run auto-generated checks for ",
-        "all mismatches & search for rows added or with differences in metrics. 5 sample rows: ",
-        (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM backfilled_not_matching LIMIT 5)))
+        "all mismatches & search for rows added or with differences in metrics. Sample row in new_version: ",
+        (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM backfilled_not_matching LIMIT 1)))
       )
     ),
     NULL

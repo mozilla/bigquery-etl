@@ -1,0 +1,77 @@
+fields:
+- name: repo_name
+  type: STRING
+  mode: REQUIRED
+  description: Repository name in owner/repo format (e.g. mozilla/private-bigquery-etl)
+- name: pr_number
+  type: INTEGER
+  mode: REQUIRED
+  description: GitHub pull request number
+- name: title
+  type: STRING
+  mode: REQUIRED
+  description: Title of the pull request
+- name: body
+  type: STRING
+  mode: NULLABLE
+  description: Description or body text of the pull request
+- name: author
+  type: STRING
+  mode: REQUIRED
+  description: GitHub username of the pull request author
+- name: html_url
+  type: STRING
+  mode: REQUIRED
+  description: URL of the pull request on GitHub
+- name: created_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: When the pull request was created
+- name: updated_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: When the pull request was last updated
+- name: merged_at
+  type: TIMESTAMP
+  mode: REQUIRED
+  description: When the pull request was merged. Used as the partition field.
+- name: base_branch
+  type: STRING
+  mode: NULLABLE
+  description: Target branch the pull request is merging into (usually main).
+- name: head_branch
+  type: STRING
+  mode: NULLABLE
+  description: Source branch the pull request is merging from.
+- name: additions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of lines added in the pull request.
+- name: deletions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of lines deleted in the pull request.
+- name: changed_files
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of files changed in the pull request.
+- name: commits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of commits in the pull request.
+- name: comments
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of issue-level comments on the pull request.
+- name: review_comments
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of inline code review comments on the pull request.
+- name: labels
+  type: STRING
+  mode: REPEATED
+  description: Label names applied to the pull request.
+- name: requested_reviewers
+  type: STRING
+  mode: REPEATED
+  description: GitHub usernames requested to review the pull request.

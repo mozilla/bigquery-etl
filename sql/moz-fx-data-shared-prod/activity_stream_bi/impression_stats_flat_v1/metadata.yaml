@@ -18,10 +18,3 @@ bigquery:
     fields:
       - release_channel
       - sample_id
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      # to avoid permissions desync mozilla-confidential access is only granted
-      # at the dataset-level for now
-      # - workgroup:mozilla-confidential
-      - workgroup:pocket/external

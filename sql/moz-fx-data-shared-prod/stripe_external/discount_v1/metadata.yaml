@@ -1,0 +1,18 @@
+friendly_name: Production Stripe discounts
+description: |-
+  Mirror of production Stripe `discount` table from Fivetran.
+owners:
+- phlee@mozilla.com
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+  depends_on_fivetran:
+  - task_id: fivetran_stripe
+bigquery:
+  time_partitioning: null
+  clustering: null

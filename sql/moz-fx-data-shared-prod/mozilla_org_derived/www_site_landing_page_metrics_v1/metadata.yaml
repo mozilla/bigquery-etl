@@ -8,8 +8,10 @@ labels:
   schedule: daily
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
-scheduling:
-  dag_name: bqetl_google_analytics_derived
+  table_type: aggregate
+  shredder_mitigation: false
+# scheduling:
+#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -22,5 +24,4 @@ bigquery:
     - country
     - locale
     - medium
-references: {}
 deprecated: true

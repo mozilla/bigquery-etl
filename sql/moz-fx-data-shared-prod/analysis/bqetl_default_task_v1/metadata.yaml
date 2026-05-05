@@ -8,4 +8,3 @@ owners:
 - telemetry-alerts@mozilla.com
 scheduling:
   dag_name: bqetl_default
-references: {}

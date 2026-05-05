@@ -19,10 +19,32 @@ fields:
   name: campaign_language
   type: STRING
   description: "Language the campaign ran in."
+- mode: REPEATED
+  name: campaign_segments
+  type: RECORD
+  description:
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
 - mode: NULLABLE
   name: ad_group
   type: STRING
   description: "Name of the Ad Group."
+- mode: REPEATED
+  name: ad_group_segments
+  type: RECORD
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
+  description:
 - mode: NULLABLE
   name: impressions
   type: INTEGER

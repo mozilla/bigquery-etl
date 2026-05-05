@@ -6,18 +6,19 @@ owners:
 labels:
   application: firefox
   schedule: daily
-scheduling:
-  dag_name: bqetl_crash
-  start_date: '2023-12-10'
-  retry_delay: 5m
-  arguments: ["--submission-date", "{{ ds }}"]
-  referenced_tables:
-  - - 'moz-fx-data-shared-prod'
-    - 'telemetry_derived'
-    - 'crash_symbolicated_v1'
+#scheduling:
+#  dag_name: bqetl_crash
+#  start_date: '2023-12-10'
+#  retry_delay: 5m
+#  arguments: ["--submission-date", "{{ ds }}"]
+#  referenced_tables:
+#  - - 'moz-fx-data-shared-prod'
+#    - 'telemetry_derived'
+#    - 'crash_symbolicated_v1'
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: true
     expiration_days: null
+deprecated: true

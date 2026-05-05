@@ -20,10 +20,11 @@ class MetricsClientsDaily(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.per_app_id_enabled = False
         self.cross_channel_template = None
+        self.per_app_requires_all_base_tables = True
 
         with open(
             Path(os.path.dirname(__file__)) / "templates" / "metrics_templating.yaml",
             "r",
         ) as f:
             metrics_config = yaml.safe_load(f) or {}
-            self.custom_render_kwargs = {"metrics": metrics_config}
+            self.common_render_kwargs = {"metrics": metrics_config}

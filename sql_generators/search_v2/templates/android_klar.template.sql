@@ -22,6 +22,7 @@ baseline_{{ namespace }} AS (
         ping_info.end_time,
         ping_info.experiments,
         metrics.counter.browser_total_uri_count AS total_uri_count,
+        CAST(NULL AS STRING) AS distribution_id,
     FROM
         {{ namespace }}.baseline AS {{ namespace }}_baseline
 ),

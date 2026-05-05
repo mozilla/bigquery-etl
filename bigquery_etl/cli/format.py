@@ -34,7 +34,13 @@ from bigquery_etl.format_sql.format import format as format_sql
     " return code 0 indicates nothing would change;"
     " return code 1 indicates some files would be reformatted",
 )
+@click.option(
+    "--ignore-skip",
+    help="Ignore format skip configuration.",
+    is_flag=True,
+    default=False,
+)
 @parallelism_option()
-def format(paths, check, parallelism):
+def format(paths, check, ignore_skip, parallelism):
     """Apply formatting to SQL files."""
-    format_sql(paths, check=check, parallelism=parallelism)
+    format_sql(paths, check=check, ignore_skip=ignore_skip, parallelism=parallelism)

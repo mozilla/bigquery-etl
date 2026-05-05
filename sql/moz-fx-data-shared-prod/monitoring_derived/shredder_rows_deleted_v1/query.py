@@ -1,12 +1,14 @@
 """Monitor the number of rows deleted by shredder."""
 
 import datetime
+import re
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+from typing import Optional
 
 import yaml
-from google.cloud import bigquery
+from google.cloud import bigquery, exceptions
 
 from bigquery_etl.util import standard_args
 
@@ -89,17 +91,43 @@ def get_job_info(
     return list(map(dict, query.result()))
 
 
-def add_job_metadata(client: bigquery.Client, job: dict) -> dict:
+def add_job_metadata(client: bigquery.Client, job: dict) -> Optional[dict]:
+    is_glean_v2 = False
+
     if job["deleted_row_count"] is None:
         table = f'{job["project_id"]}.{job["dataset_id"]}.{job["table_id"]}'
-        before = client.get_table(f'{table}@{job["start_time_millis"]}').num_rows
-        after = client.get_table(f'{table}@{job["end_time_millis"]}').num_rows
+        try:
+            is_glean_v2 = (
+                re.fullmatch(r"[a-z0-9_]+_v2\$[0-9]{8}", job["table_id"])
+                and client.get_table(table).labels.get("schema_id") == "glean_ping_2"
+            )
+
+            before = client.get_table(f'{table}@{job["start_time_millis"]}').num_rows
+
+            # glean v2 tables for https://mozilla-hub.atlassian.net/browse/DENG-8494 are backfilled
+            # from the v1 table so the first run will have rows added
+            if before == 0 and is_glean_v2:
+                v1_table = f'{job["project_id"]}.{job["dataset_id"]}.{job["table_id"].replace("_v2$", "_v1$")}'
+                before = client.get_table(
+                    f'{v1_table}@{job["start_time_millis"]}'
+                ).num_rows
+
+            after = client.get_table(f'{table}@{job["end_time_millis"]}').num_rows
+        except exceptions.NotFound:
+            print(
+                f"Could not get table {table}, table may have been deleted since the job ran."
+            )
+            return None
         job["deleted_row_count"] = count = before - after
         if count < 0:
             raise ValueError(f"deleted_row_count must be >= 0, but got: {count}")
+    # Use v1 table name in the output table for continuity
+    if is_glean_v2:
+        job["table_id"] = job["table_id"].replace("_v2$", "_v1$")
     # move partition id to separate column
     if "$" in job["table_id"]:
         job["table_id"], _, job["partition_id"] = job["table_id"].partition("$")
+
     job["end_time"] = job["end_time"].isoformat()
     return job
 
@@ -128,11 +156,24 @@ def main():
             ),
             start=[],
         )
-        json_rows = list(
-            pool.starmap(
-                add_job_metadata, ((client, job) for job in jobs), chunksize=1
-            ),
-        )
+
+        json_rows = [
+            job
+            for job in pool.starmap(
+                add_job_metadata,
+                (
+                    (client, job)
+                    for job in jobs
+                    # ignore intermediate shredder tables because the rows deleted are irrelevant
+                    if not (
+                        job["project_id"] == "moz-fx-data-shredder"
+                        and job["dataset_id"] == "shredder_tmp"
+                    )
+                ),
+                chunksize=1,
+            )
+            if job is not None
+        ]
 
     load_job = client.load_table_from_json(
         json_rows=json_rows,

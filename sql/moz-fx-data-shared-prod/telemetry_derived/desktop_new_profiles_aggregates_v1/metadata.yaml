@@ -8,9 +8,11 @@ owners:
 labels:
   application: firefox
   incremental: true
+  shredder_mitigation: true
   schedule: daily
   depends_on_past: false
   owner1: mhirose
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: desktop_new_profiles_aggregates
@@ -23,4 +25,3 @@ bigquery:
     field: first_seen_date
     require_partition_filter: false
     expiration_days: null
-references: {}

@@ -1,0 +1,4 @@
+friendly_name: Firefox Health Indicators MAU Per Tier1 Country
+description: Aggregate of MAU per tier 1 country used in dashboard
+owners:
+- kwindau@mozilla.com

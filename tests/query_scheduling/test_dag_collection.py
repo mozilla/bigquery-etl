@@ -91,6 +91,15 @@ class TestDagCollection:
         assert dags.dag_by_name("non_existing") is None
 
     def test_task_for_table(self):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -126,16 +135,8 @@ class TestDagCollection:
             },
         )
 
-        tasks = [Task.of_query(query_file, metadata)]
-
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": self.default_args,
-                }
-            }
-        ).with_tasks(tasks)
+        tasks = [Task.of_query(query_file, metadata, dag_collection=dags)]
+        dags.with_tasks(tasks)
 
         task = dags.task_for_table(
             "moz-fx-data-test-project", "test", "incremental_query_v1"
@@ -163,6 +164,15 @@ class TestDagCollection:
         )
 
     def test_dags_with_tasks(self):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -181,16 +191,8 @@ class TestDagCollection:
             {"dag_name": "bqetl_test_dag", "depends_on_past": True},
         )
 
-        tasks = [Task.of_query(query_file, metadata)]
-
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": self.default_args,
-                }
-            }
-        ).with_tasks(tasks)
+        tasks = [Task.of_query(query_file, metadata, dag_collection=dags)]
+        dags.with_tasks(tasks)
 
         assert len(dags.dags) == 1
 
@@ -200,6 +202,15 @@ class TestDagCollection:
 
     def test_dags_with_invalid_tasks(self):
         with pytest.raises(InvalidDag):
+            dags = DagCollection.from_dict(
+                {
+                    "bqetl_test_dag": {
+                        "schedule_interval": "daily",
+                        "default_args": self.default_args,
+                    }
+                }
+            )
+
             query_file = (
                 TEST_DIR
                 / "data"
@@ -222,47 +233,10 @@ class TestDagCollection:
                 },
             )
 
-            tasks = [Task.of_query(query_file, metadata)]
-
-            DagCollection.from_dict(
-                {
-                    "bqetl_test_dag": {
-                        "schedule_interval": "daily",
-                        "default_args": self.default_args,
-                    }
-                }
-            ).with_tasks(tasks)
+            tasks = [Task.of_query(query_file, metadata, dag_collection=dags)]
+            dags.with_tasks(tasks)
 
     def test_to_airflow(self, tmp_path):
-        query_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "test"
-            / "non_incremental_query_v1"
-            / "query.sql"
-        )
-
-        metadata = Metadata(
-            "test",
-            "test",
-            ["test@example.com"],
-            {},
-            {
-                "dag_name": "bqetl_test_dag",
-                "depends_on_past": True,
-                "param": "test_param",
-                "arguments": ["--append_table"],
-                "depends_on_fivetran": [
-                    {"task_id": "fivetran_import_1"},
-                    {"task_id": "fivetran_import_2"},
-                ],
-            },
-        )
-
-        tasks = [Task.of_query(query_file, metadata)]
-
         default_args = {
             "depends_on_past": False,
             "owner": "test@example.org",
@@ -277,7 +251,77 @@ class TestDagCollection:
                     "default_args": default_args,
                 }
             }
-        ).with_tasks(tasks)
+        )
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        query_file_2 = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.com"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "param": "test_param",
+                "arguments": ["--append_table"],
+                "depends_on_fivetran": [
+                    {
+                        "task_id": "fivetran_import_1",
+                        "trigger_rule": "all_done",
+                        "depends_on": [
+                            {
+                                "dag_name": "fivetran_import_dag",
+                                "task_id": "fivetran_import_1",
+                            }
+                        ],
+                    },
+                    {
+                        "task_id": "fivetran_import_2",
+                        "depends_on": [
+                            {
+                                "dag_name": "bqetl_test_dag",
+                                "task_id": "test__incremental_query__v1",
+                            }
+                        ],
+                    },
+                ],
+            },
+        )
+
+        metadata_2 = Metadata(
+            "test",
+            "test",
+            ["test@example.com"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+            },
+        )
+
+        tasks = [
+            Task.of_query(query_file, metadata, dag_collection=dags),
+            Task.of_query(query_file_2, metadata_2, dag_collection=dags),
+        ]
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
@@ -285,6 +329,22 @@ class TestDagCollection:
         assert result == expected
 
     def test_python_script_to_airflow(self, tmp_path):
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -309,25 +369,10 @@ class TestDagCollection:
         )
 
         tasks = [
-            Task.of_python_script(query_file, metadata),
-            Task.of_bigeye_check(query_file, metadata),
+            Task.of_python_script(query_file, metadata, dag_collection=dags),
+            Task.of_bigeye_check(query_file, metadata, dag_collection=dags),
         ]
-
-        default_args = {
-            "depends_on_past": False,
-            "owner": "test@example.org",
-            "email": ["test@example.org"],
-            "start_date": "2020-01-01",
-            "retry_delay": "1h",
-        }
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": default_args,
-                }
-            }
-        ).with_tasks(tasks)
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
@@ -338,6 +383,25 @@ class TestDagCollection:
         assert result == expected
 
     def test_to_airflow_with_upstream_dependencies(self, tmp_path):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+                "bqetl_external_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+            }
+        )
+
         query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -359,11 +423,12 @@ class TestDagCollection:
             },
         )
 
-        task = Task.of_query(query_file, metadata)
+        task = Task.of_query(query_file, metadata, dag_collection=dags)
 
         table_task1 = Task.of_query(
             tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
 
         os.makedirs(tmp_path / "test-project" / "test" / "table1_v1")
@@ -373,6 +438,7 @@ class TestDagCollection:
         table_task2 = Task.of_query(
             tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
 
         os.makedirs(tmp_path / "test-project" / "test" / "table2_v1")
@@ -393,6 +459,7 @@ class TestDagCollection:
         external_table_task = Task.of_query(
             tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
 
         os.makedirs(tmp_path / "test-project" / "test" / "external_table_v1")
@@ -401,24 +468,7 @@ class TestDagCollection:
         )
         query_file.write_text("SELECT 3")
 
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": {
-                        "owner": "test@example.org",
-                        "start_date": "2020-05-25",
-                    },
-                },
-                "bqetl_external_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": {
-                        "owner": "test@example.org",
-                        "start_date": "2020-05-25",
-                    },
-                },
-            }
-        ).with_tasks([task, table_task1, table_task2, external_table_task])
+        dags.with_tasks([task, table_task1, table_task2, external_table_task])
 
         dags.to_airflow_dags(tmp_path)
 
@@ -444,18 +494,6 @@ class TestDagCollection:
         assert dag_external_dependency == expected_dag_external_dependency
 
     def test_public_json_dag_to_airflow(self, tmp_path):
-        query_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "test"
-            / "non_incremental_query_v1"
-            / "query.sql"
-        )
-
-        tasks = [Task.of_query(query_file)]
-
         default_args = {
             "depends_on_past": False,
             "owner": "test@example.org",
@@ -463,7 +501,6 @@ class TestDagCollection:
             "start_date": "2020-01-01",
             "retry_delay": "1h",
         }
-
         dags = DagCollection.from_dict(
             {
                 "bqetl_public_data_json": {
@@ -475,7 +512,20 @@ class TestDagCollection:
                     "default_args": default_args,
                 },
             }
-        ).with_tasks(tasks)
+        )
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        tasks = [Task.of_query(query_file, dag_collection=dags)]
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_public_data_json.py").read_text().strip()
@@ -488,6 +538,20 @@ class TestDagCollection:
         assert result == expected_dag
 
     def test_to_airflow_duplicate_dependencies(self, tmp_path):
+        default_args = {
+            "owner": "test@example.org",
+            "start_date": "2020-01-01",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                    "tags": ["repo/bigquery-etl"],
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -523,23 +587,10 @@ class TestDagCollection:
         )
 
         tasks = [
-            Task.of_query(query_file, metadata),
-            Task.of_query(query_file2, metadata),
+            Task.of_query(query_file, metadata, dag_collection=dags),
+            Task.of_query(query_file2, metadata, dag_collection=dags),
         ]
-
-        default_args = {
-            "owner": "test@example.org",
-            "start_date": "2020-01-01",
-        }
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": default_args,
-                    "tags": ["repo/bigquery-etl"],
-                }
-            }
-        ).with_tasks(tasks)
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
@@ -552,6 +603,25 @@ class TestDagCollection:
         assert result == expected
 
     def test_to_airflow_with_check_upstream_dependencies(self, tmp_path):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+                "bqetl_external_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+            }
+        )
+
         query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -573,11 +643,12 @@ class TestDagCollection:
             },
         )
 
-        task = Task.of_query(query_file, metadata)
+        task = Task.of_query(query_file, metadata, dag_collection=dags)
 
         table_task1 = Task.of_query(
             tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
         table_task1_ref = TaskRef(
             dag_name=table_task1.dag_name, task_id=table_task1.task_name
@@ -591,6 +662,7 @@ class TestDagCollection:
             tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql",
             is_check_fail=True,
             metadata=metadata,
+            dag_collection=dags,
         )
 
         checks_task1.upstream_dependencies.append(table_task1_ref)
@@ -601,6 +673,7 @@ class TestDagCollection:
         table_task2 = Task.of_query(
             tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
 
         os.makedirs(tmp_path / "test-project" / "test" / "table2_v1")
@@ -621,6 +694,7 @@ class TestDagCollection:
         external_table_task = Task.of_query(
             tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
         external_table_task_ref = TaskRef(
             dag_name=external_table_task.dag_name, task_id=external_table_task.task_name
@@ -636,6 +710,7 @@ class TestDagCollection:
             tmp_path / "test-project" / "test" / "external_table_v1" / "checks.sql",
             is_check_fail=True,
             metadata=metadata,
+            dag_collection=dags,
         )
         checks_task2.upstream_dependencies.append(external_table_task_ref)
 
@@ -644,24 +719,7 @@ class TestDagCollection:
         )
         check_file2.write_text("SELECT TRUE")
 
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": {
-                        "owner": "test@example.org",
-                        "start_date": "2020-05-25",
-                    },
-                },
-                "bqetl_external_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": {
-                        "owner": "test@example.org",
-                        "start_date": "2020-05-25",
-                    },
-                },
-            }
-        ).with_tasks(
+        dags.with_tasks(
             [
                 task,
                 table_task1,
@@ -697,6 +755,18 @@ class TestDagCollection:
         assert dag_external_dependency == expected_dag_external_dependency
 
     def test_to_airflow_with_check_table_dependencies(self, tmp_path):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                }
+            }
+        )
+
         metadata = Metadata(
             "test",
             "test",
@@ -711,6 +781,7 @@ class TestDagCollection:
         table_task1 = Task.of_query(
             tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
         table_task1_ref = TaskRef(
             dag_name=table_task1.dag_name, task_id=table_task1.task_name
@@ -724,6 +795,7 @@ class TestDagCollection:
             tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql",
             is_check_fail=True,
             metadata=metadata,
+            dag_collection=dags,
         )
 
         checks_task1.upstream_dependencies.append(table_task1_ref)
@@ -734,6 +806,7 @@ class TestDagCollection:
         table_task2 = Task.of_query(
             tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
+            dag_collection=dags,
         )
         table_task2_ref = TaskRef(
             dag_name=table_task2.dag_name, task_id=table_task2.task_name
@@ -745,17 +818,7 @@ class TestDagCollection:
         query_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
         query_file.write_text("SELECT 2")
 
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": {
-                        "owner": "test@example.org",
-                        "start_date": "2020-05-25",
-                    },
-                }
-            }
-        ).with_tasks(
+        dags.with_tasks(
             [
                 table_task1,
                 table_task2,
@@ -778,6 +841,22 @@ class TestDagCollection:
         assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
 
     def test_to_airflow_with_bigquery_table_sensors(self, tmp_path):
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -822,23 +901,8 @@ class TestDagCollection:
             },
         )
 
-        tasks = [Task.of_query(query_file, metadata)]
-
-        default_args = {
-            "depends_on_past": False,
-            "owner": "test@example.org",
-            "email": ["test@example.org"],
-            "start_date": "2020-01-01",
-            "retry_delay": "1h",
-        }
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_test_dag": {
-                    "schedule_interval": "daily",
-                    "default_args": default_args,
-                }
-            }
-        ).with_tasks(tasks)
+        tasks = [Task.of_query(query_file, metadata, dag_collection=dags)]
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
@@ -850,6 +914,22 @@ class TestDagCollection:
         assert result == expected
 
     def test_to_airflow_with_secrets(self, tmp_path):
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_events": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        )
+
         query_file = (
             TEST_DIR
             / "data"
@@ -870,23 +950,8 @@ class TestDagCollection:
             / "metadata.yaml"
         )
 
-        tasks = [Task.of_query(query_file, metadata)]
-
-        default_args = {
-            "depends_on_past": False,
-            "owner": "test@example.org",
-            "email": ["test@example.org"],
-            "start_date": "2020-01-01",
-            "retry_delay": "1h",
-        }
-        dags = DagCollection.from_dict(
-            {
-                "bqetl_events": {
-                    "schedule_interval": "daily",
-                    "default_args": default_args,
-                }
-            }
-        ).with_tasks(tasks)
+        tasks = [Task.of_query(query_file, metadata, dag_collection=dags)]
+        dags.with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_events.py").read_text().strip()

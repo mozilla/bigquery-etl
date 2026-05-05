@@ -50,7 +50,7 @@ active_users_aggregates AS (
     ON cn.code = country_group
   WHERE
     submission_date = @submission_date
-    AND app_name = 'Firefox Desktop'
+    AND app_name IN ('Firefox Desktop', 'Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
 ),
 sample_addons AS (
   SELECT
@@ -188,7 +188,7 @@ latest_releases AS (
     build.target.channel = 'release'
     AND DATE(build.build.date) >= '2018-12-01'
   GROUP BY
-    day
+    `day`
 ),
 active_clients_with_latest_releases AS (
   SELECT

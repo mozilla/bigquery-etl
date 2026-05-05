@@ -25,6 +25,10 @@ class _ConfigLoader:
         """Update the project root directory."""
         self.project_dir = project_dir
 
+    def set_config_file(self, config_file: str):
+        """Update the project root directory."""
+        self.config_file = config_file
+
     def get(self, *args, fallback=None):
         """Get the config option specified by args."""
         conf = self.config

@@ -1,0 +1,13 @@
+fields:
+- name: key_tentpole
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Key Tentpole Event.
+- name: start_date
+  type: DATE
+  mode: NULLABLE
+  description: The beginning of the time period
+- name: end_date
+  type: DATE
+  mode: NULLABLE
+  description: The end of the time period.

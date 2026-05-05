@@ -92,8 +92,8 @@ class TestCopyDeduplicateTaskMarkers:
         ast.parse(source)
 
         # same execution_delta as ExternalTaskSensor
-        assert "datetime.timedelta(seconds=3600)" in source
-        assert "datetime.timedelta(seconds=11700)" in source
+        assert "macros.timedelta(seconds=3600)" in source
+        assert "macros.timedelta(seconds=11700)" in source
 
         # EmptyOperators are emitted per source task.
         assert 'task_id="copy_deduplicate_all_marker"' in source

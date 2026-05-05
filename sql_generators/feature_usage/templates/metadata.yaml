@@ -12,6 +12,7 @@ labels:
   incremental: true
   application: firefox
   schedule: daily
+  table_type: client_level
 scheduling:
   dag_name: bqetl_feature_usage
 bigquery:
@@ -19,3 +20,4 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: 775

@@ -1,0 +1,21 @@
+friendly_name: Corpus Items Updated v1
+description: Model corpus item updated events for the Fx New Tab from stg_reviewed_corpus_items_v1 and prospect_item_feed_v1 tables
+owners:
+  - jpetto@mozilla.com
+  - rrando@mozilla.com
+labels:
+  schedule: hourly
+  incremental: true
+  owner1: jpetto
+  owner2: rrando
+scheduling:
+  dag_name: bqetl_content_ml_hourly
+bigquery:
+  time_partitioning:
+    type: day
+    field: happened_at
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - approved_corpus_item_external_id

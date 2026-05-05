@@ -5,7 +5,7 @@ WITH query_counts AS (
     targets.dataset_id,
     targets.table_id,
   FROM
-    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
   CROSS JOIN
     UNNEST(referenced_tables) AS ref_table
   RIGHT JOIN
@@ -14,10 +14,7 @@ WITH query_counts AS (
     AND targets.dataset_id = ref_table.dataset_id
     AND STARTS_WITH(ref_table.table_id, targets.table_id)
     -- filter out shredder reads
-    AND (
-      NOT ENDS_WITH(reservation_id, '.shredder-main-v4')
-      OR NOT ENDS_WITH(reservation_id, '.batch')
-    )
+    AND jobs.project_id NOT IN ('moz-fx-data-shredder', 'moz-fx-data-bq-batch-prod')
   WHERE
     DATE(creation_time)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 29 DAY)
@@ -37,15 +34,12 @@ write_counts AS (
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.shredder_targets_v1` AS targets
   LEFT JOIN
-    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
     ON targets.project_id = destination_table.project_id
     AND targets.dataset_id = destination_table.dataset_id
     AND STARTS_WITH(destination_table.table_id, targets.table_id)
     -- filter out shredder writes
-    AND (
-      NOT ENDS_WITH(reservation_id, '.shredder-main-v4')
-      OR NOT ENDS_WITH(reservation_id, '.batch')
-    )
+    AND jobs.project_id NOT IN ('moz-fx-data-shredder', 'moz-fx-data-bq-batch-prod')
   WHERE
     DATE(creation_time)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 29 DAY)

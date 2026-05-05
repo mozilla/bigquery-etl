@@ -1,0 +1,7 @@
+fields:
+  - mode: NULLABLE
+    name: flow_name
+    type: STRING
+  - mode: NULLABLE
+    name: flow_description
+    type: STRING

@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: The smaller client ID string
+- mode: NULLABLE
+  name: linked_client_id
+  type: STRING
+  description: The larger client ID string
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date

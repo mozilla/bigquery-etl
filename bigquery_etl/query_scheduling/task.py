@@ -16,6 +16,7 @@ import click
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
+    ensure_telemetry_alerts_email,
     is_date_string,
     is_email,
     is_email_or_github_identity,
@@ -91,6 +92,8 @@ class TaskRef:
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
+    poke_interval: Optional[str] = attr.ib(None, kw_only=True)
+    timeout: Optional[str] = attr.ib(None, kw_only=True)
 
     @property
     def task_key(self):
@@ -112,6 +115,18 @@ class TaskRef:
         """Validate the schedule_interval format."""
         if value is not None and not is_schedule_interval(value):
             raise ValueError(f"Invalid schedule_interval {value}.")
+
+    @poke_interval.validator
+    def validate_poke_interval(self, attribute, value):
+        """Check that `poke_interval` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+    @timeout.validator
+    def validate_timeout(self, attribute, value):
+        """Check that `timeout` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
 
     def get_execution_delta(self, schedule_interval):
         """Determine execution_delta, via schedule_interval if necessary."""
@@ -191,6 +206,17 @@ class FivetranTask:
     """Representation of a Fivetran data import task."""
 
     task_id: str = attr.ib()
+    trigger_rule: Optional[str] = attr.ib(None)
+    depends_on: List[TaskRef] = attr.ib([])
+
+    @trigger_rule.validator
+    def validate_trigger_rule(self, attribute, value):
+        """Check that trigger_rule is a valid option."""
+        if value is not None and value not in set(rule.value for rule in TriggerRule):
+            raise ValueError(
+                f"Invalid trigger rule {value}. "
+                "See https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html#trigger-rules for list of trigger rules"
+            )
 
 
 class SecretDeployType(Enum):
@@ -237,7 +263,6 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *",
     ): [
-        "telemetry_stable.main_v4",
         "telemetry_stable.main_v5",
         "telemetry_stable.main_use_counter_v4",
     ],
@@ -246,18 +271,8 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_first_shutdown_ping",
         schedule_interval="0 1 * * *",
     ): [
-        "telemetry_stable.first_shutdown_v4",
         "telemetry_stable.first_shutdown_v5",
         "telemetry_stable.first_shutdown_use_counter_v4",
-    ],
-    TaskRef(
-        dag_name="copy_deduplicate",
-        task_id="copy_deduplicate_saved_session_ping",
-        schedule_interval="0 1 * * *",
-    ): [
-        "telemetry_stable.saved_session_v4",
-        "telemetry_stable.saved_session_v5",
-        "telemetry_stable.saved_session_use_counter_v4",
     ],
     TaskRef(
         dag_name="copy_deduplicate",
@@ -303,6 +318,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_type: Optional[str] = None
     table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
@@ -351,7 +367,11 @@ class Task:
     @property
     def task_key(self):
         """Key to uniquely identify the task."""
-        return f"{self.dag_name}.{self.task_name}"
+        return (
+            f"{self.dag_name}.{self.task_group}.{self.task_name}"
+            if self.task_group
+            else f"{self.dag_name}.{self.task_name}"
+        )
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -401,7 +421,7 @@ class Task:
         if value is not None and value not in set(rule.value for rule in TriggerRule):
             raise ValueError(
                 f"Invalid trigger rule {value}. "
-                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+                "See https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html#trigger-rules for list of trigger rules"
             )
 
     @retry_delay.validator
@@ -481,6 +501,7 @@ class Task:
 
         # Get default email from default_args if available
         default_email = []
+        dag = None
         if dag_collection is not None:
             dag = dag_collection.dag_by_name(dag_name)
             if dag is not None:
@@ -495,6 +516,10 @@ class Task:
                     f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
+        if dag:
+            task_config["email"] = ensure_telemetry_alerts_email(
+                task_config["email"], dag.no_triage
+            )
 
         # expose secret config
         task_config["secrets"] = metadata.scheduling.get("secrets", [])
@@ -507,35 +532,40 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
-        # Override the table_partition_template if there is no `destination_table`
-        # set in the scheduling section of the metadata. If not then pass a jinja
-        # template that reformats the date string used for table partition decorator.
-        # See doc here for formatting conventions:
-        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
-        if (
-            metadata.bigquery
-            and metadata.bigquery.time_partitioning
-            and metadata.scheduling.get("destination_table") is None
-        ):
-            match metadata.bigquery.time_partitioning.type:
-                case PartitionType.YEAR:
-                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
-                case PartitionType.MONTH:
-                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
-                case PartitionType.DAY:
-                    # skip for the default case of daily partitioning
-                    partition_template = None
-                case PartitionType.HOUR:
-                    partition_template = (
-                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
-                    )
-                case _:
-                    raise TaskParseException(
-                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
-                    )
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            task_config["table_partition_type"] = (
+                metadata.bigquery.time_partitioning.type.value
+            )
 
-            if partition_template:
-                task_config["table_partition_template"] = partition_template
+            # Override the table_partition_template if there is no `destination_table`
+            # set in the scheduling section of the metadata. If not then pass a jinja
+            # template that reformats the date string used for table partition decorator.
+            # See doc here for formatting conventions:
+            #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
+            if metadata.scheduling.get("destination_table") is None:
+                match metadata.bigquery.time_partitioning.type:
+                    case PartitionType.YEAR:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y") }}'
+                        )
+                    case PartitionType.MONTH:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y%m") }}'
+                        )
+                    case PartitionType.DAY:
+                        # skip for the default case of daily partitioning
+                        partition_template = None
+                    case PartitionType.HOUR:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                        )
+                    case _:
+                        raise TaskParseException(
+                            f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                        )
+
+                if partition_template:
+                    task_config["table_partition_template"] = partition_template
 
         try:
             return copy.deepcopy(converter.structure(task_config, cls))
@@ -594,7 +624,8 @@ class Task:
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
         task.depends_on_past = False
-        task.retries = 0
+        task.retries = 1
+        task.retry_delay = "5m"
         task.depends_on_fivetran = []
         task.referenced_tables = None
         task.depends_on = []
@@ -622,7 +653,7 @@ class Task:
         task.is_bigeye_check = True
         task.depends_on_past = False
         task.destination_table = None
-        task.retries = 0
+        task.retries = 1
         task.depends_on_fivetran = []
         task.referenced_tables = None
         task.depends_on = []
@@ -634,12 +665,13 @@ class Task:
 
         return task
 
-    def to_ref(self, dag_collection):
+    def to_ref(self, dag_collection, execution_delta=None):
         """Return the task as `TaskRef`."""
         return TaskRef(
             dag_name=self.dag_name,
             task_id=self.task_name,
             date_partition_offset=self.date_partition_offset,
+            execution_delta=execution_delta,
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,
@@ -764,4 +796,12 @@ class Task:
             task_ref
             for task_ref in dag_collection.get_task_downstream_dependencies(self)
             if task_ref.dag_name != self.dag_name
+        ]
+
+    def fivetran_dependencies(self):
+        """Return a upstream Fivetran dependency tasks based on `depends_on_fivetran`."""
+        return [
+            dep
+            for fivetran_task in self.depends_on_fivetran
+            for dep in getattr(fivetran_task, "depends_on", [])
         ]

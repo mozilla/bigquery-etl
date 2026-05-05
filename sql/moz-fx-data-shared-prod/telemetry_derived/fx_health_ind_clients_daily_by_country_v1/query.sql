@@ -8,7 +8,6 @@ WITH searches_per_user_by_country_and_date_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND search_count_all < 10000
   GROUP BY
@@ -33,7 +32,6 @@ subsession_hours_per_user_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND subsession_hours_sum < 24
   GROUP BY
@@ -58,7 +56,6 @@ active_hours_per_user_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND active_hours_sum < 24
   GROUP BY
@@ -97,7 +94,6 @@ default_percent_and_avg_age_by_country AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
   GROUP BY
     submission_date_s3,

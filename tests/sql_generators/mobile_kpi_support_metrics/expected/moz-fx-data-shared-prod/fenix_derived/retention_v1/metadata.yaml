@@ -1,0 +1,43 @@
+friendly_name: Profile / Client Retention - Fenix (Aggregated)
+description: |-
+  Profile / Client Retention (Fenix) aggregated metrics
+
+  For all profiles that sent us a ping on the metric date.
+  Client's attribute values as observed on the metric date.
+
+  see: DENG-3183 for more information.
+
+  Grouped by all dimensions to generate activity, new profiles, and retention metrics.
+
+  Notes:
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: fenix
+  date_partition_parameter: metric_date
+  date_partition_offset: -27
+  parameters:
+    - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: metric_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - app_name
+      - country
+      - first_seen_date
+monitoring:
+  enabled: true
+  collection: Operational Checks

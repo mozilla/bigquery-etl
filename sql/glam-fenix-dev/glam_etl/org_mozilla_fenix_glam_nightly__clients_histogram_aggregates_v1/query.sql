@@ -83,11 +83,11 @@ filtered_accumulated AS (
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),
@@ -123,11 +123,11 @@ filtered_daily AS (
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
-    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+    mozfun.glam.build_hour_to_datetime(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 DAY)
       -- only keep builds from the last year
     AND mozfun.glam.build_hour_to_datetime(app_build_id) > DATE_SUB(
       @submission_date,
-      INTERVAL 365 day
+      INTERVAL 365 DAY
     )
     AND app_version > (latest_version - 3)
 ),

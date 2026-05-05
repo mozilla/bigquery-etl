@@ -7,7 +7,7 @@ labels:
   incremental: true
   owner1: wichan@mozilla.com
   table_type: aggregate
-  shredder_mitigation: false
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_default_browser_aggregates
 bigquery:
@@ -17,4 +17,3 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-references: {}

@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_daily_v1`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_daily_v2`

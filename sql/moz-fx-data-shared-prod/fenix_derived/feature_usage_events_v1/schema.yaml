@@ -14,9 +14,11 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: The name of the Adjust Network that sourced this installation.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - name: autofill_password_detected_logins
   type: INTEGER
   mode: NULLABLE

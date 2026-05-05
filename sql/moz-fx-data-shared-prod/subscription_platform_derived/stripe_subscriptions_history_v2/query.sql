@@ -60,6 +60,7 @@ subscriptions_customers_history AS (
     ON subscriptions_history.subscription.customer_id = customers_history.customer.id
     AND subscriptions_history.valid_from < customers_history.valid_from
     AND subscriptions_history.valid_to > customers_history.valid_from
+    AND customers_history.valid_to > customers_history.valid_from
   WHERE
     subscriptions_history.subscription.ended_at IS NULL
 )

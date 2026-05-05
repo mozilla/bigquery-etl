@@ -7,6 +7,9 @@ description: >
   pings have limitations on length of properties attached to events
   and addon_id values are sometimes too long. The AMO stats application
   looks up records in this table based on the hashed_addon_id.
+
+  The hashed_addon_id is only valid for install_stats:
+  https://searchfox.org/mozilla-central/rev/5b061cdc4d40d44988dc61aa941cfbd98e31791f/toolkit/components/telemetry/Events.yaml#233-234
 owners:
   - kik@mozilla.com
 labels:

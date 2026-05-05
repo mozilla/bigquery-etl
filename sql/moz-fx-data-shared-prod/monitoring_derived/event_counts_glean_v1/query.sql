@@ -5,7 +5,7 @@ WITH event_counts_per_app_channel AS (
     event_name,
     event_extra_key,
     normalized_app_name,
-    channel,
+    mozfun.norm.app_channel(channel) AS channel,
     country,
     version,
     SUM(total_events) AS total_events,

@@ -1,0 +1,15 @@
+friendly_name: US Unemployment
+description: |-
+  Contains monthly unemployment data for the United States from the BLS Government API
+  Full truncate & reload each time it runs
+owners:
+- kbammarito@mozilla.com
+labels:
+  owner1: kbammarito
+scheduling:
+  dag_name: bqetl_us_bls_unemployment_data
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: BLS_US_UNEMPLOYMENT_API_KEY
+    key: bqetl_us_bls_unemployment_data__bls_us_api_key
+require_column_descriptions: true

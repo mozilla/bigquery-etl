@@ -17,12 +17,17 @@ build_ids AS (
     app_build_id,
     channel,
   FROM
-    all_combos
+    sampled_source
   GROUP BY
     1,
     2
   HAVING
-      COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }}
+  UNION ALL
+  SELECT
+    '*',
+    '*'
+),
 histograms_cte AS (
   SELECT
     {% if channel == "release" %}
@@ -41,9 +46,9 @@ histograms_cte AS (
           mozfun.glam.histogram_normalized_sum_with_original(value, 1.0) AS aggregates,
         {% endif %}
       FROM unnest(histogram_aggregates)
-    )AS histogram_aggregates
+    ) AS histogram_aggregates
   FROM
-    all_combos
+    sampled_source
 ),
 unnested AS (
   SELECT
@@ -58,8 +63,6 @@ unnested AS (
     histograms_cte,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
-  INNER JOIN build_ids
-  USING (app_build_id,channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the
@@ -103,15 +106,60 @@ records as (
     SELECT
         {{ attributes }},
         {{ metric_attributes }},
-        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record,
-        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(non_norm_value)) AS non_norm_record
+        CAST(bucket AS STRING) AS bucket,
+        1.0 * SUM(value) AS normalized_value,
+        1.0 * SUM(non_norm_value) AS non_norm_value,
     FROM
         unnested
     GROUP BY
         {{ attributes }},
         {{ metric_attributes }},
         bucket
+),
+with_combos AS (
+  SELECT
+    records.* REPLACE (
+      COALESCE(combo.ping_type, records.ping_type) AS ping_type,
+      COALESCE(combo.os, records.os) AS os,
+      COALESCE(combo.app_build_id, records.app_build_id) AS app_build_id
+    )
+  FROM
+    records
+  CROSS JOIN
+    static_combos AS combo
+),
+aggregated_combos AS (
+  SELECT
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    STRUCT<key STRING, value FLOAT64>(bucket, SUM(normalized_value)) AS record,
+    STRUCT<key STRING, value FLOAT64>(bucket, SUM(non_norm_value)) AS non_norm_record,
+  FROM
+    with_combos
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
+  GROUP BY
+      ping_type,
+      os,
+      app_version,
+      app_build_id,
+      channel,
+      metric,
+      metric_type,
+      key,
+      agg_type,
+      bucket
 )
+
 SELECT
     * EXCEPT(metric_type, histogram_type),
     -- Suffix `custom_distribution` with bucketing type
@@ -121,7 +169,7 @@ SELECT
       metric_type
     ) as metric_type
 FROM
-    records
+    aggregated_combos
 LEFT OUTER JOIN
     distribution_metadata
     USING (metric_type, metric)

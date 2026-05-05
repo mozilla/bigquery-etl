@@ -30,3 +30,7 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+- name: valid_ping_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of rows in the associated stable table

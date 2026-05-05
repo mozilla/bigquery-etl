@@ -22,17 +22,19 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  owner1: lvargas
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - country
     - city
     - app_name
     - attribution_medium
-references: {}
 deprecated: true
+require_column_descriptions: false

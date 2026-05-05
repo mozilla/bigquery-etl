@@ -1,0 +1,6 @@
+friendly_name: Active Stripe Subscriptions
+description: |
+  Active Stripe subscriptions for products included in KPIs.
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com

@@ -17,7 +17,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - sample_id
@@ -25,3 +25,4 @@ scheduling:
   dag_name: bqetl_firefox_ios
   date_partition_parameter: submission_date
   depends_on_past: false
+deprecated: false

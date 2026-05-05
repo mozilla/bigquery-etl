@@ -9,6 +9,7 @@ syndication:
     syndicated_project: moz-fx-sumo-prod
     syndicated_dataset: sumo
   syndicated_tables:
+    - kitsune_auth_user
     - kitsune_questions
     - kitsune_questions_plus
     - kitsune_answers_raw

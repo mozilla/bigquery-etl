@@ -1,0 +1,13 @@
+fields:
+  - mode: NULLABLE
+    name: date
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - mode: NULLABLE
+    name: state
+    type: STRING
+  - mode: NULLABLE
+    name: count
+    type: INTEGER

@@ -67,6 +67,14 @@ VALUES
     'firefox-accounts-journey'
   ),
   (
+    'formulaic-app',
+    'Formulaic newsletter',
+    '3349e1ab-acb8-4396-8fff-ee9d5cf96678',
+    '9ceceace-0184-4fb6-a2d8-0c1943026bb7',
+    '91f8d0bf-5d01-48b5-bcc4-e12373e3f89b',
+    'formulaic-app'
+  ),
+  (
     'graceland-waitlist',
     'Graceland Waitlist',
     '0dd864a8-7afb-4e01-874c-5bd89c62f249',
@@ -155,6 +163,14 @@ VALUES
     'mozilla-social-waitlist'
   ),
   (
+    'nothing-personal-college-interest',
+    'Firefox University interest',
+    '7edc5999-8893-4453-b4f3-70ab7c479dd2',
+    '9b2bfa6c-0725-4a2d-8b21-a9f05f2d0bba',
+    'c0681ddd-1ae8-49df-bffd-6f3e6dd0aa92',
+    'nothing-personal-college-interest'
+  ),
+  (
     'relay-phone-masking-waitlist',
     'Relay Phone Masking Waitlist',
     '4011707b-1a55-4177-9f5d-2a6d86225242',
@@ -187,12 +203,28 @@ VALUES
     'security-privacy-news'
   ),
   (
+    'smart-window-waitlist',
+    'Firefox AI Window News',
+    '13fad2d2-d236-4bd0-8015-e5ed64780d25',
+    '0f09d5bc-83cf-47e2-81eb-a3d0a4972d93',
+    '40fb8be3-cb2e-4856-b5fd-2906f43a5753',
+    'smart-window-waitlist'
+  ),
+  (
     'take-action-for-the-internet',
     'Take Action for the Internet',
     'cd16fdf7-88bb-4ff3-a8d9-cc5102790f49',
     '3396d77f-3996-4364-90df-f80813947b4c',
     '8627ca41-5358-4107-9d50-677ed31d57ff',
     'take-action-for-the-internet'
+  ),
+  (
+    'ten-tabs',
+    'Ten Tabs Newsletter',
+    '5711f4ee-663a-4010-81e5-b087c273681c',
+    'f01e85e1-12a8-42ef-848c-2083bce89038',
+    '1da167f2-c473-4949-ac8e-0045ad5b23ff',
+    'ten-tabs'
   ),
   (
     'test-pilot',

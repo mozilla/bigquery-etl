@@ -6,17 +6,16 @@ The general structure of `bqetl_project.yaml` is as follows:
 
 ```yaml
 dry_run:
-  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
-  test_project: bigquery-etl-integration-test
+  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun
+  test_project: moz-fx-data-integration-tests
   skip:
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
-  - sql/**/apple_ads_external*/**/query.sql
+  - sql/**/braze_external*/**/query.sql
   # - ...
 
 views:
   skip_validation:
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
   - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
   # - ...
   skip_publishing:

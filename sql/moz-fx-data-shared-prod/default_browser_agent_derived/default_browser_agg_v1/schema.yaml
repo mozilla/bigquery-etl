@@ -1,0 +1,46 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the ingestion edge server accepted this message.
+- name: build_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: Major build version.
+- name: windows_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the window os version.
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code.
+- name: build_channel
+  type: STRING
+  mode: NULLABLE
+  description: build channel.
+- name: default_browser
+  type: STRING
+  mode: NULLABLE
+  description: The current default browser.
+- name: previous_default_browser
+  type: STRING
+  mode: NULLABLE
+  description: What the default browser was before it was changed to the current one.
+- name: notification_shown
+  type: STRING
+  mode: NULLABLE
+  description: Whether the notification was shown, not shown, or resulted in an error.
+- name: notification_type
+  type: STRING
+  mode: NULLABLE
+  description: Whether the notification shown was the initial notification, or the
+    followup.
+- name: notification_action
+  type: STRING
+  mode: NULLABLE
+  description: What action was taken by the user then the toast notification was displayed.
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of rows aggregated.

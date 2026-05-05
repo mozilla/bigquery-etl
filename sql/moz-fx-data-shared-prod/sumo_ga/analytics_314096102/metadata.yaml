@@ -1,0 +1,7 @@
+friendly_name: SUMO Prod Google Analytics Data (314096102)
+description: |-
+  SUMO Prod Google Analytics Data (Analytics 314096102)
+owners:
+  - kwindau@mozilla.com
+labels:
+  authorized: true

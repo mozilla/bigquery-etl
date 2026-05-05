@@ -1,0 +1,51 @@
+# Subscription 1: no synthetic record because subscription not in billing retry period
+- id: s1-2000-01-01T00:00:00.000000-UPDATE
+  timestamp: 2000-01-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s1
+    status: 2
+    last_transaction:
+      expires_date: 2000-01-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 2: no synthetic record because expires date too recent
+- id: s2-2000-02-01T00:00:00.000000-UPDATE
+  timestamp: 2000-02-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s2
+    status: 3
+    last_transaction:
+      expires_date: 2999-02-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 4: synthetic record for future billing retry period expiration
+- id: s4-2000-02-01T00:00:00.000000-UPDATE
+  timestamp: 2000-02-01 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s4
+    status: 3
+    last_transaction:
+      expires_date: 2000-03-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1
+
+# Subscription 5: synthetic record for past billing retry period expiration
+- id: s5-2000-05-31T00:00:00.000000-UPDATE
+  timestamp: 2000-05-31 00:00:00Z
+  type: original
+  firestore_export_operation: UPDATE
+  subscription:
+    original_transaction_id: s5
+    status: 3
+    last_transaction:
+      expires_date: 2000-04-01 00:00:00Z
+    renewal_info:
+      auto_renew_status: 1

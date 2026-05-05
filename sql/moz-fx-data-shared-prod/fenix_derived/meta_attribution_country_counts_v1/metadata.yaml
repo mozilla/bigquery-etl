@@ -25,4 +25,3 @@ bigquery:
     - meta_attribution_app
     - normalized_channel
     - country
-references: {}

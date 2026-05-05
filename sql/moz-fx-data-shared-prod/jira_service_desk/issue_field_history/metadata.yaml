@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Issue Field History
+description: |-
+  Jira issue field history for Service Desk synced via Fivetran.

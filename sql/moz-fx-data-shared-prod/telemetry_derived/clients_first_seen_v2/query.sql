@@ -3,7 +3,17 @@
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes
 -- are retrieved for each client_id from the ping type that reported it.
-WITH new_profile_ping AS (
+WITH error_check AS (
+  SELECT
+    IF(
+      DATE_ADD(MAX(first_seen_date), INTERVAL 1 DAY) != @submission_date,
+      ERROR("Need to run sequentially, day after max day only"),
+      0
+    ) AS result
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+),
+new_profile_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
@@ -130,6 +140,7 @@ WITH new_profile_ping AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_dlsource,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -270,6 +281,7 @@ shutdown_ping AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_dlsource,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -382,7 +394,8 @@ main_ping AS (
     ] AS attribution_dltoken,
     ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
-    ] AS attribution_dlsource
+    ] AS attribution_dlsource,
+    ARRAY_AGG(profile_group_id ORDER BY submission_date)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -508,7 +521,47 @@ _current AS (
 ),
 _previous AS (
   SELECT
-    *
+    client_id,
+    sample_id,
+    first_seen_date,
+    second_seen_date,
+    architecture,
+    app_build_id,
+    app_name,
+    locale,
+    platform_version,
+    vendor,
+    app_version,
+    xpcom_abi,
+    document_id,
+    distribution_id,
+    partner_distribution_version,
+    partner_distributor,
+    partner_distributor_channel,
+    partner_id,
+    attribution_campaign,
+    attribution_content,
+    attribution_experiment,
+    attribution_medium,
+    attribution_source,
+    attribution_ua,
+    engine_data_load_path,
+    engine_data_name,
+    engine_data_origin,
+    engine_data_submission_url,
+    apple_model_id,
+    city,
+    db_version,
+    subdivision1,
+    normalized_channel,
+    country,
+    normalized_os,
+    normalized_os_version,
+    startup_profile_selection_reason,
+    attribution_dltoken,
+    attribution_dlsource,
+    profile_group_id,
+    metadata
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )

@@ -1,0 +1,188 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: approved_corpus_item_external_id
+    description: Backend identifier for reviewed_corpus_item’s approved_corpus_item_external_id
+  - mode: NULLABLE
+    type: STRING
+    name: authors
+    description: The list of authors of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: corpus_item_id_scheduled_surface_id_scheduled_at_key
+    description: "
+      A combination of the approved_corpus_item_external_id and scheduled_surface_id columns to
+      create a unique event identifier. Note: A Corpus item could be scheduled across multiple
+      surfaces."
+  - mode: NULLABLE
+    type: STRING
+    name: corpus_item_loaded_from
+    description: "
+      Indicates the source for an approved corpus item PROSPECT: From a prospect feed MANUAL:
+      Manually added by curators ML: Added by an ML generated process BACKFILL: Backfilled
+      from legacy curation process"
+  - mode: NULLABLE
+    type: STRING
+    name: corpus_review_status
+    description: "
+      The curator's decision on the item’s validity for the curated corpus (values are
+      'recommendation', 'corpus')."
+  - mode: NULLABLE
+    type: STRING
+    name: curator_created_by
+    description: The curator who created the scheduled_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: curator_updated_by
+    description: The curator who updated the scheduled_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: excerpt
+    description: The excerpt for the reviewed corpus item
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: happened_at
+    description: Timestamp making allowance for inaccurate device clock
+  - mode: NULLABLE
+    type: STRING
+    name: image_url
+    description: The url of the main image of the reviewed corpus item
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_collection
+    description: Indicates whether the reviewed_corpus_item is a collection
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_syndicated
+    description: Indicates whether the reviewed_corpus_item is a syndicated article
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_time_sensitive
+    description: "
+      Indicates whether the reviewed_corpus_item is only relevant for a short period of time
+      (e.g. news)"
+  - mode: NULLABLE
+    type: STRING
+    name: language
+    description: The language of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: predicted_topic
+    description: Topic categorization based on content predictions (examples TECHNOLOGY, TRAVEL, SPORTS, BUSINESS, EDUCATION)
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: prospect_expires_at
+    description: The date at which this candidate set is no longer "fresh".
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_flow
+    description: Name of the metaflow script generating this candidate set from dl-meatflow-jobs.
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_id
+    description: The id of the item as a prospect (potential corporeal candidate)
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_scheduled_surface_id
+    description: "
+      The curated rec destination where the corpus item is expected to appear (NEW_TAB_EN_INTL,
+      NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB)."
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_source
+    description: Source identified by the ML process for the prospect (SYNDICATED, ORGANIC_TIMESPENT, GLOBAL).
+  - mode: NULLABLE
+    type: STRING
+    name: publisher
+    description: The name of the online publication that published this story.
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: reviewed_corpus_item_created_at
+    description: timestamp when the reviewed_corpus_item was created
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: reviewed_corpus_item_updated_at
+    description: timestamp when the reviewed_corpus_item was updated
+  - mode: NULLABLE
+    type: STRING
+    name: reviewed_corpus_update_status
+    description: "
+      The most recent update status for a corpus item added: when a new corpus item is added
+      updated: when a corpus item metadata is updated removed: when a previously added corpus
+      item is removed"
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_action_ui_page
+    description: "
+      Indicates where in the Curation Tools UI the action took place Null if the action was
+      performed by a backend ML process"
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: scheduled_corpus_item_created_at
+    description: timestamp when the scheduled_corpus_item was created
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_corpus_item_external_id
+    description: scheduled corpus item’s external_id
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: scheduled_corpus_item_scheduled_at
+    description: timestamp when the scheduled_corpus_item item is scheduled to run
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: scheduled_corpus_item_updated_at
+    description: timestamp when the scheduled_corpus_item was updated
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_corpus_status
+    description: "
+      Schedule status of the corpus item added: when a new schedule is added for a corpus item
+      removed: when a corpus item schedule is removed rescheduled: when a corpus item is
+      rescheduled"
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_status
+    description: The status of the scheduled_corpus_item, as decided by a curator
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_status_reasons
+    description: "
+      The list (CSV) of reasons why the curator set the current status for the
+      scheduled_corpus_item"
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_status_reason_comment
+    description: "
+      An optional text field for the curator to provide more information about a change in status"
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_iana_timezone
+    description: The iana.org timezone of the scheduled surface.
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_id
+    description: "
+      The curated rec destination where the corpus item is expected to appear (NEW_TAB_EN_INTL,
+      NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB)"
+  - mode: NULLABLE
+    type: STRING
+    name: scheduled_surface_name
+    description: The name of the scheduled surface
+  - mode: NULLABLE
+    type: STRING
+    name: schedule_generated_by
+    description: "
+      The method by which this schedule was generated. Algorithmically generated by an ML process
+      (ML) or Manually created by curators (MANUAL)"
+  - mode: NULLABLE
+    type: STRING
+    name: title
+    description: The title of the reviewed corpus item
+  - mode: NULLABLE
+    type: STRING
+    name: topic
+    description: The topic of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: url
+    description: The url of the reviewed corpus_item

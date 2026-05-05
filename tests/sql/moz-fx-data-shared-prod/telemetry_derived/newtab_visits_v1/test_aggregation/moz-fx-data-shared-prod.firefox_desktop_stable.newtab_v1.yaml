@@ -5,8 +5,11 @@
   metrics:
     uuid:
       legacy_telemetry_client_id: legacy_id_1
+      legacy_telemetry_profile_group_id: profile_group_id_1
     string:
       newtab_newtab_category: enabled
+    quantity:
+      topsites_sponsored_tiles_configured: 2
   events:
     - category: newtab
       name: opened
@@ -59,6 +62,8 @@
           value: 1
         - key: is_sponsored
           value: false
+        - key: is_list_card
+          value: false
     - category: newtab
       name: wallpaper_click
       extra:
@@ -73,3 +78,14 @@
       extra:
         - key: newtab_visit_id
           value: visit_id_1
+    - category: newtab
+      name: topic_selection_topics_saved
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: topics
+          value: "[topic_1, topic_2]"
+        - key: first_save
+          value: false
+        - key: previous_topics
+          value: "[topic_1]"

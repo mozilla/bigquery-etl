@@ -1,0 +1,53 @@
+fields:
+- name: run_date
+  type: DATE
+  mode: NULLABLE
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+- name: dataset_id
+  type: STRING
+  mode: NULLABLE
+- name: table_id
+  type: STRING
+  mode: NULLABLE
+- name: first_partition_historical
+  type: DATE
+  mode: NULLABLE
+  description: First recorded partition
+- name: first_partition_current
+  type: DATE
+  mode: NULLABLE
+  description: First partition as of the current run date
+- name: first_non_empty_partition_historical
+  type: DATE
+  description: >
+    First recorded partition with at least one row,
+    or the first recorded partition if the table existed before the partitions
+    started being recorded.
+  mode: NULLABLE
+- name: first_non_empty_partition_current
+  type: DATE
+  description: First partition with at least one row as of the current run date
+  mode: NULLABLE
+- name: first_partition_row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of rows in the current first partition
+- name: partition_expiration_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Maximum age of a partition before it is deleted
+- name: next_deletion_date
+  type: DATE
+  mode: NULLABLE
+  description: >
+    Next date on which a partition will be dropped.
+    Only partitions after first_non_empty_partition_historical are considered.
+- name: previous_partition_expiration_days
+  type: INTEGER
+  mode: NULLABLE
+- name: expiration_changed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the partition expiration value has changed in the past day

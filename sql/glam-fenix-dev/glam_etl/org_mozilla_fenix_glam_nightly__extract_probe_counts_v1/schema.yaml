@@ -35,6 +35,3 @@ fields:
 - mode: NULLABLE
   name: histogram
   type: STRING
-- mode: NULLABLE
-  name: percentiles
-  type: STRING

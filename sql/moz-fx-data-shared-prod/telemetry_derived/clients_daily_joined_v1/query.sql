@@ -13,7 +13,7 @@ WITH first_seen AS (
 ),
 daily_events AS (
   SELECT
-    *
+    * EXCEPT (profile_group_id)
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_event_v1`
   WHERE

@@ -20,7 +20,8 @@ SELECT
   value.signed_state,
   value.is_system,
   value.is_web_extension,
-  value.multiprocess_compatible
+  value.multiprocess_compatible,
+  profile_group_id
 FROM
   `moz-fx-data-shared-prod.telemetry.main`,
   UNNEST(

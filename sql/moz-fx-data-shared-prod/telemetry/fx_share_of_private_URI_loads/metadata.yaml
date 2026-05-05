@@ -1,0 +1,5 @@
+friendly_name: Private browsing mode users dashboard - Share of private URI loads
+  for users of private windows
+description: Share of private URI loads for users of private windows
+owners:
+- akommasani@mozilla.com

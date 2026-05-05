@@ -1,0 +1,3 @@
+fields: !include-fields
+  table: moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_history_v1
+  parent_field: subscription

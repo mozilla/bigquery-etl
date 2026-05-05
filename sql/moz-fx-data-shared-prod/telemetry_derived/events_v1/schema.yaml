@@ -1,0 +1,155 @@
+fields:
+- mode: REQUIRED
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: REQUIRED
+  name: doc_type
+  type: STRING
+  description: Document Type
+- mode: NULLABLE
+  name: document_id
+  type: STRING
+  description: Document ID
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: App Name
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: Operating System
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: Operating System Version
+- mode: NULLABLE
+  name: e10s_enabled
+  type: BOOLEAN
+  description: E10S Enabled
+- mode: NULLABLE
+  name: e10s_cohort
+  type: STRING
+  description: E10S Cohort
+- mode: NULLABLE
+  name: subsession_start_date
+  type: STRING
+  description: Subsession Start Date
+- mode: NULLABLE
+  name: subsession_length
+  type: INT64
+  description: Subsession Length
+- mode: NULLABLE
+  name: sync_configured
+  type: BOOLEAN
+  description: Sync Configured
+- mode: NULLABLE
+  name: sync_count_desktop
+  type: INT64
+  description: Sync Count Desktop
+- mode: NULLABLE
+  name: sync_count_mobile
+  type: INT64
+  description: Sync Count Mobile
+- mode: NULLABLE
+  name: timestamp
+  type: INTEGER
+  description: Timestamp
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: Sample ID
+- mode: NULLABLE
+  name: active_experiment_id
+  type: STRING
+  description: Active Experiment ID
+- mode: NULLABLE
+  name: active_experiment_branch
+  type: STRING
+  description: Active Experiment Branch
+- mode: NULLABLE
+  name: event_timestamp
+  type: INTEGER
+  description: Event Timestamp
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: Event Category
+- mode: NULLABLE
+  name: event_method
+  type: STRING
+  description: Event Method
+- mode: NULLABLE
+  name: event_object
+  type: STRING
+  description: Event Object
+- mode: NULLABLE
+  name: event_string_value
+  type: STRING
+  description: Event String Value
+- mode: NULLABLE
+  name: event_map_values
+  type: RECORD
+  description: Event Map Values
+  fields:
+  - mode: REPEATED
+    name: key_value
+    type: RECORD
+    fields:
+    - mode: REQUIRED
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+- mode: NULLABLE
+  name: experiments
+  type: RECORD
+  description: Experiments
+  fields:
+  - mode: REPEATED
+    name: key_value
+    type: RECORD
+    fields:
+    - mode: REQUIRED
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+- mode: NULLABLE
+  name: event_process
+  type: STRING
+  description: Event Process
+- mode: NULLABLE
+  name: subsession_id
+  type: STRING
+  description: Subsession ID
+- mode: NULLABLE
+  name: session_start_time
+  type: INTEGER
+  description: Session Start Time
+- mode: NULLABLE
+  name: session_id
+  type: STRING
+  description: Session ID

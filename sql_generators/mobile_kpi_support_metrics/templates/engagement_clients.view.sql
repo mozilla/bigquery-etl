@@ -8,46 +8,39 @@ WITH active_users AS (
     client_id,
     sample_id,
     first_seen_date,
-    app_name,
     normalized_channel,
-    locale,
-    country,
-    isp,
+    app_name,
     app_display_version,
+    country,
+    city,
+    geo_subdivision,
+    locale,
+    isp,
+    normalized_os,
+    normalized_os_version,
+    device_model,
+    device_manufacturer,
+    device_type,
     is_dau,
     is_wau,
     is_mau,
     is_mobile,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
+),
+attribution AS (
+  SELECT
+    client_id,
+    sample_id,
+    normalized_channel,
+    {% for attribution_field in product_attribution_fields %}
+    {{ attribution_field }},
+    {% endfor %}
+    paid_vs_organic,
+    paid_vs_organic_gclid,
+  FROM
+    `{{ project_id }}.{{ dataset }}.attribution_clients`
 )
-{% if attribution_fields %},
-  attribution AS (
-    SELECT
-      client_id,
-      sample_id,
-      channel AS normalized_channel,
-      {% for field in attribution_fields %}
-        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
-          CASE
-            WHEN adjust_network IN ('Google Organic Search', 'Organic')
-              THEN 'Organic'
-            ELSE NULLIF(adjust_campaign, "")
-          END AS adjust_campaign,
-        {% elif field.type == "STRING" %}
-          NULLIF({{ field.name }}, "") AS {{ field.name }},
-        {% else %}
-          {{ field.name }},
-        {% endif %}
-      {% endfor %}
-    FROM
-      {% if app_name == "fenix" %}
-        `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
-      {% elif app_name == "firefox_ios" %}
-        `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
-      {% endif %}
-  )
-{% endif %}
 SELECT
   submission_date,
   client_id,
@@ -58,19 +51,18 @@ SELECT
   app_display_version AS app_version,
   locale,
   country,
+  city,
+  geo_subdivision,
   isp,
   is_dau,
   is_wau,
   is_mau,
   is_mobile,
-  {% for field in attribution_fields %}
-    attribution.{{ field.name }},
+  {% for attribution_field in product_attribution_fields %}
+  attribution.{{ attribution_field }},
   {% endfor %}
-  {% for field in attribution_fields if field.name == "adjust_network" %}
-    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(attribution.adjust_network) AS paid_vs_organic,
-  {% else %}
-    "Organic" AS paid_vs_organic,
-  {% endfor %}
+  attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -82,10 +74,13 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  device_type,
+  device_manufacturer,
+  normalized_os AS os,
+  normalized_os_version AS os_version,
+  device_model,
 FROM
   active_users
-  {% if attribution_fields %}
-    LEFT JOIN
-      attribution
-      USING (client_id, sample_id, normalized_channel)
-  {% endif %}
+LEFT JOIN
+  attribution
+  USING(client_id, sample_id, normalized_channel)

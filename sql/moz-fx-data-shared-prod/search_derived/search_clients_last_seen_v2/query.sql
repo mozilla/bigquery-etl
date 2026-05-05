@@ -74,6 +74,7 @@ _grouped AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(first_reported_country)
     ) AS first_reported_country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(profile_group_id)) AS profile_group_id,
       -- User activity data
     MAX(max_concurrent_tab_count_max) AS max_concurrent_tab_count_max,
     SUM(tab_open_event_count_sum) AS tab_open_event_count_sum,
@@ -103,7 +104,7 @@ _grouped AS (
 ),
 _current AS (
   SELECT
-    * EXCEPT (days_since_first_seen),
+    * EXCEPT (days_since_first_seen, profile_group_id),
       -- In this raw table, we capture the history of activity over the past
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.
@@ -120,7 +121,8 @@ _current AS (
       active_hours_sum > 0
       AND total_uri_count_sum > 0
     ) AS days_dau_bytes,
-    `moz-fx-data-shared-prod.udf.int_to_365_bits`(days_since_first_seen) AS days_first_seen_bytes
+    `moz-fx-data-shared-prod.udf.int_to_365_bits`(days_since_first_seen) AS days_first_seen_bytes,
+    profile_group_id
   FROM
     _grouped
 ),

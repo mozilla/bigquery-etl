@@ -3,13 +3,16 @@ description: |-
   Visits on the newtab page, one row per visit per-day
   (identified by the visit id).
 owners:
-- anicholson@mozilla.com
+- mbowerman@mozilla.com
+- cbeck@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
-  owner1: anicholson
+  owner1: mbowerman
   dag: bqetl_newtab
+  table_type: client_level
+  owner2: cbeck
 scheduling:
   dag_name: bqetl_newtab
 bigquery:
@@ -17,10 +20,10 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:
     - channel
     - country_code
-references: {}
+require_column_descriptions: false

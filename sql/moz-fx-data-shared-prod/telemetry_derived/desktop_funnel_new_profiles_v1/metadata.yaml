@@ -6,6 +6,8 @@ description: >
 friendly_name: Firefox Desktop New Profiles
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
 owners:
   - ascholtz@mozilla.com
 scheduling:

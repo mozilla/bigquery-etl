@@ -43,7 +43,8 @@ class TestPublishMetadata(object):
             "deprecated": "true",
             "incremental": "",
             "incremental_export": "",
-            "owner1": "ascholtz",
+            "monitoring": "true",
+            "owner1": "test",
             "public_json": "",
             "schedule": "daily",
         }
@@ -64,7 +65,8 @@ class TestPublishMetadata(object):
             "deprecated": "true",
             "incremental": "",
             "incremental_export": "",
-            "owner1": "ascholtz",
+            "monitoring": "true",
+            "owner1": "test",
             "public_json": "",
             "schedule": "daily",
         }

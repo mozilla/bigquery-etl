@@ -1,8 +1,0 @@
-friendly_name: Search Impressions By Site V2 (DEPRECATED)
-description: |-
-  This table is being moved to `moz-fx-data-shared-prod.google_search_console_derived.search_impressions_by_site_v2`.
-  Please update any queries referencing this table to point to the new location.
-owners:
-- srose@mozilla.com
-labels:
-  owner1: srose

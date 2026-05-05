@@ -42,17 +42,23 @@ class TestFormatters:
         with pytest.raises(TypeError):
             assert format_timedelta(123)
 
-        assert format_timedelta("1h") == datetime.timedelta(seconds=3600)
-        assert format_timedelta("-1h") == datetime.timedelta(seconds=-3600)
-        assert format_timedelta("15m") == datetime.timedelta(seconds=900)
-        assert format_timedelta("-15m") == datetime.timedelta(seconds=-900)
-        assert format_timedelta("1h15m") == datetime.timedelta(seconds=4500)
-        assert format_timedelta("-1h15m") == datetime.timedelta(seconds=-4500)
+        assert format_timedelta("1h") == datetime.timedelta(hours=1)
+        assert format_timedelta("-1h") == datetime.timedelta(hours=-1)
+        assert format_timedelta("15m") == datetime.timedelta(minutes=15)
+        assert format_timedelta("-15m") == datetime.timedelta(minutes=-15)
+        assert format_timedelta("1h15m") == datetime.timedelta(hours=1, minutes=15)
+        assert format_timedelta("-1h15m") == datetime.timedelta(hours=-1, minutes=-15)
         assert format_timedelta("1s") == datetime.timedelta(seconds=1)
         assert format_timedelta("-1s") == datetime.timedelta(seconds=-1)
-        assert format_timedelta("1h1m1s") == datetime.timedelta(seconds=3661)
-        assert format_timedelta("-1h1m1s") == datetime.timedelta(seconds=-3661)
-        assert format_timedelta("1d1h1m1s") == "1d1h1m1s"
+        assert format_timedelta("1h1m1s") == datetime.timedelta(
+            hours=1, minutes=1, seconds=1
+        )
+        assert format_timedelta("-1h1m1s") == datetime.timedelta(
+            hours=-1, minutes=-1, seconds=-1
+        )
+        assert format_timedelta("1d1h1m1s") == datetime.timedelta(
+            days=1, hours=1, minutes=1, seconds=1
+        )
 
     def test_format_optional_string(self):
         assert format_optional_string(None) == "None"

@@ -6,17 +6,20 @@ import os
 import random
 import re
 import string
+import sys
 import tempfile
 import warnings
+from functools import cache, wraps
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import Callable, List, Optional, Set, Tuple
 from uuid import uuid4
 
+import click
 import sqlglot
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
-from bigquery_etl.config import ConfigLoader
+from bigquery_etl.config import BQETL_PROJECT_CONFIG, ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metrics import MetricHub
 
@@ -55,7 +58,10 @@ def project_dirs(project_id=None, sql_dir=None) -> List[str]:
         sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
     if project_id is None:
         return [
-            os.path.join(sql_dir, project_dir) for project_dir in os.listdir(sql_dir)
+            os.path.join(sql_dir, project_dir)
+            for project_dir in os.listdir(sql_dir)
+            # sql/ can contain files like bigconfig.yml
+            if os.path.isdir(os.path.join(sql_dir, project_dir))
         ]
     else:
         return [os.path.join(sql_dir, project_id)]
@@ -66,6 +72,38 @@ def random_str(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for i in range(length))
 
 
+@cache
+def get_bqetl_project_root() -> Path | None:
+    """Return the root path of the bqetl project the user is currently in."""
+    cwd = Path.cwd()
+    search_paths = [cwd]
+    search_paths.extend(cwd.parents)
+    for possible_project_root in search_paths:
+        if (possible_project_root / BQETL_PROJECT_CONFIG).exists():
+            return possible_project_root
+    return None
+
+
+def resolve_project_file_path(project_file_path: str | Path) -> Path:
+    """Return the absolute path to the file, either in the current `bqetl` project or the main `bqetl` project."""
+    relative_project_file_path = Path(str(project_file_path).removeprefix("/"))
+
+    bqetl_project_root = get_bqetl_project_root()
+    if bqetl_project_root:
+        absolute_project_file_path = bqetl_project_root / relative_project_file_path
+        if absolute_project_file_path.exists():
+            return absolute_project_file_path
+
+    # Fall back to checking the main `bqetl` project if necessary.
+    if (
+        bqetl_project_root != ROOT
+        and (root_project_file_path := ROOT / relative_project_file_path).exists()
+    ):
+        return root_project_file_path
+
+    raise FileNotFoundError(f"Project file not found: {project_file_path}")
+
+
 def render(
     sql_filename,
     template_folder=".",
@@ -74,7 +112,8 @@ def render(
     **kwargs,
 ) -> str:
     """Render a given template query using Jinja."""
-    path = Path(template_folder) / sql_filename
+    template_folder_path = Path(template_folder)
+    path = template_folder_path / sql_filename
     skip = {
         file
         for skip in ConfigLoader.get("render", "skip", fallback=[])
@@ -118,14 +157,20 @@ def render(
                 checks_template.write_text(
                     macro_imports
                     + "\n"
-                    + (Path(template_folder) / sql_filename).read_text()
+                    + (template_folder_path / sql_filename).read_text()
                 )
 
                 file_loader = FileSystemLoader(f"{str(checks_template.parent)}")
                 env = Environment(loader=file_loader)
                 main_sql = env.get_template(checks_template.name)
         else:
-            file_loader = FileSystemLoader(f"{template_folder}")
+            # Add the bigquery-etl project root to the search path to support Jinja imports/includes.
+            file_loader_search_paths = [template_folder_path, ROOT]
+            # Also dynamically detect the project root so imports/includes in the private-bigquery-etl repo work.
+            if bqetl_project_root := get_bqetl_project_root():
+                if bqetl_project_root not in file_loader_search_paths:
+                    file_loader_search_paths.append(bqetl_project_root)
+            file_loader = FileSystemLoader(file_loader_search_paths)
             env = Environment(loader=file_loader)
             main_sql = env.get_template(sql_filename)
 
@@ -137,9 +182,9 @@ def render(
     return rendered
 
 
-def get_table_dir(output_dir, full_table_id):
+def get_table_dir(output_dir, full_table_id, parts=2):
     """Return the output directory for a given table id."""
-    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
 
 
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
@@ -163,6 +208,20 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
         f.write("\n")
 
 
+def alter_sql_for_sqlglot(sql: str) -> str:
+    """Alter the specified SQL to avoid issues SQLGlot has with some SQL syntax."""
+    # sqlglot parses UDFs with keyword names incorrectly:
+    # https://github.com/tobymao/sqlglot/issues/3332
+    sql = re.sub(
+        r"\.(true|false|null)\(",
+        r".`\1`(",
+        sql,
+        flags=re.IGNORECASE,
+    )
+
+    return sql
+
+
 def qualify_table_references_in_file(path: Path) -> str:
     """Add project id and dataset id to table/view references and persistent udfs in a given query.
 
@@ -180,6 +239,22 @@ def qualify_table_references_in_file(path: Path) -> str:
         raise NotImplementedError(
             "Cannot qualify table_references of query scripts or UDFs"
         )
+
+    # INFORMATION_SCHEMA views that can be dataset qualified
+    # https://cloud.google.com/bigquery/docs/information-schema-intro#dataset_qualifier
+    # used to make a best-effort attempt to qualify with dataset when appropriate
+    DATASET_QUALIFIED_INFO_SCHEMA_VIEWS = (
+        "COLUMNS",
+        "COLUMN_FIELD_PATHS",
+        "MATERIALIZED_VIEWS",
+        "PARAMETERS",
+        "PARTITIONS",
+        "ROUTINES",
+        "ROUTINE_OPTIONS",
+        "TABLES",
+        "TABLE_OPTIONS",
+        "VIEWS",
+    )
 
     # determine the default target project and dataset from the path
     target_project = Path(path).parent.parent.parent.name
@@ -202,10 +277,13 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
     # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
-        init_query,
+        alter_sql_for_sqlglot(init_query),
         read="bigquery",
     )
-    sql_query_statements = sqlglot.parse(sql_query, read="bigquery")
+    sql_query_statements = sqlglot.parse(
+        alter_sql_for_sqlglot(sql_query),
+        read="bigquery",
+    )
 
     # tuples of (table identifier, replacement string)
     table_replacements: Set[Tuple[str, str]] = set()
@@ -228,7 +306,9 @@ def qualify_table_references_in_file(path: Path) -> str:
             for table_expr in statement.find_all(sqlglot.exp.Table):
                 # existing table ref including backticks without alias
                 table_expr.set("alias", "")
-                reference_string = table_expr.sql(dialect="bigquery")
+                # as of sqlglot 26, dialect=bigquery puts backticks at only start and end
+                # if every part is quoted, so using dialect=None
+                reference_string = table_expr.sql(dialect=None).replace('"', "`?")
 
                 matched_cte = [
                     re.match(
@@ -240,17 +320,28 @@ def qualify_table_references_in_file(path: Path) -> str:
                 if any(matched_cte):
                     continue
 
-                # project id is parsed as the catalog attribute
-                # but information_schema region may also be parsed as catalog
-                if table_expr.catalog.startswith("region-"):
-                    project_name = f"{target_project}.{table_expr.catalog}"
+                # as of sqlglot 26, INFORMATION_SCHEMA.{VIEW_NAME} is parsed together as a table name
+                if table_expr.name.startswith("INFORMATION_SCHEMA."):
+                    if table_expr.db.lower().startswith("region-"):
+                        project_name = table_expr.catalog or target_project
+                        dataset_name = table_expr.db
+                    elif (
+                        table_expr.name.split(".")[1]
+                        in DATASET_QUALIFIED_INFO_SCHEMA_VIEWS
+                    ):  # add project and dataset
+                        project_name = target_project
+                        dataset_name = table_expr.db or default_dataset
+                    else:  # just add project
+                        project_name = ""
+                        dataset_name = table_expr.db or target_project
                 elif table_expr.catalog == "":  # no project id
                     project_name = target_project
+                    dataset_name = table_expr.db or default_dataset
                 else:  # project id exists
                     continue
 
                 # fully qualified table ref
-                replacement_string = f"`{project_name}.{table_expr.db or default_dataset}.{table_expr.name}`"
+                replacement_string = f"`{project_name}{'.' if project_name else ''}{dataset_name}.{table_expr.name}`"
 
                 table_replacements.add((reference_string, replacement_string))
 
@@ -285,6 +376,51 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
 
     return updated_query
+
+
+def extract_last_group_by_from_query(
+    sql_path: Optional[Path] = None, sql_text: Optional[str] = None
+):
+    """Return the list of columns in the latest group by of a query."""
+    if not sql_path and not sql_text:
+        raise click.ClickException(
+            "Extracting GROUP BY from query failed due to sql file"
+            " or sql text not available."
+        )
+
+    if sql_path:
+        try:
+            query_text = sql_path.read_text()
+        except (FileNotFoundError, OSError):
+            raise click.ClickException(f'Failed to read query from: "{sql_path}."')
+    else:
+        query_text = str(sql_text)
+    group_by_list = []
+
+    # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.
+    query_text = re.sub(r"/\*.*?\*/", "", query_text, flags=re.DOTALL)
+    query_text = re.sub(r"--[^\n]*\n", "\n", query_text)
+    query_text = re.sub(r"\s+", " ", query_text).strip()
+    if query_text.endswith(";"):
+        query_text = query_text[:-1].strip()
+
+    last_group_by_original = re.search(
+        r"(?i){}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
+        query_text,
+        re.DOTALL,
+    )
+
+    if last_group_by_original:
+        group_by = query_text[last_group_by_original.end() :].lstrip()
+        # Remove parenthesis, closing parenthesis, LIMIT, ORDER BY and text after those. Remove also opening parenthesis.
+        group_by = (
+            re.sub(r"(?i)[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
+            .replace("(", "")
+            .strip()
+        )
+        if group_by:
+            group_by_list = group_by.replace(" ", "").replace("\n", "").split(",")
+    return group_by_list
 
 
 class TempDatasetReference(bigquery.DatasetReference):
@@ -322,3 +458,33 @@ class TempDatasetReference(bigquery.DatasetReference):
         character.
         """
         return self.table(f"anon{uuid4().hex}")
+
+
+@cache
+def is_running_under_coding_agent():
+    """Check if `bqetl` is running under a coding agent."""
+    # Based on https://searchfox.org/firefox-main/rev/a771bf78b90de89e0ea9d17caaa64ffa240ecd7e/python/mozbuild/mozbuild/util.py#74-80
+    return bool(
+        os.environ.get("CLAUDECODE")
+        or os.environ.get("CODEX_SANDBOX")
+        or os.environ.get("GEMINI_CLI")
+        or os.environ.get("OPENCODE")
+    )
+
+
+def exit_if_running_under_coding_agent():
+    """Exit if `bqetl` is running under a coding agent."""
+    if is_running_under_coding_agent():
+        click.echo("Coding agents aren't allowed to run this command.", err=True)
+        sys.exit(1)
+
+
+def block_coding_agents(function: Callable) -> Callable:
+    """Wrap a function so that it exits if `bqetl` is running under a coding agent."""
+
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        exit_if_running_under_coding_agent()
+        return function(*args, **kwargs)
+
+    return wrapper

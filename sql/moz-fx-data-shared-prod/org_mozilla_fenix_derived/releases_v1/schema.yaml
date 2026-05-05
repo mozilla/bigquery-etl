@@ -1,29 +1,29 @@
 fields:
-- description: null
+- description: Build Number
   mode: NULLABLE
   name: build_number
   type: INTEGER
-- description: null
+- description: Category
   mode: NULLABLE
   name: category
   type: STRING
-- description: null
+- description: Date
   mode: NULLABLE
   name: date
   type: DATE
-- description: null
+- description: Description
   mode: NULLABLE
   name: description
   type: STRING
-- description: null
+- description: Is Security Driven
   mode: NULLABLE
   name: is_security_driven
   type: BOOLEAN
-- description: null
+- description: Product
   mode: NULLABLE
   name: product
   type: STRING
-- description: null
+- description: Version
   mode: NULLABLE
   name: version
   type: STRING

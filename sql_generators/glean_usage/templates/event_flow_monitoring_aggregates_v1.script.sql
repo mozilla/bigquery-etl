@@ -9,8 +9,8 @@ CREATE TEMP TABLE
     channel STRING,
     events ARRAY<
       STRUCT<
-        source STRUCT<category STRING, name STRING, timestamp TIMESTAMP>,
-        target STRUCT<category STRING, name STRING, timestamp TIMESTAMP>
+        source STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>,
+        target STRUCT<category STRING, name STRING, `timestamp` TIMESTAMP>
       >
     >,
     flow_hash STRING
@@ -85,9 +85,9 @@ CREATE TEMP TABLE
         channel,
         ARRAY_AGG((
           SELECT AS
-          STRUCT category AS category, name AS name, timestamp AS timestamp
+          STRUCT category AS category, name AS name, `timestamp` AS timestamp
           LIMIT 100 -- limit number of events considered
-        ) ORDER BY timestamp) AS events
+        ) ORDER BY `timestamp`) AS events
       FROM
         all_app_events
       GROUP BY
@@ -132,7 +132,7 @@ CREATE TEMP TABLE
       flow_id,
       normalized_app_name,
       channel,
-      ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
+      ARRAY_AGG(event ORDER BY event.source.timestamp LIMIT 10000) AS events,
       -- create a flow hash that concats all the events that are part of the flow
       -- <event_category>.<event_name> -> <event_category>.<event_name> -> ...
       ARRAY_TO_STRING(
@@ -141,6 +141,7 @@ CREATE TEMP TABLE
             CONCAT(IF(event.source.category IS NOT NULL, CONCAT(event.source.category, "."), ""), event.source.name)
             ORDER BY
               event.source.timestamp
+            LIMIT 10000
           ),
           [
             ARRAY_REVERSE(
@@ -148,6 +149,7 @@ CREATE TEMP TABLE
                 CONCAT(IF(event.target.category IS NOT NULL, CONCAT(event.target.category, "."), ""), event.target.name)
                 ORDER BY
                   event.source.timestamp
+                LIMIT 10000
               )
             )[SAFE_OFFSET(0)]
           ]

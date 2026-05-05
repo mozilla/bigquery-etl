@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
-  EXISTS(
+  EXISTS (
     SELECT
       country
     FROM

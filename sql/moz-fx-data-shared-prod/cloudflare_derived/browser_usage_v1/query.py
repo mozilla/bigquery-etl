@@ -1,11 +1,13 @@
 # Load libraries
 import json
+import os
+import time
+from argparse import ArgumentParser
 from datetime import datetime, timedelta
+
 import pandas as pd
 import requests
-from argparse import ArgumentParser
-from google.cloud import bigquery
-from google.cloud import storage
+from google.cloud import bigquery, storage
 
 # Configs
 brwsr_usg_configs = {
@@ -24,9 +26,12 @@ brwsr_usg_configs = {
     ],
     "locations": [
         "ALL",
+        "AU",
         "BE",
         "BG",
+        "BR",
         "CA",
+        "CH",
         "CZ",
         "DE",
         "DK",
@@ -37,6 +42,9 @@ brwsr_usg_configs = {
         "GB",
         "HR",
         "IE",
+        "IN",
+        "JP",
+        "KE",
         "IT",
         "CY",
         "LV",
@@ -68,6 +76,9 @@ brwsr_usg_configs = {
     "results_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.browser_results_stg",
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.browser_errors_stg",
 }
+
+# Load the Cloudflare API Token
+cloudflare_api_token = os.getenv("CLOUDFLARE_AUTH_TOKEN")
 
 
 # Define a function to move a GCS object then delete the original
@@ -106,7 +117,7 @@ def generate_browser_api_call(
     location_string = "" if location == "ALL" else f"&location={location}"
     op_system_string = "" if op_system == "ALL" else f"&os={op_system}"
     device_type_string = "" if device_type == "ALL" else f"&deviceType={device_type}"
-    browser_api_url = f"https://api.cloudflare.com/client/v4/radar/http/top/browsers?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z{device_type_string}{location_string}{op_system_string}{user_type_string}&limit={limit}&format=json"
+    browser_api_url = f"https://api.cloudflare.com/client/v4/radar/http/top/browser?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z{device_type_string}{location_string}{op_system_string}{user_type_string}&limit={limit}&format=json"
     return browser_api_url
 
 
@@ -166,79 +177,99 @@ def get_browser_data(date_of_interest, auth_token):
                     brwsr_usg_api_url = generate_browser_api_call(
                         start_date, end_date, device_type, loc, os, user_type, limit
                     )
-                    try:
-                        response = requests.get(
-                            brwsr_usg_api_url,
-                            headers=headers,
-                            timeout=brwsr_usg_configs["timeout_limit"],
-                        )
-                        response_json = json.loads(response.text)
-
-                        # if the response was successful, get the result and append it to the results dataframe
-                        if response_json["success"] is True:
-                            # Save the results to GCS
-                            result = response_json["result"]
-                            confidence_level = result["meta"]["confidenceInfo"]["level"]
-                            normalization = result["meta"]["normalization"]
-                            last_updated = result["meta"]["lastUpdated"]
-                            startTime = result["meta"]["dateRange"][0]["startTime"]
-                            endTime = result["meta"]["dateRange"][0]["endTime"]
-                            data = result["top_0"]
-                            browser_lst = []
-                            browser_share_lst = []
-
-                            for browser in data:
-                                browser_lst.append(browser["name"])
-                                browser_share_lst.append(browser["value"])
-
-                            new_browser_results_df = pd.DataFrame(
-                                {
-                                    "StartTime": [startTime] * len(browser_lst),
-                                    "EndTime": [endTime] * len(browser_lst),
-                                    "DeviceType": [device_type] * len(browser_lst),
-                                    "Location": [loc] * len(browser_lst),
-                                    "UserType": [user_type] * len(browser_lst),
-                                    "Browser": browser_lst,
-                                    "OperatingSystem": [os] * len(browser_lst),
-                                    "PercentShare": browser_share_lst,
-                                    "ConfLevel": [confidence_level] * len(browser_lst),
-                                    "Normalization": [normalization] * len(browser_lst),
-                                    "LastUpdated": [last_updated] * len(browser_lst),
-                                }
+                    max_retries = 3
+                    for attempt in range(max_retries):
+                        try:
+                            response = requests.get(
+                                brwsr_usg_api_url,
+                                headers=headers,
+                                timeout=brwsr_usg_configs["timeout_limit"],
                             )
-                            browser_results_df = pd.concat(
-                                [browser_results_df, new_browser_results_df]
-                            )
+                            response_json = json.loads(response.text)
 
-                        # If there were errors, save them to the errors dataframe
-                        else:
-                            new_browser_error_df = pd.DataFrame(
-                                {
-                                    "StartTime": [start_date],
-                                    "EndTime": [end_date],
-                                    "Location": [loc],
-                                    "UserType": [user_type],
-                                    "DeviceType": [device_type],
-                                    "OperatingSystem": [os],
-                                }
-                            )
-                            browser_errors_df = pd.concat(
-                                [browser_errors_df, new_browser_error_df]
-                            )
-                    except:
-                        new_browser_error_df = pd.DataFrame(
-                            {
-                                "StartTime": [start_date],
-                                "EndTime": [end_date],
-                                "Location": [loc],
-                                "UserType": [user_type],
-                                "DeviceType": [device_type],
-                                "OperatingSystem": [os],
-                            }
-                        )
-                        browser_errors_df = pd.concat(
-                            [browser_errors_df, new_browser_error_df]
-                        )
+                            # if the response was successful, get the result and append it to the results dataframe
+                            if response_json["success"] is True:
+                                # Save the results to GCS
+                                result = response_json["result"]
+                                confidence_level = result["meta"]["confidenceInfo"][
+                                    "level"
+                                ]
+                                normalization = result["meta"]["normalization"]
+                                last_updated = result["meta"]["lastUpdated"]
+                                startTime = result["meta"]["dateRange"][0]["startTime"]
+                                endTime = result["meta"]["dateRange"][0]["endTime"]
+                                data = result["top_0"]
+                                browser_lst = []
+                                browser_share_lst = []
+
+                                for browser in data:
+                                    browser_lst.append(browser["name"])
+                                    browser_share_lst.append(browser["value"])
+
+                                new_browser_results_df = pd.DataFrame(
+                                    {
+                                        "StartTime": [startTime] * len(browser_lst),
+                                        "EndTime": [endTime] * len(browser_lst),
+                                        "DeviceType": [device_type] * len(browser_lst),
+                                        "Location": [loc] * len(browser_lst),
+                                        "UserType": [user_type] * len(browser_lst),
+                                        "Browser": browser_lst,
+                                        "OperatingSystem": [os] * len(browser_lst),
+                                        "PercentShare": browser_share_lst,
+                                        "ConfLevel": [confidence_level]
+                                        * len(browser_lst),
+                                        "Normalization": [normalization]
+                                        * len(browser_lst),
+                                        "LastUpdated": [last_updated]
+                                        * len(browser_lst),
+                                    }
+                                )
+                                browser_results_df = pd.concat(
+                                    [browser_results_df, new_browser_results_df]
+                                )
+                                break
+
+                            # If there were errors, save them to the errors dataframe
+                            else:
+                                if attempt < max_retries - 1:
+                                    print(
+                                        f"API returned success=False for {curr_combo}, retrying (attempt {attempt + 1})..."
+                                    )
+                                    time.sleep(5 * 2**attempt)
+                                else:
+                                    new_browser_error_df = pd.DataFrame(
+                                        {
+                                            "StartTime": [start_date],
+                                            "EndTime": [end_date],
+                                            "Location": [loc],
+                                            "UserType": [user_type],
+                                            "DeviceType": [device_type],
+                                            "OperatingSystem": [os],
+                                        }
+                                    )
+                                    browser_errors_df = pd.concat(
+                                        [browser_errors_df, new_browser_error_df]
+                                    )
+                        except Exception as e:
+                            if attempt < max_retries - 1:
+                                print(
+                                    f"Exception for {curr_combo}: {e}, retrying (attempt {attempt + 1})..."
+                                )
+                                time.sleep(5 * 2**attempt)
+                            else:
+                                new_browser_error_df = pd.DataFrame(
+                                    {
+                                        "StartTime": [start_date],
+                                        "EndTime": [end_date],
+                                        "Location": [loc],
+                                        "UserType": [user_type],
+                                        "DeviceType": [device_type],
+                                        "OperatingSystem": [os],
+                                    }
+                                )
+                                browser_errors_df = pd.concat(
+                                    [browser_errors_df, new_browser_error_df]
+                                )
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = brwsr_usg_configs["bucket"] + brwsr_usg_configs[
@@ -255,7 +286,7 @@ def get_browser_data(date_of_interest, auth_token):
     # Return a summary to the console
     len_results = str(len(browser_results_df))
     len_errors = str(len(browser_errors_df))
-    result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
+    result_summary = [len_results, len_errors]
     return result_summary
 
 
@@ -263,7 +294,7 @@ def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
+    parser.add_argument("--cloudflare_api_token", default=cloudflare_api_token)
     parser.add_argument("--project", default=brwsr_usg_configs["gcp_project_id"])
     parser.add_argument("--dataset", default="cloudflare_derived")
 
@@ -272,7 +303,10 @@ def main():
     print(args.date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_browser_data(args.date, args.cloudflare_api_token)
+    results = get_browser_data(args.date, args.cloudflare_api_token)
+    nbr_successful = results[0]
+    nbr_errors = results[1]
+    result_summary = f"# Result Rows: {nbr_successful}; # of Error Rows: {nbr_errors}"
     print("result_summary")
     print(result_summary)
 
@@ -418,6 +452,10 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         brwsr_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+    # If # errors > 200 (more than 10%), fail with error
+    if int(nbr_errors) > 200:
+        raise Exception("200 or more errors, check for issues")
 
 
 if __name__ == "__main__":

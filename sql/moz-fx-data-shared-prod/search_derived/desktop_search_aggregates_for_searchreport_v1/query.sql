@@ -46,9 +46,9 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5,
-  6
+  submission_date,
+  geo,
+  locale,
+  normalized_engine,
+  os,
+  app_version

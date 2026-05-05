@@ -1,0 +1,4 @@
+friendly_name: Airflow task reschedule
+description: List of tasks rescheduled by Airflow
+owners:
+- kik@mozilla.com

@@ -170,7 +170,7 @@ staging AS (
     _previous
     USING (client_id)
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` AS cfs
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` AS cfs
     USING (client_id)
 )
 SELECT
@@ -576,6 +576,7 @@ SELECT
   max_subsession_counter,
   min_subsession_counter,
   startup_profile_selection_first_ping_only,
-  days_active_bits
+  days_active_bits,
+  profile_group_id
 FROM
   staging a

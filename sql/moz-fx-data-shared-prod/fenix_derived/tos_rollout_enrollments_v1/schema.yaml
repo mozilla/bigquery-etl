@@ -1,0 +1,17 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Client ID
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Enrollment timestamp
+- name: slug
+  type: STRING
+  mode: NULLABLE
+  description: Experiment slug
+- name: branch
+  type: STRING
+  mode: NULLABLE
+  description: Experiment branch

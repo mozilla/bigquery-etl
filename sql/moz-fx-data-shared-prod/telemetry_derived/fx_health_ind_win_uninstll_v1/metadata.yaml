@@ -2,10 +2,10 @@ friendly_name: Fx Health Ind Win Uninstll
 description: |-
   Aggregate view of Windows uninstalls by day
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

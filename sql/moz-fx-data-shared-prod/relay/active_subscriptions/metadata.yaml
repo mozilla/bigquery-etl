@@ -1,0 +1,6 @@
+friendly_name: Active Firefox Relay Subscriptions
+description: >
+  Aggregated count of active Firefox Relay subscriptions.
+owners:
+  - phlee@mozilla.com
+  - srose@mozilla.com

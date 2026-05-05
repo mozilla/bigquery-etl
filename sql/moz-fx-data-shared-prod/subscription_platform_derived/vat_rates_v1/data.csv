@@ -10,6 +10,7 @@ AU,Australia,0.1,2024-02-07
 AZ,Azerbaijan,0.18,2025-08-12
 BA,Bosnia and Herzegovina,0.17,2024-02-07
 BB,Barbados,0.175,2025-08-12
+BS,Bahamas,0.1,2026-02-24
 BD,Bangladesh,0.15,2024-10-22
 BE,Belgium,0.21,2021-01-01
 BG,Bulgaria,0.2,2022-05-10
@@ -83,6 +84,7 @@ LA,Lao PDR,0.1,2025-08-12
 LB,Lebanon,0.11,2025-08-12
 LC,Saint Lucia,0.125,2025-08-12
 LI,Liechtenstein,0.081,2025-08-12
+LR,Liberia,0.12,2026-01-14
 LT,Lithuania,0.21,2022-05-10
 LU,Luxembourg,0.17,2022-05-10
 LV,Latvia,0.21,2022-05-10
@@ -121,8 +123,10 @@ PS,Palestinian territories,0.16,2025-08-12
 PT,Portugal,0.23,2022-05-10
 PY,Paraguay,0.1,2025-08-12
 RO,Romania,0.19,2022-05-10
+RO,Romania,0.21,2025-08-01
 RS,Serbia,0.2,2024-02-07
 RU,Russia,0.2,2024-02-07
+RU,Russia,0.22,2026-01-01
 RW,Rwanda,0.18,2025-08-12
 SA,Saudi Arabia,0.15,2024-02-07
 SE,Sweden,0.25,2022-01-01

@@ -28,7 +28,24 @@ SELECT
   END AS user_type,
   'https://sql.telemetry.mozilla.org/queries/' || query_id || '/source' AS query_url,
   username = "Scheduled" AS is_scheduled,
-  (total_slot_ms * 0.06) / (60 * 60 * 1000) AS cost,
+  -- These cost estimates are calculated using BigQuery's list prices: https://cloud.google.com/bigquery/pricing
+  CASE
+    -- On-demand queries cost $6.25 per tebibyte.
+    WHEN reservation_id IS NULL
+      AND total_terabytes_billed IS NOT NULL
+      THEN total_terabytes_billed * 6.25
+    -- Default pipeline queries are free: https://docs.cloud.google.com/bigquery/docs/reservations-workload-management#default-pipeline
+    WHEN reservation_id = 'default-pipeline'
+      THEN 0
+    -- Enterprise Edition queries using 1-year slot commitments cost $0.048 per slot hour.
+    WHEN reservation_id LIKE '%.metadata-generation'
+      OR reservation_id LIKE '%.shredder-all'
+      OR reservation_id LIKE '%.shredder-telemetry-main'
+      OR reservation_id LIKE '%.shredder-desktop-metrics'
+      THEN (total_slot_ms / (60 * 60 * 1000)) * 0.048
+    -- Enterprise Edition queries not using slot commitments cost $0.06 per slot hour.
+    ELSE (total_slot_ms / (60 * 60 * 1000)) * 0.06
+  END AS cost,
   total_slot_ms / (60 * 60 * 1000) AS total_slot_hours,
   ROW_NUMBER() OVER (PARTITION BY job_id, submission_date) AS referenced_table_number,
 FROM

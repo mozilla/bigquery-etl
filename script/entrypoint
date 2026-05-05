@@ -17,10 +17,23 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
 fi
 
 if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && which gcloud > /dev/null; then
-    echo "DEBUG: Authenticating with GCP key file '$GOOGLE_APPLICATION_CREDENTIALS' containing $(cat $GOOGLE_APPLICATION_CREDENTIALS | wc -c) bytes."
-    gcloud --verbosity=debug --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-    python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
-    sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc
+    # Check if this is a service account key file (has "private_key") or a credential config (Workload Identity)
+    if grep -q '"private_key"' "$GOOGLE_APPLICATION_CREDENTIALS" 2>/dev/null; then
+        echo "DEBUG: Authenticating with GCP key file '$GOOGLE_APPLICATION_CREDENTIALS' containing $(cat $GOOGLE_APPLICATION_CREDENTIALS | wc -c) bytes."
+        gcloud --verbosity=debug --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+        python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
+        # Create or update .bigqueryrc with project ID
+        touch ~/.bigqueryrc
+        sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc
+    else
+        echo "DEBUG: Using Workload Identity Federation credentials from '$GOOGLE_APPLICATION_CREDENTIALS'."
+        # With Workload Identity, the auth action already configured gcloud, so we just need to set up the project
+        if python -W ignore -c 'import google.auth; creds, project = google.auth.default(); print("project = ", project) if project else exit(1)' >> ~/.config/gcloud/configurations/config_default 2>/dev/null; then
+            # Create or update .bigqueryrc with project ID
+            touch ~/.bigqueryrc
+            sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc
+        fi
+    fi
 fi
 
 if [ "$#" = 0 ]; then

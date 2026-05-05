@@ -2,10 +2,11 @@ friendly_name: Private Browsing Mode Retention
 description: |-
   Calculates retention over time for PBM users
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
+  level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
 scheduling:
@@ -18,3 +19,4 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null
+require_column_descriptions: true

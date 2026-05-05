@@ -6,6 +6,9 @@ fields:
   name: position
   type: INTEGER
 - mode: NULLABLE
+  name: tile_format
+  type: STRING
+- mode: NULLABLE
   name: impressions
   type: INTEGER
 - mode: NULLABLE

@@ -1,0 +1,4 @@
+friendly_name: Firefox iOS LTV States
+description: Fields required for calculating LTV for Firefox iOS clients
+owners:
+- kwindau@mozilla.com

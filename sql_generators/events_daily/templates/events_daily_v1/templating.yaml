@@ -1,34 +1,3 @@
-fenix_derived:
-  name: Firefox for Android
-  include_normalized_fields: True
-  include_metadata_fields: True
-  events_table_name: events
-  glean: True
-  dataset: fenix
-  glean_app_ids: [ org_mozilla_firefox, org_mozilla_firefox_beta, org_mozilla_fenix ]
-  start_date: 2020-01-01
-  dag_name: bqetl_fenix_event_rollup
-  user_properties:
-    - src: client_info.android_sdk_version
-      dest: android_sdk_version
-    - src: client_info.app_build
-      dest: app_build
-    - src: client_info.app_channel
-      dest: app_channel
-    - src: client_info.app_display_version
-      dest: app_display_version
-    - src: client_info.architecture
-      dest: architecture
-    - src: client_info.device_manufacturer
-      dest: device_manufacturer
-    - src: client_info.device_model
-      dest: device_model
-    - src: client_info.first_run_date
-      dest: first_run_date
-    - src: client_info.telemetry_sdk_build
-      dest: telemetry_sdk_build
-    - src: client_info.locale
-      dest: locale
 mozilla_vpn_derived:
   name: Mozilla VPN
   include_normalized_fields: True

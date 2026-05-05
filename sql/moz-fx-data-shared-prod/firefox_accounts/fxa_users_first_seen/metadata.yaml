@@ -1,0 +1,11 @@
+friendly_name: FxA Users First Seen
+description: 'Contains the first entry seen inside fxa_users_daily_v2
+
+  for each user along with some attributes.
+
+
+  Partitioned by submission_date,
+
+  clustered by seen_in_tier1_country, country, os_name'
+owners:
+- kik@mozilla.com

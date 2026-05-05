@@ -1,4 +1,10 @@
 {{ header }}
+CREATE TEMP FUNCTION cast_labeled_boolean(boolean ARRAY<STRUCT<key STRING, value BOOL>>) RETURNS ARRAY<STRUCT<key STRING, value INT64>> AS (
+  (SELECT
+    ARRAY_AGG(STRUCT(key, CAST(value AS INT64)))
+  FROM
+    UNNEST(boolean))
+);
 WITH extracted AS (
   SELECT
     *,
@@ -166,7 +172,7 @@ flattened_unioned_labeled_metrics AS (
   FROM
     flattened_dual_labeled_metrics
 ),
-aggregated_labeled_metrics AS (
+aggregated_non_boolean_labeled_metrics AS (
   SELECT
     {{ attributes }},
     metric,
@@ -179,26 +185,86 @@ aggregated_labeled_metrics AS (
     IF(MIN(value) IS NULL, NULL, COUNT(*)) AS count
   FROM
     flattened_unioned_labeled_metrics
+  WHERE
+    metric_type != 'labeled_boolean'
   GROUP BY
     {{ attributes }},
     metric,
     metric_type,
     key
 ),
+boolean_labeled_metrics AS (
+  SELECT
+    {{ attributes }},
+    metric,
+    metric_type,
+    key,
+    'false' AS agg_type,
+    SUM(1 - value) AS value
+  FROM
+    flattened_unioned_labeled_metrics
+  WHERE
+    metric_type = 'labeled_boolean'
+  GROUP BY
+    {{ attributes }},
+    metric,
+    metric_type,
+    key
+  UNION ALL
+  SELECT
+    {{ attributes }},
+    metric,
+    metric_type,
+    key,
+    'true' AS agg_type,
+    SUM(value) AS value
+  FROM
+    flattened_unioned_labeled_metrics
+  WHERE
+    metric_type = 'labeled_boolean'
+  GROUP BY
+    {{ attributes }},
+    metric,
+    metric_type,
+    key
+),
+labeled_metric_rows AS (
+  SELECT
+    {{ attributes }},
+    metric,
+    metric_type,
+    key,
+    agg.agg_type,
+    agg.value
+  FROM
+    aggregated_non_boolean_labeled_metrics
+  CROSS JOIN
+    UNNEST([
+      STRUCT('max' AS agg_type, max AS value),
+      STRUCT('min' AS agg_type, min AS value),
+      STRUCT('avg' AS agg_type, avg AS value),
+      STRUCT('sum' AS agg_type, sum AS value),
+      STRUCT('count' AS agg_type, count AS value)
+    ]) AS agg
+  UNION ALL
+  SELECT
+    {{ attributes }},
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    value
+  FROM
+    boolean_labeled_metrics
+),
 labeled_metrics AS (
   SELECT
     {{ attributes }},
-    ARRAY_CONCAT_AGG(
-      ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
-        (metric, metric_type, key, 'max', max),
-        (metric, metric_type, key, 'min', min),
-        (metric, metric_type, key, 'avg', avg),
-        (metric, metric_type, key, 'sum', sum),
-        (metric, metric_type, key, 'count', count)
-      ]
+    ARRAY_AGG(
+      STRUCT(metric, metric_type, key, agg_type, value)
     ) AS scalar_aggregates
   FROM
-    aggregated_labeled_metrics
+    labeled_metric_rows
   GROUP BY
     {{ attributes }}
 )

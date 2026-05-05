@@ -1,7 +1,0 @@
-friendly_name: Fx Health Ind Searches By Provider
-description: |-
-  Count of searches & users by provider/day used in Firefox Health Indicator dashboard
-owners:
-- kwindau@mozilla.com
-labels:
-  owner: kwindau

@@ -1,0 +1,5 @@
+friendly_name: Uninstalls By Account Signed In Status
+description: 'Aggregate table calculating # unique clients with uninstalls by account
+  enabled status and date'
+owners:
+- kwindau@mozilla.com

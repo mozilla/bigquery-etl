@@ -34,6 +34,7 @@ attribution AS (
     sample_id,
     normalized_channel,
     paid_vs_organic,
+    paid_vs_organic_gclid,
   FROM
     `moz-fx-data-shared-prod.klar_android.attribution_clients`
 )
@@ -55,6 +56,7 @@ SELECT
   is_mau,
   is_mobile,
   attribution.paid_vs_organic,
+  attribution.paid_vs_organic_gclid,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

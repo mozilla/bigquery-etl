@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner
+from click.utils import strip_ansi
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
@@ -117,7 +118,9 @@ class TestView:
 
         assert metadata_view.is_valid()
         assert metadata_view.publish()
+        # update_table is called once for metadata/labels (view query is handled by CREATE OR REPLACE VIEW)
         assert mock_bigquery_client().update_table.call_count == 1
+        # Check the call has metadata/labels update
         assert (
             mock_bigquery_client().update_table.call_args[0][0].friendly_name
             == "Test metadata file"
@@ -306,7 +309,7 @@ class TestView:
             assert result.exit_code != 0
             assert (
                 "Cannot use both --skip-authorized and --authorized-only"
-                in result.output
+                in strip_ansi(result.output)
             )
 
     def test_clean_authorized_only_mutually_exclusive(self, runner):
@@ -326,5 +329,5 @@ class TestView:
                 assert result.exit_code != 0
                 assert (
                     "Cannot use both --skip-authorized and --authorized-only"
-                    in result.output
+                    in strip_ansi(result.output)
                 )

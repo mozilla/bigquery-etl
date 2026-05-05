@@ -1,12 +1,12 @@
 """bigquery-etl CLI view command."""
 
 import logging
+import multiprocessing
 import re
 import string
 import sys
 from fnmatch import fnmatchcase
 from functools import partial
-from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
@@ -25,6 +25,8 @@ from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
+from ..util.common import block_coding_agents
+from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from ..view import View, broken_views
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -81,15 +83,13 @@ def create(name, sql_dir, project_id, owner):
     click.echo(f"Created new view {view.path}")
 
 
-@view.command(
-    help="""Validate a view.
+@view.command(help="""Validate a view.
     Checks formatting, naming, references and dry runs the view.
 
     Examples:
 
     ./bqetl view validate telemetry.clients_daily
-    """
-)
+    """)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -119,8 +119,10 @@ def _view_is_valid(v: View) -> bool:
     return v.is_valid()
 
 
-@view.command(
-    help="""Publish views.
+@view.command(help="""Publish views.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Publish all views
@@ -128,8 +130,8 @@ def _view_is_valid(v: View) -> bool:
 
     # Publish a specific view
     ./bqetl view publish telemetry.clients_daily
-    """
-)
+    """)
+@block_coding_agents
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -239,20 +241,22 @@ def publish(
         for view in views
     }
 
-    view_id_order = TopologicalSorter(view_id_graph).static_order()
+    manager = multiprocessing.Manager()
+    results = manager.dict()
 
-    client = bigquery.Client(credentials=credentials)
+    callback = partial(
+        _publish_view_callback,
+        views_by_id=views_by_id,
+        target_project=target_project,
+        dry_run=dry_run,
+        credentials=credentials,
+        results=results,
+    )
 
-    result = []
-    for view_id in view_id_order:
-        try:
-            result.append(views_by_id[view_id].publish(target_project, dry_run, client))
-        except Exception:
-            print(f"Failed to publish view: {view_id}")
-            print_exc()
-            result.append(False)
+    ts = ParallelTopologicalSorter(view_id_graph, parallelism=parallelism)
+    ts.map(callback)
 
-    if not all(result):
+    if not all(results.values()):
         sys.exit(1)
 
     click.echo("All have been published.")
@@ -260,6 +264,25 @@ def publish(
 
 def _view_has_changes(target_project, credentials, view):
     return view.has_changes(target_project, credentials)
+
+
+def _publish_view_callback(
+    view_id,
+    followup_queue,
+    views_by_id,
+    target_project,
+    dry_run,
+    credentials,
+    results,
+):
+    try:
+        client = bigquery.Client(credentials=credentials)
+        success = views_by_id[view_id].publish(target_project, dry_run, client)
+        results[view_id] = success if success is not None else True
+    except Exception:
+        print(f"Failed to publish view: {view_id}")
+        print_exc()
+        results[view_id] = False
 
 
 def _collect_views(
@@ -298,8 +321,10 @@ def _collect_views(
     return views
 
 
-@view.command(
-    help="""Remove managed views that are not present in the sql dir.
+@view.command(help="""Remove managed views that are not present in the sql dir.
+
+    Coding agents aren't allowed to run this command.
+
     Examples:
 
     # Clean managed views in shared prod
@@ -307,8 +332,8 @@ def _collect_views(
 
     # Clean managed user facing views in mozdata
     ./bqetl view clean --target-project=mozdata --user-facing-only --skip-authorized
-    """
-)
+    """)
+@block_coding_agents
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option(default=None)
@@ -472,8 +497,7 @@ def _remove_view(client, view_id, dry_run):
         client.delete_table(view_id)
 
 
-@view.command(
-    help="""List broken views.
+@view.command(help="""List broken views.
     Examples:
 
     # Publish all views
@@ -481,8 +505,7 @@ def _remove_view(client, view_id, dry_run):
 
     # Publish a specific view
     ./bqetl view list-broken --only telemetry
-    """
-)
+    """)
 @project_id_option()
 @parallelism_option()
 @click.option(

@@ -149,7 +149,8 @@ def scalar_bucket_counts(**kwargs):
             "dual_labeled_counter"
         """,
         boolean_metric_types="""
-            "boolean"
+            "boolean",
+            "labeled_boolean"
         """,
         aggregate_attributes="""
             metric,
@@ -216,7 +217,8 @@ def probe_counts(**kwargs):
             "dual_labeled_counter"
         """,
         boolean_metric_types="""
-            "boolean"
+            "boolean",
+            "labeled_boolean"
         """,
         dual_labeled_counter_metric_types="""
             "dual_labeled_counter"

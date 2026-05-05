@@ -2,6 +2,7 @@ friendly_name: Non-production Stripe discounts
 description: |-
   Mirror of non-production Stripe `discount` table from Fivetran.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false
@@ -18,4 +19,4 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:mozilla-confidential/data-viewers

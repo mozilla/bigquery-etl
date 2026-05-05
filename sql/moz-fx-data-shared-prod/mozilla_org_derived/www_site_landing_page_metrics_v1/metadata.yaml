@@ -10,7 +10,7 @@ labels:
   owner1: ascholtz
   table_type: aggregate
   shredder_mitigation: false
-#scheduling:
+# scheduling:
 #  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:

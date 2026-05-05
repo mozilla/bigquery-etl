@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION norm.subplat_attribution_channel_group(utm_source STR
 RETURNS STRING AS (
   CASE
     -- Marketing Owned
-    WHEN utm_source LIKE ANY(
+    WHEN utm_source LIKE ANY (
         '%blog.mozilla.org%',
         '%firefox-desktop%',
         '%fxaonboardingemail%',
@@ -34,7 +34,7 @@ RETURNS STRING AS (
       )
       THEN 'Direct'
     -- Product Owned
-    WHEN utm_source LIKE ANY(
+    WHEN utm_source LIKE ANY (
         '%about-preferences%',
         '%about-prefs%',
         '%accounts.firefox.com%',
@@ -71,7 +71,7 @@ RETURNS STRING AS (
       )
       THEN 'Product Owned'
     -- Marketing Paid
-    WHEN utm_source LIKE ANY(
+    WHEN utm_source LIKE ANY (
         '%facebook%',
         '%instagram%',
         '%google%',

@@ -1,0 +1,55 @@
+fields:
+- name: ad_click
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of ad clicks resulting from a search, where the user clicked
+    on an advertisement displayed alongside search results.
+- name: ad_click_organic
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of ad clicks from organic (non-tagged, non-SAP) searches,
+    where the search was initiated without a partner tag but still resulted in an ad click.
+- name: normalized_engine
+  type: STRING
+  mode: NULLABLE
+  description: The normalized identifier of the search engine used for the search,
+    standardized across different client configurations and locales.
+- name: organic
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of organic searches, meaning searches that were not tagged
+    with a search access point (SAP) partner code and do not generate direct revenue.
+- name: sap
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of Search Access Point (SAP) searches, meaning searches
+    initiated through a monetizable search access point such as the URL bar, search
+    bar, or new tab page with a valid partner tag.
+- name: search_with_ads
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of searches that resulted in a search engine results page (SERP)
+    containing at least one advertisement, regardless of whether the ad was clicked.
+- name: search_with_ads_organic
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of organic searches that resulted in a SERP containing at least
+    one advertisement. These are non-tagged searches where ads were displayed but
+    without a partner revenue tag.
+- name: tagged_follow_on
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of follow-on searches that retain a partner tag from the
+    original tagged search. A follow-on search occurs when a user performs additional
+    searches from within the search engine results page.
+- name: tagged_sap
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of tagged Search Access Point (SAP) searches, meaning searches
+    that carry a valid partner revenue tag and were initiated through a recognized
+    search access point.
+- name: unknown
+  type: INTEGER
+  mode: NULLABLE
+  description: The count of searches whose search access point or source could not be
+    determined or classified into one of the standard categories.

@@ -1,7 +1,9 @@
 CREATE OR REPLACE FUNCTION norm.result_type_to_product_name(res STRING)
 RETURNS STRING AS (
   CASE
-    WHEN res IN ('autofill_origin', 'autofill_url')
+    WHEN res IS NULL
+      THEN NULL
+    WHEN res IN ('autofill_origin', 'autofill_url', 'autofill_adaptive_origin', 'autofill_adaptive_url', 'history_autofill_fallback_origin')
       THEN 'autofill'
     WHEN res IN ('addon')
       THEN 'xchannels_add_on'

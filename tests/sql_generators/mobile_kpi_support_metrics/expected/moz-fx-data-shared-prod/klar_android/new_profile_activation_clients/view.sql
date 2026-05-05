@@ -6,6 +6,7 @@ SELECT
   *,
   "Organic" AS paid_vs_organic,
   CAST(NULL AS STRING) AS paid_vs_organic_via_gclid_attribution,
+  CAST(NULL AS STRING) AS paid_vs_organic_gclid,
   -- Checking if the client was seen more than once in the first 2 - 7 days
   -- and if they had more than 0 searches within the time window (3 days).
   IF(num_days_seen_day_2_7 > 1 AND search_count > 0, TRUE, FALSE) AS is_activated,
@@ -13,3 +14,5 @@ SELECT
   IF(num_days_active_day_2_7 > 1 AND search_count > 0, TRUE, FALSE) AS is_early_engagement,
 FROM
   `moz-fx-data-shared-prod.klar_android_derived.new_profile_activation_clients_v1`
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date ASC) = 1

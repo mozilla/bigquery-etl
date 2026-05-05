@@ -10,13 +10,16 @@ from pathlib import Path
 
 import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from typing import List, Set
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
+from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
-APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+PROBEINFO_URL = "https://probeinfo.telemetry.mozilla.org"
+APP_LISTINGS_URL = f"{PROBEINFO_URL}/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
 # added as the result of baseline checks being added to the template,
@@ -28,9 +31,6 @@ BQETL_CHECKS_SKIP_APPS = ConfigLoader.get(
 )
 BIGCONFIG_SKIP_APPS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_apps", fallback=[]
-)
-BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
-    "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
 DEPRECATED_APP_LIST = ConfigLoader.get(
@@ -125,6 +125,21 @@ def ping_has_metrics(dataset_family: str, unversioned_table: str) -> bool:
     return (dataset_family, unversioned_table) not in _get_pings_without_metrics()
 
 
+@cache
+def _get_glean_stable_tables():
+    """Return (dataset_family, unversioned_table) for all Glean stable tables."""
+    return {
+        (schema.bq_dataset_family, schema.bq_table_unversioned)
+        for schema in get_stable_table_schemas()
+        if "glean" in schema.schema_id
+    }
+
+
+def ping_has_stable_table(dataset_family: str, ping_name: str) -> bool:
+    """Return true if the given Glean ping has a stable table in the dataset."""
+    return (dataset_family, ping_name.replace("-", "_")) in _get_glean_stable_tables()
+
+
 def table_names_from_baseline(baseline_table, include_project_id=True):
     """Return a dict with full table IDs for derived tables and views.
 
@@ -146,24 +161,8 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         events_view=f"{prefix}.events",
         events_stream_table=f"{prefix}_derived.events_stream_v1",
         events_stream_view=f"{prefix}.events_stream",
-    )
-
-
-def referenced_table_exists(view_sql, id_token=None):
-    """Dry run the given view SQL to see if its referent exists."""
-    dryrun = DryRun("foo/bar/view.sql", content=view_sql, id_token=id_token)
-    # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
-    # since dryruns on views will also return 403 due to the table CREATE
-    # 404 is returned if referenced table or view doesn't exist
-    return not any(
-        [
-            404 == e.get("code")
-            or (
-                403 == e.get("code")
-                and "bigquery.tables.create denied" not in e.get("message")
-            )
-            for e in dryrun.errors()
-        ]
+        events_first_seen_table=f"{prefix}_derived.events_first_seen_v1",
+        events_first_seen_view=f"{prefix}.events_first_seen",
     )
 
 
@@ -176,8 +175,8 @@ def _extract_dataset_from_glob(pattern):
     return pattern.split(".", 1)[0]
 
 
-def get_app_info():
-    """Return a list of applications from the probeinfo API."""
+def get_app_info() -> dict[str, list[dict]]:
+    """Return applications from the probeinfo app listings API grouped by app name."""
     resp = requests.get(APP_LISTINGS_URL)
     resp.raise_for_status()
     apps_json = resp.json()
@@ -194,6 +193,70 @@ def get_app_info():
     return app_info
 
 
+@cache
+def get_glean_repositories() -> list[dict]:
+    """Return a list of the Glean repositories."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/repositories")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_glean_app_pings(v1_name: str) -> dict[str, dict]:
+    """Return a dictionary of the Glean app's pings."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/pings")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_glean_app_metrics(v1_name: str) -> dict[str, dict]:
+    """Return a dictionary of the Glean app's metrics."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/metrics")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_prod_datasets_with_event() -> List[str]:
+    """Get glean datasets with an events table in generated schemas."""
+    return [
+        s.bq_dataset_family
+        for s in get_stable_table_schemas()
+        if s.schema_id.startswith("moz://mozilla.org/schemas/glean/ping/")
+        and s.bq_table == "events_v1"
+    ]
+
+
+def get_tables_with_events(
+    v1_name: str, bq_dataset_name: str, skip_min_ping: bool
+) -> Set[str]:
+    """Get tables for the given app that receive event type metrics."""
+    pings = set()
+    metrics_json = get_glean_app_metrics(v1_name)
+    min_pings = set()
+    if skip_min_ping:
+        ping_json = get_glean_app_pings(v1_name)
+        min_pings = {
+            name
+            for name, info in ping_json.items()
+            if not info["history"][-1].get("include_info_sections", True)
+        }
+
+    for _, metric in metrics_json.items():
+        if metric.get("type", None) == "event":
+            latest_history = metric.get("history", [])[-1]
+            pings.update(latest_history.get("send_in_pings", []))
+
+    if bq_dataset_name in get_prod_datasets_with_event():
+        pings.add("events")
+
+    pings = pings.difference(min_pings)
+
+    # Only include pings that have a corresponding stable table deployed
+    # A metric can have a non-existent ping in "send_in_pings"
+    pings = {ping for ping in pings if ping_has_stable_table(bq_dataset_name, ping)}
+
+    return pings
+
+
 class GleanTable:
     """Represents a generated Glean table."""
 
@@ -201,13 +264,14 @@ class GleanTable:
         """Init Glean table."""
         self.target_table_id = ""
         self.prefix = ""
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.per_app_id_enabled = True
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
-        self.python_query = False
+        self.possible_query_parameters = {"submission_date": "DATE"}
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -226,11 +290,14 @@ class GleanTable:
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
+        custom_render_kwargs=None,
+        use_python_query=False,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -250,14 +317,6 @@ class GleanTable:
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
         derived_dataset = tables["daily_table"].split(".")[-2]
-        dataset = derived_dataset.replace("_derived", "")
-
-        app_name = dataset
-        for app in app_info:
-            for app_dataset in app:
-                if app_dataset["bq_dataset_family"] == dataset:
-                    app_name = app_dataset["app_name"]
-                    break
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
@@ -278,17 +337,19 @@ class GleanTable:
             deprecated_app=deprecated_app,
         )
 
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         render_kwargs.update(tables)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         # query.sql is optional for python queries
         query_sql = None
         query_python = None
-        if (PATH / "templates" / query_filename).exists() or not self.python_query:
+        if (PATH / "templates" / query_filename).exists() or not use_python_query:
             query_sql = render(
                 query_filename, template_folder=PATH / "templates", **render_kwargs
             )
-        if self.python_query:
+        if use_python_query:
             query_python = render(
                 python_query_filename,
                 template_folder=PATH / "templates",
@@ -320,7 +381,7 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        # Schema files are optional
+        # Schema files are optional, except for Python queries without a SQL query to dry run
         try:
             schema = render(
                 schema_filename,
@@ -330,6 +391,19 @@ class GleanTable:
             )
         except TemplateNotFound:
             schema = None
+            if query_python:
+                if query_sql:
+                    schema = Schema(
+                        DryRun(
+                            os.path.join(project_id, *table.split("."), "query.sql"),
+                            content=query_sql,
+                            query_parameters=self.possible_query_parameters,
+                            use_cloud_function=use_cloud_function,
+                            id_token=id_token,
+                        ).get_schema()
+                    ).to_yaml()
+                else:
+                    raise
 
         if enable_monitoring:
             try:
@@ -361,10 +435,7 @@ class GleanTable:
         if query_python:
             artifacts.append(Artifact(table, "query.py", query_python))
 
-        if not (referenced_table_exists(view_sql, id_token)):
-            logging.info("Skipping view for table which doesn't exist:" f" {table}")
-        else:
-            artifacts.append(Artifact(view, "view.sql", view_sql))
+        artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
@@ -404,23 +475,31 @@ class GleanTable:
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
+        custom_render_kwargs=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
 
-        app_name = app_info[0]["app_name"]
-
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
 
+        if self.per_app_requires_all_base_tables and not all_base_tables_exist:
+            logging.info(
+                f"Skipping per-app generation for {target_dataset}.{target_view_name} as not all baseline tables exist"
+            )
+            return
+
         datasets = [
-            (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
+            (a["bq_dataset_family"], a.get("app_channel", "release"))
+            for a in app_ids_info
         ]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
@@ -432,9 +511,7 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
-        enable_monitoring = app_name not in list(
-            set(BIGCONFIG_SKIP_APPS + BIGCONFIG_SKIP_APPS_METRICS)
-        )
+        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
@@ -449,9 +526,11 @@ class GleanTable:
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
             enable_monitoring=enable_monitoring,
-            deprecated_app = deprecated_app,
+            deprecated_app=deprecated_app,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 
@@ -464,10 +543,6 @@ class GleanTable:
                 **render_kwargs,
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
-
-            if not (referenced_table_exists(sql, id_token=id_token)):
-                logging.info("Skipping view for table which doesn't exist:" f" {view}")
-                return
 
             if output_dir:
                 write_dataset_metadata(output_dir, view)
@@ -499,13 +574,6 @@ class GleanTable:
 
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
-
-            if not (referenced_table_exists(query_sql, id_token=id_token)):
-                logging.info(
-                    "Skipping query for table which doesn't exist:"
-                    f" {self.target_table_id}"
-                )
-                return
 
             if output_dir:
                 artifacts = [

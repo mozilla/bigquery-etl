@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   incremental: true
   owner1: kwindau
   table_type: client_level
@@ -21,5 +22,4 @@ bigquery:
     fields:
     - country
     - normalized_os
-references: {}
 require_column_descriptions: true

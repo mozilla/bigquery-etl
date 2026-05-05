@@ -12,6 +12,7 @@ IF
     SELECT
       submission_timestamp,
       events,
+      normalized_channel,
       TRUE as validation_errors_valid
     FROM
        `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
@@ -22,6 +23,7 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
+      normalized_channel,
       event.name AS event_method,
       validation_errors_valid
     FROM
@@ -43,6 +45,7 @@ IF
     SELECT
       submission_timestamp,
       events,
+      normalized_channel,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
       CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+).*") AS NUMERIC) >= 109 OR normalized_app_name != 'firefox_desktop' AS validation_errors_valid
@@ -55,6 +58,7 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
+      normalized_channel,
       event.name AS event_method,
       validation_errors_valid
     FROM
@@ -80,6 +84,7 @@ IF
       event.f3_ AS `type`,
       event.f4_ AS experiment,
       IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
+      normalized_channel,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
       CAST(REGEXP_EXTRACT(application.version, r"^([0-9]+).*") AS NUMERIC) >= 109 AS validation_errors_valid
@@ -117,6 +122,7 @@ IF
     `type`,
     experiment,
     branch,
+    normalized_channel,
     TIMESTAMP_ADD(
       TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -142,12 +148,13 @@ IF
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('{{ start_date }}')
+    `timestamp` > TIMESTAMP('{{ start_date }}')
   GROUP BY
     partition_date,
     submission_date,
     `type`,
     experiment,
     branch,
+    normalized_channel,
     window_start,
     window_end

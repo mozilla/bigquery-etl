@@ -9,6 +9,7 @@ description: |-
   Some caveats:
     * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false
@@ -18,5 +19,4 @@ scheduling:
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery: null
-references: {}
 require_column_descriptions: true

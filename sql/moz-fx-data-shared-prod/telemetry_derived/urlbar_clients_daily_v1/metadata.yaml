@@ -22,6 +22,5 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-references: {}
 deprecated: true
 require_column_descriptions: false

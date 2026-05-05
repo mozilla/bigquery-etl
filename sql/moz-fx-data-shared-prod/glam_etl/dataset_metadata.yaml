@@ -22,6 +22,6 @@ syndication:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
-      - workgroup:dataops-managed/glam
+      - workgroup:mozilla-confidential/data-viewers
+      - workgroup:dataplatform/glam-gke
       - workgroup:treeherder/service

@@ -1,6 +1,6 @@
 -- Definition for json.from_map
 CREATE OR REPLACE FUNCTION json.from_map(input ANY type)
-RETURNS json AS (
+RETURNS JSON AS (
   json.from_map_json(TO_JSON(input))
 );
 

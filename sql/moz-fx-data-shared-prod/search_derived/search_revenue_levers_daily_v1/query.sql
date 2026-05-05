@@ -201,7 +201,7 @@ eligible_markets_dau AS (
       )
     ) AS google_eligible_dau
   FROM
-    `mozdata.telemetry.desktop_active_users`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
     AND is_dau
@@ -228,7 +228,7 @@ eligible_markets_dau AS (
       )
     ) AS google_eligible_dau
   FROM
-    `mozdata.telemetry.mobile_active_users`
+    `moz-fx-data-shared-prod.telemetry.mobile_active_users`
   WHERE
     submission_date = @submission_date
     AND is_dau
@@ -248,7 +248,7 @@ desktop_mobile_search_dau AS (
     SUM(dau_w_engine_as_default) AS dau_w_engine_as_default,
     SUM(dau_engaged_w_sap) AS dau_engaged_w_sap
   FROM
-    `mozdata.search.search_dau_aggregates`
+    `moz-fx-data-shared-prod.search.search_dau_aggregates`
   WHERE
     submission_date = @submission_date
   GROUP BY

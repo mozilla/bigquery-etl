@@ -25,6 +25,5 @@ bigquery:
     - sample_id
     - country
     - adjust_network
-references: {}
 deprecated: true
 require_column_descriptions: false

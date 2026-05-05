@@ -8,5 +8,6 @@ SELECT
   sample_id,
   normalized_channel,
   "Organic" AS paid_vs_organic,
+  CAST(NULL AS STRING) AS paid_vs_organic_gclid,
 FROM
   `moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1`

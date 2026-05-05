@@ -1,0 +1,4 @@
+friendly_name: Airflow DAG tags
+description: List of DAG tags
+owners:
+- kik@mozilla.com

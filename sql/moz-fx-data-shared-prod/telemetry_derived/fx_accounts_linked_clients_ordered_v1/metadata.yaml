@@ -6,6 +6,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  level: bronze
   owner1: kwindau
   table_type: client_level
 scheduling:
@@ -13,5 +14,4 @@ scheduling:
   depends_on_past: true
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
-references: {}
 require_column_descriptions: true

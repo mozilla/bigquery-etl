@@ -14,6 +14,7 @@ countries = [
     "CAN",
     "CHE",
     "CHN",
+    "CZE",
     "COL",
     "CRI",
     "DEU",
@@ -24,6 +25,7 @@ countries = [
     "GBR",
     "GRC",
     "GRL",
+    "HUN",
     "IDN",
     "IND",
     "IRL",
@@ -37,6 +39,7 @@ countries = [
     "NOR",
     "POL",
     "SRB",
+    "SVK",
     "SWE",
     "SGP",
     "TUR",
@@ -51,7 +54,7 @@ RESULTS_FPATH = "IMF_GDP/imf_gdp_data_%s.csv"
 
 
 # Define function to pull CPI data
-def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
+def pull_yearly_gdp_data_from_imf(country, start_year, end_year):
     """
     Inputs:
       A country code - ISO 3 letter
@@ -62,11 +65,11 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
     """
 
     base_url = "http://api.worldbank.org/v2/country"
-    end_url = f"/{country_query}/indicator/NY.GDP.MKTP.CD?format=json&date={start_year}:{end_year}&per_page=10000"
+    end_url = f"/{country}/indicator/NY.GDP.MKTP.CD?format=json&date={start_year}:{end_year}&per_page=10000"
 
     api_url = base_url + end_url
 
-    response = requests.get(api_url, timeout=10)
+    response = requests.get(api_url, timeout=40)
     gdp_data = response.json()
     gdp_data = gdp_data[1]
 
@@ -111,9 +114,6 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
 
 
 if __name__ == "__main__":
-    # Create the country query
-    country_query = ";".join(countries)
-
     # Get current date
     today = datetime.today()
     curr_date = today.strftime("%Y-%m-%d")
@@ -130,19 +130,35 @@ if __name__ == "__main__":
     print("end_year")
     print(end_year)
 
-    # Pull the data
-    gdp = pull_yearly_gdp_data_from_imf(country_query, start_year, end_year)
+    # Initialize the data frame
+    gdp_results_df = pd.DataFrame(
+        {
+            "gdp_type": [],
+            "gdp_unit_of_measurement": [],
+            "gdp_country_code": [],
+            "gdp_country_name": [],
+            "gdp_country_code_iso3": [],
+            "gdp_year": [],
+            "gdp_value": [],
+        }
+    )
+    # For each country
+    for country in countries:
+        print("country: ", country)
+        # Pull the data
+        new_gdp_df = pull_yearly_gdp_data_from_imf(country, start_year, end_year)
+        gdp_results_df = pd.concat([gdp_results_df, new_gdp_df])
 
     # Add a column with the current date
-    gdp["last_updated"] = curr_date
+    gdp_results_df["last_updated"] = curr_date
 
     print("gdp")
-    print(gdp)
+    print(gdp_results_df)
 
     # Write the final results_df to GCS bucket
     final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (curr_date)
     print("final_results_fpath: ", final_results_fpath)
-    gdp.to_csv(final_results_fpath, index=False)
+    gdp_results_df.to_csv(final_results_fpath, index=False)
 
     # Load to BQ  - write/truncate
     client = bigquery.Client(TARGET_PROJECT)

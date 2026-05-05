@@ -1,0 +1,10 @@
+friendly_name: SUMO Product Slug Mapper
+description: |
+  Maps SUMO product slug paths to canonical product names.
+
+  Single source of truth for product mapping across all SUMO queries.
+  Eliminates 44-line CASE statements duplicated across multiple queries.
+
+  Example:
+    SELECT sumo.map_product_slug('/firefox/') -- Returns: 'firefox'
+    SELECT sumo.map_product_slug('/mozilla-vpn/') -- Returns: 'mozilla-vpn'

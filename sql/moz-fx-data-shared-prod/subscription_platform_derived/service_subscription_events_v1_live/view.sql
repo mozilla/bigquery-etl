@@ -5,8 +5,15 @@ WITH subscription_changes AS (
   SELECT
     id AS service_subscriptions_history_id,
     valid_from AS `timestamp`,
+    valid_to AS next_subscription_change_at,
     subscription,
-    LAG(subscription) OVER (PARTITION BY subscription.id ORDER BY valid_from) AS old_subscription
+    LAG(subscription) OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        valid_from,
+        valid_to
+    ) AS old_subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1`
 ),
@@ -14,28 +21,26 @@ subscription_start_events AS (
   SELECT
     subscription.started_at AS `timestamp`,
     'Subscription Start' AS type,
-    CONCAT(
-      IF(
-        subscription.customer_service_subscription_number = 1,
-        'New Customer',
-        'Returning Customer'
-      ),
-      IF(subscription.is_trial, ' Trial', '')
-    ) AS reason,
+    subscription.started_reason AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription
   FROM
     subscription_changes
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY `timestamp`)
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        `timestamp`,
+        next_subscription_change_at
+    )
 ),
 subscription_end_events AS (
   SELECT
     subscription.ended_at AS `timestamp`,
     'Subscription End' AS type,
-    -- TODO: rather than "Unknown", determine if the user cancelled intentionally or their payment failed
-    IF(NOT subscription.auto_renew, 'Auto-Renew Disabled', 'Unknown') AS reason,
+    subscription.ended_reason AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription
@@ -64,6 +69,7 @@ mozilla_account_change_events AS (
   WHERE
     old_subscription IS NOT NULL
     AND subscription.mozilla_account_id_sha256 IS DISTINCT FROM old_subscription.mozilla_account_id_sha256
+    AND subscription.ended_at IS NULL
 ),
 plan_change_events AS (
   SELECT
@@ -105,6 +111,7 @@ plan_change_events AS (
     subscription_changes
   WHERE
     subscription.provider_plan_id != old_subscription.provider_plan_id
+    AND subscription.ended_at IS NULL
 ),
 trial_change_events AS (
   SELECT

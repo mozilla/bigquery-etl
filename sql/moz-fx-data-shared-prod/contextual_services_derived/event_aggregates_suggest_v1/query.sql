@@ -136,7 +136,7 @@ combined AS (
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
-    normalized_country_code AS country,
+    COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed

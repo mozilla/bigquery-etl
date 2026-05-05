@@ -24,5 +24,4 @@ bigquery:
     fields:
     - channel
     - country_code
-references: {}
 require_column_descriptions: false

@@ -1,6 +1,6 @@
 ---
 friendly_name: adMarketplace Daily Aggregation with DMA
-description:
+description: |-
   Daily summary for adMarketplace of Firefox Suggest impressions and clicks
   per search term and DMA (Designated Market Area)
 

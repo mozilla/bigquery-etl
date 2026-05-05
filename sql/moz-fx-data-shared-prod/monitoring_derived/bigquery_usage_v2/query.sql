@@ -28,6 +28,9 @@ WITH jobs_by_org AS (
     error_result.reason AS error_reason,
     error_result.message AS error_message,
     query_info_resource_warning AS resource_warning,
+    bi_engine_mode,
+    acceleration_mode,
+    bi_engine_reasons
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
   LEFT JOIN
@@ -89,6 +92,9 @@ SELECT DISTINCT
   @submission_date AS submission_date,
   jp.labels,
   jp.is_materialized_view_refresh,
+  jo.bi_engine_mode,
+  jo.acceleration_mode,
+  jo.bi_engine_reasons,
 FROM
   jobs_by_org AS jo
 LEFT JOIN

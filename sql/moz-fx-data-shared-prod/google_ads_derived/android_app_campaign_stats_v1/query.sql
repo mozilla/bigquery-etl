@@ -37,15 +37,15 @@ retention_aggs AS (
   SELECT
     first_seen_date AS `date`,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
-    SUM(repeat_user) AS repeat_users,
+    SUM(repeat_profiles) AS repeat_users,
     SUM(retained_week_4) AS retained_week_4
   FROM
-    `moz-fx-data-shared-prod.fenix.funnel_retention_week_4`
+    `moz-fx-data-shared-prod.fenix.retention`
   WHERE
     {% if is_init() %}
-      submission_date <= CURRENT_DATE
+      metric_date <= CURRENT_DATE
     {% else %}
-      submission_date = @submission_date
+      metric_date = @submission_date
     {% endif %}
   GROUP BY
     `date`,

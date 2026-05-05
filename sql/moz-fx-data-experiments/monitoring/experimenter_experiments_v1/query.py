@@ -7,12 +7,15 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
+from pathlib import Path
 
 import attr
 import cattrs
 import pytz
 import requests
 from google.cloud import bigquery
+
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 # for nimbus experiments
 EXPERIMENTER_API_URL_V8 = (
@@ -204,47 +207,12 @@ def main():
         f"{args.project}.{args.destination_dataset}.{args.destination_table}"
     )
 
-    bq_schema = (
-        bigquery.SchemaField("experimenter_slug", "STRING"),
-        bigquery.SchemaField("normandy_slug", "STRING"),
-        bigquery.SchemaField("type", "STRING"),
-        bigquery.SchemaField("status", "STRING"),
-        bigquery.SchemaField("start_date", "DATE"),
-        bigquery.SchemaField("end_date", "DATE"),
-        bigquery.SchemaField("enrollment_end_date", "DATE"),
-        bigquery.SchemaField("proposed_enrollment", "INTEGER"),
-        bigquery.SchemaField("reference_branch", "STRING"),
-        bigquery.SchemaField("is_high_population", "BOOL"),
-        bigquery.SchemaField(
-            "branches",
-            "RECORD",
-            mode="REPEATED",
-            fields=[
-                bigquery.SchemaField("slug", "STRING"),
-                bigquery.SchemaField("ratio", "INTEGER"),
-                bigquery.SchemaField("features", "JSON"),
-            ],
-        ),
-        bigquery.SchemaField("app_id", "STRING"),
-        bigquery.SchemaField("app_name", "STRING"),
-        bigquery.SchemaField("channel", "STRING"),
-        bigquery.SchemaField("channels", "STRING", mode="REPEATED"),
-        bigquery.SchemaField("targeting", "STRING"),
-        bigquery.SchemaField("targeted_percent", "FLOAT"),
-        bigquery.SchemaField("namespace", "STRING"),
-        bigquery.SchemaField("feature_ids", "STRING", mode="REPEATED"),
-        bigquery.SchemaField("is_rollout", "BOOL"),
-        bigquery.SchemaField("outcomes", "STRING", mode="REPEATED"),
-        bigquery.SchemaField("segments", "STRING", mode="REPEATED"),
-        bigquery.SchemaField("randomization_unit", "STRING"),
-        bigquery.SchemaField("is_firefox_labs_opt_in", "BOOL"),
-        bigquery.SchemaField("is_enrollment_paused", "BOOL"),
-    )
+    schema = Schema.from_schema_file(Path(__file__).parent / SCHEMA_FILE)
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
     )
-    job_config.schema = bq_schema
+    job_config.schema = schema.to_bigquery_schema()
 
     converter = cattrs.BaseConverter()
     converter.register_unstructure_hook(

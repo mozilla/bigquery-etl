@@ -9,6 +9,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_ai_usage
+  date_partition_parameter: null
   depends_on:
   - task_id: ai_usage_derived__openai_costs__v1
     dag_name: bqetl_ai_usage

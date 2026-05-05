@@ -21,21 +21,6 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
-- advertiser: awesome guitar store
-  block_id: 102
-  context_id: cid2
-  country: US
-  is_clicked: true
-  locale: en-US
-  normalized_os: Windows
-  normalized_os_version: "11.0"
-  position: 2
-  region: AK
-  normalized_channel: nightly
-  reporting_url: url2
-  scenario: online
-  submission_timestamp: 2021-01-01T12:03:00+00:00
-  version: "94"
 - block_id: 107
   context_id: cid7
   request_id: rid7
@@ -102,6 +87,29 @@
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
   version: "134"
+- advertiser: legacy store
+  block_id: 105
+  browser: firefox(96)
+  context_id: cid_overlap
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 5
+  query: "overlap query"
+  region: TX
+  reporting_url: url_overlap
+  request_id: rid_overlap
+  scenario: online
+  sequence_no: 5
+  session_id: sid_overlap
+  submission_timestamp: "2021-01-01T13:06:00+00:00"
+  timestamp: "2021-01-01T12:05:00+00:00"
+  version: "94"
 - advertiser: duff beer
   block_id: 203
   context_id: cid13
@@ -116,3 +124,72 @@
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
   version: "134"
+- advertiser: pizza place
+  block_id: 120
+  browser: firefox(96)
+  context_id: cid_multi_high
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 20
+  query: "best pizza"
+  region: CO
+  reporting_url: url_multi_high
+  request_id: rid_multi_high
+  scenario: online
+  sequence_no: 21
+  session_id: sid_multi
+  submission_timestamp: "2021-01-01T13:20:30+00:00"
+  timestamp: "2021-01-01T13:21:00+00:00"
+  version: "94"
+- advertiser: widget co 2
+  block_id: 131
+  browser: firefox(134)
+  context_id: cid_glean_dup_2
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 30
+  query: "best widget"
+  region: NV
+  reporting_url: url_glean_dup_2
+  request_id: rid_glean_dup
+  sequence_no: 33
+  session_id: sid_glean_dup
+  submission_timestamp: "2021-01-01T13:31:00+00:00"
+  timestamp: "2021-01-01T13:33:00+00:00"
+  version: "134"
+- advertiser: norm store
+  block_id: 140
+  browser: firefox(96)
+  context_id: cid_norm
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  os_family: windows
+  position: 40
+  query: "great sandals"
+  region: GA
+  reporting_url: url_norm
+  request_id: rid_norm
+  scenario: online
+  sequence_no: 40
+  session_id: sid_norm
+  submission_timestamp: "2021-01-01T13:40:00+00:00"
+  telemetry_query: "best shoes"
+  timestamp: "2021-01-01T13:40:00+00:00"
+  version: "94"

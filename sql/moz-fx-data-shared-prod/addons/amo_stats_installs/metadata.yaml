@@ -1,0 +1,11 @@
+friendly_name: AMO Stats Installs
+
+description: |-
+  Daily install statistics to power addons.mozilla.org stats pages.
+
+owners:
+- kik@mozilla.com
+- lgreco@mozilla.com
+
+labels:
+  application: amo

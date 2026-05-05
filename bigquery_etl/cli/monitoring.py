@@ -89,6 +89,21 @@ def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int):
     return datawatch_client_factory(api_auth, workspace_id=workspace_id)
 
 
+def _warehouse_id_for_workspace(workspace_id: int) -> int:
+    """Return the Bigeye BQ warehouse ID for the given workspace.
+
+    Bigeye warehouses belong to a single workspace, so calls like
+    `get_metric_info_batch_post(warehouse_ids=[...])` only return metrics from
+    that workspace's warehouse. Looks up `monitoring.bigeye_warehouses` first
+    and falls back to the singular `monitoring.bigeye_warehouse_id` for
+    back-compat.
+    """
+    warehouses = ConfigLoader.get("monitoring", "bigeye_warehouses", fallback={}) or {}
+    if workspace_id in warehouses:
+        return warehouses[workspace_id]
+    return ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+
+
 @click.group(help="""
     Commands for managing monitoring of datasets.
     """)
@@ -306,7 +321,6 @@ def deploy_custom_rules(
     )
 
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
     url = "/api/v1/custom-rules"
 
     for custom_rule_file in list(set(custom_rules_files)):
@@ -314,9 +328,9 @@ def deploy_custom_rules(
         try:
             metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
             if metadata.monitoring and metadata.monitoring.enabled:
-                client = _client_for_workspace(
-                    api_auth, _resolve_workspace(metadata, workspace)
-                )
+                table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
+                client = _client_for_workspace(api_auth, table_workspace)
                 collections = client.get_collections()
                 existing_rules = client.get_rules_for_source(warehouse_id=warehouse_id)
                 existing_rules_sql = [
@@ -677,11 +691,9 @@ def set_partition_column(
                 if not metadata.monitoring.partition_column_set:
                     click.echo(f"No partition column set for {metadata_file.parent}")
                     continue
-                client = _client_for_workspace(
-                    api_auth, _resolve_workspace(metadata, workspace)
-                )
-
-                warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+                table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
+                client = _client_for_workspace(api_auth, table_workspace)
                 table_id = client.get_table_ids(
                     warehouse_id=warehouse_id,
                     schemas=f"{project}.{dataset}",
@@ -789,7 +801,6 @@ def delete(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
 
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
@@ -798,9 +809,9 @@ def delete(
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
             continue
-        client = _client_for_workspace(
-            api_auth, _resolve_workspace(metadata, workspace)
-        )
+        table_workspace = _resolve_workspace(metadata, workspace)
+        warehouse_id = _warehouse_id_for_workspace(table_workspace)
+        client = _client_for_workspace(api_auth, table_workspace)
         existing_rules = {
             rule.custom_rule.sql: rule.id
             for rule in client.get_rules_for_source(
@@ -870,7 +881,6 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
         sys.exit(1)
 
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
 
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
@@ -884,6 +894,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
             metadata = Metadata.from_file(metadata_file)
             if metadata.monitoring and metadata.monitoring.enabled:
                 table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
                 client = _client_for_workspace(api_auth, table_workspace)
                 existing_rules = {
                     rule.custom_rule.sql: {

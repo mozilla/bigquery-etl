@@ -944,6 +944,7 @@ jobs:
             openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
               -pass env:ARTIFACT_ENCRYPTION_KEY \
               -out private-generated-sql-with-dags.tar.gz.enc
+          rm -rf private-generated-sql
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: private-generated-sql-with-dags

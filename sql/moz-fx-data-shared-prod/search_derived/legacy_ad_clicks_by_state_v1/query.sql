@@ -33,7 +33,7 @@ ad_click_states AS (
 join_states_and_clients AS (
   SELECT
     ad_click_clients.submission_date,
-    DATE_TRUNC(ad_click_clients.submission_date, month) AS `month`,
+    DATE_TRUNC(ad_click_clients.submission_date, MONTH) AS `month`,
     ad_click_clients.client_id,
     ad_click_clients.normalized_engine,
     ad_click_clients.ad_click,

@@ -1,5 +1,5 @@
 SELECT
-  date,
+  `date`,
   'OpenAI' AS provider,
   amount_value AS amount,
   currency,
@@ -17,7 +17,7 @@ FROM
   `moz-fx-data-shared-prod.ai_usage_derived.openai_costs_v1`
 UNION ALL
 SELECT
-  date,
+  `date`,
   'Claude' AS provider,
   amount / 100.0 AS amount,
   currency,

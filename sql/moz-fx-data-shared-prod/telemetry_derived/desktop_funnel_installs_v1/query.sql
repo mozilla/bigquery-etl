@@ -35,7 +35,7 @@ LEFT JOIN
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
-  date,
+  `date`,
   os_version,
   build_channel,
   build_id,

@@ -1,3 +1,49 @@
+2026-03-31:
+  start_date: 2025-05-01
+  end_date: 2026-03-31
+  reason: The three-month backfill succeeded. Trying to complete whole backfill.
+  watchers:
+  - kbammarito@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+2026-03-30:
+  start_date: 2025-02-01
+  end_date: 2025-04-30
+  reason: The previous backfill failed, possibly due to Kubernetes errors. Trying again with three months.
+  watchers:
+  - kbammarito@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+2026-03-27:
+  start_date: 2025-02-01
+  end_date: 2026-03-26
+  reason: The shorter backfill succeeded. Now populate the new fields with data from Feb 2025 onward.
+  watchers:
+  - kbammarito@mozilla.com
+  - nflorez@mozilla.com
+  status: Cancelled
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+2026-03-25:
+  start_date: 2025-01-01
+  end_date: 2025-01-31
+  reason: Populate the new fields with data as before. That backfill possibly failed because of a database error. Trying again with a shorter timeframe.
+  watchers:
+  - kbammarito@mozilla.com
+  - nflorez@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
 2026-03-20:
   start_date: 2025-01-01
   end_date: 2026-03-20
@@ -6,7 +52,7 @@
   - kbammarito@mozilla.com
   - lmcfall@mozilla.com
   - nflorez@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

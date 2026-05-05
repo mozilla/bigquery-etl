@@ -80,7 +80,7 @@ old_events_staging AS (
     dl_token_to_telemetry_id b
     ON a.client_id = b.telemetry_client_id
   WHERE
-    a.submission_date <= current_date
+    a.submission_date <= CURRENT_DATE
   GROUP BY
     1
 ),

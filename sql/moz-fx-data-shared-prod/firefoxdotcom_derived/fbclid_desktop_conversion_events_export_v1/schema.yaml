@@ -4,7 +4,7 @@ fields:
   mode: NULLABLE
   type: DATE
   description: |-
-    Logical date processed, also used for partitioning (scheduled to run with 2 day lag).
+    Logical date processed, also used for partitioning.
 
 - name: activity_unix_timestamp
   mode: NULLABLE
@@ -21,3 +21,8 @@ fields:
   mode: NULLABLE
   type: STRING
   description: Conversion name.
+
+- name: run_timestamp
+  mode: NULLABLE
+  type: TIMESTAMP
+  description: Timestamp when the job run.

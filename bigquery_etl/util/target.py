@@ -4,9 +4,10 @@ import logging
 import os
 import re
 import shutil
+from datetime import datetime
 from functools import cache
 from pathlib import Path
-from typing import List, NamedTuple, Optional, Set
+from typing import List, NamedTuple, Optional, Set, Tuple
 
 import attr
 import cattrs
@@ -23,14 +24,26 @@ from jinja2 import Template
 from bigquery_etl.routine.parse_routine import (
     PERSISTENT_UDF_RE,
     ROUTINE_FILES,
+    read_routine_dir,
     routine_usage_pattern,
+    routine_usages_in_text,
 )
 
 from ..config import ConfigLoader
+from ..dependency import extract_table_references
 from ..deploy import deploy_table
+from ..dryrun import get_id_token
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..schema import SCHEMA_FILE, Schema
+from ..view import View
 from . import extract_from_query_path
 from .common import get_bqetl_project_root
 from .common import render as render_template
+
+VIEW_FILE = "view.sql"
+QUERY_FILE = "query.sql"
+QUERY_SCRIPT = "query.py"
+MATERIALIZED_VIEW = "materialized_view.sql"
 
 ROOT = Path(__file__).parent.parent.parent
 
@@ -84,6 +97,17 @@ class Target:
     dataset_prefix: Optional[str] = attr.ib(default=None)
     dataset: Optional[str] = attr.ib(default=None)
     artifact_prefix: Optional[str] = attr.ib(default=None)
+    # When True, datasets created by this target's deploys grant READER to
+    # `dry_run.function_accounts`. Use for shared/CI environments (e.g. stage)
+    # where the cloud-function dry-run needs to read staged data.
+    grant_dryrun_access: bool = attr.ib(default=False)
+    # Default table expiration (in hours) on datasets this target creates.
+    # When set, the dataset is also labeled `expires_on=<unix-millis>` so a
+    # sweeper can GC datasets.
+    expire_after_hours: Optional[int] = attr.ib(default=None)
+    # When True, --target deploys copy and rename SQL tests under tests/sql/
+    # to match target paths so pytest can run against staged artifacts.
+    rewrite_tests: bool = attr.ib(default=False)
 
     # raw (unrendered) templates — preserved so that pattern-matching code
     # (e.g. target clean) can parameterize git.branch / git.commit independently.
@@ -100,23 +124,39 @@ class Target:
 
 
 def _template_to_pattern(
-    template_str: str, branch: Optional[str] = None, anchor_end: bool = False
+    template_str: str,
+    branch: Optional[str] = None,
+    anchor_end: bool = False,
+    capture_commit: bool = False,
 ) -> str:
     """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
-    Known values (branch, username) are rendered literally; variable parts
-    (commit, artifact ids) become [a-zA-Z0-9_]+ regex wildcards.
+    Known values (branch, username) are rendered literally; the commit slot
+    must start with 7+ hex chars (short SHA) and may have trailing chars from
+    legacy templates; other variable slots become [a-zA-Z0-9_]+. Anchoring
+    the commit slot to a hex SHA prefix prevents over-matching when the
+    literal branch is a substring of another branch's sanitized name.
+
+    If capture_commit is True, the first commit slot is wrapped in a
+    (non-greedy) capture group so the commit can be extracted from a name
+    that matches the pattern.
 
     Returns a ^-anchored regex string, optionally $-anchored.
     """
     _WILDCARD = "XBQETLWCX"
+    _COMMIT_WILDCARD = "XBQETLCOMMITX"
     rendered = Template(template_str).render(
-        git={"branch": branch or _WILDCARD, "commit": _WILDCARD},
+        git={"branch": branch or _WILDCARD, "commit": _COMMIT_WILDCARD},
         account=_get_account_context(),
         artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
     )
 
-    pattern = re.escape(sanitize_bq_id(rendered)).replace(_WILDCARD, "[a-zA-Z0-9_]+")
+    escaped = re.escape(sanitize_bq_id(rendered))
+    if capture_commit:
+        escaped = escaped.replace(_COMMIT_WILDCARD, "([a-f0-9]{7,}[a-zA-Z0-9_]*?)", 1)
+    pattern = escaped.replace(_COMMIT_WILDCARD, "[a-f0-9]{7,}[a-zA-Z0-9_]*").replace(
+        _WILDCARD, "[a-zA-Z0-9_]+"
+    )
 
     return f"^{pattern}$" if anchor_end else f"^{pattern}"
 
@@ -141,6 +181,27 @@ def render_artifact_prefix_pattern(
     if not target.raw_artifact_prefix:
         return None
     return _template_to_pattern(target.raw_artifact_prefix, branch=branch)
+
+
+def extract_commit_from_dataset_name(
+    target: Target, dataset_id: str, branch: str
+) -> Optional[str]:
+    """Extract the git.commit value from a dataset name using the target's template.
+
+    Returns None if the template has no git.commit slot or the name does not
+    match the expected pattern.
+    """
+    template_str = target.raw_dataset or target.raw_dataset_prefix
+    if not template_str or "git.commit" not in template_str:
+        return None
+    pattern = _template_to_pattern(
+        template_str,
+        branch=branch,
+        anchor_end=bool(target.raw_dataset),
+        capture_commit=True,
+    )
+    m = re.match(pattern, dataset_id)
+    return m.group(1) if m else None
 
 
 def render_artifact_template(
@@ -384,125 +445,421 @@ def get_deployed_routines_in_target(
     )
 
 
+def _normalize_table_ref(
+    dependency: str, default_project: str
+) -> Optional[Tuple[str, str, str]]:
+    """Split a table reference into (project, dataset, name).
+
+    Promotes 2-part INFORMATION_SCHEMA refs to 3-part with default_project,
+    and folds the trailing INFORMATION_SCHEMA pseudo-table-path into one name
+    so we don't try to deploy it.
+    """
+    components = dependency.split(".")
+    if components[1:2] == ["INFORMATION_SCHEMA"]:
+        components.insert(0, default_project)
+    if components[2:3] == ["INFORMATION_SCHEMA"]:
+        components = components[:2] + [".".join(components[2:])]
+    if len(components) != 3:
+        return None
+    project, dataset, name = components
+    return project, dataset, name
+
+
+def _existing_artifact_file(source_dir: Path) -> Optional[Path]:
+    """Return the recognized artifact file under source_dir, or None."""
+    for fn in (VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW):
+        if (source_dir / fn).is_file():
+            return source_dir / fn
+    return None
+
+
+def _fetch_stub_schema(
+    project: str,
+    dataset: str,
+    name: str,
+    out_path: Path,
+    id_token: str,
+) -> None:
+    """Write schema.yaml for an unmanaged dep table at out_path.
+
+    Tries `client.get_table` first (fast, works on partition-required tables),
+    falls back to `Schema.for_table`'s dry-run for cases where the source
+    table doesn't exist yet. Logs both errors when both fail.
+    """
+    get_table_err: Optional[Exception] = None
+    try:
+        bq_table = bigquery.Client(project=project).get_table(
+            f"{project}.{dataset}.{name}"
+        )
+        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(out_path)
+        return
+    except Exception as e:
+        get_table_err = e
+
+    partitioned_by = (
+        "submission_timestamp"
+        if any(dataset.endswith(s) for s in ("_live", "_stable"))
+        else None
+    )
+    try:
+        Schema.for_table(
+            project=project,
+            dataset=dataset,
+            table=name,
+            id_token=id_token,
+            partitioned_by=partitioned_by,
+        ).to_yaml_file(out_path)
+    except Exception as for_table_err:
+        print(
+            f"Warning: Could not fetch schema for {project}.{dataset}.{name}: "
+            f"get_table: {get_table_err}; dry-run: {for_table_err}"
+        )
+
+
+def _create_target_stub(
+    project: str,
+    dataset: str,
+    name: str,
+    sql_dir: str,
+    target: Target,
+    id_token: str,
+) -> Path:
+    """Write a stub for an unmanaged dependency table.
+
+    Drops a placeholder ``query.py`` and a best-effort ``schema.yaml`` at
+    the target path so the regular deploy flow can pick it up.
+    """
+    is_wildcard = "*" in name
+    stub_name = name.replace("*", "wildcard") if is_wildcard else name
+    tgt_project, tgt_dataset, tgt_table = _target_ref_for_source(
+        target, target.project_id, project, dataset, stub_name
+    )
+    stub_path = Path(sql_dir) / tgt_project / tgt_dataset / tgt_table
+    stub_path.mkdir(parents=True, exist_ok=True)
+
+    # Wildcards represent multiple tables; no single schema to fetch.
+    if not is_wildcard:
+        _fetch_stub_schema(project, dataset, name, stub_path / SCHEMA_FILE, id_token)
+
+    (stub_path / QUERY_SCRIPT).write_text("# Table stub generated by --target deploy")
+    return stub_path / QUERY_SCRIPT
+
+
+def _table_refs_from(dep_file: Path) -> List[str]:
+    """Return the table references from a view, query, or materialized view.
+
+    Query files with a checked-in schema.yaml return [] — we deploy the
+    schema structure rather than running the query, so we don't need to
+    walk into the query's own deps.
+    """
+    if dep_file.name == VIEW_FILE:
+        return View.from_file(dep_file, id_token=get_id_token()).table_references
+    if dep_file.name in (QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW):
+        if (dep_file.parent / SCHEMA_FILE).exists():
+            return []
+        try:
+            sql_content = render_template(
+                dep_file.name, template_folder=dep_file.parent
+            )
+            return extract_table_references(sql_content)
+        except Exception as e:
+            print(f"Warning: Could not extract references from {dep_file}: {e}")
+    return []
+
+
+def _udf_refs_from(dep_file: Path) -> List[str]:
+    """Return the UDF references from a view, query, or materialized view."""
+    if dep_file.name == VIEW_FILE:
+        return View.from_file(dep_file, id_token=get_id_token()).udf_references
+    if dep_file.name in (QUERY_FILE, MATERIALIZED_VIEW):
+        try:
+            sql_content = render_template(
+                dep_file.name, template_folder=dep_file.parent, format=False
+            )
+            return routine_usages_in_text(
+                sql_content, dep_file.parent.parent.parent.name
+            )
+        except Exception as e:
+            print(f"Warning: Could not extract UDF refs from {dep_file}: {e}")
+    return []
+
+
+def _udf_dep_paths(udf_names: List[str]) -> Set[Path]:
+    """Resolve UDF names + their transitive deps to source filesystem paths."""
+    if not udf_names:
+        return set()
+    # local import to avoid circular deps
+    from bigquery_etl.routine.parse_routine import accumulate_dependencies
+
+    raw_routines = read_routine_dir()
+    paths: Set[Path] = set()
+    for udf in udf_names:
+        if udf not in raw_routines:
+            continue
+        for transitive in accumulate_dependencies([], raw_routines, udf):
+            if transitive in raw_routines:
+                paths.add(Path(raw_routines[transitive].filepath))
+    return paths
+
+
+def collect_target_dependencies(
+    artifact_files: Set[Path],
+    sql_dir: str,
+    target: Target,
+) -> Set[Path]:
+    """Walk dependencies of `artifact_files` for an --isolated target deploy.
+
+    Behavior parallels `bigquery_etl.cli.stage.collect_artifact_dependencies`,
+    but stubs for unmanaged tables (live/stable, syndicated, etc. — anything
+    referenced by deployed artifacts but not present under sql/) are written
+    *directly* into the target tree at
+    `sql/<target_project>/<target_dataset>/<target_artifact>/`, computed via
+    the target's templates. Source-managed deps are returned as their
+    sql/<source>/... paths and the regular deploy flow rewrites them into the
+    target via prepare_target_files.
+
+    Returns the set of dep paths to deploy (mix of source paths and target
+    paths). Callers detect already-target paths to skip prepare_target_files.
+    """
+    artifact_dependencies: Set[Path] = set()
+    dependency_files = [
+        f
+        for f in artifact_files
+        if f.name in (VIEW_FILE, QUERY_FILE, MATERIALIZED_VIEW)
+    ]
+    id_token = get_id_token()
+
+    for dep_file in dependency_files:
+        if dep_file not in artifact_files:
+            artifact_dependencies.add(dep_file)
+
+        # Walk table refs — managed deps recurse via dependency_files; unmanaged
+        # deps get a stub written directly at their target path.
+        artifact_project = dep_file.parent.parent.parent.name
+        for ref in _table_refs_from(dep_file):
+            normalized = _normalize_table_ref(ref, artifact_project)
+            if normalized is None:
+                raise ValueError(
+                    f"Invalid table reference {ref} in {dep_file}. "
+                    "Expected format: project.dataset.table."
+                )
+            project, dataset, name = normalized
+            if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
+                continue
+
+            existing = _existing_artifact_file(Path(sql_dir) / project / dataset / name)
+            if existing is not None:
+                if existing not in artifact_files:
+                    dependency_files.append(existing)
+                continue
+
+            artifact_dependencies.add(
+                _create_target_stub(project, dataset, name, sql_dir, target, id_token)
+            )
+
+        # UDF refs — paths come from sql/<source>/... directly (UDFs go through
+        # the regular routine publish step; we just need their paths).
+        artifact_dependencies.update(_udf_dep_paths(_udf_refs_from(dep_file)))
+
+    return artifact_dependencies
+
+
+def _target_ref_for_source(
+    target: "Target",
+    target_project: str,
+    src_project: str,
+    src_dataset: str,
+    src_table: str,
+) -> Tuple[str, str, str]:
+    """Compute the target-environment 3-part location for a source reference.
+
+    Single source of truth for "given a source project.dataset.table, where
+    does it land in target?". Used by:
+    - prepare_target_directory (where to copy artifact files)
+    - collect_target_dependencies (where to write stubs for unmanaged tables)
+    - rewrite_for_isolated (where to point rewritten 3-part refs)
+    """
+    rendered_artifact_prefix = sanitize_bq_id(
+        render_artifact_template(target.artifact_prefix, src_project, src_dataset) or ""
+    )
+    if target.dataset:
+        rendered = render_artifact_template(target.dataset, src_project, src_dataset)
+        target_ds = sanitize_bq_id(rendered) if rendered else src_dataset
+    elif target.dataset_prefix:
+        rendered = render_artifact_template(
+            target.dataset_prefix, src_project, src_dataset
+        )
+        prefix = sanitize_bq_id(rendered) if rendered else ""
+        target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
+    else:
+        target_ds = src_dataset
+    target_table = (
+        sanitize_bq_id(f"{rendered_artifact_prefix}{src_table}")
+        if rendered_artifact_prefix
+        else src_table
+    )
+    return target_project, target_ds, target_table
+
+
+def _read_source_project_from_manifest(query_file: Path) -> Optional[str]:
+    """Recover the artifact's original source project from its target manifest."""
+    manifest_path = query_file.parent / MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return None
+    try:
+        return (yaml.safe_load(manifest_path.read_text()) or {}).get("source_project")
+    except Exception:
+        return None
+
+
+def _substitute_3part_ref(
+    sql: str,
+    src: Tuple[str, str, str],
+    tgt: Tuple[str, str, str],
+) -> str:
+    """Replace every occurrence of source 3-part ref with target 3-part ref."""
+    src_project, src_dataset, src_table = src
+    pattern = re.compile(
+        rf"`?{re.escape(src_project)}`?"
+        rf"\.`?{re.escape(src_dataset)}`?"
+        rf"\.`?{re.escape(src_table)}\b`?"
+    )
+    return pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
+
+
+def rewrite_for_isolated(
+    query_file: Path,
+    sql_dir: str,
+    target_project: str,
+    target: "Target",
+) -> None:
+    """Rewrite ALL references in `query_file` to point at the target.
+
+    Used by --isolated deploys: every project.dataset.table in the SQL is
+    re-rendered through the target's templates, plus 2-part UDF calls
+    (e.g. `json.extract_int_map`) that 3-part extraction doesn't see.
+    """
+    sql = render_template(
+        query_file.name, template_folder=str(query_file.parent), format=False
+    )
+
+    # sqlglot extraction excludes struct field paths like `metadata.header.date`
+    # and CREATE-clause self-refs, so we don't need a known-projects heuristic
+    # or a target_project skip guard.
+    for ref in extract_table_references(sql):
+        parts = ref.split(".")
+        if len(parts) != 3 or parts[0] == target_project:
+            continue
+        src_project, src_dataset, src_table = parts
+        sql = _substitute_3part_ref(
+            sql,
+            (src_project, src_dataset, src_table),
+            _target_ref_for_source(
+                target, target_project, src_project, src_dataset, src_table
+            ),
+        )
+
+    # 2-part UDF refs (e.g. `json.extract_int_map` inside `mozfun.json.extract`)
+    # aren't 3-part extractable. Walk known routines under the file's source
+    # project and rewrite their 2-part usages.
+    file_source_project = _read_source_project_from_manifest(query_file)
+    if file_source_project:
+        for routine_name, routine in read_routine_dir().items():
+            if routine.project != file_source_project:
+                continue
+            src_dataset, src_name = routine_name.split(".")
+            tgt = _target_ref_for_source(
+                target, target_project, routine.project, src_dataset, src_name
+            )
+            two_part = re.compile(
+                rf"(?<![\w\.`])`?{re.escape(src_dataset)}`?"
+                rf"\.`?{re.escape(src_name)}`?(?=\()"
+            )
+            sql = two_part.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
+
+    query_file.write_text(sql)
+
+
+def rewrite_for_defer(
+    query_file: Path,
+    sql_dir: str,
+    target_project: str,
+    target: "Target",
+) -> None:
+    """Smart-rewrite refs that are already deployed in target; leave others alone.
+
+    Used by --defer-to-target: prod refs that haven't been deployed to target
+    pass through unchanged so the deploy still picks up production data.
+    """
+    sql = render_template(
+        query_file.name, template_folder=str(query_file.parent), format=False
+    )
+
+    def _validated_source(
+        info: DeployedTableInfo,
+    ) -> Optional[Tuple[str, str, str]]:
+        """Return the source 3-part ref if `info` is current and complete.
+
+        Returns None when the deployed artifact is missing source fields, or
+        when its target dataset doesn't match what the current target config
+        would produce — guards against stale deployments from a different
+        branch/config.
+        """
+        if not (info.source_project and info.source_dataset and info.source_table):
+            return None
+        _, expected_ds, _ = _target_ref_for_source(
+            target,
+            target_project,
+            info.source_project,
+            info.source_dataset,
+            info.source_table,
+        )
+        if info.target_dataset != expected_ds:
+            return None
+        return info.source_project, info.source_dataset, info.source_table
+
+    for info in get_deployed_tables_in_target(sql_dir, target_project):
+        src = _validated_source(info)
+        if src is None:
+            continue
+        sql = _substitute_3part_ref(
+            sql,
+            src,
+            (target_project, info.target_dataset, info.target_table),
+        )
+
+    # Routine refs can be 2-part (dataset.name) or 3-part (project.dataset.name);
+    # routine_usage_pattern handles both, gated on a `(` call site.
+    for info in get_deployed_routines_in_target(sql_dir, target_project):
+        src = _validated_source(info)
+        if src is None:
+            continue
+        src_project, src_dataset, src_table = src
+        udf_pattern = routine_usage_pattern(f"{src_dataset}.{src_table}", src_project)
+        sql = udf_pattern.sub(
+            f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`",
+            sql,
+        )
+
+    query_file.write_text(sql)
+
+
 def rewrite_query_references(
     query_file: Path,
     sql_dir: str,
     target_project: str,
     target: "Target",
     rewrite_all: bool = False,
-):
-    """Rewrite references in a query file to point to target environment."""
-    sql = render_template(
-        query_file.name, template_folder=str(query_file.parent), format=False
-    )
+) -> None:
+    """Dispatch to the appropriate rewrite based on deploy mode.
 
+    Kept as a thin shim for callers that don't want to know about the
+    --isolated vs --defer-to-target distinction.
+    """
     if rewrite_all:
-        # rewrite ALL references to target, rendering target properties per matched
-        # reference using its own source project/dataset
-        gcp_project_pattern = (
-            r"`?([a-z][a-z0-9\-]*[a-z0-9])`?\.`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?"
-        )
-
-        def replace_all(m: re.Match) -> str:
-            src_project, src_dataset, src_table = m.group(1), m.group(2), m.group(3)
-            rendered_artifact_prefix = sanitize_bq_id(
-                render_artifact_template(
-                    target.artifact_prefix, src_project, src_dataset
-                )
-                or ""
-            )
-            if target.dataset:
-                rendered = render_artifact_template(
-                    target.dataset, src_project, src_dataset
-                )
-                target_ds = sanitize_bq_id(rendered) if rendered else src_dataset
-            elif target.dataset_prefix:
-                rendered = render_artifact_template(
-                    target.dataset_prefix, src_project, src_dataset
-                )
-                prefix = sanitize_bq_id(rendered) if rendered else ""
-                target_ds = sanitize_bq_id(f"{prefix}{src_dataset}")
-            else:
-                target_ds = src_dataset
-            return f"`{target_project}`.`{target_ds}`.`{rendered_artifact_prefix}{src_table}`"
-
-        sql = re.sub(gcp_project_pattern, replace_all, sql)
+        rewrite_for_isolated(query_file, sql_dir, target_project, target)
     else:
-        # smart rewriting: only rewrite references to tables that exist in target
-        deployed_tables = get_deployed_tables_in_target(sql_dir, target_project)
-
-        def expected_target_dataset(info: DeployedTableInfo) -> Optional[str]:
-            """Render the target dataset for a specific deployed artifact."""
-            # source_project/source_dataset are guaranteed non-None by the caller
-            assert info.source_project is not None
-            assert info.source_dataset is not None
-            if target.dataset:
-                rendered = render_artifact_template(
-                    target.dataset, info.source_project, info.source_dataset
-                )
-                return sanitize_bq_id(rendered) if rendered else None
-            if target.dataset_prefix:
-                rendered = render_artifact_template(
-                    target.dataset_prefix, info.source_project, info.source_dataset
-                )
-                prefix = sanitize_bq_id(rendered) if rendered else ""
-                return sanitize_bq_id(f"{prefix}{info.source_dataset}")
-            # no dataset or dataset_prefix — target dataset equals source dataset
-            return info.source_dataset
-
-        for info in deployed_tables:
-            if (
-                info.source_project is None
-                or info.source_dataset is None
-                or info.source_table is None
-            ):
-                continue
-
-            # Skip artifacts whose target dataset doesn't match what the current
-            # target config would produce for that artifact's source — guards against
-            # rewriting to stale deployments from a different branch/config.
-            expected = expected_target_dataset(info)
-            if expected is not None and info.target_dataset != expected:
-                continue
-
-            pattern = (
-                rf"`?{re.escape(info.source_project)}`?"
-                rf"\.`?{re.escape(info.source_dataset)}`?"
-                rf"\.`?{re.escape(info.source_table)}\b`?"
-            )
-            replacement = (
-                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
-            )
-            sql = re.sub(pattern, replacement, sql)
-
-        # Also rewrite references to routines deployed in the target.
-        # Routine references can be 2-part (dataset.name) or 3-part
-        # (project.dataset.name), so we use routine_usage_pattern which
-        # handles both forms (matching only before a "(" call).
-        deployed_routines = get_deployed_routines_in_target(sql_dir, target_project)
-
-        for info in deployed_routines:
-            if (
-                info.source_project is None
-                or info.source_dataset is None
-                or info.source_table is None
-            ):
-                continue
-
-            expected = expected_target_dataset(info)
-            if expected is not None and info.target_dataset != expected:
-                continue
-
-            udf_pattern = routine_usage_pattern(
-                f"{info.source_dataset}.{info.source_table}",
-                info.source_project,
-            )
-            replacement = (
-                f"`{target_project}`.`{info.target_dataset}`.`{info.target_table}`"
-            )
-            sql = udf_pattern.sub(replacement, sql)
-
-    query_file.write_text(sql)
+        rewrite_for_defer(query_file, sql_dir, target_project, target)
 
 
 def prepare_target_directory(
@@ -515,29 +872,12 @@ def prepare_target_directory(
 ) -> Path:
     """Prepare target directory for query execution with --target."""
     source_project, source_dataset, source_table = extract_from_query_path(query_file)
-    effective_project = target.project_id or source_project
-
-    rendered_dataset = render_artifact_template(
-        target.dataset, source_project, source_dataset
-    )
-    rendered_dataset_prefix = render_artifact_template(
-        target.dataset_prefix, source_project, source_dataset
-    )
-    rendered_artifact_prefix = render_artifact_template(
-        target.artifact_prefix, source_project, source_dataset
-    )
-
-    if rendered_dataset:
-        effective_dataset = sanitize_bq_id(rendered_dataset)
-    elif rendered_dataset_prefix:
-        effective_dataset = sanitize_bq_id(f"{rendered_dataset_prefix}{source_dataset}")
-    else:
-        effective_dataset = source_dataset
-
-    effective_table = (
-        sanitize_bq_id(f"{rendered_artifact_prefix}{source_table}")
-        if rendered_artifact_prefix
-        else source_table
+    effective_project, effective_dataset, effective_table = _target_ref_for_source(
+        target,
+        target.project_id or source_project,
+        source_project,
+        source_dataset,
+        source_table,
     )
 
     target_dir = Path(sql_dir) / effective_project / effective_dataset / effective_table
@@ -556,6 +896,19 @@ def prepare_target_directory(
         for item in source_dir.iterdir():
             if item.is_file():
                 shutil.copy2(item, target_dir / item.name)
+
+        # external_data sources (e.g. Google Sheets) can't be recreated in the
+        # target project. Clear it so the table deploys from schema.yaml only,
+        # matching legacy `stage deploy` behavior.
+        target_metadata_file = target_dir / METADATA_FILE
+        if target_metadata_file.exists():
+            try:
+                target_metadata = Metadata.from_file(target_metadata_file)
+                if target_metadata.external_data:
+                    target_metadata.external_data = None
+                    target_metadata.write(target_metadata_file)
+            except Exception:
+                pass
 
         # Preserve non-source keys (e.g. shared_with from `target share`) so
         # _reapply_shared_access can re-apply them after re-deploy.
@@ -611,8 +964,23 @@ def prepare_target_directory(
     return target_query_file
 
 
-def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
-    """Create a dataset if it doesn't exist, with user-only access permissions."""
+def ensure_dataset_exists(
+    client: bigquery.Client,
+    dataset_ref: str,
+    expiration_hours: Optional[int] = None,
+    grant_dryrun_access: bool = False,
+) -> bool:
+    """Create a dataset if it doesn't exist, with user-only access permissions.
+
+    `expiration_hours`: when set, applies default table-expiration and an
+    `expires_on` label so a sweeper can GC datasets — used by ephemeral CI
+    deploys.
+
+    `grant_dryrun_access`: when True, dry-run service accounts (from
+    `dry_run.function_accounts` config) get READER access. Off by default so
+    personal dev datasets stay private; opt in for stage / shared CI targets
+    by setting `grant_dryrun_access: true` on the target in `bqetl_targets.yaml`.
+    """
     try:
         client.get_dataset(dataset_ref)
         return True
@@ -622,24 +990,52 @@ def ensure_dataset_exists(client: bigquery.Client, dataset_ref: str) -> bool:
     dataset = bigquery.Dataset(dataset_ref)
     dataset.location = "US"
 
+    access_entries = []
     try:
         user_email = _get_gcloud_account()
-
         # Explicitly grant ownership to the user. When running as yourself this
         # is redundant (BigQuery auto-grants dataOwner to the creator), but with
         # service account impersonation the SA would become the owner instead.
         if user_email and "@" in user_email:
-            dataset.access_entries = [
+            access_entries.append(
                 bigquery.AccessEntry(
                     role="OWNER",
                     entity_type="userByEmail",
                     entity_id=user_email,
                 )
-            ]
+            )
         else:
             click.echo("⚠️  Could not determine user email, using default permissions")
     except Exception as e:
         click.echo(f"⚠️  Could not set dataset permissions: {e}")
+
+    # Grant READER to dry-run cloud function accounts so schema dry-runs can
+    # read staged datasets. Opt-in per-target — leave off for personal dev so
+    # the cloud-function service account doesn't get access to your data.
+    if grant_dryrun_access:
+        for dry_run_account in ConfigLoader.get(
+            "dry_run", "function_accounts", fallback=[]
+        ):
+            access_entries.append(
+                bigquery.AccessEntry(
+                    role="READER",
+                    entity_type="userByEmail",
+                    entity_id=dry_run_account,
+                )
+            )
+
+    if access_entries:
+        dataset.access_entries = access_entries
+
+    if expiration_hours is not None:
+        # Both per-table default expiration and a label so a sweeper can find
+        # datasets to GC — same shape legacy stage uses.
+        dataset.default_table_expiration_ms = expiration_hours * 60 * 60 * 1000
+        expires_on = int(
+            (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000
+            + expiration_hours * 60 * 60 * 1000
+        )
+        dataset.labels = {**(dataset.labels or {}), "expires_on": str(expires_on)}
 
     try:
         client.create_dataset(dataset, exists_ok=True)

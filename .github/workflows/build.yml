@@ -741,6 +741,10 @@ jobs:
         env:
           ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
         run: |
+          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
+            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
+            exit 1
+          fi
           cd /tmp/workspace
           tar czf - private-generated-sql | \
             openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
@@ -899,6 +903,10 @@ jobs:
         env:
           ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
         run: |
+          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
+            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
+            exit 1
+          fi
           cd /tmp/workspace
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
             -pass env:ARTIFACT_ENCRYPTION_KEY \
@@ -939,6 +947,10 @@ jobs:
         env:
           ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
         run: |
+          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
+            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
+            exit 1
+          fi
           cd /tmp/workspace
           tar czf - private-generated-sql | \
             openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
@@ -1137,6 +1149,10 @@ jobs:
         env:
           ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
         run: |
+          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
+            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
+            exit 1
+          fi
           cd /tmp/workspace
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
             -pass env:ARTIFACT_ENCRYPTION_KEY \
@@ -1190,6 +1206,10 @@ jobs:
         env:
           ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
         run: |
+          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
+            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
+            exit 1
+          fi
           cd /tmp/workspace
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
             -pass env:ARTIFACT_ENCRYPTION_KEY \

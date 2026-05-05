@@ -1,0 +1,73 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: |-
+    The date when the telemetry ping is received on the server side.
+
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    A unique identifier (UUID) for the client.
+
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
+
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The normalized channel the application is being distributed on.
+
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Legacy Telemetry Client Identifier.
+
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    User visible version string (e.g. "1.0.3") for the browser.
+
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Code of the country in which the activity took place, as determined by
+    the IP geolocation.
+
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Set of language- and/or country-based preferences for a user interface.
+
+- name: app_os
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The normalized name of the operating system running at the client.
+
+- name: addons
+  type: RECORD
+  mode: REPEATED
+  description: |-
+    List of addons that the client had active on the submission_date.
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Identifier of the active addon.
+  - name: version
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Version of the active addon.

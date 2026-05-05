@@ -43,7 +43,7 @@ WITH impressions AS (
 ),
 merino_logs AS (
   SELECT
-    TIMESTAMP_TRUNC(timestamp, SECOND) AS merino_timestamp,
+    TIMESTAMP_TRUNC(`timestamp`, SECOND) AS merino_timestamp,
     jsonPayload.fields.rid AS request_id,
     LTRIM(LOWER(jsonPayload.fields.query)) AS query,
     -- Merino currently injects 'none' for missing geo fields.
@@ -59,7 +59,7 @@ merino_logs AS (
   FROM
     `suggest-searches-prod-a30f.logs.stdout`
   WHERE
-    DATE(timestamp) = @submission_date
+    DATE(`timestamp`) = @submission_date
     AND jsonPayload.type = "web.suggest.request"
 ),
 allowed_queries AS (

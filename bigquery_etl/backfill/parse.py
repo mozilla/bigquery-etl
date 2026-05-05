@@ -52,6 +52,7 @@ class BackfillStatus(enum.Enum):
 
     INITIATE = "Initiate"
     COMPLETE = "Complete"
+    CANCELLED = "Cancelled"
 
 
 @attr.s(auto_attribs=True)
@@ -68,13 +69,20 @@ class Backfill:
     end_date: date = attr.ib()
     excluded_dates: List[date] = attr.ib()
     reason: str = attr.ib()
+    # watchers are expected to be emails with the name matching
+    # the username listed at https://mozilla.slack.com/account/settings#username
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
     custom_query_path: Optional[str] = attr.ib(None)
     shredder_mitigation: Optional[bool] = attr.ib(False)
     override_retention_limit: Optional[bool] = attr.ib(False)
     override_depends_on_past_end_date: Optional[bool] = attr.ib(False)
+    ignore_date_partition_offset: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
+    query_script_entrypoint: Optional[str] = attr.ib(None)
+    query_script_date_arg: Optional[str] = attr.ib(None)
+    query_script_args: Optional[List[str]] = attr.ib(None)
+    query_script_dry_run_arg: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -97,7 +105,12 @@ class Backfill:
             shredder_mitigation = {self.shredder_mitigation}
             override_retention_limit = {self.override_retention_limit}
             override_depends_on_past_end_date = {self.override_depends_on_past_end_date}
+            ignore_date_partition_offset = {self.ignore_date_partition_offset}
             billing_project = {self.billing_project}
+            query_script_entrypoint = {self.query_script_entrypoint}
+            query_script_date_arg = {self.query_script_date_arg}
+            query_script_arg = {self.query_script_args}
+            query_script_dry_run_arg = {self.query_script_dry_run_arg}
             """
 
         return backfill_str.replace("'", "")
@@ -212,7 +225,18 @@ class Backfill:
                         override_depends_on_past_end_date=entry.get(
                             "override_depends_on_past_end_date", False
                         ),
+                        ignore_date_partition_offset=entry.get(
+                            "ignore_date_partition_offset", False
+                        ),
                         billing_project=entry.get("billing_project", None),
+                        query_script_entrypoint=entry.get(
+                            "query_script_entrypoint", None
+                        ),
+                        query_script_date_arg=entry.get("query_script_date_arg", None),
+                        query_script_args=entry.get("query_script_args", None),
+                        query_script_dry_run_arg=entry.get(
+                            "query_script_dry_run_arg", None
+                        ),
                     )
 
                     backfill_entries.append(backfill)

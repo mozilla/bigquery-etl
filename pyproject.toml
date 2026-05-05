@@ -23,7 +23,7 @@ dependencies = {file = ["requirements.in"]}
 [tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
-include = ["bigquery_etl", "bigquery_etl.*"]
+include = ["bigquery_etl", "bigquery_etl.*", "sql_generators", "sql_generators.*"]
 
 [project.scripts]
 bqetl = "bigquery_etl.cli:cli"

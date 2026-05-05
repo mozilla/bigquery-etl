@@ -10,6 +10,9 @@ from google.cloud import bigquery
 # Set variables
 INDICATOR_ID_OF_INTEREST = 49  # Total population by sex"
 LOC_IDS_OF_INTEREST = [
+    348,  # Hungary
+    203, # Czechia
+    703, # Slovakia
     124,  # Canada
     276,  # Germany
     380,  # Italy
@@ -44,6 +47,7 @@ LOC_IDS_OF_INTEREST = [
     578,  # Norway
     688,  # Serbia
     702,  # Singapore
+    724, # Spain
 ]
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.population_v1"

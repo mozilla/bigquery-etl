@@ -53,3 +53,7 @@ fields:
 - name: error_message
   type: STRING
   mode: NULLABLE
+- name: job_type
+  type: STRING
+  mode: NULLABLE
+  description: BigQuery job type, should be one of 'QUERY' or 'COPY'

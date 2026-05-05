@@ -1,7 +1,7 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
   fxa.metrics.uuid.client_association_legacy_client_id AS legacy_telemetry_client_id,
-  fxa.client_info.*,
+  fxa.client_info.* EXCEPT (attribution, distribution),
   fxa.metadata,
   fxa.metrics.labeled_counter,
   fxa.metrics.string.glean_client_annotation_experimentation_id,
@@ -14,7 +14,9 @@ SELECT
   fxa.normalized_os,
   fxa.normalized_os_version,
   fxa.normalized_country_code,
-  fxa.sample_id
+  fxa.sample_id,
+  fxa.client_info.attribution,
+  fxa.client_info.distribution,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.fx_accounts` fxa
 WHERE

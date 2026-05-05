@@ -23,7 +23,7 @@ python3.11 -m venv venv/
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_PROJECT_ID=bigquery-etl-integration-test
+export GOOGLE_PROJECT_ID=moz-fx-data-integration-tests
 gcloud config set project $GOOGLE_PROJECT_ID
 ./venv/bin/pytest -m integration -n 4
 ```
@@ -140,25 +140,3 @@ Simply name the test `test_init`. The other guidelines still apply.
   - File extensions `yaml`, `json` and `ndjson` are supported
   - Preferred format is `yaml` for readability
 
-## How to Run CircleCI Locally
-
-- Install the [CircleCI Local CI](https://circleci.com/docs/2.0/local-cli/)
-- Download GCP [service account](https://cloud.google.com/iam/docs/service-accounts) keys
-  - Integration tests will only successfully run with service account keys
-    that belong to the `circleci` service account in the `biguqery-etl-integration-test` project
-- Run `circleci build` and set required environment variables `GOOGLE_PROJECT_ID` and
-  `GCLOUD_SERVICE_KEY`:
-
-```bash
-gcloud_service_key=`cat /path/to/key_file.json`
-
-# to run a specific job, e.g. integration:
-circleci build --job integration \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
-
-# to run all jobs
-circleci build \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
-```

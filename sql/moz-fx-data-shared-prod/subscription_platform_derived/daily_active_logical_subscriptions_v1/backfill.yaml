@@ -1,3 +1,120 @@
+2026-02-20:
+  start_date: 2019-10-10
+  end_date: 2026-02-11
+  reason: Populate the new `channel_group` field (DENG-10391).
+  watchers:
+  - phlee@mozilla.com
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2026-02-12:
+  start_date: 2019-10-10
+  end_date: 2026-02-04
+  reason: Update historical records after some ETL join conditions were corrected (#8824).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2026-02-05:
+  start_date: 2019-10-10
+  end_date: 2026-01-26
+  reason: Populate the new `payment_method` field (DENG-9664).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2026-01-20:
+  start_date: 2019-10-10
+  end_date: 2026-01-08
+  reason: Populate the new `started_reason` field (DENG-9856).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2025-11-21:
+  start_date: 2023-07-20
+  end_date: 2025-11-13
+  reason: Update historical records after some wrong Stripe changelog data was manually corrected (DENG-10213).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2025-11-12:
+  start_date: 2019-10-10
+  end_date: 2025-11-04
+  reason: Fix some more issues (DENG-9565, DENG-10152).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2025-10-29:
+  start_date: 2019-10-10
+  end_date: 2025-10-21
+  reason: Fix some known issues (DENG-9565) and populate the new `ended_reason` field (DENG-4043).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2025-06-25:
+  start_date: 2021-12-17
+  end_date: 2025-06-15
+  reason: Add records for Apple subscriptions, which are now included in these SubPlat
+    consolidated reporting ETLs as of https://github.com/mozilla/bigquery-etl/pull/7679.
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
+2025-05-22:
+  start_date: 2021-09-09
+  end_date: 2025-05-14
+  reason: Add records for Google subscriptions, which are now included in these SubPlat
+    consolidated reporting ETLs as of https://github.com/mozilla/bigquery-etl/pull/7333.
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
 2024-11-13:
   start_date: 2019-10-10
   end_date: 2024-11-12

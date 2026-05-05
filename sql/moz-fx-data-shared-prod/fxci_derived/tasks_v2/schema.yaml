@@ -42,3 +42,12 @@ fields:
       - name: worker_implementation
         type: STRING
         mode: NULLABLE
+      - name: test_suite
+        type: STRING
+        mode: NULLABLE
+      - name: test_platform
+        type: STRING
+        mode: NULLABLE
+      - name: test_variant
+        type: STRING
+        mode: NULLABLE

@@ -10,10 +10,13 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_glean_usage
+  dag_name: bqetl_usage_reporting
   task_group: {{ app_name }}
 bigquery:
   time_partitioning:
     type: day
     field: first_seen_date
     require_partition_filter: false
+    expiration_days: null
+monitoring:
+  enabled: true

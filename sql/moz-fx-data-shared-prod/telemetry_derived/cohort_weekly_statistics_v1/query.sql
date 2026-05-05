@@ -1,82 +1,13 @@
-WITH clients_first_seen AS (
-  --Get 1 row per client ID, with all their attributes as of their first seen date
-  SELECT
-    normalized_app_name,
-    normalized_channel,
-    app_version,
-    attribution_campaign,
-    attribution_content,
-    attribution_experiment,
-    attribution_medium,
-    attribution_source,
-    attribution_variation,
-    country,
-    device_model,
-    distribution_id,
-    is_default_browser,
-    locale,
-    normalized_os,
-    normalized_os_version,
-    adjust_ad_group,
-    adjust_campaign,
-    adjust_creative,
-    adjust_network,
-    play_store_attribution_campaign,
-    play_store_attribution_medium,
-    play_store_attribution_source,
-    play_store_attribution_content,
-    play_store_attribution_term,
-    DATE_TRUNC(cohort_date, WEEK) AS cohort_date_week,
-    client_id
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
-  WHERE
-    cohort_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
-      WEEK
-    ) --start of week for date 180 days ago
-    AND cohort_date <= DATE_SUB(
-      DATE_TRUNC(@submission_date, WEEK),
-      INTERVAL 1 DAY
-    ) --end of last completed week
-    AND LOWER(normalized_app_name) NOT LIKE '%browserstack'
-    AND LOWER(normalized_app_name) NOT LIKE '%mozillaonline'
-  QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        client_id
-      ORDER BY
-        cohort_date ASC
-    ) = 1  --necessary due to mobile having some clients with multiple first seen dates
-),
-weekly_active_clients AS (
-  --Get 1 row per client ID & week where the client ID was a DAU at least 1 day during that week
-  SELECT DISTINCT
-    client_id,
-    DATE_TRUNC(submission_date, WEEK) AS activity_date_week
-  FROM
-    `moz-fx-data-shared-prod.telemetry.active_users`
-  WHERE
-    submission_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
-      WEEK
-    ) --start of week for date 180 days ago
-    AND submission_date <= DATE_SUB(
-      DATE_TRUNC(@submission_date, WEEK),
-      INTERVAL 1 DAY
-    ) --through end of last completed week
-    AND is_dau IS TRUE
-),
-unique_weeks AS (
+WITH unique_weeks AS (
   SELECT DISTINCT
     first_date_of_week AS activity_date_week
   FROM
-    `mozdata.external.calendar`
+    `moz-fx-data-shared-prod.external.calendar`
   WHERE
     submission_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
+      DATE_SUB(@submission_date, INTERVAL 768 DAY),
       WEEK
-    ) --start of week 180 days ago
+    ) --start of week 768 days ago
     AND submission_date <= DATE_SUB(
       DATE_TRUNC(@submission_date, WEEK),
       INTERVAL 1 DAY
@@ -109,10 +40,11 @@ initial_cohort_counts AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
-    clients_first_seen
+    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1`
   GROUP BY
     normalized_app_name,
     normalized_channel,
@@ -139,6 +71,7 @@ initial_cohort_counts AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
     cohort_date_week
 ),
 unique_week_group_combos AS (
@@ -168,6 +101,7 @@ unique_week_group_combos AS (
     i.play_store_attribution_source,
     i.play_store_attribution_content,
     i.play_store_attribution_term,
+    i.play_store_attribution_install_referrer_response,
     i.cohort_date_week,
     i.nbr_clients_in_cohort,
     w.activity_date_week
@@ -203,13 +137,14 @@ weekly_active_agg AS (
     cfs.play_store_attribution_source,
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
+    cfs.play_store_attribution_install_referrer_response,
     cfs.cohort_date_week,
     wac.activity_date_week,
     COUNT(DISTINCT(wac.client_id)) AS nbr_active_clients
   FROM
-    clients_first_seen cfs
+    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1` cfs
   JOIN
-    weekly_active_clients wac
+    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_v1` wac
     ON cfs.client_id = wac.client_id
     AND cfs.cohort_date_week <= wac.activity_date_week
   GROUP BY
@@ -238,6 +173,7 @@ weekly_active_agg AS (
     cfs.play_store_attribution_source,
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
+    cfs.play_store_attribution_install_referrer_response,
     cfs.cohort_date_week,
     wac.activity_date_week
 )
@@ -271,7 +207,8 @@ SELECT
   uwgc.nbr_clients_in_cohort,
   uwgc.activity_date_week,
   DATE_DIFF(uwgc.activity_date_week, uwgc.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
-  COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients
+  COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients,
+  uwgc.play_store_attribution_install_referrer_response,
 FROM
   unique_week_group_combos uwgc
 LEFT JOIN
@@ -317,6 +254,10 @@ LEFT JOIN
   )
   AND COALESCE(uwgc.play_store_attribution_term, 'NULL') = COALESCE(
     waa.play_store_attribution_term,
+    'NULL'
+  )
+  AND COALESCE(uwgc.play_store_attribution_install_referrer_response, 'NULL') = COALESCE(
+    waa.play_store_attribution_install_referrer_response,
     'NULL'
   )
   AND uwgc.cohort_date_week = waa.cohort_date_week

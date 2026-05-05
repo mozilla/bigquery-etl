@@ -1,0 +1,8 @@
+friendly_name: Domain Overview
+description: |-
+  Daily snapshot of Semrush domain_ranks data for tracked domains.
+  Source: https://developer.semrush.com/api/v3/analytics/basic-docs/
+owners:
+- sherrera@mozilla.com
+labels:
+  owner: sherrera

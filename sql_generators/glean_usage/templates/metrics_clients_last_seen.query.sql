@@ -35,8 +35,15 @@ SELECT
     {% endif %}
   {% endfor -%}
   {% endif -%}
+  {% if app_name == "fenix" -%}
+    COALESCE(_current.device_manufacturer, _previous.device_manufacturer) AS device_manufacturer,
+    COALESCE(_current.isp_name, _previous.isp_name) AS isp_name,
+  {% endif -%}
   {% if app_name == "firefox_desktop" -%}
     _current.profile_group_id,
+    COALESCE(_current.search_with_ads_count_all, _previous.search_with_ads_count_all) AS search_with_ads_count_all,
+    COALESCE(_current.search_count_all, _previous.search_count_all) AS search_count_all,
+    COALESCE(_current.ad_clicks_count_all, _previous.ad_clicks_count_all) AS ad_clicks_count_all
   {% endif -%}
 FROM
   _previous

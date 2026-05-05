@@ -41,6 +41,8 @@ def run_query(sdk, date):
             "dashboard_performance.dash_id",
             "dashboard_performance.dashboard_page_session",
             "dashboard_performance.first_event_at_date",
+            "dashboard.refresh_interval",
+            "dashboard_performance.dashboard_run_session",
         ],
         pivots=None,
         fill_fields=None,
@@ -92,6 +94,8 @@ def import_performance_data_for_date(sdk, destination_table, date):
         bigquery.SchemaField("dash_id", "STRING"),
         bigquery.SchemaField("dashboard_page_session", "STRING"),
         bigquery.SchemaField("submission_date", "DATE"),
+        bigquery.SchemaField("refresh_interval", "STRING"),
+        bigquery.SchemaField("dashboard_run_session", "STRING"),
     )
     job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
     job_config.time_partitioning = bigquery.TimePartitioning(

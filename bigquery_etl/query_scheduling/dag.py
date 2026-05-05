@@ -10,6 +10,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
+    ensure_telemetry_alerts_email,
     is_date_string,
     is_email_or_github_identity,
     is_schedule_interval,
@@ -23,6 +24,7 @@ PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
 
 CONFIDENTIAL_TAG = "triage/confidential"
+NO_TRIAGE_TAG = "triage/no_triage"
 
 
 class DagParseException(Exception):
@@ -69,6 +71,7 @@ class DagDefaultArgs:
     email_on_failure: bool = attr.ib(True)
     email_on_retry: bool = attr.ib(True)
     retries: int = attr.ib(2)
+    max_active_tis_per_dag: Optional[int] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -121,6 +124,7 @@ class Dag:
     repo: str = attr.ib("bigquery-etl")
     tags: List[str] = attr.ib([])
     catchup: bool = attr.ib(False)
+    max_active_runs: Optional[int] = attr.ib(None)
 
     @name.validator
     def validate_dag_name(self, attribute, value):
@@ -176,6 +180,11 @@ class Dag:
         return {name: d}
 
     @property
+    def no_triage(self) -> bool:
+        """Return whether this DAG has a `triage/no_triage` tag."""
+        return NO_TRIAGE_TAG in self.tags
+
+    @property
     def task_groups(self) -> Set[str]:
         """
         Return list of task groups in this DAG.
@@ -203,7 +212,14 @@ class Dag:
         converter = cattrs.BaseConverter()
         try:
             name = list(d.keys())[0]
+            default_args: dict = d[name].get("default_args", {})
             tags: set[str] = set(d[name].get("tags", []))
+
+            no_triage = NO_TRIAGE_TAG in tags
+            default_args["email"] = ensure_telemetry_alerts_email(
+                default_args.get("email", []), no_triage
+            )
+
             if not any(tag.startswith("repo/") for tag in tags):
                 tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
 

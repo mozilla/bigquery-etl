@@ -2,12 +2,13 @@ friendly_name: Production Stripe invoice discounts
 description: |-
   Production Stripe invoice discounts combined from Fivetran's newer `discount` and older `invoice_discount` tables.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: false
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:

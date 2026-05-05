@@ -20,22 +20,15 @@ IF
       TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
     ) AS window_end,
-    {% if dataset == "telemetry" %}
-    payload.process_type AS crash_process_type,
-    {% else %}
     metrics.string.crash_process_type AS crash_process_type,
-    {% endif %}
+    crash_ping.signature AS crash_signature,
     COUNT(*) AS crash_count
   FROM
-  {% if dataset == "telemetry" %}
-    `moz-fx-data-shared-prod.{{ dataset }}_live.crash_v4`
-    LEFT JOIN
-      UNNEST(environment.experiments) AS experiment
-  {% else %}
     `moz-fx-data-shared-prod.{{ dataset }}_live.crash_v1`
-    LEFT JOIN
-      UNNEST(ping_info.experiments) AS experiment
-  {% endif %}
+  LEFT JOIN `moz-fx-data-shared-prod.crash_ping_ingest_external.ingest_output` crash_ping
+    USING (document_id, submission_timestamp)
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
@@ -47,4 +40,5 @@ IF
     branch,
     window_start,
     window_end,
-    crash_process_type
+    crash_process_type,
+    crash_signature

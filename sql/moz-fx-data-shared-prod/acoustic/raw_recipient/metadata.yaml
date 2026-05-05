@@ -2,11 +2,5 @@ friendly_name: Adjust raw recipient
 description: |-
   Adjust raw recipient data. This includes information related to email events such as "clicked" and "opened".
 
-  The source data is an ETL defined in Airflow here:
-  https://github.com/mozilla/telemetry-airflow/blob/main/dags/fivetran_acoustic.py
-
-  and here:
-  https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-marketing-prod/acoustic
-
 labels:
   authorized: true

@@ -1,0 +1,19 @@
+friendly_name: Experiment Enrollment Aggregates
+description: Experiment enrollment aggregates, partitioned by day. (glean only)
+owners:
+- ascholtz@mozilla.com
+- mwilliams@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_daily
+labels:
+  table_type: aggregate
+  shredder_mitigation: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: window_start
+    require_partition_filter: false
+  clustering:
+    fields:
+    - experiment
+    - branch

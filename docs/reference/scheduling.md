@@ -59,8 +59,8 @@
       - `poke_interval`: Time that the sensor should wait in between each check, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default poke interval is 5 minutes).
       - `timeout`: Time allowed before the sensor times out and fails, formatted as a timedelta string like "2h" or "30m".
-        This parameter is optional (the default timeout is 8 hours).
-      - `retries`: The number of retries that should be performed if the sensor times out or otherwise fails.
+        This parameter is optional (the default timeout is 24 hours).
+      - `retries`: The number of retries that should be performed if the sensor fails for some reason other than timing out.
         This parameter is optional (the default depends on how the DAG is configured).
       - `retry_delay`: Time delay between retries, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default depends on how the DAG is configured).
@@ -82,8 +82,8 @@
       - `poke_interval`: Time that the sensor should wait in between each check, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default poke interval is 5 minutes).
       - `timeout`: Time allowed before the sensor times out and fails, formatted as a timedelta string like "2h" or "30m".
-        This parameter is optional (the default timeout is 8 hours).
-      - `retries`: The number of retries that should be performed if the sensor times out or otherwise fails.
+        This parameter is optional (the default timeout is 24 hours).
+      - `retries`: The number of retries that should be performed if the sensor fails for some reason other than timing out.
         This parameter is optional (the default depends on how the DAG is configured).
       - `retry_delay`: Time delay between retries, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default depends on how the DAG is configured).
@@ -104,6 +104,8 @@
 - Generated DAGs do not need to be checked into `main`. CI automatically generates DAGs and writes them to the [telemetry-airflow-dags](https://github.com/mozilla/telemetry-airflow-dags) repo from where Airflow will pick them up
 - Generated DAGs will be automatically detected and scheduled by Airflow
   - It might take up to 10 minutes for new DAGs and updates to show up in the Airflow UI
+  - The DAG can be found at `https://workflow.telemetry.mozilla.org/dags/{YOUR_DAG_NAME}/grid`
+  - **NOTE** - New DAGs will _not_ be started automatically. You must enable them manually via the Airflow UI. To enable the DAG, toggle the switch next to your DAG name in the upper left corner.
 - To generate tasks for importing data from Fivetran that an ETL task depends on add:
   ```yaml
   depends_on_fivetran:

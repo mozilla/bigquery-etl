@@ -1,6 +1,0 @@
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:google-managed/external-ads-datafusion
-  - workgroup:google-managed/external-ads-dataproc
-  - workgroup:dataops-managed/external-census

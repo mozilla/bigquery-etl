@@ -1,0 +1,5 @@
+friendly_name: Google Analytics Desktop Conversions Feed
+description: Query that pulls conversion event data so Census feed can pull and send
+  to Google for marketing campaigns
+owners:
+- kwindau@mozilla.com

@@ -1,9 +1,9 @@
 fields:
-- description: null
+- description: Build Hour
   mode: NULLABLE
   name: build_hour
   type: DATETIME
-- description: null
+- description: Gecko View Major Version
   mode: NULLABLE
   name: geckoview_major_version
   type: INTEGER

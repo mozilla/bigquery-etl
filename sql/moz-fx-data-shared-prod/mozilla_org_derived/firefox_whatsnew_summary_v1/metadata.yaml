@@ -5,8 +5,8 @@ labels:
   schedule: daily
 owners:
   - rbaffourawuah@mozilla.com
-scheduling:
-  dag_name: bqetl_google_analytics_derived
+#scheduling:
+#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -17,3 +17,4 @@ bigquery:
       - country
       - locale
       - version
+deprecated: true

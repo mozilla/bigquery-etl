@@ -6,8 +6,20 @@ owners:
 - lgreco@mozilla.com
 labels:
   application: amo
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  dag: bqetl_amo_stats
   owner1: kik
   owner2: lgreco
+scheduling:
+  dag_name: bqetl_amo_stats
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -15,5 +27,5 @@ workgroup_access:
   - workgroup:amo/prod
   - workgroup:mozilla-confidential/data-viewers
 references:
-  view.sql:
-  - moz-fx-data-shared-prod.addons_derived.dev_amo_stats_dau_v1
+  query.sql:
+  - moz-fx-data-shared-prod.addons.amo_stats_dau

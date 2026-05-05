@@ -46,6 +46,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..util import extract_from_query_path
+from ..util.common import block_coding_agents
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
@@ -62,24 +63,64 @@ METRIC_STATUS_FAILURES = [
 ]
 
 
-@click.group(
-    help="""
-        Commands for managing monitoring of datasets.
-        """
-)
+def _resolve_workspace(metadata: Metadata, default_workspace: int) -> int:
+    """Return the Bigeye workspace ID for a table.
+
+    Uses `metadata.monitoring.workspace` if set, otherwise falls back to the
+    --workspace CLI flag default. Validates against
+    `monitoring.bigeye_workspace_ids` in bqetl_project.yaml when configured.
+    """
+    workspace_id = (
+        metadata.monitoring.workspace
+        if metadata.monitoring and metadata.monitoring.workspace is not None
+        else default_workspace
+    )
+    allowed = ConfigLoader.get("monitoring", "bigeye_workspace_ids", fallback=None)
+    if allowed and workspace_id not in allowed:
+        raise click.ClickException(
+            f"workspace {workspace_id} is not in monitoring.bigeye_workspace_ids "
+            f"({allowed}) configured in bqetl_project.yaml"
+        )
+    return workspace_id
+
+
+def _client_for_workspace(api_auth: APIKeyAuth, workspace_id: int):
+    """Build a datawatch client for the given Bigeye workspace."""
+    return datawatch_client_factory(api_auth, workspace_id=workspace_id)
+
+
+def _warehouse_id_for_workspace(workspace_id: int) -> int:
+    """Return the Bigeye BQ warehouse ID for the given workspace.
+
+    Bigeye warehouses belong to a single workspace, so calls like
+    `get_metric_info_batch_post(warehouse_ids=[...])` only return metrics from
+    that workspace's warehouse. Looks up `monitoring.bigeye_warehouses` first
+    and falls back to the singular `monitoring.bigeye_warehouse_id` for
+    back-compat.
+    """
+    warehouses = ConfigLoader.get("monitoring", "bigeye_warehouses", fallback={}) or {}
+    if workspace_id in warehouses:
+        return warehouses[workspace_id]
+    return ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+
+
+@click.group(help="""
+    Commands for managing monitoring of datasets.
+    """)
 @click.pass_context
 def monitoring(ctx):
     """Create the CLI group for the monitoring command."""
     pass
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy monitors defined in the BigConfig files to Bigeye.
 
     Requires BigConfig API key to be set via BIGEYE_API_KEY env variable.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
@@ -108,7 +149,7 @@ def deploy(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
-    workspace: str,
+    workspace: int,
     base_url: str,
     dry_run: bool,
 ) -> None:
@@ -129,6 +170,10 @@ def deploy(
         print(f"No metadata files matching {name}")
         return
 
+    api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
+    # bigconfig files grouped by the workspace they target — needed because
+    # `mc.execute_bigconfig` validates against a single workspace's catalog.
+    bigconfigs_by_workspace: dict = {}
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
         try:
@@ -140,9 +185,10 @@ def deploy(
                     sql_dir=sql_dir,
                     project_id=project_id,
                 )
-                api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-                client = datawatch_client_factory(api_auth, workspace_id=workspace)
-                mc = MetricSuiteController(client=client)
+                table_workspace = _resolve_workspace(metadata, workspace)
+                bigconfigs_by_workspace.setdefault(table_workspace, []).append(
+                    metadata_file.parent / BIGCONFIG_FILE
+                )
 
                 ctx.invoke(
                     validate,
@@ -162,6 +208,7 @@ def deploy(
                             name=metadata_file.parent,
                             sql_dir=sql_dir,
                             project_id=project_id,
+                            workspace=table_workspace,
                         )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
@@ -180,28 +227,29 @@ def deploy(
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
-    try:
-        # Deploy BigConfig files at once.
-        # Deploying BigConfig files separately can lead to previously deployed metrics being removed.
-        mc.execute_bigconfig(
-            input_path=[
-                metadata_file.parent / BIGCONFIG_FILE
-                for metadata_file in list(set(metadata_files))
-            ]
-            + [f"{sql_dir}/{BIGCONFIG_FILE}"],
-            output_path=Path(sql_dir).parent if sql_dir else None,
-            apply=not dry_run,
-            recursive=False,
-            strict_mode=True,
-            auto_approve=True,
-        )
-    except Exception as e:
-        if dry_run:
-            bigconfig_result = Path(f"{project_id}_PLAN.yml")
-        else:
-            bigconfig_result = Path(f"{project_id}_APPLY.yml")
-        click.echo(bigconfig_result.read_text())
-        raise e
+    # Deploy bigconfig files once per workspace. Batching within a workspace
+    # preserves the original "deploy together so previously-deployed metrics
+    # aren't removed" guarantee; splitting across workspaces is required since
+    # each MetricSuiteController binds to a single workspace's catalog.
+    for ws_id, bigconfig_paths in bigconfigs_by_workspace.items():
+        client = _client_for_workspace(api_auth, ws_id)
+        mc = MetricSuiteController(client=client)
+        try:
+            mc.execute_bigconfig(
+                input_path=bigconfig_paths + [f"{sql_dir}/{BIGCONFIG_FILE}"],
+                output_path=Path(sql_dir).parent if sql_dir else None,
+                apply=not dry_run,
+                recursive=False,
+                strict_mode=True,
+                auto_approve=True,
+            )
+        except Exception as e:
+            if dry_run:
+                bigconfig_result = Path(f"{project_id}_PLAN.yml")
+            else:
+                bigconfig_result = Path(f"{project_id}_APPLY.yml")
+            click.echo(bigconfig_result.read_text())
+            raise e
 
 
 def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
@@ -233,11 +281,12 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
     return statements
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Deploy custom SQL rules.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -272,15 +321,6 @@ def deploy_custom_rules(
     )
 
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    client = datawatch_client_factory(api_auth, workspace_id=workspace)
-    collections = client.get_collections()
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
-    existing_rules = client.get_rules_for_source(warehouse_id=warehouse_id)
-    existing_rules_sql = [rule.custom_rule.sql for rule in existing_rules.custom_rules]
-    existing_schedules = {
-        schedule.name: schedule.id
-        for schedule in client.get_named_schedule().named_schedules
-    }
     url = "/api/v1/custom-rules"
 
     for custom_rule_file in list(set(custom_rules_files)):
@@ -288,6 +328,18 @@ def deploy_custom_rules(
         try:
             metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
             if metadata.monitoring and metadata.monitoring.enabled:
+                table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
+                client = _client_for_workspace(api_auth, table_workspace)
+                collections = client.get_collections()
+                existing_rules = client.get_rules_for_source(warehouse_id=warehouse_id)
+                existing_rules_sql = [
+                    rule.custom_rule.sql for rule in existing_rules.custom_rules
+                ]
+                existing_schedules = {
+                    schedule.name: schedule.id
+                    for schedule in client.get_named_schedule().named_schedules
+                }
                 # Convert all the Airflow params to jinja usable dict.
                 for select_statement in _sql_rules_from_file(
                     custom_rule_file, project, dataset, table
@@ -478,13 +530,11 @@ def _update_bigconfig(
             )
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Update BigConfig files based on monitoring metadata.
 
     Requires BigConfig credentials to be set via BIGEYE_API_CRED_FILE env variable.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -546,11 +596,9 @@ def _update_single_monitoring_file(metadata_file: Path) -> None:
         print(f"Error processing {metadata_file}: {e}")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Validate BigConfig files.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -595,11 +643,12 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
     click.echo("All BigConfig files are valid.")
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Set partition column for view or table in Bigeye.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -633,6 +682,7 @@ def set_partition_column(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
+    api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
         try:
@@ -641,10 +691,9 @@ def set_partition_column(
                 if not metadata.monitoring.partition_column_set:
                     click.echo(f"No partition column set for {metadata_file.parent}")
                     continue
-                api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-                client = datawatch_client_factory(api_auth, workspace_id=workspace)
-
-                warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+                table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
+                client = _client_for_workspace(api_auth, table_workspace)
                 table_id = client.get_table_ids(
                     warehouse_id=warehouse_id,
                     schemas=f"{project}.{dataset}",
@@ -698,11 +747,12 @@ def set_partition_column(
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Delete deployed monitors. Use --custom-sql and/or --metrics flags to select which types of monitors to delete.
-    """
-)
+
+    Coding agents aren't allowed to run this command.
+    """)
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -751,15 +801,24 @@ def delete(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    client = datawatch_client_factory(api_auth, workspace_id=workspace)
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
-    existing_rules = {
-        rule.custom_rule.sql: rule.id
-        for rule in client.get_rules_for_source(warehouse_id=warehouse_id).custom_rules
-    }
 
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
+        try:
+            metadata = Metadata.from_file(metadata_file)
+        except FileNotFoundError:
+            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+            continue
+        table_workspace = _resolve_workspace(metadata, workspace)
+        warehouse_id = _warehouse_id_for_workspace(table_workspace)
+        client = _client_for_workspace(api_auth, table_workspace)
+        existing_rules = {
+            rule.custom_rule.sql: rule.id
+            for rule in client.get_rules_for_source(
+                warehouse_id=warehouse_id
+            ).custom_rules
+        }
+
         if metrics:
             deployed_metrics = client.get_metric_info_batch_post(
                 table_name=table,
@@ -785,6 +844,8 @@ def delete(
     help="""
     Runs Bigeye monitors.
 
+    Coding agents aren't allowed to run this command.
+
     Example:
 
     \t./bqetl monitoring run ga_derived.downloads_with_attribution_v2
@@ -794,6 +855,7 @@ def delete(
         allow_extra_args=True,
     ),
 )
+@block_coding_agents
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
@@ -819,13 +881,6 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
         sys.exit(1)
 
     api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
-    client = datawatch_client_factory(api_auth, workspace_id=workspace)
-    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
-    existing_rules = {
-        rule.custom_rule.sql: {"id": rule.id, "name": rule.custom_rule.name}
-        for rule in client.get_rules_for_source(warehouse_id=warehouse_id).custom_rules
-        if rule.custom_rule.name.endswith(marker or "")
-    }
 
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
@@ -838,6 +893,19 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
         try:
             metadata = Metadata.from_file(metadata_file)
             if metadata.monitoring and metadata.monitoring.enabled:
+                table_workspace = _resolve_workspace(metadata, workspace)
+                warehouse_id = _warehouse_id_for_workspace(table_workspace)
+                client = _client_for_workspace(api_auth, table_workspace)
+                existing_rules = {
+                    rule.custom_rule.sql: {
+                        "id": rule.id,
+                        "name": rule.custom_rule.name,
+                    }
+                    for rule in client.get_rules_for_source(
+                        warehouse_id=warehouse_id
+                    ).custom_rules
+                    if rule.custom_rule.name.endswith(marker or "")
+                }
                 metrics = client.get_metric_info_batch_post(
                     table_name=table,
                     schema_name=f"{project}.{dataset}",
@@ -869,7 +937,10 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                             f"Error running check {metric_info.metric_configuration.id}: {metric_info.active_issue.display_name}"
                         )
                         click.echo(
-                            f"Check {base_url}/w/{workspace}/catalog/data-sources/metric/{metric_info.metric_configuration.id}/chart for more information."
+                            f"Check {base_url}/w/{table_workspace}/catalog/"
+                            f"data-sources/metric/"
+                            f"{metric_info.metric_configuration.id}/chart "
+                            "for more information."
                         )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
@@ -902,7 +973,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
                                 click.echo(
                                     f"Error running custom rule {existing_rules[sql]} for {project}.{dataset}.{table}. "
-                                    + f"Check {base_url}/w/{workspace}/catalog/data-sources/{warehouse_id}/rules/{existing_rules[sql]['id']}/runs "
+                                    + f"Check {base_url}/w/{table_workspace}/catalog/data-sources/{warehouse_id}/rules/{existing_rules[sql]['id']}/runs "
                                     + "for more information."
                                 )
 
@@ -914,13 +985,11 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
 
 # TODO: remove this command once checks have been migrated
-@monitoring.command(
-    help="""
+@monitoring.command(help="""
     Create BigConfig files from ETL check.sql files.
 
     This is a temporary command and will be removed after checks have been migrated.
-    """
-)
+    """)
 @click.argument("name")
 @project_id_option()
 @sql_dir_option

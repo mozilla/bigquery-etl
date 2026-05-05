@@ -11,7 +11,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
     "Braze Firefox unsubscribe" AS suppression_source
   FROM
@@ -20,7 +20,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Firefox hard bounce" AS suppression_source
   FROM
@@ -31,25 +31,16 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Mozilla hard bounce" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_hard_bounces_v1`
--- MoFo suppression List
-  UNION DISTINCT
-  SELECT
-    LOWER(email) AS email,
-    update_timestamp AS suppressed_timestamp,
-    suppression_reason,
-    "Campaign Monitor" AS suppression_source
-  FROM
-    `moz-fx-data-shared-prod.marketing_suppression_list_external.campaign_monitor_suppression_list_v1`
   -- braze unsubscribes from Pocket workspace
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
     "Braze Pocket unsubscribe" AS suppression_source
   FROM
@@ -58,7 +49,7 @@ WITH suppressions AS (
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
-    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    TIMESTAMP_SECONDS(`time`) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
     "Braze Pocket hard bounce" AS suppression_source
   FROM

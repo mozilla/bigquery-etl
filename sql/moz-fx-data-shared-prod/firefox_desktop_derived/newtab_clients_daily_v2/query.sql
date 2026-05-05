@@ -24,6 +24,9 @@ SELECT
   `moz-fx-data-shared-prod.udf.mode_last`(
     ARRAY_AGG(newtab_search_enabled)
   ) AS newtab_search_enabled,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(newtab_content_surface_id)
+  ) AS newtab_content_surface_id,
   COUNT(DISTINCT IF(is_newtab_opened, newtab_visit_id, NULL)) AS all_visits,
   COUNT(DISTINCT IF(is_default_ui, newtab_visit_id, NULL)) AS default_ui_visits,
   COUNT(DISTINCT IF(any_interaction_count > 0, newtab_visit_id, NULL)) AS any_engagement_visits,
@@ -126,8 +129,10 @@ SELECT
   SUM(widget_impression_count) AS widget_impression_count,
   SUM(other_interaction_count) AS other_interaction_count,
   SUM(other_impression_count) AS other_impression_count,
-  AVG(newtab_visit_duration) AS avg_newtab_visit_duration,
-  SUM(newtab_visit_duration) AS cumulative_newtab_visit_duration,
+  AVG(SAFE_CAST(newtab_visit_duration AS FLOAT64)) AS avg_newtab_visit_duration,
+  SAFE_CAST(
+    SUM(CAST(newtab_visit_duration AS FLOAT64)) AS INT64
+  ) AS cumulative_newtab_visit_duration,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2`
 WHERE

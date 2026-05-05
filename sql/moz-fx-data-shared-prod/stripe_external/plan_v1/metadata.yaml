@@ -1,6 +1,7 @@
 friendly_name: Prod Stripe plan
 description: Production Stripe plan table from Fivetran
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   schedule: hourly

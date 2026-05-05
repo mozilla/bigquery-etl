@@ -2,6 +2,7 @@ friendly_name: Active Hubs Subscriptions
 description: >
   Aggregated count of active Hubs subscriptions.
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   application: hubs

@@ -15,7 +15,7 @@ import yaml
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.util.common import render
+from bigquery_etl.util.common import alter_sql_for_sqlglot, render
 
 stable_views = None
 
@@ -39,15 +39,7 @@ def extract_table_references(sql: str) -> List[str]:
     # sqlglot cannot handle scripts with variables and control statements
     if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
         return []
-    # sqlglot parses UDFs with keyword names incorrectly:
-    # https://github.com/tobymao/sqlglot/issues/3332
-    sql = re.sub(
-        r"\.(true|false|null)\(",
-        r".`\1`(",
-        sql,
-        flags=re.IGNORECASE,
-    )
-    query = sqlglot.parse(sql, read="bigquery")
+    query = sqlglot.parse(alter_sql_for_sqlglot(sql), read="bigquery")
     creates = set()
     tables = set()
     for statement in query:
@@ -56,9 +48,19 @@ def extract_table_references(sql: str) -> List[str]:
         creates |= {
             _raw_table_name(expr.this)
             for expr in statement.find_all(sqlglot.exp.Create)
+            if expr.kind in ("TABLE", "VIEW")
         }
         tables |= (
-            {_raw_table_name(table) for table in statement.find_all(sqlglot.exp.Table)}
+            {
+                _raw_table_name(table)
+                for table in statement.find_all(sqlglot.exp.Table)
+                # Starting in sqlglot v26.9.0 the identifiers for UDFs created by `CREATE TEMP FUNCTION`
+                # statements get parsed into `Table` expressions (https://github.com/tobymao/sqlglot/pull/4829),
+                # so we need to exclude those (note that `Table` expressions in the bodies of UDFs won't have
+                # the `UserDefinedFunction` expression as their parent).  We reported this as a sqlglot bug
+                # (https://github.com/tobymao/sqlglot/issues/6298) but were told this is expected behavior.
+                if not isinstance(table.parent, sqlglot.exp.UserDefinedFunction)
+            }
             # ignore references created in this query
             - creates
             # ignore CTEs created in this statement

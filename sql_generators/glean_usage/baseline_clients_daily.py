@@ -14,5 +14,5 @@ class BaselineClientsDailyTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = BASELINE_DAILY_TABLE_ID
         self.prefix = PREFIX
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.per_app_requires_all_base_tables = True

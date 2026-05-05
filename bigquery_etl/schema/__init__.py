@@ -2,9 +2,9 @@
 
 import json
 import os
+from functools import cache, lru_cache, wraps
 from pathlib import Path
-from tempfile import NamedTemporaryFile
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Callable, Concatenate, Dict, Iterable, List, Optional
 
 import attr
 import ujson
@@ -12,10 +12,15 @@ import yaml
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import SchemaField
+from jmespath import search as jmespath_search
 
 from .. import dryrun
+from ..config import ConfigLoader
+from ..util.common import resolve_project_file_path
+from .stable_table_schema import get_stable_table_schemas
 
 SCHEMA_FILE = "schema.yaml"
+DEFAULT_SQL_DIR = Path(ConfigLoader.get("default", "sql_dir"))
 
 
 @attr.s(auto_attribs=True)
@@ -39,14 +44,27 @@ class Schema:
         return cls(schema)
 
     @classmethod
-    def from_schema_file(cls, schema_file: Path):
-        """Create schema from a yaml schema file."""
+    def from_yaml(cls, schema_yaml: str, sql_dir: Optional[Path] = None):
+        """Create schema from a YAML string."""
+        yaml_loader = SchemaLoader
+        if sql_dir and sql_dir != DEFAULT_SQL_DIR:
+            custom_sql_dir = sql_dir  # To avoid a NameError in CustomSchemaLoader.
+
+            class CustomSchemaLoader(SchemaLoader):
+                sql_dir = custom_sql_dir
+
+            yaml_loader = CustomSchemaLoader
+
+        schema = yaml.load(schema_yaml, Loader=yaml_loader)
+        return cls(schema)
+
+    @classmethod
+    def from_schema_file(cls, schema_file: Path, sql_dir: Optional[Path] = None):
+        """Create schema from a `schema.yaml` file."""
         if not schema_file.is_file() or schema_file.suffix != ".yaml":
             raise Exception(f"{schema_file} is not a valid YAML schema file.")
 
-        with open(schema_file) as file:
-            schema = yaml.load(file, Loader=yaml.FullLoader)
-            return cls(schema)
+        return cls.from_yaml(schema_file.read_text(), sql_dir=sql_dir)
 
     @classmethod
     def empty(cls):
@@ -59,7 +77,16 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
+    def for_table(
+        cls,
+        project,
+        dataset,
+        table,
+        partitioned_by=None,
+        filename="query.sql",
+        *args,
+        **kwargs,
+    ):
         """Get the schema for a BigQuery table."""
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
@@ -67,27 +94,51 @@ class Schema:
             query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
 
         try:
+            sql_dir = ConfigLoader.get("default", "sql_dir")
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"),
+                    os.path.join(sql_dir, project, dataset, table, filename),
                     query,
                     project=project,
                     dataset=dataset,
                     table=table,
                     *args,
                     **kwargs,
-                ).get_schema()
+                ).get_table_schema()
             )
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
+    def get_field(self, field_path: str) -> dict:
+        """Return the specified schema field."""
+        fields = self.schema["fields"]
+
+        if "." in field_path:
+            parent_field_path, field_name = field_path.rsplit(".", maxsplit=1)
+            parent_field_path_parts = parent_field_path.split(".")
+            for i, parent_field_path_part in enumerate(parent_field_path_parts):
+                for field in fields:
+                    if field["name"] == parent_field_path_part:
+                        fields = field["fields"]
+                        break
+                else:
+                    raise KeyError(
+                        f"Field not found: {'.'.join(parent_field_path_parts[0:i+1])}"
+                    )
+        else:
+            field_name = field_path
+
+        for field in fields:
+            if field["name"] == field_name:
+                return field
+        else:
+            raise KeyError(f"Field not found: {field_path}")
+
     def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
-        tmp_schema_file = NamedTemporaryFile()
-        self.to_json_file(Path(tmp_schema_file.name))
-        bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+        bigquery_schema = self.to_bigquery_schema()
 
         try:
             # destination table already exists, update schema
@@ -280,7 +331,19 @@ class Schema:
     def to_yaml_file(self, yaml_path: Path):
         """Write schema to the YAML file path."""
         with open(yaml_path, "w") as out:
-            yaml.dump(self.schema, out, default_flow_style=False, sort_keys=False)
+            yaml.dump(
+                self.schema,
+                out,
+                Dumper=SchemaDumper,
+                default_flow_style=False,
+                sort_keys=False,
+            )
+
+    def to_yaml(self):
+        """Return the schema data as YAML."""
+        return yaml.dump(
+            self.schema, Dumper=SchemaDumper, default_flow_style=False, sort_keys=False
+        )
 
     def to_json_file(self, json_path: Path):
         """Write schema to the JSON file path."""
@@ -307,6 +370,8 @@ class Schema:
         unnest_structs: bool = False,
         max_unnest_depth: int = 0,
         unnest_allowlist: Optional[Iterable[str]] = None,
+        match_column_order: bool = True,
+        retain_null_structs: bool = False,
     ) -> str:
         """Generate the select expression for the source schema based on the target schema.
 
@@ -323,6 +388,10 @@ class Schema:
         :param max_unnest_depth: Maximum level of struct nesting to explicitly unnest in
             the expression.
         :param unnest_allowlist: If set, only the given top-level structs are unnested.
+        :param match_column_order: If true, structs will be unnested if the order of the nested
+            fields does not match. This is needed if column order matters, e.g. UNION queries.
+        :param retain_null_structs: If true, structs will be set to null if they are null in the
+            source. Otherwise, structs will always be non-null with nested fields explicitly set.
         """
 
         def _type_info(node):
@@ -371,6 +440,17 @@ class Schema:
                             dtype != "RECORD"
                             or node["fields"]
                             == source_schema_nodes[node_name]["fields"]
+                            or (
+                                # check if top-level fields match in any order
+                                not match_column_order
+                                and len(node["fields"])
+                                == len(source_schema_nodes[node_name]["fields"])
+                                and sorted(
+                                    source_schema_nodes[node_name]["fields"],
+                                    key=lambda f: f["name"],
+                                )
+                                == sorted(node["fields"], key=lambda f: f["name"])
+                            )
                         )
                         and (
                             # don't need to unnest scalar
@@ -396,8 +476,7 @@ class Schema:
                         if (
                             node.get("mode", None) == "REPEATED"
                         ):  # unnest repeated record
-                            select_expr.append(
-                                f"""
+                            select_expr.append(f"""
                                     ARRAY(
                                         SELECT
                                             STRUCT(
@@ -409,20 +488,27 @@ class Schema:
                                             )
                                         FROM UNNEST({node_path_str}) AS `{node_name}`
                                     ) AS `{node_name}`
-                                """
-                            )
+                                """)
                         else:  # select struct fields
-                            select_expr.append(
-                                f"""
-                                    STRUCT(
-                                        {recurse_fields(
-                                            source_schema_nodes[node_name]['fields'],
-                                            node['fields'],
-                                            node_path,
-                                        )}
-                                    ) AS `{node_name}`
-                                """
+                            struct_expr = f"""
+                            STRUCT(
+                                {recurse_fields(
+                                    source_schema_nodes[node_name]['fields'],
+                                    node['fields'],
+                                    node_path,
+                                )}
                             )
+                            """
+                            if retain_null_structs:
+                                select_expr.append(f"""
+                                    IF(
+                                        {node_path_str} IS NULL,
+                                        NULL,
+                                        {struct_expr}
+                                    ) AS `{node_name}`
+                                """)
+                            else:
+                                select_expr.append(f"{struct_expr} AS `{node_name}`")
                     else:  # scalar value doesn't match, e.g. different types
                         select_expr.append(
                             f"CAST(NULL AS {_type_info(node)}) AS `{node_name}`"
@@ -454,3 +540,230 @@ class Schema:
             max_unnest_depth,
             unnest_allowlist,
         )
+
+
+@cache
+def generate_compatible_select_expression(
+    client: bigquery.Client, v1_table_id: str, v2_table_id: str
+):
+    """Generate a select expression that conforms the v1 table schema to the v2 table schema.
+
+    The expression will be compatible with the v2 table. Fields that are in v1 but not v2 will
+    not be included. Fields that are in v2 but not v1 will be set to null.
+    """
+    v1_table = client.get_table(v1_table_id)
+    v2_table = client.get_table(v2_table_id)
+
+    v1_schema = Schema.from_bigquery_schema(v1_table.schema)
+    v2_schema = Schema.from_bigquery_schema(v2_table.schema)
+
+    return v1_schema.generate_compatible_select_expression(
+        v2_schema, match_column_order=False, retain_null_structs=True
+    )
+
+
+class SchemaLoader(yaml.FullLoader):
+    """Loader for schema YAML files."""
+
+    sql_dir = DEFAULT_SQL_DIR
+
+    @lru_cache
+    def load_yaml_from_project_file(self, project_file_path: str | Path) -> Any:
+        """Load the YAML from the specified project file."""
+        project_file_path = Path(str(project_file_path).removeprefix("/"))
+        if self.sql_dir != DEFAULT_SQL_DIR and project_file_path.is_relative_to(
+            DEFAULT_SQL_DIR
+        ):
+            resolved_project_file_path = Path(
+                self.sql_dir, project_file_path.relative_to(DEFAULT_SQL_DIR)
+            )
+        else:
+            resolved_project_file_path = resolve_project_file_path(project_file_path)
+        with resolved_project_file_path.open() as file_stream:
+            return yaml.load(file_stream, Loader=self.__class__)
+
+    def get_schema_from_project_file(self, project_file_path: str | Path) -> Schema:
+        """Get the schema from the specified project file."""
+        return Schema(self.load_yaml_from_project_file(project_file_path))
+
+    def get_schema_for_table(self, table: str) -> Schema:
+        """Get the schema for the specified table."""
+        if "_stable." in table:
+            for stable_table_schema in get_stable_table_schemas():
+                if table.endswith("." + stable_table_schema.stable_table):
+                    return Schema({"fields": stable_table_schema.schema})
+            else:
+                raise Exception(f"Stable table schema not found: {table}")
+        return self.get_schema_from_project_file(
+            Path(DEFAULT_SQL_DIR, *table.split("."), SCHEMA_FILE)
+        )
+
+
+def yaml_tag_kwargs_loader(
+    yaml_tag_constructor: Callable[Concatenate[SchemaLoader, ...], Any],
+) -> Callable[[SchemaLoader, yaml.Node], Any]:
+    """Decorate a YAML tag constructor, passing it the keyword arguments loaded from the YAML dictionary node."""
+
+    @wraps(yaml_tag_constructor)
+    def yaml_tag_constructor_wrapper(loader: SchemaLoader, node: yaml.Node) -> Any:
+        kwargs: dict[str, Any] = loader.construct_mapping(node, deep=True)  # type: ignore
+        return yaml_tag_constructor(loader, **kwargs)
+
+    return yaml_tag_constructor_wrapper
+
+
+@yaml_tag_kwargs_loader
+def yaml_include_constructor(
+    loader: SchemaLoader, file: str, jmespath: Optional[str] = None
+) -> Any:
+    """Load a YAML `!include` tag."""
+    data = loader.load_yaml_from_project_file(file)
+    if jmespath:
+        return jmespath_search(jmespath, data)
+    return data
+
+
+SchemaLoader.add_constructor("!include", yaml_include_constructor)
+
+
+@yaml_tag_kwargs_loader
+def yaml_include_field_constructor(
+    loader: SchemaLoader,
+    field: str,
+    file: Optional[str] = None,
+    table: Optional[str] = None,
+    new_name: Optional[str] = None,
+    new_type: Optional[str] = None,
+    new_mode: Optional[str] = None,
+    new_description: Optional[str] = None,
+    append_description: Optional[str] = None,
+    prepend_description: Optional[str] = None,
+    new_fields: Optional[list[dict]] = None,
+    append_fields: Optional[list[dict]] = None,
+    prepend_fields: Optional[list[dict]] = None,
+) -> dict:
+    """Load a YAML `!include-field` tag."""
+    if file:
+        schema = loader.get_schema_from_project_file(file)
+    elif table:
+        schema = loader.get_schema_for_table(table)
+    else:
+        raise Exception("!include-field tags must specify either `file` or `table`.")
+
+    schema_field = schema.get_field(field).copy()
+    if new_name:
+        schema_field["name"] = new_name
+    if new_type:
+        schema_field["type"] = new_type
+    if new_mode:
+        schema_field["mode"] = new_mode
+    if new_description:
+        schema_field["description"] = new_description
+    if append_description or prepend_description:
+        description: str = schema_field.get("description", "")
+        if append_description:
+            description = (description.rstrip() + "\n" + append_description).lstrip()
+        if prepend_description:
+            description = (prepend_description + "\n" + description.lstrip()).rstrip()
+        schema_field["description"] = description
+    if new_fields:
+        schema_field["fields"] = new_fields
+    if append_fields:
+        schema_field["fields"] = schema_field["fields"] + append_fields
+    if prepend_fields:
+        schema_field["fields"] = prepend_fields + schema_field["fields"]
+    return schema_field
+
+
+SchemaLoader.add_constructor("!include-field", yaml_include_field_constructor)
+
+
+@yaml_tag_kwargs_loader
+def yaml_include_fields_constructor(
+    loader: SchemaLoader,
+    file: Optional[str] = None,
+    table: Optional[str] = None,
+    parent_field: Optional[str] = None,
+    field_names: Optional[list[str]] = None,
+    exclude_field_names: Optional[list[str]] = None,
+    field_replacements: Optional[list[dict]] = None,
+) -> list[dict]:
+    """Load a YAML `!include-fields` tag."""
+    if file:
+        schema = loader.get_schema_from_project_file(file)
+    elif table:
+        schema = loader.get_schema_for_table(table)
+    else:
+        raise Exception("!include-fields tags must specify either `file` or `table`.")
+
+    fields = schema.schema["fields"]
+    if parent_field:
+        fields = schema.get_field(parent_field)["fields"]
+    if field_names:
+        fields_dict = {field["name"]: field for field in fields}
+        # Return the fields in the same order as the specified field names.
+        fields = [fields_dict[field_name] for field_name in field_names]
+    if exclude_field_names:
+        fields = [field for field in fields if field["name"] not in exclude_field_names]
+    if field_replacements:
+        field_replacements_dict = {field["name"]: field for field in field_replacements}
+        fields = [field_replacements_dict.get(field["name"], field) for field in fields]
+    return fields
+
+
+SchemaLoader.add_constructor("!include-fields", yaml_include_fields_constructor)
+
+
+@yaml_tag_kwargs_loader
+def yaml_include_field_description_constructor(
+    loader: SchemaLoader,
+    field: str,
+    file: Optional[str] = None,
+    table: Optional[str] = None,
+    append: Optional[str] = None,
+    prepend: Optional[str] = None,
+) -> str:
+    """Load a YAML `!include-field-description` tag."""
+    if file:
+        schema = loader.get_schema_from_project_file(file)
+    elif table:
+        schema = loader.get_schema_for_table(table)
+    else:
+        raise Exception(
+            "!include-field-description tags must specify either `file` or `table`."
+        )
+
+    description: str = schema.get_field(field).get("description", "")
+    if append:
+        description = (description.rstrip() + "\n" + append).lstrip()
+    if prepend:
+        description = (prepend + "\n" + description.lstrip()).rstrip()
+    return description
+
+
+SchemaLoader.add_constructor(
+    "!include-field-description",
+    yaml_include_field_description_constructor,
+)
+
+
+def yaml_flatten_lists_constructor(loader: SchemaLoader, node: yaml.Node) -> list:
+    """Load a YAML `!flatten-lists` tag."""
+    flattened_list = []
+    for item in loader.construct_sequence(node, deep=True):  # type: ignore
+        if isinstance(item, list):
+            flattened_list.extend(item)
+        else:
+            flattened_list.append(item)
+    return flattened_list
+
+
+SchemaLoader.add_constructor("!flatten-lists", yaml_flatten_lists_constructor)
+
+
+class SchemaDumper(yaml.Dumper):
+    """Dumper for schema YAML files."""
+
+    def ignore_aliases(self, data):
+        """Never use aliases in the output."""
+        return True

@@ -33,6 +33,8 @@ tag_deployments:
                 string_value: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
             rct_overrides:
               - FULL_SCAN
+            conditions:
+              - normalized_channel IS NOT NULL
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:

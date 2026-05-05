@@ -5,7 +5,7 @@ CREATE OR REPLACE VIEW
         * EXCEPT (percentiles, non_norm_percentiles),
         IF(
           percentiles IS NOT NULL
-          OR metric_type = "boolean",
+          OR metric_type IN ("boolean", "labeled_boolean"),
           NULL,
           mozfun.glam.histogram_cast_struct(histogram)
         ) AS struct_histogram,
@@ -15,7 +15,8 @@ CREATE OR REPLACE VIEW
             "labeled_counter",
             "dual_labeled_counter",
             "quantity",
-            "boolean"
+            "boolean",
+            "labeled_boolean"
           )
           OR non_norm_percentiles IS NOT NULL,
           NULL,
@@ -120,7 +121,8 @@ CREATE OR REPLACE VIEW
           "labeled_counter",
           "dual_labeled_counter",
           "quantity",
-          "boolean"
+          "boolean",
+          "labeled_boolean"
         ),
         percentiles,
         non_norm_percentiles

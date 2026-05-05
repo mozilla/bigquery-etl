@@ -6,10 +6,10 @@ description: |-
   if they perform different conversion actions
   on different days.
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: client_level
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
@@ -21,8 +21,7 @@ bigquery:
     field: activity_date
     require_partition_filter: false
     expiration_days: 775
-references: {}
 require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members: [workgroup:dataplatform/external-census]

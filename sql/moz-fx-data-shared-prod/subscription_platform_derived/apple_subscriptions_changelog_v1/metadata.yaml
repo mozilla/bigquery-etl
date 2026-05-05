@@ -6,6 +6,7 @@ description: |-
   (https://developer.apple.com/documentation/appstoreserverapi/get-all-subscription-statuses),
   though SubPlat doesn't currently save all the API fields and has added some custom metadata.
 owners:
+- phlee@mozilla.com
 - srose@mozilla.com
 labels:
   incremental: true
@@ -24,7 +25,6 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
-references: {}
 require_column_descriptions: true
 monitoring:
   enabled: true

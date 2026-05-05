@@ -59,8 +59,8 @@
       - `poke_interval`: Time that the sensor should wait in between each check, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default poke interval is 5 minutes).
       - `timeout`: Time allowed before the sensor times out and fails, formatted as a timedelta string like "2h" or "30m".
-        This parameter is optional (the default timeout is 8 hours).
-      - `retries`: The number of retries that should be performed if the sensor times out or otherwise fails.
+        This parameter is optional (the default timeout is 24 hours).
+      - `retries`: The number of retries that should be performed if the sensor fails for some reason other than timing out.
         This parameter is optional (the default depends on how the DAG is configured).
       - `retry_delay`: Time delay between retries, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default depends on how the DAG is configured).
@@ -82,8 +82,8 @@
       - `poke_interval`: Time that the sensor should wait in between each check, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default poke interval is 5 minutes).
       - `timeout`: Time allowed before the sensor times out and fails, formatted as a timedelta string like "2h" or "30m".
-        This parameter is optional (the default timeout is 8 hours).
-      - `retries`: The number of retries that should be performed if the sensor times out or otherwise fails.
+        This parameter is optional (the default timeout is 24 hours).
+      - `retries`: The number of retries that should be performed if the sensor fails for some reason other than timing out.
         This parameter is optional (the default depends on how the DAG is configured).
       - `retry_delay`: Time delay between retries, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default depends on how the DAG is configured).

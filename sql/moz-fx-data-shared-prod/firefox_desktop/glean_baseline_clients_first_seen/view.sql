@@ -10,10 +10,15 @@ SELECT
   bcfs.`distribution`,
   bcfs.attribution_ext,
   JSON_VALUE(bcfs.attribution_ext.dlsource) AS attribution_dlsource,
+  JSON_VALUE(bcfs.attribution_ext.msclkid) AS attribution_msclkid,
   JSON_VALUE(bcfs.attribution_ext.dltoken) AS attribution_dltoken,
   JSON_VALUE(bcfs.attribution_ext.ua) AS attribution_ua,
   JSON_VALUE(bcfs.attribution_ext.experiment) AS attribution_experiment,
   JSON_VALUE(bcfs.attribution_ext.variation) AS attribution_variation,
+  JSON_VALUE(bcfs.distribution_ext.distributionVersion) AS distribution_version,
+  JSON_VALUE(bcfs.distribution_ext.distributor) AS distributor,
+  JSON_VALUE(bcfs.distribution_ext.partnerId) AS distribution_partner_id,
+  JSON_VALUE(bcfs.distribution_ext.distributorChannel) AS distributor_channel,
   bcfs.distribution_ext,
   bcfs.legacy_telemetry_client_id,
   bcfs.legacy_telemetry_profile_group_id,
@@ -23,9 +28,12 @@ SELECT
   bcfs.locale,
   bcfs.normalized_os,
   bcfs.app_display_version,
+  bcfs.app_build_id,
   bcfs.normalized_channel,
   bcfs.normalized_os_version,
   bcfs.isp,
+  bcfs.startup_profile_selection_reason_first,
+  bcfs.architecture,
   IF(
     LOWER(IFNULL(bcfs.isp, '')) <> "browserstack"
     AND LOWER(

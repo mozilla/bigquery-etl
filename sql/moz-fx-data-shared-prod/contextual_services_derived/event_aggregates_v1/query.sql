@@ -153,7 +153,7 @@ combined AS (
       "impression"
     ) AS event_type,
     'phone' AS form_factor,
-    normalized_country_code AS country,
+    COALESCE(metrics.string.fx_suggest_country, normalized_country_code) AS country,
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
     client_info.app_channel AS release_channel,

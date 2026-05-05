@@ -21,10 +21,7 @@ subscription_start_events AS (
   SELECT
     subscription.started_at AS `timestamp`,
     'Subscription Start' AS type,
-    CONCAT(
-      IF(subscription.customer_subscription_number = 1, 'New Customer', 'Returning Customer'),
-      IF(subscription.is_trial, ' Trial', '')
-    ) AS reason,
+    subscription.started_reason AS reason,
     logical_subscriptions_history_id,
     subscription,
     old_subscription
@@ -43,8 +40,7 @@ subscription_end_events AS (
   SELECT
     subscription.ended_at AS `timestamp`,
     'Subscription End' AS type,
-    -- TODO: rather than "Unknown", determine if the user cancelled intentionally or their payment failed
-    IF(NOT subscription.auto_renew, 'Auto-Renew Disabled', 'Unknown') AS reason,
+    subscription.ended_reason AS reason,
     logical_subscriptions_history_id,
     subscription,
     old_subscription

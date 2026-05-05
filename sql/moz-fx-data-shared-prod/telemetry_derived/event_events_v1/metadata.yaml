@@ -17,4 +17,3 @@ bigquery:
     - event_category
     - sample_id
     - client_id
-references: {}

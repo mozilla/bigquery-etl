@@ -105,3 +105,9 @@ fields:
   mode: NULLABLE
   description: Timestamp corresponding to the ping that contained the adjust attribution.
 
+
+- name: paid_vs_organic_gclid
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Categorised as "Paid" if play_store_attribution_install_referrer_response value contained gclid (Google click id).

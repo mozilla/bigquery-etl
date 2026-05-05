@@ -12,11 +12,8 @@ WITH subscription_starts AS (
     subscription.services,
     valid_from AS started_at,
     subscription.mozilla_account_id_sha256,
-    IF(
-      valid_from = subscription.started_at,
-      STRUCT(subscription.first_touch_attribution, subscription.last_touch_attribution),
-      STRUCT(NULL AS first_touch_attribution, NULL AS last_touch_attribution)
-    ).*
+    subscription.id AS logical_subscription_id,
+    subscription.started_at AS logical_subscription_started_at
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
   CROSS JOIN
@@ -111,8 +108,9 @@ customer_attribution_impressions AS (
 SELECT
   subscription_starts.subscription_id,
   ANY_VALUE(subscription_starts.started_at) AS subscription_started_at,
-  COALESCE(
-    ANY_VALUE(subscription_starts.first_touch_attribution),
+  IF(
+    ANY_VALUE(subscription_starts.started_at = subscription_starts.logical_subscription_started_at),
+    ANY_VALUE(logical_subscriptions_attribution.first_touch_attribution),
     MIN_BY(
       STRUCT(
         customer_attribution_impressions.impression_at,
@@ -129,8 +127,9 @@ SELECT
       customer_attribution_impressions.impression_at
     )
   ) AS first_touch_attribution,
-  COALESCE(
-    ANY_VALUE(subscription_starts.last_touch_attribution),
+  IF(
+    ANY_VALUE(subscription_starts.started_at = subscription_starts.logical_subscription_started_at),
+    ANY_VALUE(logical_subscriptions_attribution.last_touch_attribution),
     MAX_BY(
       STRUCT(
         customer_attribution_impressions.impression_at,
@@ -149,12 +148,39 @@ SELECT
   ) AS last_touch_attribution
 FROM
   subscription_starts
+LEFT JOIN
+  `moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v1` AS logical_subscriptions_attribution
+  ON subscription_starts.logical_subscription_id = logical_subscriptions_attribution.subscription_id
+  AND subscription_starts.started_at = logical_subscriptions_attribution.subscription_started_at
+  AND subscription_starts.started_at = subscription_starts.logical_subscription_started_at
 CROSS JOIN
   UNNEST(subscription_starts.services) AS service
-JOIN
+LEFT JOIN
   customer_attribution_impressions
   ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
   AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
   AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
+  AND subscription_starts.started_at > subscription_starts.logical_subscription_started_at
+WHERE
+  IF(
+    subscription_starts.started_at = subscription_starts.logical_subscription_started_at,
+    logical_subscriptions_attribution.subscription_id IS NOT NULL,
+    -- Require at least one of the core attribution values to be set, and exclude some nonsensical attribution values (DENG-9776).
+    (
+      (
+        customer_attribution_impressions.entrypoint_experiment IS NOT NULL
+        OR NULLIF(customer_attribution_impressions.utm_campaign, 'invalid') IS NOT NULL
+        OR NULLIF(customer_attribution_impressions.utm_source, 'invalid') IS NOT NULL
+      )
+      AND (
+        customer_attribution_impressions.utm_campaign IN (
+          'download-client',
+          'fx-forgot-password',
+          'subscription-download',
+          'FuckOff'
+        )
+      ) IS NOT TRUE
+    )
+  )
 GROUP BY
   subscription_id

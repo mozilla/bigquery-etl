@@ -9,4 +9,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.apple_ads_external.organization_report_v1`
+  `moz-fx-data-shared-prod.apple_ads_syndicate.apple_search_ads__organization_report`

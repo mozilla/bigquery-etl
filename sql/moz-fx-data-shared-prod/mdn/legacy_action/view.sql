@@ -77,7 +77,8 @@ CREATE OR REPLACE VIEW
               glean_error_invalid_label ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_overflow ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_state ARRAY<STRUCT<key STRING, value INT64>>,
-              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>
+              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>,
+              glean_error_invalid_type ARRAY<STRUCT<key STRING, value INT64>>
             >
         ) AS labeled_counter,
         STRUCT(
@@ -101,10 +102,20 @@ CREATE OR REPLACE VIEW
         STRUCT(
           ARRAY(
             SELECT AS STRUCT
-              REGEXP_EXTRACT(kv, r'^utm_(.*?)=') AS key,
-              REGEXP_EXTRACT(kv, r'=(.*)$') AS value
+              key,
+              value
             FROM
-              UNNEST(REGEXP_EXTRACT_ALL(JSON_VALUE(event_extra.url), r'[?&](utm_[^&]+)')) AS kv
+              (
+                SELECT
+                  REGEXP_EXTRACT(kv, r'^utm_(.*?)=') AS key,
+                  REGEXP_EXTRACT(kv, r'=(.*)$') AS value,
+                  off
+                FROM
+                  UNNEST(REGEXP_EXTRACT_ALL(JSON_VALUE(event_extra.url), r'[?&](utm_[^&]+)')) AS kv
+                  WITH OFFSET off
+              )
+            QUALIFY
+              ROW_NUMBER() OVER (PARTITION BY key ORDER BY off DESC) = 1
           ) AS page_utm
         ) AS labeled_string,
         STRUCT(CAST(NULL AS ARRAY<STRING>) AS navigator_user_languages) AS string_list,
@@ -134,6 +145,15 @@ CREATE OR REPLACE VIEW
         reason AS reason,
         ping_info.seq AS seq,
         ping_info.start_time AS start_time,
+        CAST(
+          NULL
+          AS
+            STRUCT<
+              event_threshold INT64,
+              metrics_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>,
+              pings_enabled ARRAY<STRUCT<key STRING, value BOOLEAN>>
+            >
+        ) AS server_knobs_config,
         ping_info.parsed_start_time AS parsed_start_time,
         ping_info.parsed_end_time AS parsed_end_time
       ) AS ping_info,

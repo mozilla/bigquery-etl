@@ -1,6 +1,7 @@
 """Delete user data from long term storage."""
 
 import logging
+import re
 import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
@@ -15,6 +16,8 @@ from typing import Callable, Iterable, Optional, Tuple, Union
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import CopyJob, QueryJob
+
+from bigquery_etl.schema import generate_compatible_select_expression
 
 from ..format_sql.formatter import reformat
 from ..util import standard_args
@@ -129,6 +132,7 @@ parser.add_argument(
     "--sampling-tables",
     "--sampling_tables",
     nargs="+",
+    metavar="DATASET.TABLE",
     dest="sampling_tables",
     help="Create tasks per sample id for the given table(s).  Table format is dataset.table_name.",
     default=[],
@@ -139,6 +143,13 @@ parser.add_argument(
     type=int,
     default=10,
     help="Number of concurrent queries to run per partition when shredding per sample id",
+)
+parser.add_argument(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    type=int,
+    default=1,
+    help="Number of sample ids per query in sample id shredding",
 )
 parser.add_argument(
     "--temp-dataset",
@@ -153,6 +164,17 @@ parser.add_argument(
     metavar="projects/{project}/locations/{location}/reservations/{reservation}",
     help="Override the reservation assigned to the billing projects, e.g. "
     "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
+# Temporary: https://mozilla-hub.atlassian.net/browse/DENG-8494
+parser.add_argument(
+    "--column-removal-backfill-tables",
+    "--column_removal_backfill_tables",
+    nargs="+",
+    metavar="DATASET.TABLE",
+    help="List of tables (dataset.table format) on which to run a modified query to remove "
+    "fields and backfill to another table. "
+    "Tables are expected to be in a *_stable dataset and have a _v1 prefix.",
+    default=[],
 )
 
 
@@ -307,10 +329,11 @@ def delete_from_partition(
     sources: Iterable[DeleteSource],
     target: DeleteTarget,
     use_dml: bool,
-    sample_id: Optional[int] = None,
+    sample_id_range: Optional[Tuple[int, int]] = None,
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
     reservation_override: Optional[str] = None,
+    column_removal_backfill: Optional[bool] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
@@ -318,19 +341,39 @@ def delete_from_partition(
         dry_run=dry_run,
         priority=priority,
         reservation=reservation_override,
+        labels={
+            "type": "shredder",
+        },
+    )
+    # The event_id backfill logic in this function is just temporary for https://mozilla-hub.atlassian.net/browse/DENG-9800.
+    event_id_backfill = target.table_id == "events_stream_v1" and target.dataset_id in (
+        "firefox_desktop_derived",
+        "org_mozilla_firefox_derived",
     )
     # whole table operations must use DML to protect against dropping partitions in the
     # case of conflicting write operations in ETL, and special partitions must use DML
     # because they can't be set as a query destination.
     if partition.id is None or partition.is_special:
         use_dml = True
-    elif sample_id is not None:
+    elif sample_id_range is not None:
+        # sample_id shredding can't use DML because of performance, and it will result in
+        # partially shredded partitions
         use_dml = False
-        job_config.destination = f"{temp_dataset}.{target.dataset_id}__{target.table_id}_{partition.id}__sample_{sample_id}"
+        job_config.destination = (
+            f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
+            f"{partition.id}__sample_{sample_id_range[0]}_{sample_id_range[1]}"
+        )
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
-    elif not use_dml:
-        job_config.destination = f"{sql_table_id(target)}${partition.id}"
+    elif not use_dml or column_removal_backfill or event_id_backfill:
+        destination_table = f"{sql_table_id(target)}${partition.id}"
+        if column_removal_backfill:
+            # column removal requires a transformation using a SELECT query
+            use_dml = False
+            destination_table = destination_table.replace("_v1$", "_v2$")
+        elif event_id_backfill:
+            use_dml = False
+        job_config.destination = destination_table
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client) -> bigquery.QueryJob:
@@ -343,8 +386,7 @@ def delete_from_partition(
             return expr
 
         if use_dml:
-            field_condition = " OR ".join(
-                f"""
+            field_condition = " OR ".join(f"""
                 {normalized_expr(field)} IN (
                   SELECT
                     {normalized_expr(source.field)}
@@ -353,9 +395,7 @@ def delete_from_partition(
                   WHERE
                     {" AND ".join((source_condition, *source.conditions))}
                 )
-                """
-                for field, source in zip(target.fields, sources)
-            )
+                """ for field, source in zip(target.fields, sources))
 
             # Temporary workaround for fxa_id nested in event extras in relay_backend_stable.events_v1
             # We'll be able to remove this once fxa_id is migrated to string metric
@@ -364,15 +404,13 @@ def delete_from_partition(
                 field_condition, target, sources, source_condition
             )
 
-            query = reformat(
-                f"""
+            query = reformat(f"""
                 DELETE
                   `{sql_table_id(target)}`
                 WHERE
                   ({field_condition})
                   AND ({partition.condition})
-                """
-            )
+                """)
         else:
             field_joins = "".join(
                 (
@@ -386,7 +424,11 @@ def delete_from_partition(
                     WHERE
                 """
                     + " AND ".join((source_condition, *source.conditions))
-                    + (f" AND sample_id = {sample_id}" if sample_id is not None else "")
+                    + (
+                        f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}"
+                        if sample_id_range is not None
+                        else ""
+                    )
                     + f"""
                   )
                   ON {normalized_expr(field)} = _source_{index}
@@ -412,19 +454,36 @@ def delete_from_partition(
             else:
                 partition_condition = partition.condition
 
-            query = reformat(
-                f"""
+            if column_removal_backfill:
+                select_expression = generate_compatible_select_expression(
+                    client,
+                    sql_table_id(target),
+                    re.sub("_v1$", "_v2", sql_table_id(target)),
+                )
+            elif event_id_backfill:
+                select_expression = """
+                    _target.* REPLACE (
+                      COALESCE(
+                        _target.event_id,
+                        CONCAT(_target.document_id, '-', _target.document_event_number),
+                        GENERATE_UUID()
+                      ) AS event_id
+                    )
+                """
+            else:
+                select_expression = "_target.*"
+
+            query = reformat(f"""
                 SELECT
-                  _target.*,
+                  {select_expression},
                 FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE
-                  ({field_conditions})
-                  AND ({partition_condition})
-                  {f" AND sample_id = {sample_id}" if sample_id is not None else ""}
-                """
-            )
+                  {f"({field_conditions}) AND " if field_conditions else ""}
+                  ({partition_condition})
+                  {f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}" if sample_id_range is not None else ""}
+                """)
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
         return client.query(query, job_config=job_config)
@@ -443,8 +502,10 @@ def delete_from_partition_with_sampling(
     target: DeleteTarget,
     use_dml: bool,
     sampling_parallelism: int,
+    sampling_batch_size: int,
     temp_dataset: str,
     reservation_override: str,
+    column_removal_backfill: bool,
     **wait_for_job_kwargs,
 ):
     """Return callable to delete from a partition of a target table per sample id."""
@@ -469,17 +530,18 @@ def delete_from_partition_with_sampling(
                 target=target,
                 use_dml=use_dml,
                 temp_dataset=temp_dataset,
-                sample_id=s,
+                sample_id_range=(s, s + sampling_batch_size - 1),
                 clustering_fields=intermediate_clustering_fields,
                 check_table_existence=True,
                 reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
-                    "task_id": f"{wait_for_job_kwargs['task_id']}__sample_{s}",
+                    "task_id": f"{wait_for_job_kwargs['task_id']}__sample_{s}_{s + sampling_batch_size - 1}",
                 },
             )
-            for s in range(100)
+            for s in range(0, 100, sampling_batch_size)
         ]
 
         # Run all 100 delete functions in parallel, exception is raised without retry if any fail
@@ -580,15 +642,15 @@ def list_partitions(
             [
                 get_partition(table, partition_expr, end_date, row["partition_id"])
                 for row in client.query(
-                    dedent(
-                        f"""
+                    dedent(f"""
                         SELECT
                           partition_id
                         FROM
-                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
-                        """
-                    ).strip(),
-                    bigquery.QueryJobConfig(use_legacy_sql=True),
+                          `{table.project}.{table.dataset_id}.INFORMATION_SCHEMA.PARTITIONS`
+                        WHERE
+                          table_name = '{table.table_id}'
+                          AND partition_id IS NOT NULL
+                        """).strip(),
                 ).result()
             ]
             if table.num_bytes > max_single_dml_bytes and partition_expr is not None
@@ -633,12 +695,19 @@ def delete_from_table(
     max_single_dml_bytes,
     partition_limit,
     sampling_parallelism,
+    sampling_batch_size,
     use_sampling,
     temp_dataset,
     reservation_override,
+    column_removal_backfill,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
+    if len(sources) == 0 and not column_removal_backfill:
+        logging.info(
+            f"Skipping {sql_table_id(target)} due to no deletion request sources"
+        )
+        return ()  # type: ignore
     try:
         table = client.get_table(sql_table_id(target))
     except NotFound:
@@ -646,11 +715,18 @@ def delete_from_table(
         return ()  # type: ignore
     partition_expr = get_partition_expr(table)
     for partition in list_partitions(
-        client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
+        client,
+        table,
+        partition_expr,
+        end_date,
+        # column removal cannot use DML
+        0 if column_removal_backfill else max_single_dml_bytes,
+        partition_limit,
     ):
         # no sampling for __NULL__ partition
         if use_sampling and not partition.is_special:
             kwargs["sampling_parallelism"] = sampling_parallelism
+            kwargs["sampling_batch_size"] = sampling_batch_size
             delete_func: Callable = delete_from_partition_with_sampling
         else:
             if use_sampling:
@@ -659,6 +735,7 @@ def delete_from_table(
                     f"{target.dataset_id}.{target.table_id} is too small to use sampling"
                 )
             kwargs.pop("sampling_parallelism", None)
+            kwargs.pop("sampling_batch_size", None)
             delete_func = delete_from_partition
 
         yield Task(
@@ -674,6 +751,7 @@ def delete_from_table(
                 end_date=end_date,
                 temp_dataset=temp_dataset,
                 reservation_override=reservation_override,
+                column_removal_backfill=column_removal_backfill,
                 **kwargs,
             ),
         )
@@ -725,10 +803,7 @@ def main():
                 )
                 state_table_exists = True
         if state_table_exists:
-            states = dict(
-                client.query(
-                    reformat(
-                        f"""
+            states = dict(client.query(reformat(f"""
                         SELECT
                           task_id,
                           job_id,
@@ -738,14 +813,15 @@ def main():
                           end_date = '{args.end_date}'
                         ORDER BY
                           job_created
-                        """
-                    )
-                ).result()
-            )
+                        """)).result())
 
     if args.environment == "telemetry":
         with ThreadPool(6) as pool:
-            glean_targets = find_glean_targets(pool, client)
+            glean_targets = find_glean_targets(
+                pool,
+                client,
+                column_removal_backfill_tables=args.column_removal_backfill_tables,
+            )
         targets_with_sources = (
             *DELETE_TARGETS.items(),
             *glean_targets.items(),
@@ -791,9 +867,11 @@ def main():
             state_table=args.state_table,
             states=states,
             sampling_parallelism=args.sampling_parallelism,
+            sampling_batch_size=args.sampling_batch_size,
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
             reservation_override=args.reservation_override,
+            column_removal_backfill=target.table in args.column_removal_backfill_tables,
         )
     ]
 
@@ -834,16 +912,14 @@ def main():
                         client.query,
                         [
                             (
-                                reformat(
-                                    f"""
+                                reformat(f"""
                                     SELECT
                                       {source.field}
                                     FROM
                                       `{sql_table_id(source)}`
                                     WHERE
                                       {source_condition}
-                                    """
-                                ),
+                                    """),
                                 bigquery.QueryJobConfig(dry_run=True),
                             )
                             for source in sources

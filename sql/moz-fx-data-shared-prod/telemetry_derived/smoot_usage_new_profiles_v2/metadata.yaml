@@ -21,5 +21,4 @@ bigquery:
     fields:
     - usage
     - id_bucket
-references: {}
 require_column_descriptions: false

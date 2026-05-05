@@ -9,7 +9,7 @@ description: |-
   be parsed into segments, available
   in the "ad_group_segments" field.
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: false
 scheduling:

@@ -14,8 +14,8 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-bq-data-science",
     "moz-fx-glam-prod",
     "moz-fx-glam-nonprod",
-    "moz-fx-data-sumo-prod",
-    "moz-fx-data-sumo-nonprod",
+    "moz-fx-sumo-prod",
+    "moz-fx-sumo-nonprod",
     "moz-fx-mozsocial-dw-prod",
     "moz-fx-data-bq-people",
 ]

@@ -1,0 +1,7 @@
+friendly_name: Feature Usage Events (Android - Fenix)
+description: |-
+  Metrics from events pings for mobile feature usage dashboards (Fenix).
+  `distribution_id` was added as a dimension to this table beginning on
+  2024-10-08.
+owners:
+- rzhao@mozilla.com

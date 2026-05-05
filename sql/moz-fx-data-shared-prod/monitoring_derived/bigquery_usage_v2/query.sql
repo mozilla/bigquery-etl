@@ -28,6 +28,9 @@ WITH jobs_by_org AS (
     error_result.reason AS error_reason,
     error_result.message AS error_message,
     query_info_resource_warning AS resource_warning,
+    bi_engine_mode,
+    acceleration_mode,
+    bi_engine_reasons
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
   LEFT JOIN
@@ -48,31 +51,14 @@ jobs_by_project AS (
       user_email,
       REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
       REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
+      labels,
+      UPPER(
+        LTRIM(REGEXP_REPLACE(query, r'\s+', ' '))
+      ) LIKE 'CALL BQ.REFRESH_MATERIALIZED_VIEW%' AS is_materialized_view_refresh,
     FROM
       `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
     LEFT JOIN
-      UNNEST(
-        ARRAY_CONCAT(
-          referenced_tables,
-          (
-            IFNULL(
-              (
-                SELECT
-                  ARRAY_AGG(
-                    STRUCT(
-                      materialized_view.table_reference.project_id AS project_id,
-                      materialized_view.table_reference.dataset_id AS dataset_id,
-                      materialized_view.table_reference.table_id AS table_id
-                    )
-                  )
-                FROM
-                  UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
-              ),
-              []
-            )
-          )
-        )
-      ) AS referenced_table
+      UNNEST(referenced_tables) AS referenced_table
     WHERE
       DATE(creation_time) = @submission_date
   {%- endfor %}
@@ -104,6 +90,11 @@ SELECT DISTINCT
   jo.error_message,
   jo.resource_warning,
   @submission_date AS submission_date,
+  jp.labels,
+  jp.is_materialized_view_refresh,
+  jo.bi_engine_mode,
+  jo.acceleration_mode,
+  jo.bi_engine_reasons,
 FROM
   jobs_by_org AS jo
 LEFT JOIN

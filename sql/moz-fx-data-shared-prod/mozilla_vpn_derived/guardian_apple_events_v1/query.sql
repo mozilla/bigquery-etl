@@ -36,6 +36,7 @@ SELECT
   renewal_info.auto_renew_product_id,
   renewal_info.auto_renew_status,
   legacy_subscriptions.apple_receipt.receipt.bundle_id,
+  CAST(NULL AS STRING) AS currency,
   legacy_subscriptions.apple_receipt.environment,
   renewal_info.expiration_intent,
   receipt_info.expires_date,
@@ -50,8 +51,13 @@ SELECT
   receipt_info.offer_type,
   receipt_info.original_purchase_date,
   latest_original_transaction_id AS original_transaction_id,
+  CAST(NULL AS INTEGER) AS price,
   receipt_info.product_id,
   receipt_info.purchase_date,
+  CAST(NULL AS STRING) AS renewal_currency,
+  CAST(NULL AS STRING) AS renewal_offer_identifier,
+  CAST(NULL AS INTEGER) AS renewal_offer_type,
+  CAST(NULL AS INTEGER) AS renewal_price,
   receipt_info.revocation_date,
   receipt_info.revocation_reason,
   CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
@@ -65,6 +71,8 @@ SELECT
       THEN 3
     ELSE 2
   END AS status,
+  CAST(NULL AS STRING) AS storefront,
+  receipt_info.transaction_id,
   "Auto-Renewable Subscription" AS type,
   legacy_subscriptions.user_id,
   IF(
@@ -101,6 +109,7 @@ CROSS JOIN
         TIMESTAMP_MILLIS(purchase_date_ms) AS purchase_date,
         TIMESTAMP_MILLIS(cancellation_date_ms) AS revocation_date,
         CAST(cancellation_reason AS INT64) AS revocation_reason,
+        CAST(transaction_id AS STRING) AS transaction_id,
       FROM
         UNNEST(
           [

@@ -1,0 +1,11 @@
+friendly_name: Desktop Search Aggregates By Userstate
+description: 'This query creates a table based on clients_last_seen containing
+
+  search metrics aggregated by user state, geo, submission_date
+
+  and whether the user searched or not.
+
+  Originally created for the search report dashboard.'
+owners:
+- cmorales@mozilla.com
+- akommasani@mozilla.com

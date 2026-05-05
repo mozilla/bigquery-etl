@@ -3,9 +3,9 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
-    timestamp AS event_timestamp,
+    `timestamp` AS event_timestamp,
     client_info,
-    metadata,
+    METADATA,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -42,6 +42,9 @@ visit_metadata AS (
     ANY_VALUE(metrics.boolean.pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
     ANY_VALUE(metrics.boolean.topsites_enabled) AS topsites_enabled,
     ANY_VALUE(metrics.boolean.topsites_sponsored_enabled) AS topsites_sponsored_enabled,
+    ANY_VALUE(
+      metrics.quantity.topsites_sponsored_tiles_configured
+    ) AS topsites_sponsored_tiles_configured,
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,
@@ -229,40 +232,57 @@ pocket_events AS (
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS pocket_story_position,
     mozfun.map.get_key(event_details, "tile_id") AS pocket_tile_id,
     mozfun.map.get_key(event_details, "recommendation_id") AS pocket_recommendation_id,
-    COUNTIF(event_name = 'save') AS pocket_saves,
-    COUNTIF(event_name = 'click') AS pocket_clicks,
-    COUNTIF(event_name = 'impression') AS pocket_impressions,
+    COUNTIF(
+      event_name = 'save'
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
+    ) AS pocket_saves,
+    COUNTIF(
+      event_name = 'click'
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
+    ) AS pocket_clicks,
+    COUNTIF(
+      event_name = 'impression'
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
+    ) AS pocket_impressions,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_clicks,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_clicks,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_impressions,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_impressions,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_saves,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_saves,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_dismissals,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_dismissals,
     COUNTIF(
       event_name = 'thumb_voting_interaction'
@@ -561,9 +581,9 @@ combined_newtab_activity AS (
     topic_selection_summary
     USING (newtab_visit_id)
   WHERE
-   -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
-   -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
-   -- (these are suspected to be from pre-loaded tabs)
+    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
+    -- (these are suspected to be from pre-loaded tabs)
     newtab_open_source IS NOT NULL
     OR search_interactions IS NOT NULL
     OR topsite_tile_interactions IS NOT NULL
@@ -575,14 +595,12 @@ combined_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    ANY_VALUE(is_new_profile) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    first_seen_date = @submission_date AS is_new_profile,
+    activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 )
 SELECT
   *,

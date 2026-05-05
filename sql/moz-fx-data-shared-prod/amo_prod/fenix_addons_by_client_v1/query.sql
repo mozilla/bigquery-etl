@@ -28,19 +28,19 @@ WITH unioned AS (
     get_fields(nightly).*,
     -- Bug 1669516 Nightly versions have app_display_version like "Nightly <timestamp>",
     -- so we take the geckoview version instead.
-    nightly.metrics.string.geckoview_version AS app_version,
+    client_info.app_display_version AS app_version,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS nightly
   UNION ALL
   SELECT
     get_fields(preview_nightly).*,
-    preview_nightly.metrics.string.geckoview_version AS app_version,
+    client_info.app_display_version AS app_version,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS preview_nightly
   UNION ALL
   SELECT
     get_fields(old_fenix_nightly).*,
-    old_fenix_nightly.metrics.string.geckoview_version AS app_version,
+    client_info.app_display_version AS app_version,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS old_fenix_nightly
 ),

@@ -1,8 +1,0 @@
-friendly_name: |-
-  Telemetry Derived - Experiments
-description: |-
-  [DESCRIPTION_MISSING]
-owners:
-- data-platform-infra-wg@mozilla.com
-deprecated: true
-deletion_date: 2024-12-31

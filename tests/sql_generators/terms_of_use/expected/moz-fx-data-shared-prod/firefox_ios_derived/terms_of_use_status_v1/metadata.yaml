@@ -1,0 +1,26 @@
+# Generated via `terms_of_use` SQL generator.
+friendly_name: Terms of Use - Status
+description: |-
+  This dataset contains the most recent status
+
+  Cluster by: sample_id
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_terms_of_use
+  task_group: firefox_ios
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+    - submission_date:DATE:{{ds}}
+bigquery:
+  clustering:
+    fields:
+      - sample_id
+monitoring:
+  enabled: true

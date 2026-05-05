@@ -6,6 +6,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   {% for attribution_group in product_attribution_groups if attribution_group.name in ["adjust", "play_store", "meta"] %}
   {% for attribution_field in attribution_group.fields %}
     {% if app_name == "fenix" and attribution_field.name == "adjust_campaign" %}
@@ -34,6 +35,11 @@ SELECT
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_info.adjust_network) AS paid_vs_organic,
   {% else %}
     "Organic" AS paid_vs_organic,
+  {% endif %}
+  {% if 'play_store_attribution_install_referrer_response' in product_attribution_fields %}
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(play_store_info.play_store_attribution_install_referrer_response) AS paid_vs_organic_gclid,
+  {% else %}
+    CAST(NULL AS STRING) AS paid_vs_organic_gclid,
   {% endif %}
   FROM
   `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

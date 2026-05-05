@@ -78,6 +78,7 @@ CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value IN
     )
 );
 
+
 WITH core_flattened_searches AS (
   SELECT
     *,
@@ -230,7 +231,6 @@ glean_flattened_searches AS (
           )
       ELSE search.search_type
     END AS source,
-
     search.value AS search_count,
     UNIX_DATE(udf.parse_iso8601_date(first_run_date)) AS profile_creation_date,
     SAFE.DATE_DIFF(
@@ -301,7 +301,6 @@ combined_search_clients AS (
         THEN search_type
       ELSE 'unknown'
     END AS search_type,
-
     search_count,
     country,
     locale,
@@ -313,7 +312,7 @@ combined_search_clients AS (
     os_version,
     default_search_engine,
     default_search_engine_submission_url,
-    CAST(NULL AS STRING) AS distribution_id,
+    distribution_id,
     profile_creation_date,
     profile_age_in_days,
     sample_id,

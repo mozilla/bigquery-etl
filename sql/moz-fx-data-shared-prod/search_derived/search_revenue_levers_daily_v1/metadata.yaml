@@ -11,6 +11,7 @@ labels:
   schedule: daily
   change_controlled: true
   dag: bqetl_search_dashboard
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:
@@ -21,4 +22,3 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-references: {}

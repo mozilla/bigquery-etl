@@ -1,0 +1,22 @@
+# Generated via `usage_reporting` SQL generator.
+friendly_name: Clients First Seen Based on the DAU Reporting Ping.
+description: |-
+  A representation of when we saw each `usage_profile_id`
+  for the first time based on the usage_reporting ping.
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_usage_reporting
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+monitoring:
+  enabled: true

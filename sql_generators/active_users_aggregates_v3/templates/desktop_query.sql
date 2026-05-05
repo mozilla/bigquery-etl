@@ -7,7 +7,7 @@ WITH todays_metrics AS (
     app_version AS app_version,
     normalized_channel AS channel,
     IFNULL(country, '??') country,
-    city,
+    IFNULL(city, '??') city,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     os,
@@ -69,4 +69,21 @@ SELECT
 FROM
   todays_metrics
 GROUP BY
-  ALL
+  segment,
+  app_name,
+  app_version,
+  channel,
+  country,
+  city,
+  locale,
+  first_seen_year,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  submission_date,
+  is_default_browser,
+  distribution_id,
+  attribution_source,
+  attribution_medium,
+  attributed

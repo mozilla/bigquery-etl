@@ -1,0 +1,21 @@
+friendly_name: Newtab Merino Priors
+description: |-
+  Queries New Tab stats used by Merino to calculate Thompson sampling priors.
+  These determine how new items (without engagement data) are ranked on New Tab.
+owners:
+- mmiermans@mozilla.com
+- rrando@mozilla.com
+labels:
+  incremental: false
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_merino_newtab_priors_to_gcs
+  date_partition_parameter: null
+  # Adjust the execution delta for task dependencies in the bqetl_content_ml_hourly DAG
+  # to wait for the most recent bqetl_content_ml_hourly DAG tasks to complete.
+  depends_on:
+  - dag_name: bqetl_content_ml_hourly
+    task_id: snowflake_migration_derived__corpus_items_updated__v1
+    execution_delta: -22h30m

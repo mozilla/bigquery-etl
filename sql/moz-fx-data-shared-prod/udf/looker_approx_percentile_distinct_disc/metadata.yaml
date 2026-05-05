@@ -1,0 +1,3 @@
+---
+description: 'This UDF is used to compute percentiles on Looker performance data, which can have duplicates'
+friendly_name: Looker Approximate Distinct Percentiles

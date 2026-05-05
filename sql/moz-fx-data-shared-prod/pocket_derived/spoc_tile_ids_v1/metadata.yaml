@@ -5,11 +5,10 @@ owners:
   - kik@mozilla.com
 labels:
   incremental: false
-scheduling:
-  dag_name: bqetl_pocket
-  date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  table_type: tile_id
+  shredder_mitigation: false
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:pocket/prefect
+deprecated: true

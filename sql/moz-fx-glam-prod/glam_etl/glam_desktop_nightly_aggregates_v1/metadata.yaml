@@ -1,0 +1,8 @@
+friendly_name: Glam Desktop Nightly Aggregates
+description: |-
+  Refresh glam_desktop_nightly_aggregates which contains data served by GLAM
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: false
+  owner1: efilho@mozilla.com

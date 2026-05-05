@@ -1,0 +1,5 @@
+friendly_name: Newtab Conditional Daily Aggregates
+description: |-
+  Conditional computations for daily aggregation for newtab.
+owners:
+- gkatre@mozilla.com

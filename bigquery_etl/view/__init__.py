@@ -124,15 +124,10 @@ class View:
         if not base_table:
             base_table = f"{project}.{dataset}_derived.{name}_v1"
 
-        path.write_text(
-            reformat(
-                f"""
+        path.write_text(reformat(f"""
                 CREATE OR REPLACE VIEW `{project}.{dataset}.{name}` AS
                 SELECT * FROM `{base_table}`
-                """
-            )
-            + "\n"
-        )
+                """) + "\n")
         return cls(path, name, dataset, project)
 
     def skip_validation(self):
@@ -210,16 +205,14 @@ class View:
                 if self.partition_column
                 else "FALSE"
             )
-            schema_query = dedent(
-                f"""
+            schema_query = dedent(f"""
                 WITH view_query AS (
                     {CREATE_VIEW_PATTERN.sub("", self.content)}
                 )
                 SELECT *
                 FROM view_query
                 WHERE {schema_query_filter}
-                """
-            )
+                """)
             return Schema.from_query_file(
                 Path(self.path), content=schema_query, id_token=self.id_token
             )
@@ -292,7 +285,7 @@ class View:
             return self.view_identifier.replace(self.project, target_project, 1)
         return self.view_identifier
 
-    def has_changes(self, target_project=None):
+    def has_changes(self, target_project=None, credentials=None):
         """Determine whether there are any changes that would be published."""
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
@@ -303,7 +296,10 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        client = bigquery.Client()
+        if credentials:
+            client = bigquery.Client(credentials=credentials)
+        else:
+            client = bigquery.Client()
         target_view_id = self.target_view_identifier(target_project)
         try:
             table = client.get_table(target_view_id)
@@ -313,12 +309,12 @@ class View:
 
         try:
             expected_view_query = CREATE_VIEW_PATTERN.sub(
-                "", sqlparse.format(self.content, strip_comments=True), count=1
+                "", sqlparse.format(self.content), count=1
             ).strip(";" + string.whitespace)
 
-            actual_view_query = sqlparse.format(
-                table.view_query, strip_comments=True
-            ).strip(";" + string.whitespace)
+            actual_view_query = sqlparse.format(table.view_query).strip(
+                ";" + string.whitespace
+            )
         except TypeError:
             print(
                 f"ERROR: There has been an issue formatting: {target_view_id}",
@@ -352,7 +348,7 @@ class View:
 
         return False
 
-    def publish(self, target_project=None, dry_run=False, client=None):
+    def publish(self, target_project=None, dry_run=False, client=None, force=False):
         """
         Publish this view to BigQuery.
 
@@ -423,9 +419,9 @@ class View:
 
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
-
-                table.description = self.metadata.description
-                table.friendly_name = self.metadata.friendly_name
+                else:
+                    table.description = self.metadata.description
+                    table.friendly_name = self.metadata.friendly_name
 
                 if table.labels != self.labels:
                     labels = self.labels.copy()

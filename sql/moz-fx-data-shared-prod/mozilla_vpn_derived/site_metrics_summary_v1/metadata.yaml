@@ -2,10 +2,12 @@ friendly_name: GA Site Metrics Summary for Mozilla VPN
 description: >
   GA Site Metrics Summary for Mozilla VPN
 owners:
+  - phlee@mozilla.com
   - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
+  table_type: aggregate
 scheduling:
   # No longer scheduled because we're no longer getting GA3 data from Google.
   # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989

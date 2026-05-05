@@ -67,6 +67,21 @@ transformed AS (
     document_type,
     document_version,
     path
+),
+row_counts AS (
+  SELECT
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version,
+    COUNT(*) AS total_row_count,
+  FROM
+    extracted
+  GROUP BY
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version
 )
 SELECT
   submission_date,
@@ -74,6 +89,10 @@ SELECT
   document_type,
   document_version,
   path,
-  path_count
+  path_count,
+  total_row_count,
 FROM
   transformed
+INNER JOIN
+  row_counts
+  USING (submission_date, document_namespace, document_type, document_version)

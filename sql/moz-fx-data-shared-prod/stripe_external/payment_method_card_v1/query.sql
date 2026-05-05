@@ -1,0 +1,11 @@
+SELECT
+  payment_method_id,
+  brand,
+  fingerprint,
+  three_d_secure_usage_supported,
+  type,
+  charge_id,
+  wallet_type,
+  _fivetran_synced,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.payment_method_card

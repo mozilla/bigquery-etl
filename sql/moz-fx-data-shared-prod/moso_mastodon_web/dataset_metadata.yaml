@@ -7,5 +7,4 @@ user_facing: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
-  - workgroup:mozsocial/dbt
+  - workgroup:mozilla-confidential/data-viewers

@@ -1,0 +1,33 @@
+fields:
+- name: source_relation
+  type: STRING
+  mode: NULLABLE
+  description: The source relation identifier for the record.
+- name: account_id
+  type: INTEGER
+  mode: NULLABLE
+  description: The ID associated with the account name.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Most recent date and time when the row was updated.
+- name: currency_code
+  type: STRING
+  mode: NULLABLE
+  description: The currency code for the account.
+- name: auto_tagging_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether auto-tagging is enabled for the account.
+- name: time_zone
+  type: STRING
+  mode: NULLABLE
+  description: The time zone for the account.
+- name: account_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Google Ads account, e.g. Mozilla Firefox.
+- name: is_most_recent_record
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates whether this is the most recent record for the account_id.

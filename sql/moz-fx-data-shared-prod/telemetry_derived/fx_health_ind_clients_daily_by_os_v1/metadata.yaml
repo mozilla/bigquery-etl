@@ -2,11 +2,12 @@ friendly_name: Firefox Health Indicator Clients Daily OS Aggregates
 description: |-
   Calculates active hrs, subsession hrs, and searches per user on a 1% client sample
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kik
   table_type: aggregate
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -19,4 +20,4 @@ bigquery:
   clustering:
     fields:
     - os
-references: {}
+require_column_descriptions: false

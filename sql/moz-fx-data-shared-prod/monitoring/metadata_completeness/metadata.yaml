@@ -1,0 +1,5 @@
+friendly_name: Metadata Completeness
+description: Checks, for each object, whether it has a description, and how many columns
+  have a description
+owners:
+- kwindau@mozilla.com

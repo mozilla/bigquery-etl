@@ -28,7 +28,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.fenix.active_users_aggregates`
 WHERE
-  app_version_major < 137
+  app_version_major < 136
 GROUP BY
   submission_date,
   first_seen_year,
@@ -74,8 +74,6 @@ SELECT
   SUM(monthly_users) AS monthly_users,
 FROM
   `moz-fx-data-shared-prod.fenix.usage_reporting_active_users_aggregates`
-WHERE
-  app_version_major >= 137
 GROUP BY
   submission_date,
   first_seen_year,

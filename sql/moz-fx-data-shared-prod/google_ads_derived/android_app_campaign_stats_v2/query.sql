@@ -33,7 +33,7 @@ activations AS (
     COUNTIF(is_activated) AS activated_profiles,
     COUNT(*) AS new_profiles,
   FROM
-    `mozdata.telemetry.mobile_new_profile_clients` np
+    `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients` np
   LEFT JOIN
     `moz-fx-data-shared-prod.fenix.new_profile_activation_clients` act
     USING (client_id)
@@ -49,7 +49,7 @@ fenix_new_profile_ltv_at_14_days_after_first_seen_date AS (
   SELECT
     *
   FROM
-    `mozdata.ltv.fenix_new_profile_ltv`
+    `moz-fx-data-shared-prod.ltv.fenix_new_profile_ltv`
   WHERE
     submission_date = @ltv_recorded_date
 ),
@@ -64,7 +64,7 @@ revenue AS (
     END AS country_to_match_desktop_rpcs,
     SUM(ltv) AS lifetime_value
   FROM
-    `mozdata.telemetry.mobile_new_profile_clients` np
+    `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients` np
   JOIN
     fenix_new_profile_ltv_at_14_days_after_first_seen_date rev
     ON np.client_id = rev.client_id

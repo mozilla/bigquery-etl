@@ -1,0 +1,51 @@
+# {{ header }}
+fields:
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp when the ping is received on the server side. Also used as the logical date
+    by the ETL process and partitioning.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    A UUID uniquely identifying the client.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp when the event occurred.
+
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: |
+    Category of the recorded event.
+
+- mode: NULLABLE
+  name: event_name
+  type: STRING
+  description: |
+    Name of the recorded event.
+
+- mode: NULLABLE
+  name: normalized_event_name
+  type: STRING
+  description: |
+    Normalized name of the event, used to align events from both fenix and iOS as well as collapse across events from different surfaces.
+
+- mode: NULLABLE
+  name: surface
+  type: STRING
+  description: |
+    The surface the terms of use prompt/impression was served.

@@ -32,7 +32,8 @@ SELECT
     metrics.string.messaging_system_attribution_variation AS variation,
     metrics.string.messaging_system_attribution_dltoken AS dltoken,
     metrics.string.messaging_system_attribution_dlsource AS dlsource,
-    metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin
+    metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin,
+    metrics.string.messaging_system_attribution_msclkid AS msclkid
   ) AS attribution
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_stable.messaging_system_v1`

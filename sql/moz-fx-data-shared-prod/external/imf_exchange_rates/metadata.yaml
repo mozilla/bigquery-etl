@@ -1,0 +1,3 @@
+friendly_name: Exchange Rates
+description: |-
+  Contains data from the IMF API about exchange rates by country & report period

@@ -16,4 +16,3 @@ bigquery:
     - app_version
     - channel
     - client_id
-references: {}

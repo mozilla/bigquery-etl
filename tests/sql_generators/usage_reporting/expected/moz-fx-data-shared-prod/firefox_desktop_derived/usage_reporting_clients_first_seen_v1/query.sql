@@ -1,30 +1,27 @@
 -- Generated via `usage_reporting` SQL generator.
 WITH _current AS (
   SELECT
-    usage_profile_id,
     {% if is_init() %}
       MIN(submission_date) AS first_seen_date,
     {% else %}
       @submission_date AS first_seen_date,
     {% endif %}
-    app_channel,
+    * EXCEPT (submission_date, is_active),
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.usage_reporting_clients_daily`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_daily_v1`
   WHERE
     usage_profile_id IS NOT NULL
     {% if is_init() %}
       AND submission_date > "2014-10-10"
+      GROUP BY
+        usage_profile_id
     {% else %}
       AND submission_date = @submission_date
     {% endif %}
-  GROUP BY
-    usage_profile_id,
-    app_channel
 ),
 _previous AS (
   SELECT
     usage_profile_id,
-    app_channel,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_first_seen_v1`
   WHERE
@@ -35,14 +32,12 @@ _previous AS (
     {% endif %}
 )
 SELECT
-  first_seen_date,
-  usage_profile_id,
-  app_channel,
+  _current.*,
 FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id)
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

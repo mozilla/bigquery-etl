@@ -2,12 +2,14 @@ friendly_name: Network Usage
 description: |-
   Compares private vs non private network usage
 owners:
-- kwindau@mozilla.com
+- kik@mozilla.com
 labels:
+  level: bronze
   incremental: true
-  owner1: kwindau
+  owner1: kik
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -17,4 +19,5 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-references: {}
+  clustering: null
+require_column_descriptions: true

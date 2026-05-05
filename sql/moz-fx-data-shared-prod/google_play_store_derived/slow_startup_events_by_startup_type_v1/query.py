@@ -94,7 +94,7 @@ def main():
     print("logical_dag_date_string: ", logical_dag_date_string)
 
     # Get 2 days prior - we always will pull data for the previous day
-    data_pull_date = logical_dag_date - timedelta(days=2)
+    data_pull_date = logical_dag_date - timedelta(days=1)
     data_pull_date_string = data_pull_date.strftime("%Y-%m-%d")
     print("data_pull_date")
     print(data_pull_date)

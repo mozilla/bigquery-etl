@@ -2,17 +2,23 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.usage_reporting_active_users`
 AS
+WITH first_seen AS (
+  SELECT
+    usage_profile_id,
+    first_seen_date,
+  FROM
+    `moz-fx-data-shared-prod.fenix.usage_reporting_clients_first_seen`
+)
 SELECT
   * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
-  last_seen.submission_date,
-  daily.submission_date AS `date`,
+  submission_date,
   normalized_channel AS channel,
   IFNULL(normalized_country_code, "??") AS country,
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
-      THEN CONCAT("fenix", " ", distribution_id)
-    ELSE "fenix"
+      THEN CONCAT("Fenix", " ", distribution_id)
+    ELSE "Fenix"
   END AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE
@@ -51,10 +57,9 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
 FROM
-  `moz-fx-data-shared-prod.fenix.usage_reporting_clients_last_seen` AS last_seen
+  `moz-fx-data-shared-prod.fenix.usage_reporting_clients_last_seen`
 LEFT JOIN
-  `moz-fx-data-shared-prod.fenix.usage_reporting_clients_daily` AS daily
-  USING (submission_date, usage_profile_id, normalized_app_id, normalized_channel)
-LEFT JOIN
-  `moz-fx-data-shared-prod.fenix.usage_reporting_clients_first_seen` AS first_seen
-  USING (usage_profile_id, normalized_app_id, normalized_channel)
+  first_seen
+  USING (usage_profile_id)
+WHERE
+  submission_date >= '2025-03-01'

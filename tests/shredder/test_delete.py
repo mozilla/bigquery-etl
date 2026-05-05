@@ -4,8 +4,11 @@ from unittest.mock import ANY, Mock, patch
 
 from google.api_core.exceptions import NotFound
 
+from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.schema import Schema
 from bigquery_etl.shredder import delete as shredder_delete
 from bigquery_etl.shredder.config import DeleteSource, DeleteTarget
+from bigquery_etl.shredder.delete import Partition, delete_from_partition
 
 wait_for_job_partial = partial(
     shredder_delete.wait_for_job,
@@ -95,6 +98,8 @@ COMMON_DELETE_ARGS = {
     "target": DeleteTarget(table="dataset.table_v1", field="client_id"),
     "use_dml": False,
     "temp_dataset": "project.tmp",
+    "reservation_override": None,
+    "column_removal_backfill": False,
 }
 
 
@@ -112,6 +117,7 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             id="20240101", condition="", is_special=False
         ),
         sampling_parallelism=10,
+        sampling_batch_size=1,
         task_id=base_task_id,
     )
 
@@ -127,10 +133,48 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             partition=shredder_delete.Partition(
                 id="20240101", condition="", is_special=False
             ),
-            sample_id=i,
             clustering_fields=ANY,
             check_table_existence=True,
-            task_id=f"{base_task_id}__sample_{i}",
+            sample_id_range=(i, i),
+            task_id=f"{base_task_id}__sample_{i}_{i}",
+        )
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_batch_size(mock_delete_from_partition):
+    """
+    delete_from_partition_with_sampling with a sample id batch size should run
+    delete_from_partition ceil(100 / batch_size) times.
+    """
+    base_task_id = "proj.dataset.table_v1"
+    batch_size = 4
+
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **COMMON_DELETE_ARGS,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=batch_size,
+        task_id=base_task_id,
+    )
+
+    mock_client = Mock()
+
+    job_function = wait_for_job.keywords["create_job"]
+    job_function(mock_client)
+
+    assert mock_delete_from_partition.call_count == 25
+    for i in range(0, 100, batch_size):
+        mock_delete_from_partition.assert_any_call(
+            **COMMON_DELETE_ARGS,
+            partition=shredder_delete.Partition(
+                id="20240101", condition="", is_special=False
+            ),
+            clustering_fields=ANY,
+            check_table_existence=True,
+            sample_id_range=(i, i + batch_size - 1),
+            task_id=f"{base_task_id}__sample_{i}_{i + batch_size - 1}",
         )
 
 
@@ -153,6 +197,7 @@ def test_delete_from_table_sampling(mock_list_partitions):
                 client=mock_client,
                 use_sampling=True,
                 sampling_parallelism=10,
+                sampling_batch_size=1,
                 max_single_dml_bytes=1,
                 partition_limit=None,
                 end_date="",
@@ -165,3 +210,255 @@ def test_delete_from_table_sampling(mock_list_partitions):
             if sampling_enabled
             else "create_job"
         )
+
+
+def test_context_id_brace_normalization():
+    """
+    Ensure context_id fields are normalized in generated SQL to accept and
+    delete braced and unbraced forms.
+    """
+    mock_table = Mock()
+    mock_table.num_bytes = 1000
+    mock_table.schema = []
+    mock_table.time_partitioning = None
+
+    mock_range = Mock()
+    mock_range.interval = 1
+    mock_range_partitioning = Mock()
+    mock_range_partitioning.range_ = mock_range
+    mock_table.range_partitioning = mock_range_partitioning
+
+    mock_client = Mock()
+    mock_client.get_table.return_value = mock_table
+    mock_client.query.return_value.result.return_value = [
+        {"partition_id": "20240101"},
+    ]
+
+    target = DeleteTarget(table="dataset.table_v1", field="context_id")
+    source = DeleteSource(
+        table="dataset.deletions_v1",
+        field="payload.scalars.parent.deletion_request_context_id",
+    )
+
+    task = next(
+        shredder_delete.delete_from_table(
+            client=mock_client,
+            target=target,
+            sources=(source,),
+            dry_run=True,
+            use_dml=True,
+            source_condition="DATE(submission_timestamp) < '2025-05-29'",
+            start_date="2025-05-01",
+            end_date="2025-05-29",
+            max_single_dml_bytes=1,
+            partition_limit=None,
+            sampling_parallelism=10,
+            sampling_batch_size=1,
+            use_sampling=False,
+            temp_dataset="project.tmp",
+            priority="INTERACTIVE",
+            reservation_override=None,
+            column_removal_backfill=False,
+        )
+    )
+
+    task.func.keywords["create_job"](mock_client)
+    sql = mock_client.query.call_args[0][0]
+
+    assert "REPLACE(REPLACE(context_id" in sql
+    assert "REPLACE(REPLACE(payload.scalars.parent.deletion_request_context_id" in sql
+
+
+def test_delete_from_partition_with_column_removal_false():
+    """column_removal_backfill=False should execute a SELECT * and write to the target table."""
+    mock_client = Mock()
+
+    delete_func = delete_from_partition(
+        dry_run=True,
+        partition=Partition(condition="", id="20260101"),
+        priority="INTERACTIVE",
+        source_condition="",
+        sources=[
+            DeleteSource(
+                project="test_project",
+                field="client_id",
+                table="firefox.deletion_request_v1",
+            )
+        ],
+        target=DeleteTarget(
+            project="test_project", field="client_id", table="firefox.metrics_v1"
+        ),
+        use_dml=False,
+        column_removal_backfill=False,
+        task_id="test",
+        states={},
+        state_table=None,
+        start_date=None,
+        end_date=None,
+    )
+
+    delete_func(mock_client)
+
+    assert mock_client.query.call_count == 1
+
+    expected_query = reformat(
+        "SELECT _target.*, FROM `test_project.firefox.metrics_v1`"
+    )
+
+    assert mock_client.query.call_args.args[0].startswith(reformat(expected_query))
+    assert (
+        str(mock_client.query.call_args.kwargs["job_config"].destination)
+        == "test_project.firefox.metrics_v1$20260101"
+    )
+
+
+def test_delete_from_partition_with_column_removal_true():
+    """
+    column_removal_backfill=True should change the select expression to be compatible
+    with the v2 schema and the destination table should be the v2 table.
+    """
+    mock_client = Mock()
+
+    def mock_get_table(table_id: str):
+        if table_id[-3:] not in ("_v1", "_v2"):
+            raise ValueError("unrecognized table")
+
+        base_schema = {
+            "fields": [
+                {"name": "document_id", "type": "STRING", "mode": "NULLABLE"},
+                {
+                    "name": "metrics",
+                    "type": "RECORD",
+                    "fields": [
+                        {
+                            "name": "timing_distribution",
+                            "type": "RECORD",
+                            "fields": [
+                                {
+                                    "name": "timing_dist_1",
+                                    "type": "RECORD",
+                                    "fields": [
+                                        {"name": "sum", "type": "INTEGER"},
+                                        {
+                                            "name": "values",
+                                            "type": "RECORD",
+                                            "mode": "REPEATED",
+                                            "fields": [
+                                                {"name": "key", "type": "STRING"},
+                                                {"name": "value", "type": "INTEGER"},
+                                            ],
+                                        },
+                                    ],
+                                }
+                            ],
+                        },
+                        {
+                            "name": "string",
+                            "type": "RECORD",
+                            "fields": [
+                                {
+                                    "name": "string1",
+                                    "type": "STRING",
+                                    "mode": "NULLABLE",
+                                }
+                            ],
+                        },
+                        {
+                            "name": "quantity",
+                            "type": "RECORD",
+                            "fields": [
+                                {
+                                    "name": "quantity1",
+                                    "type": "STRING",
+                                    "mode": "NULLABLE",
+                                }
+                            ],
+                        },
+                    ],
+                },
+            ]
+        }
+
+        if table_id.endswith("_v1"):
+            # add more fields to timing distribution
+            base_schema["fields"][1]["fields"][0]["fields"][0]["fields"].extend(  # type: ignore[index]
+                [
+                    {"name": "overflow", "type": "INTEGER"},
+                    {"name": "bucket_count", "type": "INTEGER"},
+                    {"name": "time_unit", "type": "STRING"},
+                ]
+            )
+            # add a quantity metric
+            base_schema["fields"][1]["fields"][2]["fields"].append(  # type: ignore[index]
+                {"name": "quantity2", "type": "STRING", "mode": "NULLABLE"}
+            )
+
+        return Mock(schema=Schema(base_schema).to_bigquery_schema())
+
+    mock_client.get_table.side_effect = mock_get_table
+
+    delete_func = delete_from_partition(
+        dry_run=True,
+        partition=Partition(condition="", id="20260101"),
+        priority="INTERACTIVE",
+        source_condition="",
+        sources=[
+            DeleteSource(
+                project="test_project",
+                field="client_id",
+                table="firefox.deletion_request_v1",
+            )
+        ],
+        target=DeleteTarget(
+            project="test_project", field="client_id", table="firefox.metrics_v1"
+        ),
+        use_dml=True,
+        column_removal_backfill=True,
+        task_id="test",
+        states={},
+        state_table=None,
+        start_date=None,
+        end_date=None,
+    )
+
+    delete_func(mock_client)
+
+    assert mock_client.query.call_count == 1
+
+    expected_query = reformat("""
+    SELECT
+      document_id,
+      IF(
+        metrics IS NULL,
+        NULL,
+        STRUCT(
+          IF(
+            metrics.timing_distribution IS NULL,
+            NULL,
+            STRUCT(
+              IF(
+                metrics.timing_distribution.timing_dist_1 IS NULL,
+                NULL,
+                STRUCT(
+                  metrics.timing_distribution.timing_dist_1.sum,
+                  metrics.timing_distribution.timing_dist_1.values
+                )
+              ) AS `timing_dist_1`
+            )
+          ) AS `timing_distribution`,
+          metrics.string,
+          IF(
+            metrics.quantity IS NULL,
+            NULL,
+            STRUCT(metrics.quantity.quantity1)
+          ) AS `quantity`
+        )
+      ) AS `metrics`,
+    FROM `test_project.firefox.metrics_v1`
+    """)
+
+    assert mock_client.query.call_args.args[0].startswith(reformat(expected_query))
+    assert (
+        str(mock_client.query.call_args.kwargs["job_config"].destination)
+        == "test_project.firefox.metrics_v2$20260101"
+    )

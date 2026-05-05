@@ -2,7 +2,6 @@
 WITH
   _current AS (
     SELECT
-      usage_profile_id,
       {% raw %}
       {% if is_init() %}
       MIN(submission_date) AS first_seen_date,
@@ -10,26 +9,24 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
-      app_channel,
+      * EXCEPT(submission_date, is_active),
     FROM
-      `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
+      `{{ project_id }}.{{ channel_dataset }}_derived.usage_reporting_clients_daily_v1`
     WHERE
       usage_profile_id IS NOT NULL
       {% raw %}
       {% if is_init() %}
       AND submission_date > "2014-10-10"
+      GROUP BY
+        usage_profile_id
       {% else %}
       AND submission_date = @submission_date
       {% endif %}
       {% endraw %}
-    GROUP BY
-      usage_profile_id,
-      app_channel
   ),
 _previous AS (
   SELECT
     usage_profile_id,
-    app_channel,
   FROM
     `{{ project_id }}.{{ channel_dataset }}_derived.{{ view_name }}_v1`
   WHERE
@@ -43,14 +40,12 @@ _previous AS (
 )
 
 SELECT
-  first_seen_date,
-  usage_profile_id,
-  app_channel,
+  _current.*,
 FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id)
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

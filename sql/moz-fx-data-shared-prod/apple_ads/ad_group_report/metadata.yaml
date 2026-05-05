@@ -1,0 +1,5 @@
+friendly_name: Ad Group Report (Apple)
+description: |-
+  Each record represents the daily ad performance of each ad group.
+owners:
+- kik@mozilla.com

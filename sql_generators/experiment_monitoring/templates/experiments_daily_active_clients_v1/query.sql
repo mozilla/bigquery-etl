@@ -7,9 +7,10 @@ WITH
         submission_date,
         e.key AS experiment_id,
         e.value AS branch,
-        client_id
+        client_id,
+        normalized_channel
       FROM
-        telemetry.clients_daily
+        `moz-fx-data-shared-prod.telemetry.clients_daily`
       CROSS JOIN
         UNNEST(experiments) AS e
     )
@@ -19,7 +20,8 @@ WITH
         DATE(submission_timestamp) AS submission_date,
         mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
         mozfun.map.get_key(e.extra, "branch") AS branch,
-       mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id
+        mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+        normalized_channel
       FROM
         `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment` AS enrollment
       CROSS JOIN
@@ -33,7 +35,8 @@ WITH
         DATE(submission_timestamp) AS submission_date,
         e.key AS experiment_id,
         e.value.branch AS branch,
-        client_info.client_id
+        client_info.client_id,
+        normalized_channel
       FROM
         `moz-fx-data-shared-prod.{{ app_dataset }}.baseline`
       CROSS JOIN
@@ -48,6 +51,7 @@ SELECT
   submission_date,
   experiment_id,
   branch,
+  normalized_channel,
   COUNT(*) AS active_clients
 FROM
   (
@@ -66,4 +70,5 @@ WHERE
 GROUP BY
   submission_date,
   experiment_id,
-  branch
+  branch,
+  normalized_channel

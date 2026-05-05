@@ -633,7 +633,8 @@ def initiate(
                 f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
             ) from e
     else:
-        if copy_table_permissions:
+        # python script table permissions are applied after the backfill
+        if copy_table_permissions and not is_python_script:
             copy_permissions_to_staging_table(
                 bigquery.Client(project=project_id),
                 qualified_table_name,
@@ -680,6 +681,13 @@ def initiate(
         billing_project=billing_project,
         is_python_script=is_python_script,
     )
+
+    if copy_table_permissions and is_python_script:
+        copy_permissions_to_staging_table(
+            bigquery.Client(project=project_id),
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+        )
 
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"

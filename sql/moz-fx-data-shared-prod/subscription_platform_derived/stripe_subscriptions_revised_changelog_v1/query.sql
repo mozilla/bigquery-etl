@@ -61,13 +61,25 @@ CREATE TEMP FUNCTION synthesize_subscription(
         ) AS latest_invoice_id,
         STRUCT(
           subscription.metadata.appliedPromotionCode,
+          CAST(NULL AS STRING) AS cancellation_reason,
           IF(
             subscription.metadata.cancelled_for_customer_at <= effective_at,
             subscription.metadata.cancelled_for_customer_at,
             NULL
           ) AS cancelled_for_customer_at,
           IF(plan_start > subscription.start_date, plan_start, NULL) AS plan_change_date,
-          previous_plan_id
+          previous_plan_id,
+          CAST(NULL AS STRING) AS currency,
+          CAST(NULL AS INT64) AS amount,
+          CAST(NULL AS STRING) AS session_flow_id,
+          CAST(NULL AS STRING) AS session_entrypoint,
+          CAST(NULL AS STRING) AS session_entrypoint_experiment,
+          CAST(NULL AS STRING) AS session_entrypoint_variation,
+          CAST(NULL AS STRING) AS utm_campaign,
+          CAST(NULL AS STRING) AS utm_content,
+          CAST(NULL AS STRING) AS utm_medium,
+          CAST(NULL AS STRING) AS utm_source,
+          CAST(NULL AS STRING) AS utm_term
         ) AS metadata,
         CASE
           WHEN subscription.status IN ('incomplete', 'incomplete_expired')
@@ -97,17 +109,34 @@ WITH original_changelog AS (
         subscription.* REPLACE (
           STRUCT(
             JSON_VALUE(subscription.metadata.appliedPromotionCode) AS appliedPromotionCode,
+            JSON_VALUE(subscription.metadata.cancellation_reason) AS cancellation_reason,
             TIMESTAMP_SECONDS(
               CAST(JSON_VALUE(subscription.metadata.cancelled_for_customer_at) AS INT64)
             ) AS cancelled_for_customer_at,
             TIMESTAMP_SECONDS(
               CAST(JSON_VALUE(subscription.metadata.plan_change_date) AS INT64)
             ) AS plan_change_date,
-            JSON_VALUE(subscription.metadata.previous_plan_id) AS previous_plan_id
+            JSON_VALUE(subscription.metadata.previous_plan_id) AS previous_plan_id,
+            JSON_VALUE(subscription.metadata.currency) AS currency,
+            CAST(JSON_VALUE(subscription.metadata.amount) AS INT64) AS amount,
+            JSON_VALUE(subscription.metadata.session_flow_id) AS session_flow_id,
+            JSON_VALUE(subscription.metadata.session_entrypoint) AS session_entrypoint,
+            JSON_VALUE(
+              subscription.metadata.session_entrypoint_experiment
+            ) AS session_entrypoint_experiment,
+            JSON_VALUE(
+              subscription.metadata.session_entrypoint_variation
+            ) AS session_entrypoint_variation,
+            JSON_VALUE(subscription.metadata.utm_campaign) AS utm_campaign,
+            JSON_VALUE(subscription.metadata.utm_content) AS utm_content,
+            JSON_VALUE(subscription.metadata.utm_medium) AS utm_medium,
+            JSON_VALUE(subscription.metadata.utm_source) AS utm_source,
+            JSON_VALUE(subscription.metadata.utm_term) AS utm_term
           ) AS metadata
         )
     ) AS subscription,
     ROW_NUMBER() OVER subscription_changes_asc AS subscription_change_number,
+    LAG(`timestamp`) OVER subscription_changes_asc AS previous_subscription_change_at,
     LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
     LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
@@ -117,7 +146,8 @@ WITH original_changelog AS (
       PARTITION BY
         subscription.id
       ORDER BY
-        `timestamp`
+        `timestamp`,
+        id
     )
 ),
 adjusted_original_changelog AS (
@@ -134,6 +164,7 @@ adjusted_original_changelog AS (
           AND previous_subscription_ended_at IS NULL
           AND subscription_change_number > 1
           AND subscription.ended_at < `timestamp`
+          AND subscription.ended_at > previous_subscription_change_at
           THEN STRUCT(subscription.ended_at AS `timestamp`, 'adjusted_subscription_end' AS type)
         ELSE STRUCT(`timestamp`, 'original' AS type)
       END
@@ -172,28 +203,30 @@ questionable_subscription_plan_changes AS (
   SELECT
     invoice_line_items.subscription_id,
     invoice_line_items.plan_id,
-    COALESCE(
-      TIMESTAMP_SECONDS(
-        CAST(JSON_VALUE(invoice_line_items.metadata, '$.plan_change_date') AS INT64)
-      ),
-      invoice_line_items.period_start
-    ) AS subscription_plan_start
+    invoice_line_items.period_start AS subscription_plan_start
   FROM
     questionable_resync_changelog AS changelog
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.invoice_line_item_v1 AS invoice_line_items
-  ON
-    changelog.subscription.id = invoice_line_items.subscription_id
-    AND invoice_line_items.type = 'subscription'
-    AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
+    ON changelog.subscription.id = invoice_line_items.subscription_id
   WHERE
     changelog.subscription.metadata.plan_change_date IS NOT NULL
+    AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
+    AND (
+      invoice_line_items.type = 'subscription'
+      OR (
+        invoice_line_items.type = 'invoiceitem'
+        AND invoice_line_items.description LIKE 'Remaining time on %'
+      )
+    )
   QUALIFY
     invoice_line_items.plan_id IS DISTINCT FROM LAG(invoice_line_items.plan_id) OVER (
       PARTITION BY
         invoice_line_items.subscription_id
       ORDER BY
-        invoice_line_items.period_start
+        invoice_line_items.period_start,
+        invoice_line_items.period_end,
+        invoice_line_items.id
     )
 ),
 questionable_subscription_plans_history AS (
@@ -234,12 +267,10 @@ questionable_subscription_plans_history AS (
     questionable_subscription_plan_changes AS plan_changes
   LEFT JOIN
     `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_plans_v1 AS plans
-  ON
-    plan_changes.plan_id = plans.id
+    ON plan_changes.plan_id = plans.id
   LEFT JOIN
     `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_products_v1 AS products
-  ON
-    plans.product_id = products.id
+    ON plans.product_id = products.id
   WINDOW
     subscription_plan_changes_asc AS (
       PARTITION BY
@@ -264,8 +295,7 @@ synthetic_subscription_start_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND plans_history.subscription_plan_number = 1
 ),
 synthetic_plan_change_changelog AS (
@@ -284,8 +314,7 @@ synthetic_plan_change_changelog AS (
     questionable_subscription_plans_history AS plans_history
   JOIN
     questionable_resync_changelog AS changelog
-  ON
-    plans_history.subscription_id = changelog.subscription.id
+    ON plans_history.subscription_id = changelog.subscription.id
   WHERE
     plans_history.subscription_plan_number > 1
     AND plans_history.valid_from > changelog.subscription.start_date
@@ -306,8 +335,7 @@ synthetic_trial_start_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.trial_start >= plans_history.valid_from
     AND changelog.subscription.trial_start < plans_history.valid_to
   WHERE
@@ -329,8 +357,7 @@ synthetic_trial_end_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.trial_end >= plans_history.valid_from
     AND changelog.subscription.trial_end < plans_history.valid_to
   WHERE
@@ -361,8 +388,7 @@ synthetic_cancel_at_period_end_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.canceled_at >= plans_history.valid_from
     AND changelog.subscription.canceled_at < plans_history.valid_to
   WHERE

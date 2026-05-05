@@ -47,8 +47,7 @@ todays_metrics_enriched AS (
     todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    todays_metrics.locale = languages.code
+    ON todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (

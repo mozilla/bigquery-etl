@@ -72,9 +72,7 @@ FROM
   req
 LEFT JOIN
   emp
-USING
-  (submission_date, country, device, form_factor, normalized_os)
+  USING (submission_date, country, device, form_factor, normalized_os)
 LEFT JOIN
   tiles
-USING
-  (submission_date, country, device, form_factor, normalized_os)
+  USING (submission_date, country, device, form_factor, normalized_os)

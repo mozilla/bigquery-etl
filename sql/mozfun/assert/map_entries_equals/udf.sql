@@ -17,7 +17,6 @@ RETURNS BOOLEAN AS (
       -- BQ does not allow full array scans with FULL join
       -- so we trick it using a subquery
       (SELECT * FROM UNNEST(expected)) AS e
-    USING
-      (key)
+      USING (key)
   )
 );

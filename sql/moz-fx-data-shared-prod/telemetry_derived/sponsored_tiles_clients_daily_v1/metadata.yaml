@@ -1,22 +1,27 @@
 friendly_name: Sponsored Tiles Clients Daily
 description: |-
-  daily client-level aggregates of Sponsored Tiles-related fields
+  daily client-level aggregates of Sponsored Tiles-related fields.
+  Note that for desktop tile dismissals and disables, we deprecated PingCentre's Activity Stream in Fx123,
+  and now rely on Glean's newtab ping as of Fx120. There's an effective cutover version of Fx123.
 owners:
 - skahmann@mozilla.com
 - cmorales@mozilla.com
+- akommasani@mozilla.com
 labels:
   incremental: true
-scheduling:
-  dag_name: bqetl_sponsored_tiles_clients_daily
-  task_name: sponsored_tiles_clients_daily_v1
+  table_type: client_level
+  owner1: skahmann
+  owner2: cmorales
+  owner3: akommasani
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
-references: {}
+require_column_descriptions: false

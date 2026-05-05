@@ -11,9 +11,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
         (
           SELECT
             * EXCEPT (value),
-            FIRST_VALUE(
-              value IGNORE NULLS
-            ) --
+            FIRST_VALUE(value IGNORE NULLS) --
             OVER (
               PARTITION BY
                 key

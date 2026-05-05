@@ -1,0 +1,10 @@
+2024-11-07:
+  start_date: 2019-10-10
+  end_date: 2024-11-06
+  reason:
+    A bug was causing conflicting changelog records, which in turn caused problems in downstream ETLs.
+    That bug was fixed in https://github.com/mozilla/bigquery-etl/pull/6458.
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false

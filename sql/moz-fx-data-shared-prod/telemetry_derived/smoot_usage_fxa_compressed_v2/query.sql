@@ -32,7 +32,7 @@ WITH compressed AS (
     channel,
     attributed
   FROM
-    smoot_usage_fxa_v2
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2`
 )
 SELECT
   submission_date,

@@ -3,6 +3,7 @@
 """Put data from region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION into a table."""
 
 from argparse import ArgumentParser
+from datetime import date, timedelta
 
 from google.cloud import bigquery
 
@@ -11,17 +12,25 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",
     "moz-fx-data-marketing-prod",
     "moz-fx-data-bq-data-science",
+    "moz-fx-glam-prod",
+    "moz-fx-glam-nonprod",
+    "moz-fx-sumo-prod",
+    "moz-fx-sumo-nonprod",
+    "moz-fx-mozsocial-dw-prod",
+    "moz-fx-data-bq-people",
 ]
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
+parser.add_argument(
+    "--date", required=True, type=date.fromisoformat
+)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="jobs_by_organization_v1")
 
 
-def create_query(date, project):
+def create_query(job_date: date, project: str):
     """Create query with filter for source projects."""
     return f"""
         SELECT
@@ -50,11 +59,16 @@ def create_query(date, project):
           query_info.resource_warning as query_info_resource_warning,
           query_info.query_hashes.normalized_literals as query_info_query_hashes_normalized_literals,
           transferred_bytes,
-          DATE(creation_time) as creation_date
+          DATE(creation_time) as creation_date,
+          materialized_view_statistics,
+          query_dialect,
+          bi_engine_statistics.bi_engine_mode AS bi_engine_mode,
+          bi_engine_statistics.acceleration_mode AS acceleration_mode,
+          bi_engine_statistics.bi_engine_reasons AS bi_engine_reasons,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE
-          DATE(creation_time) = '{date}'
+          DATE(creation_time) = '{job_date.isoformat()}'
           AND (
                 (
                   project_id IN UNNEST({DEFAULT_PROJECTS})
@@ -77,18 +91,24 @@ def main():
     args = parser.parse_args()
     project = args.project
 
-    partition = args.date.replace("-", "")
-    destination_table = f"{args.destination_project}.{args.destination_dataset}.{args.destination_table}${partition}"
+    # reprocess previous date to update jobs completed after the last run
+    for partition_date in (args.date - timedelta(days=1), args.date):
+        partition = partition_date.strftime("%Y%m%d")
+        destination_table = (
+            f"{args.destination_project}.{args.destination_dataset}"
+            f".{args.destination_table}${partition}"
+        )
 
-    # remove old partition in case of re-run
-    client = bigquery.Client(project)
-    client.delete_table(destination_table, not_found_ok=True)
+        client = bigquery.Client(project)
 
-    query = create_query(args.date, project)
-    job_config = bigquery.QueryJobConfig(
-        destination=destination_table, write_disposition="WRITE_APPEND"
-    )
-    client.query(query, job_config=job_config).result()
+        query = create_query(partition_date, project)
+        job_config = bigquery.QueryJobConfig(
+            destination=destination_table,
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        )
+        result = client.query(query, job_config=job_config).result()
+
+        print(f"Wrote {result.total_rows} rows to {destination_table}")
 
 
 if __name__ == "__main__":

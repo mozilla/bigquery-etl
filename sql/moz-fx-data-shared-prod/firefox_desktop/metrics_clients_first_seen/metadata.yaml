@@ -1,0 +1,7 @@
+friendly_name: Metrics Clients First Seen
+description: |-
+  Records the attributes first seen for each client from the metric ping.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau

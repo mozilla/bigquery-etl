@@ -7,15 +7,18 @@ owners:
 - kik@mozilla.com
 labels:
   schedule: daily
+  table_type: client_level
+  dag: bqetl_firefox_ios
+  owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  depends_on:
-  - task_id: baseline_clients_daily
-    dag_name: copy_deduplicate
-    execution_delta: 3h
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+require_column_descriptions: true

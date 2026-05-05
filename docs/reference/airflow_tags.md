@@ -24,3 +24,5 @@ This tag is meant to provide guidance to a triage engineer on how to respond to 
 - **triage/record_only**: Failures should _only_ be recorded and the job owner informed without taking any active steps to fix the failure.
 
 - **triage/no_triage**: No triage should be performed on this job. Should only be used in a limited number of cases, like this is still WIP, where no production processes are affected.
+
+- **triage/confidential** - Failures should be recorded by the triage engineer as normal, and bug should be marked **Confidential**.

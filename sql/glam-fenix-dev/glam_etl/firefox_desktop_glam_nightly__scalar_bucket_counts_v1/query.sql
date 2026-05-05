@@ -104,7 +104,7 @@ all_combos AS (
     COALESCE(combo.os, table.os) AS os,
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
-    glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1 table
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1` table
   CROSS JOIN
     static_combos combo
 ),
@@ -191,8 +191,7 @@ bucketed_scalars AS (
     UNNEST(scalar_aggregates)
   LEFT JOIN
     buckets_by_metric
-  USING
-    (metric, key)
+    USING (metric, key)
   WHERE
     metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
 ),
@@ -242,8 +241,7 @@ valid_booleans_scalars AS (
     booleans_and_scalars
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 )
 SELECT
   ping_type,

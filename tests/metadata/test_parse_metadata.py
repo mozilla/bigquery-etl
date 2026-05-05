@@ -72,7 +72,7 @@ class TestParseMetadata(object):
         metadata = Metadata.from_file(metadata_file)
 
         assert metadata.friendly_name == "Test metadata file"
-        assert metadata.description is None
+        assert metadata.description == "Please provide a description for the query"
         assert "schedule" in metadata.labels
         assert metadata.labels["schedule"] == "daily"
         assert "public_json" in metadata.labels
@@ -120,9 +120,7 @@ class TestParseMetadata(object):
         assert metadata.review_bugs() == ["1999999", "12121212"]
         assert metadata.workgroup_access is not None
         assert metadata.workgroup_access[0].role == "roles/bigquery.dataViewer"
-        assert (
-            metadata.workgroup_access[0].members[0] == "workgroup:dataops-managed/taar"
-        )
+        assert metadata.workgroup_access[0].members[0] == "workgroup:dataplatform/test"
 
     def test_of_query_file_no_metadata(self):
         metadata_file = (

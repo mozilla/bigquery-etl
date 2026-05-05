@@ -7,7 +7,6 @@ description: >
   https://docs.telemetry.mozilla.org/cookbooks/retention.html#1-week-retention
   for the usage criterion "Any Firefox Activity" on Firefox (Desktop)
 owners:
-  - dthorn@mozilla.com
-  - jklukas@mozilla.com
+  - ascholtz@mozilla.com
 labels:
   application: firefox

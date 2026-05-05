@@ -18,7 +18,7 @@ WITH fxa_events AS (
     ua_version,
     ua_browser,
   FROM
-    `firefox_accounts.fxa_all_events`
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     DATE(`timestamp`)
     -- 2 day time window used to make sure we can get user session attribution information
@@ -123,12 +123,10 @@ FROM
   device_service_users_entries
 LEFT JOIN
   entrypoints
-USING
-  (flow_id)
+  USING (flow_id)
 LEFT JOIN
   utms
-USING
-  (flow_id)
+  USING (flow_id)
 WHERE
   -- making sure the user is registered
   user_id IS NOT NULL

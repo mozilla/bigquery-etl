@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION assert.map_equals(expected ANY TYPE, actual ANY TYPE)
 RETURNS BOOLEAN AS (
   IF(
-    EXISTS(
+    EXISTS (
       SELECT
         key
       FROM
@@ -10,8 +10,7 @@ RETURNS BOOLEAN AS (
           -- BQ does not allow full array scans with FULL join
           -- so we trick it using a subquery
         (SELECT * FROM UNNEST(actual)) AS a
-      USING
-        (key)
+        USING (key)
       WHERE
         e.value != a.value
         OR (e.value IS NULL AND a.value IS NOT NULL)

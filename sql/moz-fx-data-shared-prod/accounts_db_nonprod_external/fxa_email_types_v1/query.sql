@@ -1,0 +1,13 @@
+SELECT
+  id,
+  emailType,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
+    """SELECT
+         id,
+         emailType
+       FROM
+         fxa.emailTypes
+    """
+  )

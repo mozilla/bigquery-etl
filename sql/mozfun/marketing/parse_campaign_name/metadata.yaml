@@ -1,0 +1,2 @@
+description: Parse a campaign name. Extracts things like region, country_code, and language.
+friendly_name: Parse a Campaign Name

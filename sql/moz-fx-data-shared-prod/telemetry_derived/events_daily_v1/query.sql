@@ -4,7 +4,7 @@ WITH sample AS (
     *,
     COUNT(*) OVER (PARTITION BY submission_date, client_id) AS client_event_count
   FROM
-    telemetry_derived.deanonymized_events
+    `moz-fx-data-shared-prod.telemetry_derived.deanonymized_events`
 ),
 events AS (
   SELECT
@@ -22,20 +22,25 @@ events AS (
 ),
 joined AS (
   SELECT
-    CONCAT(udf.pack_event_properties(events.extra, event_types.event_properties), index) AS index,
+    CONCAT(
+      `moz-fx-data-shared-prod.udf.pack_event_properties`(
+        events.extra,
+        event_types.event_properties
+      ),
+      index
+    ) AS index,
     events.* EXCEPT (category, event, extra)
   FROM
     events
   INNER JOIN
-    telemetry.event_types event_types
-  USING
-    (category, event)
+    `moz-fx-data-shared-prod.telemetry.event_types` event_types
+    USING (category, event)
 )
 SELECT
   submission_date,
   client_id,
   sample_id,
-  CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
+  CONCAT(STRING_AGG(index, ',' ORDER BY `timestamp` ASC), ',') AS events,
   -- client info
   mozfun.stats.mode_last(ARRAY_AGG(application.build_id)) AS build_id,
   mozfun.stats.mode_last(ARRAY_AGG(environment.build.architecture)) AS build_architecture,

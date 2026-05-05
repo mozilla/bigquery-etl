@@ -1,0 +1,12 @@
+friendly_name: Client Probe Counts Firefox Desktop Beta
+description: |-
+  This dataset contains client probe counts for Firefox Desktop Beta.
+owners:
+- ascholtz@mozilla.com
+- efilho@mozilla.com
+labels:
+  incremental: false
+  public_bigquery: true
+  public_json: true
+  review_bugs:
+  - '1866889'

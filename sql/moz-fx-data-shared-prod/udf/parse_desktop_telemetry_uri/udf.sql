@@ -19,27 +19,13 @@ RETURNS STRUCT<
   CASE
     WHEN ARRAY_LENGTH(REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")) = 8
       THEN STRUCT(
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(1)
-          ],  --namespace
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(2)
-          ],  --document_id
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(3)
-          ],  --document_type
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(4)
-          ],  --app_name
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(5)
-          ],  --app_version
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(6)
-          ],  --app_update_channel
-          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[
-            OFFSET(7)
-          ]   --app_build_id
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(1)],  --namespace
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(2)],  --document_id
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(3)],  --document_type
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(4)],  --app_name
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(5)],  --app_version
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(6)],  --app_update_channel
+          REGEXP_EXTRACT_ALL(uri, r"/([a-zA-Z0-9_.+-]+)")[OFFSET(7)]   --app_build_id
         )
     ELSE NULL
   END

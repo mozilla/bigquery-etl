@@ -2,7 +2,7 @@ friendly_name: Shredder Rows Deleted
 description: >
   Record of rows deleted by shredder.
 owners:
-  - dthorn@mozilla.com
+  - akomar@mozilla.com
 labels:
   incremental: true
   schedule: daily

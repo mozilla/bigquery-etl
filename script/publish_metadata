@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Update metadata of BigQuery tables and views.
-
-cd "$(dirname "$0")/.."
-
-exec python3 -m bigquery_etl.metadata.publish_metadata "$@"

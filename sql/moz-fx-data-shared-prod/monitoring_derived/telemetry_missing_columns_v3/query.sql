@@ -4,7 +4,7 @@ WITH placeholder_table_names AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE
-    option_value LIKE '%placeholder_schema%'
+    option_value LIKE r'%placeholder\_schema%'
 ),
 extracted AS (
   SELECT
@@ -67,6 +67,21 @@ transformed AS (
     document_type,
     document_version,
     path
+),
+row_counts AS (
+  SELECT
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version,
+    COUNT(*) AS total_row_count,
+  FROM
+    extracted
+  GROUP BY
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version
 )
 SELECT
   submission_date,
@@ -74,6 +89,10 @@ SELECT
   document_type,
   document_version,
   path,
-  path_count
+  path_count,
+  total_row_count,
 FROM
   transformed
+INNER JOIN
+  row_counts
+  USING (submission_date, document_namespace, document_type, document_version)

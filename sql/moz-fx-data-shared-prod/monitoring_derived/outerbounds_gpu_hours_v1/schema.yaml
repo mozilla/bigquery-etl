@@ -1,0 +1,28 @@
+fields:
+  - mode: NULLABLE
+    name: event_date
+    type: STRING
+  - mode: NULLABLE
+    name: nca_id
+    type: STRING
+  - mode: NULLABLE
+    name: org_name
+    type: STRING
+  - mode: NULLABLE
+    name: email_domain
+    type: STRING
+  - mode: NULLABLE
+    name: function_id
+    type: STRING
+  - mode: NULLABLE
+    name: gpu_type
+    type: STRING
+  - mode: NULLABLE
+    name: gpus
+    type: INTEGER
+  - mode: NULLABLE
+    name: backend
+    type: STRING
+  - mode: NULLABLE
+    name: gpu_hours
+    type: FLOAT64

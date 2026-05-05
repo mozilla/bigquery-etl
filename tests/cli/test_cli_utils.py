@@ -15,6 +15,7 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestUtils:
+
     def test_is_valid_dir(self):
         with pytest.raises(BadParameter):
             assert is_valid_dir(None, None, "invalid")

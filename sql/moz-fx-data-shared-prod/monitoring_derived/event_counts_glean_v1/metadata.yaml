@@ -1,0 +1,19 @@
+friendly_name: Event Counts Glean
+description: |-
+  Daily event counts for all Glean apps, derived from monitoring_derived.event_monitoring_aggregates_v1
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_app_name

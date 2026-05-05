@@ -20,9 +20,6 @@ fields:
 - name: event_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-- name: customer_start_date
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
@@ -59,9 +56,6 @@ fields:
 - name: ended_reason
   type: STRING
   mode: NULLABLE
-- name: end_date
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: fxa_uid
   type: STRING
   mode: NULLABLE
@@ -71,29 +65,11 @@ fields:
 - name: country_name
   type: STRING
   mode: NULLABLE
+- name: state
+  type: STRING
+  mode: NULLABLE
 - name: user_registration_date
   type: TIMESTAMP
-  mode: NULLABLE
-- name: entrypoint_experiment
-  type: STRING
-  mode: NULLABLE
-- name: entrypoint_variation
-  type: STRING
-  mode: NULLABLE
-- name: utm_campaign
-  type: STRING
-  mode: NULLABLE
-- name: utm_content
-  type: STRING
-  mode: NULLABLE
-- name: utm_medium
-  type: STRING
-  mode: NULLABLE
-- name: utm_source
-  type: STRING
-  mode: NULLABLE
-- name: utm_term
-  type: STRING
   mode: NULLABLE
 - name: provider
   type: STRING
@@ -128,11 +104,44 @@ fields:
 - name: billing_grace_period
   type: INTERVAL
   mode: NULLABLE
+- name: has_refunds
+  type: BOOLEAN
+  mode: NULLABLE
+- name: has_fraudulent_charges
+  type: BOOLEAN
+  mode: NULLABLE
+- name: has_fraudulent_charge_refunds
+  type: BOOLEAN
+  mode: NULLABLE
 - name: promotion_codes
   type: STRING
   mode: REPEATED
 - name: promotion_discounts_amount
   type: INTEGER
+  mode: NULLABLE
+- name: attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: entrypoint_experiment
+  type: STRING
+  mode: NULLABLE
+- name: entrypoint_variation
+  type: STRING
+  mode: NULLABLE
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+- name: utm_content
+  type: STRING
+  mode: NULLABLE
+- name: utm_medium
+  type: STRING
+  mode: NULLABLE
+- name: utm_source
+  type: STRING
+  mode: NULLABLE
+- name: utm_term
+  type: STRING
   mode: NULLABLE
 - name: normalized_acquisition_channel
   type: STRING
@@ -151,6 +160,12 @@ fields:
   mode: NULLABLE
 - name: website_channel_group
   type: STRING
+  mode: NULLABLE
+- name: customer_start_date
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: end_date
+  type: TIMESTAMP
   mode: NULLABLE
 - name: months_retained
   type: INTEGER

@@ -1,0 +1,6 @@
+friendly_name: Email First Reg Login Funnels By Service
+description: |-
+  A view on top of accounts_frontend_derived.email_first_reg_login_funnels_by_service_v1
+  that includes relevant OAuth client IDs as well as interpretable service names
+owners:
+- ksiegler@mozilla.com

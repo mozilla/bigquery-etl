@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.docker_fxa_admin_server_sanitized`
 AS
 SELECT
-  * REPLACE(
+  * REPLACE (
     STRUCT(
       resource.type,
       STRUCT(
@@ -33,17 +33,16 @@ SELECT
     ) AS labels,
     STRUCT(
       jsonPayload.timestamp,
-      STRUCT(
-        jsonPayload.fields.event,
-        jsonPayload.fields.search_type
-      ) AS fields
+      STRUCT(jsonPayload.fields.event, jsonPayload.fields.search_type) AS fields
     ) AS jsonPayload
-  )
+  ),
+  CAST(NULL AS ARRAY<STRUCT<id STRING>>) AS errorGroups,
+  NULL AS appHubSource
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1`
-UNION ALL
+UNION ALL BY NAME
 SELECT
-  * REPLACE(
+  * EXCEPT (apphub, apphubDestination) REPLACE(
     STRUCT(
       resource.type,
       STRUCT(
@@ -74,10 +73,7 @@ SELECT
     ) AS labels,
     STRUCT(
       jsonPayload.timestamp,
-      STRUCT(
-        jsonPayload.fields.event,
-        jsonPayload.fields.search_type
-      ) AS fields
+      STRUCT(jsonPayload.fields.event, jsonPayload.fields.search_type) AS fields
     ) AS jsonPayload
   )
 FROM

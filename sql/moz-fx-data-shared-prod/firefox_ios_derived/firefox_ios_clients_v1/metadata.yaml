@@ -11,8 +11,8 @@ description: |-
   For analysis purposes, use first_seen_date to query clients that
   effectively appeared on that date.
 
-  The query for this table overwrites the whole table instead of writing to
-  a single partition, so manual backfills must use parameter --no_partition.
+  Note that the query for this table overwrites the whole table instead of writing to
+  a single partition.
 
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
@@ -25,20 +25,19 @@ labels:
   application: firefox_ios
   incremental: true
   schedule: daily
+  dag: bqetl_firefox_ios
+  owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
   date_partition_parameter: null
-  depends_on:
-  - task_id: baseline_clients_daily
-    dag_name: copy_deduplicate
-    execution_delta: 3h
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
-    field: first_seen_date
     type: day
+    field: first_seen_date
     require_partition_filter: false
     expiration_days: null
   clustering:
@@ -46,4 +45,3 @@ bigquery:
     - sample_id
     - channel
     - first_reported_country
-references: {}

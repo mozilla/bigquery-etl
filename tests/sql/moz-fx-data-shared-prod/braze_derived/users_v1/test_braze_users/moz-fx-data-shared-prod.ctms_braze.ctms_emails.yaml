@@ -1,0 +1,242 @@
+# test_braze_users ctms_emails
+---
+# user 1 has all the subscriptions
+- email_id: user_1
+  primary_email: User_1@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_1
+  email_lang: EN
+  create_timestamp: 2021-01-01 10:00:00+00:00
+  update_timestamp: 2024-01-01 08:00:00+00:00
+# user 2 only has newsletter subscription
+- email_id: user_2
+  primary_email: user_2@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_2
+  email_lang: en
+  create_timestamp: 2021-01-02 10:00:00+00:00
+  update_timestamp: 2024-01-02 08:00:00+00:00
+# user 3 only has waitlist subscription
+- email_id: user_3
+  primary_email: user_3@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: de
+  basket_token: basket_user_3
+  email_lang: en
+  create_timestamp: 2021-01-03 10:00:00+00:00
+  update_timestamp: 2024-01-03 08:00:00+00:00
+# user 4 only has product subscription
+- email_id: user_4
+  primary_email: user_4@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_4
+  email_lang: en
+  create_timestamp: 2021-01-04 10:00:00+00:00
+  update_timestamp: 2024-01-04 08:00:00+00:00
+# user 5 has newsletter and waitlist subscription
+- email_id: user_5
+  primary_email: user_5@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_5
+  email_lang: en
+  create_timestamp: 2021-01-05 10:00:00+00:00
+  update_timestamp: 2024-01-05 08:00:00+00:00
+# user 6 has newsletter, waitlist and product subscription
+- email_id: user_6
+  primary_email: user_6@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_6
+  email_lang: en
+  create_timestamp: 2021-01-06 10:00:00+00:00
+  update_timestamp: 2024-01-06 08:00:00+00:00
+# user 7 has newsletter subscription but is on suppression list
+- email_id: user_7
+  primary_email: user_7@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_7
+  email_lang: en
+  create_timestamp: 2021-01-07 10:00:00+00:00
+  update_timestamp: 2024-01-07 08:00:00+00:00
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+- email_id: user_8
+  primary_email: user_8@email.com
+  has_opted_out_of_email: true
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_8
+  email_lang: en
+  create_timestamp: 2021-01-08 10:00:00+00:00
+  update_timestamp: 2024-01-08 08:00:00+00:00
+# user 9 has newsletter subscription but not double opted in yet
+- email_id: user_9
+  primary_email: user_9@email.com
+  has_opted_out_of_email: false
+  double_opt_in: false
+  mailing_country: us
+  basket_token: basket_user_9
+  email_lang: en
+  create_timestamp: 2021-01-09 10:00:00+00:00
+  update_timestamp: 2024-01-09 08:00:00+00:00
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+- email_id: user_10
+  primary_email: user_10@email.com
+  has_opted_out_of_email: true
+  double_opt_in: false
+  mailing_country: us
+  basket_token: basket_user_10
+  email_lang: en
+  create_timestamp: 2021-01-10 10:00:00+00:00
+  update_timestamp: 2024-01-10 08:00:00+00:00
+# user 11 has newsletter subscription, double opted in and opted out of emails
+- email_id: user_11
+  primary_email: user_11@email.com
+  has_opted_out_of_email: true
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_11
+  email_lang: en
+  create_timestamp: 2021-01-11 10:00:00+00:00
+  update_timestamp: 2024-01-11 08:00:00+00:00
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+- email_id: user_12
+  primary_email: user_12@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_12
+  email_lang: en
+  create_timestamp: 2021-01-12 10:00:00+00:00
+  update_timestamp: 2024-01-12 08:00:00+00:00
+# user 13 has waitlist subscription and clicked on it
+- email_id: user_13
+  primary_email: user_13@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_13
+  email_lang: en
+  create_timestamp: 2021-01-13 10:00:00+00:00
+  update_timestamp: 2024-01-13 08:00:00+00:00
+# user 14 has waitlist subscription but deleted their fxa_account
+- email_id: user_14
+  primary_email: user_14@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_14
+  email_lang: en
+  create_timestamp: 2021-01-14 10:00:00+00:00
+  update_timestamp: 2024-01-14 08:00:00+00:00
+# user 15 has newsletter subscription but is unsubscribed from all of them
+- email_id: user_15
+  primary_email: user_15@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_15
+  email_lang: en
+  create_timestamp: 2021-01-15 10:00:00+00:00
+  update_timestamp: 2024-01-15 08:00:00+00:00
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+- email_id: user_16
+  primary_email: user_16@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_16
+  email_lang: en
+  create_timestamp: 2021-01-16 10:00:00+00:00
+  update_timestamp: 2024-01-16 08:00:00+00:00
+# user 17 has only unsubscribed waitlist subscriptions
+- email_id: user_17
+  primary_email: user_17@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_17
+  email_lang: en
+  create_timestamp: 2021-01-17 10:00:00+00:00
+  update_timestamp: 2024-01-17 08:00:00+00:00
+# user 18 is only subscribed to MoFo subscriptions
+- email_id: user_18
+  primary_email: user_18@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_18
+  email_lang: en
+  create_timestamp: 2021-01-18 10:00:00+00:00
+  update_timestamp: 2024-01-18 08:00:00+00:00
+# user 19 has newsletter subscription and MoFo subscription
+- email_id: user_19
+  primary_email: user_19@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_19
+  email_lang: en
+  create_timestamp: 2021-01-19 10:00:00+00:00
+  update_timestamp: 2024-01-19 08:00:00+00:00
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  primary_email: user_20@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_20
+  email_lang: en
+  create_timestamp: 2021-01-20 10:00:00+00:00
+  update_timestamp: 2024-01-20 08:00:00+00:00
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  primary_email: user_21@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_21
+  email_lang: en
+  create_timestamp: 2021-01-21 10:00:00+00:00
+  update_timestamp: 2024-01-21 08:00:00+00:00
+# user 22 has waitlist subscription to vpn
+- email_id: user_22
+  primary_email: user_22@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_22
+  email_lang: en
+  create_timestamp: 2021-01-22 10:00:00+00:00
+  update_timestamp: 2024-01-22 08:00:00+00:00
+# user 23 has newsletter subscription not in the subscription map
+- email_id: user_23
+  primary_email: user_23@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_23
+  email_lang: en
+  create_timestamp: 2021-01-23 10:00:00+00:00
+  update_timestamp: 2024-01-23 08:00:00+00:00
+# user 24 has waitlist subscription not on the subscription map
+- email_id: user_24
+  primary_email: user_24@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_24
+  email_lang: en
+  create_timestamp: 2021-01-24 10:00:00+00:00
+  update_timestamp: 2024-01-24 08:00:00+00:00

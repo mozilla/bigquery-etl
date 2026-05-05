@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk User
+description: |-
+  Jira users for Service Desk synced via Fivetran.

@@ -9,30 +9,25 @@ description: |
   which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-- dthorn@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: dthorn
+  owner1: ascholtz
+  table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85
   start_date: '2019-04-15'
-  email:
-  - dthorn@mozilla.com
-  - jklukas@mozilla.com
   depends_on_past: true
-  external_downstream_tasks:
-  - task_id: wait_for_clients_last_seen
-    dag_name: taar_daily
-    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
@@ -44,8 +39,3 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:dataops-managed/taar
-references: {}

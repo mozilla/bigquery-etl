@@ -4,3 +4,13 @@ description: |-
 owners:
   - test@mozilla.com
 deprecated: true
+monitoring:
+  enabled: true
+deletion_date: 2024-03-02
+workgroup_access:
+  - role: roles/bigquery.metadataViewer
+    members:
+      - workgroup:mozilla-foo
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:mozilla-foo

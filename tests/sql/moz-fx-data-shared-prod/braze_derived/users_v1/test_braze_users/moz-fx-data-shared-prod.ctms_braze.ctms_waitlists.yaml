@@ -1,0 +1,62 @@
+# test_braze_users - ctms_waitlists
+---
+# user 1 has all the subscriptions
+- email_id: user_1
+  subscribed: true
+  name: waitlist_1
+# user 2 only has newsletter subscription
+# user 3 only has waitlist subscription
+- email_id: user_3
+  subscribed: true
+  name: waitlist_1
+# user 4 only has product subscription
+# user 5 has newsletter and waitlist subscription
+- email_id: user_5
+  subscribed: true
+  name: waitlist_1
+# user 6 has newsletter, waitlist and product subscription
+- email_id: user_6
+  subscribed: true
+  name: waitlist_1
+# user 7 has newsletter subscription but is on suppression list
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+# user 9 has newsletter subscription but not double opted in yet
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+# user 11 has newsletter subscription, double opted in and opted out of emails
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+- email_id: user_12
+  subscribed: true
+  name: waitlist_1
+# user 13 has waitlist subscription and clicked on it
+- email_id: user_13
+  subscribed: true
+  name: waitlist_1
+# user 14 has waitlist subscription but deleted their fxa_account
+- email_id: user_14
+  subscribed: true
+  name: waitlist_1
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+- email_id: user_16
+  subscribed: true
+  name: waitlist_1
+# user 17 has only unsubscribed waitlist subscriptions
+- email_id: user_17
+  subscribe: false
+  name: waitlist_1
+- email_id: user_17
+  subscribe: false
+  name: waitlist_2
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+# user 22 has waitlist subscription to vpn
+- email_id: user_22
+  subscribed: true
+  name: vpn
+# user 23 has newsletter subscription not in the subscription map
+# user 24 has waitlist subscription not on the subscription map
+- email_id: user_23
+  subscribed: true
+  name: not_a_waitlist

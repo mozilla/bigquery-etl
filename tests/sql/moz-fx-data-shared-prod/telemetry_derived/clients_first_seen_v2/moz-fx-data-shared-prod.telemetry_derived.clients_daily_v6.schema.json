@@ -160,5 +160,13 @@
   {
     "type": "STRING",
     "name": "normalized_os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "startup_profile_selection_first_ping_only"
+  },
+  {
+    "type": "STRING",
+    "name": "profile_group_id"
   }
 ]

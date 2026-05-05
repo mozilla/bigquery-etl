@@ -8,11 +8,12 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
-scheduling:
-  dag_name: bqetl_iprospect
-  depends_on_past: true
+#scheduling:
+#  dag_name: bqetl_iprospect
+#  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+deprecated: true

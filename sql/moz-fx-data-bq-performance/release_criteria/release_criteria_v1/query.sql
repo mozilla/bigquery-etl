@@ -11,7 +11,7 @@ WITH rc_included_tests AS (
       IFNULL(test_extra_options, '') AS test_extra_options
     )
   FROM
-    release_criteria_helper
+    `moz-fx-data-bq-performance.release_criteria.release_criteria_helper`
   WHERE
     rc_test_name IS NOT NULL
     AND rc_test_name != 'exclude'
@@ -38,11 +38,10 @@ rc_test_data AS (
     included_rc.rc_target_value,
     included_rc.rc_target_app,
   FROM
-    rc_flattened_test_data_v1 AS flattened
+    `moz-fx-data-bq-performance.release_criteria.rc_flattened_test_data_v1` AS flattened
   LEFT JOIN
     rc_included_tests AS included_rc
-  ON
-    flattened.framework = included_rc.framework
+    ON flattened.framework = included_rc.framework
     AND flattened.platform = included_rc.platform
     AND flattened.normalized_test_type = included_rc.test_type
     AND flattened.test_name = included_rc.test_name
@@ -298,8 +297,7 @@ rc_tests_with_tested_version AS (
     rc_tests
   LEFT JOIN
     versions
-  ON
-    date_utc = DATE(task_group_time)
+    ON date_utc = DATE(task_group_time)
     AND (
       (project IN ('fenix', 'mozilla-central', 'mozilla-beta', 'autoland') AND category = 'dev')
       OR (project = 'mozilla-release' AND category = 'stability')

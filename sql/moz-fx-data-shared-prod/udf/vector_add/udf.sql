@@ -26,8 +26,7 @@ CREATE OR REPLACE FUNCTION udf.vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (
       a_unnested
     FULL OUTER JOIN
       b_unnested
-    ON
-      _a_off = _b_off
+      ON _a_off = _b_off
     ORDER BY
       COALESCE(_a_off, _b_off) ASC
   )

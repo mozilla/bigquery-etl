@@ -15,8 +15,7 @@ WITH stripe_plans AS (
     `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   LEFT JOIN
     `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
-  ON
-    plans.product_id = products.id
+    ON plans.product_id = products.id
 ),
 events AS (
   SELECT
@@ -46,7 +45,7 @@ events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
 ),
 flows AS (
   SELECT
@@ -344,8 +343,7 @@ FROM
   flow_counts
 LEFT JOIN
   stripe_plans
-USING
-  (plan_id)
+  USING (plan_id)
 WINDOW
   partition_date AS (
     PARTITION BY

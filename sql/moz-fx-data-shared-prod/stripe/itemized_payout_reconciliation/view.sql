@@ -36,12 +36,10 @@ charge_states AS (
     `moz-fx-data-shared-prod`.stripe_external.charge_v1 AS charges
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.card_v1 AS cards
-  ON
-    charges.card_id = cards.id
+    ON charges.card_id = cards.id
   JOIN
     postal_code_to_state
-  ON
-    cards.country = postal_code_to_state.country
+    ON cards.country = postal_code_to_state.country
     AND UPPER(TRIM(charges.billing_detail_address_postal_code)) = postal_code_to_state.postal_code
   WHERE
     cards.country IN ("US", "CA")
@@ -118,13 +116,10 @@ FROM
   `moz-fx-data-shared-prod`.stripe_external.itemized_payout_reconciliation_v5 AS report
 LEFT JOIN
   charge_states
-USING
-  (charge_id, card_country)
+  USING (charge_id, card_country)
 LEFT JOIN
   subscriptions
-USING
-  (subscription_id)
+  USING (subscription_id)
 LEFT JOIN
   taxes
-USING
-  (invoice_id)
+  USING (invoice_id)

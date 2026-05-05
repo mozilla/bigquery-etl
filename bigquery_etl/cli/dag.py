@@ -4,11 +4,15 @@ import os
 import sys
 from pathlib import Path
 
-import click
+import rich_click as click
 import yaml
 
 from ..cli.utils import is_valid_dir, is_valid_file, sql_dir_option
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..query_scheduling.copy_deduplicate_task_markers import (
+    TASK_MARKERS_DAG_NAME,
+    write_task_markers_dag,
+)
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
@@ -176,6 +180,11 @@ def info(name, dags_config, sql_dir, with_tasks):
     ),
     default="30m",
 )
+@click.option(
+    "--catchup",
+    help=("Allow DAG to run for past dates if its start date is in the past"),
+    default=False,
+)
 def create(
     name,
     dags_config,
@@ -187,6 +196,7 @@ def create(
     email,
     retries,
     retry_delay,
+    catchup,
 ):
     """Create a new DAG."""
     # create a DAG and validate all properties
@@ -202,6 +212,7 @@ def create(
                     "retries": retries,
                     "retry_delay": retry_delay,
                 },
+                "catchup": catchup,
                 "tags": tag,
             }
         }
@@ -215,8 +226,7 @@ def create(
     click.echo(f"Added new DAG definition to {dags_config}")
 
 
-@dag.command(
-    help="""Generate Airflow DAGs from DAG definitions.
+@dag.command(help="""Generate Airflow DAGs from DAG definitions.
 
     Examples:
 
@@ -225,8 +235,7 @@ def create(
 
     # Generate a specific DAG
     ./bqetl dag generate bqetl_ssl_ratios
-    """
-)
+    """)
 @click.argument("name", required=False)
 @dags_config_option
 @sql_dir_option
@@ -234,7 +243,13 @@ def create(
 def generate(name, dags_config, sql_dir, output_dir):
     """CLI command for generating Airflow DAGs."""
     dags = get_dags(None, dags_config, sql_dir)
-    if name:
+    if name == TASK_MARKERS_DAG_NAME:
+        # copy_deduplicate task markers need to resolve every task's upstream dependencies
+        for _dag in dags.dags:
+            _dag.with_upstream_dependencies(dags)
+        output_file = write_task_markers_dag(dags, output_dir)
+        click.echo(f"Generated {output_file}")
+    elif name:
         # only generate specific DAG
         dag = dags.dag_by_name(name)
 
@@ -243,15 +258,14 @@ def generate(name, dags_config, sql_dir, output_dir):
             sys.exit(1)
 
         dags.to_airflow_dags(output_dir, dag_to_generate=dag)
-        click.echo(f"Generated {output_dir}{dag.name}.py")
+        click.echo(f"Generated {os.path.join(output_dir, dag.name)}.py")
     else:
         # re-generate all DAGs
         dags.to_airflow_dags(output_dir)
         click.echo("DAG generation complete.")
 
 
-@dag.command(
-    help="""Remove a DAG.
+@dag.command(help="""Remove a DAG.
     This will also remove the scheduling information from the queries that were scheduled
     as part of the DAG.
 
@@ -259,8 +273,7 @@ def generate(name, dags_config, sql_dir, output_dir):
 
     # Remove a specific DAG
     ./bqetl dag remove bqetl_vrbrowser
-    """
-)
+    """)
 @click.argument("name", required=False)
 @dags_config_option
 @sql_dir_option

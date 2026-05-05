@@ -10,7 +10,7 @@
   )
   SELECT IF(
    (SELECT COUNTIF(total_rows < {{ threshold }}) FROM min_row_count) > 0,
-   ERROR(CONCAT("Less than ", (SELECT total_rows FROM min_row_count), " rows found (expected more than {{ threshold }})")),
+   ERROR(CONCAT("Min Row Count Error: ", (SELECT total_rows FROM min_row_count), " rows found, expected more than {{ threshold }} rows")),
    NULL
   );
 {% endmacro %}

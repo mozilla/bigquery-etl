@@ -22,8 +22,17 @@ SELECT
   baseline.sample_id,
   baseline.submission_date,
   baseline.normalized_channel,
-  * EXCEPT (submission_date, normalized_channel, client_id, sample_id, is_default_browser),
+  * EXCEPT (
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    is_default_browser,
+    device_manufacturer,
+    isp_name -- removes the `isp_name` that comes from `metrics` and leaves in the `baseline.isp
+  ),
   baseline.is_default_browser,
+  baseline.device_manufacturer
 FROM
   baseline
 LEFT JOIN

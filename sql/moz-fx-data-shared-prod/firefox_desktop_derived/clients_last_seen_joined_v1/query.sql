@@ -34,8 +34,7 @@ SELECT
     client_id,
     sample_id,
     is_default_browser,
-    device_manufacturer,
-    isp_name -- removes the `isp_name` that comes from `metrics` and leaves in the `baseline.isp
+    device_manufacturer
   ),
   baseline.is_default_browser,
   baseline.device_manufacturer

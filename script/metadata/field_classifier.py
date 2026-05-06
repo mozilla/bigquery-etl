@@ -71,7 +71,7 @@ DEST_SCHEMA = [
         "confidence",
         "STRING",
         mode="NULLABLE",
-        description="high | medium | low — Claude's self-reported confidence.",
+        description="high | medium | low — the model's self-reported confidence.",
     ),
     bigquery.SchemaField(
         "reasoning",
@@ -172,7 +172,7 @@ def find_matching_probes(column_name, probes):
 def build_classification_prompt(
     column_name, data_type, table, pass1_description, matching_probes, taxonomy_json
 ):
-    """Build a prompt asking Claude to assign a taxonomy label."""
+    """Build a prompt asking the LLM to assign a taxonomy label."""
     if matching_probes:
         probe_lines = []
         for p in matching_probes:

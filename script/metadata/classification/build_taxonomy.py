@@ -1,8 +1,11 @@
 """Preprocess the Mozilla data taxonomy CSV into a clean JSON file for the classifier.
 
 Reads `Taxonomy overview - Data Types.csv`, normalizes labels, fixes known typos,
-and emits a flat list of {label, parent, display_name, description, examples}
-as `taxonomy.json`.
+and emits a flat list of {label, parent, level, display_name, description, examples}
+as `taxonomy.json`. The `level` field tags which CSV column the entry came from:
+  - "subject"     — Data subject (col 0): user, system, personnel, ...
+  - "data_type"   — Data type (col 1): user.unique_id, user.behavior.search, ...
+  - "subcategory" — Subcategory 1 (col 2): user.unique_id.client_id, ...
 """
 
 import csv
@@ -56,16 +59,20 @@ def parse_row(row):
 
     if level2.strip():
         label = canonical_label(level2)
+        level = "subcategory"
     elif level1.strip():
         label = canonical_label(level1)
+        level = "data_type"
     elif subject.strip() in SUBJECT_LABELS:
         label = SUBJECT_LABELS[subject.strip()]
+        level = "subject"
     else:
         return None
 
     return {
         "label": label,
         "parent": parent_of(label),
+        "level": level,
         "display_name": name.strip() or None,
         "description": description.strip() or None,
         "examples": examples.strip() or None,

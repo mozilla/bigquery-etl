@@ -486,7 +486,9 @@ jobs:
           stage:
             project_id: moz-fx-data-integration-tests
             dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.branch }}"
-            artifact_prefix: "{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}_"
+            # Leading `c_` is required: UDF identifiers must start with an alpha
+            # char, but git.commit is hex.
+            artifact_prefix: "c_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}_"
             grant_dryrun_access: true
             expire_after_hours: 12
             rewrite_tests: true

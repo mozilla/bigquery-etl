@@ -779,6 +779,30 @@ def _read_source_project_from_manifest(query_file: Path) -> Optional[str]:
         return None
 
 
+def read_source_identity_from_manifest(
+    query_file: Path,
+) -> Optional[Tuple[str, str, str]]:
+    """Recover (source_project, source_dataset, source_table) from the manifest.
+
+    Returns None if the manifest is missing, unreadable, or doesn't contain all
+    three source fields. Used by deploy-time schema resolution to point the
+    `client.get_table` lookup at the original prod table.
+    """
+    manifest_path = query_file.parent / MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return None
+    try:
+        manifest = yaml.safe_load(manifest_path.read_text()) or {}
+    except Exception:
+        return None
+    src_project = manifest.get("source_project")
+    src_dataset = manifest.get("source_dataset")
+    src_table = manifest.get("source_table")
+    if not (src_project and src_dataset and src_table):
+        return None
+    return src_project, src_dataset, src_table
+
+
 def _substitute_3part_ref(
     sql: str,
     src: Tuple[str, str, str],

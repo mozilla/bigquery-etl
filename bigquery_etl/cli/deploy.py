@@ -615,19 +615,10 @@ def _prepare_target_artifacts(
         if target_file.name == MATERIALIZED_VIEW:
             target_file = _strip_materialized_view(target_file)
 
-        if (
-            isolated
-            and artifact_type == "table"
-            and target_file.name in (QUERY_FILE, QUERY_SCRIPT)
-        ):
-            _resolve_isolated_schema(
-                target_file=target_file,
-                artifact_metadata_path=file_path.parent / "metadata.yaml",
-                source_project=source_project,
-                source_dataset=source_dataset,
-                source_table=source_table,
-                sql_dir=sql_dir,
-            )
+        # Schema resolution for tables without schema.yaml is deferred to
+        # `_deploy_table_artifact` so it runs in topo order, after the table's
+        # target deps already exist (otherwise the rewritten-query dry-run
+        # 404s on dep datasets that haven't been deployed yet).
 
         project, dataset, name = extract_from_query_path(target_file)
         new_artifacts[f"{project}.{dataset}.{name}"] = (target_file, artifact_type)
@@ -645,18 +636,20 @@ def _resolve_isolated_schema(
 ) -> None:
     """Ensure target_file's schema.yaml exists for an --isolated table deploy.
 
+    Called from `_deploy_table_artifact` in topo order, so dependent target
+    artifacts already exist by the time we get here — the rewritten-query
+    dry-run can resolve their schemas.
+
     Resolution order (first match wins):
       1. target_file already has a schema.yaml (copied from source) — keep it,
          unless the table declares allow_field_addition (schema may have drifted).
       2. The table is deployed in the source project — fetch via client.get_table.
-      3. Dry-run the source query (refs prod tables, accessible via the dry-run
-         cloud function) — derives the schema from prod data without depending
-         on the target deploy ordering.
-      4. Dry-run the rewritten query against the target project. UDFs and
-         dependency stubs were already published earlier in the deploy, so the
-         dry-run picks up local UDF changes. Used as a fallback when the source
-         query isn't dry-runnable (e.g., user changed it locally in a way that
-         requires the rewritten target refs).
+         Works when the runtime credentials have read access to source (typical
+         for local dev with the user's own creds; falls through silently in CI
+         where the stage SA can't read prod).
+      3. Dry-run the rewritten query against the target project. Target UDFs
+         and dependency tables were deployed earlier in topo order, so refs
+         resolve and the dry-run yields the schema.
 
     Raises FailedDeployException if none of the above produces a schema.
     """
@@ -694,30 +687,12 @@ def _resolve_isolated_schema(
         Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(target_schema)
         return
     except Exception as e:
-        log.info(
+        log.debug(
             f"Source table {source_project}.{source_dataset}.{source_table} "
-            f"not available, falling back to source query dry-run ({e})"
+            f"not available, falling back to target dry-run ({e})"
         )
 
-    # 3. dry-run the source query (resolves refs against prod, no target deps required)
-    source_file = (
-        Path(sql_dir)
-        / source_project
-        / source_dataset
-        / source_table
-        / target_file.name
-    )
-    if source_file.exists():
-        try:
-            Schema.from_query_file(source_file).to_yaml_file(target_schema)
-            return
-        except Exception as e:
-            log.info(
-                f"Source query dry-run for {source_project}.{source_dataset}."
-                f"{source_table} failed, falling back to target dry-run ({e})"
-            )
-
-    # 4. dry-run the rewritten query against the target project
+    # 3. dry-run the rewritten query against the target project
     try:
         Schema.from_query_file(target_file).to_yaml_file(target_schema)
         return
@@ -1054,6 +1029,28 @@ def _update_table_schema(file_path: Path, options: dict):
 
 def _deploy_table_artifact(file_path: Path, options: dict):
     """Deploy a table using existing deploy_table function."""
+    # For --isolated, resolve schema.yaml here (after deps deployed in topo order)
+    # rather than upfront in `_prepare_target_artifacts`. Doing it upfront would
+    # 404 on rewritten refs that point at target datasets not yet created.
+    if (
+        options.get("isolated", False)
+        and not options["dry_run"]
+        and file_path.name in (QUERY_FILE, QUERY_SCRIPT)
+    ):
+        from bigquery_etl.util.target import read_source_identity_from_manifest
+
+        source_identity = read_source_identity_from_manifest(file_path)
+        if source_identity is not None:
+            src_project, src_dataset, src_table = source_identity
+            _resolve_isolated_schema(
+                target_file=file_path,
+                artifact_metadata_path=file_path.parent / "metadata.yaml",
+                source_project=src_project,
+                source_dataset=src_dataset,
+                source_table=src_table,
+                sql_dir=options["sql_dir"],
+            )
+
     # Check if schema update is needed before deployment.
     # Skip entirely for --isolated: schema update dry-runs the query, but
     # rewritten refs in the isolated mirror point at deps that aren't deployed.

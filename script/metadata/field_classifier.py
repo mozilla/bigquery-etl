@@ -18,8 +18,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import anthropic
+from google import genai
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
+from google.genai.types import HttpOptions
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -30,9 +32,22 @@ MAPPING_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_table_pings_v1"
 PROBE_TABLE = "mozdata-nonprod.analysis.akomar_metadata_phase2_ping_probes_v1"
 DEST_TABLE = "mozdata-nonprod.analysis.akomar_field_classifications_v1"
 DEST_PROJECT = "mozdata-nonprod"
-CLAUDE_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "claude-sonnet-4-6"
+GEMINI_VERTEX_PROJECT = "mozdata"
+GEMINI_VERTEX_LOCATION = "global"
 TAXONOMY_PATH = Path(__file__).parent / "classification" / "taxonomy.json"
 TOP_N_PROBES = 3
+
+
+def is_claude_model(name):
+    """Anthropic-hosted Claude model name (e.g. claude-sonnet-4-6)."""
+    return name.startswith("claude-")
+
+
+def is_gemini_model(name):
+    """Vertex-hosted Gemini model name (e.g. gemini-3.1-flash-lite-preview)."""
+    return name.startswith("gemini-")
+
 
 DEST_SCHEMA = [
     bigquery.SchemaField("source_project", "STRING", mode="REQUIRED"),
@@ -76,6 +91,12 @@ DEST_SCHEMA = [
         "STRING",
         mode="REPEATED",
         description="Glean data_sensitivity labels from the matched probe, if any.",
+    ),
+    bigquery.SchemaField(
+        "model",
+        "STRING",
+        mode="NULLABLE",
+        description="LLM backend that produced the row: 'claude' or 'gemini'.",
     ),
     bigquery.SchemaField("classified_at", "TIMESTAMP", mode="REQUIRED"),
 ]
@@ -177,17 +198,31 @@ def build_classification_prompt(
     )
 
 
-def call_claude(claude_client, prompt):
+def _strip_json_fences(text):
+    """Remove optional ```json ... ``` markdown fences."""
+    text = text.strip()
+    text = re.sub(r"^```(?:json)?\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+    return text
+
+
+def call_claude(claude_client, model, prompt):
     """Call Claude and parse the JSON response."""
     response = claude_client.messages.create(
-        model=CLAUDE_MODEL,
+        model=model,
         max_tokens=512,
         messages=[{"role": "user", "content": prompt}],
     )
-    text = response.content[0].text.strip()
-    text = re.sub(r"^```(?:json)?\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-    return json.loads(text)
+    return json.loads(_strip_json_fences(response.content[0].text))
+
+
+def call_gemini(gemini_client, model, prompt):
+    """Call Gemini via Vertex and parse the JSON response."""
+    response = gemini_client.models.generate_content(
+        model=model,
+        contents=prompt,
+    )
+    return json.loads(_strip_json_fences(response.text))
 
 
 # --- BQ loaders ---
@@ -261,14 +296,14 @@ def load_probes_by_ping(bq_client):
 
 
 def get_already_classified(bq_client):
-    """Return set of (project, dataset, table, column) already classified."""
+    """Return set of (project, dataset, table, column, model) already classified."""
     try:
         query = f"""
-            SELECT source_project, source_dataset, source_table, column_name
+            SELECT source_project, source_dataset, source_table, column_name, model
             FROM `{DEST_TABLE}`
         """
         return {
-            (r.source_project, r.source_dataset, r.source_table, r.column_name)
+            (r.source_project, r.source_dataset, r.source_table, r.column_name, r.model)
             for r in bq_client.query(query).result()
         }
     except NotFound:
@@ -280,6 +315,9 @@ def save_to_bq(bq_client, records):
     job_config = bigquery.LoadJobConfig(
         schema=DEST_SCHEMA,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        schema_update_options=[
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+        ],
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
     )
     job = bq_client.load_table_from_json(records, DEST_TABLE, job_config=job_config)
@@ -299,14 +337,44 @@ def parse_args():
         "--table",
         help="Fully qualified BQ table (project.dataset.table). If omitted, processes all Phase 1 tables.",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help=(
+            "Full LLM model name. Names starting with 'claude-' route to the "
+            "Anthropic API (requires ANTHROPIC_API_KEY); names starting with "
+            "'gemini-' route to Vertex AI on project "
+            f"'{GEMINI_VERTEX_PROJECT}' (requires application-default "
+            f"credentials). Default: {DEFAULT_MODEL}."
+        ),
+    )
+    args = parser.parse_args()
+    if not (is_claude_model(args.model) or is_gemini_model(args.model)):
+        parser.error(
+            f"Unrecognized --model '{args.model}'. "
+            "Expected a name starting with 'claude-' or 'gemini-'."
+        )
+    return args
 
 
 def main():
     """Classify columns from Phase 1 against the Mozilla data taxonomy."""
     args = parse_args()
     bq_client = bigquery.Client(project=DEST_PROJECT)
-    claude_client = anthropic.Anthropic()
+
+    if is_claude_model(args.model):
+        claude_client = anthropic.Anthropic()
+        invoke_llm = lambda prompt: call_claude(claude_client, args.model, prompt)
+        logging.info(f"Using Claude model: {args.model}")
+    else:
+        gemini_client = genai.Client(
+            vertexai=True,
+            project=GEMINI_VERTEX_PROJECT,
+            location=GEMINI_VERTEX_LOCATION,
+            http_options=HttpOptions(api_version="v1"),
+        )
+        invoke_llm = lambda prompt: call_gemini(gemini_client, args.model, prompt)
+        logging.info(f"Using Gemini model: {args.model}")
 
     project, dataset, table = (None, None, None)
     if args.table:
@@ -336,7 +404,9 @@ def main():
         )
 
         pending = [
-            c for c in columns if (proj, ds, tbl, c["column_name"]) not in already_done
+            c
+            for c in columns
+            if (proj, ds, tbl, c["column_name"], args.model) not in already_done
         ]
         if not pending:
             logging.info(
@@ -365,9 +435,9 @@ def main():
             )
 
             try:
-                result = call_claude(claude_client, prompt)
+                result = invoke_llm(prompt)
             except Exception as e:
-                logging.error(f"Claude call failed for {col_name}: {e}")
+                logging.error(f"{args.model} call failed for {col_name}: {e}")
                 continue
 
             matched_probe = (
@@ -391,6 +461,7 @@ def main():
                     "needs_review": result.get("needs_review"),
                     "matched_probe": matched_probe,
                     "data_sensitivity": probe_sensitivity or [],
+                    "model": args.model,
                     "classified_at": now,
                 }
             )

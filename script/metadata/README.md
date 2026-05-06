@@ -29,7 +29,19 @@ TABLE=moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
 python script/metadata/field_profiler.py        --table "$TABLE"
 python script/metadata/lineage_probe_fetcher.py --table "$TABLE"
 python script/metadata/field_classifier.py      --table "$TABLE"
+python script/metadata/field_classifier.py      --table "$TABLE" --model gemini-3.1-flash-lite-preview
+python script/metadata/classification/compare_models.py --table "$TABLE"
 ```
 
-Requires `ANTHROPIC_API_KEY` and `DATAHUB_GMS_TOKEN` env vars and
-`pip install anthropic`.
+`--model` takes the full model name. Names starting with `claude-` route to
+the Anthropic API; names starting with `gemini-` route to Vertex AI on
+project `mozdata`. Default is `claude-sonnet-4-6`.
+
+Requires `DATAHUB_GMS_TOKEN`, plus a credential matching whichever model(s)
+you use:
+- Claude: `ANTHROPIC_API_KEY`
+- Gemini: `gcloud auth application-default login`
+
+Dependencies (`anthropic`, `google-genai`) are in `requirements.in` /
+`requirements.txt`. See [`classification/PLAN.md`](classification/PLAN.md)
+for design details and model-comparison usage.

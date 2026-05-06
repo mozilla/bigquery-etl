@@ -12,6 +12,7 @@ import json
 import logging
 import os
 import re
+import time
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 
@@ -306,6 +307,103 @@ def reconcile_column(
         }
 
 
+def build_batch_prompt(
+    batch, table, source_ping, ping_platform, github_query=None, github_filename=None
+):
+    """Build a Claude prompt to reconcile multiple columns in one call."""
+    ping_info = (
+        f"{source_ping} ({ping_platform})"
+        if source_ping
+        else "unknown (no lineage resolved)"
+    )
+
+    source_section = ""
+    if github_query:
+        source_section = (
+            f"ETL query ({github_filename}) from the bqetl GitHub repo:\n"
+            f"```sql\n{github_query}\n```\n\n"
+        )
+
+    col_lines = []
+    for i, col in enumerate(batch):
+        probe_info = ""
+        if col.get("matching_probes"):
+            probe_lines = [
+                f"    - {p['probe_name']} ({p['probe_type'] or 'unknown type'}): {p['probe_description'] or '(no description)'}"
+                for p in col["matching_probes"]
+            ]
+            probe_info = "\n   Candidate probes:\n" + "\n".join(probe_lines)
+        col_lines.append(
+            f"{i + 1}. Column: {col['column_name']} (type: {col['data_type']})\n"
+            f"   Phase 1 description: {col['pass1_description']}"
+            f"{probe_info}"
+        )
+
+    columns_section = "\n\n".join(col_lines)
+
+    return (
+        "You are a data documentation expert for Mozilla's BigQuery data warehouse.\n\n"
+        f"Table: {table}\n"
+        f"Source ping: {ping_info}\n\n"
+        f"{source_section}"
+        f"For each of the {len(batch)} columns below, provide:\n"
+        "1. matched_probe: probe name this column maps to (or null)\n"
+        "2. final_description: 1-2 sentence description combining observed data with source intent\n"
+        "3. contradiction: any contradiction between observed data and source definition (or null)\n"
+        "4. routing_hint: 'global' if generic across Mozilla products, 'dataset' if specific, 'unknown' if unclear\n\n"
+        f"Columns:\n\n{columns_section}\n\n"
+        f"Respond with a JSON array of exactly {len(batch)} objects in order (no markdown fences):\n"
+        '[{"matched_probe": "...", "final_description": "...", "contradiction": "...", "routing_hint": "global|dataset|unknown"}, ...]'
+    )
+
+
+def reconcile_column_batch(
+    claude_client,
+    batch,
+    table,
+    source_ping,
+    ping_platform,
+    github_query=None,
+    github_filename=None,
+):
+    """Reconcile a batch of columns in a single Claude API call. Falls back per-column on error."""
+    prompt = build_batch_prompt(
+        batch, table, source_ping, ping_platform, github_query, github_filename
+    )
+    try:
+        response = claude_client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        text = response.content[0].text.strip()
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+        results = json.loads(text)
+        if not isinstance(results, list) or len(results) != len(batch):
+            raise ValueError(
+                f"Expected list of {len(batch)}, got {type(results).__name__} len={len(results) if isinstance(results, list) else '?'}"
+            )
+        return results
+    except Exception as e:
+        logging.warning(
+            f"Batch call failed ({e}), falling back to per-column for this batch"
+        )
+        return [
+            reconcile_column(
+                claude_client,
+                col["column_name"],
+                col["data_type"],
+                table,
+                source_ping,
+                ping_platform,
+                col["pass1_description"],
+                col.get("matching_probes", []),
+            )
+            for col in batch
+        ]
+
+
 # --- BQ loaders ---
 
 
@@ -317,6 +415,8 @@ def load_phase1(bq_client, project=None, dataset=None, table=None):
     where = "WHERE column_tier != 'undocumented' AND pass1_description IS NOT NULL"
     if project and dataset and table:
         where += f" AND source_project = '{project}' AND source_dataset = '{dataset}' AND source_table = '{table}'"
+    elif dataset:
+        where += f" AND source_dataset = '{dataset}'"
     query = f"""
         SELECT source_project, source_dataset, source_table, column_name, data_type, pass1_description
         FROM `{PHASE1_TABLE}`
@@ -417,6 +517,16 @@ def parse_args():
         "--table",
         help="Fully qualified BQ table (project.dataset.table). If omitted, processes all Phase 1 tables.",
     )
+    parser.add_argument(
+        "--dataset",
+        help="BQ dataset name (e.g. monitoring_derived). Scopes processing to one dataset.",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=1,
+        help="Number of columns per Claude API call (default 1 = per-column). Try 10 for jsonPayload-heavy tables.",
+    )
     return parser.parse_args()
 
 
@@ -429,6 +539,9 @@ def main():
     project, dataset, table = (None, None, None)
     if args.table:
         project, dataset, table = args.table.split(".")
+    elif args.dataset:
+        dataset = args.dataset
+    batch_size = args.batch_size
 
     logging.info("Loading Phase 1, Phase 2 mapping and probes...")
     phase1 = load_phase1(bq_client, project, dataset, table)
@@ -474,57 +587,132 @@ def main():
         )
 
         records = []
+
+        # Annotate pending columns with their matching probes
+        annotated = []
         for col in pending:
             col_name = col["column_name"]
-            pass1 = col["pass1_description"]
             matching_probes = find_matching_probes(col_name, ping_probes)
-
-            # Only pass GitHub query for columns with no probe match
             col_github_query = github_query if not matching_probes else None
             col_github_filename = github_filename if not matching_probes else None
-            logging.info(
-                f"  {col_name} → {len(matching_probes)} probes {'(+GitHub query)' if col_github_query else ''}"
-            )
-
-            result = reconcile_column(
-                claude_client,
-                col_name,
-                col["data_type"],
-                f"{ds}.{tbl}",
-                source_ping,
-                ping_platform,
-                pass1,
-                matching_probes,
-                github_query=col_github_query,
-                github_filename=col_github_filename,
-            )
-
-            matched_probe = result.get("matched_probe")
-            probe_desc = None
-            if matched_probe:
-                probe_match = next(
-                    (p for p in ping_probes if p["probe_name"] == matched_probe), None
-                )
-                probe_desc = probe_match["probe_description"] if probe_match else None
-
-            records.append(
+            annotated.append(
                 {
-                    "source_project": proj,
-                    "source_dataset": ds,
-                    "source_table": tbl,
-                    "column_name": col_name,
-                    "data_type": col["data_type"],
-                    "source_ping": source_ping,
-                    "ping_platform": ping_platform,
-                    "pass1_description": pass1,
-                    "matched_probe": matched_probe,
-                    "probe_description": probe_desc,
-                    "final_description": result.get("final_description"),
-                    "contradiction": result.get("contradiction"),
-                    "routing_hint": result.get("routing_hint"),
-                    "processed_at": now,
+                    **col,
+                    "matching_probes": matching_probes,
+                    "col_github_query": col_github_query,
+                    "col_github_filename": col_github_filename,
                 }
             )
+
+        if batch_size > 1:
+            # Batch mode: group by (has_probes, github_query) so columns with same context batch together
+            for i in range(0, len(annotated), batch_size):
+                batch = annotated[i : i + batch_size]
+                batch_github_query = batch[0]["col_github_query"]
+                batch_github_filename = batch[0]["col_github_filename"]
+                col_names = [c["column_name"] for c in batch]
+                logging.info(
+                    f"  Batch {i // batch_size + 1} ({len(batch)} cols): {col_names[0]} … {col_names[-1]}"
+                )
+                t0 = time.time()
+                results = reconcile_column_batch(
+                    claude_client,
+                    batch,
+                    f"{ds}.{tbl}",
+                    source_ping,
+                    ping_platform,
+                    github_query=batch_github_query,
+                    github_filename=batch_github_filename,
+                )
+                elapsed = time.time() - t0
+                logging.info(
+                    f"    → {len(batch)} cols in {elapsed:.1f}s ({elapsed / len(batch):.2f}s/col)"
+                )
+                for col, result in zip(batch, results):
+                    col_name = col["column_name"]
+                    matched_probe = result.get("matched_probe")
+                    probe_desc = None
+                    if matched_probe:
+                        probe_match = next(
+                            (
+                                p
+                                for p in ping_probes
+                                if p["probe_name"] == matched_probe
+                            ),
+                            None,
+                        )
+                        probe_desc = (
+                            probe_match["probe_description"] if probe_match else None
+                        )
+                    records.append(
+                        {
+                            "source_project": proj,
+                            "source_dataset": ds,
+                            "source_table": tbl,
+                            "column_name": col_name,
+                            "data_type": col["data_type"],
+                            "source_ping": source_ping,
+                            "ping_platform": ping_platform,
+                            "pass1_description": col["pass1_description"],
+                            "matched_probe": matched_probe,
+                            "probe_description": probe_desc,
+                            "final_description": result.get("final_description"),
+                            "contradiction": result.get("contradiction"),
+                            "routing_hint": result.get("routing_hint"),
+                            "processed_at": now,
+                        }
+                    )
+        else:
+            # Per-column mode (default)
+            for col in annotated:
+                col_name = col["column_name"]
+                pass1 = col["pass1_description"]
+                matching_probes = col["matching_probes"]
+                col_github_query = col["col_github_query"]
+                col_github_filename = col["col_github_filename"]
+                logging.info(
+                    f"  {col_name} → {len(matching_probes)} probes {'(+GitHub query)' if col_github_query else ''}"
+                )
+                result = reconcile_column(
+                    claude_client,
+                    col_name,
+                    col["data_type"],
+                    f"{ds}.{tbl}",
+                    source_ping,
+                    ping_platform,
+                    pass1,
+                    matching_probes,
+                    github_query=col_github_query,
+                    github_filename=col_github_filename,
+                )
+                matched_probe = result.get("matched_probe")
+                probe_desc = None
+                if matched_probe:
+                    probe_match = next(
+                        (p for p in ping_probes if p["probe_name"] == matched_probe),
+                        None,
+                    )
+                    probe_desc = (
+                        probe_match["probe_description"] if probe_match else None
+                    )
+                records.append(
+                    {
+                        "source_project": proj,
+                        "source_dataset": ds,
+                        "source_table": tbl,
+                        "column_name": col_name,
+                        "data_type": col["data_type"],
+                        "source_ping": source_ping,
+                        "ping_platform": ping_platform,
+                        "pass1_description": pass1,
+                        "matched_probe": matched_probe,
+                        "probe_description": probe_desc,
+                        "final_description": result.get("final_description"),
+                        "contradiction": result.get("contradiction"),
+                        "routing_hint": result.get("routing_hint"),
+                        "processed_at": now,
+                    }
+                )
 
         save_to_bq(bq_client, records)
         logging.info(f"  Done {ds}.{tbl} ({len(records)} columns)")

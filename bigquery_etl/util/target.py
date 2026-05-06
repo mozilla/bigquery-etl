@@ -682,7 +682,18 @@ def collect_target_dependencies(
     ]
     id_token = get_id_token()
 
+    # Visit each file and each (project, dataset, name) ref at most once. The
+    # same dep is commonly referenced from many artifacts, and without dedup
+    # `_create_target_stub` re-runs `_fetch_stub_schema` (dry-run) on every
+    # occurrence, blowing up CI logs and runtime.
+    walked_files: Set[Path] = set()
+    seen_refs: Set[Tuple[str, str, str]] = set()
+
     for dep_file in dependency_files:
+        if dep_file in walked_files:
+            continue
+        walked_files.add(dep_file)
+
         if dep_file not in artifact_files:
             artifact_dependencies.add(dep_file)
 
@@ -699,6 +710,9 @@ def collect_target_dependencies(
             project, dataset, name = normalized
             if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
                 continue
+            if (project, dataset, name) in seen_refs:
+                continue
+            seen_refs.add((project, dataset, name))
 
             existing = _existing_artifact_file(Path(sql_dir) / project / dataset / name)
             if existing is not None:

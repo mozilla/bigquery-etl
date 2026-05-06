@@ -54,7 +54,8 @@ fields:
     (e.g., "control", "treatment-a", "treatment-b").
 - name: attribution_campaign
   type: STRING
-  description: The attribution campaign; similar or the same as UTM campaign.
+  description: The campaign this client/install was attributed to (utm_campaign
+    value, identifying a specific marketing campaign or promotion).
 - name: attribution_content
   type: STRING
   description: The attribution content; similar or the same as UTM content.

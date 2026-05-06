@@ -93,10 +93,22 @@ DEST_SCHEMA = [
         description="Glean data_sensitivity labels from the matched probe, if any.",
     ),
     bigquery.SchemaField(
+        "data_collection_category",
+        "STRING",
+        mode="NULLABLE",
+        description=(
+            "LLM-inferred Mozilla data collection category — one of "
+            "'technical', 'interaction', 'web_activity', 'highly_sensitive' "
+            "(see https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories). "
+            "Same scale as Glean's data_sensitivity but emitted for every row, "
+            "including columns with no probe match or legacy telemetry."
+        ),
+    ),
+    bigquery.SchemaField(
         "model",
         "STRING",
         mode="NULLABLE",
-        description="LLM backend that produced the row: 'claude' or 'gemini'.",
+        description="Full LLM model name that produced the row, e.g. claude-sonnet-4-6 or gemini-3.1-flash-lite-preview.",
     ),
     bigquery.SchemaField("classified_at", "TIMESTAMP", mode="REQUIRED"),
 ]
@@ -191,10 +203,23 @@ def build_classification_prompt(
         " list the extras in secondary_labels. Use the Glean data_sensitivity signal"
         " to disambiguate when present (e.g. highly_sensitive strongly implies"
         " user.behavior, user.content, user.location.precise, etc.).\n\n"
+        "Also assign a Mozilla data collection category — exactly one of"
+        " 'technical', 'interaction', 'web_activity', 'highly_sensitive' (per"
+        " https://wiki.mozilla.org/Data_Collection#Data_Collection_Categories,"
+        " same scale as Glean's data_sensitivity). Definitions:\n"
+        "  - technical: build, environment, version, performance counters; no user content.\n"
+        "  - interaction: how users interact with the product (clicks, sessions, feature usage).\n"
+        "  - web_activity: web/search activity — URLs, search terms, visited domains.\n"
+        "  - highly_sensitive: anything else of high sensitivity — precise location, free-form\n"
+        "    user content, communications, demographic data, identifiers tied to a person.\n"
+        "If a Glean data_sensitivity is declared on the matched probe, you should usually agree,"
+        " but the column's observed content takes precedence when they conflict (e.g. a"
+        " 'technical' probe carrying user content). Pick the single highest applicable category.\n\n"
         "Respond with a JSON object only (no markdown fences):\n"
         '{"primary_label": "<label>", "secondary_labels": [], '
         '"confidence": "high|medium|low", "reasoning": "<1-2 sentences>", '
-        '"needs_review": true|false}'
+        '"needs_review": true|false, '
+        '"data_collection_category": "technical|interaction|web_activity|highly_sensitive"}'
     )
 
 
@@ -461,6 +486,7 @@ def main():
                     "needs_review": result.get("needs_review"),
                     "matched_probe": matched_probe,
                     "data_sensitivity": probe_sensitivity or [],
+                    "data_collection_category": result.get("data_collection_category"),
                     "model": args.model,
                     "classified_at": now,
                 }

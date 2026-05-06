@@ -477,7 +477,7 @@ jobs:
       - *auth-gcp-dryrun
       - *auth-gcp-stage
       - name: Deploy changes to stage
-        timeout-minutes: 60
+        timeout-minutes: 120
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}

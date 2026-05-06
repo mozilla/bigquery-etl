@@ -73,7 +73,7 @@ WITH temp_unnested AS (
       res.result_type IN (
         'search_engine',
         'search_suggest',
-        'search_sugget_rich',
+        'search_suggest_rich',
         'trending_search',
         'trending_search_rich'
       ),

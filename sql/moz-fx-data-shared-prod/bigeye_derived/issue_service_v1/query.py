@@ -1,5 +1,6 @@
 """Pull from BigEye API from Issue service and upload to Big Query."""
 
+import json
 import logging
 import os
 import re
@@ -55,8 +56,16 @@ def process_response(response_data: Dict[str, Any]) -> pd.DataFrame:
         snake_case_name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
         df = df.rename(columns={f"{column_name}": f"{snake_case_name}"})
 
-    df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
+    for col in df.columns:
+        if (
+            df[col].dtype == object
+            and df[col].apply(lambda x: isinstance(x, (dict, list))).any()
+        ):
+            df[col] = df[col].apply(
+                lambda x: json.dumps(x) if isinstance(x, (dict, list)) else x
+            )
 
+    df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
     return df
 
 

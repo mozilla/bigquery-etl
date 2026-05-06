@@ -36,9 +36,9 @@ SELECT
       client_id,
       sample_id,
       is_default_browser,
-      device_manufacturer,
+      device_manufacturer
       {% if app_name == "fenix" %}
-      isp_name -- removes the `isp_name` that comes from `metrics` and leaves in the `baseline.isp`
+      , isp_name -- removes the `isp_name` that comes from `metrics` and leaves in the `baseline.isp`
       {% endif %}
     ),
   baseline.is_default_browser,

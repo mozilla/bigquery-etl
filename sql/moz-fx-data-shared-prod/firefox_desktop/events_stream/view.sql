@@ -79,6 +79,7 @@ SELECT
       LAX_BOOL(event_extra.is_addon_active) AS `is_addon_active`,
       LAX_BOOL(event_extra.is_customizing) AS `is_customizing`,
       LAX_BOOL(event_extra.is_deleted) AS `is_deleted`,
+      LAX_BOOL(event_extra.is_destroying) AS `is_destroying`,
       LAX_BOOL(event_extra.is_extensions_button_visible) AS `is_extensions_button_visible`,
       LAX_BOOL(event_extra.is_extensions_panel_empty) AS `is_extensions_panel_empty`,
       LAX_BOOL(event_extra.is_frame) AS `is_frame`,

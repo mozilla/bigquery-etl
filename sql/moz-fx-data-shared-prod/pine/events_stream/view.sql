@@ -54,6 +54,7 @@ SELECT
       LAX_BOOL(event_extra.inPrivateBrowsing) AS `inPrivateBrowsing`,
       LAX_BOOL(event_extra.is_addon_active) AS `is_addon_active`,
       LAX_BOOL(event_extra.is_deleted) AS `is_deleted`,
+      LAX_BOOL(event_extra.is_destroying) AS `is_destroying`,
       LAX_BOOL(event_extra.is_frame) AS `is_frame`,
       LAX_BOOL(event_extra.is_hardware_accelerated) AS `is_hardware_accelerated`,
       LAX_BOOL(event_extra.is_hardware_decoding) AS `is_hardware_decoding`,

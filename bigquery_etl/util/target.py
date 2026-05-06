@@ -126,14 +126,15 @@ class Target:
 def _template_to_pattern(
     template_str: str,
     branch: Optional[str] = None,
+    run_id: Optional[str] = None,
     anchor_end: bool = False,
     capture_commit: bool = False,
 ) -> str:
     """Render a Jinja2 template into a regex pattern for matching BQ identifiers.
 
-    Known values (branch, username) are rendered literally; the commit slot
-    must start with 7+ hex chars (short SHA) and may have trailing chars from
-    legacy templates; other variable slots become [a-zA-Z0-9_]+. Anchoring
+    Known values (branch, username, run_id) are rendered literally; the commit
+    slot must start with 7+ hex chars (short SHA) and may have trailing chars
+    from legacy templates; other variable slots become [a-zA-Z0-9_]+. Anchoring
     the commit slot to a hex SHA prefix prevents over-matching when the
     literal branch is a substring of another branch's sanitized name.
 
@@ -149,6 +150,7 @@ def _template_to_pattern(
         git={"branch": branch or _WILDCARD, "commit": _COMMIT_WILDCARD},
         account=_get_account_context(),
         artifact={"project_id": _WILDCARD, "dataset_id": _WILDCARD},
+        run_id=run_id if run_id else _WILDCARD,
     )
 
     escaped = re.escape(sanitize_bq_id(rendered))
@@ -161,7 +163,11 @@ def _template_to_pattern(
     return f"^{pattern}$" if anchor_end else f"^{pattern}"
 
 
-def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
+def render_dataset_pattern(
+    target: Target,
+    branch: Optional[str] = None,
+    run_id: Optional[str] = None,
+) -> str:
     """Render a target's dataset template into a regex pattern for matching dataset names."""
     template_str = target.raw_dataset or target.raw_dataset_prefix
     if not template_str:
@@ -170,17 +176,24 @@ def render_dataset_pattern(target: Target, branch: Optional[str] = None) -> str:
             "Cannot determine which datasets belong to this target."
         )
     return _template_to_pattern(
-        template_str, branch=branch, anchor_end=bool(target.raw_dataset)
+        template_str,
+        branch=branch,
+        run_id=run_id,
+        anchor_end=bool(target.raw_dataset),
     )
 
 
 def render_artifact_prefix_pattern(
-    target: Target, branch: Optional[str] = None
+    target: Target,
+    branch: Optional[str] = None,
+    run_id: Optional[str] = None,
 ) -> Optional[str]:
     """Render a target's artifact_prefix template into a regex pattern for matching table names."""
     if not target.raw_artifact_prefix:
         return None
-    return _template_to_pattern(target.raw_artifact_prefix, branch=branch)
+    return _template_to_pattern(
+        target.raw_artifact_prefix, branch=branch, run_id=run_id
+    )
 
 
 def extract_commit_from_dataset_name(
@@ -226,21 +239,60 @@ def _get_targets_file() -> Path:
     return ConfigLoader.project_dir / targets_file_name
 
 
+def _git_env_branch() -> Optional[str]:
+    """Return a branch name from GitHub Actions env vars, or None."""
+    return (
+        os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME") or None
+    )
+
+
+def _git_env_commit() -> Optional[str]:
+    """Return a commit SHA from GitHub Actions env vars, or None."""
+    return os.environ.get("GITHUB_SHA") or None
+
+
 @cache
 def _get_git_context() -> dict:
-    """Return git template variables, cached after first call."""
+    """Return git template variables, cached after first call.
+
+    CI checkouts often use a detached HEAD (`actions/checkout` with a SHA ref),
+    so `repo.active_branch` raises. Fall back to GitHub Actions env vars before
+    giving up so target dataset/artifact templates resolve correctly in CI.
+    """
+    branch: Optional[str] = None
+    commit: Optional[str] = None
     try:
         project_root = get_bqetl_project_root() or ROOT
         repo = git.Repo(project_root)
-        return {
-            "branch": repo.active_branch.name,
-            "commit": repo.active_branch.commit.hexsha,
-        }
+        try:
+            branch = repo.active_branch.name
+        except TypeError:
+            branch = _git_env_branch()
+        try:
+            commit = repo.head.commit.hexsha
+        except Exception:
+            commit = _git_env_commit()
     except Exception:
+        branch = _git_env_branch()
+        commit = _git_env_commit()
+
+    if not branch or not commit:
         logging.warning(
-            "Not in a git repository. Using 'unknown' for git.branch and git.commit"
+            "Could not determine git branch/commit. Using 'unknown' for missing values."
         )
-        return {"branch": "unknown", "commit": "unknown"}
+    return {"branch": branch or "unknown", "commit": commit or "unknown"}
+
+
+@cache
+def _get_run_id() -> str:
+    """Return a per-invocation run id from env, or empty string.
+
+    Used by target dataset/artifact templates as `{{ run_id }}` to disambiguate
+    parallel deploys for the same git.branch/git.commit (e.g. concurrent CI
+    runs). `BQETL_RUN_ID` takes precedence; `GITHUB_RUN_ID` is the GitHub
+    Actions fallback so CI doesn't have to forward it explicitly.
+    """
+    return os.environ.get("BQETL_RUN_ID") or os.environ.get("GITHUB_RUN_ID") or ""
 
 
 @cache
@@ -302,6 +354,7 @@ def get_target(target: str) -> Target:
     rendered_content = template.render(
         git=_get_git_context(),
         account=_get_account_context(),
+        run_id=_get_run_id(),
     )
 
     targets = yaml.safe_load(rendered_content)

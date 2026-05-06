@@ -20,6 +20,7 @@ from ..util.target import (
     IAM_ROLE_MAP,
     MANIFEST_FILENAME,
     _get_git_context,
+    _get_run_id,
     _reapply_shared_access,
     extract_commit_from_dataset_name,
     render_artifact_prefix_pattern,
@@ -30,12 +31,14 @@ from ..util.target import (
 log = logging.getLogger(__name__)
 
 
-def _find_matching_datasets(client, target_config, branch=None):
+def _find_matching_datasets(client, target_config, branch=None, run_id=None):
     """Find datasets in the target project matching the target's naming pattern.
 
     Returns a list of dataset references, or an empty list (with user message).
     """
-    dataset_re = re.compile(render_dataset_pattern(target_config, branch=branch))
+    dataset_re = re.compile(
+        render_dataset_pattern(target_config, branch=branch, run_id=run_id)
+    )
     all_datasets = list(client.list_datasets())
 
     if not all_datasets:
@@ -81,6 +84,9 @@ def target(ctx):
     git.branch is in artifact_prefix, only matching tables within datasets are
     deleted. Both filters apply when branch appears in both templates.
 
+    --run-id deletes artifacts for a specific run id. Reads from $BQETL_RUN_ID
+    / $GITHUB_RUN_ID when not passed.
+
     --older-than performs table-level cleanup: within matched datasets, only
     tables not updated within the given duration are deleted.
 
@@ -98,6 +104,8 @@ def target(ctx):
 
       ./bqetl --target dev target clean --branch feature-xyz --older-than 7d
 
+      ./bqetl --target dev target clean --run-id 12345 --yes
+
       ./bqetl --target dev target clean --older-than 7d --dry-run
     """)
 @click.option(
@@ -110,6 +118,13 @@ def target(ctx):
     "--branch",
     default=None,
     help="Delete deployments for a specific branch.",
+)
+@click.option(
+    "--run-id",
+    "--run_id",
+    "run_id",
+    default=None,
+    help="Delete deployments for a specific run id (defaults to $BQETL_RUN_ID / $GITHUB_RUN_ID if set).",
 )
 @click.option(
     "--all",
@@ -134,20 +149,23 @@ def target(ctx):
 @sql_dir_option
 @block_coding_agents
 @click.pass_context
-def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
+def clean(ctx, older_than, branch, run_id, all_deployments, dry_run, yes, sql_dir):
     """Clean up target environment deployments."""
-    if not any([older_than, branch, all_deployments]):
+    if not run_id:
+        run_id = _get_run_id() or None
+
+    if not any([older_than, branch, run_id, all_deployments]):
         raise click.UsageError(
-            "Must specify at least one filter: --older-than, --branch, or --all"
+            "Must specify at least one filter: --older-than, --branch, --run-id, or --all"
         )
-    if branch and all_deployments:
-        raise click.UsageError("--branch and --all are mutually exclusive.")
+    if all_deployments and (branch or run_id):
+        raise click.UsageError("--all is mutually exclusive with --branch / --run-id.")
 
     target_config = ctx.obj["target"]
     project_id = target_config.project_id
 
     client = bigquery.Client(project=project_id)
-    matching = _find_matching_datasets(client, target_config, branch)
+    matching = _find_matching_datasets(client, target_config, branch, run_id)
     if not matching:
         return
 
@@ -155,13 +173,12 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
         datetime.now(timezone.utc) - _parse_duration(older_than) if older_than else None
     )
     artifact_re = None
-    if (
-        branch
-        and target_config.raw_artifact_prefix
-        and "git.branch" in target_config.raw_artifact_prefix
+    if target_config.raw_artifact_prefix and (
+        (branch and "git.branch" in target_config.raw_artifact_prefix)
+        or (run_id and "run_id" in target_config.raw_artifact_prefix)
     ):
         artifact_re = re.compile(
-            render_artifact_prefix_pattern(target_config, branch=branch)
+            render_artifact_prefix_pattern(target_config, branch=branch, run_id=run_id)
         )
 
     # table-level cleanup when we have table-level filters

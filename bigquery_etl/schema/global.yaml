@@ -166,12 +166,20 @@ fields:
   mode: NULLABLE
   description: The operating system code based on the Common Platform Enumeration CPE.
 - name: os_version
-  type: INTEGER
-  description: The normalized version of the operating system running at the
-    client (e.g., "10.0" for Windows, "24.6.0" for macOS, "18.6.2" for iOS,
-    "16" for Android).
-  aliases:
-  - normalized_os_version
+  type: STRING
+  description: The operating system version running at the client prior to
+    normalization (e.g. "4.18.0-553.97.1.el8_10.aarch64" or
+    "6.11+parrot-amd64" for Linux; "10.0" for Windows, "25.3.0" for macOS,
+    "26.3.1" for iOS, "16" for Android). Windows 10 and Windows 11 both
+    show "10.0". Use `windows_build_number >= 22000` to identify
+    Windows 11.
+- name: normalized_os_version
+  type: STRING
+  description: The operating system version normalized to a consistent format
+    at ingestion (e.g. "10.0" for Windows, "16" for Android, "26.3.1" for
+    iOS, "25.3.0" for macOS, "6.8" for Linux). Windows 10 and Windows 11
+    both show "10.0". Use `windows_build_number >= 22000` to identify
+    Windows 11.
 - name: os_major
   type: INTEGER
   description: Major or first part of the operating system version running at the

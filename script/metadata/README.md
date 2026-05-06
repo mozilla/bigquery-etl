@@ -23,7 +23,23 @@ holds the taxonomy source CSV, preprocessed `taxonomy.json`, and the
 [`classification/PLAN.md`](classification/PLAN.md) for design, usage, and
 non-goals.
 
-**One-liner to classify a table end-to-end:**
+**Classify one or more tables end-to-end:**
+```bash
+script/metadata/classify_table.sh \
+    moz-fx-data-shared-prod.search_derived.search_clients_daily_v8 \
+    moz-fx-data-shared-prod.ads_backend_stable.interaction_v1
+```
+The wrapper runs three phases per table: profile → lineage/probes → classify
+with each model in `$MODELS`. Default is a single Gemini run
+(`gemini-3.1-flash-lite-preview`). To also classify with Claude (e.g. to
+diff the two models afterwards):
+```bash
+MODELS="claude-sonnet-4-6 gemini-3.1-flash-lite-preview" \
+    script/metadata/classify_table.sh "$TABLE"
+python script/metadata/classification/compare_models.py --table "$TABLE"
+```
+
+Or run the phases manually:
 ```bash
 TABLE=moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
 python script/metadata/field_profiler.py        --table "$TABLE"

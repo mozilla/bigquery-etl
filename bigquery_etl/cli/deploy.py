@@ -649,9 +649,14 @@ def _resolve_isolated_schema(
       1. target_file already has a schema.yaml (copied from source) — keep it,
          unless the table declares allow_field_addition (schema may have drifted).
       2. The table is deployed in the source project — fetch via client.get_table.
-      3. Dry-run the rewritten query against the target project. UDFs and
+      3. Dry-run the source query (refs prod tables, accessible via the dry-run
+         cloud function) — derives the schema from prod data without depending
+         on the target deploy ordering.
+      4. Dry-run the rewritten query against the target project. UDFs and
          dependency stubs were already published earlier in the deploy, so the
-         dry-run picks up local UDF changes.
+         dry-run picks up local UDF changes. Used as a fallback when the source
+         query isn't dry-runnable (e.g., user changed it locally in a way that
+         requires the rewritten target refs).
 
     Raises FailedDeployException if none of the above produces a schema.
     """
@@ -691,10 +696,28 @@ def _resolve_isolated_schema(
     except Exception as e:
         log.info(
             f"Source table {source_project}.{source_dataset}.{source_table} "
-            f"not available, falling back to target dry-run ({e})"
+            f"not available, falling back to source query dry-run ({e})"
         )
 
-    # 3. dry-run the rewritten query against the target project
+    # 3. dry-run the source query (resolves refs against prod, no target deps required)
+    source_file = (
+        Path(sql_dir)
+        / source_project
+        / source_dataset
+        / source_table
+        / target_file.name
+    )
+    if source_file.exists():
+        try:
+            Schema.from_query_file(source_file).to_yaml_file(target_schema)
+            return
+        except Exception as e:
+            log.info(
+                f"Source query dry-run for {source_project}.{source_dataset}."
+                f"{source_table} failed, falling back to target dry-run ({e})"
+            )
+
+    # 4. dry-run the rewritten query against the target project
     try:
         Schema.from_query_file(target_file).to_yaml_file(target_schema)
         return

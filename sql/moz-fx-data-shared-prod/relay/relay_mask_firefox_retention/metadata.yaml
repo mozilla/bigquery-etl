@@ -1,0 +1,6 @@
+friendly_name: Relay Mask Firefox Retention
+description: |-
+  Firefox Desktop 4th-week retention segmented by Relay mask usage.
+  Shows correlation only.
+owners:
+- lcrouch@mozilla.com

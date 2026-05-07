@@ -46,9 +46,11 @@ SELECT
       LAX_INT64(event_extra.position) AS `position`,
       LAX_INT64(event_extra.selected_tab_index) AS `selected_tab_index`,
       LAX_INT64(event_extra.size) AS `size`,
+      LAX_INT64(event_extra.tab_count) AS `tab_count`,
       LAX_INT64(event_extra.to_version) AS `to_version`,
       LAX_INT64(event_extra.total_num_of_groups) AS `total_num_of_groups`,
-      LAX_INT64(event_extra.total_tabs_in_all_groups) AS `total_tabs_in_all_groups`
+      LAX_INT64(event_extra.total_tabs_in_all_groups) AS `total_tabs_in_all_groups`,
+      LAX_INT64(event_extra.webview_count) AS `webview_count`
     ) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,

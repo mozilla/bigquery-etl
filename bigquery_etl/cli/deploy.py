@@ -647,9 +647,13 @@ def _resolve_isolated_schema(
          Works when the runtime credentials have read access to source (typical
          for local dev with the user's own creds; falls through silently in CI
          where the stage SA can't read prod).
-      3. Dry-run the rewritten query against the target project. Target UDFs
-         and dependency tables were deployed earlier in topo order, so refs
-         resolve and the dry-run yields the schema.
+      3. `SELECT *` dry-run against the prod source table via the dry-run
+         cloud function (which has prod read access). Sidesteps query-level
+         issues like self-references in incremental queries — we just need
+         the schema, not the query plan.
+      4. Dry-run the rewritten target query. Target UDFs and dependency tables
+         were deployed earlier in topo order, so refs resolve. Last resort,
+         used when the source table doesn't exist in prod (e.g. brand-new).
 
     Raises FailedDeployException if none of the above produces a schema.
     """
@@ -689,10 +693,36 @@ def _resolve_isolated_schema(
     except Exception as e:
         log.debug(
             f"Source table {source_project}.{source_dataset}.{source_table} "
-            f"not available, falling back to target dry-run ({e})"
+            f"not available via get_table, falling back to source dry-run ({e})"
         )
 
-    # 3. dry-run the rewritten query against the target project
+    # 3. SELECT * dry-run against the prod source table via cloud function
+    # (CF has prod read access). Sidesteps self-refs, UDFs, and any other
+    # query-level complexity — we just want the schema. partitioned_by guesses
+    # the partition column from the dataset suffix; for *_derived tables we
+    # default to submission_date which covers most Mozilla derived datasets.
+    partitioned_by = None
+    if any(source_dataset.endswith(s) for s in ("_live", "_stable")):
+        partitioned_by = "submission_timestamp"
+    elif source_dataset.endswith("_derived"):
+        partitioned_by = "submission_date"
+    try:
+        schema = Schema.for_table(
+            project=source_project,
+            dataset=source_dataset,
+            table=source_table,
+            partitioned_by=partitioned_by,
+        )
+        if schema.schema.get("fields"):
+            schema.to_yaml_file(target_schema)
+            return
+    except Exception as e:
+        log.debug(
+            f"Source dry-run failed for {source_project}.{source_dataset}."
+            f"{source_table}, falling back to target dry-run ({e})"
+        )
+
+    # 4. dry-run the rewritten query against the target project
     try:
         Schema.from_query_file(target_file).to_yaml_file(target_schema)
         return

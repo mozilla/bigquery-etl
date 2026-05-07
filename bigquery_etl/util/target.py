@@ -850,24 +850,21 @@ def rewrite_for_isolated(
             ),
         )
 
-    # UDF call sites: walk known routines under the file's source project and
-    # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages.
-    # `routine_usage_pattern` matches both forms; sqlglot's table extractor
-    # above doesn't classify function calls as `Table` expressions, so 3-part
-    # UDF refs would otherwise slip through and the deploy would invoke the
-    # source-project UDF at runtime (and fail with `accessDenied` on the
-    # dryrun service account, which only has READER on target).
-    file_source_project = _read_source_project_from_manifest(query_file)
-    if file_source_project:
-        for routine_name, routine in read_routine_dir().items():
-            if routine.project != file_source_project:
-                continue
-            src_dataset, src_name = routine_name.split(".")
-            tgt = _target_ref_for_source(
-                target, target_project, routine.project, src_dataset, src_name
-            )
-            udf_pattern = routine_usage_pattern(routine_name, routine.project)
-            sql = udf_pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
+    # UDF call sites: walk known routines across ALL source projects and
+    # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages via
+    # `routine_usage_pattern`. sqlglot's table extractor above doesn't classify
+    # function calls as `Table` expressions, so without this pass any
+    # `<src_project>.<ds>.<fn>(` would slip through and the deploy would invoke
+    # the source-project UDF at runtime — `accessDenied` on the dryrun SA.
+    # Cross-project routines like `mozfun.*` are deployed to target in
+    # `--isolated`, so we don't restrict to the file's own source project.
+    for routine_name, routine in read_routine_dir().items():
+        src_dataset, src_name = routine_name.split(".")
+        tgt = _target_ref_for_source(
+            target, target_project, routine.project, src_dataset, src_name
+        )
+        udf_pattern = routine_usage_pattern(routine_name, routine.project)
+        sql = udf_pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 
     query_file.write_text(sql)
 

@@ -601,15 +601,16 @@ def _create_target_stub(
 def _table_refs_from(dep_file: Path) -> List[str]:
     """Return the table references from a view, query, or materialized view.
 
-    Query files with a checked-in schema.yaml return [] — we deploy the
-    schema structure rather than running the query, so we don't need to
-    walk into the query's own deps.
+    Walked even when a checked-in schema.yaml exists: the artifact itself
+    deploys schema-only, but downstream consumers (e.g. the post-deploy
+    dry-run-sql check, or any view we're about to deploy that joins this
+    table) need its dependencies present in the target environment too.
+    The caller (`collect_target_dependencies`) dedupes via `seen_refs` so
+    re-walking shared deps is idempotent.
     """
     if dep_file.name == VIEW_FILE:
         return View.from_file(dep_file, id_token=get_id_token()).table_references
     if dep_file.name in (QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW):
-        if (dep_file.parent / SCHEMA_FILE).exists():
-            return []
         try:
             sql_content = render_template(
                 dep_file.name, template_folder=dep_file.parent

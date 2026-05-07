@@ -639,7 +639,15 @@ def _udf_refs_from(dep_file: Path) -> List[str]:
 
 
 def _udf_dep_paths(udf_names: List[str]) -> Set[Path]:
-    """Resolve UDF names + their transitive deps to source filesystem paths."""
+    """Resolve UDF names + their transitive deps to source filesystem paths.
+
+    Includes `test_dependencies` of every walked routine: assertion helpers
+    (e.g. `mozfun.assert.equals`) only appear in a routine's own test SQL,
+    not its body, so `accumulate_dependencies` (which walks `dependencies`)
+    doesn't reach them. For target deploys we still need them in target so
+    the routine's tests can be exercised by `bqetl routine validate` or the
+    pytest routine plugin against the staged copy.
+    """
     if not udf_names:
         return set()
     # local import to avoid circular deps
@@ -647,12 +655,21 @@ def _udf_dep_paths(udf_names: List[str]) -> Set[Path]:
 
     raw_routines = read_routine_dir()
     paths: Set[Path] = set()
-    for udf in udf_names:
-        if udf not in raw_routines:
+    queue = list(udf_names)
+    seen: Set[str] = set()
+    while queue:
+        udf = queue.pop()
+        if udf in seen or udf not in raw_routines:
             continue
+        seen.add(udf)
         for transitive in accumulate_dependencies([], raw_routines, udf):
             if transitive in raw_routines:
                 paths.add(Path(raw_routines[transitive].filepath))
+                # test_dependencies aren't picked up by accumulate_dependencies;
+                # queue them so their own deps get walked too.
+                for test_dep in raw_routines[transitive].test_dependencies:
+                    if test_dep not in seen:
+                        queue.append(test_dep)
     return paths
 
 

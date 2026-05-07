@@ -850,9 +850,13 @@ def rewrite_for_isolated(
             ),
         )
 
-    # 2-part UDF refs (e.g. `json.extract_int_map` inside `mozfun.json.extract`)
-    # aren't 3-part extractable. Walk known routines under the file's source
-    # project and rewrite their 2-part usages.
+    # UDF call sites: walk known routines under the file's source project and
+    # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages.
+    # `routine_usage_pattern` matches both forms; sqlglot's table extractor
+    # above doesn't classify function calls as `Table` expressions, so 3-part
+    # UDF refs would otherwise slip through and the deploy would invoke the
+    # source-project UDF at runtime (and fail with `accessDenied` on the
+    # dryrun service account, which only has READER on target).
     file_source_project = _read_source_project_from_manifest(query_file)
     if file_source_project:
         for routine_name, routine in read_routine_dir().items():
@@ -862,11 +866,8 @@ def rewrite_for_isolated(
             tgt = _target_ref_for_source(
                 target, target_project, routine.project, src_dataset, src_name
             )
-            two_part = re.compile(
-                rf"(?<![\w\.`])`?{re.escape(src_dataset)}`?"
-                rf"\.`?{re.escape(src_name)}`?(?=\()"
-            )
-            sql = two_part.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
+            udf_pattern = routine_usage_pattern(routine_name, routine.project)
+            sql = udf_pattern.sub(f"`{tgt[0]}`.`{tgt[1]}`.`{tgt[2]}`", sql)
 
     query_file.write_text(sql)
 

@@ -128,6 +128,9 @@ SELECT
       LAX_INT64(event_extra.download_time) AS `download_time`,
       LAX_INT64(event_extra.duration) AS `duration`,
       LAX_INT64(event_extra.duration_ms) AS `duration_ms`,
+      LAX_INT64(
+        event_extra.duration_since_last_visible_seconds
+      ) AS `duration_since_last_visible_seconds`,
       LAX_INT64(event_extra.edited) AS `edited`,
       LAX_INT64(event_extra.error_code) AS `error_code`,
       LAX_INT64(event_extra.extracted_code_units) AS `extracted_code_units`,

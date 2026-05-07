@@ -630,8 +630,12 @@ def _udf_refs_from(dep_file: Path) -> List[str]:
             sql_content = render_template(
                 dep_file.name, template_folder=dep_file.parent, format=False
             )
+            # Pass the project's full path; `routine_usages_in_text` ->
+            # `get_routines` -> `os.walk` needs a real directory. Passing
+            # the bare basename (e.g. "moz-fx-data-shared-prod") only works
+            # when cwd happens to be sql/, which it isn't in CI.
             return routine_usages_in_text(
-                sql_content, dep_file.parent.parent.parent.name
+                sql_content, str(dep_file.parent.parent.parent)
             )
         except Exception as e:
             print(f"Warning: Could not extract UDF refs from {dep_file}: {e}")

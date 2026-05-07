@@ -13,18 +13,20 @@ CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>, _groups ARRAY<STRIN
   )
 );
 
-CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING) AS (
+CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING, selected_result STRING) AS (
   CASE
-    WHEN event_name IN ('engagement', 'bounce')
-      AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))
+    WHEN
+    (event_name IN ('engagement', 'bounce')
+      AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))) OR
+    (event_name = 'disable' AND selected_result != 'none')
       THEN 'engaged'
-    WHEN event_name = 'abandonment'
+    WHEN
+      (event_name = 'abandonment') OR
+      (event_name = 'disable' AND selected_result = 'none')
       THEN 'abandoned'
     WHEN event_name = 'engagement'
       AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
       THEN "annoyance"
-    WHEN event_name = 'disable'
-      THEN "disabled"
     ELSE NULL
   END
 );
@@ -124,23 +126,26 @@ add_conditionals AS (
     num_chars_typed,
     num_total_results,
     selected_position,
-    selected_result,
+    NULLIF(
+      selected_result,
+      'none'
+    ) AS selected_result,
     results,
-    `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
-    get_event_action(event_name, engagement_type) AS event_action,
+    `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none')) AS product_selected_result,
+    get_event_action(event_name, engagement_type, selected_result) AS event_action,
     get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
-      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+      WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
         THEN selected_result
       ELSE NULL
     END AS engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type) IN ('engaged', 'annoyance')
+      WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
         THEN `mozfun.norm.result_type_to_product_name`(selected_result)
       ELSE NULL
     END AS product_engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type) = 'annoyance'
+      WHEN get_event_action(event_name, engagement_type, selected_result) = 'annoyance'
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,

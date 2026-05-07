@@ -45,7 +45,7 @@ cp .vscode/settings.json.default .vscode/settings.json
 cp .vscode/launch.json.default .vscode/launch.json
 ```
 
-And you should now be set up to start working in the repo. The easiest way to do this for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
+And you should now be set up to start working in the repo. The easiest way to do this for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/) (especially [Making a pull request from a fork](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/#making-a-pull-request-from-a-fork) if you're contributing from outside Data Engineering - fork PRs gate on org-membership visibility).
 
 
 ## Releasing a new version of `bqetl`

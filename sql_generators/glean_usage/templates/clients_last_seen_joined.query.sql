@@ -59,3 +59,4 @@ LEFT JOIN
 -- we've seen first.
 QUALIFY
   ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY first_seen_date ASC) = 1
+-- test change

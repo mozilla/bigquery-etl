@@ -8,4 +8,3 @@ FROM
   `moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1`
 WHERE
   metadata.embedding_succeeded
--- test change

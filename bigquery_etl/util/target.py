@@ -1089,7 +1089,9 @@ def prepare_target_directory(
 
         target_query_file.write_text(sql)
 
-    if defer_to_target or isolated:
+    # Only SQL artifacts have refs to rewrite. query.py scripts (e.g. Braze
+    # ingestion) are Python — sqlglot would error on them.
+    if (defer_to_target or isolated) and target_query_file.suffix == ".sql":
         rewrite_query_references(
             target_query_file,
             sql_dir,

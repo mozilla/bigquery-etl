@@ -27,6 +27,7 @@ scheduling:
       (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
       }}
   query_file_path: sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql
+  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day
@@ -42,3 +43,10 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:mozilla-confidential/data-viewers
+monitoring:
+  enabled: true
+  workspace: 508
+  collection: Ads Client
+  freshness:
+    blocking: false
+  volume: null

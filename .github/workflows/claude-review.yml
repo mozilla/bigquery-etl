@@ -1,0 +1,116 @@
+# Automated code review using Claude
+# Triggers:
+#   - Once automatically when a PR is opened or marked ready for review
+#   - On demand by commenting "@claude" on a PR (non-fork PRs only)
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: |
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.draft == false &&
+        github.event.pull_request.head.repo.fork != true
+      ) || (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, '@claude')
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check PR is not from a fork
+        if: github.event_name == 'issue_comment'
+        id: fork-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          IS_FORK=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} --jq '.head.repo.fork')
+          echo "is_fork=$IS_FORK" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout repository
+        if: steps.fork-check.outputs.is_fork != 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Minimize previous Claude review comments
+        if: steps.fork-check.outputs.is_fork != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          ids=$(gh api graphql \
+            -f query='
+              query($owner: String!, $repo: String!, $pr: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  pullRequest(number: $pr) {
+                    comments(last: 100) {
+                      nodes { id author { login } bodyText isMinimized }
+                    }
+                  }
+                }
+              }' \
+            -f owner="$REPO_OWNER" -f repo="$REPO_NAME" -F pr="$PR_NUMBER" \
+            | jq -r '.data.repository.pullRequest.comments.nodes[]
+                    | select(.author.login == "github-actions"
+                             and (.isMinimized | not)
+                             and (.bodyText | test("Claude Code is working|Claude finished")))
+                    | .id')
+          for id in $ids; do
+            echo "Minimizing $id"
+            gh api graphql \
+              -f query='
+                mutation($id: ID!) {
+                  minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
+                    clientMutationId
+                  }
+                }' \
+              -f id="$id"
+          done
+
+      - name: Run Claude Code Review
+        if: steps.fork-check.outputs.is_fork != 'true'
+        # Mozilla org allowlist permits either "anthropics/claude-code-action@v1" (mutable tag)
+        # or a specific older SHA (73367208d0bc0c529b8b3fb223cbd4a8f63586e4, between v1.0.66 and v1.0.67).
+        # Using @v1 to stay current.
+        uses: anthropics/claude-code-action@v1 # zizmor: ignore[unpinned-uses]
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Pass GITHUB_TOKEN explicitly so the action doesn't try to mint an OIDC token
+          # (which would require `id-token: write`). Comments will be authored by github-actions[bot].
+          github_token: ${{ github.token }}
+          trigger_phrase: "@claude"
+          track_progress: true
+          include_fix_links: false
+          prompt: |
+            Review this pull request for code quality, best practices, and potential issues.
+            Refer to docs/reference/recommended_practices.md for SQL conventions and best practices.
+
+            Post a single formal GitHub review:
+            - Inline comments on specific lines for actionable findings.
+            - The review body summarizes cross-cutting observations and overall assessment.
+            Do not post separate top-level PR comments.
+          claude_args: |
+            --allowedTools mcp__github__create_pending_pull_request_review,mcp__github__add_comment_to_pending_review
+            --allowedTools mcp__github__submit_pending_pull_request_review,mcp__github__delete_pending_pull_request_review
+            --allowedTools mcp__github__get_pull_request_reviews,mcp__github__get_pull_request_review_comments,mcp__github__add_reply_to_pull_request_comment
+            --allowedTools mcp__github__get_workflow_run,mcp__github__list_workflow_runs,mcp__github__list_workflow_jobs
+            --allowedTools "Bash(gh pr diff:*),Bash(gh pr view:*),Read,Grep,Glob"

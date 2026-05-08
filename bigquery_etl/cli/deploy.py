@@ -481,12 +481,29 @@ def _rewrite_tests_for_target(
     For each (source, target) artifact pair, copies
     `tests/sql/<src_project>/<src_dataset>/<src_table>/` into
     `tests/sql/<tgt_project>/<tgt_dataset>/<tgt_table>/`, then renames any
-    files in the new tree whose basenames encode the source identity (e.g.
-    `proj.dataset.table.expected.yaml`) to use the target identity.
-    Mirrors legacy `bqetl stage deploy` so CI can pytest staged artifacts.
+    fixture files in the new tree whose basenames encode a source identity
+    (e.g. `proj.dataset.table.yaml` for input fixtures, or
+    `proj.dataset.table.expected.yaml` for the artifact's own expected
+    output) to the corresponding target identity. Renaming covers both
+    the deployed artifact's own fixtures *and* input fixtures whose stems
+    match any other deployed artifact — pytest's sql plugin substitutes
+    `<dotted>` → `<flat>` based on filename, so without this every input
+    referencing another deployed artifact would load under source-flat
+    while the rewritten query reads from target-flat. Mirrors legacy
+    `bqetl stage deploy` so CI can pytest staged artifacts.
     """
     if not test_dir.exists():
         return
+
+    # Build a lookup keyed by every form of source identity that fixture
+    # filenames can use: full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
+    # Maps to the equivalent target identity in full form.
+    src_to_tgt_id: Dict[str, str] = {}
+    for source_path, target_path in source_to_target_paths.items():
+        src = extract_from_query_path(source_path)
+        tgt = extract_from_query_path(target_path)
+        src_to_tgt_id[".".join(src)] = ".".join(tgt)
+        src_to_tgt_id[f"{src[1]}.{src[2]}"] = ".".join(tgt)
 
     for source_path, target_path in source_to_target_paths.items():
         src = extract_from_query_path(source_path)
@@ -497,9 +514,6 @@ def _rewrite_tests_for_target(
         tgt_test_dir = test_dir.joinpath(*tgt)
         shutil.copytree(src_test_dir, tgt_test_dir, dirs_exist_ok=True)
 
-        src_id = ".".join(src)
-        src_short = f"{src[1]}.{src[2]}"
-        tgt_id = ".".join(tgt)
         for test_file in tgt_test_dir.rglob("*"):
             if not test_file.is_file():
                 continue
@@ -509,10 +523,12 @@ def _rewrite_tests_for_target(
             if stem.endswith(".schema"):
                 stem = stem[: -len(".schema")]
                 schema_part = ".schema"
-            if stem in (src_id, src_short):
-                new_path = test_file.parent / f"{tgt_id}{schema_part}{suffix}"
-                if not new_path.exists():
-                    test_file.rename(new_path)
+            tgt_id = src_to_tgt_id.get(stem)
+            if tgt_id is None:
+                continue
+            new_path = test_file.parent / f"{tgt_id}{schema_part}{suffix}"
+            if not new_path.exists():
+                test_file.rename(new_path)
 
 
 def _strip_materialized_view(target_file: Path) -> Path:
@@ -638,20 +654,25 @@ def _resolve_isolated_schema(
 ) -> None:
     """Ensure target_file's schema.yaml exists for an --isolated table deploy.
 
+    Called from `_deploy_table_artifact` in topo order, so dependent target
+    artifacts already exist in BigQuery — the rewritten-query dry-run can
+    resolve their schemas, and the resulting schema reflects the *local*
+    query's actual output shape (which may have new fields the source table
+    doesn't have yet).
+
     Resolution order (first match wins):
       1. target_file already has a schema.yaml (copied from source) — keep it,
          unless the table declares allow_field_addition (schema may have drifted).
-      2. The table is deployed in the source project — fetch via client.get_table.
-         Works when the runtime credentials have read access to source (typical
-         for local dev with the user's own creds; falls through silently in CI
-         where the stage SA can't read prod).
+      2. Dry-run the rewritten target query. This is the source of truth for
+         the local query's schema; the alternatives below only kick in when
+         the dry-run fails (target deps still missing, query unrunnable, etc.).
       3. `SELECT *` dry-run against the prod source table via the dry-run
-         cloud function (which has prod read access). Sidesteps query-level
-         issues like self-references in incremental queries — we just need
-         the schema, not the query plan.
-      4. Dry-run the rewritten target query. Target UDFs and dependency tables
-         were deployed earlier in topo order, so refs resolve. Last resort,
-         used when the source table doesn't exist in prod (e.g. brand-new).
+         cloud function. Falls back to whatever prod currently has — usable
+         when the local query can't be dry-run, but may be stale if local
+         changes added fields. Validation downstream will catch a mismatch.
+      4. `client.get_table` on source — same fallback as step 3 but as a
+         single metadata RPC. Only works when the runtime credentials have
+         read access to source (local dev, not CI's stage SA).
 
     Raises FailedDeployException if none of the above produces a schema.
     """
@@ -681,22 +702,19 @@ def _resolve_isolated_schema(
             Schema.from_yaml(text, Path(sql_dir)).to_yaml_file(target_schema)
         return
 
-    # 2. fetch from source project's deployed table (no dry-run, fastest)
+    # 2. dry-run the rewritten target query — primary source of truth.
+    target_dry_run_err: Optional[Exception] = None
     try:
-        bq_table = bigquery.Client(project=source_project).get_table(
-            f"{source_project}.{source_dataset}.{source_table}"
-        )
-        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(target_schema)
+        Schema.from_query_file(target_file).to_yaml_file(target_schema)
         return
     except Exception as e:
+        target_dry_run_err = e
         log.debug(
-            f"Source table {source_project}.{source_dataset}.{source_table} "
-            f"not available via get_table, falling back to source dry-run ({e})"
+            f"Target dry-run failed for {source_project}.{source_dataset}."
+            f"{source_table}, falling back to source schema ({e})"
         )
 
-    # 3. SELECT * dry-run against the prod source table via cloud function
-    # (CF has prod read access). Sidesteps self-refs, UDFs, and any other
-    # query-level complexity — we just want the schema.
+    # 3. SELECT * dry-run against the prod source table via cloud function.
     try:
         schema = Schema.for_table(
             project=source_project,
@@ -709,21 +727,30 @@ def _resolve_isolated_schema(
             return
     except Exception as e:
         log.debug(
-            f"Source dry-run failed for {source_project}.{source_dataset}."
-            f"{source_table}, falling back to target dry-run ({e})"
+            f"Source SELECT * dry-run failed for {source_project}.{source_dataset}."
+            f"{source_table}, falling back to get_table ({e})"
         )
 
-    # 4. dry-run the rewritten query against the target project
+    # 4. client.get_table on source (local dev fast path).
     try:
-        Schema.from_query_file(target_file).to_yaml_file(target_schema)
+        bq_table = bigquery.Client(project=source_project).get_table(
+            f"{source_project}.{source_dataset}.{source_table}"
+        )
+        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(target_schema)
         return
     except Exception as e:
-        raise FailedDeployException(
-            f"Cannot resolve schema for {source_project}.{source_dataset}."
-            f"{source_table}: target dry-run failed ({e}). If the query "
-            f"references UDFs you've changed, ensure they're discoverable "
-            f"(--routines auto-detects from query refs in --isolated mode)."
+        log.debug(
+            f"get_table failed for {source_project}.{source_dataset}."
+            f"{source_table} ({e})"
         )
+
+    raise FailedDeployException(
+        f"Cannot resolve schema for {source_project}.{source_dataset}."
+        f"{source_table}: target dry-run failed ({target_dry_run_err}). "
+        f"If the query references UDFs you've changed, ensure they're "
+        f"discoverable (--routines auto-detects from query refs in --isolated "
+        f"mode)."
+    )
 
 
 def _discover_artifacts(

@@ -604,16 +604,20 @@ def _create_target_stub(
 def _table_refs_from(dep_file: Path) -> List[str]:
     """Return the table references from a view, query, or materialized view.
 
-    Walked even when a checked-in schema.yaml exists: the artifact's own
-    deploy is schema-only (no query execution), but the post-deploy dry-run
-    validation (`bqetl dryrun --validate-schemas` over the deployed target
-    tree) plans the query and needs its refs to resolve in target. The
-    caller (`collect_target_dependencies`) dedupes via `seen_refs` so
-    re-walking shared deps is idempotent.
+    Skip query files with a checked-in schema.yaml: tables deploy
+    schema-only (the query is never executed at deploy time and the schema
+    comes straight from the yaml), so walking their refs would balloon the
+    artifact set with transitive deps the deploy doesn't need. View files
+    are always walked — `CREATE OR REPLACE VIEW` validates refs at deploy
+    time, so a view's deps must exist in target. Query files *without* a
+    schema.yaml are walked too: schema resolution may fall back to dry-run
+    paths that benefit from knowing the artifact's deps.
     """
     if dep_file.name == VIEW_FILE:
         return View.from_file(dep_file, id_token=get_id_token()).table_references
     if dep_file.name in (QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW):
+        if (dep_file.parent / SCHEMA_FILE).exists():
+            return []
         try:
             sql_content = render_template(
                 dep_file.name, template_folder=dep_file.parent
@@ -689,12 +693,19 @@ def collect_target_dependencies(
 
     Behavior parallels `bigquery_etl.cli.stage.collect_artifact_dependencies`,
     but stubs for unmanaged tables (live/stable, syndicated, etc. — anything
-    referenced by deployed artifacts but not present under sql/) are written
-    *directly* into the target tree at
+    referenced by views but not present under sql/) are written *directly*
+    into the target tree at
     `sql/<target_project>/<target_dataset>/<target_artifact>/`, computed via
-    the target's templates. Source-managed deps are returned as their
-    sql/<source>/... paths and the regular deploy flow rewrites them into the
-    target via prepare_target_files.
+    the target's templates. Stubs are only emitted for refs walked from a
+    `view.sql` — `CREATE OR REPLACE VIEW` validates its refs at deploy time,
+    so unmanaged dep tables must exist in target. Tables (`query.sql`,
+    `materialized_view.sql`) deploy schema-only and never execute their
+    bodies at deploy time, so their refs aren't needed in target; the
+    rewrite during schema resolution dry-runs against prod via the dry-run
+    cloud function, which can read the original prod refs directly.
+    Source-managed deps are returned as their sql/<source>/... paths and
+    the regular deploy flow rewrites them into the target via
+    prepare_target_files.
 
     Returns the set of dep paths to deploy (mix of source paths and target
     paths). Callers detect already-target paths to skip prepare_target_files.
@@ -723,7 +734,10 @@ def collect_target_dependencies(
             artifact_dependencies.add(dep_file)
 
         # Walk table refs — managed deps recurse via dependency_files; unmanaged
-        # deps get a stub written directly at their target path.
+        # deps get a stub only when the walking file is a view (CREATE VIEW
+        # validates refs at deploy time). Table-bodied artifacts deploy
+        # schema-only and don't need their refs in target.
+        emit_stubs = dep_file.name == VIEW_FILE
         artifact_project = dep_file.parent.parent.parent.name
         for ref in _table_refs_from(dep_file):
             normalized = _normalize_table_ref(ref, artifact_project)
@@ -745,9 +759,12 @@ def collect_target_dependencies(
                     dependency_files.append(existing)
                 continue
 
-            artifact_dependencies.add(
-                _create_target_stub(project, dataset, name, sql_dir, target, id_token)
-            )
+            if emit_stubs:
+                artifact_dependencies.add(
+                    _create_target_stub(
+                        project, dataset, name, sql_dir, target, id_token
+                    )
+                )
 
         # UDF refs — paths come from sql/<source>/... directly (UDFs go through
         # the regular routine publish step; we just need their paths).
@@ -871,8 +888,14 @@ def rewrite_for_isolated(
     # `<src_project>.<ds>.<fn>(` would slip through and the deploy would invoke
     # the source-project UDF at runtime — `accessDenied` on the dryrun SA.
     # Cross-project routines like `mozfun.*` are deployed to target in
-    # `--isolated`, so we don't restrict to the file's own source project.
+    # `--isolated`, so we don't restrict to the file's own source project. We
+    # do skip routines whose project is the target project: those are routines
+    # we've already deployed (or are deploying) into target — `read_routine_dir`
+    # picks them up alongside the source routines, and re-rewriting their
+    # already-prefixed names would double-prefix.
     for routine_name, routine in read_routine_dir().items():
+        if routine.project == target_project:
+            continue
         src_dataset, src_name = routine_name.split(".")
         tgt = _target_ref_for_source(
             target, target_project, routine.project, src_dataset, src_name

@@ -397,6 +397,21 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    bigeye__customer_experience_derived__kitsune_retrieval_index__v1 = bigquery_bigeye_check(
+        task_id="bigeye__customer_experience_derived__kitsune_retrieval_index__v1",
+        table_id="moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1",
+        warehouse_id="1939",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
     bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
         table_id="moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1",
@@ -695,6 +710,21 @@ with DAG(
 
         clients_first_seen_v3_external.set_upstream(clients_first_seen_v3)
 
+    customer_experience_derived__kitsune_retrieval_index__v1 = bigquery_etl_query(
+        task_id="customer_experience_derived__kitsune_retrieval_index__v1",
+        destination_table="kitsune_retrieval_index_v1",
+        dataset_id="customer_experience_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     desktop_new_profiles_aggregates = bigquery_etl_query(
         task_id="desktop_new_profiles_aggregates",
         destination_table="desktop_new_profiles_aggregates_v1",
@@ -814,6 +844,10 @@ with DAG(
         telemetry_derived__clients_first_seen_28_days_later__v3_external.set_upstream(
             telemetry_derived__clients_first_seen_28_days_later__v3
         )
+
+    bigeye__customer_experience_derived__kitsune_retrieval_index__v1.set_upstream(
+        customer_experience_derived__kitsune_retrieval_index__v1
+    )
 
     bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1.set_upstream(
         firefox_desktop_derived__desktop_dau_distribution_id_history__v1

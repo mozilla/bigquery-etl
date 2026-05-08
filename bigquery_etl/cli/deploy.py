@@ -354,10 +354,16 @@ def deploy(
     # rewritten to its target equivalent if its source identity is in this
     # set. Refs to artifacts not being deployed in this run keep their prod
     # source ref so the dry-run cloud function can resolve them, avoiding
-    # the need to stub/deploy the entire transitive dep graph.
-    deployed_source_identities: Set[Tuple[str, str, str]] = {
-        extract_from_query_path(file_path) for file_path, _ in artifacts.values()
-    }
+    # the need to stub/deploy the entire transitive dep graph. For stubs
+    # (paths under <sql_dir>/<target_project>/...), `extract_from_query_path`
+    # would return the target identity; we recover the original source
+    # identity from the manifest `_create_target_stub` writes alongside.
+    deployed_source_identities: Set[Tuple[str, str, str]] = set()
+    for file_path, _ in artifacts.values():
+        source_identity = read_source_identity_from_manifest(file_path)
+        if source_identity is None:
+            source_identity = extract_from_query_path(file_path)
+        deployed_source_identities.add(source_identity)
     if cross_project_target and (routines or isolated_routine_deps):
         # Group all routine paths by their source project. `_publish_to_target`
         # is called once per source project so its qualify-non-published-refs
@@ -503,12 +509,8 @@ def _rewrite_tests_for_target(
     (e.g. `proj.dataset.table.yaml` for input fixtures, or
     `proj.dataset.table.expected.yaml` for the artifact's own expected
     output) to the corresponding target identity. Renaming covers both
-    the deployed artifact's own fixtures *and* input fixtures whose stems
-    match any other deployed artifact — pytest's sql plugin substitutes
-    `<dotted>` → `<flat>` based on filename, so without this every input
-    referencing another deployed artifact would load under source-flat
-    while the rewritten query reads from target-flat. Mirrors legacy
-    `bqetl stage deploy` so CI can pytest staged artifacts.
+    the deployed artifact's own fixtures and input fixtures whose stems
+    match any other deployed artifact.
     """
     if not test_dir.exists():
         return
@@ -674,12 +676,6 @@ def _resolve_isolated_schema(
 ) -> None:
     """Ensure target_file's schema.yaml exists for an --isolated table deploy.
 
-    Called from `_deploy_table_artifact` in topo order, so dependent target
-    artifacts already exist in BigQuery — the rewritten-query dry-run can
-    resolve their schemas, and the resulting schema reflects the *local*
-    query's actual output shape (which may have new fields the source table
-    doesn't have yet).
-
     Resolution order (first match wins):
       1. target_file already has a schema.yaml (copied from source) — keep it,
          unless the table declares allow_field_addition (schema may have drifted).
@@ -687,10 +683,10 @@ def _resolve_isolated_schema(
          the local query's schema; the alternatives below only kick in when
          the dry-run fails (target deps still missing, query unrunnable, etc.).
       3. `SELECT *` dry-run against the prod source table via the dry-run
-         cloud function. Falls back to whatever prod currently has — usable
+         cloud function. Falls back to whatever prod currently has. Usable
          when the local query can't be dry-run, but may be stale if local
          changes added fields. Validation downstream will catch a mismatch.
-      4. `client.get_table` on source — same fallback as step 3 but as a
+      4. `client.get_table` on source -> same fallback as step 3 but as a
          single metadata RPC. Only works when the runtime credentials have
          read access to source (local dev, not CI's stage SA).
 

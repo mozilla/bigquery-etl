@@ -13,6 +13,7 @@ syndication:
     - ticket
     - ticket_field_history
     - ticket_tag
+    - user
   administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer

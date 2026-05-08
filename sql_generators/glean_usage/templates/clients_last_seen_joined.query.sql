@@ -40,7 +40,6 @@ SELECT
       {% if app_name == "fenix" %}
       , isp_name -- removes the `isp_name` that comes from `metrics` and leaves in the `baseline.isp`
       {% endif %}
-      -- test change
     ),
   baseline.is_default_browser,
   baseline.device_manufacturer

@@ -34,7 +34,8 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING,
 CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STRING, event_name STRING) AS (
   --events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
   CASE
-    WHEN event_name IN ('bounce', 'disable', 'abandonment') THEN TRUE
+    WHEN event_name = 'abandonment' THEN TRUE
+    WHEN event_name IN ('bounce', 'disable') THEN FALSE
     ELSE COALESCE(
       NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
       AND NOT (

@@ -350,6 +350,14 @@ def deploy(
     # publish routines first since tables/views may depend on them
     routine_results = {}
     cross_project_target = target and target.project_id not in project_ids
+    # Used by `rewrite_for_isolated` to filter rewrites: a ref only gets
+    # rewritten to its target equivalent if its source identity is in this
+    # set. Refs to artifacts not being deployed in this run keep their prod
+    # source ref so the dry-run cloud function can resolve them, avoiding
+    # the need to stub/deploy the entire transitive dep graph.
+    deployed_source_identities: Set[Tuple[str, str, str]] = {
+        extract_from_query_path(file_path) for file_path, _ in artifacts.values()
+    }
     if cross_project_target and (routines or isolated_routine_deps):
         # Group all routine paths by their source project. `_publish_to_target`
         # is called once per source project so its qualify-non-published-refs
@@ -369,6 +377,10 @@ def deploy(
         for p in isolated_routine_deps:
             routines_by_source[p.parent.parent.parent.name].add(p)
 
+        for files in routines_by_source.values():
+            for f in files:
+                deployed_source_identities.add(extract_from_query_path(f))
+
         for source_project, files in routines_by_source.items():
             result = _publish_routines_to_target(
                 target,
@@ -381,6 +393,7 @@ def deploy(
                 isolated,
                 routine_files=sorted(files),
                 dry_run=dry_run,
+                deployed_source_identities=deployed_source_identities,
             )
             if result:
                 routine_results.update(result)
@@ -400,7 +413,12 @@ def deploy(
 
     if target and target.project_id not in project_ids:
         artifacts, source_to_target_paths = _prepare_target_artifacts(
-            artifacts, target, sql_dir, defer_to_target, isolated
+            artifacts,
+            target,
+            sql_dir,
+            defer_to_target,
+            isolated,
+            deployed_source_identities=deployed_source_identities,
         )
 
         if rewrite_tests:
@@ -587,6 +605,7 @@ def _prepare_target_artifacts(
     sql_dir: str,
     defer_to_target: bool,
     isolated: bool,
+    deployed_source_identities: Optional[Set[Tuple[str, str, str]]] = None,
 ) -> Tuple[Dict[str, Tuple[Path, str]], Dict[Path, Path]]:
     """Copy each artifact into the target tree.
 
@@ -627,6 +646,7 @@ def _prepare_target_artifacts(
                 defer_to_target=defer_to_target,
                 isolated=isolated,
                 auto_deploy=False,
+                deployed_source_identities=deployed_source_identities,
             )
             target_file = target_files[0]
 

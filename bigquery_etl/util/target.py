@@ -854,16 +854,28 @@ def rewrite_for_isolated(
     sql_dir: str,
     target_project: str,
     target: "Target",
+    deployed_source_identities: Optional[Set[Tuple[str, str, str]]] = None,
 ) -> None:
-    """Rewrite ALL references in `query_file` to point at the target.
+    """Rewrite references in `query_file` to point at the target.
 
-    Used by --isolated deploys: every project.dataset.table in the SQL is
-    re-rendered through the target's templates, plus 2-part UDF calls
-    (e.g. `json.extract_int_map`) that 3-part extraction doesn't see.
+    Used by --isolated deploys. Only refs whose source identity is in
+    `deployed_source_identities` (the set of artifacts being deployed this
+    run) are rewritten; everything else stays at its prod source ref so the
+    dry-run cloud function (and any runtime SA with prod read) can resolve
+    it. This avoids stubbing/deploying the entire transitive dep graph just
+    so refs resolve in target — refs to existing prod artifacts simply
+    pass through. When `deployed_source_identities` is None (legacy
+    callers), every ref is rewritten (original "self-contained mirror"
+    semantics).
     """
     sql = render_template(
         query_file.name, template_folder=str(query_file.parent), format=False
     )
+
+    def _is_deployed(project: str, dataset: str, name: str) -> bool:
+        if deployed_source_identities is None:
+            return True
+        return (project, dataset, name) in deployed_source_identities
 
     # sqlglot extraction excludes struct field paths like `metadata.header.date`
     # and CREATE-clause self-refs, so we don't need a known-projects heuristic
@@ -873,6 +885,8 @@ def rewrite_for_isolated(
         if len(parts) != 3 or parts[0] == target_project:
             continue
         src_project, src_dataset, src_table = parts
+        if not _is_deployed(src_project, src_dataset, src_table):
+            continue
         sql = _substitute_3part_ref(
             sql,
             (src_project, src_dataset, src_table),
@@ -885,18 +899,16 @@ def rewrite_for_isolated(
     # rewrite both 2-part (`udf.fn(`) and 3-part (`proj.udf.fn(`) usages via
     # `routine_usage_pattern`. sqlglot's table extractor above doesn't classify
     # function calls as `Table` expressions, so without this pass any
-    # `<src_project>.<ds>.<fn>(` would slip through and the deploy would invoke
-    # the source-project UDF at runtime — `accessDenied` on the dryrun SA.
-    # Cross-project routines like `mozfun.*` are deployed to target in
-    # `--isolated`, so we don't restrict to the file's own source project. We
-    # do skip routines whose project is the target project: those are routines
-    # we've already deployed (or are deploying) into target — `read_routine_dir`
-    # picks them up alongside the source routines, and re-rewriting their
-    # already-prefixed names would double-prefix.
+    # `<src_project>.<ds>.<fn>(` would slip through. Skip routines whose
+    # project is the target project (already-target paths re-walked by
+    # `read_routine_dir` would otherwise double-prefix), and skip routines
+    # not in the deploy set (refs to prod-only routines stay at prod).
     for routine_name, routine in read_routine_dir().items():
         if routine.project == target_project:
             continue
         src_dataset, src_name = routine_name.split(".")
+        if not _is_deployed(routine.project, src_dataset, src_name):
+            continue
         tgt = _target_ref_for_source(
             target, target_project, routine.project, src_dataset, src_name
         )
@@ -976,6 +988,7 @@ def rewrite_query_references(
     target_project: str,
     target: "Target",
     rewrite_all: bool = False,
+    deployed_source_identities: Optional[Set[Tuple[str, str, str]]] = None,
 ) -> None:
     """Dispatch to the appropriate rewrite based on deploy mode.
 
@@ -983,7 +996,13 @@ def rewrite_query_references(
     --isolated vs --defer-to-target distinction.
     """
     if rewrite_all:
-        rewrite_for_isolated(query_file, sql_dir, target_project, target)
+        rewrite_for_isolated(
+            query_file,
+            sql_dir,
+            target_project,
+            target,
+            deployed_source_identities=deployed_source_identities,
+        )
     else:
         rewrite_for_defer(query_file, sql_dir, target_project, target)
 
@@ -995,6 +1014,7 @@ def prepare_target_directory(
     defer_to_target: bool,
     isolated: bool,
     copied_target_dirs: Optional[Set[Path]] = None,
+    deployed_source_identities: Optional[Set[Tuple[str, str, str]]] = None,
 ) -> Path:
     """Prepare target directory for query execution with --target."""
     source_project, source_dataset, source_table = extract_from_query_path(query_file)
@@ -1121,6 +1141,7 @@ def prepare_target_directory(
             effective_project,
             target,
             rewrite_all=isolated,
+            deployed_source_identities=deployed_source_identities,
         )
 
     return target_query_file
@@ -1281,6 +1302,7 @@ def prepare_target_files(
     defer_to_target: bool,
     isolated: bool,
     auto_deploy: bool = True,
+    deployed_source_identities: Optional[Set[Tuple[str, str, str]]] = None,
 ) -> List[Path]:
     """Prepare target directories for multiple query files."""
     copied_target_dirs: Set[Path] = set()
@@ -1292,6 +1314,7 @@ def prepare_target_files(
             defer_to_target,
             isolated,
             copied_target_dirs=copied_target_dirs,
+            deployed_source_identities=deployed_source_identities,
         )
         for query_file in query_files
     ]

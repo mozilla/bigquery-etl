@@ -2,12 +2,7 @@ WITH bridge AS (
   SELECT
     metrics.string.client_association_uid AS fxa_uid,
     client_info.client_id AS client_id,
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        metrics.string.client_association_uid
-      ORDER BY
-        submission_timestamp DESC
-    ) AS rn
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp DESC) AS rn
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
@@ -17,18 +12,31 @@ WITH bridge AS (
 ),
 relay_masks AS (
   SELECT
-    extras.string.fxa_id AS fxa_uid,
-    MAX(
-      COALESCE(extras.quantity.n_random_masks, 0) + COALESCE(extras.quantity.n_domain_masks, 0)
-    ) AS total_masks,
-    MAX(extras.string.premium_status) AS premium_status
+    fxa_uid,
+    total_masks,
+    premium_status
   FROM
-    `moz-fx-data-shared-prod.relay_backend.events_stream`
+    (
+      SELECT
+        extras.string.fxa_id AS fxa_uid,
+        MAX(
+          COALESCE(extras.quantity.n_random_masks, 0) + COALESCE(extras.quantity.n_domain_masks, 0)
+        ) OVER (PARTITION BY extras.string.fxa_id) AS total_masks,
+        extras.string.premium_status AS premium_status,
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            extras.string.fxa_id
+          ORDER BY
+            submission_timestamp DESC
+        ) AS rn
+      FROM
+        `moz-fx-data-shared-prod.relay_backend.events_stream`
+      WHERE
+        DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 90 DAY)
+        AND extras.string.fxa_id IS NOT NULL
+    )
   WHERE
-    DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 90 DAY)
-    AND extras.string.fxa_id IS NOT NULL
-  GROUP BY
-    1
+    rn = 1
 ),
 retention AS (
   SELECT

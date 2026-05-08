@@ -1,0 +1,46 @@
+friendly_name: Kitsune Retrieval Index
+description: "AI-enriched retrieval table derived from Kitsune, containing embeddings\
+  \ and semantic features\n to support grounded question answering over Mozilla Support\
+  \ (SUMO) data.\n\nGrain: one row per date, question_id and answer_id.\n\nLLM generated\
+  \ fields:\n- question_summary_llm\n- question_category_llm\n- question_language_llm\n\
+  - question_entities_llm\n- question_topics_llm\n- embedding based on [title, content]\n\
+  - question_sentiment_score based on [title, content]\n\nRead-time fields (computed\
+  \ on the `customer_experience.kitsune_retrieval_index` view, not stored here):\n\
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` \u2014\
+  \ 30-day exponential decay,\n  1.0 today, ~0.37 after 30 days. Always reflects freshness\
+  \ at query time.\n\nMetadata\n- Additional data to support technical processes,\
+  \ such as backfills or investigations.\n- The prompt version is a self-managed version\
+  \ for changes in the prompt given to the LLM."
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+labels:
+  level: gold
+  incremental: true
+  change_controlled: true
+  dag: bqetl_analytics_tables
+  owner1: lvargas
+scheduling:
+  dag_name: bqetl_analytics_tables
+bigquery:
+  time_partitioning:
+    type: day
+    field: creation_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - product
+    - locale
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
+  - moz-fx-data-shared-prod.static.cx_product_mappings_v1
+monitoring:
+  enabled: true
+require_column_descriptions: true

@@ -7,7 +7,7 @@ import shutil
 from datetime import datetime
 from functools import cache
 from pathlib import Path
-from typing import List, NamedTuple, Optional, Set, Tuple
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple
 
 import attr
 import cattrs
@@ -1053,14 +1053,48 @@ def prepare_target_directory(
         )
         target_query_file.write_text(sql)
 
-    # for routine files, rewrite the CREATE FUNCTION/PROCEDURE self-reference
+    # For routine files, rewrite EVERY CREATE FUNCTION / PROCEDURE statement.
+    # A single udf.sql can declare a primary UDF plus several private helpers
+    # (e.g. `safe_crc32_uuid` + `crc32_table` + `crc32_partial_*`) — they all
+    # need to land in the target dataset under prefixed names. We then rewrite
+    # internal call sites to those helpers (within the same file) so the body
+    # of each function references the deployed target name. Helpers don't have
+    # their own dirs, so `read_routine_dir()` doesn't see them — without this
+    # pass the global rewrite in `rewrite_for_isolated` misses them and BQ
+    # errors at CREATE-time on the unresolved `udf.<helper>` calls.
     if target_query_file.name in ("udf.sql", "stored_procedure.sql"):
         sql = target_query_file.read_text()
-        sql = PERSISTENT_UDF_RE.sub(
-            rf"\g<prefix>`{effective_dataset}`.`{effective_table}`",
-            sql,
-            count=1,
-        )
+
+        # Discover every (src_ds, src_name) declared in this file and compute
+        # its target equivalent. Used to rewrite both definitions and calls.
+        local_routines: Dict[Tuple[str, str], Tuple[str, str]] = {}
+        for match in PERSISTENT_UDF_RE.finditer(sql):
+            src_ds = match.group("dataset")
+            src_nm = match.group("name")
+            _, tgt_ds, tgt_nm = _target_ref_for_source(
+                target,
+                effective_project,
+                source_project,
+                src_ds,
+                src_nm,
+            )
+            local_routines[(src_ds, src_nm)] = (tgt_ds, tgt_nm)
+
+        def _rewrite_create(match: re.Match) -> str:
+            src_ds = match.group("dataset")
+            src_nm = match.group("name")
+            tgt_ds, tgt_nm = local_routines[(src_ds, src_nm)]
+            return f"{match.group('prefix')}`{tgt_ds}`.`{tgt_nm}`"
+
+        sql = PERSISTENT_UDF_RE.sub(_rewrite_create, sql)
+
+        # Rewrite call sites for every locally-declared routine. Uses
+        # `routine_usage_pattern` so 2-part (`udf.fn(`) and 3-part
+        # (`<src_proj>.udf.fn(`) calls are both caught.
+        for (src_ds, src_nm), (tgt_ds, tgt_nm) in local_routines.items():
+            pattern = routine_usage_pattern(f"{src_ds}.{src_nm}", source_project)
+            sql = pattern.sub(f"`{effective_project}`.`{tgt_ds}`.`{tgt_nm}`", sql)
+
         target_query_file.write_text(sql)
 
     if defer_to_target or isolated:

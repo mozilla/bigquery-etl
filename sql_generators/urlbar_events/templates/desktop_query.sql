@@ -136,12 +136,12 @@ add_conditionals AS (
     get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
       WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
-        THEN selected_result
+        THEN NULLIF(selected_result, 'none')
       ELSE NULL
     END AS engaged_result_type,
     CASE
       WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
-        THEN `mozfun.norm.result_type_to_product_name`(selected_result)
+        THEN `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none'))
       ELSE NULL
     END AS product_engaged_result_type,
     CASE

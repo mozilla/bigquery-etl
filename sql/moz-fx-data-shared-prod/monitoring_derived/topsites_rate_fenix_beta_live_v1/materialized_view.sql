@@ -14,3 +14,4 @@ WHERE
   DATE(submission_timestamp) >= '2010-01-01'
 GROUP BY
   submission_minute
+-- test change

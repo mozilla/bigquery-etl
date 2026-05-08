@@ -54,13 +54,6 @@ automation_tags AS (
             'ssa-experiment-2fa-automation',
             'ssa-experiment-pwrdreset-automation',
             'ssa-experiment-emailverify-automation',
-            'ssa-experiment-2fa-macro',
-            'ssa-experiment-pwrdreset-macro',
-            'ssa-experiment-emailverify-macro',
-            'ssa-experiment-connectionissues-macro',
-            'ssa-experiment-changeemail-macro',
-            'ssa-experiment-sign-in-failure-macro',
-            'ssa-experiment-sync-data-macro',
             'ssa-experiment-4-star',
             'ssa-experiment-5-star',
             'loginless-autosolve'

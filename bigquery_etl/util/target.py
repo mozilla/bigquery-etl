@@ -239,18 +239,6 @@ def _get_targets_file() -> Path:
     return ConfigLoader.project_dir / targets_file_name
 
 
-def _git_env_branch() -> Optional[str]:
-    """Return a branch name from GitHub Actions env vars, or None."""
-    return (
-        os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME") or None
-    )
-
-
-def _git_env_commit() -> Optional[str]:
-    """Return a commit SHA from GitHub Actions env vars, or None."""
-    return os.environ.get("GITHUB_SHA") or None
-
-
 @cache
 def _get_git_context() -> dict:
     """Return git template variables, cached after first call.
@@ -259,22 +247,26 @@ def _get_git_context() -> dict:
     so `repo.active_branch` raises. Fall back to GitHub Actions env vars before
     giving up so target dataset/artifact templates resolve correctly in CI.
     """
+    env_branch = (
+        os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME") or None
+    )
+    env_commit = os.environ.get("GITHUB_SHA") or None
+
     branch: Optional[str] = None
     commit: Optional[str] = None
     try:
-        project_root = get_bqetl_project_root() or ROOT
-        repo = git.Repo(project_root)
+        repo = git.Repo(get_bqetl_project_root() or ROOT)
         try:
             branch = repo.active_branch.name
         except TypeError:
-            branch = _git_env_branch()
+            branch = env_branch
         try:
             commit = repo.head.commit.hexsha
         except Exception:
-            commit = _git_env_commit()
+            commit = env_commit
     except Exception:
-        branch = _git_env_branch()
-        commit = _git_env_commit()
+        branch = env_branch
+        commit = env_commit
 
     if not branch or not commit:
         logging.warning(
@@ -526,6 +518,22 @@ def _existing_artifact_file(source_dir: Path) -> Optional[Path]:
     return None
 
 
+def default_partition_for(dataset: str) -> Optional[str]:
+    """Guess the partition-filter column from a Mozilla dataset suffix.
+
+    `*_live`/`*_stable` (Glean ingestion) partition on `submission_timestamp`;
+    `*_derived` typically partition on `submission_date`. Returned as the
+    `partitioned_by` argument for `Schema.for_table` so its `SELECT *` dry-run
+    can satisfy partition-required filters and resolve a schema. Returns None
+    for unrecognized suffixes — callers fall through to an unfiltered query.
+    """
+    if any(dataset.endswith(s) for s in ("_live", "_stable")):
+        return "submission_timestamp"
+    if dataset.endswith("_derived"):
+        return "submission_date"
+    return None
+
+
 def _fetch_stub_schema(
     project: str,
     dataset: str,
@@ -549,18 +557,13 @@ def _fetch_stub_schema(
     except Exception as e:
         get_table_err = e
 
-    partitioned_by = (
-        "submission_timestamp"
-        if any(dataset.endswith(s) for s in ("_live", "_stable"))
-        else None
-    )
     try:
         Schema.for_table(
             project=project,
             dataset=dataset,
             table=name,
             id_token=id_token,
-            partitioned_by=partitioned_by,
+            partitioned_by=default_partition_for(dataset),
         ).to_yaml_file(out_path)
     except Exception as for_table_err:
         print(
@@ -601,11 +604,11 @@ def _create_target_stub(
 def _table_refs_from(dep_file: Path) -> List[str]:
     """Return the table references from a view, query, or materialized view.
 
-    Walked even when a checked-in schema.yaml exists: the artifact itself
-    deploys schema-only, but downstream consumers (e.g. the post-deploy
-    dry-run-sql check, or any view we're about to deploy that joins this
-    table) need its dependencies present in the target environment too.
-    The caller (`collect_target_dependencies`) dedupes via `seen_refs` so
+    Walked even when a checked-in schema.yaml exists: the artifact's own
+    deploy is schema-only (no query execution), but the post-deploy dry-run
+    validation (`bqetl dryrun --validate-schemas` over the deployed target
+    tree) plans the query and needs its refs to resolve in target. The
+    caller (`collect_target_dependencies`) dedupes via `seen_refs` so
     re-walking shared deps is idempotent.
     """
     if dep_file.name == VIEW_FILE:
@@ -788,17 +791,6 @@ def _target_ref_for_source(
         else src_table
     )
     return target_project, target_ds, target_table
-
-
-def _read_source_project_from_manifest(query_file: Path) -> Optional[str]:
-    """Recover the artifact's original source project from its target manifest."""
-    manifest_path = query_file.parent / MANIFEST_FILENAME
-    if not manifest_path.exists():
-        return None
-    try:
-        return (yaml.safe_load(manifest_path.read_text()) or {}).get("source_project")
-    except Exception:
-        return None
 
 
 def read_source_identity_from_manifest(

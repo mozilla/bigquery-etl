@@ -51,8 +51,10 @@ from bigquery_etl.util.target import (
     VIEW_FILE,
     Target,
     collect_target_dependencies,
+    default_partition_for,
     ensure_dataset_exists,
     prepare_target_files,
+    read_source_identity_from_manifest,
 )
 from bigquery_etl.view import View
 
@@ -636,10 +638,6 @@ def _resolve_isolated_schema(
 ) -> None:
     """Ensure target_file's schema.yaml exists for an --isolated table deploy.
 
-    Called from `_deploy_table_artifact` in topo order, so dependent target
-    artifacts already exist by the time we get here — the rewritten-query
-    dry-run can resolve their schemas.
-
     Resolution order (first match wins):
       1. target_file already has a schema.yaml (copied from source) — keep it,
          unless the table declares allow_field_addition (schema may have drifted).
@@ -698,20 +696,13 @@ def _resolve_isolated_schema(
 
     # 3. SELECT * dry-run against the prod source table via cloud function
     # (CF has prod read access). Sidesteps self-refs, UDFs, and any other
-    # query-level complexity — we just want the schema. partitioned_by guesses
-    # the partition column from the dataset suffix; for *_derived tables we
-    # default to submission_date which covers most Mozilla derived datasets.
-    partitioned_by = None
-    if any(source_dataset.endswith(s) for s in ("_live", "_stable")):
-        partitioned_by = "submission_timestamp"
-    elif source_dataset.endswith("_derived"):
-        partitioned_by = "submission_date"
+    # query-level complexity — we just want the schema.
     try:
         schema = Schema.for_table(
             project=source_project,
             dataset=source_dataset,
             table=source_table,
-            partitioned_by=partitioned_by,
+            partitioned_by=default_partition_for(source_dataset),
         )
         if schema.schema.get("fields"):
             schema.to_yaml_file(target_schema)
@@ -1067,8 +1058,6 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         and not options["dry_run"]
         and file_path.name in (QUERY_FILE, QUERY_SCRIPT)
     ):
-        from bigquery_etl.util.target import read_source_identity_from_manifest
-
         source_identity = read_source_identity_from_manifest(file_path)
         if source_identity is not None:
             src_project, src_dataset, src_table = source_identity

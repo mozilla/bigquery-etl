@@ -3,9 +3,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Account ID in hexadecimal format.
-- name: createdAt
+- name: deletedAt
   type: TIMESTAMP
-  mode: NULLABLE
-- name: verificationMethod
-  type: INTEGER
   mode: NULLABLE

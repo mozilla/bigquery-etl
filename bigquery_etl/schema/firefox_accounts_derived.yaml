@@ -91,10 +91,6 @@ fields:
     type: STRING
     description: The referer URL of the request, as defined in HTTP/1.1 Header Field
       Definitions.
-  - name: latency
-    type: STRING
-    description: The request processing latency on the server, from the time the request
-      was received until the response was sent.
   - name: cacheLookup
     type: BOOLEAN
     description: Whether or not a cache lookup was attempted.

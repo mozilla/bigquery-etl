@@ -86,7 +86,7 @@ WITH temp_unnested AS (
     UNNEST(results) AS res
   WHERE
     submission_date = @submission_date
-    AND event_name IN ('abandonment', 'engagement')
+    AND event_name IN ('abandonment', 'engagement', 'bounce', 'disable')
 ),
 temp_session AS (
   SELECT

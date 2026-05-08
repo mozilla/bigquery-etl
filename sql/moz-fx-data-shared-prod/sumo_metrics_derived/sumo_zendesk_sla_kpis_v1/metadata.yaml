@@ -1,0 +1,21 @@
+friendly_name: SUMO Zendesk SLA KPIs (CSAT, FCR)
+description: |
+  Daily KPI view for SUMO Zendesk support tickets, aggregated from
+  zendesk_ticket_sla_v1. Both KPIs attribute the ticket to its resolution date.
+
+  KPIs:
+  - csat_percentage — Customer Satisfaction. Number of 'good' ratings divided
+    by the number of rated tickets ('good' + 'bad'), times 100. Tickets without
+    a rating are excluded from the denominator.
+  - fcr_percentage — First Contact Resolution. Number of one-touch tickets
+    (resolved with fewer than two agent replies) divided by total resolved
+    tickets, times 100. Mirrors Zendesk Explore's "% One-touch tickets" metric.
+
+  Grain: resolved_date x product x automation_category.
+
+  Tickets where is_excluded_from_sla = TRUE in the base table are filtered out
+  (Appbot non-English, Sumo Test / VPN QA groups, %test% tags). Unresolved
+  tickets are also excluded — both KPIs are about resolved-ticket outcomes.
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience

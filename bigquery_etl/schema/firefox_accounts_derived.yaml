@@ -101,7 +101,7 @@ fields:
   - name: cacheValidatedWithOriginServer
     type: BOOLEAN
     description: Whether or not the response was validated with the origin server before
-      being served from cache.
+      being served from cache. This field is only meaningful if `cacheHit` is True.
   - name: cacheFillBytes
     type: INTEGER
     description: The number of HTTP response bytes inserted into cache. Set only when a

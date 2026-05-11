@@ -131,7 +131,8 @@ active_schedule AS (
           THEN 'America/Denver'
         WHEN 'Pacific Time (US & Canada)'
           THEN 'America/Los_Angeles'
-        ELSE time_zone
+        -- Fallback to UTC so unmapped Zendesk labels don't blow up DATETIME().
+        ELSE 'UTC'
       END
     ) AS schedule_tz
   FROM
@@ -373,9 +374,14 @@ test_tickets AS (
     tickets_in_window AS tw
     ON tw.ticket_id = tt.ticket_id
   WHERE
-    tt.tag LIKE '%test%'
+    -- Word-boundary match so 'test', 'sumo-test', 'test-only' match,
+    -- but 'latest', 'manifest', 'contest', etc. don't.
+    REGEXP_CONTAINS(tt.tag, r'(^|[-_])test([-_]|$)')
 ),
 csat AS (
+  -- One row per ticket: pick the latest survey response so a ticket with
+  -- multiple surveys (or multiple rating_scale answers per survey) doesn't
+  -- fan out and multiply downstream KPI numerators.
   SELECT
     t_s.ticket_id,
     a_s.rating_category
@@ -385,6 +391,8 @@ csat AS (
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket_csat_survey` AS t_s
     ON a_s.survey_response_id = t_s.survey_response_id
     AND a_s.type = 'rating_scale'
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY t_s.ticket_id ORDER BY t_s.survey_response_id DESC) = 1
 )
 SELECT
   tw.ticket_id,

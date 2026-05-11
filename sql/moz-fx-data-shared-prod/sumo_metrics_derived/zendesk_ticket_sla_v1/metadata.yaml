@@ -29,7 +29,7 @@ description: |
 
   Used by:
   - SUMO support SLA dashboards (TTFR, FRT, FCR, CSAT)
-  - sumo_zendesk_kpis_v1 (KPI view layer)
+  - sumo_zendesk_sla_kpis_v1 (KPI view layer)
   - Ad-hoc SLA distribution analyses (medians, percentiles)
 owners:
   - phlee@mozilla.com
@@ -45,6 +45,10 @@ bigquery:
     type: day
     field: ticket_created_date
     require_partition_filter: false
+  clustering:
+    fields:
+      - product
+      - automation_category
 scheduling:
   dag_name: bqetl_sumo_metrics
   date_partition_parameter: null

@@ -145,8 +145,8 @@ fields:
   - name: is_terminal
     type: BOOLEAN
     mode: NULLABLE
-    description: Did the event action cause the search session to end? Filter on
-      'is_terminal = TRUE' to count unique search sessions.
+    description: |
+      Whether this event is the final event of a urlbar session. FALSE for bounce, disable, tab-to-search activations, tip dismissals, and feedback actions (dismiss, not_interested, etc.). Filter on is_terminal = TRUE to count unique search sessions.
   - name: engaged_result_type
     type: STRING
     mode: NULLABLE
@@ -197,4 +197,4 @@ fields:
   - name: exit_type
     type: STRING
     mode: NULLABLE
-    description: How the user exited the urlbar session ('bounce', 'disable' or 'abandonment').
+    description: The event type that ending the urlbar session ('bounce', 'disable', or 'abandonment'). NULL for engagement events.

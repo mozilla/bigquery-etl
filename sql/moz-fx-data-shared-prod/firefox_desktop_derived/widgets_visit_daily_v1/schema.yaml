@@ -31,6 +31,14 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of widgets_user_event events whose user_action is 'change_size' or 'learn_more'
+- name: enabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_enabled events where the widget was enabled (enabled extra = TRUE)
+- name: disabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of widgets_enabled events where the widget was disabled (enabled extra = FALSE)
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE

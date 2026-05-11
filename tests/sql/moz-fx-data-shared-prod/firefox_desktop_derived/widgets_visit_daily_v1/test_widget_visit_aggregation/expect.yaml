@@ -7,6 +7,8 @@
   impression_count: 1
   user_event_count: 1
   change_size_or_learn_more_count: 0
+  enabled_count: 0
+  disabled_count: 1
   submission_timestamp: "2026-05-04T12:00:00+00:00"
   app_version: 138
   os: Windows
@@ -35,6 +37,8 @@
   impression_count: 2
   user_event_count: 3
   change_size_or_learn_more_count: 2
+  enabled_count: 1
+  disabled_count: 0
   submission_timestamp: "2026-05-04T12:00:00+00:00"
   app_version: 138
   os: Windows

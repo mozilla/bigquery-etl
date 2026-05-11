@@ -78,6 +78,17 @@
         - key: user_action
           value: learn_more
     - category: newtab
+      name: widgets_enabled
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: mini
+        - key: enabled
+          value: "true"
+    - category: newtab
       name: widgets_impression
       extra:
         - key: newtab_visit_id
@@ -97,3 +108,14 @@
           value: small
         - key: user_action
           value: timer_set
+    - category: newtab
+      name: widgets_enabled
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: focus_timer
+        - key: widget_size
+          value: small
+        - key: enabled
+          value: "false"

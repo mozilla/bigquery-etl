@@ -77,3 +77,14 @@
           value: small
         - key: user_action
           value: change_size
+    - category: newtab
+      name: widgets_enabled
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: widget_name
+          value: lists
+        - key: widget_size
+          value: small
+        - key: enabled
+          value: "true"

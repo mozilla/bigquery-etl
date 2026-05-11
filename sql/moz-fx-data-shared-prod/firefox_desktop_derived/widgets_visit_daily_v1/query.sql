@@ -49,7 +49,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) = @submission_date
     AND category = 'newtab'
     -- include `opened` so that is_default_ui can be derived per visit
-    AND name IN ('opened', 'widgets_impression', 'widgets_user_event')
+    AND name IN ('opened', 'widgets_impression', 'widgets_user_event', 'widgets_enabled')
 ),
 visit_aggregations AS (
   SELECT
@@ -97,10 +97,12 @@ visit_aggregations AS (
     newtab_visit_id
 ),
 user_action_counts_per_widget AS (
-    -- Per-event-name, per-user_action counts at widget grain.
+    -- Per-event-name, per-user_action, per-enabled-flag counts at widget grain.
     -- Base CTE that is rolled up by widget_metrics.
     -- Used by user_action_counts_summary to build the user_action array column
-    -- widgets_impression rows have user_action = NULL.
+    -- (filtering to widgets_user_event only).
+    -- widgets_impression rows have user_action = NULL and enabled = NULL.
+    -- widgets_enabled rows have user_action = NULL and enabled = TRUE/FALSE.
   SELECT
     submission_date,
     client_id,
@@ -109,11 +111,12 @@ user_action_counts_per_widget AS (
     mozfun.map.get_key(event_details, 'widget_size') AS widget_size,
     event_name,
     mozfun.map.get_key(event_details, 'user_action') AS user_action,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'enabled') AS BOOL) AS widget_enabled,
     COUNT(*) AS count,
   FROM
     events_unnested
   WHERE
-    event_name IN ('widgets_impression', 'widgets_user_event')
+    event_name IN ('widgets_impression', 'widgets_user_event', 'widgets_enabled')
     AND mozfun.map.get_key(event_details, 'widget_name') IS NOT NULL
   GROUP BY
     submission_date,
@@ -122,7 +125,8 @@ user_action_counts_per_widget AS (
     widget_name,
     widget_size,
     event_name,
-    user_action
+    user_action,
+    widget_enabled
 ),
 widget_metrics AS (
   SELECT
@@ -141,6 +145,8 @@ widget_metrics AS (
         0
       )
     ) AS change_size_or_learn_more_count,
+    SUM(IF(event_name = 'widgets_enabled' AND widget_enabled, count, 0)) AS enabled_count,
+    SUM(IF(event_name = 'widgets_enabled' AND NOT widget_enabled, count, 0)) AS disabled_count,
   FROM
     user_action_counts_per_widget
   GROUP BY

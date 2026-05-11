@@ -1,0 +1,57 @@
+---
+- submission_date: 2026-05-04
+  client_id: client_id_1
+  newtab_visit_id: visit_id_1
+  widget_name: lists
+  widget_size: mini
+  impression_count: 1
+  user_event_count: 1
+  change_size_or_learn_more_count: 0
+  submission_timestamp: "2026-05-04T12:00:00+00:00"
+  app_version: 138
+  os: Windows
+  os_version: "10.0"
+  windows_build_number: 22631
+  channel: release
+  locale: en-US
+  country: US
+  sample_id: 42
+  legacy_telemetry_client_id: legacy_id_1
+  profile_group_id: profile_group_id_1
+  homepage_category: enabled
+  newtab_category: enabled
+  newtab_blocked_sponsors: []
+  newtab_content_surface_id: NEW_TAB_EN_US
+  experiments: []
+  is_default_ui: true
+  user_action_counts:
+    - user_action: list_copy
+      count: 1
+- submission_date: 2026-05-04
+  client_id: client_id_1
+  newtab_visit_id: visit_id_1
+  widget_name: lists
+  widget_size: small
+  impression_count: 2
+  user_event_count: 1
+  change_size_or_learn_more_count: 1
+  submission_timestamp: "2026-05-04T12:00:00+00:00"
+  app_version: 138
+  os: Windows
+  os_version: "10.0"
+  windows_build_number: 22631
+  channel: release
+  locale: en-US
+  country: US
+  sample_id: 42
+  legacy_telemetry_client_id: legacy_id_1
+  profile_group_id: profile_group_id_1
+  homepage_category: enabled
+  newtab_category: enabled
+  newtab_blocked_sponsors: []
+  newtab_content_surface_id: NEW_TAB_EN_US
+  experiments: []
+  is_default_ui: true
+  user_action_counts:
+    - user_action: change_size
+      count: 1

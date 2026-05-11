@@ -99,8 +99,6 @@ visit_aggregations AS (
 user_action_counts_per_widget AS (
     -- Per-event-name, per-user_action, per-enabled-flag counts at widget grain.
     -- Base CTE that is rolled up by widget_metrics.
-    -- Used by user_action_counts_summary to build the user_action array column
-    -- (filtering to widgets_user_event only).
     -- widgets_impression rows have user_action = NULL and enabled = NULL.
     -- widgets_enabled rows have user_action = NULL and enabled = TRUE/FALSE.
   SELECT
@@ -147,27 +145,11 @@ widget_metrics AS (
     ) AS change_size_or_learn_more_count,
     SUM(IF(event_name = 'widgets_enabled' AND widget_enabled, count, 0)) AS enabled_count,
     SUM(IF(event_name = 'widgets_enabled' AND NOT widget_enabled, count, 0)) AS disabled_count,
+    ARRAY_AGG(
+      IF(event_name = 'widgets_user_event', STRUCT(user_action, count), NULL) IGNORE NULLS
+    ) AS user_action_counts,
   FROM
     user_action_counts_per_widget
-  GROUP BY
-    submission_date,
-    client_id,
-    newtab_visit_id,
-    widget_name,
-    widget_size
-),
-user_action_counts_summary AS (
-  SELECT
-    submission_date,
-    client_id,
-    newtab_visit_id,
-    widget_name,
-    widget_size,
-    ARRAY_AGG(STRUCT(user_action, count)) AS user_action_counts,
-  FROM
-    user_action_counts_per_widget
-  WHERE
-    event_name = 'widgets_user_event'
   GROUP BY
     submission_date,
     client_id,
@@ -178,12 +160,8 @@ user_action_counts_summary AS (
 SELECT
   widget_metrics.*,
   visit_aggregations.* EXCEPT (submission_date, client_id, newtab_visit_id),
-  user_action_counts_summary.user_action_counts,
 FROM
   widget_metrics
 LEFT JOIN
   visit_aggregations
   USING (submission_date, client_id, newtab_visit_id)
-LEFT JOIN
-  user_action_counts_summary
-  USING (submission_date, client_id, newtab_visit_id, widget_name, widget_size)

@@ -16,6 +16,7 @@ CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>, _groups ARRAY<STRIN
 CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING, selected_result STRING) AS (
   CASE
     WHEN
+    -- bounce engagement_type is never outside this set
     (event_name IN ('engagement', 'bounce')
       AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))) OR
     (event_name = 'disable' AND selected_result IS NOT NULL)

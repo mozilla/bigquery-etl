@@ -22,11 +22,11 @@ fields:
 - name: impression_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of widgets_impression events for this widget within the visit
+  description: Count of widgets_impression events for this widget and size within the visit
 - name: user_event_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of widgets_user_event events for this widget within the visit
+  description: Count of widgets_user_event events for this widget and size within the visit
 - name: change_size_or_learn_more_count
   type: INTEGER
   mode: NULLABLE
@@ -90,7 +90,7 @@ fields:
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user has enabled organic stories in the browser.
+  description: TRUE if the user has enabled stories in the browser.
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -102,7 +102,7 @@ fields:
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user has enabled organic topsites in the browser.
+  description: TRUE if the user has enabled topsites in the browser.
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE

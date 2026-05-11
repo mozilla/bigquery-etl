@@ -97,9 +97,10 @@ visit_aggregations AS (
     newtab_visit_id
 ),
 user_action_counts_per_widget AS (
-    -- Per-event-name, per-user_action counts at widget grain. Base CTE that
-    -- widget_metrics rolls up and that user_action_counts_summary builds the
-    -- array column from. widgets_impression rows have user_action = NULL.
+    -- Per-event-name, per-user_action counts at widget grain.
+    -- Base CTE that is rolled up by widget_metrics.
+    -- Used by user_action_counts_summary to build the user_action array column
+    -- widgets_impression rows have user_action = NULL.
   SELECT
     submission_date,
     client_id,

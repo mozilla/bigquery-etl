@@ -182,9 +182,7 @@ fields:
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: !include-field-description
-    field: normalized_channel
-    file: bigquery_etl/schema/global.yaml
+  description: null
 - mode: NULLABLE
   name: client_clock_skew_mean
   type: FLOAT
@@ -563,9 +561,7 @@ fields:
 - mode: NULLABLE
   name: os
   type: STRING
-  description: !include-field-description
-    field: normalized_os
-    file: bigquery_etl/schema/global.yaml
+  description: null
 - mode: NULLABLE
   name: os_service_pack_major
   type: INTEGER

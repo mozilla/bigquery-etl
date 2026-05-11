@@ -18,11 +18,11 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING,
     WHEN
     (event_name IN ('engagement', 'bounce')
       AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))) OR
-    (event_name = 'disable' AND selected_result != 'none')
+    (event_name = 'disable' AND selected_result IS NOT NULL)
       THEN 'engaged'
     WHEN
       (event_name = 'abandonment') OR
-      (event_name = 'disable' AND selected_result = 'none')
+      (event_name = 'disable' AND selected_result IS NULL)
       THEN 'abandoned'
     WHEN event_name = 'engagement'
       AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
@@ -85,7 +85,7 @@ WITH events_unnested AS (
       SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int),
       0
     ) AS selected_position,
-    mozfun.map.get_key(extra, "selected_result") AS selected_result,
+    NULLIF(mozfun.map.get_key(extra, "selected_result"), 'none') AS selected_result,
     enumerated_array(
       SPLIT(mozfun.map.get_key(extra, "results"), ','),
       SPLIT(mozfun.map.get_key(extra, "groups"), ',')
@@ -134,22 +134,19 @@ add_conditionals AS (
     num_chars_typed,
     num_total_results,
     selected_position,
-    NULLIF(
-      selected_result,
-      'none'
-    ) AS selected_result,
+    selected_result,
     results,
-    `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none')) AS product_selected_result,
+    `mozfun.norm.result_type_to_product_name`(selected_result) AS product_selected_result,
     event_action,
     get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
       WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
-        THEN NULLIF(selected_result, 'none')
+        THEN selected_result
       ELSE NULL
     END AS engaged_result_type,
     CASE
       WHEN event_action IN ('engaged', 'annoyance')
-        THEN `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none'))
+        THEN `mozfun.norm.result_type_to_product_name`(selected_result)
       ELSE NULL
     END AS product_engaged_result_type,
     CASE

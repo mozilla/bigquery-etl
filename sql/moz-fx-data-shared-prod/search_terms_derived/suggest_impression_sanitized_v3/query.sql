@@ -30,8 +30,9 @@ WITH quicksuggest_impressions AS (
     scenario,
     -- Truncate to just Firefox major version
     SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
-    ARRAY_AGG(experiment.key IGNORE NULLS) AS experiment_slug,
-    ARRAY_AGG(experiment.value.branch IGNORE NULLS) AS experiment_branch,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   LEFT JOIN
@@ -62,8 +63,9 @@ quick_suggest_impressions AS (
     CAST(NULL AS STRING) AS scenario,
     -- Truncate to just Firefox major version
     SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
-    ARRAY_AGG(experiment.key IGNORE NULLS) AS experiment_slug,
-    ARRAY_AGG(experiment.value.branch IGNORE NULLS) AS experiment_branch,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
   LEFT JOIN

@@ -141,7 +141,7 @@ add_conditionals AS (
     event_action,
     get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
-      WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
+      WHEN event_action IN ('engaged', 'annoyance')
         THEN selected_result
       ELSE NULL
     END AS engaged_result_type,

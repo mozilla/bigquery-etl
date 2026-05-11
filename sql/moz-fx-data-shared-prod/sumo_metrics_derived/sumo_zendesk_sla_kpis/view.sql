@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_zendesk_sla_kpis_v1`
+  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_zendesk_sla_kpis`
 AS
 -- CSAT and FCR KPIs aggregated from zendesk_ticket_sla_v1.
 -- Both metrics are attributed to the date the ticket was resolved, matching

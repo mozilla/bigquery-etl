@@ -1,0 +1,15 @@
+friendly_name: Relay Mask Firefox Retention
+description: |-
+  Firefox Desktop 4th-week retention segmented by Relay mask usage.
+  Shows correlation only.
+owners:
+- lcrouch@mozilla.com
+labels:
+  owner1: lcrouch
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.relay_derived.relay_mask_firefox_retention_v1

@@ -510,13 +510,15 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
 
 
 def _make_transform(pairs):
-    """Build a str->str substring-replace transform from (old, new) pairs."""
+    """Build a str->str substring-replace transform from (old, new) pairs.
 
-    # TODO: naive str.replace can match substrings inside unrelated identifiers,
-    # comments, string literals, or column names. Short sanitized branch tokens
-    # like "dev" or "test" are particularly risky. Use a word-boundary-anchored
-    # regex, or scope rewrites to known qualified-identifier positions (3-part
-    # refs, manifest source_* keys).
+    TODO: naive str.replace can match substrings inside unrelated identifiers,
+    comments, string literals, or column names. Short sanitized branch tokens
+    like "dev" or "test" are particularly risky. Use a word-boundary-anchored
+    regex, or scope rewrites to known qualified-identifier positions (3-part
+    refs, manifest source_* keys).
+    """
+
     def transform(s):
         for old, new in pairs:
             s = s.replace(old, new)

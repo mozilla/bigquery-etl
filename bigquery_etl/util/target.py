@@ -141,18 +141,16 @@ def _template_to_pattern(
     If capture_commit is True, the *first* git.commit slot in the template is
     wrapped in a (non-greedy) capture group so the commit can be extracted
     from a name that matches the pattern; any subsequent commit slots fall
-    through to the non-capturing replacement. Requires anchor_end=True so the
-    trailing `$` forces the non-greedy class to consume any `_run123` /
-    `_user_suffix` portion of the commit slot — without `$`, the engine would
-    stop at the 7-hex-char minimum and drop the rest.
+    through to the non-capturing replacement. With anchor_end=True the
+    trailing `$` makes the non-greedy class consume any trailing suffix
+    (e.g. `_run123`) in the commit slot. With anchor_end=False, regex
+    backtracking against the literal separator that follows the commit slot
+    in the template typically yields the correct capture too — but templates
+    that don't separate `git.commit` from the next variable slot may capture
+    a truncated commit.
 
     Returns a ^-anchored regex string, optionally $-anchored.
     """
-    if capture_commit and not anchor_end:
-        raise ValueError(
-            "capture_commit=True requires anchor_end=True; otherwise the "
-            "non-greedy capture would stop at the 7-hex minimum."
-        )
     _WILDCARD = "XBQETLWCX"
     _COMMIT_WILDCARD = "XBQETLCOMMITX"
     rendered = Template(template_str).render(

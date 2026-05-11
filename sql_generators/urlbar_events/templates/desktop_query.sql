@@ -105,6 +105,13 @@ WITH events_unnested AS (
     AND event.category = 'urlbar'
     AND event.name IN ('abandonment', 'bounce', 'disable', 'engagement')
 ),
+with_event_action AS (
+  SELECT
+    *,
+    get_event_action(event_name, engagement_type, selected_result) AS event_action
+  FROM
+    events_unnested
+),
 add_conditionals AS (
   SELECT
     submission_date,
@@ -133,7 +140,7 @@ add_conditionals AS (
     ) AS selected_result,
     results,
     `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none')) AS product_selected_result,
-    get_event_action(event_name, engagement_type, selected_result) AS event_action,
+    event_action,
     get_is_terminal(selected_result, engagement_type, event_name) AS is_terminal,
     CASE
       WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
@@ -141,12 +148,12 @@ add_conditionals AS (
       ELSE NULL
     END AS engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type, selected_result) IN ('engaged', 'annoyance')
+      WHEN event_action IN ('engaged', 'annoyance')
         THEN `mozfun.norm.result_type_to_product_name`(NULLIF(selected_result, 'none'))
       ELSE NULL
     END AS product_engaged_result_type,
     CASE
-      WHEN get_event_action(event_name, engagement_type, selected_result) = 'annoyance'
+      WHEN event_action = 'annoyance'
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
@@ -168,7 +175,7 @@ add_conditionals AS (
       ELSE NULL
     END AS exit_type
   FROM
-    events_unnested
+    with_event_action
 ),
 final AS (
   SELECT

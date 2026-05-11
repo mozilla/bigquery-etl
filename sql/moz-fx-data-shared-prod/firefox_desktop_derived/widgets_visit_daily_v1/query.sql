@@ -96,19 +96,19 @@ visit_aggregations AS (
     client_id,
     newtab_visit_id
 ),
-widget_metrics AS (
+user_action_counts_per_widget AS (
+    -- Per-event-name, per-user_action counts at widget grain. Base CTE that
+    -- widget_metrics rolls up and that user_action_counts_summary builds the
+    -- array column from. widgets_impression rows have user_action = NULL.
   SELECT
     submission_date,
     client_id,
     mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
     mozfun.map.get_key(event_details, 'widget_name') AS widget_name,
     mozfun.map.get_key(event_details, 'widget_size') AS widget_size,
-    COUNTIF(event_name = 'widgets_impression') AS impression_count,
-    COUNTIF(event_name = 'widgets_user_event') AS user_event_count,
-    COUNTIF(
-      event_name = 'widgets_user_event'
-      AND mozfun.map.get_key(event_details, 'user_action') IN ('change_size', 'learn_more')
-    ) AS change_size_or_learn_more_count,
+    event_name,
+    mozfun.map.get_key(event_details, 'user_action') AS user_action,
+    COUNT(*) AS count,
   FROM
     events_unnested
   WHERE
@@ -118,28 +118,35 @@ widget_metrics AS (
     client_id,
     newtab_visit_id,
     widget_name,
-    widget_size
+    widget_size,
+    event_name,
+    user_action
 ),
-user_action_counts_per_widget AS (
+widget_metrics AS (
   SELECT
-    submission_date,
-    client_id,
-    mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
-    mozfun.map.get_key(event_details, 'widget_name') AS widget_name,
-    mozfun.map.get_key(event_details, 'widget_size') AS widget_size,
-    mozfun.map.get_key(event_details, 'user_action') AS user_action,
-    COUNT(*) AS count,
-  FROM
-    events_unnested
-  WHERE
-    event_name = 'widgets_user_event'
-  GROUP BY
     submission_date,
     client_id,
     newtab_visit_id,
     widget_name,
     widget_size,
-    user_action
+    SUM(IF(event_name = 'widgets_impression', count, 0)) AS impression_count,
+    SUM(IF(event_name = 'widgets_user_event', count, 0)) AS user_event_count,
+    SUM(
+      IF(
+        event_name = 'widgets_user_event'
+        AND user_action IN ('change_size', 'learn_more'),
+        count,
+        0
+      )
+    ) AS change_size_or_learn_more_count,
+  FROM
+    user_action_counts_per_widget
+  GROUP BY
+    submission_date,
+    client_id,
+    newtab_visit_id,
+    widget_name,
+    widget_size
 ),
 user_action_counts_summary AS (
   SELECT
@@ -151,6 +158,8 @@ user_action_counts_summary AS (
     ARRAY_AGG(STRUCT(user_action, count)) AS user_action_counts,
   FROM
     user_action_counts_per_widget
+  WHERE
+    event_name = 'widgets_user_event'
   GROUP BY
     submission_date,
     client_id,

@@ -1,7 +1,7 @@
 friendly_name: Widgets Visit Daily
 description: |-
   A daily computation of newtab widgets impression and user-event metrics.
-  One row per (newtab_visit_id, widget_name, widget_size) per-day, unpacking
+  One row per newtab_visit_id, widget_name, widget_size, and submission_date, unpacking
   the `widgets_impression` and `widgets_user_event` events from the
   `newtab` event category.
 owners:
@@ -20,7 +20,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: null
   range_partitioning: null
   clustering:
     fields:

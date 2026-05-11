@@ -20,13 +20,13 @@ from bigquery_etl.backfill.parse import (
 from bigquery_etl.backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
+    copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
-    validate_metadata_workgroups,
 )
 from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
@@ -1359,189 +1359,6 @@ class TestBackfill:
 
         assert actual_backfill_staging == expected_backfill_backup
 
-    def test_validate_metadata_workgroups_invalid_table_workgroup_and_valid_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        invalid_workgroup_access = [
-            dict(
-                role="roles/bigquery.dataViewer",
-                members=["workgroup:invalid_workgroup"],
-            )
-        ]
-
-        metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "owners": ["test@example.org"],
-            "workgroup_access": invalid_workgroup_access,
-        }
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_empty_table_workgroup_and_valid_dataset_workgroups(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_valid_table_workgroup_and_invalid_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        invalid_workgroup_access = [
-            dict(
-                role="roles/bigquery.dataViewer",
-                members=["workgroup:invalid_workgroup"],
-            )
-        ]
-
-        dataset_metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "dataset_base_acl": "derived",
-            "user_facing": False,
-            "workgroup_access": invalid_workgroup_access,
-        }
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(dataset_metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_valid_table_workgroup_and_empty_dataset_workgroup(
-        self, runner
-    ):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        assert "dataset_metadata.yaml" in os.listdir("sql/moz-fx-data-shared-prod/test")
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_missing_table_metadata(self, runner):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_missing_dataset_metadata(self, runner):
-        with pytest.raises(ValueError) as e:
-            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-            # remove dataset metdata file
-            Path("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml").unlink(
-                missing_ok=False
-            )
-
-            validate_metadata_workgroups("sql", qualified_table_name)
-
-        assert e.type == ValueError
-
-    def test_validate_metadata_workgroups_empty_workgroups(self, runner):
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert not result
-
-    def test_validate_metadata_workgroups_dataset_valid_superset(self, runner):
-        """Dataset access containing mozilla-confidential and something else should be valid."""
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
-
-        dataset_metadata_conf = {
-            "friendly_name": "test",
-            "description": "test",
-            "dataset_base_acl": "derived",
-            "user_facing": False,
-            "workgroup_access": [
-                dict(
-                    role="roles/bigquery.dataViewer",
-                    members=[
-                        "workgroup:mozilla-confidential/data-viewers",
-                        "workgroup:something-else",
-                    ],
-                )
-            ],
-        }
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(dataset_metadata_conf))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
-    def test_validate_metadata_workgroups_table_valid_superset(self, runner):
-        """Table access containing mozilla-confidential and something else should be valid."""
-        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(
-                yaml.dump(
-                    {
-                        "friendly_name": "test",
-                        "description": "test",
-                        "owners": ["test@example.org"],
-                        "workgroup_access": [
-                            dict(
-                                role="roles/bigquery.dataViewer",
-                                members=[
-                                    "workgroup:mozilla-confidential/data-viewers",
-                                    "workgroup:something-else",
-                                ],
-                            )
-                        ],
-                    }
-                ),
-            )
-
-        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
-            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
-
-        result = validate_metadata_workgroups("sql", qualified_table_name)
-        assert result
-
     def test_qualified_table_name_matching(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         project_id, dataset_id, table_id = qualified_table_name_matching(
@@ -2783,3 +2600,144 @@ class TestBackfill:
                 f'moz-fx-data-shared-prod.dataset.table${d.strftime("%Y%m%d")}'
             )
             assert call.args == (expected_staging, expected_prod, None)
+
+
+class TestCopyPermissionsToStagingTable:
+    PROD_TABLE = "moz-fx-data-shared-prod.test_dataset.test_table"
+    STAGING_TABLE = (
+        "moz-fx-data-shared-prod.backfills_staging_derived.test_dataset__test_table"
+    )
+
+    @classmethod
+    def build_client(
+        cls,
+        prod_table_bindings,
+        dataset_access_entries,
+        staging_bindings,
+    ):
+        """Make a mock bigquery client."""
+        client = MagicMock()
+        prod_table_policy = MagicMock(bindings=list(prod_table_bindings))
+        staging_policy = MagicMock(bindings=list(staging_bindings))
+        client.get_iam_policy.side_effect = lambda table: (
+            prod_table_policy if table == cls.PROD_TABLE else staging_policy
+        )
+
+        prod_dataset = MagicMock()
+        prod_dataset.access_entries = dataset_access_entries
+        client.get_dataset.return_value = prod_dataset
+
+        return client
+
+    def test_unions_table_and_dataset_bindings(self):
+        """Permission copy should apply the union of the prod table's and dataset's permissions."""
+        prod_table_bindings = [
+            {
+                "role": "roles/bigquery.dataViewer",
+                "members": {"user:abc@example.com"},
+            }
+        ]
+        dataset_access_entries = [
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:def/data-viewers",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings, dataset_access_entries, staging_bindings=[]
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        client.set_iam_policy.assert_called_once()
+        applied_table, applied_policy = client.set_iam_policy.call_args.args
+        assert applied_table == self.STAGING_TABLE
+
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {
+                "user:abc@example.com",
+                "workgroup:def/data-viewers",
+            }
+        }
+
+    def test_skips_non_principal_access_entries(self):
+        """Permission copy should skip access entries that aren't principals."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="abc@mozilla.com"
+            ),
+            MagicMock(
+                role="READER", entity_type="groupByEmail", entity_id="team@mozilla.com"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="iamMember",
+                entity_id="workgroup:foo/data-viewers",
+            ),
+            MagicMock(
+                role="READER", entity_type="specialGroup", entity_id="projectOwners"
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="view",
+                entity_id="moz-fx-data-shared-prod.x.y",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="routine",
+                entity_id="moz-fx-data-shared-prod.x.r",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="dataset",
+                entity_id="moz-fx-data-shared-prod.x",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        members = set()
+        for b in applied_policy.bindings:
+            members.update(b["members"])
+        assert members == {
+            "user:abc@mozilla.com",
+            "group:team@mozilla.com",
+            "workgroup:foo/data-viewers",
+        }
+
+    def test_translate_legacy_dataset_roles(self):
+        """Permission copy should translate legacy dataset role names into IAM roles."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER", entity_type="userByEmail", entity_id="reader@mozilla.com"
+            ),
+            MagicMock(
+                role="WRITER", entity_type="userByEmail", entity_id="writer@mozilla.com"
+            ),
+            MagicMock(
+                role="OWNER", entity_type="userByEmail", entity_id="owner@mozilla.com"
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {"user:reader@mozilla.com"},
+            "roles/bigquery.dataEditor": {"user:writer@mozilla.com"},
+            "roles/bigquery.dataOwner": {"user:owner@mozilla.com"},
+        }

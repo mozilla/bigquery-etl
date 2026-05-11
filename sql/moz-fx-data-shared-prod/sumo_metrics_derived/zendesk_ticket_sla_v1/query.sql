@@ -12,6 +12,7 @@ WITH tickets_in_window AS (
     DATE(t.created_at) AS ticket_created_date,
     t.status,
     t.group_id,
+    t.assignee_id,
     t.custom_product,
     COALESCE(m.product_mapping, t.custom_product) AS product
   FROM
@@ -404,6 +405,9 @@ SELECT
   CASE
     WHEN COALESCE(aut.is_automated, 0) = 1
       AND COALESCE(r.reopen_count, 0) = 0
+      AND res.calendar_minutes < 1
+      AND res.event_at IS NOT NULL
+      AND assignee.role IS NULL
       THEN 'automation'
     ELSE 'human-handled'
   END AS automation_category,
@@ -472,3 +476,6 @@ LEFT JOIN
 LEFT JOIN
   `moz-fx-data-shared-prod.zendesk_syndicate.group` AS g
   ON tw.group_id = g.id
+LEFT JOIN
+  `moz-fx-data-shared-prod.zendesk_syndicate.user` AS assignee
+  ON tw.assignee_id = assignee.id

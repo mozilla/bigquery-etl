@@ -82,11 +82,11 @@ fields:
 - name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: User’s chosen homepage/new window appearance
+  description: User's chosen homepage/new window appearance
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: User’s chosen newtab appearance
+  description: User's chosen newtab appearance
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -167,7 +167,7 @@ fields:
 - name: user_action_counts
   type: RECORD
   mode: REPEATED
-  description: Per-user_action counts of widgets_user_event events for this widget within the visit
+  description: Per-user_action counts of widgets_user_event events for this widget within the visit. Will be null in the abscence of interactions
   fields:
   - name: user_action
     type: STRING

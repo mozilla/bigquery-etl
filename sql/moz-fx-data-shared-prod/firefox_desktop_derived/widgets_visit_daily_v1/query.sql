@@ -114,6 +114,7 @@ user_action_counts_per_widget AS (
     events_unnested
   WHERE
     event_name IN ('widgets_impression', 'widgets_user_event')
+    AND mozfun.map.get_key(event_details, 'widget_name') IS NOT NULL
   GROUP BY
     submission_date,
     client_id,

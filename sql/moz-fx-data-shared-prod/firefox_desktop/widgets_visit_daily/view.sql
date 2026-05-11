@@ -2,7 +2,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.widgets_visit_daily`
 AS
 SELECT
-  'Firefox Desktop' AS app_name,
   mozfun.norm.glean_windows_version_info(os, os_version, windows_build_number) AS windows_version,
   *,
 FROM

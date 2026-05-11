@@ -727,12 +727,14 @@ def _resolve_isolated_schema(
 
     # 2. dry-run the rewritten target query — primary source of truth.
     target_dry_run_err: Optional[Exception] = None
+    source_select_err: Optional[Exception] = None
+    get_table_err: Optional[Exception] = None
     try:
         Schema.from_query_file(target_file).to_yaml_file(target_schema)
         return
     except Exception as e:
         target_dry_run_err = e
-        log.debug(
+        log.warning(
             f"Target dry-run failed for {source_project}.{source_dataset}."
             f"{source_table}, falling back to source schema ({e})"
         )
@@ -749,7 +751,8 @@ def _resolve_isolated_schema(
             schema.to_yaml_file(target_schema)
             return
     except Exception as e:
-        log.debug(
+        source_select_err = e
+        log.warning(
             f"Source SELECT * dry-run failed for {source_project}.{source_dataset}."
             f"{source_table}, falling back to get_table ({e})"
         )
@@ -762,14 +765,18 @@ def _resolve_isolated_schema(
         Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(target_schema)
         return
     except Exception as e:
-        log.debug(
+        get_table_err = e
+        log.warning(
             f"get_table failed for {source_project}.{source_dataset}."
             f"{source_table} ({e})"
         )
 
     raise FailedDeployException(
         f"Cannot resolve schema for {source_project}.{source_dataset}."
-        f"{source_table}: target dry-run failed ({target_dry_run_err}). "
+        f"{source_table}:\n"
+        f"  - target dry-run: {target_dry_run_err}\n"
+        f"  - source SELECT * dry-run: {source_select_err}\n"
+        f"  - get_table: {get_table_err}\n"
         f"If the query references UDFs you've changed, ensure they're "
         f"discoverable (--routines auto-detects from query refs in --isolated "
         f"mode)."

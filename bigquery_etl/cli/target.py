@@ -21,7 +21,6 @@ from ..util.target import (
     IAM_ROLE_MAP,
     MANIFEST_FILENAME,
     _get_git_context,
-    _get_run_id,
     _reapply_shared_access,
     extract_commit_from_dataset_name,
     render_artifact_prefix_pattern,
@@ -152,15 +151,16 @@ def target(ctx):
 @click.pass_context
 def clean(ctx, older_than, branch, run_id, all_deployments, dry_run, yes, sql_dir):
     """Clean up target environment deployments."""
-    if not run_id:
-        run_id = _get_run_id() or None
+    # Only fall back to BQETL_RUN_ID (opt-in) — not GITHUB_RUN_ID, which is
+    # auto-set on every Actions runner and would silently filter a local
+    # `target clean` invoked from a CI-adjacent shell. Skip the fallback
+    # entirely when --all is set, to avoid a surprising mutex error.
+    if not run_id and not all_deployments:
+        run_id = os.environ.get("BQETL_RUN_ID") or None
         if run_id:
-            source = (
-                "BQETL_RUN_ID" if os.environ.get("BQETL_RUN_ID") else "GITHUB_RUN_ID"
-            )
             click.echo(
-                f"Using run_id={run_id} from ${source}; pass --run-id explicitly "
-                "or unset the env var to clean across all runs."
+                f"Using run_id={run_id} from $BQETL_RUN_ID; pass --run-id "
+                "explicitly or unset the env var to clean across all runs."
             )
 
     if not any([older_than, branch, run_id, all_deployments]):
@@ -184,7 +184,7 @@ def clean(ctx, older_than, branch, run_id, all_deployments, dry_run, yes, sql_di
     artifact_re = None
     if target_config.raw_artifact_prefix and (
         (branch and "git.branch" in target_config.raw_artifact_prefix)
-        or (run_id and "run_id" in target_config.raw_artifact_prefix)
+        or (run_id and "{{ run_id" in target_config.raw_artifact_prefix)
     ):
         artifact_re = re.compile(
             render_artifact_prefix_pattern(target_config, branch=branch, run_id=run_id)

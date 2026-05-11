@@ -5,9 +5,9 @@ owners:
 - cbeck@mozilla.com
 labels:
   incremental: true
-  schedule: hourly
+  # schedule: hourly
 scheduling:
-  dag_name: bqetl_ads_hourly
+  # dag_name: bqetl_ads_hourly
   date_partition_parameter: null
   # We reprocess the same day every hour up until 1:00 the following day, to give
   # the live data time to come in
@@ -33,3 +33,4 @@ bigquery:
     fields:
     - advertiser
     - country
+deprecated: true

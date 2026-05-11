@@ -11,7 +11,7 @@ from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
-from sql_generators.glean_usage import get_app_info
+from sql_generators.glean_usage.common import get_app_info
 
 THIS_PATH = Path(__file__).parent
 TABLE_NAME = THIS_PATH.name

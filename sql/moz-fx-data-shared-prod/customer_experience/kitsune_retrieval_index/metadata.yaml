@@ -1,0 +1,31 @@
+friendly_name: Kitsune Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
+   to support grounded question answering over Mozilla Support (SUMO) data.
+
+  Grain: one row per date, question_id and answer_id.
+
+  LLM generated fields:
+  - question_summary_llm
+  - question_category_llm
+  - question_language_llm
+  - question_entities_llm
+  - question_topics_llm
+  - embedding based on [title, content]
+  - question_sentiment_score based on [title, content]
+
+  Read-time fields (computed by this view, not stored in the underlying table):
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay,
+    1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Usage
+  - The underlying table requires a partition filter. Always include
+    `WHERE creation_date >= ...` (or an equivalent range) when querying
+    this view, otherwise BigQuery will reject the query.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience

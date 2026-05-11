@@ -1,0 +1,21 @@
+- product: firefox
+  product_mapping: Firefox
+  source: Kitsune
+- product: mobile
+  product_mapping: Firefox Android
+  source: Kitsune
+- product: ios
+  product_mapping: Firefox iOS
+  source: Kitsune
+- product: firefox-enterprise
+  product_mapping: Firefox Enterprise
+  source: Kitsune
+- product: focus-firefox
+  product_mapping: Firefox Focus
+  source: Kitsune
+- product: thunderbird
+  product_mapping: Thunderbird
+  source: Kitsune
+- product: thunderbird-android
+  product_mapping: Thunderbird Android
+  source: Kitsune

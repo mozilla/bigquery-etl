@@ -2755,6 +2755,11 @@ class TestCopyPermissionsToStagingTable:
                 entity_type="userByEmail",
                 entity_id="airflow@project.iam.gserviceaccount.com",
             ),
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="123-compute@developer.gserviceaccount.com",
+            ),
         ]
         client = self.build_client(
             prod_table_bindings=[],
@@ -2770,5 +2775,6 @@ class TestCopyPermissionsToStagingTable:
             "roles/bigquery.dataViewer": {
                 "user:abc@mozilla.com",
                 "serviceAccount:airflow@project.iam.gserviceaccount.com",
+                "serviceAccount:123-compute@developer.gserviceaccount.com",
             },
         }

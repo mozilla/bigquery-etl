@@ -1,5 +1,5 @@
--- Identify answers from deactivated users so they can be excluded from TTFR
--- and helpfulness vote calculations, matching kitsune_forum_posts.sql logic.
+-- Identify answers from deactivated users so they can be excluded from
+-- helpfulness vote calculations, matching kitsune_forum_posts.sql logic.
 WITH deactivation_filter AS (
   SELECT
     a.answer_id,
@@ -13,7 +13,8 @@ WITH deactivation_filter AS (
     a.answer_id,
     u.is_active
 ),
--- First non-OP, non-spam reply from an active user; used for TTFR and reply rate.
+-- First non-OP, non-spam reply; used for TTFR and reply rate.
+-- Matches kitsune_forum_posts.sql: deactivated-user answers are NOT excluded here.
 time_to_first_reply AS (
   SELECT
     question_id,
@@ -28,16 +29,12 @@ time_to_first_reply AS (
         ROW_NUMBER() OVER (PARTITION BY fr.question_id ORDER BY fr.created_date) AS rn
       FROM
         `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
-      JOIN
+      LEFT JOIN
         `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` fr
         ON q.question_id = fr.question_id
-      LEFT JOIN
-        deactivation_filter df
-        ON df.answer_id = fr.answer_id
       WHERE
         fr.creator_username <> q.creator_username
         AND fr.is_spam IS NOT TRUE
-        AND df.is_deactivated IS NOT TRUE
     )
   WHERE
     rn = 1

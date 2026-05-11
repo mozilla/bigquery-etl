@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_sser_kpis_v1`
+  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_sser_kpis`
 AS
 -- Pivot GA4 sessions into kb and forum columns so we can join once per date/product.
 WITH ga4_pivoted AS (
@@ -42,10 +42,6 @@ SELECT
   COALESCE(k.forum_questions_posted, 0) AS forum_questions,
   COALESCE(g.kb_sessions, 0) AS kb_sessions,
   COALESCE(g.forum_question_sessions, 0) AS forum_question_sessions,
-  -- SSER for KB: share of KB-session users who escalated to a paid ticket
-  SAFE_DIVIDE(COALESCE(z.zendesk_tickets_created, 0), g.kb_sessions) AS sser_kb,
-  -- SSER for Forums: share of forum-session viewers who had to post a new question
-  SAFE_DIVIDE(COALESCE(k.forum_questions_posted, 0), g.forum_question_sessions) AS sser_forums,
   -- SSER overall: all escalations over all self-service interactions
   SAFE_DIVIDE(
     COALESCE(z.zendesk_tickets_created, 0) + COALESCE(k.forum_questions_posted, 0),

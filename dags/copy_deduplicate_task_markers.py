@@ -212,6 +212,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_desktop_retention_model__copy_deduplicate_all",
+            external_dag_id="bqetl_desktop_retention_model",
+            external_task_id="wait_for_copy_deduplicate_all",
+            execution_date="{{ (logical_date + macros.timedelta(seconds=14400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_ech_adoption_rate__copy_deduplicate_all",
             external_dag_id="bqetl_ech_adoption_rate",
             external_task_id="wait_for_copy_deduplicate_all",

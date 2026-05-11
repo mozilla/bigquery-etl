@@ -7145,6 +7145,21 @@ with DAG(
         task_group=task_group_relay_backend,
     )
 
+    with TaskGroup(
+        "relay_backend_derived__events_stream__v1_external",
+        parent_group=task_group_relay_backend,
+    ) as relay_backend_derived__events_stream__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_retention_model__wait_for_relay_backend_derived__events_stream__v1",
+            external_dag_id="bqetl_desktop_retention_model",
+            external_task_id="wait_for_relay_backend_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        relay_backend_derived__events_stream__v1_external.set_upstream(
+            relay_backend_derived__events_stream__v1
+        )
+
     subscription_platform_backend_cirrus_derived__events_stream__v1 = (
         bigquery_etl_query(
             task_id="subscription_platform_backend_cirrus_derived__events_stream__v1",

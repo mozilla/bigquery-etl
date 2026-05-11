@@ -1,4 +1,4 @@
---- User-facing view. Generated via sql_generators.active_users.
+--- User-facing view. Generated via sql_generators.urlbar_events.
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.urlbar_events`
 AS

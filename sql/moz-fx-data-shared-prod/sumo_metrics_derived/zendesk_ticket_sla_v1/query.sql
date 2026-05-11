@@ -33,9 +33,9 @@ ticket_comments_with_role AS (
     tc.created AS comment_created_at,
     u.role AS author_role
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_comment` AS tc
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_comment` AS tc
   JOIN
-    `moz-fx-sumo-prod.zendesk.user` AS u
+    `moz-fx-data-shared-prod.zendesk_syndicate.user` AS u
     ON tc.user_id = u.id
   JOIN
     tickets_in_window AS tw
@@ -69,7 +69,7 @@ status_history AS (
     h.value AS status_value,
     h.updated AS status_updated_at
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_field_history` AS h
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history` AS h
   JOIN
     tickets_in_window AS tw
     ON tw.ticket_id = h.ticket_id
@@ -135,7 +135,7 @@ active_schedule AS (
       END
     ) AS schedule_tz
   FROM
-    `moz-fx-sumo-prod.zendesk.schedule`
+    `moz-fx-data-shared-prod.zendesk_syndicate.schedule`
   WHERE
     name = 'Mozilla Support Hours'
   GROUP BY
@@ -247,7 +247,7 @@ intercepted_periods AS (
   FROM
     weekly_periods AS wp
   JOIN
-    `moz-fx-sumo-prod.zendesk.schedule` AS s
+    `moz-fx-data-shared-prod.zendesk_syndicate.schedule` AS s
     ON s.id = wp.schedule_id
     AND wp.ticket_week_start_time <= s.end_time
     AND wp.ticket_week_end_time >= s.start_time
@@ -271,7 +271,7 @@ holiday_minutes_per_event AS (
   FROM
     intercepted_with_dates AS iwd
   JOIN
-    `moz-fx-sumo-prod.zendesk.schedule_holiday` AS sh
+    `moz-fx-data-shared-prod.zendesk_syndicate.schedule_holiday` AS sh
     ON sh.schedule_id = iwd.schedule_id
     AND iwd.schedule_interval_date
     BETWEEN DATE(sh.start_date)
@@ -326,7 +326,7 @@ appbot_class AS (
       ELSE 'All Other Tickets'
     END AS ticket_group
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag` AS tt
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag` AS tt
   JOIN
     tickets_in_window AS tw
     ON tw.ticket_id = tt.ticket_id
@@ -357,7 +357,7 @@ automation_tags AS (
       END
     ) AS is_automated
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag` AS tt
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag` AS tt
   JOIN
     tickets_in_window AS tw
     ON tw.ticket_id = tt.ticket_id
@@ -368,7 +368,7 @@ test_tickets AS (
   SELECT DISTINCT
     tt.ticket_id
   FROM
-    `moz-fx-sumo-prod.zendesk.ticket_tag` AS tt
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag` AS tt
   JOIN
     tickets_in_window AS tw
     ON tw.ticket_id = tt.ticket_id
@@ -380,9 +380,9 @@ csat AS (
     t_s.ticket_id,
     a_s.rating_category
   FROM
-    `moz-fx-sumo-prod.zendesk.csat_survey_answer` AS a_s
+    `moz-fx-data-shared-prod.zendesk_syndicate.csat_survey_answer` AS a_s
   JOIN
-    `moz-fx-sumo-prod.zendesk.ticket_csat_survey` AS t_s
+    `moz-fx-data-shared-prod.zendesk_syndicate.ticket_csat_survey` AS t_s
     ON a_s.survey_response_id = t_s.survey_response_id
     AND a_s.type = 'rating_scale'
 )
@@ -462,5 +462,5 @@ LEFT JOIN
   test_tickets AS tt
   ON tw.ticket_id = tt.ticket_id
 LEFT JOIN
-  `moz-fx-sumo-prod.zendesk.group` AS g
+  `moz-fx-data-shared-prod.zendesk_syndicate.group` AS g
   ON tw.group_id = g.id

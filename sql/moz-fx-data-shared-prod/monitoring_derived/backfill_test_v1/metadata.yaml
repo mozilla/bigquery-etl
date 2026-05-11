@@ -1,0 +1,21 @@
+friendly_name: Backfill Test
+description: |-
+  Test for managed backfill staging table ACL.  Staging table should be moz-confidential with
+  workgroup:amo/nonprod access.
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/nonprod
+  - workgroup:mozilla-confidential/data-viewers
+require_column_descriptions: true

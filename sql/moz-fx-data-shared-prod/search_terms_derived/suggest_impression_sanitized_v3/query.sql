@@ -5,7 +5,7 @@ with sanitized search query data captured in logs from the backend Merino servic
 The results of this are copied into suggest_impression_sanitized_v3,
 which is also defined in this directory.
 */
-WITH quicksuggest_impressions AS (
+WITH legacy_impressions AS (
   SELECT
     -- This should already be truncated to second level per CONSVC-1364
     -- but we reapply truncation to be explicit about granularity.
@@ -42,7 +42,7 @@ WITH quicksuggest_impressions AS (
   GROUP BY
     ALL
 ),
-quick_suggest_impressions AS (
+glean_impressions AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,
@@ -82,12 +82,12 @@ impressions AS (
   SELECT
     *
   FROM
-    quicksuggest_impressions
+    legacy_impressions
   UNION ALL
   SELECT
     *
   FROM
-    quick_suggest_impressions
+    glean_impressions
 ),
 -- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
 -- the same request_id appears in both quicksuggest_impression_v1 (legacy) and

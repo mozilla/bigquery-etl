@@ -1,4 +1,7 @@
 fields:
+- name: cloud_provider
+  type: STRING
+  mode: NULLABLE
 - name: project
   type: STRING
   mode: NULLABLE

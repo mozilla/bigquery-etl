@@ -21,20 +21,7 @@ worker_cost AS (
     usage_start_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND @submission_date
-  GROUP BY
-    zone,
-    instance_id
-  UNION ALL
-  SELECT
-    zone,
-    instance_id,
-    SUM(total_cost) AS total_cost,
-  FROM
-    `moz-fx-data-shared-prod.fxci_derived.worker_costs_azure_v1`
-  WHERE
-    usage_start_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND @submission_date
+    AND project IN ("fxci-production-level3-workers", "fxci-production-level1-workers")
   GROUP BY
     zone,
     instance_id
@@ -46,20 +33,6 @@ worker_metric AS (
     SUM(uptime) AS total_uptime
   FROM
     `moz-fx-data-shared-prod.fxci_derived.worker_metrics_v1`
-  WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND @submission_date
-  GROUP BY
-    zone,
-    instance_id
-  UNION ALL
-  SELECT
-    zone,
-    instance_id,
-    SUM(uptime) AS total_uptime
-  FROM
-    `moz-fx-data-shared-prod.fxci_derived.worker_metrics_azure_v1`
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)

@@ -1,8 +1,9 @@
 friendly_name: Firefox-CI Worker Costs
 description: |-
-  Derived Firefox-CI worker cost data from the GCP billing export.
+  Derived Firefox-CI worker cost data from the GCP and Azure billing exports.
 owners:
 - ahalberstadt@mozilla.com
+- jmoss@mozilla.com
 labels:
   incremental: true
   owner1: ahalberstadt
@@ -10,6 +11,9 @@ labels:
 scheduling:
   dag_name: bqetl_fxci
   task_name: fxci_worker_cost__v1
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+schema:
+  allow_field_addition: true
 bigquery:
   time_partitioning:
     type: day

@@ -18,7 +18,7 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING,
     WHEN
     -- bounce engagement_type is never outside this set
     (event_name IN ('engagement', 'bounce')
-      AND (engagement_type IN ("click", "drop_go", "enter", "go_button", "paste_go"))) OR
+      AND (engagement_type IN ('click', 'drop_go', 'enter', 'go_button', 'paste_go'))) OR
     (event_name = 'disable' AND selected_result IS NOT NULL)
       THEN 'engaged'
     WHEN
@@ -26,8 +26,8 @@ CREATE TEMP FUNCTION get_event_action(event_name STRING, engagement_type STRING,
       (event_name = 'disable' AND selected_result IS NULL)
       THEN 'abandoned'
     WHEN event_name = 'engagement'
-      AND (engagement_type NOT IN ("click", "drop_go", "enter", "go_button", "paste_go"))
-      THEN "annoyance"
+      AND (engagement_type NOT IN ('click', 'drop_go', 'enter', 'go_button', 'paste_go'))
+      THEN 'annoyance'
     ELSE NULL
   END
 );
@@ -72,32 +72,32 @@ WITH events_unnested AS (
     normalized_channel,
     normalized_country_code,
     `moz-fx-data-shared-prod`.udf.normalize_search_engine(
-      mozfun.map.get_key(extra, "search_engine_default_id")
+      mozfun.map.get_key(extra, 'search_engine_default_id')
     ) AS normalized_engine,
     COALESCE(metrics.boolean.urlbar_pref_suggest_data_collection, FALSE) AS pref_data_collection,
     COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
     COALESCE((metrics.boolean.urlbar_pref_suggest_nonsponsored OR metrics.boolean.urlbar_pref_suggest_all), FALSE) AS pref_fx_suggestions,
-    mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
-    mozfun.map.get_key(extra, "interaction") AS interaction,
-    SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
-    SAFE_CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
+    mozfun.map.get_key(extra, 'engagement_type') AS engagement_type,
+    mozfun.map.get_key(extra, 'interaction') AS interaction,
+    SAFE_CAST(mozfun.map.get_key(extra, 'n_chars') AS int) AS num_chars_typed,
+    SAFE_CAST(mozfun.map.get_key(extra, 'n_results') AS int) AS num_total_results,
   --If 0, then no result was selected.
     NULLIF(
-      SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int),
+      SAFE_CAST(mozfun.map.get_key(extra, 'selected_position') AS int),
       0
     ) AS selected_position,
-    NULLIF(mozfun.map.get_key(extra, "selected_result"), 'none') AS selected_result,
+    NULLIF(mozfun.map.get_key(extra, 'selected_result'), 'none') AS selected_result,
     enumerated_array(
-      SPLIT(mozfun.map.get_key(extra, "results"), ','),
-      SPLIT(mozfun.map.get_key(extra, "groups"), ',')
+      SPLIT(mozfun.map.get_key(extra, 'results'), ','),
+      SPLIT(mozfun.map.get_key(extra, 'groups'), ',')
     ) AS results,
     normalized_os,
     client_info.os_version,
     client_info.app_display_version as app_display_version,
     metrics.boolean.urlbar_pref_suggest_online_available AS pref_ohttp_available,
     metrics.boolean.urlbar_pref_suggest_online_enabled AS pref_ohttp_enabled,
-    mozfun.map.get_key(extra, "sap") AS sap,
-    mozfun.map.get_key(extra, "window_mode") AS window_mode
+    mozfun.map.get_key(extra, 'sap') AS sap,
+    mozfun.map.get_key(extra, 'window_mode') AS window_mode
   FROM
     `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event

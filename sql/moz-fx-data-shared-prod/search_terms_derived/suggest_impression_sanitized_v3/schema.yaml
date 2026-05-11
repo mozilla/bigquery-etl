@@ -77,3 +77,9 @@ fields:
 - mode: NULLABLE
   name: sequence_no
   type: INTEGER
+- mode: REPEATED
+  name: experiment_slug
+  type: STRING
+- mode: REPEATED
+  name: experiment_branch
+  type: STRING

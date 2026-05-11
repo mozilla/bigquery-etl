@@ -141,7 +141,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: |
-      Action taken by the user which generated the event—'engaged', 'abandoned', 'annoyance'.
+      Action taken by the user which generated the event - 'engaged', 'abandoned', or 'annoyance'.
   - name: is_terminal
     type: BOOLEAN
     mode: NULLABLE

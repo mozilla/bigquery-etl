@@ -6,7 +6,10 @@ SELECT
   COALESCE(event_id, CONCAT(document_id, '-', document_event_number)) AS event_id,
   * EXCEPT (event_id),
   STRUCT(
-    STRUCT(LAX_BOOL(event_extra.blocked) AS `blocked`) AS `boolean`,
+    STRUCT(
+      LAX_BOOL(event_extra.blocked) AS `blocked`,
+      LAX_BOOL(event_extra.enabled) AS `enabled`
+    ) AS `boolean`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.feature) AS `feature`,

@@ -20959,6 +20959,20 @@ fields:
         preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
 
         '
+    - name: browser_ui_interaction_preferences_pane_tabs_browsing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the items interacted with in the Tabs and browsing section
+        of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -23883,6 +23897,26 @@ fields:
       description: 'The value of the "nimbus.qa.string-user" pref.
 
         '
+    - name: os_environment_launch_on_login_state
+      type: STRING
+      mode: NULLABLE
+      description: 'The state of the launch-on-login setting at startup. One of: "enabled"
+        (launch on login is active), "disabled" (not enabled by the user), "disabled_by_settings"
+        (blocked by Windows Settings or policy), "not_supported" (feature unavailable
+        on this platform), or "error" (failed to determine state).
+
+        '
+    - name: os_environment_desktop_entry_exists
+      type: STRING
+      mode: NULLABLE
+      description: "Determines whether a freedesktop.org desktop entry exists that\
+        \ matches the remoting name, i.e. that is likely to associate with browser\
+        \ windows.\nThis will only be set on Linux, and is either:\n  * \"absent\"\
+        , if none exists (or one exists but is marked Hidden, i.e.\n    deleted)\n\
+        \  * \"invisible\", if it exists but is marked invisible (by NoDisplay etc)\n\
+        \  * \"visible\" if it exists and is visible\n  * \"sandboxed\" if running\
+        \ under Flatpak or Snap, where it is likely\n    visible but detection is\
+        \ impossible\n"
   - name: timespan
     type: RECORD
     mode: NULLABLE

@@ -68,6 +68,12 @@ CREATE OR REPLACE VIEW
     UNION ALL
     SELECT
       *,
+      'urlbar' AS feature,
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_feature_monitoring_urlbar_v1`
+    UNION ALL
+    SELECT
+      *,
       'infobar' AS feature,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.nimbus_feature_monitoring_infobar_v1`

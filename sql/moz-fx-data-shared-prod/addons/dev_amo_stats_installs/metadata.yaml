@@ -5,9 +5,9 @@ description: |-
 owners:
 - kik@mozilla.com
 - lgreco@mozilla.com
+
 labels:
   application: amo
-  authorized: true
 
 workgroup_access:
 - role: roles/bigquery.dataViewer

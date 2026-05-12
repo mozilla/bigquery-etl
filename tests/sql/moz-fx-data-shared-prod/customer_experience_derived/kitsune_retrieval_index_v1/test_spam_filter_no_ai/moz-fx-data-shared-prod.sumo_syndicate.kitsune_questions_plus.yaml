@@ -1,0 +1,13 @@
+- question_id: 1
+  created_date: "2026-04-01T00:00:00+00:00"
+  creator_username: "testuser"
+  product: "firefox"
+  locale: "en-US"
+  topic: "other"
+  tier1_topic: "other"
+  tier2_topic: "other"
+  tier3_topic: "other"
+  title: "Test question"
+  question_content: "Test content"
+  is_spam: true
+  is_locked: false

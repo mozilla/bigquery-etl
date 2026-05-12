@@ -1,11 +1,11 @@
 WITH activity_range AS (
   SELECT
     last_seen.client_id,
+    last_seen.sample_id,
     first_seen.first_seen_date,
     last_seen.submission_date,
-    last_seen.days_desktop_active_bits,
-    last_seen.sample_id,
-    DATE_DIFF(last_seen.submission_date, first_seen.first_seen_date, DAY) AS days_since_first_seen
+    DATE_DIFF(last_seen.submission_date, first_seen.first_seen_date, DAY) AS days_since_first_seen,
+    last_seen.days_desktop_active_bits
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
   INNER JOIN
@@ -13,18 +13,16 @@ WITH activity_range AS (
     ON last_seen.client_id = first_seen.client_id
     AND last_seen.sample_id = first_seen.sample_id
   WHERE
-      -- Only include activity within each client's 30-day post-cohort window,
-      -- up to the as_of_date
-    last_seen.submission_date
-    BETWEEN first_seen.first_seen_date
-    AND DATE_ADD(first_seen.first_seen_date, INTERVAL 30 DAY)
-    AND last_seen.submission_date = @submission_date
+    first_seen.first_seen_date = @submission_date
+    AND last_seen.submission_date
+    BETWEEN @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 30 DAY)
 ),
   -- Latest date with data available; drives NULL logic for future day columns
 max_available_date AS (
   SELECT
     MAX(submission_date) AS max_date,
-    DATE_DIFF(CURRENT_DATE(), MAX(submission_date), DAY) AS days_since_last_data
+    DATE_DIFF(@submission_date, MAX(submission_date), DAY) AS days_since_last_data
   FROM
     activity_range
 ),
@@ -138,15 +136,16 @@ client_attributes AS (
   WHERE
       -- Pull attributes from each client's cohort date (first seen day) row
     last_seen.submission_date = last_seen.first_seen_date
-    AND last_seen.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND last_seen.submission_date <= @submission_date
+    AND last_seen.submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
 ),
 client_level AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
-    DATE_DIFF(max_date, first_seen_date, DAY) AS days_data_available,
+    DATE_DIFF(max_date, first_seen_date, DAY) + 1 AS days_data_available,
     days_since_last_data,
     MAX(
       CASE
@@ -527,7 +526,7 @@ SELECT
   -- No activity on days 2-6; at risk of churning by day 7
   -- NULL if day 6 data not yet available
   CASE
-    WHEN days_data_available < 6
+    WHEN days_data_available < 7
       THEN NULL
     WHEN day_2 = FALSE
       AND day_3 = FALSE
@@ -570,7 +569,7 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND day_28 = FALSE
+      AND IFNULL(day_28, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS churned_after_1_day,
@@ -606,8 +605,8 @@ SELECT
       AND day_25 = FALSE
       AND day_26 = FALSE
       AND day_27 = FALSE
-      AND day_28 = FALSE
-      AND day_29 = FALSE
+      AND IFNULL(day_28, FALSE) = FALSE
+      AND IFNULL(day_29, FALSE) = FALSE
       THEN TRUE
     ELSE FALSE
   END AS churned_after_2_days,
@@ -675,9 +674,12 @@ SELECT
   day_25,
   day_26,
   day_27,
-  day_28,
-  day_29,
-  day_30
+  -- bits28 tracks 28 days (bits 0-27); clients inactive for 28+ days fall out of
+  -- baseline_clients_last_seen entirely, producing NULL instead of FALSE. Coerce to
+  -- FALSE when days_data_available confirms the date is in the past.
+  IF(days_data_available >= 29 AND day_28 IS NULL, FALSE, day_28) AS day_28,
+  IF(days_data_available >= 30 AND day_29 IS NULL, FALSE, day_29) AS day_29,
+  IF(days_data_available >= 31 AND day_30 IS NULL, FALSE, day_30) AS day_30
 FROM
   client_level
 LEFT JOIN

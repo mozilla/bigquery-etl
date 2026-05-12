@@ -98,6 +98,8 @@ class Metric:
         if (_key := "aggregators") not in kwargs:
             if data_type in ("boolean", "labeled_boolean"):
                 kwargs[_key] = ["count_true"]
+            elif data_type == "string":
+                kwargs[_key] = ["sum"]
             else:
                 kwargs[_key] = ["avg"]
 
@@ -106,6 +108,8 @@ class Metric:
                 kwargs[_key] = "logical_or"
             elif data_type == "event" and source_type == "events_stream":
                 kwargs[_key] = "countif"
+            elif data_type == "string":
+                kwargs[_key] = "count"
             else:
                 kwargs[_key] = "sum"
 

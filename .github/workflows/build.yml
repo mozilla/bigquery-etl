@@ -43,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read  # for resolve-pr-base on workflow_run events
     if: &is-allowed-event >-
       ${{
         (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
@@ -64,10 +65,36 @@ jobs:
           filter: blob:none
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+      # For workflow_run (fork PRs post-gate), the PR event payload isn't
+      # available. Resolve the PR's base SHA via the API so changed-files can
+      # still compute a real diff instead of conservatively running everything.
+      # workflow_run.pull_requests[0] is reliable for same-repo PRs but often
+      # empty for fork PRs, so we fall back to looking up by head SHA.
+      - id: resolve-pr-base
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_FROM_EVENT: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          set -euo pipefail
+          pr_number="$PR_FROM_EVENT"
+          if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            pr_number=$(gh api \
+              "/repos/${{ github.repository }}/commits/$HEAD_SHA/pulls" \
+              --jq '.[0].number')
+          fi
+          if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            echo "Could not resolve PR for head $HEAD_SHA; falling back to full validation."
+            echo "base_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base_sha=$(gh api "/repos/${{ github.repository }}/pulls/$pr_number" --jq '.base.sha')
+          echo "Resolved PR #$pr_number, base $base_sha"
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
       - id: changed-files-routines
-        # Skip path-based gating for fork PRs reaching us via workflow_run;
-        # PR event payload isn't available, so we run everything conservatively.
-        if: github.event_name != 'workflow_run'
+        # Skip if we couldn't resolve a base SHA for workflow_run (run everything).
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -78,9 +105,9 @@ jobs:
             sql/moz-fx-data-shared-prod/udf/**
             sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
-        if: github.event_name != 'workflow_run'
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -92,9 +119,9 @@ jobs:
             bigquery_etl/query_scheduling/**
             tests/sql/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-bqetl
-        if: github.event_name != 'workflow_run'
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -106,7 +133,7 @@ jobs:
             requirements.txt
             requirements.in
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - name: Decide which jobs to run
         id: set-flags
         env:
@@ -114,10 +141,12 @@ jobs:
           VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
           VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
           EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_RESOLVED: ${{ steps.resolve-pr-base.outputs.base_sha }}
         run: |
-          # For workflow_run (fork PRs post-gate), the changed-files steps were
-          # skipped — default everything to true so all validation jobs run.
-          if [[ "$EVENT_NAME" == "workflow_run" ]]; then
+          # For workflow_run when PR base SHA couldn't be resolved, fall back to
+          # running everything (conservative). Otherwise the changed-files
+          # outputs are valid for both event paths.
+          if [[ "$EVENT_NAME" == "workflow_run" && -z "$PR_BASE_RESOLVED" ]]; then
             echo "validate-routines=true" >> $GITHUB_OUTPUT
             echo "validate-sql=true" >> $GITHUB_OUTPUT
             echo "validate-bqetl=true" >> $GITHUB_OUTPUT
@@ -127,7 +156,9 @@ jobs:
           echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
           echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
           echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
-          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+          if [[ "$EVENT_NAME" == "workflow_run" ]]; then
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          elif [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
             echo "deploy=false" >> $GITHUB_OUTPUT
@@ -1475,10 +1506,10 @@ jobs:
   # fork-gate approval). For same-repo PRs the native pull_request checks
   # already appear in the PR UI, so this job is unnecessary there.
   #
-  # !!! COUPLING: the `needs:` list below must include every job whose status
-  # should appear in the fork-PR Checks UI. If you ADD a job to this workflow
-  # that should be visible to fork-PR reviewers, ADD it to `needs:` here too.
-  # Forgetting means the new job runs but its status never reaches the PR.
+  # `needs:` enforces ordering (run after all upstream jobs complete). The
+  # actual list of jobs to report is derived dynamically from the Actions Jobs
+  # API at runtime, so new jobs added to this workflow automatically appear in
+  # the fork-PR Checks UI without needing edits here.
   report-checks:
     name: Report PR checks
     if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
@@ -1506,32 +1537,41 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+      actions: read  # for listing jobs in this workflow run
     steps:
       - name: Post check runs for each upstream job
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEEDS_JSON: ${{ toJSON(needs) }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          DETAILS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          echo "$NEEDS_JSON" | jq -r 'to_entries[] | "\(.key)\t\(.value.result)"' | \
-          while IFS=$'\t' read -r name result; do
-            case "$result" in
-              success)   conclusion=success ;;
-              failure)   conclusion=failure ;;
-              cancelled) conclusion=cancelled ;;
-              skipped)   conclusion=skipped ;;
-              *)         conclusion=neutral ;;
-            esac
-            echo "Reporting check: $name -> $conclusion"
-            gh api -X POST "/repos/${{ github.repository }}/check-runs" \
-              -f name="$name" \
-              -f head_sha="$HEAD_SHA" \
-              -f status=completed \
-              -f conclusion="$conclusion" \
-              -f details_url="$DETAILS_URL" >/dev/null
-          done
+          # Iterate the Actions Jobs API for this run; each check-run's
+          # details_url points at the specific job's log so failing checks
+          # deep-link directly to the failure (rather than the run overview).
+          # Skip the reporter jobs themselves to avoid self-reporting.
+          gh api --paginate \
+            "/repos/${{ github.repository }}/actions/runs/$RUN_ID/jobs" \
+            --jq '.jobs[]
+                  | select(.name != "Report PR checks"
+                        and .name != "Report fork-gate result")
+                  | "\(.name)\t\(.conclusion // "neutral")\t\(.html_url)"' \
+          | while IFS=$'\t' read -r name conclusion html_url; do
+              case "$conclusion" in
+                success)   c=success ;;
+                failure)   c=failure ;;
+                cancelled) c=cancelled ;;
+                skipped)   c=skipped ;;
+                *)         c=neutral ;;
+              esac
+              echo "Reporting: $name -> $c ($html_url)"
+              gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+                -f name="$name" \
+                -f head_sha="$HEAD_SHA" \
+                -f status=completed \
+                -f conclusion="$c" \
+                -f details_url="$html_url" >/dev/null
+            done
 
   # Surface gate rejection / failure as a single check on the PR. Without this,
   # a rejected approval (or errored gate) shows nothing in the PR UI.

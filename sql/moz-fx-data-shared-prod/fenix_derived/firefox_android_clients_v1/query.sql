@@ -615,3 +615,4 @@ FROM
 FULL OUTER JOIN
   _previous
   USING (client_id)
+-- test change

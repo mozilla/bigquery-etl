@@ -1,0 +1,27 @@
+name: Fork PR Gate
+
+# Single approval gate for fork PRs. Once a maintainer approves the
+# `external-fork` environment here, build.yml fires via `workflow_run` and
+# runs all downstream jobs in trusted context without further per-job approval.
+# Non-fork PRs and MEMBER-authored PRs skip this workflow entirely.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  approve:
+    if: |
+      github.event.pull_request.head.repo.fork == true &&
+      github.event.pull_request.author_association != 'MEMBER'
+    runs-on: ubuntu-latest
+    environment: external-fork
+    steps:
+      - run: |
+          echo "::warning::Approving runs build.yml with this fork's code in trusted context."
+          echo "::warning::Re-review every push: a new commit re-fires this gate; approval is per-SHA, not per-PR."
+          echo "::warning::Inspect dependency changes (requirements.txt, setup.py, package-lock, Makefile) — these execute with secrets after approval."
+          echo "Approved fork PR #${{ github.event.pull_request.number }}"
+          echo "head_sha=${{ github.event.pull_request.head.sha }}"

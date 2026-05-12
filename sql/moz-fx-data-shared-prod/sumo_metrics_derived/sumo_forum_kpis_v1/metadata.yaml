@@ -1,0 +1,29 @@
+friendly_name: SUMO Forum KPIs
+description: |
+  View exposing pre-computed KPI columns for the Kitsune support forum,
+  sourced from kitsune_forum_metrics_daily_v1.
+
+  Grain: Daily x Product x Locale
+
+  KPIs exposed:
+    reply_rate       = questions_replied / questions_created
+    avg_ttfr_hrs     = average time to first qualifying reply in hours
+                       (weight by questions_replied when rolling up across locales)
+    helpfulness_rate = total_helpful_votes / (total_helpful_votes + total_unhelpful_votes)
+
+  Raw counts (questions_created, questions_replied, total_helpful_votes,
+  total_unhelpful_votes) are also exposed to support moving averages and
+  running backlog calculations in the dashboard layer.
+owners:
+- plee@mozilla.com
+- mozilla/customer_insights
+labels:
+  owner1: plee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.kitsune_forum_metrics_daily_v1

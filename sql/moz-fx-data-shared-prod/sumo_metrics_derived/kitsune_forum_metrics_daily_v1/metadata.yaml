@@ -1,0 +1,44 @@
+friendly_name: Kitsune Forum Metrics Daily
+description: "Daily Kitsune support forum question and reply metrics, broken down\
+  \ by product\nand locale.\n\nGrain: Daily x Product x Locale (UTC timezone)\n\n\
+  Supports three Tier 1 KPIs:\n  reply_rate       = SUM(questions_replied) / SUM(questions_created)\n\
+  \  avg_ttfr_hrs     = AVG(avg_ttfr_hrs) weighted by questions_replied\n  helpfulness_rate\
+  \ = SUM(total_helpful_votes)\n                   / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))\n\
+  \nA row is included on @submission_date if the question was created on that date\n\
+  OR if the question received its first qualifying reply on that date. This allows\n\
+  both questions_created and questions_replied to be tracked in a single partition.\n\
+  \nProduct mapping (matching kitsune_forum_posts.sql):\n  firefox            \u2192\
+  \ Firefox desktop\n  mobile             \u2192 Firefox for Android\n  ios      \
+  \          \u2192 Firefox for iOS\n  firefox-enterprise \u2192 Firefox for Enterprise\n\
+  Non-Firefox products are excluded.\n\nExclusions (matching kitsune_forum_posts.sql\
+  \ source logic):\n- Spam questions and locked questions\n- Non-Firefox products\n\
+  - Self-replies (OP answering their own question) for TTFR and reply rate\n- Spam\
+  \ answers\n- Answers from deactivated users (kitsune_auth_user.is_active = FALSE)\n\
+  \nNote: total_helpful_votes and total_unhelpful_votes are cumulative vote totals\n\
+  on a question's answers as of ETL run time \u2014 not votes cast on @submission_date.\n\
+  Helpfulness rate is most meaningful when aggregated over a rolling window.\n\nReplaces\
+  \ the reply rate, TTFR, and helpfulness CTEs in:\n- kitsune_forum_posts.sql (dashboard\
+  \ queries)\n"
+owners:
+- plee@mozilla.com
+- mozilla/customer_insights
+labels:
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: plee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus

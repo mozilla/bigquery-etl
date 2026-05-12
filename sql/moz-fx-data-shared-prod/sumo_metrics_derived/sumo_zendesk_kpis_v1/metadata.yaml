@@ -1,0 +1,24 @@
+friendly_name: SUMO Zendesk KPIs
+description: |
+  View aggregating daily Zendesk KPIs by date and product, including ticket
+  creation counts, ticket resolution counts, and the automation resolution rate.
+
+  Grain: Daily x Product
+
+  Automation Resolution Rate = automated resolutions / total resolutions,
+  where automated resolutions are tickets resolved by an automated workflow
+  and not subsequently reopened.
+
+  Source: sumo_metrics_derived.zendesk_automation_daily_v1
+owners:
+- phlee@mozilla.com
+labels:
+  owner1: phlee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.zendesk_automation_daily_v1

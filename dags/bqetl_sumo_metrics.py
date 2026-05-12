@@ -93,6 +93,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    sumo_metrics_derived__kitsune_forum_metrics_daily__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__kitsune_forum_metrics_daily__v1",
+        destination_table="kitsune_forum_metrics_daily_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     sumo_metrics_derived__kitsune_questions_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__kitsune_questions_base__v1",
         destination_table="kitsune_questions_base_v1",

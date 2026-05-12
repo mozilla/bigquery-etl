@@ -1474,6 +1474,11 @@ jobs:
   # Only runs when build.yml is triggered via `workflow_run` (i.e. after the
   # fork-gate approval). For same-repo PRs the native pull_request checks
   # already appear in the PR UI, so this job is unnecessary there.
+  #
+  # !!! COUPLING: the `needs:` list below must include every job whose status
+  # should appear in the fork-PR Checks UI. If you ADD a job to this workflow
+  # that should be visible to fork-PR reviewers, ADD it to `needs:` here too.
+  # Forgetting means the new job runs but its status never reaches the PR.
   report-checks:
     name: Report PR checks
     if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
@@ -1527,3 +1532,32 @@ jobs:
               -f conclusion="$conclusion" \
               -f details_url="$DETAILS_URL" >/dev/null
           done
+
+  # Surface gate rejection / failure as a single check on the PR. Without this,
+  # a rejected approval (or errored gate) shows nothing in the PR UI.
+  report-gate-failure:
+    name: Report fork-gate result
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Post failure check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GATE_URL: ${{ github.event.workflow_run.html_url }}
+          GATE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+          summary="The fork-PR approval gate concluded with \`$GATE_CONCLUSION\`. "
+          summary+="CI did not run. A maintainer must approve the gate workflow "
+          summary+="for this push, or re-run if it errored."
+          gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+            -f name='Fork PR Gate' \
+            -f head_sha="$HEAD_SHA" \
+            -f status=completed \
+            -f conclusion=failure \
+            -f details_url="$GATE_URL" \
+            -f "output[title]=Gate $GATE_CONCLUSION" \
+            -f "output[summary]=$summary" >/dev/null

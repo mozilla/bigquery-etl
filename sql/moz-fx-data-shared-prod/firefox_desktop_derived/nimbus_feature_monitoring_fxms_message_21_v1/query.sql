@@ -63,8 +63,8 @@ source_table_cte_1 AS (
 source_table_cte_2 AS (
   SELECT
     client_info.client_id AS analysis_unit_id,
-    SUM(metrics.string.messaging_system_event) AS messaging_system_event,
-    SUM(metrics.string.messaging_system_ping_type) AS messaging_system_ping_type
+    COUNT(metrics.string.messaging_system_event) AS messaging_system_event,
+    COUNT(metrics.string.messaging_system_ping_type) AS messaging_system_ping_type
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.messaging_system`
   WHERE
@@ -91,8 +91,8 @@ aggregates_cte AS (
     rollout_slug,
     dimensions,
     COUNT(*) AS count_analysis_unit_ids,
-    COALESCE(CAST(AVG(messaging_system_event) AS FLOAT64), 0) AS messaging_system_event_avg,
-    COALESCE(CAST(AVG(messaging_system_ping_type) AS FLOAT64), 0) AS messaging_system_ping_type_avg,
+    COALESCE(CAST(SUM(messaging_system_event) AS FLOAT64), 0) AS messaging_system_event_sum,
+    COALESCE(CAST(SUM(messaging_system_ping_type) AS FLOAT64), 0) AS messaging_system_ping_type_sum,
   FROM
     all_dimensions_and_metrics_cte
   GROUP BY
@@ -116,4 +116,4 @@ SELECT
 FROM
   ratios_cte
 -- unpivot to create consistent schema for wildcard table selects
-  UNPIVOT (value FOR metric IN (messaging_system_event_avg, messaging_system_ping_type_avg))
+  UNPIVOT (value FOR metric IN (messaging_system_event_sum, messaging_system_ping_type_sum))

@@ -14,7 +14,7 @@ scheduling:
   - --destination-project=moz-fx-data-shared-prod
   - --destination-dataset=braze_external
   - --destination-table=braze_currents_mozilla_mark_as_spam_v1
-  - --source-bucket=moz-fx-data-marketing-prod-braze-mozilla
+  - --source-bucket=moz-fx-data-marketing-prod-braze-mozilla-dual-region
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366
   - --event-type=users.messages.email.MarkAsSpam
 bigquery: null

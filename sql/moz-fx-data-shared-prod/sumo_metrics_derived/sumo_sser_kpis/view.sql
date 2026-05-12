@@ -35,7 +35,7 @@ spine AS (
     ga4_pivoted
 )
 SELECT
-  s.event_date AS date,
+  s.event_date AS event_date,
   s.product,
   -- Raw channel volumes (numerators and denominators for SSER)
   COALESCE(z.zendesk_tickets_created, 0) AS zendesk_tickets,

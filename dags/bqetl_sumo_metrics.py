@@ -129,6 +129,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    sumo_metrics_derived__zendesk_automation_daily__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__zendesk_automation_daily__v1",
+        destination_table="zendesk_automation_daily_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     sumo_metrics_derived__zendesk_tickets_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__zendesk_tickets_base__v1",
         destination_table="zendesk_tickets_base_v1",

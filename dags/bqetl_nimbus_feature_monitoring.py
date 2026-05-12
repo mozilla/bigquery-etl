@@ -343,6 +343,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__nimbus_feature_monitoring_urlbar__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_urlbar__v1",
+        destination_table="nimbus_feature_monitoring_urlbar_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__nimbus_feature_monitoring_aboutwelcome__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -528,5 +539,13 @@ with DAG(
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_preonboarding__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_urlbar__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_urlbar__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )

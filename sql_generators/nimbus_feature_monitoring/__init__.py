@@ -5,9 +5,9 @@ from pathlib import Path
 from typing import Any
 
 import click
+from jinja2 import Environment, FileSystemLoader
 from metric_config_parser.config import ConfigCollection
 from metric_config_parser.featmon import SourceTableSpec
-from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat

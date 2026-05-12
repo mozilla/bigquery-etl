@@ -74,6 +74,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="private_bqetl_marketing__wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+            external_dag_id="private_bqetl_marketing",
+            external_task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
         checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1_external.set_upstream(
             checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
         )

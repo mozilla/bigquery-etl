@@ -758,6 +758,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="private_bqetl_marketing__wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+            external_dag_id="private_bqetl_marketing",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
         bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1_external.set_upstream(
             bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
         )

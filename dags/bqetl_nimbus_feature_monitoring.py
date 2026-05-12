@@ -65,6 +65,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring__experimenter_experiments__v1",
+        external_dag_id="bqetl_experimenter_experiments_import",
+        external_task_id="monitoring__experimenter_experiments__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_firefox_desktop_derived__events_stream__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_desktop_derived__events_stream__v1",
         external_dag_id="bqetl_glean_usage",
@@ -78,21 +90,185 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
-        task_id="wait_for_monitoring__experimenter_experiments__v1",
-        external_dag_id="bqetl_experimenter_experiments_import",
-        external_task_id="monitoring__experimenter_experiments__v1",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    firefox_desktop_derived__nimbus_feature_monitoring_aboutwelcome__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_aboutwelcome__v1",
+        destination_table="nimbus_feature_monitoring_aboutwelcome_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_address_autofill_feature__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__nimbus_feature_monitoring_address_autofill_feature__v1",
         destination_table="nimbus_feature_monitoring_address_autofill_feature_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_backgroundtaskmessage__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_backgroundtaskmessage__v1",
+        destination_table="nimbus_feature_monitoring_backgroundtaskmessage_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_featurecallout__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_featurecallout__v1",
+        destination_table="nimbus_feature_monitoring_featurecallout_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_bmb_button__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_bmb_button__v1",
+        destination_table="nimbus_feature_monitoring_fxms_bmb_button_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_16__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_16__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_16_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_1__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_1__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_1_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_20__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_20__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_20_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_21__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_21__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_21_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_22__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_22__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_22_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_7__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_7__v1",
+        destination_table="nimbus_feature_monitoring_fxms_message_7_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_infobar__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_infobar__v1",
+        destination_table="nimbus_feature_monitoring_infobar_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabadsizingexperiment__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabadsizingexperiment__v1",
+        destination_table="nimbus_feature_monitoring_newtabadsizingexperiment_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabinferredpersonalization__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabinferredpersonalization__v1",
+        destination_table="nimbus_feature_monitoring_newtabinferredpersonalization_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabmerinoohttp__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabmerinoohttp__v1",
+        destination_table="nimbus_feature_monitoring_newtabmerinoohttp_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabprivateping__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabprivateping__v1",
+        destination_table="nimbus_feature_monitoring_newtabprivateping_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabpromocard__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabpromocard__v1",
+        destination_table="nimbus_feature_monitoring_newtabpromocard_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="project-nimbus@mozilla.com",
@@ -123,6 +299,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhop__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhop__v1",
+        destination_table="nimbus_feature_monitoring_newtabtrainhop_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1",
         destination_table="nimbus_feature_monitoring_newtabtrainhopaddon_v1",
@@ -132,6 +319,36 @@ with DAG(
         email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_pocketnewtab__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_pocketnewtab__v1",
+        destination_table="nimbus_feature_monitoring_pocketnewtab_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_preonboarding__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__nimbus_feature_monitoring_preonboarding__v1",
+        destination_table="nimbus_feature_monitoring_preonboarding_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="project-nimbus@mozilla.com",
+        email=["project-nimbus@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_aboutwelcome__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_aboutwelcome__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_address_autofill_feature__v1.set_upstream(
@@ -146,6 +363,126 @@ with DAG(
         wait_for_monitoring__experimenter_experiments__v1
     )
 
+    firefox_desktop_derived__nimbus_feature_monitoring_backgroundtaskmessage__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_backgroundtaskmessage__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_featurecallout__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_featurecallout__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_bmb_button__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_bmb_button__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_16__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_16__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_1__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_1__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_20__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_20__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_21__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_21__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_22__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_22__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_7__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_fxms_message_7__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_infobar__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_infobar__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabadsizingexperiment__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabadsizingexperiment__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabinferredpersonalization__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabinferredpersonalization__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabmerinoohttp__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabmerinoohttp__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabprivateping__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabprivateping__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabpromocard__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabpromocard__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
     firefox_desktop_derived__nimbus_feature_monitoring_newtabsectionsexperiment__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -162,10 +499,34 @@ with DAG(
         wait_for_monitoring__experimenter_experiments__v1
     )
 
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhop__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhop__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
     firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_derived__nimbus_feature_monitoring_newtabtrainhopaddon__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_pocketnewtab__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_pocketnewtab__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_preonboarding__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__nimbus_feature_monitoring_preonboarding__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
     )

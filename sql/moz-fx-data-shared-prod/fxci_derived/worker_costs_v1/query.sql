@@ -7,9 +7,9 @@ WITH azure_billing AS (
     daily_load.costInBillingCurrency,
     daily_load.chargeType
   FROM
-    `moz-fx-data-billing-prod-9147.azure_billing_raw.fxci_daily_actual_load` AS daily_load
+    `moz-fx-data-shared-prod.azure_billing_syndicate.fxci_daily_actual_load` AS daily_load
   INNER JOIN
-    `moz-fx-data-billing-prod-9147.azure_billing_raw.fxci_daily_actual_lookup` AS daily_lookup
+    `moz-fx-data-shared-prod.azure_billing_syndicate.fxci_daily_actual_lookup` AS daily_lookup
     USING (sourceDataId)
   WHERE
     daily_load.`date` = @submission_date
@@ -22,9 +22,9 @@ WITH azure_billing AS (
     daily_load.costInBillingCurrency,
     daily_load.chargeType
   FROM
-    `moz-fx-data-billing-prod-9147.azure_billing_raw.taskcluster_daily_actual_load` AS daily_load
+    `moz-fx-data-shared-prod.azure_billing_syndicate.taskcluster_daily_actual_load` AS daily_load
   INNER JOIN
-    `moz-fx-data-billing-prod-9147.azure_billing_raw.taskcluster_daily_actual_lookup` AS daily_lookup
+    `moz-fx-data-shared-prod.azure_billing_syndicate.taskcluster_daily_actual_lookup` AS daily_lookup
     USING (sourceDataId)
   WHERE
     daily_load.`date` = @submission_date

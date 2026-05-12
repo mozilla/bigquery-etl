@@ -76,7 +76,7 @@ kitsune_llm AS (
         'Content: ',
         content
       ),
-      endpoint => 'gemini-2.5-pro-001',
+      endpoint => 'gemini-2.5-pro',
       output_schema => 'question_summary_llm STRING, question_category_llm STRING, question_language_llm STRING, question_entities_llm ARRAY<STRING>, question_topics_llm ARRAY<STRING>, question_sentiment_score FLOAT64'
     ) AS llm_result
   FROM
@@ -131,7 +131,7 @@ SELECT
   STRUCT(
     ['title', 'content'] AS input_fields,
     LENGTH(CONCAT(kitsune_joined.title, ' ', kitsune_joined.content)) AS input_char_count,
-    'gemini-2.5-pro-001' AS model_version,
+    'gemini-2.5-pro' AS model_version,
     'gemini-embedding-001' AS embedding_version,
     'v1' AS prompt_version,
     TIMESTAMP(@submission_date) AS analysis_timestamp,

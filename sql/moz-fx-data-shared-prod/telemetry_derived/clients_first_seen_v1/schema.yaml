@@ -2,13 +2,18 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: !include-field-description
+    field: first_seen_date
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: null
+  description: !include-field-description
+    field: client_id
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
@@ -113,19 +118,27 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
-  description: null
+  description: !include-field-description
+    field: app_build_id
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: app_display_version
   type: STRING
-  description: null
+  description: !include-field-description
+    field: app_version
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: app_name
   type: STRING
-  description: null
+  description: !include-field-description
+    field: app_name
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: null
+  description: !include-field-description
+    field: app_version
+    file: bigquery_etl/schema/global.yaml
 - fields:
   - mode: NULLABLE
     name: source
@@ -277,7 +290,9 @@ fields:
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: null
+  description: !include-field-description
+    field: distribution_id
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: e10s_enabled
   type: BOOLEAN
@@ -342,7 +357,9 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: null
+  description: !include-field-description
+    field: country
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: city
   type: STRING
@@ -358,7 +375,9 @@ fields:
 - mode: NULLABLE
   name: isp_name
   type: STRING
-  description: null
+  description: !include-field-description
+    field: isp_name
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: isp_organization
   type: STRING
@@ -510,7 +529,9 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: null
+  description: !include-field-description
+    field: is_default_browser
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: is_wow64
   type: BOOLEAN
@@ -518,7 +539,9 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: null
+  description: !include-field-description
+    field: locale
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: memory_mb
   type: INTEGER
@@ -526,11 +549,15 @@ fields:
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: null
+  description: !include-field-description
+    field: normalized_channel
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-  description: null
+  description: !include-field-description
+    field: normalized_os_version
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: os
   type: STRING
@@ -546,7 +573,9 @@ fields:
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: null
+  description: !include-field-description
+    field: os_version
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: pings_aggregated_by_this_row
   type: INTEGER
@@ -598,7 +627,9 @@ fields:
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: null
+  description: !include-field-description
+    field: sample_id
+    file: bigquery_etl/schema/global.yaml
 - mode: NULLABLE
   name: sandbox_effective_content_process_level
   type: INTEGER

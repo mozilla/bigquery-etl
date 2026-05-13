@@ -1,20 +1,20 @@
-friendly_name: Kitsune Retrieval Index
+friendly_name: Zendesk Retrieval Index
 description: |-
-  AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
-  to support grounded question answering over Mozilla Support (SUMO) data.
+  AI-enriched retrieval table derived from Zendesk customer support tickets, containing embeddings
+   and semantic features to support grounded question answering over Mozilla support data.
 
-  Grain: one row per date, question_id and answer_id.
+  Grain: one row per Zendesk ticket.
 
   LLM generated fields:
-  - question_summary_llm
-  - question_category_llm
-  - question_language_llm
-  - question_entities_llm
-  - question_topics_llm
+  - ticket_summary_llm
+  - ticket_category_llm
+  - ticket_language_llm
+  - ticket_entities_llm
+  - ticket_topics_llm
   - embedding based on [title, content]
-  - question_sentiment_score based on [title, content]
+  - ticket_sentiment_score based on [title, content]
 
-  Read-time fields (computed on the `customer_experience.kitsune_retrieval_index` view, not stored here):
+  Read-time fields (computed on the `customer_experience.zendesk_retrieval_index` view, not stored here):
   - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay,
     1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
 
@@ -47,6 +47,9 @@ monitoring:
   enabled: true
 references:
   query.sql:
-  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
-  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history
+  - moz-fx-data-shared-prod.zendesk_syndicate.group
+  - moz-fx-data-shared-prod.zendesk_syndicate.user
   - moz-fx-data-shared-prod.static.cx_product_mappings_v1

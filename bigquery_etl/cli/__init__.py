@@ -1,6 +1,7 @@
 """bigquery-etl CLI."""
 
 import logging
+import os
 import warnings
 from pathlib import Path
 
@@ -85,20 +86,37 @@ def cli(prog_name=None):
         default=False,
         help="Disable the default target, ignoring BQETL_TARGET and default_target in bqetl_targets.yaml.",
     )
+    @click.option(
+        "--run-id",
+        "--run_id",
+        "run_id",
+        default=None,
+        help="Per-invocation run id rendered into target templates as `{{ run_id }}`. "
+        "Used to disambiguate parallel deploys for the same git.branch/git.commit "
+        "(e.g. concurrent CI runs). Defaults to $BQETL_RUN_ID if set.",
+    )
     @click.pass_context
-    def group(ctx, log_level, target, no_target):
+    def group(ctx, log_level, target, no_target, run_id):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
 
+        # Only fall back to BQETL_RUN_ID (opt-in) — not GITHUB_RUN_ID, which
+        # GitHub Actions auto-sets on every runner. A local invocation from a
+        # CI-adjacent shell would otherwise silently inherit an unrelated run
+        # id and filter / render against the wrong dataset.
+        if run_id is None:
+            run_id = os.environ.get("BQETL_RUN_ID") or None
+
         ctx.ensure_object(dict)
         ctx.obj["target"] = None
+        ctx.obj["run_id"] = run_id
 
         try:
             if not target and not no_target:
                 target = get_default_target_name()
 
             if target:
-                parsed_target = get_target(target)
+                parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"

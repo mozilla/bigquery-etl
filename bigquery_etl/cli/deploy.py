@@ -51,10 +51,10 @@ from bigquery_etl.util.target import (
     VIEW_FILE,
     Target,
     collect_target_dependencies,
-    default_partition_for,
     ensure_dataset_exists,
     prepare_target_files,
     read_source_identity_from_manifest,
+    resolve_partition_for,
 )
 from bigquery_etl.view import View
 
@@ -745,7 +745,9 @@ def _resolve_isolated_schema(
             project=source_project,
             dataset=source_dataset,
             table=source_table,
-            partitioned_by=default_partition_for(source_dataset),
+            partitioned_by=resolve_partition_for(
+                sql_dir, source_project, source_dataset, source_table
+            ),
         )
         if schema.schema.get("fields"):
             schema.to_yaml_file(target_schema)

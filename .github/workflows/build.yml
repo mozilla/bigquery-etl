@@ -486,7 +486,7 @@ jobs:
           stage:
             project_id: moz-fx-data-integration-tests
             dataset: "{{ git.branch }}_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}"
-            artifact_prefix: "{{ artifact.project_id }}_{{ artifact.dataset_id }}_"
+            artifact_prefix: ""{{ artifact.project_id }}__{{ artifact.dataset_id }}__""
             grant_dryrun_access: true
             expire_after_hours: 12
             rewrite_tests: true
@@ -496,14 +496,15 @@ jobs:
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-          BQETL_RUN_ID: ${{ github.run_id }}
         run: |
           if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
             git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
-            PATH=".venv/bin:$PATH" script/bqetl --target stage deploy \
-              --tables --views --isolated \
+            PATH=".venv/bin:$PATH" script/bqetl \
+              --target stage \
+              --run-id "${GITHUB_RUN_ID}" \
+              deploy --tables --views --isolated \
               $PATHS
           fi
       - name: Copy generated SQL to temporary stage directory
@@ -1358,7 +1359,10 @@ jobs:
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl --target stage target clean --run-id "${GITHUB_RUN_ID}" --yes
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            target clean --yes
 
   deploy-to-pypi:
     name: Deploy to PyPI

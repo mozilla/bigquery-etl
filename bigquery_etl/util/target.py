@@ -269,14 +269,8 @@ def _get_git_context() -> dict:
     commit: Optional[str] = None
     try:
         repo = git.Repo(get_bqetl_project_root() or ROOT)
-        try:
-            branch = repo.active_branch.name
-        except TypeError:
-            branch = env_branch
-        try:
-            commit = repo.head.commit.hexsha
-        except Exception:
-            commit = env_commit
+        branch = env_branch if repo.head.is_detached else repo.active_branch.name
+        commit = repo.head.commit.hexsha
     except Exception:
         branch = env_branch
         commit = env_commit
@@ -286,22 +280,6 @@ def _get_git_context() -> dict:
             "Could not determine git branch/commit. Using 'unknown' for missing values."
         )
     return {"branch": branch or "unknown", "commit": commit or "unknown"}
-
-
-@cache
-def _get_run_id() -> str:
-    """Return a per-invocation run id from env, or empty string.
-
-    Used by target dataset/artifact templates as `{{ run_id }}` to disambiguate
-    parallel deploys for the same git.branch/git.commit (e.g. concurrent CI
-    runs). `BQETL_RUN_ID` takes precedence; `GITHUB_RUN_ID` is the GitHub
-    Actions fallback so CI doesn't have to forward it explicitly.
-
-    Caching contract: the result is frozen for the lifetime of the process.
-    Tests that mutate `BQETL_RUN_ID` / `GITHUB_RUN_ID` between cases must call
-    `_get_run_id.cache_clear()` in a fixture to avoid order-dependent behavior.
-    """
-    return os.environ.get("BQETL_RUN_ID") or os.environ.get("GITHUB_RUN_ID") or ""
 
 
 @cache
@@ -342,8 +320,14 @@ def _get_account_context() -> dict:
     return {"username": username}
 
 
-def get_target(target: str) -> Target:
-    """Load and return a Target from the targets config file by name."""
+def get_target(target: str, run_id: Optional[str] = None) -> Target:
+    """Load and return a Target from the targets config file by name.
+
+    `run_id` is rendered into the target's templates as `{{ run_id }}`,
+    typically used to disambiguate parallel deploys for the same
+    git.branch / git.commit (e.g. concurrent CI runs). Pass an empty
+    string (or omit) when the template doesn't use `{{ run_id }}`.
+    """
     targets_file = _get_targets_file()
 
     if not targets_file.exists():
@@ -363,7 +347,7 @@ def get_target(target: str) -> Target:
     rendered_content = template.render(
         git=_get_git_context(),
         account=_get_account_context(),
-        run_id=_get_run_id(),
+        run_id=run_id or "",
     )
 
     targets = yaml.safe_load(rendered_content)
@@ -535,8 +519,48 @@ def _existing_artifact_file(source_dir: Path) -> Optional[Path]:
     return None
 
 
+def _partition_field_from_metadata(
+    sql_dir: str, project: str, dataset: str, table: str
+) -> Optional[str]:
+    """Read the partition column from the source table's metadata.yaml, if any.
+
+    Returns None when the file doesn't exist, can't be parsed, or doesn't
+    declare a `time_partitioning.field`. Callers should fall back to
+    `default_partition_for(dataset)` in that case.
+    """
+    md_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+    if not md_path.is_file():
+        return None
+    try:
+        md = Metadata.from_file(str(md_path))
+    except Exception:
+        return None
+    tp = getattr(md, "bigquery", None)
+    tp = getattr(tp, "time_partitioning", None) if tp else None
+    return getattr(tp, "field", None) if tp else None
+
+
+def resolve_partition_for(
+    sql_dir: str, project: str, dataset: str, table: str
+) -> Optional[str]:
+    """Return the partition-filter column for a source table.
+
+    Prefers `time_partitioning.field` from the source's metadata.yaml in the
+    local repo. Falls back to a suffix-based guess (`default_partition_for`)
+    for tables that aren't managed here or whose metadata doesn't declare a
+    partition column. Returns None when neither source applies — callers
+    fall through to an unfiltered query.
+    """
+    return _partition_field_from_metadata(
+        sql_dir, project, dataset, table
+    ) or default_partition_for(dataset)
+
+
 def default_partition_for(dataset: str) -> Optional[str]:
     """Guess the partition-filter column from a Mozilla dataset suffix.
+
+    Fallback for `resolve_partition_for` when metadata.yaml isn't available
+    (typically because the source table isn't managed in this repo).
 
     `*_live`/`*_stable` (Glean ingestion) partition on `submission_timestamp`;
     `*_derived` typically partition on `submission_date`. Returned as the
@@ -557,6 +581,7 @@ def _fetch_stub_schema(
     name: str,
     out_path: Path,
     id_token: str,
+    sql_dir: str,
 ) -> None:
     """Write schema.yaml for an unmanaged dep table at out_path.
 
@@ -580,7 +605,7 @@ def _fetch_stub_schema(
             dataset=dataset,
             table=name,
             id_token=id_token,
-            partitioned_by=default_partition_for(dataset),
+            partitioned_by=resolve_partition_for(sql_dir, project, dataset, name),
         ).to_yaml_file(out_path)
     except Exception as for_table_err:
         print(
@@ -617,7 +642,9 @@ def _create_target_stub(
 
     # Wildcards represent multiple tables; no single schema to fetch.
     if not is_wildcard:
-        _fetch_stub_schema(project, dataset, name, stub_path / SCHEMA_FILE, id_token)
+        _fetch_stub_schema(
+            project, dataset, name, stub_path / SCHEMA_FILE, id_token, sql_dir
+        )
 
     (stub_path / MANIFEST_FILENAME).write_text(
         yaml.dump(
@@ -703,7 +730,7 @@ def _udf_dep_paths(udf_names: List[str]) -> Set[Path]:
                 # test_dependencies aren't picked up by accumulate_dependencies;
                 # queue them so their own deps get walked too.
                 for test_dep in raw_routines[transitive].test_dependencies:
-                    if test_dep not in seen:
+                    if test_dep not in queue and test_dep not in seen:
                         queue.append(test_dep)
     return paths
 

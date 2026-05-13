@@ -1,12 +1,11 @@
 ---
 friendly_name: Experiment Enrollment Funnel
 description: |-
-  Exports a cumulative enrollment funnel rollup for each live recipe to GCS
+  Exports a latest-per-client enrollment funnel snapshot for each live recipe to GCS
   for use by Experimenter visualization and alerting. Covers firefox_desktop,
   firefox_ios, and fenix. For each client-recipe pair, uses the client's most
-  recent evaluation (latest-evaluation-per-client semantic). Groups by
-  (app_name, slug, status, reason, conflict_slug) with a distinct client count.
-  Does not create any BigQuery artifacts.
+  recent evaluation. Groups by (app_name, slug, status, reason, conflict_slug)
+  with a distinct client count. Does not create any BigQuery artifacts.
 owners:
   - ykhurana@mozilla.com
 labels:

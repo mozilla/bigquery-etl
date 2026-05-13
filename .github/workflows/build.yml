@@ -202,10 +202,23 @@ jobs:
           pip install --no-deps -r requirements.txt
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
-        # Don't let forked PRs update the shared cache. The cache key already
-        # includes hashFiles('requirements.txt'), so gate-approved fork runs
-        # that modify requirements.txt land in a separate namespace; runs that
-        # don't modify it produce a deterministic venv from pinned versions.
+        # Don't let forked PRs poison the shared cache. For `pull_request`
+        # events `head.repo.fork != true` filters forks directly; for
+        # `workflow_run` (gate-approved fork PRs) the PR payload is null so
+        # the clause evaluates true and fork runs DO write to cache. Safety
+        # rests on two invariants:
+        #   1. The cache key namespaces by hashFiles('requirements.txt'), so
+        #      a fork that changes deps lands in a separate key.
+        #   2. The build step is hermetic w.r.t. files outside requirements.txt:
+        #      `pip install --no-deps -r requirements.txt` + `pip-sync
+        #      --pip-args=--no-deps` doesn't consult setup.py / pyproject.toml /
+        #      repo-local pip.conf (there is no setup.py; pyproject.toml is only
+        #      read when building the local project, which we don't do; pip
+        #      ignores pip.conf in the working tree).
+        # If the build step ever changes to invoke the local project (e.g.
+        # `pip install .` / `-e .`) or to read other config files, expand the
+        # cache key to hash those files too — otherwise a fork could quietly
+        # publish a poisoned venv under main's cache key.
         if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
@@ -1530,6 +1543,13 @@ jobs:
             -f status=in_progress \
             -f details_url="$DETAILS_URL" \
             --jq .id)
+          # Fail loudly if the API call returned nothing; otherwise downstream
+          # report-checks would PATCH /check-runs/<empty> and 404, leaving an
+          # orphan in_progress check on the PR forever.
+          if [[ -z "$check_id" || "$check_id" == "null" ]]; then
+            echo "::error::Failed to create rolled-up Build check (empty id)"
+            exit 1
+          fi
           echo "check_id=$check_id" >> "$GITHUB_OUTPUT"
 
   # Surface upstream job results as Checks-API check runs on the PR's head SHA.
@@ -1616,15 +1636,22 @@ jobs:
 
           # PATCH the rolled-up "Build" check (created by start-build-check) to
           # completed. Conclusion fails if any upstream `needs` failed/cancelled.
-          for r in $(echo '${{ toJSON(needs) }}' | jq -r 'to_entries[] | .value.result'); do
-            case "$r" in
-              failure|cancelled) overall=failure ;;
-            esac
-          done
-          gh api -X PATCH "/repos/${{ github.repository }}/check-runs/$BUILD_CHECK_ID" \
-            -f status=completed \
-            -f conclusion="$overall" \
-            -f details_url="$DETAILS_URL" >/dev/null
+          # Skip the PATCH if start-build-check failed (empty id) — otherwise
+          # we'd 404 against /check-runs/<empty>. The orphan in_progress check
+          # is the lesser evil; start-build-check's failure is itself visible.
+          if [[ -z "$BUILD_CHECK_ID" ]]; then
+            echo "::warning::No BUILD_CHECK_ID — start-build-check must have failed; skipping rollup PATCH."
+          else
+            for r in $(echo '${{ toJSON(needs) }}' | jq -r 'to_entries[] | .value.result'); do
+              case "$r" in
+                failure|cancelled) overall=failure ;;
+              esac
+            done
+            gh api -X PATCH "/repos/${{ github.repository }}/check-runs/$BUILD_CHECK_ID" \
+              -f status=completed \
+              -f conclusion="$overall" \
+              -f details_url="$DETAILS_URL" >/dev/null
+          fi
 
   # Surface gate rejection / failure as a single check on the PR. Without this,
   # a rejected approval (or errored gate) shows nothing in the PR UI.

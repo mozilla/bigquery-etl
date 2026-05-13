@@ -6,14 +6,14 @@ tag_deployments:
     - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1.creation_date
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1.question_id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1.creation_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1.ticket_id
     metrics:
     - saved_metric_id: is_not_null
       rct_overrides:
       - creation_date
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1.*
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1.*
     metrics:
     - metric_type:
         type: PREDEFINED

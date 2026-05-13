@@ -1,11 +1,11 @@
-friendly_name: Kitsune Retrieval Index
-description: "AI-enriched retrieval table derived from Kitsune, containing embeddings\
-  \ and semantic features\nto support grounded question answering over Mozilla Support\
-  \ (SUMO) data.\n\nGrain: one row per date, question_id and answer_id.\n\nLLM generated\
-  \ fields:\n- question_summary_llm\n- question_category_llm\n- question_language_llm\n\
-  - question_entities_llm\n- question_topics_llm\n- embedding based on [title, content]\n\
-  - question_sentiment_score based on [title, content]\n\nRead-time fields (computed\
-  \ on the `customer_experience.kitsune_retrieval_index` view, not stored here):\n\
+friendly_name: Zendesk Retrieval Index
+description: "AI-enriched retrieval table derived from Zendesk customer support tickets,\
+  \ containing embeddings\n and semantic features to support grounded question answering\
+  \ over Mozilla support data.\n\nGrain: one row per Zendesk ticket.\n\nLLM generated\
+  \ fields:\n- ticket_summary_llm\n- ticket_category_llm\n- ticket_language_llm\n\
+  - ticket_entities_llm\n- ticket_topics_llm\n- embedding based on [title, content]\n\
+  - ticket_sentiment_score based on [title, content]\n\nRead-time fields (computed\
+  \ on the `customer_experience.zendesk_retrieval_index` view, not stored here):\n\
   - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` \u2014\
   \ 30-day exponential decay,\n  1.0 today, ~0.37 after 30 days. Always reflects freshness\
   \ at query time.\n\nMetadata\n- Additional data to support technical processes,\
@@ -40,8 +40,11 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   query.sql:
-  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
-  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history
+  - moz-fx-data-shared-prod.zendesk_syndicate.group
+  - moz-fx-data-shared-prod.zendesk_syndicate.user
   - moz-fx-data-shared-prod.static.cx_product_mappings_v1
 monitoring:
   enabled: true

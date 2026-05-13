@@ -159,9 +159,9 @@ attrs==25.4.0 \
     #   looker-sdk
     #   mozilla-metric-config-parser
     #   referencing
-authlib==1.6.11 \
-    --hash=sha256:64db35b9b01aeccb4715a6c9a6613a06f2bd7be2ab9d2eb89edd1dfc7580a38f \
-    --hash=sha256:c8687a9a26451c51a34a06fa17bb97cb15bba46a6a626755e2d7f50da8bff3e3
+authlib==1.6.12 \
+    --hash=sha256:0656d8482f28fc8221929d5f35b2bde5d13e10555ebc06b4561b0d622e83b1bd \
+    --hash=sha256:e9229ad7fde610b139dd12f5edbe97eab9ee78bfb85691247e767727850b99ab
     # via -r requirements.in
 babel==2.12.1 \
     --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
@@ -684,9 +684,9 @@ gitdb==4.0.10 \
     --hash=sha256:6eb990b69df4e15bad899ea868dc46572c3f75339735663b81de79b06f17eb9a \
     --hash=sha256:c286cf298426064079ed96a9e4a9d39e7f3e9bf15ba60701e95f5492f28415c7
     # via gitpython
-gitpython==3.1.49 \
-    --hash=sha256:024b0422d7f84d15cd794844e029ffebd4c5d42a7eb9b936b458697ef550a02c \
-    --hash=sha256:42f9399c9eb33fc581014bedd76049dfbaf6375aa2a5754575966387280315e1
+gitpython==3.1.50 \
+    --hash=sha256:80da2d12504d52e1f998772dc5baf6e553f8d2fcfe1fcc226c9d9a2ee3372dcc \
+    --hash=sha256:d352abe2908d07355014abdd21ddf798c2a961469239afec4962e9da884858f9
     # via
     #   -r requirements.in
     #   mozilla-metric-config-parser
@@ -1273,6 +1273,9 @@ mozilla-schema-generator==0.5.1 \
     --hash=sha256:77109d64d0fd55b2579568e9a8f7c52d8eeed7e2a254b3262dd206ed21ffad38 \
     --hash=sha256:957dcb990d67436cfdabc8878cea1102040920f00cd5c5a5a4962344000bb26b
     # via -r requirements.in
+msads==13.0.27.2 \
+    --hash=sha256:56c5064a795412ea1d0c0b7bddea5bf0f3d0975398cfa769a372edbaaf1437b6
+    # via -r requirements.in
 multidict==6.0.4 \
     --hash=sha256:01a3a55bd90018c9c080fbb0b9f4891db37d148a0a18722b42f94694f8b6d4c9 \
     --hash=sha256:0b1a97283e0c85772d613878028fec909f003993e1007eafa715b24b377cb9b8 \
@@ -1830,6 +1833,7 @@ pydantic==2.9.1 \
     #   bigeye-sdk
     #   google-genai
     #   mozilla-nimbus-schemas
+    #   msads
     #   openai
     #   pydantic-yaml
 pydantic-core==2.23.3 \
@@ -1922,7 +1926,9 @@ pydantic-core==2.23.3 \
     --hash=sha256:fc379c73fd66606628b866f661e8785088afe2adaba78e6bbe80796baf708a63 \
     --hash=sha256:fc3cf31edf405a161a0adad83246568647c54404739b614b1ff43dad2b02e6d5 \
     --hash=sha256:fcf31facf2796a2d3b7fe338fe8640aa0166e4e55b4cb108dbfd1058049bf4cb
-    # via pydantic
+    # via
+    #   msads
+    #   pydantic
 pydantic-yaml==1.3.0 \
     --hash=sha256:0684255a860522c9226d4eff5c0e8ba44339683b5c5fa79fac4470c0e3821911 \
     --hash=sha256:5671c9ef1731570aa2644432ae1e2dd34c406bd4a0a393df622f6b897a88df83
@@ -2301,6 +2307,7 @@ requests==2.32.5 \
     #   mkdocs-material
     #   mozilla-metric-config-parser
     #   mozilla-schema-generator
+    #   msads
     #   requests-oauthlib
     #   responses
     #   stripe
@@ -2647,6 +2654,7 @@ typing-extensions==4.15.0 \
     #   exceptiongroup
     #   google-genai
     #   looker-sdk
+    #   msads
     #   mypy
     #   openai
     #   polyfactory
@@ -2745,9 +2753,9 @@ ujson==5.11.0 \
     --hash=sha256:fa79fdb47701942c2132a9dd2297a1a85941d966d8c87bfd9e29b0cf423f26cc \
     --hash=sha256:fac6c0649d6b7c3682a0a6e18d3de6857977378dce8d419f57a0b20e3d775b39
     # via -r requirements.in
-urllib3==2.6.3 \
-    --hash=sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed \
-    --hash=sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4
+urllib3==2.7.0 \
+    --hash=sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c \
+    --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897
     # via
     #   botocore
     #   requests

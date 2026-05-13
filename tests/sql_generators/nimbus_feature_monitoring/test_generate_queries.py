@@ -128,6 +128,65 @@ class TestGenerateQueries:
         for i in range(3):
             assert f"feature_{i}" in sql
 
+    def test_generates_query_for_string_metric(self, tmp_path):
+        app = make_app_config(
+            dataset="firefox_desktop",
+            data_sources={
+                "messaging_system": make_source_table_spec(
+                    "messaging_system", "messaging_system", "metrics"
+                ),
+            },
+            features={
+                "my_feature": make_feature_spec(
+                    "my_feature",
+                    metrics_by_source={
+                        "messaging_system": {"string": {"messaging_system_event": None}}
+                    },
+                )
+            },
+        )
+        self._run_generate([app], tmp_path)
+        query = (
+            tmp_path
+            / "moz-fx-data-shared-prod"
+            / "firefox_desktop_derived"
+            / "nimbus_feature_monitoring_my_feature_v1"
+            / "query.sql"
+        )
+        assert query.exists()
+        sql = query.read_text()
+        # string ping_aggregator must be COUNT, not SUM (SUM of a string is invalid SQL)
+        assert "COUNT" in sql
+        assert "messaging_system_event" in sql
+
+    def test_generates_query_with_dimensions(self, tmp_path):
+        source = make_source_table_spec(
+            "metrics",
+            "metrics",
+            "metrics",
+            dimensions={"normalized_channel": {"field": "normalized_channel"}},
+        )
+        app = make_app_config(
+            dataset="firefox_desktop",
+            data_sources={"metrics": source},
+            features={
+                "my_feature": make_feature_spec(
+                    "my_feature",
+                    metrics_by_source={"metrics": {"boolean": {"pref_enabled": None}}},
+                )
+            },
+        )
+        self._run_generate([app], tmp_path)
+        query = (
+            tmp_path
+            / "moz-fx-data-shared-prod"
+            / "firefox_desktop_derived"
+            / "nimbus_feature_monitoring_my_feature_v1"
+            / "query.sql"
+        )
+        sql = query.read_text()
+        assert "normalized_channel" in sql
+
     def test_ratios_populated_in_query(self, tmp_path):
         app = make_app_config(
             dataset="firefox_desktop",

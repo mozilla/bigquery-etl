@@ -46,14 +46,18 @@ events_with_sessions AS (
   WHERE
     ep.key = 'ga_session_id'
 ),
-  -- Map products using UDF
+  -- Map products using the canonical product mapping table
 events_with_product AS (
   SELECT
-    mozfun.sumo.map_product_slug(ep.value.string_value) AS product,
+    COALESCE(m.product_mapping, ep.value.string_value) AS product,
     ews.*
   FROM
     events_with_sessions ews,
     UNNEST(ews.event_params) AS ep
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
+    ON m.product = ep.value.string_value
+    AND m.source = 'GA4'
   WHERE
     ep.key = 'products'
 )

@@ -24,7 +24,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: custom_appbot_star_rating
-  type: INT64
+  type: STRING
   mode: NULLABLE
 - name: custom_category
   type: STRING

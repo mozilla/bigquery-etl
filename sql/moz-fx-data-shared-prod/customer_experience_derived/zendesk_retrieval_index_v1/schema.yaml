@@ -41,7 +41,7 @@ fields:
     time-to-first-resolution (not time to the most recent solve). NULL when the ticket
     has never been solved.
 - name: star_rating
-  type: INTEGER
+  type: STRING
   mode: NULLABLE
   description: Appbot star rating recorded on the ticket (1–5). NULL when no rating
     was submitted.

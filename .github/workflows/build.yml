@@ -202,8 +202,24 @@ jobs:
           pip install --no-deps -r requirements.txt
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
-        # Don't let forked PRs update the shared cache.
-        if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true && github.event_name != 'workflow_run'
+        # Don't let forked PRs poison the shared cache. For `pull_request`
+        # events `head.repo.fork != true` filters forks directly; for
+        # `workflow_run` (gate-approved fork PRs) the PR payload is null so
+        # the clause evaluates true and fork runs DO write to cache. Safety
+        # rests on two invariants:
+        #   1. The cache key namespaces by hashFiles('requirements.txt'), so
+        #      a fork that changes deps lands in a separate key.
+        #   2. The build step is hermetic w.r.t. files outside requirements.txt:
+        #      `pip install --no-deps -r requirements.txt` + `pip-sync
+        #      --pip-args=--no-deps` doesn't consult setup.py / pyproject.toml /
+        #      repo-local pip.conf (there is no setup.py; pyproject.toml is only
+        #      read when building the local project, which we don't do; pip
+        #      ignores pip.conf in the working tree).
+        # If the build step ever changes to invoke the local project (e.g.
+        # `pip install .` / `-e .`) or to read other config files, expand the
+        # cache key to hash those files too — otherwise a fork could quietly
+        # publish a poisoned venv under main's cache key.
+        if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
@@ -1501,6 +1517,41 @@ jobs:
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
           git push origin main
 
+  # Post a single "Build" rolled-up check in `in_progress` state at the very
+  # start of a workflow_run, so the PR Checks UI shows live progress instead
+  # of "skipped" until the per-job checks are reported at the end. The id is
+  # passed via job output to `report-checks` which PATCHes it to completed.
+  start-build-check:
+    name: Start build check
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    outputs:
+      check_id: ${{ steps.create.outputs.check_id }}
+    steps:
+      - id: create
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          DETAILS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          check_id=$(gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+            -f name='Build' \
+            -f head_sha="$HEAD_SHA" \
+            -f status=in_progress \
+            -f details_url="$DETAILS_URL" \
+            --jq .id)
+          # Fail loudly if the API call returned nothing; otherwise downstream
+          # report-checks would PATCH /check-runs/<empty> and 404, leaving an
+          # orphan in_progress check on the PR forever.
+          if [[ -z "$check_id" || "$check_id" == "null" ]]; then
+            echo "::error::Failed to create rolled-up Build check (empty id)"
+            exit 1
+          fi
+          echo "check_id=$check_id" >> "$GITHUB_OUTPUT"
+
   # Surface upstream job results as Checks-API check runs on the PR's head SHA.
   # Only runs when build.yml is triggered via `workflow_run` (i.e. after the
   # fork-gate approval). For same-repo PRs the native pull_request checks
@@ -1512,8 +1563,13 @@ jobs:
   # the fork-PR Checks UI without needing edits here.
   report-checks:
     name: Report PR checks
-    if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    # !cancelled() so we still report when some upstream job failed.
+    if: |
+      !cancelled() &&
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
     needs:
+      - start-build-check
       - decide-runs
       - build
       - verify-requirements
@@ -1545,17 +1601,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           RUN_ID: ${{ github.run_id }}
+          DETAILS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BUILD_CHECK_ID: ${{ needs.start-build-check.outputs.check_id }}
         run: |
           set -euo pipefail
           # Iterate the Actions Jobs API for this run; each check-run's
           # details_url points at the specific job's log so failing checks
           # deep-link directly to the failure (rather than the run overview).
           # Skip the reporter jobs themselves to avoid self-reporting.
+          overall=success
           gh api --paginate \
             "/repos/${{ github.repository }}/actions/runs/$RUN_ID/jobs" \
             --jq '.jobs[]
                   | select(.name != "Report PR checks"
-                        and .name != "Report fork-gate result")
+                        and .name != "Report fork-gate result"
+                        and .name != "Start build check")
                   | "\(.name)\t\(.conclusion // "neutral")\t\(.html_url)"' \
           | while IFS=$'\t' read -r name conclusion html_url; do
               case "$conclusion" in
@@ -1573,6 +1633,25 @@ jobs:
                 -f conclusion="$c" \
                 -f details_url="$html_url" >/dev/null
             done
+
+          # PATCH the rolled-up "Build" check (created by start-build-check) to
+          # completed. Conclusion fails if any upstream `needs` failed/cancelled.
+          # Skip the PATCH if start-build-check failed (empty id) — otherwise
+          # we'd 404 against /check-runs/<empty>. The orphan in_progress check
+          # is the lesser evil; start-build-check's failure is itself visible.
+          if [[ -z "$BUILD_CHECK_ID" ]]; then
+            echo "::warning::No BUILD_CHECK_ID — start-build-check must have failed; skipping rollup PATCH."
+          else
+            for r in $(echo '${{ toJSON(needs) }}' | jq -r 'to_entries[] | .value.result'); do
+              case "$r" in
+                failure|cancelled) overall=failure ;;
+              esac
+            done
+            gh api -X PATCH "/repos/${{ github.repository }}/check-runs/$BUILD_CHECK_ID" \
+              -f status=completed \
+              -f conclusion="$overall" \
+              -f details_url="$DETAILS_URL" >/dev/null
+          fi
 
   # Surface gate rejection / failure as a single check on the PR. Without this,
   # a rejected approval (or errored gate) shows nothing in the PR UI.

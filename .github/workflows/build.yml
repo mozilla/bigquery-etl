@@ -44,9 +44,18 @@ jobs:
     permissions:
       contents: read
       pull-requests: read  # for resolve-pr-base on workflow_run events
+    # The workflow_run path is only for fork PRs (post gate-approval). For
+    # same-repo PRs the native pull_request path already runs everything, so
+    # firing build.yml again from workflow_run just duplicates work and
+    # leaves an orphan "Build" rolled-up check sitting in_progress.
+    # workflow_run.pull_requests[0] is populated for same-repo PRs and empty
+    # for fork PRs — the same heuristic resolve-pr-base relies on below —
+    # so the null check filters out the non-fork case.
     if: &is-allowed-event >-
       ${{
-        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+        (github.event_name == 'workflow_run'
+          && github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.pull_requests[0] == null)
         || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true)
         || github.event_name == 'push'
         || github.event_name == 'merge_group'
@@ -1540,7 +1549,11 @@ jobs:
   # passed via job output to `report-checks` which PATCHes it to completed.
   start-build-check:
     name: Start build check
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    # Same fork-only filter as is-allowed-event — see comment there.
+    if: >-
+      github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.pull_requests[0] == null
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -1581,10 +1594,12 @@ jobs:
   report-checks:
     name: Report PR checks
     # !cancelled() so we still report when some upstream job failed.
+    # Same fork-only filter as is-allowed-event — see comment there.
     if: |
       !cancelled() &&
       github.event_name == 'workflow_run' &&
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.pull_requests[0] == null
     needs:
       - start-build-check
       - decide-runs

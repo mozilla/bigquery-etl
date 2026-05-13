@@ -48,7 +48,7 @@ WITH clients_first_seen_28_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.clients_first_seen`
   WHERE
-    baseline_first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    baseline_first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 clients_first_seen_28_days_ago_with_days_seen AS (
   SELECT
@@ -80,7 +80,6 @@ SELECT
   partner_id,
   attribution_campaign,
   attribution_content,
-  attribution_msclkid,
   attribution_dltoken,
   attribution_dlsource,
   attribution_experiment,
@@ -154,6 +153,7 @@ SELECT
     FALSE
   ) AS qualified_week4,
   @submission_date AS submission_date,
-  app_build_id
+  app_build_id,
+  attribution_msclkid,
 FROM
   clients_first_seen_28_days_ago_with_days_seen

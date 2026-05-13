@@ -240,10 +240,6 @@ fields:
     name: variation
     type: STRING
     mode: NULLABLE
-  - description: Unique token created at Firefox download time using the Microsoft Store.
-    name: msclkid
-    type: STRING
-    mode: NULLABLE
   - description: Unique token created at Firefox download time, see bug 1757451
     name: dltoken
     type: STRING
@@ -257,5 +253,9 @@ fields:
       the attributed install came from the Microsoft store and, if so, whether the
       user was signed in at the time.
     name: msstoresignedin
+    type: STRING
+    mode: NULLABLE
+  - description: Unique token created at Firefox download time using the Microsoft Store.
+    name: msclkid
     type: STRING
     mode: NULLABLE

@@ -1,0 +1,6 @@
+friendly_name: Tenants Capabilities
+description: |-
+  MozCloud tenant capabilities exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a capability enabled for a MozCloud tenant.
+owners:
+- wstuckey@mozilla.com

@@ -1,0 +1,7 @@
+- id: 1001
+  created_at: "2026-04-01T10:00:00+00:00"
+  subject: "Ticket in Sumo Test group should be excluded"
+  description: "Body text."
+  status: "open"
+  group_id: 5001
+  custom_product: "Firefox Desktop"

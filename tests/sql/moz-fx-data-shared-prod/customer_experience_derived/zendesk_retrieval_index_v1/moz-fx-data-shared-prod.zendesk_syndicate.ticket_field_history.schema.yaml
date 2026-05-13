@@ -1,0 +1,13 @@
+fields:
+- name: ticket_id
+  type: INT64
+  mode: NULLABLE
+- name: field_name
+  type: STRING
+  mode: NULLABLE
+- name: value
+  type: STRING
+  mode: NULLABLE
+- name: updated
+  type: TIMESTAMP
+  mode: NULLABLE

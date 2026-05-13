@@ -11,12 +11,16 @@ dags.yaml
 
 # These datasets are subject to the additional change control procedures
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
+# Customer Experience
+/sql/moz-fx-data-shared-prod/customer_experience_derived/** @mozilla/customer_experience
 # Active Users
 /sql_generators/active_users_aggregates_v3/templates/ @mozilla/kpi_table_reviewers
 /sql/**/active_users_aggregates_v3 @mozilla/kpi_table_reviewers
 /sql_generators/active_users_aggregates_v4/templates/ @mozilla/kpi_table_reviewers
 /sql/**/active_users_aggregates_v4 @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/telemetry/active_users_aggregates @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_tou_mobile_v1 @mozilla/kpi_table_reviewers
+/sql/**/active_users_aggregates_tou_desktop_v1 @mozilla/kpi_table_reviewers
 # Search
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
@@ -26,4 +30,7 @@ dags.yaml
 /sql/**/request_payload_suggest_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1 @mozilla/revenue_forecasting_data_reviewers
-/sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1 @mozilla/dataops
+# https://mozilla-hub.atlassian.net/browse/DSRE-1106
+/sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1 @mozilla/gcp-wg
+# OKR
+/sql/moz-fx-data-shared-prod/firefox_desktop_derived/resurrection_week_2_retention_v1 @mozilla/kpi_table_reviewers

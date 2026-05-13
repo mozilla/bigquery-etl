@@ -1,0 +1,18 @@
+friendly_name: Jira FFXP Epic Issues
+description: |-
+  Jira issues pulled from Jira API v3 (/rest/api/3/search/jql) for project
+  FFXP and issue type Epic.
+owners:
+- mcastelluccio@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+  owner1: mcastelluccio@mozilla.com
+
+scheduling:
+  dag_name: bqetl_jira_tickets
+  secrets:
+  - deploy_target: JIRA_USERNAME
+    key: bqetl_jira_service_desk__jira_username
+  - deploy_target: JIRA_TOKEN
+    key: bqetl_jira_service_desk__jira_token

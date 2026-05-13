@@ -1,0 +1,12 @@
+friendly_name: Vitals - Low Memory Kill (LMK) Rate
+description: |-
+  Pulls lmk rate data from Google Play Store API for the following apps:
+
+  - org.mozilla.firefox
+  - org.mozilla.firefox_beta
+  - org.mozilla.fenix
+  - org.mozilla.klar
+  - org.mozilla.firefox.vpn
+  - org.mozilla.focus
+owners:
+- kik@mozilla.com

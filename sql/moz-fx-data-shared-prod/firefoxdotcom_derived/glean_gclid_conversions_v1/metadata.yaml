@@ -24,4 +24,4 @@ bigquery:
 require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members: [workgroup:dataplatform/external-census]

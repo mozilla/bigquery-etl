@@ -5,7 +5,7 @@ with sanitized search query data captured in logs from the backend Merino servic
 The results of this are copied into suggest_impression_sanitized_v3,
 which is also defined in this directory.
 */
-WITH impressions AS (
+WITH legacy_impressions AS (
   SELECT
     -- This should already be truncated to second level per CONSVC-1364
     -- but we reapply truncation to be explicit about granularity.
@@ -30,15 +30,23 @@ WITH impressions AS (
     scenario,
     -- Truncate to just Firefox major version
     SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
+  LEFT JOIN
+    UNNEST(experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
-  UNION ALL
+  GROUP BY
+    ALL
+),
+glean_impressions AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,
-    NULL AS telemetry_query,
+    CAST(NULL AS STRING) AS telemetry_query,
     metrics.string.quick_suggest_advertiser AS advertiser,
     SAFE_CAST(metrics.string.quick_suggest_block_id AS INT64) AS block_id,
     metrics.uuid.quick_suggest_context_id AS context_id,
@@ -52,24 +60,57 @@ WITH impressions AS (
     normalized_channel,
     metrics.quantity.quick_suggest_position AS position,
     metrics.url2.quick_suggest_reporting_url AS reporting_url,
-    NULL AS scenario,
+    CAST(NULL AS STRING) AS scenario,
     -- Truncate to just Firefox major version
     SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
+  GROUP BY
+    ALL
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
+),
+impressions AS (
+  SELECT
+    *
+  FROM
+    legacy_impressions
+  UNION ALL
+  SELECT
+    *
+  FROM
+    glean_impressions
+),
+-- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
+-- the same request_id appears in both quicksuggest_impression_v1 (legacy) and
+-- quick_suggest_v1 (Glean).
+deduped_impressions AS (
+  SELECT
+    *
+  FROM
+    impressions
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
 ),
 sanitized_queries AS (
   SELECT
-    TIMESTAMP_TRUNC(timestamp, SECOND) AS timestamp,
+    TIMESTAMP_TRUNC(`timestamp`, SECOND) AS timestamp,
     LTRIM(LOWER(query)) AS query,
-    * EXCEPT (timestamp, query, region, country)
+    * EXCEPT (`timestamp`, query, region, country)
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
-    DATE(timestamp) = @submission_date
+    DATE(`timestamp`) = @submission_date
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY sequence_no DESC, `timestamp` DESC) = 1
 ),
 sanitized_queries_count AS (
   SELECT
@@ -102,7 +143,7 @@ validated_queries AS (
 SELECT
   *
 FROM
-  impressions
+  deduped_impressions
 LEFT JOIN
   validated_queries
   USING (request_id)

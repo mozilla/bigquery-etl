@@ -16,7 +16,7 @@ WITH kitsune_questions AS (
     q.question_id,
     q.created_date AS question_created_at,
     q.creator_username AS question_creator,
-    COALESCE(m.product_mapping, q.product) AS product,
+    q.product,
     q.locale,
     q.topic,
     q.tier1_topic,
@@ -26,10 +26,6 @@ WITH kitsune_questions AS (
     q.question_content AS content
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
-    ON m.product = q.product
-    AND m.source = 'Kitsune'
   WHERE
     q.is_spam = FALSE
     AND q.is_locked = FALSE
@@ -107,10 +103,6 @@ SELECT
       THEN NULL
     ELSE kitsune_joined.question_creator = answer_creator
   END AS is_self_answer,
-  (
-    STARTS_WITH(product, 'Firefox')
-    OR product IN ('Fenix', 'Klar iOS', 'Klar Android', 'Focus iOS', 'Focus Android')
-  ) AS is_firefox_product,
   num_helpful_votes,
   num_unhelpful_votes,
   kitsune_llm.llm_result.question_summary_llm,

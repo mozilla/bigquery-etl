@@ -1512,7 +1512,7 @@ jobs:
   # the fork-PR Checks UI without needing edits here.
   report-checks:
     name: Report PR checks
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
     needs:
       - decide-runs
       - build

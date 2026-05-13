@@ -1772,7 +1772,9 @@ SELECT
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
       metrics.timing_distribution.ai_summarize_duration,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3957,7 +3959,9 @@ SELECT
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
       metrics.timing_distribution.ai_summarize_duration,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6162,7 +6166,9 @@ SELECT
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
       metrics.timing_distribution.ai_summarize_duration,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

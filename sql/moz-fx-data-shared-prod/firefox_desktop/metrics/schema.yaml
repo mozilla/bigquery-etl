@@ -3402,6 +3402,27 @@ fields:
         track usage before removing it.
 
         '
+    - name: privacy_reduced_page_protection_banner_shown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times the reduced page protection infobar was
+        shown to the user in a private browsing window.
+
+        '
+    - name: privacy_reduced_page_protection_disable_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times the user clicked the "Don''t show again"
+        button on the reduced page protection infobar to disable it permanently.
+
+        '
+    - name: privacy_reduced_page_protection_reload_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times the user clicked the "Reload" button on
+        the reduced page protection infobar to reload with reduced protections.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -36383,6 +36404,95 @@ fields:
         of loading cached tokens from disk.
 
         '
+    - name: urlclassifier_check_channel_helper_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent classifying a channel in AntiTrackingChannelClassifierUtils::CheckChannelHelper
+        (ms), from the initial dispatch to the URL-classifier worker thread through
+        the main-thread completion of annotation/blocking.
+
+        '
+    - name: urlclassifier_check_channel_helper_worker_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent on the URL-classifier worker thread inside AntiTrackingChannelClassifierUtils::CheckChannelHelper
+        (ms), covering content-classifier and URL-classifier feature lookups.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -51678,15 +51788,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

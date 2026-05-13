@@ -14,6 +14,7 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   materialized_view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_live.adjust_attribution_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_live.home_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_live.onboarding_v1

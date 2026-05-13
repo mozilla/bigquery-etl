@@ -1600,7 +1600,9 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3520,7 +3522,9 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -5440,7 +5444,9 @@ SELECT
       metrics.timing_distribution.perf_cold_applink_main_to_load_uri,
       metrics.timing_distribution.private_browsing_cleanup_duration,
       metrics.timing_distribution.cert_verifier_crlite_not_covered_cert_age,
-      metrics.timing_distribution.network_ssl_token_cache_load_time
+      metrics.timing_distribution.network_ssl_token_cache_load_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_time,
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

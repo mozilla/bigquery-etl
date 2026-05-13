@@ -71,7 +71,11 @@ with DAG(
         dataset_id="fxci_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ahalberstadt@mozilla.com",
-        email=["ahalberstadt@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ahalberstadt@mozilla.com",
+            "jmoss@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

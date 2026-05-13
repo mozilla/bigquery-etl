@@ -112,6 +112,7 @@ SELECT
       LAX_INT64(event_extra.attemptCount) AS `attemptCount`,
       LAX_INT64(event_extra.average_words_per_request) AS `average_words_per_request`,
       LAX_INT64(event_extra.average_words_per_second) AS `average_words_per_second`,
+      LAX_INT64(event_extra.bookmarks_count) AS `bookmarks_count`,
       LAX_INT64(event_extra.bounce_time) AS `bounce_time`,
       LAX_INT64(event_extra.buffering_time) AS `buffering_time`,
       LAX_INT64(event_extra.cc_number_multi_parts) AS `cc_number_multi_parts`,

@@ -356,6 +356,10 @@ def _access_entries_to_bindings(access_entries) -> List[dict]:
         prefix = entity_type_to_member_prefix.get(entry.entity_type)
         if prefix is None:
             continue
+        if entry.entity_type == "userByEmail" and entry.entity_id.endswith(
+            "gserviceaccount.com"
+        ):
+            prefix = "serviceAccount:"
         member = f"{prefix}{entry.entity_id}" if prefix else entry.entity_id
         iam_role = legacy_role_to_iam.get(entry.role, entry.role)
         role_to_members.setdefault(iam_role, set()).add(member)

@@ -31,6 +31,7 @@ mkdocs-material==9.7.1
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2026.4.4
 mozilla-schema-generator==0.5.1
+msads==13.0.27.2
 mypy==1.15.0
 openai==2.6.1
 pandas==2.3.3

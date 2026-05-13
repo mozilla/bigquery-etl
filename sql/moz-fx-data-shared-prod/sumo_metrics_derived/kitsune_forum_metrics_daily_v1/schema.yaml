@@ -1,0 +1,65 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The submission date (UTC). A question contributes to this date if it was
+    created OR received its first qualifying reply on this date, allowing both
+    questions_created and questions_replied to be tracked in a single partition.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Canonicalized Firefox product name:
+    - 'Firefox desktop'
+    - 'Firefox for Android'
+    - 'Firefox for iOS'
+    - 'Firefox for Enterprise'
+    Non-Firefox products are excluded from this table.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: |
+    BCP-47 locale code of the question (e.g. 'en-US', 'pt-BR', 'es').
+    Sourced from kitsune_questions_plus.locale.
+- name: questions_created
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of non-spam, non-locked Firefox questions created on this date
+    for this product and locale.
+- name: questions_replied
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of questions (of any creation date) that received their first
+    qualifying reply on this date. A qualifying reply excludes OP self-replies,
+    spam answers, and answers from deactivated users.
+    Use this column to compute Reply Rate:
+      SUM(questions_replied) / SUM(questions_created)
+- name: avg_ttfr_hrs
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Average time to first qualifying reply in hours, for questions whose first
+    reply landed on this date. NULL when no questions received a first reply.
+    Use this column to compute the TTFR (Hrs) Forums KPI:
+      AVG(avg_ttfr_hrs) weighted by questions_replied across the desired window.
+- name: total_helpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Cumulative helpful votes across all qualifying answers on questions created
+    on this date, as of ETL run time. Not filtered to votes cast on this date.
+    Use with total_unhelpful_votes to compute Helpfulness (%):
+      SUM(total_helpful_votes) / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))
+- name: total_unhelpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Cumulative unhelpful votes across all qualifying answers on questions created
+    on this date, as of ETL run time. Not filtered to votes cast on this date.
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery.

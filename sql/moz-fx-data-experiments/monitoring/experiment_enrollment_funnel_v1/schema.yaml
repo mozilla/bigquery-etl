@@ -1,0 +1,25 @@
+fields:
+  - name: app_name
+    type: STRING
+    mode: NULLABLE
+    description: Application name (firefox_desktop, firefox_ios, or fenix).
+  - name: slug
+    type: STRING
+    mode: NULLABLE
+    description: Experiment or rollout slug.
+  - name: status
+    type: STRING
+    mode: NULLABLE
+    description: Enrollment status (Enrolled, NotEnrolled, Disqualified, WasEnrolled).
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+    description: Reason for the status (Qualified, NotTargeted, NotSelected, FeatureConflict, OptOut, etc.).
+  - name: conflict_slug
+    type: STRING
+    mode: NULLABLE
+    description: Slug of the recipe holding the feature slot when reason is FeatureConflict. NULL on iOS/Fenix until SDK fix lands.
+  - name: clients
+    type: INT64
+    mode: NULLABLE
+    description: Count of distinct clients with this funnel status for the recipe.

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_zendesk_kpis_v1`
+  `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_zendesk_kpis`
 AS
 SELECT
   DATE,

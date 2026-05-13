@@ -6,6 +6,12 @@ SELECT
   product,
   SUM(tickets_created) AS tickets_created,
   SUM(tickets_resolved) AS tickets_resolved,
+  SUM(
+    CASE
+      WHEN automation_category = 'automation'
+        THEN tickets_resolved
+    END
+  ) AS tickets_resolved_by_automation,
   SAFE_DIVIDE(
     SUM(CASE WHEN automation_category = 'automation' THEN tickets_resolved END),
     SUM(tickets_resolved)

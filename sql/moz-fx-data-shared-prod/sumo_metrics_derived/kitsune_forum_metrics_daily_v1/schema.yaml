@@ -43,8 +43,18 @@ fields:
   description: |
     Average time to first qualifying reply in hours, for questions whose first
     reply landed on this date. NULL when no questions received a first reply.
-    Use this column to compute the TTFR (Hrs) Forums KPI:
-      AVG(avg_ttfr_hrs) weighted by questions_replied across the desired window.
+    For aggregations across multiple dates/products/locales, prefer
+    total_ttfr_hrs so the rollup is properly weighted:
+      SUM(total_ttfr_hrs) / SUM(questions_replied)
+- name: total_ttfr_hrs
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Sum of time to first qualifying reply, in hours, across all questions
+    whose first reply landed on this date. NULL when no questions received
+    a first reply. Pair with questions_replied to compute the TTFR (Hrs)
+    Forums KPI as a weighted average:
+      SUM(total_ttfr_hrs) / SUM(questions_replied)
 - name: total_helpful_votes
   type: INTEGER
   mode: NULLABLE

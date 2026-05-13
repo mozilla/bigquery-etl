@@ -127,6 +127,7 @@ SELECT
   COUNTIF(event_type = 'created') AS questions_created,
   COUNTIF(event_type = 'replied') AS questions_replied,
   AVG(IF(event_type = 'replied', ttfr_mins / 60.0, NULL)) AS avg_ttfr_hrs,
+  SUM(IF(event_type = 'replied', ttfr_mins / 60.0, NULL)) AS total_ttfr_hrs,
   SUM(IF(event_type = 'created', total_helpful_votes, 0)) AS total_helpful_votes,
   SUM(IF(event_type = 'created', total_unhelpful_votes, 0)) AS total_unhelpful_votes,
   CURRENT_TIMESTAMP() AS etl_timestamp

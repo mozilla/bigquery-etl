@@ -9,6 +9,7 @@ SELECT
   questions_replied,
   SAFE_DIVIDE(questions_replied, questions_created) AS reply_rate,
   avg_ttfr_hrs,
+  total_ttfr_hrs,
   total_helpful_votes,
   total_unhelpful_votes,
   SAFE_DIVIDE(total_helpful_votes, total_helpful_votes + total_unhelpful_votes) AS helpfulness_rate

@@ -1522,6 +1522,7 @@ jobs:
       - test-bqetl
       - integration
       - generate-sql
+      - private-generate-sql 
       - docs
       - deploy-changes-to-stage
       - dry-run-sql

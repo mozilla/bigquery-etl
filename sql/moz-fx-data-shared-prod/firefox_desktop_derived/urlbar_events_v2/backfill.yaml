@@ -1,7 +1,7 @@
 2026-05-13:
   start_date: 2025-01-01
   end_date: 2026-05-13
-  reason: Backfill for https://mozilla-hub.atlassian.net/browse/DENG-10722
+  reason: Backfill new fields added in DENG-10722, PR 9246
   watchers:
   - kbammarito@mozilla.com
   - nflorez@mozilla.com

@@ -966,9 +966,7 @@ jaraco-classes==3.4.0 \
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
     --hash=sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755
-    # via
-    #   keyring
-    #   secretstorage
+    # via secretstorage
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
@@ -1267,6 +1265,9 @@ mozilla-nimbus-schemas==2024.9.3 \
 mozilla-schema-generator==0.5.1 \
     --hash=sha256:77109d64d0fd55b2579568e9a8f7c52d8eeed7e2a254b3262dd206ed21ffad38 \
     --hash=sha256:957dcb990d67436cfdabc8878cea1102040920f00cd5c5a5a4962344000bb26b
+    # via -r requirements.in
+msads==13.0.27.2 \
+    --hash=sha256:56c5064a795412ea1d0c0b7bddea5bf0f3d0975398cfa769a372edbaaf1437b6
     # via -r requirements.in
 multidict==6.0.4 \
     --hash=sha256:01a3a55bd90018c9c080fbb0b9f4891db37d148a0a18722b42f94694f8b6d4c9 \
@@ -1826,6 +1827,7 @@ pydantic==2.9.1 \
     # via
     #   bigeye-sdk
     #   mozilla-nimbus-schemas
+    #   msads
     #   openai
     #   pydantic-yaml
 pydantic-core==2.23.3 \
@@ -1918,7 +1920,9 @@ pydantic-core==2.23.3 \
     --hash=sha256:fc379c73fd66606628b866f661e8785088afe2adaba78e6bbe80796baf708a63 \
     --hash=sha256:fc3cf31edf405a161a0adad83246568647c54404739b614b1ff43dad2b02e6d5 \
     --hash=sha256:fcf31facf2796a2d3b7fe338fe8640aa0166e4e55b4cb108dbfd1058049bf4cb
-    # via pydantic
+    # via
+    #   msads
+    #   pydantic
 pydantic-yaml==1.3.0 \
     --hash=sha256:0684255a860522c9226d4eff5c0e8ba44339683b5c5fa79fac4470c0e3821911 \
     --hash=sha256:5671c9ef1731570aa2644432ae1e2dd34c406bd4a0a393df622f6b897a88df83
@@ -2295,6 +2299,7 @@ requests==2.32.5 \
     #   mkdocs-material
     #   mozilla-metric-config-parser
     #   mozilla-schema-generator
+    #   msads
     #   requests-oauthlib
     #   responses
     #   stripe
@@ -2484,9 +2489,7 @@ s3transfer==0.13.0 \
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
-    # via
-    #   bigeye-sdk
-    #   keyring
+    # via bigeye-sdk
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de
@@ -2641,6 +2644,7 @@ typing-extensions==4.15.0 \
     #   cattrs
     #   exceptiongroup
     #   looker-sdk
+    #   msads
     #   mypy
     #   openai
     #   polyfactory

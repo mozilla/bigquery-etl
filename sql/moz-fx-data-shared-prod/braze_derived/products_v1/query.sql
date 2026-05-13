@@ -66,4 +66,3 @@ CROSS JOIN
   UNNEST(services) AS services
 GROUP BY
   email_id;
--- test change

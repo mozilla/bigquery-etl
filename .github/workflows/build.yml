@@ -44,9 +44,18 @@ jobs:
     permissions:
       contents: read
       pull-requests: read  # for resolve-pr-base on workflow_run events
+    # The workflow_run path is only for fork PRs (post gate-approval). For
+    # same-repo PRs the native pull_request path already runs everything, so
+    # firing build.yml again from workflow_run just duplicates work and
+    # leaves an orphan "Build" rolled-up check sitting in_progress.
+    # workflow_run.pull_requests[0] is populated for same-repo PRs and empty
+    # for fork PRs — the same heuristic resolve-pr-base relies on below —
+    # so the null check filters out the non-fork case.
     if: &is-allowed-event >-
       ${{
-        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+        (github.event_name == 'workflow_run'
+          && github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.pull_requests[0] == null)
         || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true)
         || github.event_name == 'push'
         || github.event_name == 'merge_group'
@@ -542,6 +551,18 @@ jobs:
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
       - *auth-gcp-dryrun
       - *auth-gcp-stage
+      - &write-bqetl-targets
+        name: Write bqetl_targets.yaml
+        run: |
+          cat > bqetl_targets.yaml <<'EOF'
+          stage:
+            project_id: moz-fx-data-integration-tests
+            dataset: "{{ git.branch }}_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}"
+            artifact_prefix: "{{ artifact.project_id }}__{{ artifact.dataset_id }}__"
+            grant_dryrun_access: true
+            expire_after_hours: 12
+            rewrite_tests: true
+          EOF
       - name: Deploy changes to stage
         timeout-minutes: 120
         env:
@@ -552,9 +573,10 @@ jobs:
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
             git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
-            PATH=".venv/bin:$PATH" script/bqetl stage deploy \
-              --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" \
-              --remove-updated-artifacts \
+            PATH=".venv/bin:$PATH" script/bqetl \
+              --target stage \
+              --run-id "${GITHUB_RUN_ID}" \
+              deploy --tables --views --isolated \
               $PATHS
           fi
       - name: Copy generated SQL to temporary stage directory
@@ -1404,11 +1426,15 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-stage
+      - *write-bqetl-targets
       - name: Delete stage datasets
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" --delete-expired
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            target clean --yes
 
   deploy-to-pypi:
     name: Deploy to PyPI
@@ -1523,7 +1549,11 @@ jobs:
   # passed via job output to `report-checks` which PATCHes it to completed.
   start-build-check:
     name: Start build check
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    # Same fork-only filter as is-allowed-event — see comment there.
+    if: >-
+      github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.pull_requests[0] == null
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -1564,10 +1594,12 @@ jobs:
   report-checks:
     name: Report PR checks
     # !cancelled() so we still report when some upstream job failed.
+    # Same fork-only filter as is-allowed-event — see comment there.
     if: |
       !cancelled() &&
       github.event_name == 'workflow_run' &&
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.pull_requests[0] == null
     needs:
       - start-build-check
       - decide-runs

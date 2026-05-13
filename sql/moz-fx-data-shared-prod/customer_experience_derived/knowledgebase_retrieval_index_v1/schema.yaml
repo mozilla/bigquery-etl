@@ -1,0 +1,5 @@
+fields:
+- name: creation_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the Kitsune support question was originally created.

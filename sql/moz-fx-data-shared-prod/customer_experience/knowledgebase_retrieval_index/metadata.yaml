@@ -1,7 +1,30 @@
 friendly_name: Knowledgebase Retrieval Index
 description: |-
-  Please provide a description for the query
+  AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Base, containing
+  embeddings and semantic features to support grounded question answering over support articles.
+
+  Grain: one row per Knowledge Base article (keyed by `id`).
+
+  LLM generated fields:
+  - article_summary_llm
+  - article_category_llm
+  - article_language_llm
+  - article_entities_llm
+  - article_topics_llm
+  - embedding based on [title, content]
+  - article_sentiment_score based on [title, content]
+
+  Read-time fields (computed by this view, not stored in the underlying table):
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), DATE(last_updated), DAY) / 30)` — 30-day
+    exponential decay; 1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
+
+  Visibility filter
+  - Only rows where `metadata.embedding_succeeded` is TRUE are surfaced; rows whose embedding step
+    failed are visible only on the underlying derived table for triage.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
 owners:
-- example@mozilla.com
-labels:
-  owner: example
+- lvargas@mozilla.com
+- mozilla/customer_experience

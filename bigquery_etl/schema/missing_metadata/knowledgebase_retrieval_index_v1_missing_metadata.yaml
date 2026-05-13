@@ -1,0 +1,260 @@
+table: "moz-fx-data-shared-prod.customer_experience_derived.knowledgebase_retrieval_index_v1"
+generated_date: "2026-05-13"
+
+# Columns whose descriptions came from upstream Kitsune wiki document semantics, query context,
+# or application context (not found in any base schema — live or local). `locale` is the only
+# column covered by global.yaml; all others are KB- or pipeline-specific.
+missing_columns:
+  - name: "id"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Unique identifier of the Knowledge Base article (primary key in the Kitsune
+      `wiki_document` table).
+    inference_basis: "application context (Kitsune wiki schema)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: >-
+      KB-specific identifier; lives in this dataset only.
+  - name: "title"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Title of the Knowledge Base article as displayed on Mozilla Support (SUMO).
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: >-
+      Recurs across the customer_experience retrieval-index tables; a dataset-level entry
+      would centralize the description if a future kitsune/zendesk variant adopts it.
+  - name: "slug"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      URL-safe slug for the article, used as the last path segment of the SUMO article URL.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific URL slug."
+  - name: "content"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      HTML body of the Knowledge Base article (the `html` field on the upstream wiki document).
+    inference_basis: "query context (html AS content)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Recurs in kitsune/zendesk retrieval indexes."
+  - name: "category"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Numeric category code for the article. Only categories `< 30` (user-facing) are included.
+    inference_basis: "query context (category < 30 filter) + upstream Kitsune config"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific code list."
+  - name: "needs_change"
+    type: "BOOLEAN"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Whether the article has been flagged as needing a content change or update.
+    inference_basis: "application context (Kitsune wiki schema)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific flag."
+  - name: "needs_change_comment"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Free-text comment explaining why the article was flagged as needing a change.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Paired with `needs_change`; KB-specific."
+  - name: "share_link"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: "Short shareable link for the Knowledge Base article."
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "display_order"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Numeric ordering hint used to sort the article within its topic on SUMO.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "current_revision_id"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Foreign key to the article's currently published revision in `wiki_revision`.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "latest_localizable_revision_id"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Foreign key to the latest revision of the article eligible for localization.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "parent_id"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Foreign key to the parent (original) article. NULL for original articles; this table
+      only includes originals (`parent_id IS NULL`).
+    inference_basis: "query context (parent_id IS NULL filter) + application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "products"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Raw upstream Mozilla product label associated with the article. Treated as a single
+      string; Thunderbird-tagged articles are excluded upstream.
+    inference_basis: "query context (products NOT LIKE filter)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific raw value."
+  - name: "topics"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Raw upstream Knowledge Base topic label associated with the article.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "is_template"
+    type: "BOOLEAN"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Whether the article is a SUMO template (reusable building block) rather than a
+      user-facing article.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "is_localizable"
+    type: "BOOLEAN"
+    mode: "NULLABLE"
+    inferred_description: "Whether the article is eligible to be localized into other locales."
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "allow_discussion"
+    type: "BOOLEAN"
+    mode: "NULLABLE"
+    inferred_description: "Whether community discussion is enabled on the article's SUMO page."
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "last_updated"
+    type: "TIMESTAMP"
+    mode: "NULLABLE"
+    inferred_description: "Timestamp of the most recent update to the article in Kitsune."
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "num_pageviews_last_7_days"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Number of SUMO pageviews for the article over the most recent 7 days, as of the last run.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "num_pageviews_last_30_days"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Number of SUMO pageviews for the article over the most recent 30 days, as of the last run.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "num_pageviews_last_90_days"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Number of SUMO pageviews for the article over the most recent 90 days, as of the last run.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "num_pageviews_last_365_days"
+    type: "INTEGER"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Number of SUMO pageviews for the article over the most recent 365 days, as of the last run.
+    inference_basis: "application context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "KB-specific."
+  - name: "type"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Type of the content record; currently always set to "article".
+    inference_basis: "query context (literal 'article' AS type)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Same shape as kitsune ('question') and zendesk ('ticket')."
+  - name: "article_summary_llm"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      AI-generated summary of the article (max 8 words). Produced by the Gemini model.
+    inference_basis: "query context (AI.GENERATE output_schema)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "article_category_llm"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      AI-generated classification label for the article (1–2 words).
+    inference_basis: "query context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "article_language_llm"
+    type: "STRING"
+    mode: "NULLABLE"
+    inferred_description: >-
+      AI-detected BCP 47 language tag (e.g., en-US, es-MX) for the article content.
+    inference_basis: "query context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "article_entities_llm"
+    type: "STRING"
+    mode: "REPEATED"
+    inferred_description: >-
+      Array of up to three AI-extracted normalized entities from the article.
+    inference_basis: "query context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "article_topics_llm"
+    type: "STRING"
+    mode: "REPEATED"
+    inferred_description: >-
+      Array of up to three AI-generated normalized topic labels for the article.
+    inference_basis: "query context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "article_sentiment_score"
+    type: "FLOAT"
+    mode: "NULLABLE"
+    inferred_description: >-
+      AI-generated sentiment score in [-1.0, 1.0]; NULLed at write time when the model
+      returns an out-of-range value (still recorded in `metadata.failure_reasons`).
+    inference_basis: "query context (IF BETWEEN sentinel)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific LLM field."
+  - name: "embedding"
+    type: "FLOAT"
+    mode: "REPEATED"
+    inferred_description: >-
+      Vector embedding of the concatenated title and content. Generated by the Gemini
+      embedding model (gemini-embedding-001).
+    inference_basis: "query context (AI.EMBED output)"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific."
+  - name: "metadata"
+    type: "RECORD"
+    mode: "NULLABLE"
+    inferred_description: >-
+      Technical metadata about the AI analysis pipeline.
+    inference_basis: "query context"
+    recommended_target: "customer_experience_derived.yaml"
+    recommendation_reason: "Pipeline-specific metadata struct (same shape as kitsune/zendesk)."

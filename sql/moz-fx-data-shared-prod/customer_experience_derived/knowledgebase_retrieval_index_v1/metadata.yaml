@@ -1,19 +1,46 @@
 friendly_name: Knowledgebase Retrieval Index
 description: |-
-  Please provide a description for the query
+  AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Base, containing
+  embeddings and semantic features to support grounded question answering over support articles.
+
+  Grain: one row per Knowledge Base article (keyed by `id`).
+
+  LLM generated fields:
+  - article_summary_llm
+  - article_category_llm
+  - article_language_llm
+  - article_entities_llm
+  - article_topics_llm
+  - embedding based on [title, content]
+  - article_sentiment_score based on [title, content]
+
+  Read-time fields (computed on the `customer_experience.knowledgebase_retrieval_index` view, not stored here):
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), DATE(last_updated), DAY) / 30)` — 30-day exponential decay,
+    1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Refresh
+  - This table is rebuilt as a full snapshot on each run; it is not incremental.
 owners:
-- example@mozilla.com
+- lvargas@mozilla.com
+- mozilla/customer_experience
 labels:
-  incremental: true
-  owner1: example
+  level: gold
+  incremental: false
+  change_controlled: true
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_analytics_tables
 bigquery:
-  time_partitioning:
-    type: day
-    field: ''
-    require_partition_filter: true
-    expiration_days: null
   clustering:
-    fields: []
+    fields:
+    - locale
+    - category
 require_column_descriptions: true
+monitoring:
+  enabled: true
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus

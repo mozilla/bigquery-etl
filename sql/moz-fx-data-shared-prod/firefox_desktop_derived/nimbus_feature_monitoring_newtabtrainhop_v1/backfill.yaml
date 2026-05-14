@@ -1,0 +1,11 @@
+2026-05-11:
+  start_date: 2025-11-14
+  end_date: 2026-05-10
+  reason: New table, initial backfill.
+  watchers:
+  - yashika.khurana@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

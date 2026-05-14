@@ -143,8 +143,8 @@ def main():
         bucket = storage_client.bucket("mozanalysis")
         empty = json.dumps({"v1": {}})
         for path in [
-            f"{args.gcs_folder}/enrollment_funnel_{args.date}.json",
-            f"{args.gcs_folder}/enrollment_funnel_latest.json",
+            f"{args.gcs_folder}/enrollment_funnel_v1_{args.date}.json",
+            f"{args.gcs_folder}/enrollment_funnel_v1_latest.json",
         ]:
             bucket.blob(path).upload_from_string(empty, content_type="application/json")
         return
@@ -188,13 +188,13 @@ def main():
     json_str = json.dumps(versioned_data)
 
     # Dated version for historical reference.
-    dated_path = f"{args.gcs_folder}/enrollment_funnel_{args.date}.json"
+    dated_path = f"{args.gcs_folder}/enrollment_funnel_v1_{args.date}.json"
     bucket.blob(dated_path).upload_from_string(
         json_str, content_type="application/json"
     )
 
     # Latest version consumed by Experimenter.
-    latest_path = f"{args.gcs_folder}/enrollment_funnel_latest.json"
+    latest_path = f"{args.gcs_folder}/enrollment_funnel_v1_latest.json"
     source_blob = bucket.blob(dated_path)
     bucket.copy_blob(source_blob, bucket, latest_path)
 

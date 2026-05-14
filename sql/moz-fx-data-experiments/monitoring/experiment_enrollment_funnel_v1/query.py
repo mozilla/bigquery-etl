@@ -28,7 +28,7 @@ WHERE start_date IS NOT NULL
 FUNNEL_QUERY = """
 WITH active_experiments AS (
   -- Experiments that are live or ended within the last 90 days.
-  SELECT experimenter_slug AS slug
+  SELECT normandy_slug AS slug
   FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
   WHERE start_date IS NOT NULL
     AND (end_date IS NULL OR end_date >= DATE_SUB(@run_date, INTERVAL 90 DAY))

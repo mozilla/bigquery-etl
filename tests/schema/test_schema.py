@@ -1,9 +1,11 @@
 from pathlib import Path
 from textwrap import dedent
+from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
 from google.cloud.bigquery import SchemaField
+from google.cloud.exceptions import NotFound
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema, SchemaLoader
@@ -445,6 +447,117 @@ class TestQuerySchema:
                 ),
             ),
         )
+
+
+class TestSchemaDeploy:
+    BASE_FIELDS = {"fields": [{"name": "id", "type": "STRING", "mode": "REQUIRED"}]}
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_create_with_primary_key(self, mock_client_cls):
+        client = mock_client_cls.return_value
+        client.get_table.side_effect = NotFound("not found")
+
+        schema = Schema({"primary_key": ["id"], **self.BASE_FIELDS})
+        schema.deploy("proj.dataset.table")
+
+        client.create_table.assert_called_once()
+        created_table = client.create_table.call_args[0][0]
+        assert created_table.table_constraints is not None
+        assert created_table.table_constraints.primary_key.columns == ["id"]
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_update_with_primary_key(self, mock_client_cls):
+        client = mock_client_cls.return_value
+        client.get_table.return_value = MagicMock()
+
+        schema = Schema({"primary_key": ["id"], **self.BASE_FIELDS})
+        schema.deploy("proj.dataset.table")
+
+        client.update_table.assert_called_once()
+        _, update_fields = client.update_table.call_args[0]
+        assert "table_constraints" in update_fields
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_create_with_foreign_key(self, mock_client_cls):
+        client = mock_client_cls.return_value
+        client.get_table.side_effect = NotFound("not found")
+
+        schema = Schema(
+            {
+                "foreign_keys": [
+                    {
+                        "name": "fk_other",
+                        "referenced_table": "proj.other_dataset.other_table",
+                        "column_references": [
+                            {"referencing_column": "id", "referenced_column": "id"}
+                        ],
+                    }
+                ],
+                **self.BASE_FIELDS,
+            }
+        )
+        schema.deploy("proj.dataset.table")
+
+        client.create_table.assert_called_once()
+        created_table = client.create_table.call_args[0][0]
+        assert created_table.table_constraints is not None
+        fks = created_table.table_constraints.foreign_keys
+        assert len(fks) == 1
+        assert fks[0].name == "fk_other"
+        assert fks[0].column_references[0].referencing_column == "id"
+        assert fks[0].column_references[0].referenced_column == "id"
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_no_constraints_when_not_specified(self, mock_client_cls):
+        client = mock_client_cls.return_value
+        client.get_table.return_value = MagicMock()
+
+        schema = Schema(self.BASE_FIELDS)
+        schema.deploy("proj.dataset.table")
+
+        client.update_table.assert_called_once()
+        _, update_fields = client.update_table.call_args[0]
+        assert update_fields == ["schema"]
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_removing_foreign_key_sends_empty_list(self, mock_client_cls):
+        client = mock_client_cls.return_value
+        table_mock = MagicMock()
+        table_mock._properties = {}
+        client.get_table.return_value = table_mock
+
+        # primary_key present but foreign_keys removed — should explicitly clear FKs
+        schema = Schema({"primary_key": ["id"], **self.BASE_FIELDS})
+        schema.deploy("proj.dataset.table")
+
+        constraints = table_mock._properties.get("tableConstraints", {})
+        assert constraints.get("foreignKeys") == []
+
+    @patch("bigquery_etl.schema.bigquery.Client")
+    def test_deploy_update_with_foreign_key_includes_constraints_in_update_fields(
+        self, mock_client_cls
+    ):
+        client = mock_client_cls.return_value
+        client.get_table.return_value = MagicMock()
+
+        schema = Schema(
+            {
+                "foreign_keys": [
+                    {
+                        "name": "fk_other",
+                        "referenced_table": "proj.other_dataset.other_table",
+                        "column_references": [
+                            {"referencing_column": "id", "referenced_column": "id"}
+                        ],
+                    }
+                ],
+                **self.BASE_FIELDS,
+            }
+        )
+        schema.deploy("proj.dataset.table")
+
+        _, update_fields = client.update_table.call_args[0]
+        assert "table_constraints" in update_fields
 
 
 def test_generate_compatible_select_expression():

@@ -88,7 +88,7 @@ latest AS (
   SELECT
     * EXCEPT (submission_timestamp),
     ROW_NUMBER() OVER (
-      PARTITION BY client_id, slug
+      PARTITION BY app_name, client_id, slug
       ORDER BY submission_timestamp DESC
     ) AS rn
   FROM all_apps_raw
@@ -136,7 +136,18 @@ def main():
             ),
         ).result()
     )
-    min_start_date = min_start_rows[0]["min_start_date"]
+    min_start_date = min_start_rows[0]["min_start_date"] if min_start_rows else None
+    if min_start_date is None:
+        # No active experiments — write empty files and exit cleanly.
+        storage_client = storage.Client(args.project)
+        bucket = storage_client.bucket("mozanalysis")
+        empty = json.dumps({"v1": {}})
+        for path in [
+            f"{args.gcs_folder}/enrollment_funnel_{args.date}.json",
+            f"{args.gcs_folder}/enrollment_funnel_latest.json",
+        ]:
+            bucket.blob(path).upload_from_string(empty, content_type="application/json")
+        return
 
     rows = list(
         bq_client.query(

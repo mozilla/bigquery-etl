@@ -658,6 +658,13 @@ fields:
         This metric is only attached to a ping if it already contains other data.
 
         '
+    - name: newtab_widgets_enabled_list
+      type: STRING
+      mode: REPEATED
+      description: 'The list of widget telemetry names currently enabled by the user.
+        Recorded at startup and whenever a widget is enabled or disabled.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

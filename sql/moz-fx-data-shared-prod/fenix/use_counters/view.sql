@@ -2856,7 +2856,11 @@ SELECT
       metrics.counter.use_counter_page_element_requestfullscreen,
       metrics.counter.use_counter_page_requested_keyboard_lock,
       metrics.counter.use_counter_doc_editcontext_constructor,
-      metrics.counter.use_counter_page_editcontext_constructor
+      metrics.counter.use_counter_page_editcontext_constructor,
+      metrics.counter.use_counter_doc_element_requestpointerlock,
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_page_element_requestpointerlock,
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5736,7 +5740,11 @@ SELECT
       metrics.counter.use_counter_page_element_requestfullscreen,
       metrics.counter.use_counter_page_requested_keyboard_lock,
       metrics.counter.use_counter_doc_editcontext_constructor,
-      metrics.counter.use_counter_page_editcontext_constructor
+      metrics.counter.use_counter_page_editcontext_constructor,
+      metrics.counter.use_counter_doc_element_requestpointerlock,
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_page_element_requestpointerlock,
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8616,7 +8624,11 @@ SELECT
       metrics.counter.use_counter_page_element_requestfullscreen,
       metrics.counter.use_counter_page_requested_keyboard_lock,
       metrics.counter.use_counter_doc_editcontext_constructor,
-      metrics.counter.use_counter_page_editcontext_constructor
+      metrics.counter.use_counter_page_editcontext_constructor,
+      metrics.counter.use_counter_doc_element_requestpointerlock,
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_page_element_requestpointerlock,
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11496,7 +11508,11 @@ SELECT
       metrics.counter.use_counter_page_element_requestfullscreen,
       metrics.counter.use_counter_page_requested_keyboard_lock,
       metrics.counter.use_counter_doc_editcontext_constructor,
-      metrics.counter.use_counter_page_editcontext_constructor
+      metrics.counter.use_counter_page_editcontext_constructor,
+      metrics.counter.use_counter_doc_element_requestpointerlock,
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_page_element_requestpointerlock,
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14376,7 +14392,11 @@ SELECT
       metrics.counter.use_counter_page_element_requestfullscreen,
       metrics.counter.use_counter_page_requested_keyboard_lock,
       metrics.counter.use_counter_doc_editcontext_constructor,
-      metrics.counter.use_counter_page_editcontext_constructor
+      metrics.counter.use_counter_page_editcontext_constructor,
+      metrics.counter.use_counter_doc_element_requestpointerlock,
+      metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_page_element_requestpointerlock,
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

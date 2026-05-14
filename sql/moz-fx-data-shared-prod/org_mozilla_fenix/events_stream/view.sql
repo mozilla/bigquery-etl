@@ -134,6 +134,7 @@ SELECT
       ) AS `duration_since_last_visible_seconds`,
       LAX_INT64(event_extra.edited) AS `edited`,
       LAX_INT64(event_extra.error_code) AS `error_code`,
+      LAX_INT64(event_extra.event_number) AS `event_number`,
       LAX_INT64(event_extra.extracted_code_units) AS `extracted_code_units`,
       LAX_INT64(event_extra.extraction_time) AS `extraction_time`,
       LAX_INT64(event_extra.first_frame_loaded_time) AS `first_frame_loaded_time`,

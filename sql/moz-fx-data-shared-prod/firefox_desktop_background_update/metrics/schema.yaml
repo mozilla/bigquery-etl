@@ -37062,9 +37062,6 @@ fields:
           mode: NULLABLE
       description: 'Time in milliseconds from navigationStart to domLoading.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram TIME_TO_DOM_LOADING_MS.
-
         '
     - name: performance_time_to_first_contentful_paint
       type: RECORD
@@ -41779,9 +41776,6 @@ fields:
         first byte of the reply is received (ms). Keyed by TRR domain for DoH or ''Native''
         otherwise
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DNS_PERF_FIRST_BYTE_MS.
-
         '
     - name: perf_dns_first_contentful_paint
       type: RECORD
@@ -44703,9 +44697,6 @@ fields:
         type. Numbers are sampled periodically, every time 2GB of data is written
         to the cache.
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram NETWORK_CACHE_ENTRY_COUNT.
-
         '
     - name: network_cache_entry_count_share
       type: RECORD
@@ -45554,9 +45545,6 @@ fields:
       description: 'Cache size in megabytes keyed by cache capacity calculation type.
         Numbers are sampled periodically, every time 2GB of data is written to the
         cache.
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        NETWORK_CACHE_SIZE.
 
         '
     - name: networking_trr_request_size

@@ -79,6 +79,7 @@ SELECT
       LAX_BOOL(event_extra.psi_available) AS `psi_available`,
       LAX_BOOL(event_extra.reset_disabled) AS `reset_disabled`,
       LAX_BOOL(event_extra.restricted) AS `restricted`,
+      LAX_BOOL(event_extra.result_is_default) AS `result_is_default`,
       LAX_BOOL(event_extra.saved) AS `saved`,
       LAX_BOOL(event_extra.shopping_tab_displayed) AS `shopping_tab_displayed`,
       LAX_BOOL(event_extra.site_settings) AS `site_settings`,

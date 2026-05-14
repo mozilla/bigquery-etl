@@ -12187,6 +12187,22 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called EditContext.constructor
+    - name: use_counter2_element_requestpointerlock_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Element.requestPointerLock
+    - name: use_counter2_element_requestpointerlock_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Element.requestPointerLock
+    - name: use_counter2_requestedpointerlockunadjustedmovement_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has requested pointer lock with unadjustedMovement
+    - name: use_counter2_requestedpointerlockunadjustedmovement_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has requested pointer lock with unadjustedMovement
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24232,6 +24248,22 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called EditContext.constructor
+        - name: use_counter2_element_requestpointerlock_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Element.requestPointerLock
+        - name: use_counter2_element_requestpointerlock_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Element.requestPointerLock
+        - name: use_counter2_requestedpointerlockunadjustedmovement_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has requested pointer lock with unadjustedMovement
+        - name: use_counter2_requestedpointerlockunadjustedmovement_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has requested pointer lock with unadjustedMovement
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

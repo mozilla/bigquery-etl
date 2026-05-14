@@ -1,6 +1,6 @@
 2026-05-13:
   start_date: 2025-01-01
-  end_date: 2026-05-13
+  end_date: 2026-05-14
   reason: Backfill new fields added in DENG-10722, PR 9246
   watchers:
   - kbammarito@mozilla.com

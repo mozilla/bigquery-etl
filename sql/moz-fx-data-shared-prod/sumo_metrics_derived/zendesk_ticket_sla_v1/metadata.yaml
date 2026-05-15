@@ -1,0 +1,62 @@
+friendly_name: Zendesk Ticket SLA (Per-Ticket)
+description: "Ticket-level SLA snapshot for SUMO Zendesk support tickets.\n\nGrain:\
+  \ One row per ticket (rolling 13-month window keyed on ticket_created_date).\n\n\
+  Single source of truth for:\n- First Reply Time (TTFR) \u2014 calendar and business\
+  \ minutes\n- Full Resolution Time (FRT) \u2014 calendar and business minutes\n-\
+  \ First Contact Resolution / one-touch flag (is_one_touch)\n- CSAT survey response\
+  \ and rating_category\n- Reopen count and resolution status\n\nBusiness minutes\
+  \ are computed against Zendesk's \"Mozilla Support Hours\" schedule\n(Mon-Fri 8AM-5PM\
+  \ CT, DST-aware) with holidays subtracted via schedule_holiday.\nMirrors Zendesk's\
+  \ UI calculation and Fivetran's reference query.\n\nLate-arriving updates: full_resolution_at,\
+  \ rating_category, and reopen_count can\nchange weeks after a ticket is created\
+  \ (status flips, late survey responses).\nThis table is rebuilt non-incrementally\
+  \ over a rolling 13-month window so those\nchanges flow through without manual partition\
+  \ rewrites.\n\nFilter dimensions:\n- product (mapped via cx_product_mappings_v1)\n\
+  - ticket_group (Appbot - English / Appbot - Non-English / All Other Tickets)\n-\
+  \ automation_category (automation / human-handled, with reopens reclassified)\n\
+  - is_excluded_from_sla \u2014 true for Appbot non-English, Sumo Test / VPN QA groups,\n\
+  \  and tickets tagged '%test%'. Most SLA dashboards filter where false.\n\nUsed\
+  \ by:\n- SUMO support SLA dashboards (TTFR, FRT, FCR, CSAT)\n- sumo_zendesk_sla_kpis_v1\
+  \ (KPI view layer)\n- Ad-hoc SLA distribution analyses (medians, percentiles)\n"
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: ticket_created_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - product
+    - automation_category
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.static.cx_product_mappings_v1
+  - moz-fx-data-shared-prod.zendesk_syndicate.csat_survey_answer
+  - moz-fx-data-shared-prod.zendesk_syndicate.group
+  - moz-fx-data-shared-prod.zendesk_syndicate.schedule
+  - moz-fx-data-shared-prod.zendesk_syndicate.schedule_holiday
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_comment
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_csat_survey
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag
+  - moz-fx-data-shared-prod.zendesk_syndicate.user

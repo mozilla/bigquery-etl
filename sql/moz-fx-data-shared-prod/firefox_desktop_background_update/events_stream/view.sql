@@ -424,6 +424,7 @@ SELECT
       JSON_VALUE(event_extra.search_domain) AS `search_domain`,
       JSON_VALUE(event_extra.selfdetails) AS `selfdetails`,
       JSON_VALUE(event_extra.selftype) AS `selftype`,
+      JSON_VALUE(event_extra.server_content_process_stack) AS `server_content_process_stack`,
       JSON_VALUE(event_extra.server_stack) AS `server_stack`,
       JSON_VALUE(event_extra.session_id) AS `session_id`,
       JSON_VALUE(event_extra.setting) AS `setting`,

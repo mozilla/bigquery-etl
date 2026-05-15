@@ -1,0 +1,111 @@
+fields:
+- name: ticket_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Zendesk ticket ID (primary key for this table).
+- name: ticket_created_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the ticket was created (UTC). Used as partition column.
+- name: ticket_created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Full timestamp the ticket was created (UTC).
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Mozilla product the ticket is for, mapped via static.cx_product_mappings_v1
+    (source = 'Zendesk'). Falls back to the raw custom_product if no mapping exists.
+- name: raw_custom_product
+  type: STRING
+  mode: NULLABLE
+  description: Raw custom_product value from Zendesk before product mapping is applied.
+- name: ticket_group
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Appbot classification derived from ticket tags:
+    - 'Appbot - English' — appbot tag plus english/usa/uk/canada/australia
+    - 'Appbot - Non-English' — appbot tag without an English-region tag
+    - 'All Other Tickets' — non-Appbot tickets
+- name: automation_category
+  type: STRING
+  mode: NULLABLE
+  description: |
+    'automation' if resolved by an automation/macro tag and never reopened;
+    'human-handled' otherwise. Reopened automation tickets are reclassified
+    as human-handled.
+- name: first_reply_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp of the first public agent or admin comment. NULL if no reply yet.
+- name: first_reply_time_calendar_minutes
+  type: FLOAT
+  mode: NULLABLE
+  description: Wall-clock minutes from ticket_created_at to first_reply_at.
+- name: first_reply_time_business_minutes
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Business minutes from ticket_created_at to first_reply_at, computed against
+    "Mozilla Support Hours" with holidays subtracted. Zero when the interval
+    falls entirely outside business hours.
+- name: full_resolution_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |
+    Latest 'solved' timestamp; falls back to latest 'closed' for tickets that
+    went open → closed without a 'solved' event. NULL while unresolved.
+- name: full_resolution_time_calendar_minutes
+  type: FLOAT
+  mode: NULLABLE
+  description: Wall-clock minutes from ticket_created_at to full_resolution_at.
+- name: full_resolution_time_business_minutes
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Business minutes from ticket_created_at to full_resolution_at, computed
+    against "Mozilla Support Hours" with holidays subtracted.
+- name: reply_status
+  type: STRING
+  mode: NULLABLE
+  description: "'Replied' if first_reply_at is set, otherwise 'No reply yet'."
+- name: resolution_status
+  type: STRING
+  mode: NULLABLE
+  description: "'Resolved' if full_resolution_at is set, otherwise 'Unresolved'."
+- name: agent_reply_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of public agent/admin comments on this ticket.
+- name: is_one_touch
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    1 if the ticket was resolved with fewer than two agent replies (FCR proxy);
+    0 otherwise. Unresolved tickets are 0.
+- name: reopen_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of 'solved' → 'open' transitions in the ticket's status history.
+- name: rating_category
+  type: STRING
+  mode: NULLABLE
+  description: |
+    CSAT survey rating category (e.g. 'good', 'bad'). NULL when no survey response.
+- name: survey_responded
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE when a CSAT rating_category exists for this ticket.
+- name: is_excluded_from_sla
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |
+    TRUE for tickets typically excluded from SLA reporting:
+    Appbot non-English reviews, Sumo Test / VPN QA groups, and tickets tagged
+    with anything matching '%test%'. Downstream views should filter where FALSE.
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this snapshot was loaded into BigQuery.

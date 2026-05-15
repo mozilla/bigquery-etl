@@ -5,6 +5,7 @@ fields:
   description: |-
     Application name as referenced in probe-scraper. Stable identifier used
     across telemetry tooling (e.g. `firefox_desktop`, `fenix`, `firefox_ios`).
+    Not unique on its own — multi-channel apps repeat across rows.
 - name: canonical_app_name
   type: STRING
   mode: NULLABLE
@@ -14,7 +15,40 @@ fields:
 - name: app_description
   type: STRING
   mode: NULLABLE
-  description: Free-text description of the application from repositories.yaml.
+  description: Free-text description of the application.
+- name: app_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Glean application ID for this channel (e.g. `org.mozilla.firefox`).
+    Maps to the `client_info.app_id` field in pings. Unique per row.
+- name: v1_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Legacy v1 channel identifier used in BigQuery dataset names
+    (e.g. `firefox-android-release`). Unique per row.
+- name: app_channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel name (e.g. `release`, `beta`, `nightly`).
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: Channel-specific description (distinct from `app_description`).
+- name: bq_dataset_family
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    BigQuery dataset family this channel ingests into. Pings from this
+    channel land in datasets prefixed with this value
+    (e.g. `firefox_desktop`, `firefox_desktop_stable`).
+- name: document_namespace
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Edge/ingestion namespace used by the Glean pipeline (e.g.
+    `firefox-desktop`). Differs from `bq_dataset_family` in casing/format.
 - name: url
   type: STRING
   mode: NULLABLE
@@ -27,14 +61,14 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: |-
-    True when the application is marked as deprecated in repositories.yaml.
-    Deprecated apps are no longer actively scraped or maintained.
+    True when this app/channel is marked as deprecated and is no longer
+    actively scraped or maintained.
 - name: skip_documentation
   type: BOOLEAN
   mode: NULLABLE
   description: |-
-    True when probe-scraper is configured to omit this app from generated
-    documentation.
+    True when probe-scraper is configured to omit this app/channel from
+    generated documentation.
 - name: prototype
   type: BOOLEAN
   mode: NULLABLE
@@ -70,57 +104,19 @@ fields:
   mode: REPEATED
   description: |-
     Names of probe-scraper libraries (or Android dependency coordinates)
-    whose metrics and pings are merged into this application's schema.
-- name: channels
-  type: RECORD
-  mode: REPEATED
-  description: |-
-    Release channels this application ships through. One row per channel
-    (e.g. release / beta / nightly).
-  fields:
-  - name: v1_name
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Legacy v1 channel identifier used in BigQuery dataset names
-      (e.g. `firefox-android-release`).
-  - name: app_id
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Glean application ID for this channel (e.g. `org.mozilla.firefox`).
-      Maps to the `client_info.app_id` field in pings.
-  - name: app_channel
-    type: STRING
-    mode: NULLABLE
-    description: Release channel name (e.g. `release`, `beta`, `nightly`).
-  - name: description
-    type: STRING
-    mode: NULLABLE
-    description: Human-readable description of the channel.
-  - name: additional_dependencies
-    type: STRING
-    mode: REPEATED
-    description: |-
-      Channel-specific dependencies appended to the app's `dependencies`
-      list (e.g. a channel-specific Gecko engine variant).
-  - name: deprecated
-    type: BOOLEAN
-    mode: NULLABLE
-    description: |-
-      True when this specific channel is deprecated (independent of the
-      app-level `deprecated` flag).
+    whose metrics and pings are merged into this channel's schema.
+    Includes any channel-specific additional dependencies.
 - name: moz_pipeline_metadata_defaults
   type: RECORD
   mode: NULLABLE
   description: |-
-    Pipeline-level defaults applied to every ping for this app unless
+    Pipeline-level defaults applied to every ping for this channel unless
     overridden by an entry in `moz_pipeline_metadata`.
   fields:
   - name: expiration_policy
     type: RECORD
     mode: NULLABLE
-    description: Default expiration policy applied to pings for this app.
+    description: Default expiration policy applied to pings for this channel.
     fields:
     - name: delete_after_days
       type: INTEGER
@@ -161,9 +157,9 @@ fields:
   type: RECORD
   mode: REPEATED
   description: |-
-    Per-ping pipeline metadata overrides. The source YAML keys this as a
-    map by ping name; we flatten it into a repeated record with
-    `ping_name` set to the original key.
+    Per-ping pipeline metadata overrides. The source keys this as a map
+    by ping name; we flatten it into a repeated record with `ping_name`
+    set to the original key.
   fields:
   - name: ping_name
     type: STRING
@@ -186,7 +182,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: |-
-      Per-ping submission_timestamp truncation, overriding the app-level
+      Per-ping submission_timestamp truncation, overriding the channel-level
       default (e.g. `seconds`, `minutes`).
   - name: override_attributes
     type: RECORD

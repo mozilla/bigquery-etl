@@ -5,7 +5,7 @@ with sanitized search query data captured in logs from the backend Merino servic
 The results of this are copied into suggest_impression_sanitized_v3,
 which is also defined in this directory.
 */
-WITH impressions AS (
+WITH legacy_impressions AS (
   SELECT
     -- This should already be truncated to second level per CONSVC-1364
     -- but we reapply truncation to be explicit about granularity.
@@ -30,11 +30,19 @@ WITH impressions AS (
     scenario,
     -- Truncate to just Firefox major version
     SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
+  LEFT JOIN
+    UNNEST(experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
-  UNION ALL
+  GROUP BY
+    ALL
+),
+glean_impressions AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,
@@ -55,18 +63,31 @@ WITH impressions AS (
     CAST(NULL AS STRING) AS scenario,
     -- Truncate to just Firefox major version
     SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
+  GROUP BY
+    ALL
   QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        metrics.string.quick_suggest_request_id
-      ORDER BY
-        submission_timestamp DESC
-    ) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
+),
+impressions AS (
+  SELECT
+    *
+  FROM
+    legacy_impressions
+  UNION ALL
+  SELECT
+    *
+  FROM
+    glean_impressions
 ),
 -- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
 -- the same request_id appears in both quicksuggest_impression_v1 (legacy) and

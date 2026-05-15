@@ -12,7 +12,7 @@ dags.yaml
 # These datasets are subject to the additional change control procedures
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
 # Customer Experience
-/sql/moz-fx-data-shared-prod/customer_experience_derived/kitsune_retrieval_index_v1/ @mozilla/customer_experience
+/sql/moz-fx-data-shared-prod/customer_experience_derived/** @mozilla/customer_experience
 # Active Users
 /sql_generators/active_users_aggregates_v3/templates/ @mozilla/kpi_table_reviewers
 /sql/**/active_users_aggregates_v3 @mozilla/kpi_table_reviewers
@@ -22,8 +22,8 @@ dags.yaml
 /sql/**/active_users_aggregates_tou_mobile_v1 @mozilla/kpi_table_reviewers
 /sql/**/active_users_aggregates_tou_desktop_v1 @mozilla/kpi_table_reviewers
 # Search
-/sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
-/sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas @csadilek
+/sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas @csadilek
 /sql/moz-fx-data-shared-prod/search_derived/search_revenue_levers_daily_v1/ @mozilla/revenue_forecasting_data_reviewers
 /sql/moz-fx-data-shared-prod/search_derived/search_dau_aggregates_v1/ @mozilla/revenue_forecasting_data_reviewers
 # Contextual Services

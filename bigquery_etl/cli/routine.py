@@ -490,6 +490,7 @@ def _publish_to_target(
     pattern=None,
     routine_files=None,
     dry_run=False,
+    deployed_source_identities=None,
 ):
     """Publish routines to a --target environment."""
     if routine_files is None:
@@ -527,6 +528,7 @@ def _publish_to_target(
         defer_to_target=defer_to_target,
         isolated=isolated,
         auto_deploy=False,
+        deployed_source_identities=deployed_source_identities,
     )
 
     # ensure target datasets exist

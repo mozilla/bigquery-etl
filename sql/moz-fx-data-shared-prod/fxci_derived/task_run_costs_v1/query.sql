@@ -21,6 +21,7 @@ worker_cost AS (
     usage_start_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND @submission_date
+    AND project IN ("fxci-production-level3-workers", "fxci-production-level1-workers")
   GROUP BY
     zone,
     instance_id
@@ -56,7 +57,8 @@ INNER JOIN
   ON run.worker_group = worker_metric.zone
   AND run.worker_id = worker_metric.instance_id
 WHERE
-  worker_metric.total_uptime > run.duration
+  worker_metric.total_uptime > 0
+  AND worker_metric.total_uptime >= run.duration
 GROUP BY
   task_id,
   run_id,

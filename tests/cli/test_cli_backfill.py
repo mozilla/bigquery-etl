@@ -2741,3 +2741,40 @@ class TestCopyPermissionsToStagingTable:
             "roles/bigquery.dataEditor": {"user:writer@mozilla.com"},
             "roles/bigquery.dataOwner": {"user:owner@mozilla.com"},
         }
+
+    def test_userbyemail_service_accounts_get_serviceaccount_prefix(self):
+        """Permission copy should use the `serviceAccount:` prefix for service accounts."""
+        dataset_access_entries = [
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="abc@mozilla.com",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="airflow@project.iam.gserviceaccount.com",
+            ),
+            MagicMock(
+                role="READER",
+                entity_type="userByEmail",
+                entity_id="123-compute@developer.gserviceaccount.com",
+            ),
+        ]
+        client = self.build_client(
+            prod_table_bindings=[],
+            dataset_access_entries=dataset_access_entries,
+            staging_bindings=[],
+        )
+
+        copy_permissions_to_staging_table(client, self.PROD_TABLE, self.STAGING_TABLE)
+
+        applied_policy = client.set_iam_policy.call_args.args[1]
+        applied = {b["role"]: set(b["members"]) for b in applied_policy.bindings}
+        assert applied == {
+            "roles/bigquery.dataViewer": {
+                "user:abc@mozilla.com",
+                "serviceAccount:airflow@project.iam.gserviceaccount.com",
+                "serviceAccount:123-compute@developer.gserviceaccount.com",
+            },
+        }

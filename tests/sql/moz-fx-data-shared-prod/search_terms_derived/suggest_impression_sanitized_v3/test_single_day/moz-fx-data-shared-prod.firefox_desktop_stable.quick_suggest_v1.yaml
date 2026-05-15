@@ -24,6 +24,11 @@
   normalized_os: macOS
   normalized_os_version: "15.2"
   sample_id: null
+  ping_info:
+    experiments:
+      - key: glean-exp
+        value:
+          branch: treatment
 - submission_timestamp: "2021-01-01 13:02:00"
   client_info:
     app_display_version: "134.0.1"
@@ -50,6 +55,11 @@
   normalized_os: macOS
   normalized_os_version: "15.0"
   sample_id: null
+  ping_info:
+    experiments:
+      - key: glean-exp
+        value:
+          branch: treatment
 - submission_timestamp: "2021-01-01 13:03:00"
   client_info:
     app_display_version: "134.0.1"
@@ -76,6 +86,11 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
+  ping_info:
+    experiments:
+      - key: glean-exp
+        value:
+          branch: treatment
 - submission_timestamp: "2021-01-01 13:05:00"
   client_info:
     app_display_version: "134.0.1"
@@ -102,6 +117,12 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
+  # Different branch from legacy rid_overlap fixture to confirm legacy source wins dedup
+  ping_info:
+    experiments:
+      - key: overlap-exp
+        value:
+          branch: glean-loses
 - submission_timestamp: "2021-01-01 13:04:00"
   client_info:
     app_display_version: "134.0.1"
@@ -128,7 +149,12 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
-# within-Glean dedup: two pings for rid_glean_dup; earliest submission_timestamp wins
+  ping_info:
+    experiments:
+      - key: glean-exp
+        value:
+          branch: treatment
+# within-Glean dedup: two pings for rid_glean_dup; latest submission_timestamp wins
 - submission_timestamp: "2021-01-01 13:30:00"
   client_info:
     app_display_version: "134.0.1"
@@ -155,6 +181,12 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
+  # Different branch from 13:31 row to confirm 13:31 wins dedup
+  ping_info:
+    experiments:
+      - key: glean-dup-exp
+        value:
+          branch: loses
 - submission_timestamp: "2021-01-01 13:31:00"
   client_info:
     app_display_version: "134.0.1"
@@ -181,3 +213,8 @@
   normalized_os: Windows
   normalized_os_version: "11.0"
   sample_id: null
+  ping_info:
+    experiments:
+      - key: glean-dup-exp
+        value:
+          branch: wins

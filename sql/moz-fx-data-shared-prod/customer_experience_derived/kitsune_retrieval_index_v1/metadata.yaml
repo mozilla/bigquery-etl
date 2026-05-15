@@ -1,7 +1,7 @@
 friendly_name: Kitsune Retrieval Index
 description: |-
   AI-enriched retrieval table derived from Kitsune, containing embeddings and semantic features
-   to support grounded question answering over Mozilla Support (SUMO) data.
+  to support grounded question answering over Mozilla Support (SUMO) data.
 
   Grain: one row per date, question_id and answer_id.
 
@@ -28,6 +28,8 @@ labels:
   level: gold
   incremental: true
   change_controlled: true
+schema:
+  allow_field_addition: true
 scheduling:
   dag_name: bqetl_analytics_tables
 bigquery:

@@ -33,6 +33,7 @@ from ..backfill.shredder_mitigation import (
 )
 from ..backfill.utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
+    copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
@@ -565,6 +566,7 @@ def scheduled(
     type=int,
     help="Maximum number of queries to execute concurrently",
 )
+@backfill_options.copy_table_permissions()
 @sql_dir_option
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -574,6 +576,7 @@ def initiate(
     ctx,
     qualified_table_name,
     parallelism,
+    copy_table_permissions,
     sql_dir,
     project_id,
 ):
@@ -629,6 +632,14 @@ def initiate(
             raise RuntimeError(
                 f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
             ) from e
+    else:
+        # python script table permissions are applied after the backfill
+        if copy_table_permissions and not is_python_script:
+            copy_permissions_to_staging_table(
+                bigquery.Client(project=project_id),
+                qualified_table_name,
+                backfill_staging_qualified_table_name,
+            )
 
     billing_project = DEFAULT_BILLING_PROJECT
 
@@ -670,6 +681,13 @@ def initiate(
         billing_project=billing_project,
         is_python_script=is_python_script,
     )
+
+    if copy_table_permissions and is_python_script:
+        copy_permissions_to_staging_table(
+            bigquery.Client(project=project_id),
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+        )
 
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
@@ -915,10 +933,11 @@ def _initialize_previous_partition(
 )
 @block_coding_agents
 @click.argument("qualified_table_name")
+@backfill_options.copy_table_permissions()
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")
 @click.pass_context
-def complete(ctx, qualified_table_name, sql_dir, project_id):
+def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project_id):
     """Process backfill entry with complete status in backfill.yaml file(s)."""
     if not is_authenticated():
         click.echo(
@@ -953,6 +972,13 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         qualified_table_name, entry_to_complete.entry_date
     )
     _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
+
+    if copy_table_permissions:
+        copy_permissions_to_staging_table(
+            client,
+            qualified_table_name,
+            cloned_table_full_name,
+        )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata = Metadata.from_file(

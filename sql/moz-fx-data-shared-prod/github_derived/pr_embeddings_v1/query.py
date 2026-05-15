@@ -52,9 +52,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_rows_for_date(source, date):
+def get_rows_for_date(client, source, date):
     """Query the source table and return PR rows for the given partition date."""
-    client = bigquery.Client(project="moz-fx-data-shared-prod")
     query = f"""
         SELECT
             pr_number,
@@ -70,14 +69,14 @@ def get_rows_for_date(source, date):
     return rows
 
 
-def get_bq_row_count(destination, date):
+def get_bq_row_count(client, destination, date):
     """Return the number of embedding rows already loaded for the given date.
 
     Args:
+        client: Initialized BigQuery client
         destination: Fully qualified BQ table (project.dataset.table), e.g. moz-fx-data-shared-prod.github_external.pr_embeddings
         date: Partition date to check (YYYY-MM-DD), e.g. 2025-01-15
     """
-    client = bigquery.Client(project="moz-fx-data-shared-prod")
     query = f"SELECT COUNT(*) AS cnt FROM `{destination}` WHERE merged_date = '{date}'"
     try:
         for row in client.query(query).result():
@@ -122,10 +121,9 @@ def generate_embeddings(texts, client):
     return results
 
 
-def load_to_bq(records, destination):
+def load_to_bq(client, records, destination):
     """Load embedding records to the partitioned BigQuery destination table."""
     logging.info(f"Starting load of embeddings to {destination}")
-    client = bigquery.Client(project="moz-fx-data-shared-prod")
     job_config = bigquery.LoadJobConfig(
         schema=[
             bigquery.SchemaField("pr_number", "INTEGER", mode="REQUIRED"),
@@ -153,13 +151,15 @@ def main():
     """Fetch PR rows for a given date, generate embeddings, and load to BigQuery."""
     args = parse_args()
 
-    rows = get_rows_for_date(args.source, args.date)
+    bq_client = bigquery.Client(project="moz-fx-data-shared-prod")
+
+    rows = get_rows_for_date(bq_client, args.source, args.date)
     if not rows:
         logging.info(f"No rows found for {args.date}. Nothing to embed.")
         sys.exit(0)
 
     source_count = len(rows)
-    existing_count = get_bq_row_count(args.destination, args.date)
+    existing_count = get_bq_row_count(bq_client, args.destination, args.date)
 
     if existing_count == source_count:
         logging.info(
@@ -197,7 +197,7 @@ def main():
         for row, embedding in zip(rows, embeddings)
     ]
 
-    load_to_bq(records, args.destination)
+    load_to_bq(bq_client, records, args.destination)
     logging.info("Done.")
 
 

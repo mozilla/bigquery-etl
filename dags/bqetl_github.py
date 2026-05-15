@@ -84,6 +84,27 @@ with DAG(
     catchup=True,
 ) as dag:
 
+    github_derived__pr_embeddings__v1 = GKEPodOperator(
+        task_id="github_derived__pr_embeddings__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/github_derived/pr_embeddings_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--source",
+            "moz-fx-data-shared-prod.github_external.github_prs",
+            "--destination",
+            "moz-fx-data-shared-prod.github_derived.pr_embeddings_v1",
+            "--vertex-project",
+            "moz-fx-data-shared-prod",
+        ],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="gkaberere@mozilla.com",
+        email=["gkaberere@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
     github_external__bqetl_prs__v1 = GKEPodOperator(
         task_id="github_external__bqetl_prs__v1",
         arguments=[
@@ -192,4 +213,22 @@ with DAG(
         secrets=[
             github_external__private_bqetl_prs__v1_bqetl_github__github_token,
         ],
+    )
+
+    github_derived__pr_embeddings__v1.set_upstream(github_external__bqetl_prs__v1)
+
+    github_derived__pr_embeddings__v1.set_upstream(
+        github_external__looker_spoke_default_prs__v1
+    )
+
+    github_derived__pr_embeddings__v1.set_upstream(
+        github_external__looker_spoke_private_prs__v1
+    )
+
+    github_derived__pr_embeddings__v1.set_upstream(
+        github_external__lookml_generator_prs__v1
+    )
+
+    github_derived__pr_embeddings__v1.set_upstream(
+        github_external__private_bqetl_prs__v1
     )

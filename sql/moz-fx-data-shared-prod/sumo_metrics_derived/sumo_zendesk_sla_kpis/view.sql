@@ -1,16 +1,24 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.sumo_metrics_derived.sumo_zendesk_sla_kpis`
 AS
--- CSAT and FCR KPIs aggregated from zendesk_ticket_sla_v1.
--- Both metrics are attributed to the date the ticket was resolved, matching
--- how Zendesk Explore reports "% One-touch tickets" and CSAT.
+-- SLA KPI components aggregated from zendesk_ticket_sla_v1, attributed to the
+-- date the ticket was resolved (mirrors Zendesk Explore).
+--
+-- Exposes sum/count component columns rather than precomputed rates so the
+-- KPIs remain correct under any downstream filter or grouping. Compute as:
+--   FCR %        = SUM(one_touch_tickets)                    / NULLIF(SUM(tickets_resolved), 0) * 100
+--   CSAT %       = SUM(satisfied_surveys)                    / NULLIF(SUM(rated_surveys),     0) * 100
+--   Avg TTFR min = SUM(first_reply_business_minutes_sum)     / NULLIF(SUM(replied_tickets),   0)
+--   Avg TRT min  = SUM(full_resolution_business_minutes_sum) / NULLIF(SUM(tickets_resolved), 0)
 WITH resolved_tickets AS (
   SELECT
     DATE(full_resolution_at) AS resolved_date,
     product,
     automation_category,
     is_one_touch,
-    rating_category
+    rating_category,
+    first_reply_time_business_minutes,
+    full_resolution_time_business_minutes
   FROM
     `moz-fx-data-shared-prod.sumo_metrics_derived.zendesk_ticket_sla_v1`
   WHERE
@@ -25,15 +33,11 @@ SELECT
   COUNTIF(is_one_touch = 1) AS one_touch_tickets,
   COUNTIF(rating_category = 'good') AS satisfied_surveys,
   COUNTIF(rating_category IN ('good', 'bad')) AS rated_surveys,
-  -- FCR (%) = one-touch resolved tickets / total resolved tickets * 100.
-  -- Mirrors Zendesk Explore's "% One-touch tickets" metric.
-  SAFE_DIVIDE(COUNTIF(is_one_touch = 1), COUNT(*)) * 100 AS fcr_percentage,
-  -- CSAT (%) = good ratings / (good + bad ratings) * 100.
-  -- Tickets without a rating are excluded from the denominator.
-  SAFE_DIVIDE(
-    COUNTIF(rating_category = 'good'),
-    COUNTIF(rating_category IN ('good', 'bad'))
-  ) * 100 AS csat_percentage
+  -- TTFR denominator: not every resolved ticket has a first agent reply
+  -- (auto-solved tickets can resolve without one), so use a dedicated count.
+  COUNTIF(first_reply_time_business_minutes IS NOT NULL) AS replied_tickets,
+  SUM(first_reply_time_business_minutes) AS first_reply_business_minutes_sum,
+  SUM(full_resolution_time_business_minutes) AS full_resolution_business_minutes_sum
 FROM
   resolved_tickets
 GROUP BY

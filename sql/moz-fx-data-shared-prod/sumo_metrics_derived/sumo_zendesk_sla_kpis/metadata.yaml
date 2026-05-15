@@ -1,21 +1,33 @@
-friendly_name: SUMO Zendesk SLA KPIs (CSAT, FCR)
+friendly_name: SUMO Zendesk SLA KPIs (CSAT, FCR, TTFR, TRT)
 description: |
-  Daily KPI view for SUMO Zendesk support tickets, aggregated from
-  zendesk_ticket_sla_v1. Both KPIs attribute the ticket to its resolution date.
-
-  KPIs:
-  - csat_percentage — Customer Satisfaction. Number of 'good' ratings divided
-    by the number of rated tickets ('good' + 'bad'), times 100. Tickets without
-    a rating are excluded from the denominator.
-  - fcr_percentage — First Contact Resolution. Number of one-touch tickets
-    (resolved with fewer than two agent replies) divided by total resolved
-    tickets, times 100. Mirrors Zendesk Explore's "% One-touch tickets" metric.
+  Daily SLA KPI view for SUMO Zendesk support tickets, aggregated from
+  zendesk_ticket_sla_v1. All metrics are attributed to the ticket's resolution
+  date and mirror Zendesk Explore.
 
   Grain: resolved_date x product x automation_category.
 
   Tickets where is_excluded_from_sla = TRUE in the base table are filtered out
   (Appbot non-English, Sumo Test / VPN QA groups, %test% tags). Unresolved
-  tickets are also excluded — both KPIs are about resolved-ticket outcomes.
+  tickets are also excluded — these KPIs are about resolved-ticket outcomes.
+
+  Exposes sum/count component columns rather than precomputed rates so KPIs
+  remain correct under any downstream filter or grouping. Compute as:
+    FCR %        = SUM(one_touch_tickets)                    / NULLIF(SUM(tickets_resolved), 0) * 100
+    CSAT %       = SUM(satisfied_surveys)                    / NULLIF(SUM(rated_surveys),     0) * 100
+    Avg TTFR min = SUM(first_reply_business_minutes_sum)     / NULLIF(SUM(replied_tickets),   0)
+    Avg TRT min  = SUM(full_resolution_business_minutes_sum) / NULLIF(SUM(tickets_resolved), 0)
+
+  KPI definitions:
+  - FCR: one-touch tickets (resolved with fewer than two agent replies) divided
+    by total resolved tickets. Mirrors "% One-touch tickets" in Zendesk Explore.
+  - CSAT: 'good' ratings divided by rated tickets ('good' + 'bad'). Tickets
+    without a rating are excluded from the denominator.
+  - TTFR (Time to First Response): business minutes between ticket creation and
+    the first public agent/admin reply, computed against Mozilla Support Hours
+    with holiday subtraction. Tickets auto-solved without an agent reply are
+    excluded from the average via replied_tickets.
+  - TRT (Total Resolution Time): business minutes between ticket creation and
+    full resolution (last 'solved' timestamp, falling back to 'closed').
 owners:
   - phlee@mozilla.com
   - mozilla/customer_experience

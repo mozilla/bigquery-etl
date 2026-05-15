@@ -11,13 +11,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill, BackfillStatus
-from bigquery_etl.metadata.parse_metadata import (
-    DATASET_METADATA_FILE,
-    METADATA_FILE,
-    DatasetMetadata,
-    Metadata,
-    PartitionType,
-)
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from bigquery_etl.util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -26,9 +20,6 @@ QUALIFIED_TABLE_NAME_RE = re.compile(
 
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
-
-# currently only supporting backfilling tables with workgroup access: mozilla-confidential.
-VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential/data-viewers"
 
 # Backfills older than this will not run due to staging table expiration
 MAX_BACKFILL_ENTRY_AGE_DAYS = 28
@@ -157,12 +148,6 @@ def validate_table_metadata(
             "only day and month partitioning are supported."
         )
 
-    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-        errors.append(
-            "Only mozilla-confidential workgroups are supported. "
-            f"{qualified_table_name} contains workgroup access that is not supported"
-        )
-
     return errors
 
 
@@ -202,71 +187,6 @@ def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
         ]
 
     return True
-
-
-def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
-    """
-    Check if either table or dataset metadata workgroup is valid.
-
-    The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential/data-viewers.
-    """
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_file = Path(sql_dir) / project / dataset / table / "query.sql"
-    dataset_path = Path(sql_dir) / project / dataset
-    dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
-    table_metadata_path = dataset_path / table / METADATA_FILE
-
-    if not query_file.exists() and not (query_file.parent / "query.py").exists():
-        click.echo(f"No query.sql or query.py file found: {qualified_table_name}")
-        sys.exit(1)
-
-    # check dataset level metadata
-    try:
-        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-        dataset_workgroup_access = dataset_metadata.workgroup_access
-        dataset_default_table_workgroup_access = (
-            dataset_metadata.default_table_workgroup_access
-        )
-
-    except FileNotFoundError as e:
-        raise ValueError(
-            f"Unable to validate workgroups for {qualified_table_name} in dataset metadata file."
-        ) from e
-
-    if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
-        return True
-
-    # check table level metadata
-    try:
-        table_metadata = Metadata.from_file(table_metadata_path)
-        table_workgroup_access = table_metadata.workgroup_access
-
-        if _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
-            return True
-
-    except FileNotFoundError:
-        # default table workgroup access is applied to table if metadata.yaml file is missing
-        if _validate_workgroup_members(
-            dataset_default_table_workgroup_access, DATASET_METADATA_FILE
-        ):
-            return True
-
-    return False
-
-
-def _validate_workgroup_members(workgroup_access, metadata_filename):
-    """Return True if workgroup members is valid (workgroup:mozilla-confidential/data-viewers)."""
-    if workgroup_access:
-        for workgroup in workgroup_access:
-            if metadata_filename == METADATA_FILE:
-                members = workgroup.members
-            elif metadata_filename == DATASET_METADATA_FILE:
-                members = workgroup["members"]
-
-            if VALID_WORKGROUP_MEMBER in members:
-                return True
-
-    return False
 
 
 def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
@@ -313,20 +233,17 @@ def get_scheduled_backfills(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
-        # do not return backfill if not mozilla-confidential
-        try:
-            if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-                print(
-                    f"Skipping backfill for {qualified_table_name} because of unsupported metadata workgroups."
-                )
-                continue
-        except FileNotFoundError:
-            if ignore_missing_metadata:
+        if ignore_missing_metadata:
+            project_id, dataset_id, table_id = qualified_table_name_matching(
+                qualified_table_name
+            )
+            if not (
+                Path(sql_dir) / project_id / dataset_id / table_id / METADATA_FILE
+            ).exists():
                 print(
                     f"Skipping backfill for {qualified_table_name} because table metadata is missing."
                 )
-            else:
-                raise
+                continue
 
         if not entries:
             continue
@@ -411,3 +328,86 @@ def _table_exists(client: bigquery.Client, qualified_table_name: str) -> bool:
         return True
     except NotFound:
         return False
+
+
+def _access_entries_to_bindings(access_entries) -> List[dict]:
+    """Convert dataset AccessEntry list to IAM policy bindings.
+
+    Skips entries that don't represent principals (authorized views, routines,
+    datasets) or that are project-scoped (specialGroup) and so are already
+    granted via project-level IAM.
+    """
+    # dataset access_entries use legacy names
+    legacy_role_to_iam = {
+        "READER": "roles/bigquery.dataViewer",
+        "WRITER": "roles/bigquery.dataEditor",
+        "OWNER": "roles/bigquery.dataOwner",
+    }
+
+    entity_type_to_member_prefix = {
+        "userByEmail": "user:",
+        "groupByEmail": "group:",
+        "domain": "domain:",
+        "iamMember": "",
+    }
+
+    role_to_members: Dict[str, set] = {}
+    for entry in access_entries:
+        prefix = entity_type_to_member_prefix.get(entry.entity_type)
+        if prefix is None:
+            continue
+        if entry.entity_type == "userByEmail" and entry.entity_id.endswith(
+            "gserviceaccount.com"
+        ):
+            prefix = "serviceAccount:"
+        member = f"{prefix}{entry.entity_id}" if prefix else entry.entity_id
+        iam_role = legacy_role_to_iam.get(entry.role, entry.role)
+        role_to_members.setdefault(iam_role, set()).add(member)
+    return [{"role": r, "members": m} for r, m in role_to_members.items()]
+
+
+def _merge_bindings(*binding_lists) -> List[dict]:
+    """Union IAM policies for a bigquery table."""
+    merged: Dict[str, set] = {}
+    for bindings in binding_lists:
+        for b in bindings:
+            members = b["members"]
+            if not isinstance(members, set):
+                members = set(members)
+            merged.setdefault(b["role"], set()).update(members)
+    return [{"role": r, "members": m} for r, m in merged.items()]
+
+
+def copy_permissions_to_staging_table(
+    client: bigquery.Client,
+    prod_qualified_table_name: str,
+    staging_qualified_table_name: str,
+):
+    """Mirror the prod table's IAM and prod dataset's access onto the staging table.
+
+    Reads the prod table's access and access inherited from its dataset and applies
+    the union to the staging table (or the backup table).
+    """
+    prod_project, prod_dataset, _ = qualified_table_name_matching(
+        prod_qualified_table_name
+    )
+
+    prod_table_policy = client.get_iam_policy(prod_qualified_table_name)
+    prod_dataset_obj = client.get_dataset(f"{prod_project}.{prod_dataset}")
+    dataset_bindings = _access_entries_to_bindings(prod_dataset_obj.access_entries)
+
+    staging_policy = client.get_iam_policy(staging_qualified_table_name)
+    merged_bindings = _merge_bindings(prod_table_policy.bindings, dataset_bindings)
+
+    # print newly added permissions
+    click.echo(f"Adding IAM bindings to {staging_qualified_table_name}:")
+    existing_by_role = {b["role"]: set(b["members"]) for b in staging_policy.bindings}
+    for binding in merged_bindings:
+        new_members = set(binding["members"]) - existing_by_role.get(
+            binding["role"], set()
+        )
+        for member in sorted(new_members):
+            click.echo(f"+ {binding['role']}: {member}")
+
+    staging_policy.bindings = merged_bindings
+    client.set_iam_policy(staging_qualified_table_name, staging_policy)

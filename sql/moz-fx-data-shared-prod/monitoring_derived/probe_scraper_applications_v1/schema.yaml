@@ -1,0 +1,207 @@
+fields:
+- name: app_name
+  type: STRING
+  mode: REQUIRED
+  description: |-
+    Application name as referenced in probe-scraper. Stable identifier used
+    across telemetry tooling (e.g. `firefox_desktop`, `fenix`, `firefox_ios`).
+- name: canonical_app_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Human-readable application name (e.g. `Firefox for Desktop`). Intended
+    for display in dashboards and documentation.
+- name: app_description
+  type: STRING
+  mode: NULLABLE
+  description: Free-text description of the application from repositories.yaml.
+- name: url
+  type: STRING
+  mode: NULLABLE
+  description: URL of the source repository that probe-scraper scrapes for this app.
+- name: branch
+  type: STRING
+  mode: NULLABLE
+  description: Git branch in `url` that probe-scraper reads from (typically `main`).
+- name: deprecated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    True when the application is marked as deprecated in repositories.yaml.
+    Deprecated apps are no longer actively scraped or maintained.
+- name: skip_documentation
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    True when probe-scraper is configured to omit this app from generated
+    documentation.
+- name: prototype
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    True when the application is marked as a prototype / experimental app
+    not intended for production reporting.
+- name: notification_emails
+  type: STRING
+  mode: REPEATED
+  description: |-
+    Email addresses notified by probe-scraper for issues with this app
+    (e.g. schema breaks, expiring metrics).
+- name: metrics_files
+  type: STRING
+  mode: REPEATED
+  description: |-
+    Paths (relative to the repository root) of Glean `metrics.yaml` files
+    that define metrics for this application.
+- name: ping_files
+  type: STRING
+  mode: REPEATED
+  description: |-
+    Paths (relative to the repository root) of Glean `pings.yaml` files
+    that define pings for this application.
+- name: tag_files
+  type: STRING
+  mode: REPEATED
+  description: |-
+    Paths (relative to the repository root) of Glean `tags.yaml` files
+    that define metric tags for this application.
+- name: dependencies
+  type: STRING
+  mode: REPEATED
+  description: |-
+    Names of probe-scraper libraries (or Android dependency coordinates)
+    whose metrics and pings are merged into this application's schema.
+- name: channels
+  type: RECORD
+  mode: REPEATED
+  description: |-
+    Release channels this application ships through. One row per channel
+    (e.g. release / beta / nightly).
+  fields:
+  - name: v1_name
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Legacy v1 channel identifier used in BigQuery dataset names
+      (e.g. `firefox-android-release`).
+  - name: app_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Glean application ID for this channel (e.g. `org.mozilla.firefox`).
+      Maps to the `client_info.app_id` field in pings.
+  - name: app_channel
+    type: STRING
+    mode: NULLABLE
+    description: Release channel name (e.g. `release`, `beta`, `nightly`).
+  - name: description
+    type: STRING
+    mode: NULLABLE
+    description: Human-readable description of the channel.
+  - name: additional_dependencies
+    type: STRING
+    mode: REPEATED
+    description: |-
+      Channel-specific dependencies appended to the app's `dependencies`
+      list (e.g. a channel-specific Gecko engine variant).
+  - name: deprecated
+    type: BOOLEAN
+    mode: NULLABLE
+    description: |-
+      True when this specific channel is deprecated (independent of the
+      app-level `deprecated` flag).
+- name: moz_pipeline_metadata_defaults
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Pipeline-level defaults applied to every ping for this app unless
+    overridden by an entry in `moz_pipeline_metadata`.
+  fields:
+  - name: expiration_policy
+    type: RECORD
+    mode: NULLABLE
+    description: Default expiration policy applied to pings for this app.
+    fields:
+    - name: delete_after_days
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        Number of days after submission that ping data is retained before
+        deletion by the shredder pipeline.
+  - name: geoip_skip_entries
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      Number of leading entries to drop when GeoIP-resolving the client
+      IP (used to skip CDN / proxy hops).
+  - name: submission_timestamp_granularity
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Default truncation applied to `submission_timestamp` before storage
+      (e.g. `seconds`, `minutes`, `hours`, `days`).
+  - name: override_attributes
+    type: RECORD
+    mode: REPEATED
+    description: |-
+      Default attribute overrides applied during pipeline ingestion
+      (e.g. nullifying geo fields).
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: Attribute name being overridden (e.g. `geo_city`).
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        Replacement value. NULL means the attribute is cleared (the
+        common case for redaction).
+- name: moz_pipeline_metadata
+  type: RECORD
+  mode: REPEATED
+  description: |-
+    Per-ping pipeline metadata overrides. The source YAML keys this as a
+    map by ping name; we flatten it into a repeated record with
+    `ping_name` set to the original key.
+  fields:
+  - name: ping_name
+    type: STRING
+    mode: NULLABLE
+    description: Name of the ping this override applies to (e.g. `baseline`, `metrics`).
+  - name: expiration_policy
+    type: RECORD
+    mode: NULLABLE
+    description: |-
+      Per-ping expiration policy, overriding
+      `moz_pipeline_metadata_defaults.expiration_policy`.
+    fields:
+    - name: delete_after_days
+      type: INTEGER
+      mode: NULLABLE
+      description: |-
+        Number of days after submission that this ping's data is retained
+        before deletion by the shredder pipeline.
+  - name: submission_timestamp_granularity
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Per-ping submission_timestamp truncation, overriding the app-level
+      default (e.g. `seconds`, `minutes`).
+  - name: override_attributes
+    type: RECORD
+    mode: REPEATED
+    description: |-
+      Per-ping attribute overrides applied during ingestion
+      (e.g. nullifying `geo_city` for impression pings).
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: Attribute name being overridden (e.g. `geo_city`).
+    - name: value
+      type: STRING
+      mode: NULLABLE
+      description: |-
+        Replacement value. NULL means the attribute is cleared (the
+        common case for redaction).

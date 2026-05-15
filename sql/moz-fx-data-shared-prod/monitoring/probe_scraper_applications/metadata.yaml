@@ -1,0 +1,6 @@
+friendly_name: Probe Scraper Applications
+description: |-
+  Application metadata imported from probe-scraper's repositories.yaml:
+  https://github.com/mozilla/probe-scraper/blob/main/repositories.yaml
+owners:
+  - ascholtz@mozilla.com

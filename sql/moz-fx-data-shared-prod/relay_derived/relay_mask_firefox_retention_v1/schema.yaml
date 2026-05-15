@@ -1,0 +1,45 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Partition date for this row
+- name: metric_date
+  type: DATE
+  mode: NULLABLE
+  description: The retention metric date from desktop_retention_clients
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Client country code
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Firefox release channel (release, beta, nightly, esr)
+- name: relay_premium_status
+  type: STRING
+  mode: NULLABLE
+  description: Relay premium subscription status
+- name: total_masks
+  type: INT64
+  mode: NULLABLE
+  description: Total number of Relay masks (random + domain)
+- name: mask_count_tier
+  type: STRING
+  mode: NULLABLE
+  description: "Bucketed mask count: No Relay account, 0 masks, 1-5, 6-10, 11-25, 26-50, 51+"
+- name: has_relay_account
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client is linked to a Relay account via FxA
+- name: active_metric_date
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client was active on the metric date
+- name: retained_week_4
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client was retained at week 4
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Firefox Desktop Glean client_id

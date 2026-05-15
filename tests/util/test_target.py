@@ -799,14 +799,21 @@ class TestResolveIsolatedSchema:
         )
         assert "existing_field" in target_schema.read_text()
 
+    @patch("bigquery_etl.schema.Schema.for_table")
+    @patch("bigquery_etl.schema.Schema.from_query_file")
     @patch("bigquery_etl.cli.deploy.bigquery.Client")
-    def test_falls_back_to_get_table(self, mock_client_cls, tmp_path):
+    def test_falls_back_to_get_table(
+        self, mock_client_cls, mock_from_query_file, mock_for_table, tmp_path
+    ):
         from bigquery_etl.cli.deploy import _resolve_isolated_schema
 
         target_file, metadata_file = self._setup(tmp_path)
-        # No existing schema → falls through to step 2.
+        # No existing schema → tries target dry-run (mocked to fail), then
+        # source dry-run (mocked to return empty fields), finally falls
+        # through to client.get_table.
+        mock_from_query_file.side_effect = Exception("target dry-run unavailable")
+        mock_for_table.return_value.schema = {"fields": []}
 
-        # Mock the BQ client return.
         mock_table = mock_client_cls.return_value.get_table.return_value
         mock_table.schema = []
 

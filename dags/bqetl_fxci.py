@@ -80,4 +80,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    fxci_worker_usage__v1 = bigquery_etl_query(
+        task_id="fxci_worker_usage__v1",
+        destination_table="worker_usage_v1",
+        dataset_id="fxci_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ahalberstadt@mozilla.com",
+        email=[
+            "ahalberstadt@mozilla.com",
+            "jmoss@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     fxci_derived__task_run_costs__v1.set_upstream(fxci_worker_cost__v1)

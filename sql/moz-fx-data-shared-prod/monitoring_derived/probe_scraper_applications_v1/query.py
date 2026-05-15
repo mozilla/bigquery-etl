@@ -42,7 +42,7 @@ def _row_for_listing(listing: dict[str, Any]) -> dict[str, Any]:
         "app_id": listing.get("app_id"),
         "v1_name": listing.get("v1_name"),
         "app_channel": listing.get("app_channel"),
-        "description": listing.get("description"),
+        "channel_description": listing.get("description"),
         "bq_dataset_family": listing.get("bq_dataset_family"),
         "document_namespace": listing.get("document_namespace"),
         "url": listing.get("url"),

@@ -32,7 +32,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Release channel name (e.g. `release`, `beta`, `nightly`).
-- name: description
+- name: channel_description
   type: STRING
   mode: NULLABLE
   description: Channel-specific description (distinct from `app_description`).

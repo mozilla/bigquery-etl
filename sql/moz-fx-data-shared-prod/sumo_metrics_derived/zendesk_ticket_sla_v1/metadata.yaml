@@ -1,0 +1,55 @@
+friendly_name: Zendesk Ticket SLA (Per-Ticket)
+description: |
+  Ticket-level SLA snapshot for SUMO Zendesk support tickets.
+
+  Grain: One row per ticket (rolling 13-month window keyed on ticket_created_date).
+
+  Single source of truth for:
+  - First Reply Time (TTFR) — calendar and business minutes
+  - Full Resolution Time (FRT) — calendar and business minutes
+  - First Contact Resolution / one-touch flag (is_one_touch)
+  - CSAT survey response and rating_category
+  - Reopen count and resolution status
+
+  Business minutes are computed against Zendesk's "Mozilla Support Hours" schedule
+  (Mon-Fri 8AM-5PM CT, DST-aware) with holidays subtracted via schedule_holiday.
+  Mirrors Zendesk's UI calculation and Fivetran's reference query.
+
+  Late-arriving updates: full_resolution_at, rating_category, and reopen_count can
+  change weeks after a ticket is created (status flips, late survey responses).
+  This table is rebuilt non-incrementally over a rolling 13-month window so those
+  changes flow through without manual partition rewrites.
+
+  Filter dimensions:
+  - product (mapped via cx_product_mappings_v1)
+  - ticket_group (Appbot - English / Appbot - Non-English / All Other Tickets)
+  - automation_category (automation / human-handled, with reopens reclassified)
+  - is_excluded_from_sla — true for Appbot non-English, Sumo Test / VPN QA groups,
+    and tickets tagged '%test%'. Most SLA dashboards filter where false.
+
+  Used by:
+  - SUMO support SLA dashboards (TTFR, FRT, FCR, CSAT)
+  - sumo_zendesk_sla_kpis_v1 (KPI view layer)
+  - Ad-hoc SLA distribution analyses (medians, percentiles)
+owners:
+  - phlee@mozilla.com
+  - mozilla/customer_experience
+labels:
+  incremental: false
+  application: sumo
+  team: support
+  type: base_metrics
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: ticket_created_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - product
+      - automation_category
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

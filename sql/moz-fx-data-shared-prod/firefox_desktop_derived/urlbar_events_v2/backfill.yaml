@@ -1,10 +1,22 @@
-2026-05-14:
-  start_date: 2025-01-01
-  end_date: 2026-05-14
+2026-05-16:
+  start_date: 2026-02-22
+  end_date: 2026-05-16
   reason: Backfill new fields added in DENG-10722, PR 9246
   watchers:
-  - kbammarito@mozilla.com
-  - nflorez@mozilla.com
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+2026-05-14:
+  start_date: 2025-01-01
+  end_date: 2026-02-21
+  reason: Backfill new fields added in DENG-10722, PR 9246
+  watchers:
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
@@ -15,7 +27,7 @@
   end_date: 2026-03-31
   reason: The three-month backfill succeeded. Trying to complete whole backfill.
   watchers:
-  - kbammarito@mozilla.com
+    - kbammarito@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
@@ -26,7 +38,7 @@
   end_date: 2025-04-30
   reason: The previous backfill failed, possibly due to Kubernetes errors. Trying again with three months.
   watchers:
-  - kbammarito@mozilla.com
+    - kbammarito@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
@@ -37,8 +49,8 @@
   end_date: 2026-03-26
   reason: The shorter backfill succeeded. Now populate the new fields with data from Feb 2025 onward.
   watchers:
-  - kbammarito@mozilla.com
-  - nflorez@mozilla.com
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
   status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
@@ -49,8 +61,8 @@
   end_date: 2025-01-31
   reason: Populate the new fields with data as before. That backfill possibly failed because of a database error. Trying again with a shorter timeframe.
   watchers:
-  - kbammarito@mozilla.com
-  - nflorez@mozilla.com
+    - kbammarito@mozilla.com
+    - nflorez@mozilla.com
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
@@ -61,9 +73,9 @@
   end_date: 2026-03-20
   reason: Populate the new fields with data [DENG-10604](https://mozilla-hub.atlassian.net/browse/DENG-10604)
   watchers:
-  - kbammarito@mozilla.com
-  - lmcfall@mozilla.com
-  - nflorez@mozilla.com
+    - kbammarito@mozilla.com
+    - lmcfall@mozilla.com
+    - nflorez@mozilla.com
   status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false

@@ -78,7 +78,7 @@ def main():
     client = bigquery.Client(args.project)
     schema_dict = yaml.safe_load(SCHEMA_FILE.read_text())["fields"]
     job_config = bigquery.LoadJobConfig(
-        schema=client.schema_from_json(io.StringIO(json.dumps(schema_dict))),
+        schema=[bigquery.SchemaField.from_api_repr(f) for f in schema_dict],
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 

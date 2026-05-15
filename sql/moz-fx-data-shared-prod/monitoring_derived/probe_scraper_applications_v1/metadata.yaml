@@ -1,7 +1,7 @@
 friendly_name: Probe Scraper Applications
 description: |-
-  Application metadata imported from probe-scraper's repositories.yaml:
-  https://github.com/mozilla/probe-scraper/blob/main/repositories.yaml
+  Application metadata imported from probe-scraper app listings:
+  https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings
 
   One row per `applications:` entry. Refreshed daily (WRITE_TRUNCATE).
 owners:

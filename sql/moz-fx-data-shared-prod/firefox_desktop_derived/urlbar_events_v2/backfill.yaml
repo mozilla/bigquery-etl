@@ -1,6 +1,6 @@
-2026-05-16:
+2026-05-18:
   start_date: 2026-02-22
-  end_date: 2026-05-16
+  end_date: 2026-05-18
   reason: Backfill new fields added in DENG-10722, PR 9246
   watchers:
     - kbammarito@mozilla.com
@@ -17,7 +17,7 @@
   watchers:
     - kbammarito@mozilla.com
     - nflorez@mozilla.com
-  status: Complete
+  status: Initiate
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

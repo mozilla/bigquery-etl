@@ -368,6 +368,12 @@ def write_view_if_not_exists(
         document_namespace=schema.document_namespace,
         document_type=schema.document_type,
     )
+    labels = {}
+    if schema.bq_dataset_family == "telemetry":
+        # Views over `telemetry_stable` only select from Firefox Desktop
+        # legacy telemetry.
+        labels["legacy"] = True
+
     metadata_file = target_dir / "metadata.yaml"
     should_write_metadata = False
     # append metadata if existing metadata doesn't have name and description
@@ -379,7 +385,11 @@ def write_view_if_not_exists(
                 and "description" not in existing_metadata
             ):
                 should_write_metadata = True
+                if labels:
+                    existing_metadata.setdefault("labels", {}).update(labels)
                 metadata_content = metadata_content + yaml.dump(existing_metadata)
+    elif labels:
+        metadata_content = metadata_content + yaml.dump({"labels": labels})
 
     if not metadata_file.exists() or should_write_metadata:
         with metadata_file.open("w") as f:

@@ -3,3 +3,5 @@ description: |-
   Most recent major release versions per channel.
 owners:
 - efilho@mozilla.com
+labels:
+  legacy: true

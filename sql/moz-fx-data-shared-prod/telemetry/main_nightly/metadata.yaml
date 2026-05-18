@@ -24,6 +24,7 @@ owners:
 - jklukas@mozilla.com
 labels:
   application: firefox
+  legacy: true
   owner1: jklukas
 workgroup_access:
 - role: roles/bigquery.dataViewer

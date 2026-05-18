@@ -6,6 +6,7 @@ owners:
 - wkahngreene@mozilla.com
 labels:
   incremental: true
+  legacy: true
   dag: bqetl_error_aggregates
   owner1: wkahngreene
 scheduling:

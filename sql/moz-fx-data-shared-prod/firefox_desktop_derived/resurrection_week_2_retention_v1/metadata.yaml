@@ -18,6 +18,7 @@ labels:
   change_controlled: true
   owner1: rbaffourawuah
   owner2: mhirose
+  legacy: true
   dag: bqetl_desktop_retention_model
 scheduling:
   dag_name: bqetl_desktop_retention_model

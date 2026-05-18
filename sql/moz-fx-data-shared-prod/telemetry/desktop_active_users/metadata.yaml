@@ -4,6 +4,8 @@ description: |-
   Based on legacy telemetry data.
   Rows are at a client ID, submission date grain.
 owners: []
+labels:
+  legacy: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

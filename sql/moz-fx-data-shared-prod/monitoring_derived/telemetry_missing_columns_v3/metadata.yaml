@@ -5,6 +5,7 @@ owners:
 - ascholtz@mozilla.com
 labels:
   schedule: daily
+  legacy: true
   dag: bqetl_monitoring
   owner1: ascholtz
 scheduling:

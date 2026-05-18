@@ -8,6 +8,7 @@ labels:
   owner1: kik
   table_type: aggregate
   dag: bqetl_fx_health_ind_dashboard
+  legacy: true
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:

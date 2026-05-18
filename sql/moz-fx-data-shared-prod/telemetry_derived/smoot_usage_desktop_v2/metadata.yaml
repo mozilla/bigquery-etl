@@ -10,6 +10,7 @@ labels:
   table_type: aggregate
   dag: bqetl_gud
   owner1: jklukas
+  legacy: true
 scheduling:
   dag_name: bqetl_gud
 bigquery:

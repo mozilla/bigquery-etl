@@ -2,6 +2,8 @@ friendly_name: Telemetry Core Parquet V3
 description: |-
   Please provide a description for the query
 owners: []
+labels:
+  legacy: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

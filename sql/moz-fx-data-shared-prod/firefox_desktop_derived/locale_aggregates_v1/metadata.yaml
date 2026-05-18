@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   shredder_mitigation: true
+  legacy: true
   dag: bqetl_analytics_aggregations
   owner1: lvargas
 scheduling:

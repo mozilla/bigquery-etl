@@ -33,6 +33,7 @@ labels:
   depends_on_past: true
   owner1: mhirose
   dag: bqetl_analytics_tables
+  legacy: true
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: clients_first_seen_v3

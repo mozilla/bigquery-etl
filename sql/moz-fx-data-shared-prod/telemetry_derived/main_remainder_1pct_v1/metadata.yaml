@@ -24,6 +24,7 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: true
+  legacy: true
   dag: bqetl_main_summary
   owner1: ascholtz
 scheduling:

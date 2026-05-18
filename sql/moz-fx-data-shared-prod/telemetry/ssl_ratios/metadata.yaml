@@ -5,6 +5,7 @@ description: |-
 owners:
 - chutten@mozilla.com
 labels:
+  legacy: true
   owner1: chutten
 workgroup_access:
 - role: roles/bigquery.dataViewer

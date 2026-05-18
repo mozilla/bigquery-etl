@@ -27,6 +27,7 @@ owners:
 - ascholtz@mozilla.com
 labels:
   application: firefox
+  legacy: true
   owner1: ascholtz
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -6,6 +6,7 @@ owners:
 labels:
   application: devtools
   schedule: daily
+  legacy: true
   dag: bqetl_devtools
   owner1: yzenevich
 scheduling:

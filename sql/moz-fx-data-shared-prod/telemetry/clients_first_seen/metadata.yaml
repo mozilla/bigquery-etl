@@ -18,6 +18,7 @@ owners:
 - rzhao@mozilla.com
 labels:
   application: firefox
+  legacy: true
   owner1: lvargas
   owner2: rzhao
 workgroup_access:

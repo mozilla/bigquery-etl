@@ -16,6 +16,7 @@ labels:
   dag: bqetl_main_summary
   owner1: ascholtz
   table_type: client_level
+  legacy: true
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85

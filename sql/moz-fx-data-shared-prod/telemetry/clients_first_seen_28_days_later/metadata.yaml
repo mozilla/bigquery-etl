@@ -5,6 +5,7 @@ owners:
 - mhirose@mozilla.com
 - shong@mozilla.com
 labels:
+  legacy: true
   owner1: mhirose
   owner2: shong
 workgroup_access:

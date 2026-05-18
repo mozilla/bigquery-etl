@@ -14,6 +14,7 @@ description: |-
 owners:
 - mhirose@mozilla.com
 labels:
+  legacy: true
   owner1: mhirose
 workgroup_access:
 - role: roles/bigquery.dataViewer

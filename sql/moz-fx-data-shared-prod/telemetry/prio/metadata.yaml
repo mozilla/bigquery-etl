@@ -10,6 +10,8 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 owners: []
+labels:
+  legacy: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

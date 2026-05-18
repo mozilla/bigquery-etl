@@ -11,6 +11,7 @@ labels:
   public_bigquery: true
   review_bugs:
   - '1414839'
+  legacy: true
   dag: bqetl_ssl_ratios
   owner1: chutten
 scheduling:

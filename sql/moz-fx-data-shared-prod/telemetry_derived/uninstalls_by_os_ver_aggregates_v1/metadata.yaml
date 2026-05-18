@@ -9,6 +9,7 @@ labels:
   owner1: kik
   table_type: aggregate
   shredder_mitigation: true
+  legacy: true
   dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard

@@ -11,6 +11,7 @@ labels:
   incremental: true
   shredder_mitigation: true
   table_type: aggregate
+  legacy: true
   dag: bqetl_main_summary
   owner1: jklukas
 scheduling:

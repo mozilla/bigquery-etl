@@ -8,6 +8,7 @@ owners:
 - cmorales@mozilla.com
 - akommasani@mozilla.com
 labels:
+  legacy: true
   owner1: cmorales
   owner2: akommasani
 workgroup_access:

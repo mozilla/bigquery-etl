@@ -6,6 +6,7 @@ owners:
 labels:
   application: firefox
   schedule: daily
+  legacy: true
   dag: bqetl_desktop_platform
   owner1: yzenevich
 scheduling:

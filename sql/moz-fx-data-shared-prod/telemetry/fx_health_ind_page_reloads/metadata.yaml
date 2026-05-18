@@ -4,6 +4,7 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
+  legacy: true
   owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer

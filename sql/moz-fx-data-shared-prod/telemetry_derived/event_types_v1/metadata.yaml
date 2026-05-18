@@ -9,6 +9,7 @@ labels:
   schedule: daily
   owner1: wlachance
   owner2: akomar
+  legacy: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

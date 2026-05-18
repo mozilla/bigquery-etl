@@ -2,6 +2,8 @@ friendly_name: Uninstalls By Default
 description: |-
   Number of clients uninstalling by date, broken by those having Fx as default browser vs not
 owners: []
+labels:
+  legacy: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

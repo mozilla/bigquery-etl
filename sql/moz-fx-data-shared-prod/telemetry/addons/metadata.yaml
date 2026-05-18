@@ -4,6 +4,7 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
+  legacy: true
   owner1: kik
 workgroup_access:
 - role: roles/bigquery.dataViewer

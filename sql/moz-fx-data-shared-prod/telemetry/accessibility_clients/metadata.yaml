@@ -4,6 +4,7 @@ description: |
 owners:
 - yzenevich@mozilla.com
 labels:
+  legacy: true
   owner1: yzenevich
 workgroup_access:
 - role: roles/bigquery.dataViewer

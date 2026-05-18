@@ -4,6 +4,7 @@ description: |-
 owners:
 - lvargas@mozilla.com
 labels:
+  legacy: true
   owner1: lvargas
 workgroup_access:
 - role: roles/bigquery.dataViewer

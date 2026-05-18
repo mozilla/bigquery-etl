@@ -8,6 +8,7 @@ labels:
   schedule: daily
   dag: bqetl_crash
   owner1: dthorn
+  legacy: true
 bigquery:
   time_partitioning:
     type: day

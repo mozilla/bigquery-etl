@@ -8,6 +8,7 @@ labels:
   incremental: true
   schedule: daily
   table_table: client_level
+  legacy: true
   dag: bqetl_amo_stats
   owner1: kik
 scheduling:

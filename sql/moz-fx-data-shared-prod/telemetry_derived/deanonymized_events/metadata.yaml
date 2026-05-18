@@ -5,6 +5,7 @@ owners:
 - frank@mozilla.com
 labels:
   application: firefox
+  legacy: true
   owner1: frank
 workgroup_access:
 - role: roles/bigquery.dataViewer

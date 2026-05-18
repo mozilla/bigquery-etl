@@ -1,0 +1,11 @@
+2026-05-15:
+  start_date: 2026-03-30
+  end_date: 2026-05-15
+  reason: DENG-10738
+  watchers:
+  - kbammarito@mozilla.com
+  - msun@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  ignore_date_partition_offset: false

@@ -18,8 +18,17 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.customer_experience_derived.kitsune_retrieval_index_v1` t
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
+  (
+    SELECT
+      product,
+      MAX(product_mapping) AS product_mapping
+    FROM
+      `moz-fx-data-shared-prod.static.cx_product_mappings_v1`
+    WHERE
+      source = 'Kitsune'
+    GROUP BY
+      product
+  ) m
   ON m.product = t.product
-  AND m.source = 'Kitsune'
 WHERE
   metadata.embedding_succeeded

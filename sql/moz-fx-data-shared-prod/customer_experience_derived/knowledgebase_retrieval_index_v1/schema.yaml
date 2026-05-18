@@ -192,10 +192,11 @@ fields:
   - name: embedding_succeeded
     type: BOOLEAN
     mode: NULLABLE
-    description: "TRUE when `embedding IS NOT NULL`. **This is the sole driver for\
-      \ reprocessing today** \u2014 rows are re-run when `embedding_succeeded = FALSE`.\
-      \ LLM-field issues are tracked in `failure_reasons` for visibility but do **not**\
-      \ trigger reruns."
+    description: "TRUE when `embedding IS NOT NULL`. One of the reprocessing triggers\
+      \ \u2014 rows are re-run when `embedding_succeeded = FALSE`. Other triggers\
+      \ are a `current_revision_id` bump on the upstream article or a change to\
+      \ `model_version` / `embedding_version` / `prompt_version`. LLM-field issues\
+      \ are tracked in `failure_reasons` for visibility but do **not** trigger reruns."
   - name: failure_reasons
     type: STRING
     mode: REPEATED

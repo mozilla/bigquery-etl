@@ -10,8 +10,8 @@ AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Ba
 |---|---|
 | **Grain** | One row per Knowledge Base article (keyed by `id`) |
 | **Source** | `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus` |
-| **DAG** | `bqetl_analytics_tables` · daily · **full-refresh** |
-| **Partitioning** | None (table is rebuilt as a full snapshot on each run) |
+| **DAG** | `bqetl_analytics_tables` · daily · **rebuild-on-each-run (incremental reprocess)** |
+| **Partitioning** | None (table is rebuilt each run by merging existing rows with newly processed rows) |
 | **Clustering** | `locale`, `category` |
 | **Retention** | No automatic expiration |
 | **Owner** | lvargas@mozilla.com |
@@ -25,11 +25,11 @@ AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Ba
 
 > Read this section before writing queries. These are the most common sources of incorrect results.
 
-- **Full-refresh, not incremental.** The whole table is rewritten each run; there is no partition filter to apply and no per-day backfill workflow. Treat it as a current-state snapshot of the KB corpus.
+- **Rebuilt every run by merging existing + newly processed rows.** The whole table is rewritten each run, but rows whose upstream `current_revision_id`, prior `embedding_succeeded`, and `model_version` / `embedding_version` / `prompt_version` all still match the current targets are carried forward as-is and skip the AI calls. Treat the table as a current-state snapshot of the KB corpus; there is no partition filter to apply and no per-day backfill workflow.
 - **Originals only.** Translations are excluded upstream via `parent_id IS NULL`; you will not find non-English locale variants of the same article — the original (typically `en-US`) is the only row per article family.
 - **Category filter is narrow.** Only categories with code `< 30` (user-facing categories per [Kitsune `config.py`](https://github.com/mozilla/kitsune/blob/3ddd61a2f32eb486388366874d42f9a860e357d8/kitsune/wiki/config.py#L87)) are included. Internal/contributor categories are excluded.
 - **Redirects and Thunderbird are excluded.** Articles whose HTML matches `%REDIRECT%`, and any article whose `products` string contains `thunderbird`, are filtered out at source.
-- **`metadata.embedding_succeeded` is the *only* reprocessing driver.** Today this equals `embedding IS NOT NULL`. LLM-field issues do **not** trigger reruns — they are visible via `failure_reasons` for triage but never gate reprocessing.
+- **Reprocessing triggers.** A row is re-run when any of the following is true: (1) its upstream `current_revision_id` advanced, (2) its prior `metadata.embedding_succeeded = FALSE`, or (3) the current `llm_model` / `embedding_model` / `prompt_version` differs from the stored `metadata.model_version` / `embedding_version` / `prompt_version`. LLM-field issues do **not** trigger reruns — they are visible via `failure_reasons` for triage but never gate reprocessing.
 - **Filter individual LLM columns when you need clean values.** `article_summary_llm`, `article_category_llm`, `article_language_llm`, `article_entities_llm`, `article_topics_llm`, and `article_sentiment_score` can each be NULL or empty independently.
 - **`article_sentiment_score` is NULL'd at write time when the model returns out-of-range values.** A NULL is either "model returned nothing" or "model returned >1 / <-1 and we discarded it." `metadata.failure_reasons` distinguishes the two via tags `article_sentiment_score_missing` vs `article_sentiment_score_out_of_range`.
 - **For embedding/retrieval, filter on `metadata.embedding_succeeded`.** The consumer-facing view (`customer_experience.knowledgebase_retrieval_index`) enforces this automatically.
@@ -186,10 +186,11 @@ ORDER BY row_count DESC;
 
 ## 🔧 Implementation Notes
 
-- Full-refresh: the entire table is rewritten on each run; no `@submission_date` parameter is used.
+- Rebuild-on-each-run with incremental reprocess: the entire table is rewritten on each run, but the query self-references the destination table — rows whose `current_revision_id`, `embedding_succeeded`, and model/prompt versions are unchanged are carried forward without re-running AI calls. No `@submission_date` parameter is used. First run / `is_init()` rebuilds everything from scratch.
 - Source is read from the shared-prod syndicate: `sumo_syndicate.kitsune_wiki_document_plus`.
 - Upstream filters: `parent_id IS NULL` (originals only), `is_archived = FALSE`, `category < 30` (user-facing), `html NOT LIKE '%REDIRECT%'`, and `products NOT LIKE '%thunderbird%'`.
-- `metadata.embedding_succeeded` is the **only** reprocessing driver: re-runs are triggered exclusively by embedding failures. LLM-field failures are recorded in `metadata.failure_reasons` for triage but never trigger reprocessing.
+- Reprocessing triggers: (a) `current_revision_id` advanced upstream, (b) prior `embedding_succeeded = FALSE`, (c) current `llm_model` / `embedding_model` / `prompt_version` differs from the stored `metadata.*` versions. LLM-field failures are recorded in `metadata.failure_reasons` for triage but never trigger reprocessing on their own.
+- Articles deleted upstream (archived, Thunderbird-tagged, etc.) are dropped from the table naturally — both `unchanged` and `needs_processing` `JOIN base USING (id)`, so a missing upstream `id` produces no output row.
 - `article_sentiment_score` is NULLed at write time when the model returns a value outside `[-1, 1]`; the original out-of-range condition is preserved as the tag `article_sentiment_score_out_of_range` in `failure_reasons`.
 - `SAFE_DIVIDE` recommended for ratio calculations to avoid division-by-zero.
 

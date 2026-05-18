@@ -6,6 +6,11 @@ tag_deployments:
     - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.knowledgebase_retrieval_index_v1.id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.knowledgebase_retrieval_index_v1.last_updated
+    metrics:
+    - saved_metric_id: is_not_null
+  - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience_derived.knowledgebase_retrieval_index_v1.*
     metrics:
     - metric_type:

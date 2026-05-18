@@ -1,9 +1,10 @@
-2026-05-11:
-  start_date: 2026-04-20
-  end_date: 2026-04-25
-  reason: Test ACLs
+2026-05-15:
+  start_date: 2026-03-30
+  end_date: 2026-05-15
+  reason: DENG-10738
   watchers:
-  - bewu@mozilla.com
+  - kbammarito@mozilla.com
+  - msun@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

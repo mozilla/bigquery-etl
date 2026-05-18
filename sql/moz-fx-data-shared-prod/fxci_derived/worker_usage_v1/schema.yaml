@@ -1,8 +1,8 @@
 fields:
-- name: project
+- name: cloud_provider
   type: STRING
   mode: NULLABLE
-- name: name
+- name: project
   type: STRING
   mode: NULLABLE
 - name: zone
@@ -11,12 +11,12 @@ fields:
 - name: instance_id
   type: STRING
   mode: NULLABLE
-- name: total_cost
-  type: FLOAT
-  mode: NULLABLE
 - name: usage_start_date
   type: DATE
   mode: NULLABLE
-- name: cloud_provider
+- name: uptime
+  type: FLOAT
+  mode: NULLABLE
+- name: attribution_method
   type: STRING
   mode: NULLABLE

@@ -1,0 +1,14 @@
+2026-05-15:
+  start_date: 2026-02-14
+  end_date: 2026-05-14
+  reason: >-
+    RELOPS-2369 - Initial backfill of worker_usage_v1 for 90 days after adding
+    the table in https://github.com/mozilla/bigquery-etl/pull/9368. This gives
+    https://github.com/mozilla/bigquery-etl/pull/9369 enough GCP and Azure
+    worker usage history for task cost attribution without waiting for scheduled
+    daily runs to accumulate data.
+  watchers:
+  - jmoss@mozilla.com
+  - ahalberstadt@mozilla.com
+  status: Initiate
+  shredder_mitigation: false

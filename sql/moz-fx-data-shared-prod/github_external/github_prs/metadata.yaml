@@ -1,0 +1,8 @@
+friendly_name: GitHub Pull Requests
+description: |-
+  Union of all GitHub PR tables in github_external. Provides a single source
+  for querying merged pull requests across all tracked repositories:
+  mozilla/bigquery-etl, mozilla/private-bigquery-etl, mozilla/lookml-generator,
+  mozilla/looker-spoke-default, and mozilla/looker-spoke-private.
+owners:
+- gkaberere@mozilla.com

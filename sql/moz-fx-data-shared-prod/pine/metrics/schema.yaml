@@ -12618,6 +12618,117 @@ fields:
         succeeded (e.g. 1 = first attempt won).
 
         '
+    - name: networking_http_3_search_first_rtt_vs_min_rtt
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Records the ratio of SEARCH''s first RTT sample to the
+        connection''s min_rtt, expressed as an integer percentage (100 = identical,
+        200 = 2x inflated). Quantifies how much the initial RTT used to set bin_duration
+        is inflated relative to the minimum path RTT.
+
+        '
+    - name: networking_http_3_search_first_rtt_vs_second_rtt
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Records the ratio of SEARCH''s first RTT sample to the
+        second RTT sample, expressed as an integer percentage (100 = identical, 200
+        = first was 2x the second). Helps evaluate whether using the second RTT sample
+        instead of the first would improve SEARCH initialization.
+
+        '
+    - name: networking_http_3_search_lookback_bins
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Tracks the per connection maximum of lookback bins needed
+        when RTT inflation prevents SEARCH from evaluating. Helps determine if the
+        EXTRA_BINS constant value is sufficient.
+
+        '
+    - name: networking_http_3_search_max_passed_bins
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Tracks the maximum number of passed bins for SEARCH connections
+        that had at least one reset due to stale data. Can help evaluate the aggressiveness
+        of the reset mechanism. Starts at 11, because that is the first value that
+        would trigger a reset.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -20994,6 +21105,21 @@ fields:
         of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
 
         '
+    - name: networking_http_3_search_rtt_inflated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTTP3: Tracks whether a connection couldn''t run the SEARCH evaluation
+        because the RTT inflated past the point where there wasn''t enough data for
+        lookback.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -22590,6 +22716,62 @@ fields:
         a path''s capacity.
 
         '
+    - name: networking_http_3_search_empty_buffer_bdp_estimate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Records the BDP estimate with empty buffers at slow start
+        exit when using SEARCH. The SEARCH draft suggests a cwnd drain-phase using
+        this as a target value; We record it for evaluation without implementing the
+        drain-phase.
+
+        '
+    - name: networking_http_3_search_full_buffer_bdp_estimate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Records the BDP estimate with full buffers at slow start
+        exit when using SEARCH. The SEARCH draft suggests a cwnd drain-phase using
+        the empty-buffer version of this as a target value; We record this alternative
+        for evaluation without implementing the drain-phase.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -23938,6 +24120,34 @@ fields:
         \  * \"visible\" if it exists and is visible\n  * \"sandboxed\" if running\
         \ under Flatpak or Snap, where it is likely\n    visible but detection is\
         \ impossible\n"
+    - name: profiles_source
+      type: STRING
+      mode: NULLABLE
+      description: "The original creation source of the profile:\n  firstrun-created-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  firstrun-skipped-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  restart-skipped-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  cmdline\n\
+        \    Created by the --createprofile command line argument\n  downgrade\n \
+        \   Created from the profile downgrade UI\n  legacy\n    Created to support\
+        \ versions of Firefox prior to 47\n  aboutprofiles\n    Created from about:profiles\n\
+        \  profile-manager\n    Created from the legacy startup profile manager\n\
+        \  selector-startup\n    Created from the selectable profiles profile selector\
+        \ during startup\n  selector-runtime\n    Created from the selectable profiles\
+        \ profile selector at runtime\n  profiles-panel\n    Created from the profiles\
+        \ panel in the application menu\n  main-menu\n    Created from the OS main\
+        \ menu\n  replace-last\n    Created when deleting the last profile in the\
+        \ group of selectable profiles\n  reset\n    Created"
+    - name: startup_profiles_ini_status
+      type: STRING
+      mode: NULLABLE
+      description: "Records the status of parsing the profiles.ini file during startup:\n\
+        \  ok:\n    The ini file parsed correctly\n  ini-failed:\n    Parsing the\
+        \ ini file completely failed, normally this would indicate\n    an out of\
+        \ memory issue.\n  ini-error:\n    The ini parser recorded some kind of failure\
+        \ during parsing\n  missing-name:\n    A profile section was missing the name\n\
+        \  missing-path:\n    A profile section was missing the path\n  invalid-path:\n\
+        \    A profile section's path was invalid\nNote that if multiple profile sections\
+        \ contain errors then only the last will be reported.\n"
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -45943,11 +46153,15 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine identifiers for built-in
-        search engines and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are the search engine identifier for configuration
+        provided search engines and ''other'' for search engines installed via other
+        methods.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
+
+        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
+        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time
@@ -50457,6 +50671,113 @@ fields:
             mode: NULLABLE
       description: 'Happy Eyeballs: time in milliseconds to resolve each DNS record
         type (A, AAAA, HTTPS).
+
+        '
+    - name: networking_http_3_search_max_norm_diff
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: Records the maximum non-exiting value that the scaled,
+        normalized difference between sent and acked bytes ever reached for a connection.
+        Can be used to tune the exit threshold (THRESH). Is capped out at 25, since
+        the current THRESH is 26, so any diff > 25 will exit.
+
+        The bucket with the ''exited_ce'' label is of special interest, since those
+        are connections that then ended up exiting slow start with loss.
+
+        '
+    - name: networking_http_3_search_reset_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: Records how many resets due to stale data happened for
+        each SEARCH connection. Is labeled by slow start outcome to help with evaluation
+        (i.e. no resets + not_exited makes sense, since the connection might''ve been
+        very short).
+
+        '
+    - name: networking_http_3_search_zero_bytes_sent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: Records how often SEARCH observes zero bytes sent in the
+        previous RTT. Provides insight into app-limited behavior. Is labeled by slow
+        start outcome to help reason about results.
 
         '
   - name: labeled_quantity

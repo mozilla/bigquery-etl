@@ -732,7 +732,11 @@ SELECT
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
       metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
-      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
+      metrics.custom_distribution.networking_http_3_search_lookback_bins,
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1139,7 +1143,8 @@ SELECT
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
-      metrics.labeled_counter.metrics_tab_group_creation_mode
+      metrics.labeled_counter.metrics_tab_group_creation_mode,
+      metrics.labeled_counter.networking_http_3_search_rtt_inflated
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1298,7 +1303,9 @@ SELECT
       metrics.string.search_default_engine_for_private_code,
       metrics.string.search_default_engine_for_private_name,
       metrics.string.nimbus_qa_prefs_string_default_value,
-      metrics.string.nimbus_qa_prefs_string_user_value
+      metrics.string.nimbus_qa_prefs_string_user_value,
+      metrics.string.profiles_source,
+      metrics.string.startup_profiles_ini_status
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1831,7 +1838,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
       metrics.memory_distribution.networking_http_3_final_cwnd,
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
-      metrics.memory_distribution.networking_http_3_final_w_max
+      metrics.memory_distribution.networking_http_3_final_w_max,
+      metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2108,7 +2117,10 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
+      metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
+      metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -2919,7 +2931,11 @@ SELECT
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
       metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
-      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
+      metrics.custom_distribution.networking_http_3_search_lookback_bins,
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3326,7 +3342,8 @@ SELECT
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
-      metrics.labeled_counter.metrics_tab_group_creation_mode
+      metrics.labeled_counter.metrics_tab_group_creation_mode,
+      metrics.labeled_counter.networking_http_3_search_rtt_inflated
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3485,7 +3502,9 @@ SELECT
       metrics.string.search_default_engine_for_private_code,
       metrics.string.search_default_engine_for_private_name,
       metrics.string.nimbus_qa_prefs_string_default_value,
-      metrics.string.nimbus_qa_prefs_string_user_value
+      metrics.string.nimbus_qa_prefs_string_user_value,
+      metrics.string.profiles_source,
+      metrics.string.startup_profiles_ini_status
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4018,7 +4037,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
       metrics.memory_distribution.networking_http_3_final_cwnd,
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
-      metrics.memory_distribution.networking_http_3_final_w_max
+      metrics.memory_distribution.networking_http_3_final_w_max,
+      metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4295,7 +4316,10 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
+      metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
+      metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,
@@ -5126,7 +5150,11 @@ SELECT
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_attempt_count,
       metrics.custom_distribution.netwerk_happy_eyeballs_connection_establishment_time,
       metrics.custom_distribution.netwerk_happy_eyeballs_time_to_first_attempt,
-      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index
+      metrics.custom_distribution.netwerk_happy_eyeballs_winning_attempt_index,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_min_rtt,
+      metrics.custom_distribution.networking_http_3_search_first_rtt_vs_second_rtt,
+      metrics.custom_distribution.networking_http_3_search_lookback_bins,
+      metrics.custom_distribution.networking_http_3_search_max_passed_bins
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5533,7 +5561,8 @@ SELECT
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
-      metrics.labeled_counter.metrics_tab_group_creation_mode
+      metrics.labeled_counter.metrics_tab_group_creation_mode,
+      metrics.labeled_counter.networking_http_3_search_rtt_inflated
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5692,7 +5721,9 @@ SELECT
       metrics.string.search_default_engine_for_private_code,
       metrics.string.search_default_engine_for_private_name,
       metrics.string.nimbus_qa_prefs_string_default_value,
-      metrics.string.nimbus_qa_prefs_string_user_value
+      metrics.string.nimbus_qa_prefs_string_user_value,
+      metrics.string.profiles_source,
+      metrics.string.startup_profiles_ini_status
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6225,7 +6256,9 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_size_sent,
       metrics.memory_distribution.networking_http_3_final_cwnd,
       metrics.memory_distribution.networking_http_3_slow_start_exit_cwnd,
-      metrics.memory_distribution.networking_http_3_final_w_max
+      metrics.memory_distribution.networking_http_3_final_w_max,
+      metrics.memory_distribution.networking_http_3_search_empty_buffer_bdp_estimate,
+      metrics.memory_distribution.networking_http_3_search_full_buffer_bdp_estimate
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -6502,7 +6535,10 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_entries,
       metrics.labeled_custom_distribution.networking_http_3_hystart_css_rounds_finished,
       metrics.labeled_custom_distribution.networking_http_3_slow_start_exit_accuracy_w_max,
-      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time
+      metrics.labeled_custom_distribution.netwerk_happy_eyeballs_dns_resolution_time,
+      metrics.labeled_custom_distribution.networking_http_3_search_max_norm_diff,
+      metrics.labeled_custom_distribution.networking_http_3_search_reset_count,
+      metrics.labeled_custom_distribution.networking_http_3_search_zero_bytes_sent
     ) AS `labeled_custom_distribution`,
     STRUCT(
       metrics.labeled_quantity.normandy_recipe_freshness,

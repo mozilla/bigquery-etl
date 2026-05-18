@@ -622,6 +622,7 @@ SELECT
       JSON_VALUE(event_extra.path_key) AS `path_key`,
       JSON_VALUE(event_extra.payment_methods) AS `payment_methods`,
       JSON_VALUE(event_extra.pc_id) AS `pc_id`,
+      JSON_VALUE(event_extra.permission_type) AS `permission_type`,
       JSON_VALUE(event_extra.platform) AS `platform`,
       JSON_VALUE(event_extra.playback_type) AS `playback_type`,
       JSON_VALUE(event_extra.position) AS `position`,

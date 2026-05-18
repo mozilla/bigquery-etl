@@ -60,7 +60,8 @@ SELECT
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
-      metrics.string.crash_file_system_access_request_path
+      metrics.string.crash_file_system_access_request_path,
+      metrics.string.crash_event_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,
@@ -171,7 +172,8 @@ SELECT
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
-      metrics.string.crash_file_system_access_request_path
+      metrics.string.crash_file_system_access_request_path,
+      metrics.string.crash_event_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,
@@ -282,7 +284,8 @@ SELECT
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
-      metrics.string.crash_file_system_access_request_path
+      metrics.string.crash_file_system_access_request_path,
+      metrics.string.crash_event_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,
@@ -393,7 +396,8 @@ SELECT
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
-      metrics.string.crash_file_system_access_request_path
+      metrics.string.crash_file_system_access_request_path,
+      metrics.string.crash_event_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,
@@ -504,7 +508,8 @@ SELECT
       metrics.string.windows_package_family_name,
       metrics.string.crash_application_build_id,
       metrics.string.crash_id,
-      metrics.string.crash_file_system_access_request_path
+      metrics.string.crash_file_system_access_request_path,
+      metrics.string.crash_event_id
     ) AS `string`,
     STRUCT(
       metrics.timespan.crash_uptime,

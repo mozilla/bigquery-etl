@@ -388,6 +388,23 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: profiles_source
+      type: STRING
+      mode: NULLABLE
+      description: "The original creation source of the profile:\n  firstrun-created-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  firstrun-skipped-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  restart-skipped-default\n\
+        \    Matches the meaning in startup.profile_selection_reason\n  cmdline\n\
+        \    Created by the --createprofile command line argument\n  downgrade\n \
+        \   Created from the profile downgrade UI\n  legacy\n    Created to support\
+        \ versions of Firefox prior to 47\n  aboutprofiles\n    Created from about:profiles\n\
+        \  profile-manager\n    Created from the legacy startup profile manager\n\
+        \  selector-startup\n    Created from the selectable profiles profile selector\
+        \ during startup\n  selector-runtime\n    Created from the selectable profiles\
+        \ profile selector at runtime\n  profiles-panel\n    Created from the profiles\
+        \ panel in the application menu\n  main-menu\n    Created from the OS main\
+        \ menu\n  replace-last\n    Created when deleting the last profile in the\
+        \ group of selectable profiles\n  reset\n    Created"
   - name: boolean
     type: RECORD
     mode: NULLABLE

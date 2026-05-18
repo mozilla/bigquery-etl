@@ -534,6 +534,10 @@ fields:
       mode: NULLABLE
       description: The anonymized path that was rejected by FileSystemSecurity due
         to containing path traversal sequences.
+    - name: crash_event_id
+      type: STRING
+      mode: NULLABLE
+      description: A UUID for the crash event.
   - name: timespan
     type: RECORD
     mode: NULLABLE

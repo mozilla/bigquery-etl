@@ -3,3 +3,5 @@ description: Number of clients uninstalling each date relative to their profile 
   date
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

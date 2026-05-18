@@ -8,6 +8,7 @@ owners:
 labels:
   application: firefox
   schedule: daily
+  legacy: true
 scheduling:
   dag_name: bqetl_desktop_platform
   start_date: "2018-11-01"

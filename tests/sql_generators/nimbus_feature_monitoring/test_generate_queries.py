@@ -48,6 +48,17 @@ class TestGenerateQueries:
                 "moz-fx-data-shared-prod", BASE_DIR / "templates", tmp_path
             )
 
+    def _query_path(self, tmp_path, slug):
+        """Return the expected query.sql path for a feature with the given slug."""
+        feature_name_sql = slug.replace("-", "_").lower()
+        return (
+            tmp_path
+            / "moz-fx-data-shared-prod"
+            / "nimbus_feature_monitoring"
+            / f"{feature_name_sql}_v1"
+            / "query.sql"
+        )
+
     def test_generates_query_for_metrics_source(self, tmp_path):
         app = make_app_config(
             dataset="firefox_desktop",
@@ -63,13 +74,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = (
-            tmp_path
-            / "moz-fx-data-shared-prod"
-            / "firefox_desktop_derived"
-            / "nimbus_feature_monitoring_my_feature_v1"
-            / "query.sql"
-        )
+        query = self._query_path(tmp_path, "my-feature")
         assert query.exists()
         sql = query.read_text()
         assert "my-feature" in sql
@@ -93,13 +98,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = (
-            tmp_path
-            / "moz-fx-data-shared-prod"
-            / "firefox_desktop_derived"
-            / "nimbus_feature_monitoring_my_feature_v1"
-            / "query.sql"
-        )
+        query = self._query_path(tmp_path, "my_feature")
         assert query.exists()
         sql = query.read_text()
         assert "events_stream" in sql
@@ -119,7 +118,7 @@ class TestGenerateQueries:
         view = (
             tmp_path
             / "moz-fx-data-shared-prod"
-            / "firefox_desktop"
+            / "nimbus_feature_monitoring"
             / "nimbus_feature_monitoring"
             / "view.sql"
         )
@@ -146,13 +145,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = (
-            tmp_path
-            / "moz-fx-data-shared-prod"
-            / "firefox_desktop_derived"
-            / "nimbus_feature_monitoring_my_feature_v1"
-            / "query.sql"
-        )
+        query = self._query_path(tmp_path, "my_feature")
         assert query.exists()
         sql = query.read_text()
         # string ping_aggregator must be COUNT, not SUM (SUM of a string is invalid SQL)
@@ -177,13 +170,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = (
-            tmp_path
-            / "moz-fx-data-shared-prod"
-            / "firefox_desktop_derived"
-            / "nimbus_feature_monitoring_my_feature_v1"
-            / "query.sql"
-        )
+        query = self._query_path(tmp_path, "my_feature")
         sql = query.read_text()
         assert "normalized_channel" in sql
 
@@ -206,13 +193,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = (
-            tmp_path
-            / "moz-fx-data-shared-prod"
-            / "firefox_desktop_derived"
-            / "nimbus_feature_monitoring_my_feature_v1"
-            / "query.sql"
-        )
+        query = self._query_path(tmp_path, "my_feature")
         sql = query.read_text()
         assert "SAFE_DIVIDE" in sql
         assert "numerator_avg" in sql

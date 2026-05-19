@@ -615,7 +615,7 @@ def initiate(
         except NotFound:
             raise RuntimeError(
                 f"Cannot use --copy-table-permissions since {qualified_table_name} does not exist."
-            )
+            ) from None
 
     # create schema before deploying staging table if it does not exist
     schema_path = query_path.parent / SCHEMA_FILE
@@ -630,20 +630,29 @@ def initiate(
         click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
 
     def _copy_permissions_with_cleanup():
+        """Copy permissions from prod table and delete the staging table if it fails."""
         try:
             copy_permissions_to_staging_table(
                 client,
                 qualified_table_name,
                 backfill_staging_qualified_table_name,
             )
-        # try to avoid creating an undeletable staging table
         except Exception as e:
-            client.delete_table(
-                backfill_staging_qualified_table_name, not_found_ok=True
-            )
+            try:
+                client.delete_table(
+                    backfill_staging_qualified_table_name, not_found_ok=True
+                )
+                cleanup_msg = f"deleted {backfill_staging_qualified_table_name}"
+            except Exception as delete_exc:
+                click.echo(
+                    f"Failed to delete {backfill_staging_qualified_table_name}: {delete_exc}"
+                )
+                cleanup_msg = (
+                    f"failed to delete {backfill_staging_qualified_table_name}, "
+                    "manual cleanup required"
+                )
             raise RuntimeError(
-                "Failed to copy permissions to staging table, "
-                f"deleted {backfill_staging_qualified_table_name}."
+                f"Failed to copy permissions to staging table, {cleanup_msg}."
             ) from e
 
     try:

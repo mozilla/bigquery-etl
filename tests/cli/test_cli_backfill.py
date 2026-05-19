@@ -1943,12 +1943,19 @@ class TestBackfill:
         mock_copy_perms,
         runner,
     ):
+        prod_table = "moz-fx-data-shared-prod.test.test_query_v1"
         staging_table = "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03"
-        mock_client().get_table.side_effect = [
-            NotFound("staging table not found"),  # _should_initiate check
-            None,  # prod table check
-        ]
-        mock_copy_perms.side_effect = Exception("IAM policy denied")
+
+        def get_table(name, *args, **kwargs):
+            if name == staging_table:
+                raise NotFound("staging table not found")
+            if name == prod_table:
+                return MagicMock()
+            raise AssertionError(f"unexpected get_table call: {name}")
+
+        mock_client().get_table.side_effect = get_table
+        permissions_error = Exception("IAM policy denied")
+        mock_copy_perms.side_effect = permissions_error
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text("""
@@ -1972,6 +1979,7 @@ class TestBackfill:
 
         assert result.exit_code == 1
         assert "Failed to copy permissions" in str(result.exception)
+        assert result.exception.__cause__ is permissions_error
         mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
 
     @patch("google.cloud.bigquery.Client")

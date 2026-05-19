@@ -11,6 +11,7 @@ WITH widget_events AS (
     UNNEST(events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND event.category = 'newtab'
     AND event.name IN ('widgets_impression', 'widgets_user_event', 'widgets_enabled')
     AND mozfun.map.get_key(event.extra, 'widget_name') IS NOT NULL
 ),

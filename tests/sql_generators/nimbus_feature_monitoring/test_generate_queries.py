@@ -48,14 +48,14 @@ class TestGenerateQueries:
                 "moz-fx-data-shared-prod", BASE_DIR / "templates", tmp_path
             )
 
-    def _query_path(self, tmp_path, slug):
+    def _query_path(self, tmp_path, app_dataset, slug):
         """Return the expected query.sql path for a feature with the given slug."""
         feature_name_sql = slug.replace("-", "_").lower()
         return (
             tmp_path
             / "moz-fx-data-shared-prod"
             / "nimbus_feature_monitoring"
-            / f"{feature_name_sql}_v1"
+            / f"{app_dataset}_{feature_name_sql}_v1"
             / "query.sql"
         )
 
@@ -74,7 +74,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = self._query_path(tmp_path, "my-feature")
+        query = self._query_path(tmp_path, "firefox_desktop", "my-feature")
         assert query.exists()
         sql = query.read_text()
         assert "my-feature" in sql
@@ -98,13 +98,14 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = self._query_path(tmp_path, "my_feature")
+        query = self._query_path(tmp_path, "firefox_desktop", "my_feature")
         assert query.exists()
         sql = query.read_text()
         assert "events_stream" in sql
         assert "my_category_my_event" in sql
 
-    def test_generates_view_over_all_features(self, tmp_path):
+    def test_generates_single_view_over_all_apps(self, tmp_path):
+        """View is written once after all apps, not overwritten per-app iteration."""
         features = {f"feature_{i}": make_feature_spec(f"feature_{i}") for i in range(3)}
         data_sources = {
             "metrics": make_source_table_spec("metrics", "metrics", "metrics"),
@@ -112,20 +113,30 @@ class TestGenerateQueries:
         for feat in features.values():
             feat.metrics_by_source = {"metrics": {"boolean": {"flag": None}}}
 
-        app = make_app_config("firefox_desktop", data_sources, features)
-        self._run_generate([app], tmp_path)
+        app1 = make_app_config("firefox_desktop", data_sources, features)
+        app2 = make_app_config(
+            "fenix",
+            data_sources,
+            {"fenix_feature": make_feature_spec(
+                "fenix_feature",
+                metrics_by_source={"metrics": {"boolean": {"flag": None}}},
+            )},
+        )
+        self._run_generate([app1, app2], tmp_path)
 
         view = (
             tmp_path
             / "moz-fx-data-shared-prod"
             / "nimbus_feature_monitoring"
-            / "nimbus_feature_monitoring"
+            / "all_features"
             / "view.sql"
         )
         assert view.exists()
         sql = view.read_text()
+        # Both apps' features must appear in the single consolidated view
         for i in range(3):
             assert f"feature_{i}" in sql
+        assert "fenix_feature" in sql
 
     def test_generates_query_for_string_metric(self, tmp_path):
         app = make_app_config(
@@ -145,7 +156,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = self._query_path(tmp_path, "my_feature")
+        query = self._query_path(tmp_path, "firefox_desktop", "my_feature")
         assert query.exists()
         sql = query.read_text()
         # string ping_aggregator must be COUNT, not SUM (SUM of a string is invalid SQL)
@@ -170,7 +181,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = self._query_path(tmp_path, "my_feature")
+        query = self._query_path(tmp_path, "firefox_desktop", "my_feature")
         sql = query.read_text()
         assert "normalized_channel" in sql
 
@@ -193,7 +204,7 @@ class TestGenerateQueries:
             },
         )
         self._run_generate([app], tmp_path)
-        query = self._query_path(tmp_path, "my_feature")
+        query = self._query_path(tmp_path, "firefox_desktop", "my_feature")
         sql = query.read_text()
         assert "SAFE_DIVIDE" in sql
         assert "numerator_avg" in sql

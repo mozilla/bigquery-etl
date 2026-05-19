@@ -398,6 +398,18 @@ with DAG(
         ],
     )
 
+    monitoring_derived__probe_scraper_applications__v1 = GKEPodOperator(
+        task_id="monitoring_derived__probe_scraper_applications__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/probe_scraper_applications_v1/query.py",
+        ]
+        + [],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
         task_id="monitoring_derived__schema_error_counts__v2",
         destination_table="schema_error_counts_v2",

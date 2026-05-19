@@ -117,10 +117,12 @@ class TestGenerateQueries:
         app2 = make_app_config(
             "fenix",
             data_sources,
-            {"fenix_feature": make_feature_spec(
-                "fenix_feature",
-                metrics_by_source={"metrics": {"boolean": {"flag": None}}},
-            )},
+            {
+                "fenix_feature": make_feature_spec(
+                    "fenix_feature",
+                    metrics_by_source={"metrics": {"boolean": {"flag": None}}},
+                )
+            },
         )
         self._run_generate([app1, app2], tmp_path)
 

@@ -206,9 +206,7 @@ def generate_queries(project, path, write_dir):
                                         event_name=metric.pop(
                                             "event_name", metric_name
                                         ),
-                                        source_type=source_tables[
-                                            source_name
-                                        ].type,
+                                        source_type=source_tables[source_name].type,
                                         **metric,
                                     )
                                 )

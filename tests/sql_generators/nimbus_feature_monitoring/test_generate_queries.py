@@ -139,6 +139,9 @@ class TestGenerateQueries:
         for i in range(3):
             assert f"feature_{i}" in sql
         assert "fenix_feature" in sql
+        # Each app should appear as the application literal in the view
+        assert "firefox_desktop" in sql
+        assert "fenix" in sql
 
     def test_generates_query_for_string_metric(self, tmp_path):
         app = make_app_config(

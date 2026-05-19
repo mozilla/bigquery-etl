@@ -14,3 +14,4 @@ owners:
 labels:
   owner1: rbaffourawuah@mozilla.com
   owner2: mhirose@mozilla.com
+  legacy: true

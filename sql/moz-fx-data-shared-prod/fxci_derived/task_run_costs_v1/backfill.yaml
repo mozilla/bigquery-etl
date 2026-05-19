@@ -1,0 +1,16 @@
+2026-05-19:
+  start_date: 2026-04-19
+  end_date: 2026-05-17
+  reason: >-
+    RELOPS-2373 - Recompute task_run_costs_v1 with the cross-cloud attribution
+    query from https://github.com/mozilla/bigquery-etl/pull/9369 so Looker
+    dashboard 2049 can show Azure and GCP task costs for the 30-day Submission
+    Date window. This depends on the worker_costs_v1 history backfill from
+    https://github.com/mozilla/bigquery-etl/pull/9389 being completed into
+    production first, because task_run_costs_v1 reads worker_costs_v1 through a
+    30-day lookback window.
+  watchers:
+  - jmoss@mozilla.com
+  - ahalberstadt@mozilla.com
+  status: Initiate
+  shredder_mitigation: false

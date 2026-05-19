@@ -1,6 +1,6 @@
 2026-05-14:
   start_date: 2025-11-14
-  end_date: 2026-05-13
+  end_date: 2026-05-19
   reason: New table, initial backfill.
   watchers:
   - yashika.khurana@mozilla.com

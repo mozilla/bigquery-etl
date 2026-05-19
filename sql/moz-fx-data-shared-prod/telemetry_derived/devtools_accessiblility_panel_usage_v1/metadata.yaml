@@ -8,6 +8,7 @@ owners:
 labels:
   application: devtools
   schedule: daily
+  legacy: true
 scheduling:
   dag_name: bqetl_devtools
   start_date: "2018-08-01"

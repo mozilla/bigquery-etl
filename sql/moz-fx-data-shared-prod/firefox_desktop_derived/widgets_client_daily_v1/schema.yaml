@@ -1,0 +1,202 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Day the event was received in the newtab ping
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: widget_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the widget that emits the event (e.g., lists, focus_timer, weather).
+- name: widget_size
+  type: STRING
+  mode: NULLABLE
+  description: Size of widget (e.g., mini, small, medium).
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Most-common Firefox Desktop major version observed for the client this day (mode_last across visits)
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Most-common operating system observed for the client this day (mode_last across visits)
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Most-common normalized OS version observed for the client this day (mode_last across visits)
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: Most-common Windows OS build number observed for the client this day (mode_last across visits)
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Most-common Firefox Desktop deployment channel observed for the client this day (mode_last across visits)
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Most-common host system locale observed for the client this day (mode_last across visits)
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Most-common country observed for the client this day (mode_last across visits)
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: Most-common first major country subdivision observed for the client this day (mode_last across visits)
+- name: homepage_category
+  type: STRING
+  mode: NULLABLE
+  description: Most-common chosen homepage/new window appearance for the client this day (mode_last across visits)
+- name: newtab_category
+  type: STRING
+  mode: NULLABLE
+  description: Most-common chosen newtab appearance for the client this day (mode_last across visits)
+- name: organic_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of organic-stories-enabled for the client this day (mode_last across visits)
+- name: sponsored_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of sponsored-stories-enabled for the client this day (mode_last across visits)
+- name: sponsored_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of sponsored-topsites-enabled for the client this day (mode_last across visits)
+- name: organic_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of organic-topsites-enabled for the client this day (mode_last across visits)
+- name: newtab_search_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of newtab-search-enabled for the client this day (mode_last across visits)
+- name: newtab_weather_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Most-common value of newtab-weather-enabled for the client this day (mode_last across visits)
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Most-common engine_id of the default search engine for the client this day (mode_last across visits)
+- name: default_private_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Most-common engine_id of the default private search engine for the client this day (mode_last across visits)
+- name: topsite_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: Most-common number of topsite tile rows configured to be shown for the client this day (mode_last across visits)
+- name: topsite_sponsored_tiles_configured
+  type: INTEGER
+  mode: NULLABLE
+  description: Most-common number of topsite tiles configured to be shown for the client this day (mode_last across visits)
+- name: newtab_content_surface_id
+  type: STRING
+  mode: NULLABLE
+  description: Most-common scheduled surface identifier observed for the client this day (mode_last across visits)
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Hashed version of client_id (0-99). Useful for distribution analysis
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy telemetry client_id. Enables joining to legacy telemetry main-ping data
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy telemetry. Enables the calculation of metrics by profile_id
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  description: Array of experiments to associate with each client
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+- name: newtab_blocked_sponsors
+  type: STRING
+  mode: REPEATED
+  description: Array of advertiser names that have been dismissed by the user
+- name: all_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct newtab visits opened by the client this day (is_newtab_opened = TRUE)
+- name: default_ui_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct default-UI newtab visits this day (is_default_ui = TRUE)
+- name: widget_impression_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of distinct newtab visits in which this widget had at least one widgets_impression event.
+    Note that if the widget changes size it is possible for it to generate events without having associated impressions.
+    Toggling enabled and disabled can also produce multiple impressions in a single visit.
+- name: widget_user_event_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct newtab visits in which this widget had at least one widgets_user_event event
+- name: widget_enabled_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct newtab visits in which this widget had at least one widgets_enabled event with enabled=TRUE
+- name: widget_disabled_visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of distinct newtab visits in which this widget had at least one widgets_enabled event with enabled=FALSE
+- name: impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total widgets_impression events for this widget across all visits this day
+- name: user_event_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total widgets_user_event events for this widget across all visits this day
+- name: change_size_or_learn_more_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total widgets_user_event events whose user_action is 'change_size' or 'learn_more' for this widget across all visits this day
+- name: enabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total widgets_enabled events with enabled=TRUE for this widget across all visits this day
+- name: disabled_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Total widgets_enabled events with enabled=FALSE for this widget across all visits this day
+- name: user_action_counts
+  type: RECORD
+  mode: REPEATED
+  description: Per-user_action total counts of widgets_user_event events for this widget across all visits this day
+  fields:
+  - name: user_action
+    type: STRING
+    mode: NULLABLE
+    description: Specific action taken by the widget (e.g., list_copy, list_create, timer_set, timer_play, timer_pause, change_location, detect_location).
+  - name: count
+    type: INTEGER
+    mode: NULLABLE
+    description: Total number of widgets_user_event events with this user_action across all visits this day

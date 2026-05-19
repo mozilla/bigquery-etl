@@ -1,0 +1,40 @@
+friendly_name: Zendesk Automation Daily
+description: |
+  Daily Zendesk support ticket counts broken down by product and automation category.
+
+  Grain: Daily x Product x Automation Category (UTC timezone)
+
+  Tracks both ticket creation and resolution on a given day to support the
+  Automation Resolution Rate KPI (Tier 1):
+    automation_rate = SUM(tickets_resolved WHERE automation_category = 'automation')
+                    / SUM(tickets_resolved)
+
+  Automation Classification:
+  - 'automation': ticket resolved by an automated workflow (SSA experiments,
+    appbot-autosolve, loginless-autosolve, etc.) and NOT subsequently reopened
+  - 'human-handled': all other tickets, including automated tickets that were
+    reopened (a reopen indicates human intervention)
+
+  Exclusions (matching zen_desk_volume.sql source logic):
+  - Appbot Non-English tickets (auto-closed under SUMOJr, never seen by agents)
+  - Deleted tickets
+  - Test tickets (any ticket tagged with a 'test*' tag)
+
+  Note: ticket_tag and ticket_field_history are sourced from moz-fx-sumo-prod.zendesk
+  until those tables are available in moz-fx-data-shared-prod.zendesk_syndicate.
+
+  Replaces the automation_rate CTE in:
+  - zen_desk_volume.sql (dashboard queries)
+
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_insights
+labels:
+  incremental: false
+  application: sumo
+  type: base_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

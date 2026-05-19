@@ -3,3 +3,5 @@ description: Uninstalls by browser split by if the uninstall was on date of inst
   or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

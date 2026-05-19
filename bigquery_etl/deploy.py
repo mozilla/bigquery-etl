@@ -40,9 +40,16 @@ def deploy_table(
     sql_dir=ConfigLoader.get("default", "sql_dir"),
     credentials=None,
     id_token=None,
+    isolated: bool = False,
 ) -> None:
     """Deploy a query to a destination."""
-    if respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files():
+    # Under --isolated, schema.yaml is authoritative and the table must
+    # still be created so downstream views can reference it. Skip the
+    # dryrun-based validation but proceed with the deploy.
+    dryrun_skipped = (
+        respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files()
+    )
+    if dryrun_skipped and not isolated:
         raise SkippedDeployException(f"Dry run skipped for {artifact_file}.")
 
     metadata = None
@@ -88,7 +95,7 @@ def deploy_table(
         raise SkippedDeployException(f"Schema missing for {artifact_file}.") from e
 
     client = bigquery.Client(credentials=credentials)
-    if not force and str(artifact_file).endswith("query.sql"):
+    if not force and not dryrun_skipped and str(artifact_file).endswith("query.sql"):
         query_schema = Schema.from_query_file(
             artifact_file,
             use_cloud_function=use_cloud_function,

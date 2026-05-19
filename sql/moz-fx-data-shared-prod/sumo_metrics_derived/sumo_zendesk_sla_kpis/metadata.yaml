@@ -1,14 +1,17 @@
 friendly_name: SUMO Zendesk SLA KPIs (CSAT, FCR, TTFR, TRT)
 description: |
   Daily SLA KPI view for SUMO Zendesk support tickets, aggregated from
-  zendesk_ticket_sla_v1. All metrics are attributed to the ticket's resolution
-  date and mirror Zendesk Explore.
+  zendesk_ticket_sla_v1. Resolved-ticket KPIs (FCR, CSAT, TRT) are attributed
+  to the ticket's resolution date and mirror Zendesk Explore.
 
-  Grain: resolved_date x product x automation_category.
+  Grain: resolved_date x ticket_created_date x product x automation_category.
 
   Tickets where is_excluded_from_sla = TRUE in the base table are filtered out
   (Appbot non-English, Sumo Test / VPN QA groups, %test% tags). Unresolved
-  tickets are also excluded — these KPIs are about resolved-ticket outcomes.
+  tickets are included so TTFR component metrics (replied_tickets,
+  first_reply_business_minutes_sum) cover every replied ticket; their rows
+  have resolved_date IS NULL. FCR / CSAT / TRT remain resolved-only via
+  per-metric gating on resolution_status.
 
   Exposes sum/count component columns rather than precomputed rates so KPIs
   remain correct under any downstream filter or grouping. Compute as:

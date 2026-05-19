@@ -189,9 +189,16 @@ class DryRun:
         # via each stage dir's .bqetl_target_info.yaml manifest (written by
         # prepare_target_directory) — layout-independent, so any future
         # bqetl_targets.yaml rename scheme still works.
+        #
+        # Match with fnmatchcase (case-sensitive on all platforms, unlike
+        # fnmatch which is case-insensitive on Windows/macOS) for
+        # deterministic dev-vs-CI behavior. Note: fnmatch's `*` matches `/`
+        # — fine here because source_equivalent always has the fixed
+        # `sql/<proj>/<ds>/<table>/<file>` shape, but it's a semantic
+        # difference from glob.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
-        stage_root = Path(str(sql_dir)) / test_project if test_project else None
+        stage_root = sql_dir / test_project if test_project else None
         if stage_root and stage_root.is_dir() and skip_patterns:
             # Local import: util.target imports from this module.
             from .util.target import MANIFEST_FILENAME
@@ -200,7 +207,14 @@ class DryRun:
             for manifest_path in stage_root.rglob(MANIFEST_FILENAME):
                 try:
                     manifest = yaml.safe_load(manifest_path.read_text()) or {}
-                except Exception:
+                except (yaml.YAMLError, OSError) as e:
+                    # Surface so a corrupt manifest doesn't silently drop
+                    # its artifact off the skip list — the resulting dryrun
+                    # failure would otherwise mask the real cause.
+                    click.echo(
+                        f"Warning: could not read manifest {manifest_path}: {e}",
+                        err=True,
+                    )
                     continue
                 src_project = manifest.get("source_project")
                 src_dataset = manifest.get("source_dataset")
@@ -215,7 +229,8 @@ class DryRun:
                         f"{src_table}/{stage_file.name}"
                     )
                     if any(
-                        fnmatch.fnmatch(source_equivalent, pat) for pat in skip_patterns
+                        fnmatch.fnmatchcase(source_equivalent, pat)
+                        for pat in skip_patterns
                     ):
                         skip_files.add(str(stage_file))
 

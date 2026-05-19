@@ -95,7 +95,12 @@ def deploy_table(
         raise SkippedDeployException(f"Schema missing for {artifact_file}.") from e
 
     client = bigquery.Client(credentials=credentials)
-    if not force and not dryrun_skipped and str(artifact_file).endswith("query.sql"):
+    # Skip the query-vs-schema dryrun check only in the isolated + skip-listed
+    # case (rewritten refs in the target tree won't resolve in prod). Tying
+    # this to isolated rather than dryrun_skipped alone keeps the bypass
+    # scoped if the early bail above is ever loosened.
+    skip_schema_check = isolated and dryrun_skipped
+    if not force and not skip_schema_check and str(artifact_file).endswith("query.sql"):
         query_schema = Schema.from_query_file(
             artifact_file,
             use_cloud_function=use_cloud_function,

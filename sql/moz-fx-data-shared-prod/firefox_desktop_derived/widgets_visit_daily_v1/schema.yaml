@@ -85,7 +85,7 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Legacy telemetry. Enables the calculation of metrics by profile_id
+  description: Identifies profile associated with client.
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE

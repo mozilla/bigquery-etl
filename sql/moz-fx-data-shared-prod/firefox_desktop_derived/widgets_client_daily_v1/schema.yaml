@@ -18,87 +18,87 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
-  description: Most-common Firefox Desktop major version observed for the client this day (mode_last across visits)
+  description: Most-common Firefox Desktop major version observed for the client this day
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Most-common operating system observed for the client this day (mode_last across visits)
+  description: Most-common operating system observed for the client this day
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Most-common normalized OS version observed for the client this day (mode_last across visits)
+  description: Most-common normalized OS version observed for the client this day
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: Most-common Windows OS build number observed for the client this day (mode_last across visits)
+  description: Most-common Windows OS build number observed for the client this day
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Most-common Firefox Desktop deployment channel observed for the client this day (mode_last across visits)
+  description: Most-common Firefox Desktop deployment channel observed for the client this day
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Most-common host system locale observed for the client this day (mode_last across visits)
+  description: Most-common host system locale observed for the client this day
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Most-common country observed for the client this day (mode_last across visits)
+  description: Most-common country observed for the client this day
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
-  description: Most-common first major country subdivision observed for the client this day (mode_last across visits)
+  description: Most-common first major country subdivision observed for the client this day
 - name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: Most-common chosen homepage/new window appearance for the client this day (mode_last across visits)
+  description: Most-common chosen homepage/new window appearance for the client this day
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: Most-common chosen newtab appearance for the client this day (mode_last across visits)
+  description: Most-common chosen newtab appearance for the client this day
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of organic-stories-enabled for the client this day (mode_last across visits)
+  description: Most-common value of organic-stories-enabled for the client this day
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of sponsored-stories-enabled for the client this day (mode_last across visits)
+  description: Most-common value of sponsored-stories-enabled for the client this day
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of sponsored-topsites-enabled for the client this day (mode_last across visits)
+  description: Most-common value of sponsored-topsites-enabled for the client this day
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of organic-topsites-enabled for the client this day (mode_last across visits)
+  description: Most-common value of organic-topsites-enabled for the client this day
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of newtab-search-enabled for the client this day (mode_last across visits)
+  description: Most-common value of newtab-search-enabled for the client this day
 - name: newtab_weather_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Most-common value of newtab-weather-enabled for the client this day (mode_last across visits)
+  description: Most-common value of newtab-weather-enabled for the client this day
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
-  description: Most-common engine_id of the default search engine for the client this day (mode_last across visits)
+  description: Most-common engine_id of the default search engine for the client this day
 - name: default_private_search_engine
   type: STRING
   mode: NULLABLE
-  description: Most-common engine_id of the default private search engine for the client this day (mode_last across visits)
+  description: Most-common engine_id of the default private search engine for the client this day
 - name: topsite_rows
   type: INTEGER
   mode: NULLABLE
-  description: Most-common number of topsite tile rows configured to be shown for the client this day (mode_last across visits)
+  description: Most-common number of topsite tile rows configured to be shown for the client this day
 - name: topsite_sponsored_tiles_configured
   type: INTEGER
   mode: NULLABLE
-  description: Most-common number of topsite tiles configured to be shown for the client this day (mode_last across visits)
+  description: Most-common number of topsite tiles configured to be shown for the client this day
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
-  description: Most-common scheduled surface identifier observed for the client this day (mode_last across visits)
+  description: Most-common scheduled surface identifier observed for the client this day
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -110,7 +110,7 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Legacy telemetry. Enables the calculation of metrics by profile_id
+  description: Identifies profile associated with client
 - name: experiments
   type: RECORD
   mode: REPEATED

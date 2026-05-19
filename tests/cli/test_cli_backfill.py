@@ -1900,6 +1900,80 @@ class TestBackfill:
         assert result.exit_code == 1
         assert "Backfill initiate failed to deploy" in str(result.exception)
 
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_with_copy_permissions_fails_if_prod_table_missing(
+        self, mock_client, mock_deploy_table, runner
+    ):
+        mock_client().get_table.side_effect = NotFound("prod table not found")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+        """)
+
+        result = runner.invoke(
+            initiate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Cannot use --copy-table-permissions" in str(result.exception)
+        mock_deploy_table.assert_not_called()
+
+    @patch("bigquery_etl.cli.backfill.copy_permissions_to_staging_table")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_cleans_up_staging_on_permissions_failure(
+        self,
+        mock_client,
+        mock_from_query_file,
+        mock_deploy_table,
+        mock_copy_perms,
+        runner,
+    ):
+        staging_table = "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03"
+        mock_client().get_table.side_effect = [
+            NotFound("staging table not found"),  # _should_initiate check
+            None,  # prod table check
+        ]
+        mock_copy_perms.side_effect = Exception("IAM policy denied")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text("""
+        2021-05-03:
+          start_date: 2021-01-03
+          end_date: 2021-01-08
+          reason: test_reason
+          watchers:
+          - test@example.org
+          status: Initiate
+        """)
+
+        result = runner.invoke(
+            initiate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--copy-table-permissions",
+                "--parallelism=0",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Failed to copy permissions" in str(result.exception)
+        mock_client().delete_table.assert_called_with(staging_table, not_found_ok=True)
+
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
         self, mock_client, runner

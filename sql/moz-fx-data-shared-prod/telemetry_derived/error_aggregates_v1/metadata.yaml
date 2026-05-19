@@ -7,6 +7,7 @@ owners:
   - wkahngreene@mozilla.com
 labels:
   incremental: true
+  legacy: true
 scheduling:
   dag_name: bqetl_error_aggregates
   # This dag runs more frequently than upstream tables, so it can't depend on

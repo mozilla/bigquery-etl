@@ -4,7 +4,7 @@ WITH widget_events AS (
     client_info.client_id AS client_id,
     event.name AS event_name,
     mozfun.map.get_key(event.extra, 'widget_name') AS widget_name,
-    mozfun.map.get_key(event.extra, 'enabled') AS enabled,
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'enabled') AS BOOL) AS widget_enabled,
     mozfun.map.get_key(event.extra, 'user_action') AS user_action,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
@@ -22,8 +22,8 @@ aggregated AS (
     COUNT(
       DISTINCT IF(event_name IN ('widgets_user_event', 'widgets_enabled'), client_id, NULL)
     ) AS widget_engaged_clients,
-    COUNTIF(event_name = 'widgets_enabled' AND enabled = 'true') AS widget_enabled_count,
-    COUNTIF(event_name = 'widgets_enabled' AND enabled = 'false') AS widget_disabled_count,
+    COUNTIF(event_name = 'widgets_enabled' AND widget_enabled) AS widget_enabled_count,
+    COUNTIF(event_name = 'widgets_enabled' AND NOT widget_enabled) AS widget_disabled_count,
     COUNTIF(event_name = 'widgets_impression') AS widget_impression_count,
     COUNTIF(event_name = 'widgets_user_event') AS widget_user_event_count,
     COUNTIF(

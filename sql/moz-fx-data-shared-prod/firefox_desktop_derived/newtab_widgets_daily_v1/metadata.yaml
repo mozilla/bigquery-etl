@@ -12,7 +12,7 @@ labels:
   schedule: daily
   dag: bqetl_newtab
   owner1: gkatre
-  table_type: aggregated
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_newtab
   date_partition_parameter: submission_date
@@ -21,7 +21,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: null
   range_partitioning: null
   clustering:
     fields:

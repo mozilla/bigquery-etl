@@ -15,7 +15,7 @@ derived from the unified widget telemetry shape in `newtab_v1`.
 | **DAG** | `bqetl_newtab` · daily · incremental |
 | **Partitioning** | `submission_date` *(partition filter required)* |
 | **Clustering** | `widget_name` |
-| **Retention** | 775 days |
+| **Retention** | No expiration (aggregate table) |
 | **Owner** | gkatre@mozilla.com |
 | **Version** | v1 (initial version) |
 
@@ -122,7 +122,8 @@ ORDER BY 1 DESC, impressions DESC;
 ## 📌 Notes & Conventions
 
 - `widget_engaged_clients` = `COUNT(DISTINCT client_id)` where `event_name IN ('widgets_user_event', 'widgets_enabled')` — excludes passive impression-only clients.
-- `widget_enabled_count` / `widget_disabled_count` = count of `widgets_enabled` events split by the `enabled` extra being `'true'` or `'false'`.
+- `widget_enabled_count` / `widget_disabled_count` = count of `widgets_enabled` events split by `SAFE_CAST(enabled AS BOOL)`; values that don't cast cleanly to a boolean are excluded from both buckets.
+- `widget_link_click_count` groups `provider_link_click` together with `learn_more` because both navigate the user to an external link; this intentionally differs from `widgets_visit_daily_v1`, which buckets `learn_more` with the in-widget `change_size` toggle.
 - `widget_utility_action_count` covers timer, list, and task actions only; see `query.sql` for the full `user_action` value list.
 - `widget_user_action_counts.action` values are `user_action` extras from `widgets_user_event`; the array is NULL if no user events occurred for the widget on that day.
 

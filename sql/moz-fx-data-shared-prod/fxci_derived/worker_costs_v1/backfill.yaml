@@ -1,3 +1,19 @@
+2026-05-19:
+  start_date: 2026-03-20
+  end_date: 2026-05-17
+  reason: >-
+    RELOPS-2373 - Backfill worker_costs_v1 with the cloud_provider field added
+    for Azure and GCP worker costs in
+    https://github.com/mozilla/bigquery-etl/pull/9315. This source-cost window
+    covers the 30-day lookback needed before recomputing task_run_costs_v1 with
+    the cross-cloud attribution query from
+    https://github.com/mozilla/bigquery-etl/pull/9369 for Looker dashboard 2049.
+  watchers:
+  - jmoss@mozilla.com
+  - ahalberstadt@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+
 2024-10-15:
   start_date: 2024-09-01
   end_date: 2024-10-12

@@ -60,7 +60,11 @@ with DAG(
         dataset_id="fxci_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ahalberstadt@mozilla.com",
-        email=["ahalberstadt@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ahalberstadt@mozilla.com",
+            "jmoss@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -96,3 +100,5 @@ with DAG(
     )
 
     fxci_derived__task_run_costs__v1.set_upstream(fxci_worker_cost__v1)
+
+    fxci_derived__task_run_costs__v1.set_upstream(fxci_worker_usage__v1)

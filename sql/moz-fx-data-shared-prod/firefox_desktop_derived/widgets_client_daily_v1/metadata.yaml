@@ -29,4 +29,3 @@ bigquery:
       - client_id
       - widget_name
       - country
-      - channel

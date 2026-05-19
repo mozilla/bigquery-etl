@@ -2,6 +2,7 @@
 {% set embedding_model = 'gemini-embedding-001' %}
 {% set prompt_version = 'v1' %}
 {% set sentiment_bound = 1 %}
+{% set category_threshold = 30 %}
 {%- set article_prompt =
   'You are analyzing a Mozilla Knowledge Base support article. ' ~
   'Extract the following fields and return them as structured data. ' ~
@@ -42,10 +43,10 @@ WITH base AS (
   WHERE
     parent_id IS NULL -- original non-translated articles
     AND is_archived = FALSE
-    AND category < 30 -- Only categories relevant to the users. See schema description for further details.
+    AND category < {{ category_threshold }} -- Only categories relevant to the users. See schema description for further details.
     -- categories https://github.com/mozilla/kitsune/blob/3ddd61a2f32eb486388366874d42f9a860e357d8/kitsune/wiki/config.py#L87
     AND html NOT LIKE '%REDIRECT%'
-    AND products NOT LIKE '%thunderbird%'
+    AND LOWER(products) NOT LIKE '%thunderbird%'
 ),
 existing AS (
   SELECT

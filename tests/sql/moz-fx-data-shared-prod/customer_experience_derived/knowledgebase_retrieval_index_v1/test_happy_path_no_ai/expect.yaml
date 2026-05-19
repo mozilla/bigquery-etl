@@ -1,0 +1,37 @@
+- id: 1
+  title: "Firefox password manager"
+  slug: "firefox-password-manager"
+  locale: "en-US"
+  content: "<p>How to use the Firefox password manager.</p>"
+  category: 10
+  needs_change: false
+  display_order: 1
+  current_revision_id: 100
+  latest_localizable_revision_id: 100
+  products: "firefox"
+  topics: "passwords-and-sign-in"
+  is_template: false
+  is_localizable: true
+  allow_discussion: true
+  last_updated: "2026-05-01T00:00:00+00:00"
+  num_pageviews_last_7_days: 50
+  num_pageviews_last_30_days: 200
+  num_pageviews_last_90_days: 600
+  num_pageviews_last_365_days: 2400
+  type: "article"
+  article_summary_llm: "Using the Firefox password manager"
+  article_category_llm: "passwords"
+  article_language_llm: "en-US"
+  article_entities_llm: ["Firefox", "password manager"]
+  article_topics_llm: ["passwords", "sign-in"]
+  article_sentiment_score: 0.5
+  embedding: [0.1, 0.2, 0.3]
+  metadata:
+    input_fields: ["title", "content"]
+    input_char_count: 60
+    model_version: "gemini-2.5-pro"
+    embedding_version: "gemini-embedding-001"
+    prompt_version: "v1"
+    analysis_timestamp: "2026-05-01T00:00:00+00:00"
+    embedding_succeeded: true
+    failure_reasons: []

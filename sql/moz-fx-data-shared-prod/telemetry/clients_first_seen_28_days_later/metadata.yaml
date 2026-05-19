@@ -4,3 +4,5 @@ description: Client cohorts 28 days after their first seen date with relevant re
 owners:
 - mhirose@mozilla.com
 - shong@mozilla.com
+labels:
+  legacy: true

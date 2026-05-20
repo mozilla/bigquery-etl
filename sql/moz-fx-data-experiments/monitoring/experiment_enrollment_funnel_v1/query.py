@@ -42,6 +42,7 @@ all_apps_raw AS (
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'status') AS status,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'reason') AS reason,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'conflict_slug') AS conflict_slug,
+    (SELECT value FROM UNNEST(event.extra) WHERE key = 'branch') AS branch,
     t.submission_timestamp
   FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
@@ -60,6 +61,7 @@ all_apps_raw AS (
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'status') AS status,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'reason') AS reason,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'conflict_slug') AS conflict_slug,
+    (SELECT value FROM UNNEST(event.extra) WHERE key = 'branch') AS branch,
     t.submission_timestamp
   FROM `moz-fx-data-shared-prod.org_mozilla_ios_firefox.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
@@ -78,8 +80,9 @@ all_apps_raw AS (
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'status') AS status,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'reason') AS reason,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'conflict_slug') AS conflict_slug,
+    (SELECT value FROM UNNEST(event.extra) WHERE key = 'branch') AS branch,
     t.submission_timestamp
-  FROM `moz-fx-data-shared-prod.org_mozilla_fenix.nimbus_targeting_context` t,
+  FROM `moz-fx-data-shared-prod.fenix.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
   WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
     AND t.sample_id = 0
@@ -99,6 +102,7 @@ latest AS (
 SELECT
   app_name,
   slug,
+  branch,
   status,
   reason,
   conflict_slug,
@@ -106,8 +110,8 @@ SELECT
 FROM latest
 INNER JOIN active_experiments USING (slug)
 WHERE rn = 1
-GROUP BY 1, 2, 3, 4, 5
-ORDER BY slug, app_name, status, reason
+GROUP BY 1, 2, 3, 4, 5, 6
+ORDER BY slug, app_name, branch, status, reason
 """
 
 parser = ArgumentParser(description=__doc__)
@@ -176,6 +180,7 @@ def main():
         data[slug].append(
             {
                 "app_name": row["app_name"],
+                "branch": row["branch"],
                 "status": row["status"],
                 "reason": row["reason"],
                 "conflict_slug": row["conflict_slug"],

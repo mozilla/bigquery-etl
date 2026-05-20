@@ -7,6 +7,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Experiment or rollout slug.
+  - name: branch
+    type: STRING
+    mode: NULLABLE
+    description: Branch the client was assigned to (populated when status is Enrolled, NULL otherwise).
   - name: status
     type: STRING
     mode: NULLABLE

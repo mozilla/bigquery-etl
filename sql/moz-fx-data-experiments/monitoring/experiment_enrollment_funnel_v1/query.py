@@ -46,6 +46,7 @@ all_apps_raw AS (
   FROM `moz-fx-data-shared-prod.firefox_desktop.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
   WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+    AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
 
@@ -63,6 +64,7 @@ all_apps_raw AS (
   FROM `moz-fx-data-shared-prod.org_mozilla_ios_firefox.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
   WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+    AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
 
@@ -80,6 +82,7 @@ all_apps_raw AS (
   FROM `moz-fx-data-shared-prod.org_mozilla_fenix.nimbus_targeting_context` t,
   UNNEST(t.events) AS event
   WHERE DATE(t.submission_timestamp) BETWEEN @min_start_date AND @run_date
+    AND t.sample_id = 0
     AND event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
 ),
@@ -99,7 +102,7 @@ SELECT
   status,
   reason,
   conflict_slug,
-  COUNT(DISTINCT client_id) AS clients
+  COUNT(DISTINCT client_id) * 100 AS clients
 FROM latest
 INNER JOIN active_experiments USING (slug)
 WHERE rn = 1

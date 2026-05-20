@@ -22,4 +22,4 @@ fields:
   - name: clients
     type: INT64
     mode: NULLABLE
-    description: Count of distinct clients with this funnel status for the recipe.
+    description: Estimated count of distinct clients (1% sample scaled by 100).

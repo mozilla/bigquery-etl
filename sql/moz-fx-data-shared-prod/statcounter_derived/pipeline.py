@@ -343,9 +343,7 @@ def upload_to_gcs(df: pd.DataFrame, blob_name: str) -> None:
     logger.info(f"Uploaded {len(df)} rows to {gcs_uri}")
 
 
-def load_into_bigquery(
-    partition_date: date, bq_table: str, blob_name: str, clustering_fields: list[str]
-) -> None:
+def load_into_bigquery(partition_date: date, bq_table: str, blob_name: str) -> None:
     """Load the CSV from GCS into a date partition of the BigQuery table.
 
     Uses WRITE_TRUNCATE to atomically replace the partition, making the operation idempotent.
@@ -354,7 +352,6 @@ def load_into_bigquery(
         partition_date (date): The partition date, used to construct the partition decorator.
         bq_table (str): BigQuery table name.
         blob_name (str): GCS blob path to load from.
-        clustering_fields (list[str]): BigQuery clustering fields — must match the table definition.
     """
     gcs_uri = f"gs://{GCS_BUCKET}/{blob_name}"
     client = bigquery.Client(project=BQ_PROJECT)
@@ -366,11 +363,6 @@ def load_into_bigquery(
         skip_leading_rows=1,
         schema=SCHEMA,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-        time_partitioning=bigquery.TimePartitioning(
-            type_=bigquery.TimePartitioningType.DAY,
-            field=DATE_COLUMN,
-        ),
-        clustering_fields=clustering_fields,
     )
     load_job = client.load_table_from_uri(
         gcs_uri,
@@ -541,9 +533,7 @@ def main(
         )
         upload_to_gcs(df, blob_name)
         try:
-            load_into_bigquery(
-                partition_date, config.bq_table, blob_name, config.clustering_fields
-            )
+            load_into_bigquery(partition_date, config.bq_table, blob_name)
         except Exception:
             delete_from_gcs(blob_name)
             raise

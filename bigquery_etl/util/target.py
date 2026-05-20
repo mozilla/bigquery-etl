@@ -512,10 +512,16 @@ def _normalize_table_ref(
 
 
 def _existing_artifact_file(source_dir: Path) -> Optional[Path]:
-    """Return the recognized artifact file under source_dir, or None."""
+    """Return the recognized artifact file under source_dir, or None.
+
+    Falls back to schema.yaml for schema-only tables (Fivetran, GA exports,
+    etc.) so they're treated as managed and don't trigger _create_target_stub.
+    """
     for fn in (VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW):
         if (source_dir / fn).is_file():
             return source_dir / fn
+    if (source_dir / SCHEMA_FILE).is_file():
+        return source_dir / SCHEMA_FILE
     return None
 
 

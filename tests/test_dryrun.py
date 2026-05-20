@@ -1,6 +1,8 @@
 import os
+from unittest.mock import patch
 
 import pytest
+import yaml
 
 from bigquery_etl.dryrun import DryRun, Errors
 
@@ -348,6 +350,42 @@ class TestDryRun:
 
         assert cached1["schema"]["fields"][0]["name"] == "table1_col"
         assert cached2["schema"]["fields"][0]["name"] == "table2_col"
+
+    def test_skipped_files_picks_up_stage_paths_via_manifest(self, tmp_path):
+        """A skip-listed source path matches its stage copy via the manifest."""
+        sql_dir = tmp_path / "sql"
+        test_project = "moz-fx-data-integration-tests"
+        # On-disk stage path is arbitrary; the manifest is what ties it back
+        # to the source-side skip pattern.
+        stage_dir = sql_dir / test_project / "any_dataset" / "any_table_dir"
+        stage_dir.mkdir(parents=True)
+        (stage_dir / ".bqetl_target_info.yaml").write_text(
+            yaml.dump(
+                {
+                    "source_project": "src-proj",
+                    "source_dataset": "src_ds",
+                    "source_table": "skipped_v1",
+                }
+            )
+        )
+        (stage_dir / "query.sql").write_text("SELECT 1")
+        (stage_dir / "schema.yaml").write_text("fields: []")
+
+        def _config_get(*args, **kwargs):
+            if args[:2] == ("dry_run", "skip"):
+                return ["sql/src-proj/src_ds/skipped_v1/query.sql"]
+            if args[:2] == ("default", "test_project"):
+                return test_project
+            if args[:2] == ("default", "sql_dir"):
+                return str(sql_dir)
+            return kwargs.get("fallback", None)
+
+        with patch("bigquery_etl.dryrun.ConfigLoader.get", side_effect=_config_get):
+            skipped = DryRun.skipped_files(sql_dir=sql_dir)
+
+        assert str(stage_dir / "query.sql") in skipped
+        # Only artifact files (.sql/.py) get added, not schema.yaml.
+        assert str(stage_dir / "schema.yaml") not in skipped
 
     def test_use_cache_false_disables_caching(self, tmp_query_path):
         """Test that use_cache=False disables all caching functionality."""

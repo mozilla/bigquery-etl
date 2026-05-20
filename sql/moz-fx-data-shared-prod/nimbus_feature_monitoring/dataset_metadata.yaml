@@ -1,0 +1,10 @@
+friendly_name: Nimbus Feature Monitoring
+description: |-
+  Derived tables for monitoring the rollout of Nimbus features.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

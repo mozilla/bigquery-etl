@@ -3,9 +3,10 @@
 import hashlib
 import io
 import logging
+import re
 import uuid
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import NamedTuple
 
 import pandas as pd
@@ -126,25 +127,48 @@ def parse_csv(csv_content: bytes) -> pd.DataFrame:
     return df
 
 
-def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
     """Rename Statcounter CSV columns to match the pipeline schema.
 
     The CSV has a fixed 'Browser' column and a dynamic percent column whose
-    name includes the date (e.g. 'Market Share Perc. (DD MMMM YYYY)').
+    name includes the date (e.g. 'Market Share Perc. (DD MMMM YYYY)'). Parse
+    the date from that header and compare it to partition_date so that a
+    Statcounter fallback to a different day fails loudly instead of silently
+    mis-stamping the row.
 
     Args:
         df (pd.DataFrame): Parsed CSV data.
+        partition_date (date): The expected date of the response.
 
     Returns:
         pd.DataFrame: DataFrame with columns renamed to 'browser' and 'percent'.
+
+    Raises:
+        ValueError: If the percent column is missing, malformed, or its
+            embedded date does not match partition_date.
     """
     percent_cols = [col for col in df.columns if col.startswith("Market Share")]
     if len(percent_cols) != 1:
         raise ValueError(
             f"Expected exactly one 'Market Share' column, found: {percent_cols}"
         )
-    df = df.rename(columns={"Browser": "browser", percent_cols[0]: "percent"})
-    logger.info(f"Renamed 'Browser' -> 'browser', '{percent_cols[0]}' -> 'percent'")
+    percent_col = percent_cols[0]
+
+    match = re.search(r"\((\d{1,2} [A-Za-z]+ \d{4})\)", percent_col)
+    if not match:
+        raise ValueError(
+            f"Could not parse date from percent column header: '{percent_col}'"
+        )
+    source_date = datetime.strptime(match.group(1), "%d %B %Y").date()
+    if source_date != partition_date:
+        raise ValueError(
+            f"Source date in column header ({source_date}) does not match "
+            f"partition_date ({partition_date}); Statcounter may have fallen "
+            f"back to a different day. Column header: '{percent_col}'"
+        )
+
+    df = df.rename(columns={"Browser": "browser", percent_col: "percent"})
+    logger.info(f"Renamed 'Browser' -> 'browser', '{percent_col}' -> 'percent'")
     return df
 
 
@@ -498,7 +522,7 @@ def main(
             url = build_statcounter_url(source.base_url, partition_date, partition_date)
             csv_content = fetch_csv(url, source.geography, source.device)
             df = parse_csv(csv_content)
-            df = rename_columns(df)
+            df = rename_columns(df, partition_date)
             df = add_metadata(df, partition_date, source.geography, source.device)
             df = add_surrogate_key(df)
             df = reorder_columns(df)

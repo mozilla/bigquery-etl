@@ -888,6 +888,11 @@ def backfill(
         )
 
     if not depends_on_past and parallelism > 1:
+        # Attempt to populate the gcloud credential store before running the parallel queries below
+        subprocess.check_call(
+            ["bq", "query", "--use_legacy_sql=false", "--dry_run", "SELECT 1"]
+        )
+
         # run backfill for dates in parallel if depends_on_past is false
         failed_backfills = []
         with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:

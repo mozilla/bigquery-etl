@@ -451,7 +451,7 @@ def ensure_primary_key(bq_table: str) -> None:
 def delete_from_gcs(blob_name: str) -> None:
     """Delete the CSV blob from GCS.
 
-    If the blob does not exist, the deletion is skipped without raising an error.
+    Skip silently without raising if the blob does not exist.
 
     Args:
         blob_name (str): GCS blob path to delete.

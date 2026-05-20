@@ -19,7 +19,7 @@ generated_docs/
 generated-sql/
 
 # ignore target deployment manifests
-**/.bqetl_target_info.yaml
+**/bqetl_target_info.yaml
 
 # ignore local dev target deployments
 sql/*-sandbox/

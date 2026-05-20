@@ -1187,6 +1187,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         sql_dir=options["sql_dir"],
         credentials=options["credentials"],
         id_token=options["id_token"],
+        isolated=options.get("isolated", False),
     )
 
 

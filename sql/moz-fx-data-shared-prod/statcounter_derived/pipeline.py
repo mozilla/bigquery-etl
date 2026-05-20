@@ -1,9 +1,12 @@
+"""Shared Statcounter CSV ingestion pipeline."""
+
 import hashlib
 import io
 import logging
 import uuid
 from dataclasses import dataclass
 from datetime import date, timedelta
+from typing import NamedTuple
 
 import pandas as pd
 import requests
@@ -34,11 +37,19 @@ PK_COLUMNS = ["date", "geography", "device", "browser"]
 NUMERIC_COLUMNS = {"percent": (0, 100)}
 
 
+class Source(NamedTuple):
+    """A single Statcounter CSV source for a given geography and device."""
+
+    geography: str
+    device: str
+    base_url: str  # date params added at runtime
+
+
 @dataclass
 class PipelineConfig:
-    sources: list[
-        tuple[str, str, str]
-    ]  # [(geography, device, base_url), ...] — date params added at runtime
+    """Configuration for a Statcounter ingestion pipeline run."""
+
+    sources: list[Source]
     gcs_blob_prefix: str
     bq_table: str
     clustering_fields: list[str]
@@ -483,12 +494,12 @@ def main(
 
     for partition_date in dates:
         dfs = []
-        for geography, device, base_url in config.sources:
-            url = build_statcounter_url(base_url, partition_date, partition_date)
-            csv_content = fetch_csv(url, geography, device)
+        for source in config.sources:
+            url = build_statcounter_url(source.base_url, partition_date, partition_date)
+            csv_content = fetch_csv(url, source.geography, source.device)
             df = parse_csv(csv_content)
             df = rename_columns(df)
-            df = add_metadata(df, partition_date, geography, device)
+            df = add_metadata(df, partition_date, source.geography, source.device)
             df = add_surrogate_key(df)
             df = reorder_columns(df)
             dfs.append(df)

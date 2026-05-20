@@ -1,3 +1,5 @@
+"""Statcounter browser market share worldwide ingestion entrypoint."""
+
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -7,10 +9,18 @@ import typer
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from pipeline import PipelineConfig, main
+from pipeline import PipelineConfig, Source, main  # noqa: E402
 
-BASE_URL_DESKTOP = "https://gs.statcounter.com/browser-market-share/desktop/worldwide/chart.php?bar=1&device=Desktop&device_hidden=desktop&statType_hidden=browser&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
-BASE_URL_MOBILE = "https://gs.statcounter.com/browser-market-share/mobile/worldwide/chart.php?bar=1&device=Mobile&device_hidden=mobile&statType_hidden=browser&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
+BASE_URL_DESKTOP = (
+    "https://gs.statcounter.com/browser-market-share/desktop/worldwide/chart.php"
+    "?bar=1&device=Desktop&device_hidden=desktop&statType_hidden=browser"
+    "&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
+)
+BASE_URL_MOBILE = (
+    "https://gs.statcounter.com/browser-market-share/mobile/worldwide/chart.php"
+    "?bar=1&device=Mobile&device_hidden=mobile&statType_hidden=browser"
+    "&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
+)
 
 app = typer.Typer()
 
@@ -28,11 +38,16 @@ def run(
         help="End date (YYYY-MM-DD). Defaults to --date-from.",
     ),
 ) -> None:
+    """Run the worldwide pipeline for the given date range."""
     main(
         PipelineConfig(
             sources=[
-                ("Worldwide", "Desktop", BASE_URL_DESKTOP),
-                ("Worldwide", "Mobile", BASE_URL_MOBILE),
+                Source(
+                    geography="Worldwide", device="Desktop", base_url=BASE_URL_DESKTOP
+                ),
+                Source(
+                    geography="Worldwide", device="Mobile", base_url=BASE_URL_MOBILE
+                ),
             ],
             gcs_blob_prefix="statcounter_data/browser_market_share_worldwide",
             bq_table="browser_market_share_worldwide_v1",

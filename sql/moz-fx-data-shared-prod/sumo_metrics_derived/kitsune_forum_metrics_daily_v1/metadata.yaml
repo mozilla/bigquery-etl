@@ -1,24 +1,25 @@
 friendly_name: Kitsune Forum Metrics Daily
 description: "Daily Kitsune support forum question and reply metrics, broken down\
-  \ by product\nand locale.\n\nGrain: Daily x Product x Locale (UTC timezone)\n\n\
-  Supports three Tier 1 KPIs:\n  reply_rate       = SUM(questions_replied) / SUM(questions_created)\n\
-  \  avg_ttfr_hrs     = AVG(avg_ttfr_hrs) weighted by questions_replied\n  helpfulness_rate\
-  \ = SUM(total_helpful_votes)\n                   / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))\n\
-  \nA row is included on @submission_date if the question was created on that date\n\
-  OR if the question received its first qualifying reply on that date. This allows\n\
-  both questions_created and questions_replied to be tracked in a single partition.\n\
-  \nProduct mapping (matching kitsune_forum_posts.sql):\n  firefox            \u2192\
-  \ Firefox desktop\n  mobile             \u2192 Firefox for Android\n  ios      \
-  \          \u2192 Firefox for iOS\n  firefox-enterprise \u2192 Firefox for Enterprise\n\
-  Non-Firefox products are excluded.\n\nExclusions (matching kitsune_forum_posts.sql\
-  \ source logic):\n- Spam questions and locked questions\n- Non-Firefox products\n\
-  - Self-replies (OP answering their own question) for TTFR and reply rate\n- Spam\
-  \ answers\n- Answers from deactivated users (kitsune_auth_user.is_active = FALSE)\n\
-  \nNote: total_helpful_votes and total_unhelpful_votes are cumulative vote totals\n\
-  on a question's answers as of ETL run time \u2014 not votes cast on @submission_date.\n\
-  Helpfulness rate is most meaningful when aggregated over a rolling window.\n\nReplaces\
-  \ the reply rate, TTFR, and helpfulness CTEs in:\n- kitsune_forum_posts.sql (dashboard\
-  \ queries)\n"
+  \ by product\nand locale.\n\nGrain: Created Date x First Reply Date x Product x\
+  \ Locale (UTC timezone)\n\nSupports three Tier 1 KPIs:\n  reply_rate       = SUM(questions_replied)\
+  \ / SUM(questions_created)\n  avg_ttfr_hrs     = AVG(avg_ttfr_hrs) weighted by questions_replied\n\
+  \  helpfulness_rate = SUM(total_helpful_votes)\n                   / (SUM(total_helpful_votes)\
+  \ + SUM(total_unhelpful_votes))\n\nThe main date column is `created_date`. `first_reply_date`\
+  \ is exposed as an\nadditional column (NULL for unreplied questions), so reports\
+  \ can aggregate\nquestions_created / TTFR by `created_date` and questions_replied\
+  \ by\n`first_reply_date` from the same table.\n\nProduct mapping (matching kitsune_forum_posts.sql):\n\
+  \  firefox            \u2192 Firefox desktop\n  mobile             \u2192 Firefox\
+  \ for Android\n  ios                \u2192 Firefox for iOS\n  firefox-enterprise\
+  \ \u2192 Firefox for Enterprise\nNon-Firefox products are excluded.\n\nExclusions\
+  \ (matching kitsune_forum_posts.sql source logic):\n- Spam questions and locked\
+  \ questions\n- Non-Firefox products\n- Self-replies (OP answering their own question)\
+  \ for TTFR and reply rate\n  only; OP self-answers ARE included in helpful/unhelpful\
+  \ vote totals\n- Spam answers\n- Answers from deactivated users (kitsune_auth_user.is_active\
+  \ = FALSE)\n\nNote: total_helpful_votes and total_unhelpful_votes are cumulative\
+  \ vote totals\non a question's answers as of ETL run time \u2014 not votes cast\
+  \ on @submission_date.\nHelpfulness rate is most meaningful when aggregated over\
+  \ a rolling window.\n\nReplaces the reply rate, TTFR, and helpfulness CTEs in:\n\
+  - kitsune_forum_posts.sql (dashboard queries)\n"
 owners:
 - plee@mozilla.com
 - mozilla/customer_insights

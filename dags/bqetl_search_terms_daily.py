@@ -215,6 +215,23 @@ with DAG(
         depends_on_past=False,
     )
 
+    search_terms_derived__suggest_partial_aggregates_daily__v1 = bigquery_etl_query(
+        task_id="search_terms_derived__suggest_partial_aggregates_daily__v1",
+        destination_table="suggest_partial_aggregates_daily_v1",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=[
+            "ads-data-team@mozilla.com",
+            "cbeck@mozilla.com",
+            "najiang@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     checks__fail_search_terms_derived__adm_daily_aggregates_qa__v1.set_upstream(
         search_terms_derived__adm_daily_aggregates_qa__v1
     )
@@ -237,4 +254,8 @@ with DAG(
 
     search_terms_derived__suggest_impression_sanitized__v3.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    search_terms_derived__suggest_partial_aggregates_daily__v1.set_upstream(
+        checks__fail_search_terms_derived__suggest_impression_sanitized__v3
     )

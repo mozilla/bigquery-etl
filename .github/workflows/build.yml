@@ -588,6 +588,7 @@ jobs:
         with:
           name: staged-generated-sql
           path: /tmp/workspace/staged-generated-sql
+          include-hidden-files: true
 
   dry-run-sql:
     name: Dry Run SQL

@@ -1,0 +1,37 @@
+---
+friendly_name: Suggest Partial Aggregates Daily
+
+owners:
+  - cbeck@mozilla.com
+
+description: |-
+  Pre-aggregated Firefox Suggest impressions and clicks per
+  (country, form_factor, advertiser, partial) per day.
+
+  Impressions are deduplicated at the session/advertiser level
+  (keeping the deepest partial per session, by sequence_no)
+
+  Rows with no session_id or empty query (i.e. impressions that did not
+  match a Merino log entry) are excluded.
+
+  Consumers can assemble arbitrary time windows by querying a
+  date range and using COUNT(DISTINCT submission_date) to filter
+  incomplete windows.
+
+labels:
+  incremental: true
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 180
+
+scheduling:
+  dag_name: bqetl_search_terms_daily
+
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated

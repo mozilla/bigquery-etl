@@ -1,0 +1,38 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date of the impression event.
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Two-letter ISO country code derived from the client's IP address.
+- mode: NULLABLE
+  name: form_factor
+  type: STRING
+  description: >-
+    Form factor of the client device (e.g. "desktop", "phone").
+    Sourced from Merino logs.
+- mode: NULLABLE
+  name: advertiser
+  type: STRING
+  description: Advertiser name associated with the suggest result.
+- mode: NULLABLE
+  name: partial
+  type: STRING
+  description: >-
+    Normalized search query partial typed by the user at the time of the
+    impression, lowercased and trimmed. Sourced from Merino logs; rows
+    without a Merino match are excluded.
+- mode: NULLABLE
+  name: impression_count
+  type: INTEGER
+  description: >-
+    Number of impressions for this (country, form_factor,
+    advertiser, partial) combination on this date. Deduplicated by keeping
+    only the deepest partial per (session_id, advertiser) pair.
+- mode: NULLABLE
+  name: click_count
+  type: INTEGER
+  description: >-
+    Number of clicks for this (country, form_factor, advertiser, partial) combination on this date.

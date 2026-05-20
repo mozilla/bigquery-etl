@@ -1,0 +1,63 @@
+# Row 1: kept — highest sequence_no for (sess1, amazon)
+- submission_timestamp: "2024-01-15T10:00:00+00:00"
+  session_id: "sess1"
+  advertiser: "amazon"
+  sequence_no: 2
+  query: "fire fox"
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 2: deduped out — lower sequence_no for same (sess1, amazon)
+- submission_timestamp: "2024-01-15T09:00:00+00:00"
+  session_id: "sess1"
+  advertiser: "amazon"
+  sequence_no: 1
+  query: "fire"
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 3: kept — different session; query normalizes to same partial "fire fox"
+- submission_timestamp: "2024-01-15T11:00:00+00:00"
+  session_id: "sess2"
+  advertiser: "amazon"
+  sequence_no: 1
+  query: "  FIRE FOX  "
+  country: US
+  form_factor: desktop
+  is_clicked: true
+# Row 4: excluded — null session_id
+- submission_timestamp: "2024-01-15T10:00:00+00:00"
+  session_id: null
+  advertiser: "amazon"
+  sequence_no: 1
+  query: "fire fox"
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 5: excluded — null query
+- submission_timestamp: "2024-01-15T10:00:00+00:00"
+  session_id: "sess3"
+  advertiser: "amazon"
+  sequence_no: 1
+  query: null
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 6: excluded — whitespace-only query
+- submission_timestamp: "2024-01-15T10:00:00+00:00"
+  session_id: "sess4"
+  advertiser: "amazon"
+  sequence_no: 1
+  query: "   "
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 7: kept — different advertiser in same session as row 1; not deduped against amazon
+- submission_timestamp: "2024-01-15T10:00:00+00:00"
+  session_id: "sess1"
+  advertiser: "yelp"
+  sequence_no: 1
+  query: "pizza"
+  country: US
+  form_factor: desktop
+  is_clicked: true

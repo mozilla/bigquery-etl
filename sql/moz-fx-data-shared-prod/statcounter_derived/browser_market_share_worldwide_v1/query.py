@@ -4,6 +4,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
 import typer
 
@@ -11,15 +12,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from pipeline import PipelineConfig, Source, main  # noqa: E402
 
-BASE_URL_DESKTOP = (
-    "https://gs.statcounter.com/browser-market-share/desktop/worldwide/chart.php"
-    "?bar=1&device=Desktop&device_hidden=desktop&statType_hidden=browser"
-    "&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
-)
-BASE_URL_MOBILE = (
-    "https://gs.statcounter.com/browser-market-share/mobile/worldwide/chart.php"
-    "?bar=1&device=Mobile&device_hidden=mobile&statType_hidden=browser"
-    "&region_hidden=ww&granularity=daily&statType=Browser&region=Worldwide&csv=1"
+GEOGRAPHIES = [
+    ("Worldwide", "worldwide", "ww"),
+]
+
+BASE_URL = (
+    "https://gs.statcounter.com/browser-market-share/{device_slug}/{region_slug}"
+    "/chart.php?bar=1&device={device_name}&device_hidden={device_slug}"
+    "&statType_hidden=browser&region_hidden={region_code}&granularity=daily"
+    "&statType=Browser&region={region_name}&csv=1"
 )
 
 app = typer.Typer()
@@ -39,16 +40,24 @@ def run(
     ),
 ) -> None:
     """Run the worldwide pipeline for the given date range."""
+    sources = [
+        Source(
+            geography=name,
+            device=device,
+            base_url=BASE_URL.format(
+                device_slug=device.lower(),
+                region_slug=slug,
+                device_name=device,
+                region_code=code,
+                region_name=quote(name, safe=""),
+            ),
+        )
+        for name, slug, code in GEOGRAPHIES
+        for device in ("Desktop", "Mobile")
+    ]
     main(
         PipelineConfig(
-            sources=[
-                Source(
-                    geography="Worldwide", device="Desktop", base_url=BASE_URL_DESKTOP
-                ),
-                Source(
-                    geography="Worldwide", device="Mobile", base_url=BASE_URL_MOBILE
-                ),
-            ],
+            sources=sources,
             gcs_blob_prefix="statcounter_data/browser_market_share_worldwide",
             bq_table="browser_market_share_worldwide_v1",
             clustering_fields=["device", "browser"],

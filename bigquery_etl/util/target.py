@@ -47,7 +47,7 @@ MATERIALIZED_VIEW = "materialized_view.sql"
 
 ROOT = Path(__file__).parent.parent.parent
 
-MANIFEST_FILENAME = ".bqetl_target_info.yaml"
+MANIFEST_FILENAME = "bqetl_target_info.yaml"
 DEFAULT_TARGETS_FILENAME = "bqetl_targets.yaml"
 
 

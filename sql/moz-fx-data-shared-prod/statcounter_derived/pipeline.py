@@ -314,8 +314,10 @@ def validate_numeric_bounds(df: pd.DataFrame) -> None:
         ValueError: If a value is non-numeric or outside the expected bounds.
     """
     for col, (lower, upper) in NUMERIC_COLUMNS.items():
+        if df[col].isnull().any():
+            raise ValueError(f'Null value found in numeric column "{col}".')
         numeric = pd.to_numeric(df[col], errors="coerce")
-        non_numeric = df[col][numeric.isna() & df[col].notna()]
+        non_numeric = df[col][numeric.isna()]
         if not non_numeric.empty:
             raise ValueError(
                 f'Non-numeric values found in "{col}": {non_numeric.tolist()}'

@@ -8,6 +8,7 @@ labels:
   schedule: daily
   dag: bqetl_crash
   owner1: dthorn
+  legacy: true
 # scheduling:
 #  dag_name: bqetl_crash
 #  start_date: '2023-12-10'

@@ -3,3 +3,5 @@ description: Uninstalls by attribution source split by if the uninstall was on d
   of installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

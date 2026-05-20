@@ -19166,7 +19166,8 @@ fields:
     - name: avif_aom_decode_error
       type: INTEGER
       mode: NULLABLE
-      description: 'Image-decode Error from AOM decoder
+      description: 'Image-decode Error from AOM decoder (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_dav1d_decode_error

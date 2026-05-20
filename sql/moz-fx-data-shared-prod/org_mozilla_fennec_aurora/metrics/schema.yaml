@@ -13288,8 +13288,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -19158,7 +19157,8 @@ fields:
     - name: avif_aom_decode_error
       type: INTEGER
       mode: NULLABLE
-      description: 'Image-decode Error from AOM decoder
+      description: 'Image-decode Error from AOM decoder (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_dav1d_decode_error

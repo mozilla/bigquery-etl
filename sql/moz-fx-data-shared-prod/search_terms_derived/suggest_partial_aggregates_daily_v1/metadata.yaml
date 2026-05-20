@@ -27,6 +27,10 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 180
+  clustering:
+    fields:
+      - country
+      - form_factor
 
 scheduling:
   dag_name: bqetl_search_terms_daily

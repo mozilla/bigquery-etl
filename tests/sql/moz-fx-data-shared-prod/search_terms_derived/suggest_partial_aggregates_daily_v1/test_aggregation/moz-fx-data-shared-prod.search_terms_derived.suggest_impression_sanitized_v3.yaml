@@ -52,7 +52,16 @@
   country: US
   form_factor: desktop
   is_clicked: false
-# Row 7: kept — different advertiser in same session as row 1; not deduped against amazon
+# Row 7: excluded — wrong submission_date, filtered by WHERE DATE(submission_timestamp) = @submission_date
+- submission_timestamp: "2024-01-14T10:00:00+00:00"
+  session_id: "sess5"
+  advertiser: "amazon"
+  sequence_no: 1
+  query: "fire fox"
+  country: US
+  form_factor: desktop
+  is_clicked: false
+# Row 8: kept — different advertiser in same session as row 1; not deduped against amazon
 - submission_timestamp: "2024-01-15T10:00:00+00:00"
   session_id: "sess1"
   advertiser: "yelp"

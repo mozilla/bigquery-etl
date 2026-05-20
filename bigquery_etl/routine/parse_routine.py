@@ -165,7 +165,7 @@ class RawRoutine:
                 or normalized_statement.startswith("create or replace table function")
             ):
                 definitions.append(s)
-                if re.search(persistent_name_re, normalized_statement):
+                if re.search(persistent_name_re, normalized_statement, re.IGNORECASE):
                     internal_name = persistent_name
 
             elif normalized_statement.startswith("create temp function"):
@@ -177,7 +177,7 @@ class RawRoutine:
                 is_stored_procedure = True
                 definitions.append(s)
                 tests.append(s)
-                if re.search(persistent_name_re, normalized_statement):
+                if re.search(persistent_name_re, normalized_statement, re.IGNORECASE):
                     internal_name = persistent_name
 
             else:

@@ -27,6 +27,7 @@ WITH non_excluded_tickets AS (
     resolution_status = 'Resolved' AS is_resolved,
     is_one_touch,
     rating_category,
+    survey_responded,
     first_reply_time_business_minutes,
     full_resolution_time_business_minutes
   FROM
@@ -42,7 +43,7 @@ SELECT
   COUNTIF(is_resolved) AS tickets_resolved,
   COUNTIF(is_resolved AND is_one_touch = 1) AS one_touch_tickets,
   COUNTIF(is_resolved AND rating_category = 'good') AS satisfied_surveys,
-  COUNTIF(is_resolved AND rating_category IS NOT NULL) AS rated_surveys,
+  COUNTIF(is_resolved AND survey_responded) AS rated_surveys,
   -- TTFR denominator: not every ticket has a first agent reply (auto-solved
   -- tickets can resolve without one), so use a dedicated count.
   COUNTIF(first_reply_time_business_minutes IS NOT NULL) AS replied_tickets,

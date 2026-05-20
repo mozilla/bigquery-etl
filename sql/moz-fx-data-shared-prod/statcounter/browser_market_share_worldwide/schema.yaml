@@ -1,8 +1,4 @@
 fields:
-  - name: sk
-    type: STRING
-    mode: NULLABLE
-    description: Surrogate key; MD5 hash of date, geography, device, and browser
   - name: date
     type: DATE
     mode: NULLABLE

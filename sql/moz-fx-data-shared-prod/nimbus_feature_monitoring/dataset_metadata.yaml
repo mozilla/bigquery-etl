@@ -2,7 +2,7 @@ friendly_name: Nimbus Feature Monitoring
 description: |-
   Derived tables for monitoring the rollout of Nimbus features.
 dataset_base_acl: derived
-user_facing: false
+user_facing: true
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

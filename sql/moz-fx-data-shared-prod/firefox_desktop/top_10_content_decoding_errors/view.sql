@@ -4,7 +4,8 @@ AS
 WITH events AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    (SELECT value FROM UNNEST(event.extra) WHERE key = 'top_level_site') AS top_level_site
+    (SELECT value FROM UNNEST(event.extra) WHERE key = 'top_level_site') AS top_level_site,
+    (SELECT value FROM UNNEST(event.extra) WHERE key = 'error_type') AS error_type
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.content_decoding_error` AS e
   CROSS JOIN
@@ -32,6 +33,7 @@ site_counts AS (
   SELECT
     submission_date,
     events.top_level_site AS series,
+    error_type,
     COUNT(*) AS error_count
   FROM
     events
@@ -40,27 +42,32 @@ site_counts AS (
     USING (top_level_site)
   GROUP BY
     submission_date,
-    series
+    series,
+    error_type
 ),
 all_sites_total AS (
   SELECT
     submission_date,
     'ALL_SITES_TOTAL' AS series,
+    error_type,
     COUNT(*) AS error_count
   FROM
     events
   GROUP BY
-    submission_date
+    submission_date,
+    error_type
 ),
 top_10_total AS (
   SELECT
     submission_date,
     'TOP_10_TOTAL' AS series,
+    error_type,
     SUM(error_count) AS error_count
   FROM
     site_counts
   GROUP BY
-    submission_date
+    submission_date,
+    error_type
 )
 SELECT
   *

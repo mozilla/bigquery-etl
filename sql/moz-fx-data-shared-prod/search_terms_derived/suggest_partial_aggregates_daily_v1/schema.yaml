@@ -6,7 +6,7 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Two-letter ISO country code derived from the client's IP address.
+  description: Two-letter ISO country code.
 - mode: NULLABLE
   name: form_factor
   type: STRING

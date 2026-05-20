@@ -717,6 +717,32 @@ class TestCollectTargetDependencies:
         assert managed_dir / "query.sql" in deps
         mock_fetch_schema.assert_not_called()
 
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_is_followed_not_stubbed(self, mock_fetch_schema, tmp_path):
+        # Schema-only table dirs (Fivetran/GA-style externally-loaded tables)
+        # should be recognized as managed and not trigger stub creation —
+        # otherwise the dry-run inside _fetch_stub_schema can 400 with
+        # "Unrecognized name: submission_date" on tables that don't have
+        # that column.
+        view_dir = tmp_path / "src-proj" / "ds" / "view_a"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.view_a` AS\n"
+            "SELECT * FROM `src-proj.ds.schema_only_tbl`"
+        )
+        schema_only_dir = tmp_path / "src-proj" / "ds" / "schema_only_tbl"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text("fields: []")
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: x\n")
+
+        target = Target(name="dev", project_id="dev-proj", dataset="dev_ds")
+        deps = collect_target_dependencies(
+            {view_dir / "view.sql"}, str(tmp_path), target
+        )
+
+        assert schema_only_dir / "schema.yaml" in deps
+        mock_fetch_schema.assert_not_called()
+
 
 class TestStripMaterializedView:
     def test_strips_create_clause(self, tmp_path):

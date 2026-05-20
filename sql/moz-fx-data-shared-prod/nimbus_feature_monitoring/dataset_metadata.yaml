@@ -1,6 +1,8 @@
 friendly_name: Nimbus Feature Monitoring
 description: |-
-  Derived tables for monitoring the rollout of Nimbus features.
+  Aggregate tables for monitoring the rollout of Nimbus features.
+  Populated by the sql_generators/nimbus_feature_monitoring generator
+  via the bqetl_nimbus_feature_monitoring DAG (daily).
 dataset_base_acl: derived
 user_facing: true
 labels: {}

@@ -3,7 +3,7 @@ description: |
   Daily Kitsune support forum question and reply metrics, broken down by product
   and locale.
 
-  Grain: Daily x Product x Locale (UTC timezone)
+  Grain: Created Date x First Reply Date x Product x Locale (UTC timezone)
 
   Supports three Tier 1 KPIs:
     reply_rate       = SUM(questions_replied) / SUM(questions_created)
@@ -11,9 +11,10 @@ description: |
     helpfulness_rate = SUM(total_helpful_votes)
                      / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))
 
-  A row is included on @submission_date if the question was created on that date
-  OR if the question received its first qualifying reply on that date. This allows
-  both questions_created and questions_replied to be tracked in a single partition.
+  The main date column is `created_date`. `first_reply_date` is exposed as an
+  additional column (NULL for unreplied questions), so reports can aggregate
+  questions_created / TTFR by `created_date` and questions_replied by
+  `first_reply_date` from the same table.
 
   Product mapping (matching kitsune_forum_posts.sql):
     firefox            → Firefox desktop
@@ -26,6 +27,7 @@ description: |
   - Spam questions and locked questions
   - Non-Firefox products
   - Self-replies (OP answering their own question) for TTFR and reply rate
+    only; OP self-answers ARE included in helpful/unhelpful vote totals
   - Spam answers
   - Answers from deactivated users (kitsune_auth_user.is_active = FALSE)
 

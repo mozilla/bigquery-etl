@@ -368,18 +368,33 @@ def write_view_if_not_exists(
         document_namespace=schema.document_namespace,
         document_type=schema.document_type,
     )
+    labels = {}
+    # Add a `legacy` label to stable views that select from legacy telemetry ping tables.
+    if schema.bq_dataset_family == "telemetry":
+        labels["legacy"] = True
+
     metadata_file = target_dir / "metadata.yaml"
     should_write_metadata = False
     # append metadata if existing metadata doesn't have name and description
     if metadata_file.exists():
         with metadata_file.open() as f:
             existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
+            if labels:
+                if existing_labels := existing_metadata.get("labels"):
+                    existing_labels.update(labels)
+                else:
+                    existing_metadata["labels"] = labels
             if (
                 "friendly_name" not in existing_metadata
                 and "description" not in existing_metadata
             ):
                 should_write_metadata = True
-                metadata_content = metadata_content + yaml.dump(existing_metadata)
+                metadata_content += yaml.dump(existing_metadata)
+            elif labels:
+                should_write_metadata = True
+                metadata_content = yaml.dump(existing_metadata)
+    elif labels:
+        metadata_content += yaml.dump({"labels": labels})
 
     if not metadata_file.exists() or should_write_metadata:
         with metadata_file.open("w") as f:

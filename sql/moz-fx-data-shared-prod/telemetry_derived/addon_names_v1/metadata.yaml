@@ -9,6 +9,7 @@ labels:
   incremental: true
   table_type: aggregate
   shredder_mitigation: false
+  legacy: true
 scheduling:
   dag_name: bqetl_addons
   # This is an unpartitioned table that we recreate each day based on the

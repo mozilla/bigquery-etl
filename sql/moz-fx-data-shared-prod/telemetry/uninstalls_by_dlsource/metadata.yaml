@@ -3,3 +3,5 @@ description: Number of unique clients uninstalling by submission date and downlo
   source
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

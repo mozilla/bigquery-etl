@@ -607,6 +607,16 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
+    client = bigquery.Client(project=project_id)
+
+    if copy_table_permissions:
+        try:
+            client.get_table(qualified_table_name)
+        except NotFound:
+            raise RuntimeError(
+                f"Cannot use --copy-table-permissions since {qualified_table_name} does not exist."
+            ) from None
+
     # create schema before deploying staging table if it does not exist
     schema_path = query_path.parent / SCHEMA_FILE
 
@@ -618,6 +628,32 @@ def initiate(
             sql_dir=sql_dir,
         ).to_yaml_file(schema_path)
         click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
+
+    def _copy_permissions_with_cleanup():
+        """Copy permissions from prod table and delete the staging table if it fails."""
+        try:
+            copy_permissions_to_staging_table(
+                client,
+                qualified_table_name,
+                backfill_staging_qualified_table_name,
+            )
+        except Exception as e:
+            try:
+                client.delete_table(
+                    backfill_staging_qualified_table_name, not_found_ok=True
+                )
+                cleanup_msg = f"deleted {backfill_staging_qualified_table_name}"
+            except Exception as delete_exc:
+                click.echo(
+                    f"Failed to delete {backfill_staging_qualified_table_name}: {delete_exc}"
+                )
+                cleanup_msg = (
+                    f"failed to delete {backfill_staging_qualified_table_name}, "
+                    "manual cleanup required"
+                )
+            raise RuntimeError(
+                f"Failed to copy permissions to staging table, {cleanup_msg}."
+            ) from e
 
     try:
         deploy_table(
@@ -635,11 +671,7 @@ def initiate(
     else:
         # python script table permissions are applied after the backfill
         if copy_table_permissions and not is_python_script:
-            copy_permissions_to_staging_table(
-                bigquery.Client(project=project_id),
-                qualified_table_name,
-                backfill_staging_qualified_table_name,
-            )
+            _copy_permissions_with_cleanup()
 
     billing_project = DEFAULT_BILLING_PROJECT
 
@@ -650,7 +682,6 @@ def initiate(
         raise ValueError(
             f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
         )
-        sys.exit(1)
 
     if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
         click.echo(
@@ -683,11 +714,7 @@ def initiate(
     )
 
     if copy_table_permissions and is_python_script:
-        copy_permissions_to_staging_table(
-            bigquery.Client(project=project_id),
-            qualified_table_name,
-            backfill_staging_qualified_table_name,
-        )
+        _copy_permissions_with_cleanup()
 
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"

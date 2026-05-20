@@ -260,7 +260,7 @@ def validate_no_nulls(df: pd.DataFrame) -> None:
     for col in PK_COLUMNS:
         if df[col].isnull().any():
             raise ValueError(f'Null value found in PK column "{col}".')
-        # astype(str) converts nulls to "None", not "" — this check is for actual empty strings only.
+        # astype(str) converts NaN to "nan" (and None to "None"), not "" — this check is for actual empty strings only.
         if (df[col].astype(str).str.strip() == "").any():
             raise ValueError(f'Empty value found in PK column "{col}".')
     logger.info("Null checks passed")

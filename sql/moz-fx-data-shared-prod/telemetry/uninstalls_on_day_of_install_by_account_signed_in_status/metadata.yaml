@@ -3,3 +3,5 @@ description: Uninstalls by account enabled status by if the uninstall was on dat
   of installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

@@ -2,3 +2,5 @@ friendly_name: Fx Health Ind Vid Plybck By Os
 description: Aggregate table of video playback minutes per user per OS
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

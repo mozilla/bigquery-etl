@@ -2,3 +2,5 @@ friendly_name: Uninstalls By Country Aggregates
 description: Calculates uninstalls by country and submission date
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

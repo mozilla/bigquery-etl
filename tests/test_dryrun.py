@@ -359,7 +359,7 @@ class TestDryRun:
         # to the source-side skip pattern.
         stage_dir = sql_dir / test_project / "any_dataset" / "any_table_dir"
         stage_dir.mkdir(parents=True)
-        (stage_dir / ".bqetl_target_info.yaml").write_text(
+        (stage_dir / "bqetl_target_info.yaml").write_text(
             yaml.dump(
                 {
                     "source_project": "src-proj",

@@ -7,10 +7,12 @@ import re
 import uuid
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import NamedTuple
+from typing import NamedTuple, Optional
+from urllib.parse import quote
 
 import pandas as pd
 import requests
+import typer
 from google.cloud import bigquery, storage
 from google.cloud.exceptions import NotFound
 
@@ -25,6 +27,14 @@ GCS_BUCKET = "moz-fx-data-prod-external-data"
 BQ_PROJECT = "moz-fx-data-shared-prod"
 BQ_DATASET = "statcounter_derived"
 DATE_COLUMN = "date"
+
+DEVICES = ("Desktop", "Mobile")
+BASE_URL = (
+    "https://gs.statcounter.com/browser-market-share/{device_slug}/{region_slug}"
+    "/chart.php?bar=1&device={device_name}&device_hidden={device_slug}"
+    "&statType_hidden=browser&region_hidden={region_code}&granularity=daily"
+    "&statType=Browser&region={region_name}&csv=1"
+)
 
 SCHEMA = [
     bigquery.SchemaField("sk", "STRING"),
@@ -540,3 +550,78 @@ def main(
         bq_record_count = count_bq_records(partition_date, config.bq_table)
         compare_counts(len(df), bq_record_count)
         delete_from_gcs(blob_name)
+
+
+def build_sources(geographies: list[tuple[str, str, str]]) -> list[Source]:
+    """Build the per-geography, per-device list of Statcounter sources.
+
+    Args:
+        geographies (list[tuple[str, str, str]]): (name, slug, code) tuples
+            (e.g. ("North America", "north-america", "na")).
+
+    Returns:
+        list[Source]: One source per (geography, device) combination.
+    """
+    return [
+        Source(
+            geography=name,
+            device=device,
+            base_url=BASE_URL.format(
+                device_slug=device.lower(),
+                region_slug=slug,
+                device_name=device,
+                region_code=code,
+                region_name=quote(name, safe=""),
+            ),
+        )
+        for name, slug, code in geographies
+        for device in DEVICES
+    ]
+
+
+def make_app(
+    geographies: list[tuple[str, str, str]],
+    gcs_blob_prefix: str,
+    bq_table: str,
+    clustering_fields: list[str],
+) -> typer.Typer:
+    """Build a typer app that runs the pipeline for the given table config.
+
+    Args:
+        geographies (list[tuple[str, str, str]]): (name, slug, code) tuples.
+        gcs_blob_prefix (str): GCS blob path prefix for staged CSVs.
+        bq_table (str): BigQuery destination table name.
+        clustering_fields (list[str]): Clustering field list for the table.
+
+    Returns:
+        typer.Typer: App exposing a `run` command with --date-from / --date-to.
+    """
+    sources = build_sources(geographies)
+    app = typer.Typer()
+
+    @app.command()
+    def run(
+        date_from: Optional[datetime] = typer.Option(
+            None,
+            formats=["%Y-%m-%d"],
+            help="Start date (YYYY-MM-DD). Defaults to yesterday.",
+        ),
+        date_to: Optional[datetime] = typer.Option(
+            None,
+            formats=["%Y-%m-%d"],
+            help="End date (YYYY-MM-DD). Defaults to --date-from.",
+        ),
+    ) -> None:
+        """Run the pipeline for the given date range."""
+        main(
+            PipelineConfig(
+                sources=sources,
+                gcs_blob_prefix=gcs_blob_prefix,
+                bq_table=bq_table,
+                clustering_fields=clustering_fields,
+            ),
+            date_from=date_from.date() if date_from else None,
+            date_to=date_to.date() if date_to else None,
+        )
+
+    return app

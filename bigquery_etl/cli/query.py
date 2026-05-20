@@ -889,9 +889,15 @@ def backfill(
 
     if not depends_on_past and parallelism > 1:
         # Attempt to populate the gcloud credential store before running the parallel queries below
-        subprocess.check_call(
-            ["bq", "query", "--use_legacy_sql=false", "--dry_run", "SELECT 1"]
-        )
+        auth_init_args = ["bq", "query", "--use_legacy_sql=false", "--dry_run"]
+        auth_init_project = billing_project or project_id
+        if auth_init_project is not None:
+            auth_init_args.append(f"--project_id={auth_init_project}")
+        auth_init_args.append("SELECT 1")
+        try:
+            subprocess.check_call(auth_init_args, stdout=subprocess.DEVNULL)
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Credential init failed, continuing anyway: {e}", err=True)
 
         # run backfill for dates in parallel if depends_on_past is false
         failed_backfills = []

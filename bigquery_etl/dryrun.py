@@ -186,7 +186,7 @@ class DryRun:
 
         # Stage deploys rewrite every artifact's path, so a prod-side skip
         # entry no longer matches the file's stage path. Reverse the mapping
-        # via each stage dir's .bqetl_target_info.yaml manifest (written by
+        # via each stage dir's bqetl_target_info.yaml manifest (written by
         # prepare_target_directory) — layout-independent, so any future
         # bqetl_targets.yaml rename scheme still works.
         #

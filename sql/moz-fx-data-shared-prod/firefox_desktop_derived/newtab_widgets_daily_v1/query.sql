@@ -28,7 +28,7 @@ aggregated AS (
     COUNTIF(event_name = 'widgets_user_event') AS widget_user_event_count,
     COUNTIF(
       event_name = 'widgets_user_event'
-      AND user_action IN ('provider_link_click', 'learn_more')
+      AND user_action IN ('learn_more', 'provider_link_click')
     ) AS widget_link_click_count,
     COUNTIF(
       event_name = 'widgets_user_event'
@@ -42,20 +42,20 @@ aggregated AS (
     COUNTIF(
       event_name = 'widgets_user_event'
       AND user_action IN (
-        'timer_set',
-        'timer_play',
-        'timer_end',
-        'timer_pause',
-        'timer_toggle_play',
-        'timer_toggle_focus',
-        'list_create',
-        'list_edit',
         'list_copy',
+        'list_create',
         'list_delete',
+        'list_edit',
         'task_complete',
         'task_create',
         'task_delete',
-        'task_edit'
+        'task_edit',
+        'timer_end',
+        'timer_pause',
+        'timer_play',
+        'timer_set',
+        'timer_toggle_focus',
+        'timer_toggle_play'
       )
     ) AS widget_utility_action_count,
     COUNTIF(

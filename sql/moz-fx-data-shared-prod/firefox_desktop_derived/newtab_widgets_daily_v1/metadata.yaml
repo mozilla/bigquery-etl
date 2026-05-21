@@ -1,0 +1,36 @@
+friendly_name: Newtab Widgets Daily
+description: |-
+  Daily aggregation of Firefox New Tab widget telemetry.
+  One row per widget per day, capturing impressions, user interactions,
+  enable/disable actions, and engagement metrics derived from the unified
+  widget telemetry shape in newtab_v1.
+owners:
+- gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_newtab
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - widget_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1

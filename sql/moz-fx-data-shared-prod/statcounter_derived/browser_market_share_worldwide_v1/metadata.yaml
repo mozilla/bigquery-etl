@@ -1,0 +1,25 @@
+friendly_name: Statcounter Browser Market Share
+description: |-
+  Contains browser market share data from Statcounter over time.
+
+  Expected grain: 1 row per date + geography + device + browser combination. Geography is always "Worldwide" in this table.
+owners:
+  - kbammarito@mozilla.com
+labels:
+  incremental: true
+  owner1: kbammarito@mozilla.com
+  table_type: source
+scheduling:
+  dag_name: bqetl_statcounter_browser_market_share
+  date_partition_parameter: date
+  arguments: ["--date-from", "{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+      - device
+      - browser

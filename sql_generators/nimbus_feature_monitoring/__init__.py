@@ -255,7 +255,7 @@ def generate_queries(project, path, write_dir):
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
             (write_path / "schema.yaml").write_text(schema)
 
-            all_feature_tables.append((feature.name, sql_table_name))
+            all_feature_tables.append((feature.name, dataset, sql_table_name))
 
     # Write a single consolidated view over all apps' feature tables.
     view_args = {

@@ -93,7 +93,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |
-    CSAT survey rating category (e.g. 'good', 'bad'). NULL when no survey response.
+    CSAT survey rating category: one of 'good', 'neutral', or 'bad'. NULL when no
+    survey response.
 - name: survey_responded
   type: BOOLEAN
   mode: NULLABLE

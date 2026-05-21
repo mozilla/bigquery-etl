@@ -427,6 +427,22 @@ with DAG(
         ],
     )
 
+    monitoring__experiment_enrollment_funnel__v1 = GKEPodOperator(
+        task_id="monitoring__experiment_enrollment_funnel__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-experiments/monitoring/experiment_enrollment_funnel_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        image="us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest",
+        owner="ykhurana@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "ykhurana@mozilla.com",
+        ],
+    )
+
     monitoring__experiment_sample_ratio_mismatch__v1 = bigquery_etl_query(
         task_id="monitoring__experiment_sample_ratio_mismatch__v1",
         destination_table="experiment_sample_ratio_mismatch_v1",
@@ -618,6 +634,10 @@ with DAG(
 
     monitoring__experiment_enrollment_alert_data__v1.set_upstream(
         telemetry_derived__experiments_daily_active_clients__v1
+    )
+
+    monitoring__experiment_enrollment_funnel__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
     )
 
     monitoring__experiment_sample_ratio_mismatch__v1.set_upstream(

@@ -104,6 +104,42 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_firefox_desktop_derived__newtab_widgets_daily__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefox_desktop_derived__newtab_widgets_daily__v1",
+        source_table="newtab_widgets_daily_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkatre@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
+    )
+
+    checks__warn_firefox_desktop_derived__newtab_widgets_daily__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_derived__newtab_widgets_daily__v1",
+        source_table="newtab_widgets_daily_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkatre@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
+    )
+
     firefox_desktop_derived__newtab_client_tile_component_daily__v1 = (
         bigquery_etl_query(
             task_id="firefox_desktop_derived__newtab_client_tile_component_daily__v1",
@@ -274,6 +310,21 @@ with DAG(
             firefox_desktop_derived__newtab_visits_daily__v2
         )
 
+    firefox_desktop_derived__newtab_widgets_daily__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__newtab_widgets_daily__v1",
+        destination_table="newtab_widgets_daily_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkatre@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__report_content__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__report_content__v1",
         destination_table="report_content_v1",
@@ -400,6 +451,14 @@ with DAG(
             telemetry_derived__newtab_visits__v1
         )
 
+    checks__fail_firefox_desktop_derived__newtab_widgets_daily__v1.set_upstream(
+        firefox_desktop_derived__newtab_widgets_daily__v1
+    )
+
+    checks__warn_firefox_desktop_derived__newtab_widgets_daily__v1.set_upstream(
+        firefox_desktop_derived__newtab_widgets_daily__v1
+    )
+
     firefox_desktop_derived__newtab_client_tile_component_daily__v1.set_upstream(
         firefox_desktop_derived__newtab_visits_daily__v2
     )
@@ -429,6 +488,10 @@ with DAG(
     )
 
     firefox_desktop_derived__newtab_visits_daily__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__newtab_widgets_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

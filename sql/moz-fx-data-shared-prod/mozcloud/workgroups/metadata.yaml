@@ -1,0 +1,17 @@
+friendly_name: Workgroups
+description: |-
+  MozCloud workgroups exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a MozCloud workgroup.
+owners:
+- wstuckey@mozilla.com
+- wdawson@mozilla.com
+labels:
+  owner1: wstuckey
+  owner2: wdawson
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozcloud_workgroups_syndicate.workgroups

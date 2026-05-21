@@ -1,0 +1,11 @@
+friendly_name: Statcounter Region Browser Market Share
+description: |-
+  Contains browser market share data by region from Statcounter over time
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.statcounter_derived.browser_market_share_regions_v1

@@ -1,0 +1,11 @@
+friendly_name: Statcounter Browser Market Share
+description: |-
+  Contains browser market share data from Statcounter over time
+owners: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.statcounter_derived.browser_market_share_worldwide_v1

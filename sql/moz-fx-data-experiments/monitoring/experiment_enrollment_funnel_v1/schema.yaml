@@ -23,7 +23,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Slug of the recipe holding the feature slot when reason is FeatureConflict. NULL on iOS/Fenix until SDK fix lands.
-  - name: clients
+  - name: client_count
     type: INT64
     mode: NULLABLE
     description: Estimated count of distinct clients (1% sample scaled by 100).

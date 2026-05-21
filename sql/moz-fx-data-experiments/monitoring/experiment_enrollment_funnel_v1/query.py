@@ -13,10 +13,14 @@ Exports as JSON to GCS for the Experimenter ingestion task to consume.
 """
 
 import json
+import logging
 from argparse import ArgumentParser
 from datetime import date
 
 from google.cloud import bigquery, storage
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 MIN_START_QUERY = """
 SELECT MIN(start_date) AS min_start_date
@@ -34,10 +38,10 @@ WITH active_experiments AS (
     AND (end_date IS NULL OR end_date >= DATE_SUB(@run_date, INTERVAL 90 DAY))
 ),
 all_apps_raw AS (
-  -- firefox_desktop
+  -- firefox_desktop (uses profile_group_id as the Nimbus bucketing unit on desktop)
   SELECT
     'firefox_desktop' AS app_name,
-    t.client_info.client_id AS client_id,
+    t.client_info.profile_group_id AS client_id,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'slug') AS slug,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'status') AS status,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'reason') AS reason,
@@ -106,7 +110,7 @@ SELECT
   status,
   reason,
   conflict_slug,
-  COUNT(DISTINCT client_id) * 100 AS clients
+  COUNT(DISTINCT client_id) * 100 AS client_count
 FROM latest
 INNER JOIN active_experiments USING (slug)
 WHERE rn = 1
@@ -145,7 +149,7 @@ def main():
     )
     min_start_date = min_start_rows[0]["min_start_date"] if min_start_rows else None
     if min_start_date is None:
-        # No active experiments — write empty files and exit cleanly.
+        logger.warning("No active experiments found; writing empty funnel files to GCS.")
         storage_client = storage.Client(args.project)
         bucket = storage_client.bucket("mozanalysis")
         empty = json.dumps({"v1": {}})
@@ -184,7 +188,7 @@ def main():
                 "status": row["status"],
                 "reason": row["reason"],
                 "conflict_slug": row["conflict_slug"],
-                "clients": int(row["clients"]),
+                "client_count": int(row["client_count"]),
             }
         )
 

@@ -13,6 +13,13 @@ fields:
     OP self-replies, spam answers, and answers from deactivated users). NULL
     for questions that have not received a qualifying reply. Use this column
     to aggregate questions_replied by reply date.
+- name: solved_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The UTC date the question was marked as solved. NULL for questions that
+    are not solved. Use this column to aggregate questions_solved by solve
+    date.
 - name: product
   type: STRING
   mode: NULLABLE
@@ -45,6 +52,15 @@ fields:
     users. To get replies-per-day, aggregate by first_reply_date.
     Reply Rate:
       SUM(questions_replied) / SUM(questions_created)
+- name: questions_solved
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of questions in this (created_date, first_reply_date, solved_date,
+    product, locale) bucket that have been marked as solved, as of ETL run
+    time. To get solves-per-day, aggregate by solved_date.
+    Solved Rate:
+      SUM(questions_solved) / SUM(questions_created)
 - name: avg_ttfr_hrs
   type: FLOAT
   mode: NULLABLE

@@ -4,10 +4,12 @@ AS
 SELECT
   created_date,
   first_reply_date,
+  solved_date,
   product,
   locale,
   questions_created,
   questions_replied,
+  questions_solved,
   avg_ttfr_hrs,
   total_ttfr_hrs,
   total_helpful_votes,

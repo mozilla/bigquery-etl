@@ -1,0 +1,7 @@
+friendly_name: Workgroups
+description: |-
+  MozCloud workgroups exported from the github.com/mozilla/global-platform-admin
+  repository. Each row represents a MozCloud workgroup.
+owners:
+- wstuckey@mozilla.com
+- wdawson@mozilla.com

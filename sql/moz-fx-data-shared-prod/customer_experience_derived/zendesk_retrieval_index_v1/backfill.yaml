@@ -1,7 +1,7 @@
 2026-05-21:
   start_date: 2026-04-01
   end_date: 2026-05-10
-  reason: Initial backfill, limited for testing purposes before running a broader one.
+  reason: Initial backfill for DENG-11096. Limited window for DS/stakeholder evaluation of CX use cases before a broader backfill.
   watchers:
   - lvargas@mozilla.com
   status: Initiate

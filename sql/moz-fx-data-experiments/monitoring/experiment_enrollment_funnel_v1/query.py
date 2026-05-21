@@ -38,10 +38,10 @@ WITH active_experiments AS (
     AND (end_date IS NULL OR end_date >= DATE_SUB(@run_date, INTERVAL 90 DAY))
 ),
 all_apps_raw AS (
-  -- firefox_desktop (uses profile_group_id as the Nimbus bucketing unit on desktop)
+  -- firefox_desktop
   SELECT
     'firefox_desktop' AS app_name,
-    t.client_info.profile_group_id AS client_id,
+    t.client_info.client_id AS client_id,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'slug') AS slug,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'status') AS status,
     (SELECT value FROM UNNEST(event.extra) WHERE key = 'reason') AS reason,

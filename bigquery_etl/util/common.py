@@ -1,5 +1,6 @@
 """Generic utility functions."""
 
+import fnmatch
 import glob
 import logging
 import os
@@ -16,12 +17,14 @@ from uuid import uuid4
 
 import click
 import sqlglot
+import yaml
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.config import BQETL_PROJECT_CONFIG, ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metrics import MetricHub
+from bigquery_etl.util.target import MANIFEST_FILENAME
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
 REV_WORD_BOUND_PAT = re.compile(
@@ -123,20 +126,23 @@ def render(
         )
     }
     test_project = ConfigLoader.get("default", "test_project")
-    sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
+    if test_project and test_project in str(path):
 
-    if test_project in str(path):
-        # check if staged file needs to be skipped
-        skip.update(
-            [
-                p
-                for f in [Path(s) for s in skip]
-                for p in glob.glob(
-                    f"{sql_dir}/{test_project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-                    recursive=True,
+        manifest_path = template_folder_path / MANIFEST_FILENAME
+        if manifest_path.is_file():
+            try:
+                manifest = yaml.safe_load(manifest_path.read_text()) or {}
+            except Exception:
+                manifest = {}
+            src_proj = manifest.get("source_project")
+            src_ds = manifest.get("source_dataset")
+            src_table = manifest.get("source_table")
+            if src_proj and src_ds and src_table:
+                source_equivalent = (
+                    f"sql/{src_proj}/{src_ds}/{src_table}/{sql_filename}"
                 )
-            ]
-        )
+                if any(fnmatch.fnmatchcase(source_equivalent, s) for s in skip):
+                    skip.add(str(path))
 
     if any(s in str(path) for s in skip):
         rendered = path.read_text()

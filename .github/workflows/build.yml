@@ -569,16 +569,22 @@ jobs:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
-            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
-            echo $PATHS
-            git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
-            PATH=".venv/bin:$PATH" script/bqetl \
-              --target stage \
-              --run-id "${GITHUB_RUN_ID}" \
-              deploy --tables --views --isolated \
-              $PATHS
+          if [ "$SKIP_STAGE_DEPLOYS" = "true" ]; then
+            echo "SKIP_STAGE_DEPLOYS=true, skipping stage deploy"
+            exit 0
           fi
+          PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+          if [ -z "$PATHS" ]; then
+            echo "No changed SQL paths, skipping stage deploy"
+            exit 0
+          fi
+          echo "$PATHS"
+          git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            deploy --tables --views --isolated \
+            $PATHS
       - name: Copy generated SQL to temporary stage directory
         run: |
           mkdir -p /tmp/workspace/staged-generated-sql

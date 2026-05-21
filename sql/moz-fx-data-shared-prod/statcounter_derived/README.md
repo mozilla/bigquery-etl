@@ -29,7 +29,7 @@ This is a source ingestion pipeline following an EtLT pattern — the pipeline e
 
 ## Structure
 
-Shared pipeline logic lives in `pipeline.py` at the `statcounter_derived` level. Each table has its own subdirectory with a thin `query.py` that instantiates a `PipelineConfig` and calls `main()`.
+Shared pipeline logic lives in `pipeline.py` at the `statcounter_derived` level. Each table has its own subdirectory with a thin `query.py` that declares a `GEOGRAPHIES` list and calls `make_app()` to build a Typer CLI.
 
 ``` text
 statcounter_derived/
@@ -40,7 +40,7 @@ statcounter_derived/
     schema.yaml
 ```
 
-To add a new pipeline, create a new subdirectory with a `query.py`, `metadata.yaml`, and `schema.yaml`, then instantiate `PipelineConfig` with a `sources` list, `gcs_blob_prefix`, `bq_table`, and `clustering_fields`.
+To add a new pipeline, create a new subdirectory with a `query.py`, `metadata.yaml`, and `schema.yaml`. In `query.py`, declare a `GEOGRAPHIES` list of `(name, slug, code)` tuples and call `make_app()` with `geographies`, `gcs_blob_prefix`, `bq_table`, and `clustering_fields`.
 
 Each table subdirectory must include a `README.md` with a Schema table (columns, types, descriptions) and a Source section pointing to `../pipeline.py`. Keep table `README`s focused on what the table contains — implementation detail lives in the dataset-level `README`.
 
@@ -212,11 +212,11 @@ Shared constants live at the top of `pipeline.py`:
 | `PK_COLUMNS` | List of primary key columns used for null/duplicate validation and table constraints |
 | `NUMERIC_COLUMNS` | Dict mapping column names to `(lower, upper)` bounds tuples |
 
-Each table's `query.py` sets per-pipeline values via `PipelineConfig`:
+Each table's `query.py` sets per-pipeline values via `make_app()`:
 
 | Field | Description |
 | --- | --- |
-| `sources` | List of `(geography, device, base_url)` tuples — one entry per geography/device combination |
+| `geographies` | List of `(name, slug, code)` tuples — one entry per geography. `build_sources()` expands this across Desktop and Mobile to produce the full source list |
 | `gcs_blob_prefix` | GCS path prefix for the staged CSV file — date and run ID are appended at runtime (e.g. `statcounter_data/browser_market_share_worldwide_YYYYMMDD_<run_id>.csv`) |
 | `bq_table` | BigQuery table name |
 | `clustering_fields` | BigQuery clustering fields for the table — must match the `clustering` config in `metadata.yaml` |
@@ -226,7 +226,7 @@ Each table's `query.py` sets per-pipeline values via `PipelineConfig`:
 - Each pipeline step is an atomic function with a single responsibility
 - All functions have Google-style docstrings with types
 - `black` formats all Python files
-- `pipeline.py` holds shared constants and logic; `PipelineConfig` holds per-pipeline config
+- `pipeline.py` holds shared constants, logic, and `make_app()`; each `query.py` supplies per-pipeline values
 - BigQuery queries use parameterized values rather than string interpolation
 - Airflow handles I/O retries (`retries: 2, retry_delay: 30m` in `dags.yaml`)
 - Inline comments explain non-obvious logic only — not what the code does, but why

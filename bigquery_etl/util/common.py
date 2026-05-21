@@ -24,7 +24,6 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.config import BQETL_PROJECT_CONFIG, ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metrics import MetricHub
-from bigquery_etl.util.target import MANIFEST_FILENAME
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
 REV_WORD_BOUND_PAT = re.compile(
@@ -127,6 +126,7 @@ def render(
     }
     test_project = ConfigLoader.get("default", "test_project")
     if test_project and test_project in str(path):
+        from bigquery_etl.util.target import MANIFEST_FILENAME
 
         manifest_path = template_folder_path / MANIFEST_FILENAME
         if manifest_path.is_file():

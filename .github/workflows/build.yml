@@ -578,7 +578,7 @@ jobs:
             echo "No changed SQL paths, skipping stage deploy"
             exit 0
           fi
-          echo "$PATHS"
+          echo $PATHS
           git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
           PATH=".venv/bin:$PATH" script/bqetl \
             --target stage \

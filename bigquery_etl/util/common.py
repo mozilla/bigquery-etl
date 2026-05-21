@@ -116,23 +116,28 @@ def render(
     """Render a given template query using Jinja."""
     template_folder_path = Path(template_folder)
     path = template_folder_path / sql_filename
+    skip_patterns = ConfigLoader.get("render", "skip", fallback=[])
     skip = {
         file
-        for skip in ConfigLoader.get("render", "skip", fallback=[])
+        for pat in skip_patterns
         for file in glob.glob(
-            skip,
+            pat,
             recursive=True,
         )
     }
     test_project = ConfigLoader.get("default", "test_project")
-    if test_project and test_project in str(path):
+    if test_project and f"/{test_project}/" in str(path):
         from bigquery_etl.util.target import MANIFEST_FILENAME
 
         manifest_path = template_folder_path / MANIFEST_FILENAME
         if manifest_path.is_file():
             try:
                 manifest = yaml.safe_load(manifest_path.read_text()) or {}
-            except Exception:
+            except (yaml.YAMLError, OSError) as e:
+                click.echo(
+                    f"Warning: could not read manifest {manifest_path}: {e}",
+                    err=True,
+                )
                 manifest = {}
             src_proj = manifest.get("source_project")
             src_ds = manifest.get("source_dataset")
@@ -141,7 +146,9 @@ def render(
                 source_equivalent = (
                     f"sql/{src_proj}/{src_ds}/{src_table}/{sql_filename}"
                 )
-                if any(fnmatch.fnmatchcase(source_equivalent, s) for s in skip):
+                if any(
+                    fnmatch.fnmatchcase(source_equivalent, pat) for pat in skip_patterns
+                ):
                     skip.add(str(path))
 
     if any(s in str(path) for s in skip):

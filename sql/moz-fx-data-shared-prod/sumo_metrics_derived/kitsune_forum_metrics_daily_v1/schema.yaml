@@ -40,16 +40,16 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: |
-    Number of non-spam, non-locked Firefox questions created on `created_date`
-    for this product and locale (counted within each first_reply_date bucket).
+    Number of non-spam, non-locked Firefox questions in this
+    (created_date, first_reply_date, solved_date, product, locale) bucket.
 - name: questions_replied
   type: INTEGER
   mode: NULLABLE
   description: |
-    Number of questions in this (created_date, first_reply_date, product,
-    locale) bucket that received a qualifying first reply. A qualifying reply
-    excludes OP self-replies, spam answers, and answers from deactivated
-    users. To get replies-per-day, aggregate by first_reply_date.
+    Number of questions in this (created_date, first_reply_date, solved_date,
+    product, locale) bucket that received a qualifying first reply. A
+    qualifying reply excludes OP self-replies, spam answers, and answers from
+    deactivated users. To get replies-per-day, aggregate by first_reply_date.
     Reply Rate:
       SUM(questions_replied) / SUM(questions_created)
 - name: questions_solved
@@ -59,7 +59,15 @@ fields:
     Number of questions in this (created_date, first_reply_date, solved_date,
     product, locale) bucket that have been marked as solved, as of ETL run
     time. To get solves-per-day, aggregate by solved_date.
-    Solved Rate:
+
+    Note: this column is NOT stable across ETL runs — `is_solved` reflects
+    current solved state, so `questions_solved` for a given `created_date`
+    will increase over time as historical questions are solved. When
+    aggregated by `created_date`, the formula below yields a *cumulative*
+    solved rate (share of questions created on that date that are solved
+    as of the latest ETL run), not a same-day solved rate. For a
+    solve-date-aligned view, aggregate by `solved_date` instead.
+    Solved Rate (cumulative, by created_date):
       SUM(questions_solved) / SUM(questions_created)
 - name: avg_ttfr_hrs
   type: FLOAT

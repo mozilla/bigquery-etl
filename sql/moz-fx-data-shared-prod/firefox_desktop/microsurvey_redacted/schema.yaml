@@ -334,6 +334,13 @@ fields:
     - name: microsurvey_impression_id
       type: STRING
       mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_smart_window_user_feedback_data
+      type: JSON
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

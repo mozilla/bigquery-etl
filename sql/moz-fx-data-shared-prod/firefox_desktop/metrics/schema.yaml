@@ -54896,6 +54896,61 @@ fields:
         histogram GC_IN_PROGRESS_MS.
 
         '
+    - name: urlbar_autofill_reintegration_after_backspace
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time elapsed between a backspace-induced autofill block and the
+        user re-integrating the same destination by picking it as a non-autofill history
+        result in the same session. Only samples re-integrations of blocks that were
+        set via consecutive backspaces on an autofilled value, blocks set via the
+        result menu Dismiss action do not contribute samples. Labeled by whether the
+        cleared block was at the origin or page-URL level.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE

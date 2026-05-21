@@ -70,6 +70,7 @@ SELECT
       LAX_BOOL(event_extra.auto_show) AS `auto_show`,
       LAX_BOOL(event_extra.auto_translate) AS `auto_translate`,
       LAX_BOOL(event_extra.autocomplete) AS `autocomplete`,
+      LAX_BOOL(event_extra.baseline) AS `baseline`,
       LAX_BOOL(event_extra.block) AS `block`,
       LAX_BOOL(event_extra.blocked) AS `blocked`,
       LAX_BOOL(event_extra.breached) AS `breached`,

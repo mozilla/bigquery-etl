@@ -18,6 +18,7 @@ SELECT
       LAX_BOOL(event_extra.alt_text_modal) AS `alt_text_modal`,
       LAX_BOOL(event_extra.auto_show) AS `auto_show`,
       LAX_BOOL(event_extra.auto_translate) AS `auto_translate`,
+      LAX_BOOL(event_extra.baseline) AS `baseline`,
       LAX_BOOL(event_extra.blocked) AS `blocked`,
       LAX_BOOL(event_extra.breached) AS `breached`,
       LAX_BOOL(event_extra.cache) AS `cache`,

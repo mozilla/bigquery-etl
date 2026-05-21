@@ -614,6 +614,19 @@ fields:
       description: 'The unique impression identifier for a specific client.
 
         '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: microsurvey_smart_window_user_feedback_data
+      type: JSON
+      mode: NULLABLE
+      description: 'Structured feedback and session metadata submitted via the Smart
+        Window
+
+        feedback modal.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

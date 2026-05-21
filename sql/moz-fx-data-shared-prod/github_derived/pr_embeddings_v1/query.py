@@ -141,6 +141,7 @@ def load_to_bq(client, records, destination):
             type_=bigquery.TimePartitioningType.DAY,
             field="merged_date",
         ),
+        clustering_fields=["repo_name"],
     )
     job = client.load_table_from_json(records, destination, job_config=job_config)
     job.result()

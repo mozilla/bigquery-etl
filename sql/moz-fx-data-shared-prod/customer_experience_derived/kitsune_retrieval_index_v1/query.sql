@@ -16,7 +16,7 @@ WITH kitsune_questions AS (
     q.question_id,
     q.created_date AS question_created_at,
     q.creator_username AS question_creator,
-    COALESCE(m.product_mapping, q.product) AS product,
+    mozfun.customer_experience.normalize_product(q.product, 'Kitsune') AS product,
     q.locale,
     q.topic,
     q.tier1_topic,
@@ -26,10 +26,6 @@ WITH kitsune_questions AS (
     q.question_content AS content
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
-    ON m.product = q.product
-    AND m.source = 'Kitsune'
   WHERE
     q.is_spam = FALSE
     AND q.is_locked = FALSE

@@ -19,7 +19,14 @@ from urllib3.util.retry import Retry
 
 EXPERIMENTER_API_URL = "https://experimenter.services.mozilla.com/api/v8/experiments/"
 
+GLEAN_DICTIONARY_URL = (
+    "https://dictionary.telemetry.mozilla.org/data/{app_name}/index.json"
+)
+
 GLEAN_FEATURE_ID = "gleanInternalSdk"
+
+# Cached {app_name: {snake_case_metric_id: metric_type}} from the Glean dictionary.
+_glean_metric_types_by_app: dict = {}
 
 BQ_SCHEMA = (
     bigquery.SchemaField("start_date", "DATE"),
@@ -87,6 +94,27 @@ def parse_max_version(targeting):
     return None
 
 
+def get_metric_type(metric_name, app_name):
+    """Resolve a Glean metric's type via the Glean dictionary.
+
+    `metric_name` is the snake_cased Glean identifier — i.e. the dotted
+    "<category>.<name>" form with the dot replaced by an underscore
+    (e.g. 'paint_build_displaylist_time' for 'paint.build_displaylist_time').
+    Raises ValueError if the metric isn't found in the app's dictionary.
+    """
+    if app_name not in _glean_metric_types_by_app:
+        data = fetch(GLEAN_DICTIONARY_URL.format(app_name=app_name))
+        _glean_metric_types_by_app[app_name] = {
+            m["name"].replace(".", "_"): m["type"] for m in data.get("metrics", [])
+        }
+    types = _glean_metric_types_by_app[app_name]
+    if metric_name not in types:
+        raise ValueError(
+            f"Metric '{metric_name}' not found in Glean dictionary for app '{app_name}'"
+        )
+    return types[metric_name]
+
+
 def is_active(experiment):
     """Check if an experiment/rollout is currently active."""
     end_date = experiment.get("endDate")
@@ -144,12 +172,13 @@ def get_sampled_metrics_from_api():
                         sampled_metrics.add(metric)
 
         for metric in sorted(sampled_metrics):
-            parts = metric.split(".", 1)
-            if len(parts) == 2:
-                metric_type, metric_name = parts
-            else:
-                metric_type = None
-                metric_name = metric
+            # Rollout configs reference metrics by their canonical Glean ID
+            # in dotted form (e.g. 'paint.build_displaylist_time', or a
+            # multi-dot 'fog.ipc.buffer_sizes'). Store the snake_cased form
+            # to stay consistent with historical rows, and resolve the type
+            # from the Glean dictionary since it is no longer in the input.
+            metric_name = metric.replace(".", "_")
+            metric_type = get_metric_type(metric_name, app_name)
 
             rows.append(
                 {

@@ -14,13 +14,9 @@ WITH tickets_in_window AS (
     t.group_id,
     t.assignee_id,
     t.custom_product,
-    COALESCE(m.product_mapping, t.custom_product) AS product
+    mozfun.customer_experience.normalize_product(t.custom_product, 'Zendesk') AS product
   FROM
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket` AS t
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` AS m
-    ON m.product = t.custom_product
-    AND m.source = 'Zendesk'
   WHERE
     DATE(t.created_at)
     BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 13 MONTH)

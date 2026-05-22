@@ -110,7 +110,7 @@ zendesk AS (
     ticket.subject AS title,
     custom_appbot_star_rating AS star_rating,
     ticket.description AS content,
-    COALESCE(pm.product_mapping, ticket.custom_product) AS product,
+    mozfun.customer_experience.normalize_product(ticket.custom_product, 'Zendesk') AS product,
     u.locale,
     custom_category,
     g.name AS group_name,
@@ -134,10 +134,6 @@ zendesk AS (
   LEFT JOIN
     human_auto_flag ha
     ON ticket.id = ha.ticket_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` pm
-    ON pm.product = ticket.custom_product
-    AND pm.source = 'Zendesk'
   WHERE
     DATE(ticket.created_at) = @submission_date
     AND COALESCE(ticket_group, 'All Other Tickets') != 'Appbot - Non-English'

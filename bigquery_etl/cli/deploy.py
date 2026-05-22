@@ -566,8 +566,13 @@ def _strip_materialized_view(target_file: Path) -> Path:
     materialized views can't be recreated without source data access.
     """
     sql_content = target_file.read_text()
+    # \bAS\b — match the keyword, not the substring "as" inside identifiers.
+    # Under --isolated the staged FQN is rewritten to embed the source dataset
+    # name (e.g. `..._firefox_crashreporter_derived__...`), and with
+    # IGNORECASE + non-greedy .*? a bare `AS` would match the "as" in "crash"
+    # and chop the identifier.
     sql_content = re.sub(
-        r"CREATE\s+MATERIALIZED\s+VIEW.*?AS",
+        r"CREATE\s+MATERIALIZED\s+VIEW.*?\bAS\b",
         "",
         sql_content,
         flags=re.DOTALL | re.IGNORECASE,

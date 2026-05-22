@@ -23,8 +23,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Mozilla product associated with the support question.
-      Normalized via `moz-fx-data-shared-prod.static.cx_product_mappings_v1`
-      (source = 'Kitsune'); falls back to the raw upstream value when no mapping exists.
+      Normalized via `mozfun.customer_experience.normalize_product`
+      (source = 'Kitsune'); unknown raw values map to 'Other'.
 - name: locale
   type: STRING
   mode: NULLABLE

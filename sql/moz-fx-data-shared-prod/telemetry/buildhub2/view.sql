@@ -4,6 +4,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.buildhub2`
 AS
+-- test
 SELECT
   *
 FROM

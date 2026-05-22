@@ -33,6 +33,7 @@ from ..backfill.shredder_mitigation import (
 )
 from ..backfill.utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
+    copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
@@ -565,6 +566,7 @@ def scheduled(
     type=int,
     help="Maximum number of queries to execute concurrently",
 )
+@backfill_options.copy_table_permissions()
 @sql_dir_option
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
@@ -574,6 +576,7 @@ def initiate(
     ctx,
     qualified_table_name,
     parallelism,
+    copy_table_permissions,
     sql_dir,
     project_id,
 ):
@@ -604,6 +607,16 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
+    client = bigquery.Client(project=project_id)
+
+    if copy_table_permissions:
+        try:
+            client.get_table(qualified_table_name)
+        except NotFound:
+            raise RuntimeError(
+                f"Cannot use --copy-table-permissions since {qualified_table_name} does not exist."
+            ) from None
+
     # create schema before deploying staging table if it does not exist
     schema_path = query_path.parent / SCHEMA_FILE
 
@@ -615,6 +628,32 @@ def initiate(
             sql_dir=sql_dir,
         ).to_yaml_file(schema_path)
         click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
+
+    def _copy_permissions_with_cleanup():
+        """Copy permissions from prod table and delete the staging table if it fails."""
+        try:
+            copy_permissions_to_staging_table(
+                client,
+                qualified_table_name,
+                backfill_staging_qualified_table_name,
+            )
+        except Exception as e:
+            try:
+                client.delete_table(
+                    backfill_staging_qualified_table_name, not_found_ok=True
+                )
+                cleanup_msg = f"deleted {backfill_staging_qualified_table_name}"
+            except Exception as delete_exc:
+                click.echo(
+                    f"Failed to delete {backfill_staging_qualified_table_name}: {delete_exc}"
+                )
+                cleanup_msg = (
+                    f"failed to delete {backfill_staging_qualified_table_name}, "
+                    "manual cleanup required"
+                )
+            raise RuntimeError(
+                f"Failed to copy permissions to staging table, {cleanup_msg}."
+            ) from e
 
     try:
         deploy_table(
@@ -629,6 +668,10 @@ def initiate(
             raise RuntimeError(
                 f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
             ) from e
+    else:
+        # python script table permissions are applied after the backfill
+        if copy_table_permissions and not is_python_script:
+            _copy_permissions_with_cleanup()
 
     billing_project = DEFAULT_BILLING_PROJECT
 
@@ -639,7 +682,6 @@ def initiate(
         raise ValueError(
             f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
         )
-        sys.exit(1)
 
     if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
         click.echo(
@@ -670,6 +712,9 @@ def initiate(
         billing_project=billing_project,
         is_python_script=is_python_script,
     )
+
+    if copy_table_permissions and is_python_script:
+        _copy_permissions_with_cleanup()
 
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
@@ -915,10 +960,11 @@ def _initialize_previous_partition(
 )
 @block_coding_agents
 @click.argument("qualified_table_name")
+@backfill_options.copy_table_permissions()
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")
 @click.pass_context
-def complete(ctx, qualified_table_name, sql_dir, project_id):
+def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project_id):
     """Process backfill entry with complete status in backfill.yaml file(s)."""
     if not is_authenticated():
         click.echo(
@@ -953,6 +999,13 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         qualified_table_name, entry_to_complete.entry_date
     )
     _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
+
+    if copy_table_permissions:
+        copy_permissions_to_staging_table(
+            client,
+            qualified_table_name,
+            cloned_table_full_name,
+        )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata = Metadata.from_file(

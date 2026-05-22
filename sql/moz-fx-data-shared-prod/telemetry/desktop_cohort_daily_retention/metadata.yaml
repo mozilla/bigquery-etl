@@ -20,3 +20,5 @@ description: 'Desktop Cohort Daily Retention consists of one row per first_seen_
   importantly clients_first_seen_v2'
 owners:
 - mhirose@mozilla.com
+labels:
+  legacy: true

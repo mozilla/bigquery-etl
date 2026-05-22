@@ -21,6 +21,9 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
+  experiments:
+    - slug: suggest-exp
+      branch: control
 - block_id: 107
   context_id: cid7
   request_id: rid7
@@ -43,6 +46,9 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:07:00+00:00
   version: "94"
+  experiments:
+    - slug: suggest-exp
+      branch: control
 - advertiser: acme corp
   block_id: 201
   browser: firefox(134)
@@ -65,6 +71,9 @@
   submission_timestamp: "2021-01-01T13:01:00+00:00"
   timestamp: "2021-01-01T13:01:00+00:00"
   version: "134"
+  experiments:
+    - slug: glean-exp
+      branch: treatment
 - advertiser: dunder mifflin
   block_id: 202
   browser: firefox(134)
@@ -87,6 +96,10 @@
   submission_timestamp: "2021-01-01T13:02:00+00:00"
   timestamp: "2021-01-01T13:02:00+00:00"
   version: "134"
+  experiments:
+    - slug: glean-exp
+      branch: treatment
+# legacy rid_overlap wins over glean rid_overlap (13:06 > 13:05); experiments from legacy source
 - advertiser: legacy store
   block_id: 105
   browser: firefox(96)
@@ -110,6 +123,9 @@
   submission_timestamp: "2021-01-01T13:06:00+00:00"
   timestamp: "2021-01-01T12:05:00+00:00"
   version: "94"
+  experiments:
+    - slug: overlap-exp
+      branch: legacy-wins
 - advertiser: duff beer
   block_id: 203
   context_id: cid13
@@ -124,6 +140,9 @@
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
   version: "134"
+  experiments:
+    - slug: glean-exp
+      branch: treatment
 - advertiser: pizza place
   block_id: 120
   browser: firefox(96)
@@ -147,6 +166,10 @@
   submission_timestamp: "2021-01-01T13:20:30+00:00"
   timestamp: "2021-01-01T13:21:00+00:00"
   version: "94"
+  experiments:
+    - slug: suggest-exp
+      branch: control
+# glean-dup 13:31 row wins dedup; experiments from the 13:31 ping
 - advertiser: widget co 2
   block_id: 131
   browser: firefox(134)
@@ -169,6 +192,9 @@
   submission_timestamp: "2021-01-01T13:31:00+00:00"
   timestamp: "2021-01-01T13:33:00+00:00"
   version: "134"
+  experiments:
+    - slug: glean-dup-exp
+      branch: wins
 - advertiser: norm store
   block_id: 140
   browser: firefox(96)
@@ -193,3 +219,6 @@
   telemetry_query: "best shoes"
   timestamp: "2021-01-01T13:40:00+00:00"
   version: "94"
+  experiments:
+    - slug: suggest-exp
+      branch: control

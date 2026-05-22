@@ -9,7 +9,7 @@
 -- grain so downstream aggregations stay correct if the GROUP BY ever changes.
 
 #fail
-{{ is_unique(["submission_date", "widget_name"], "submission_date = @submission_date") }}
+{{ is_unique(["submission_date", "app_version", "os", "channel", "country", "locale", "widget_name"], "submission_date = @submission_date") }}
 --
 --
 -- Defensive guard: query.sql filters out null widget_name, so this should never fire;

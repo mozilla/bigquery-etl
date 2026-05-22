@@ -1,9 +1,7 @@
 friendly_name: Newtab Widgets Daily
 description: |-
-  Daily aggregation of Firefox New Tab widget telemetry.
-  One row per widget per day, capturing impressions, user interactions,
-  enable/disable actions, and engagement metrics derived from the unified
-  widget telemetry shape in newtab_v1.
+  A daily aggregation of newtab actions on widgets (example: impressions, usage actions, clicks, etc...)
+  for Firefox desktop, partitioned by day.
 owners:
   - gkatre@mozilla.com
 labels:
@@ -26,3 +24,5 @@ bigquery:
   clustering:
     fields:
       - widget_name
+      - channel
+      - country

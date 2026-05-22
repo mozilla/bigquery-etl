@@ -790,12 +790,15 @@ def collect_target_dependencies(
     ]
     id_token = get_id_token()
 
-    # Visit each file and each (project, dataset, name) ref at most once. The
-    # same dep is commonly referenced from many artifacts, and without dedup
-    # `_create_target_stub` re-runs `_fetch_stub_schema` (dry-run) on every
-    # occurrence, blowing up CI logs and runtime.
+    # Visit each file at most once. For (project, dataset, name) refs, dedup
+    # managed deps unconditionally (the `dependency_files.append` only needs
+    # to happen once). For *unmanaged* refs (not in sql/), dedup only after a
+    # stub has actually been emitted — otherwise a query (emit_stubs=False)
+    # that encounters the ref first would mark it as seen and prevent a later
+    # view (emit_stubs=True) from creating the needed stub.
     walked_files: Set[Path] = set()
-    seen_refs: Set[Tuple[str, str, str]] = set()
+    seen_managed_refs: Set[Tuple[str, str, str]] = set()
+    stubbed_refs: Set[Tuple[str, str, str]] = set()
 
     for dep_file in dependency_files:
         if dep_file in walked_files:
@@ -821,17 +824,19 @@ def collect_target_dependencies(
             project, dataset, name = normalized
             if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
                 continue
-            if (project, dataset, name) in seen_refs:
-                continue
-            seen_refs.add((project, dataset, name))
+
+            ref_key = (project, dataset, name)
 
             existing = _existing_artifact_file(Path(sql_dir) / project / dataset / name)
             if existing is not None:
-                if existing not in artifact_files:
-                    dependency_files.append(existing)
+                if ref_key not in seen_managed_refs:
+                    seen_managed_refs.add(ref_key)
+                    if existing not in artifact_files:
+                        dependency_files.append(existing)
                 continue
 
-            if emit_stubs:
+            if emit_stubs and ref_key not in stubbed_refs:
+                stubbed_refs.add(ref_key)
                 artifact_dependencies.add(
                     _create_target_stub(
                         project, dataset, name, sql_dir, target, id_token

@@ -45,7 +45,6 @@ workgroup_access:
   - workgroup:sumo/bq-automation
 references:
   query.sql:
-  - moz-fx-data-shared-prod.static.cx_product_mappings_v1
   - moz-fx-data-shared-prod.zendesk_syndicate.group
   - moz-fx-data-shared-prod.zendesk_syndicate.ticket
   - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history

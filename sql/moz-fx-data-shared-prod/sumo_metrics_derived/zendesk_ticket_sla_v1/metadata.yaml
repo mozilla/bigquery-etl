@@ -11,7 +11,7 @@ description: "Ticket-level SLA snapshot for SUMO Zendesk support tickets.\n\nGra
   \ rating_category, and reopen_count can\nchange weeks after a ticket is created\
   \ (status flips, late survey responses).\nThis table is rebuilt non-incrementally\
   \ over a rolling 13-month window so those\nchanges flow through without manual partition\
-  \ rewrites.\n\nFilter dimensions:\n- product (mapped via cx_product_mappings_v1)\n\
+  \ rewrites.\n\nFilter dimensions:\n- product (mapped via mozfun.customer_experience.normalize_product)\n\
   - ticket_group (Appbot - English / Appbot - Non-English / All Other Tickets)\n-\
   \ automation_category (automation / human-handled, with reopens reclassified)\n\
   - is_excluded_from_sla \u2014 true for Appbot non-English, Sumo Test / VPN QA groups,\n\
@@ -49,7 +49,6 @@ workgroup_access:
   - workgroup:sumo/bq-automation
 references:
   query.sql:
-  - moz-fx-data-shared-prod.static.cx_product_mappings_v1
   - moz-fx-data-shared-prod.zendesk_syndicate.csat_survey_answer
   - moz-fx-data-shared-prod.zendesk_syndicate.group
   - moz-fx-data-shared-prod.zendesk_syndicate.schedule

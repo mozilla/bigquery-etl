@@ -38,6 +38,9 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
   - workgroup:sumo/bq-automation
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket
+  - mozdata.sumo_ga.ga4_events
   query.sql:
-  - moz-fx-data-shared-prod.static.cx_product_mappings_v1
   - mozdata.sumo_ga.ga4_events

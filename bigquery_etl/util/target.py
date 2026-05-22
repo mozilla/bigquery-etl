@@ -581,6 +581,20 @@ def default_partition_for(dataset: str) -> Optional[str]:
     return None
 
 
+def _placeholder_stub_schema() -> Dict[str, List]:
+    """Build a single-field placeholder schema for stub tables."""
+    return {
+        "fields": [
+            {
+                "name": "_bqetl_stub_placeholder",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Placeholder for a stub table when schema can't be fetched",
+            }
+        ]
+    }
+
+
 def _fetch_stub_schema(
     project: str,
     dataset: str,
@@ -593,31 +607,40 @@ def _fetch_stub_schema(
 
     Tries `client.get_table` first (fast, works on partition-required tables),
     falls back to `Schema.for_table`'s dry-run for cases where the source
-    table doesn't exist yet. Logs both errors when both fail.
+    table doesn't exist yet. If both fail to produce a non-empty schema, a
+    single-field placeholder is written so downstream `SELECT *` stage views can
+    still be created. Downstream artifacts that reference specific columns will still fail.
     """
     get_table_err: Optional[Exception] = None
     try:
         bq_table = bigquery.Client(project=project).get_table(
             f"{project}.{dataset}.{name}"
         )
-        Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(out_path)
-        return
+        if bq_table.schema:
+            Schema.from_bigquery_schema(bq_table.schema).to_yaml_file(out_path)
+            return
     except Exception as e:
         get_table_err = e
 
-    try:
-        Schema.for_table(
-            project=project,
-            dataset=dataset,
-            table=name,
-            id_token=id_token,
-            partitioned_by=resolve_partition_for(sql_dir, project, dataset, name),
-        ).to_yaml_file(out_path)
-    except Exception as for_table_err:
-        print(
-            f"Warning: Could not fetch schema for {project}.{dataset}.{name}: "
-            f"get_table: {get_table_err}; dry-run: {for_table_err}"
-        )
+    # Schema.for_table catches its own exceptions and returns {"fields": []} on failure
+    schema = Schema.for_table(
+        project=project,
+        dataset=dataset,
+        table=name,
+        id_token=id_token,
+        partitioned_by=resolve_partition_for(sql_dir, project, dataset, name),
+    )
+    if schema.schema.get("fields"):
+        schema.to_yaml_file(out_path)
+        return
+
+    print(
+        f"Warning: Could not fetch schema for {project}.{dataset}.{name} "
+        f"(get_table: {get_table_err}; dry-run returned no fields, see stdout "
+        "above for the underlying dry-run error). Writing single-field "
+        "placeholder schema for stage deploy."
+    )
+    Schema(_placeholder_stub_schema()).to_yaml_file(out_path)
 
 
 def _create_target_stub(

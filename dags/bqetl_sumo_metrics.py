@@ -70,6 +70,20 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__warn_sumo_metrics_derived__ga4_engagement_sessions_daily__v1 = bigquery_dq_check(
+        task_id="checks__warn_sumo_metrics_derived__ga4_engagement_sessions_daily__v1",
+        source_table="ga4_engagement_sessions_daily_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
+    )
+
     sumo_metrics_derived__freshness_metrics_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__freshness_metrics_base__v1",
         destination_table="freshness_metrics_base_v1",
@@ -174,6 +188,14 @@ with DAG(
         email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__warn_sumo_metrics_derived__ga4_engagement_sessions_daily__v1.set_upstream(
+        wait_for_sumo_ga_derived__ga4_events__v1
+    )
+
+    checks__warn_sumo_metrics_derived__ga4_engagement_sessions_daily__v1.set_upstream(
+        sumo_metrics_derived__ga4_engagement_sessions_daily__v1
     )
 
     sumo_metrics_derived__ga4_engagement_sessions_daily__v1.set_upstream(

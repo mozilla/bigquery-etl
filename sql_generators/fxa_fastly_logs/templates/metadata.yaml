@@ -1,0 +1,7 @@
+---
+friendly_name: {{ env }} {{ service }} Fastly CDN logs
+description: |-
+  Authorized view over Fastly CDN logs for the {{ service }} service in the {{ env }} environment ({{ stage }} stage).
+  Selects all columns from `moz-fx-fxa-{{ env }}.fxa_{{ service }}_{{ env }}_{{ stage }}_fastly_cdn_logs.fastly`.
+labels:
+  authorized: true

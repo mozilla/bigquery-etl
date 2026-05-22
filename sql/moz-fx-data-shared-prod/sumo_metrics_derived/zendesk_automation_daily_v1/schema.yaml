@@ -10,8 +10,9 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |
-    Mozilla product the ticket is for, mapped via cx_product_mappings_v1.
-    Falls back to Zendesk custom_product if no mapping exists.
+    Mozilla product the ticket is for, mapped via
+    `mozfun.customer_experience.normalize_product` (source = 'Zendesk').
+    Unknown raw values map to 'Other'.
 - name: automation_category
   type: STRING
   mode: NULLABLE

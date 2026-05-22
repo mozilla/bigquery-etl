@@ -752,10 +752,10 @@ class TestFetchStubSchema:
 
     @patch("bigquery_etl.util.target.Schema.for_table")
     @patch("bigquery_etl.util.target.bigquery.Client")
-    def test_placeholder_written_when_schema_inaccesible(
+    def test_placeholder_written_when_schema_inaccessible(
         self, mock_client, mock_for_table, tmp_path
     ):
-        """Placeholder schema should be created when get_table and dry run fail."""
+        """Placeholder schema should be created when get_table raises and dry run is empty."""
         from bigquery_etl.util.target import _fetch_stub_schema
 
         mock_client.return_value.get_table.side_effect = PermissionError("403")
@@ -769,6 +769,25 @@ class TestFetchStubSchema:
         assert out_path.exists()
         written = yaml.safe_load(out_path.read_text())
         assert written["fields"], "placeholder schema must have at least one field"
+        assert written["fields"][0]["name"] == "_bqetl_stub_placeholder"
+
+    @patch("bigquery_etl.util.target.Schema.for_table")
+    @patch("bigquery_etl.util.target.bigquery.Client")
+    def test_placeholder_written_when_get_table_returns_empty_schema(
+        self, mock_client, mock_for_table, tmp_path
+    ):
+        """get_table on a table that has no columns should fall through to the dry run path."""
+        from bigquery_etl.util.target import _fetch_stub_schema
+
+        mock_client.return_value.get_table.return_value.schema = []
+        mock_for_table.return_value.schema = {"fields": []}
+
+        out_path = tmp_path / "schema.yaml"
+        _fetch_stub_schema(
+            "src-proj", "src_ds", "src_tbl", out_path, id_token="t", sql_dir="sql"
+        )
+
+        written = yaml.safe_load(out_path.read_text())
         assert written["fields"][0]["name"] == "_bqetl_stub_placeholder"
 
 

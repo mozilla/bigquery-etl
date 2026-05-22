@@ -14,7 +14,6 @@ WITH zendesk_unmapped AS (
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket` AS t
   WHERE
     DATE(t.created_at) = @submission_date
-    AND t.status != 'deleted'
     AND mozfun.customer_experience.normalize_product(t.custom_product, 'Zendesk') = 'Other'
     -- raw values intentionally bucketed as 'Other'
     AND t.custom_product NOT IN ('X', 'product_other', 'pocket', 'hubs')

@@ -21,7 +21,7 @@ description: |
   changes flow through without manual partition rewrites.
 
   Filter dimensions:
-  - product (mapped via cx_product_mappings_v1)
+  - product (mapped via mozfun.customer_experience.normalize_product)
   - ticket_group (Appbot - English / Appbot - Non-English / All Other Tickets)
   - automation_category (automation / human-handled, with reopens reclassified)
   - is_excluded_from_sla — true for Appbot non-English, Sumo Test / VPN QA groups,

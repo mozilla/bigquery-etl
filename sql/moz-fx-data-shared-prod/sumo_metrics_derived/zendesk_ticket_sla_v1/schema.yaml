@@ -15,8 +15,9 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |
-    Mozilla product the ticket is for, mapped via static.cx_product_mappings_v1
-    (source = 'Zendesk'). Falls back to the raw custom_product if no mapping exists.
+    Mozilla product the ticket is for, mapped via
+    `mozfun.customer_experience.normalize_product` (source = 'Zendesk').
+    Unknown raw values map to 'Other'.
 - name: raw_custom_product
   type: STRING
   mode: NULLABLE

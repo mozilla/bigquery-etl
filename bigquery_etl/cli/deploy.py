@@ -608,6 +608,9 @@ def _collect_isolated_dependencies(
             project, dataset, name = extract_from_query_path(dep_path)
             artifact_type = "view" if dep_path.name == VIEW_FILE else "table"
             artifacts[f"{project}.{dataset}.{name}"] = (dep_path, artifact_type)
+        elif dep_path.name == SCHEMA_FILE:
+            project, dataset, name = extract_from_query_path(dep_path)
+            artifacts[f"{project}.{dataset}.{name}"] = (dep_path, "table")
         elif dep_path.name in ROUTINE_FILES:
             routine_deps.append(dep_path)
     return routine_deps

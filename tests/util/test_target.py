@@ -744,6 +744,34 @@ class TestCollectTargetDependencies:
         mock_fetch_schema.assert_not_called()
 
 
+class TestFetchStubSchema:
+    """
+    When both get_table and dry run fail to get a schema, the stub table should fall back
+    to a placeholder so downstream `SELECT *` views can still be created in stage.
+    """
+
+    @patch("bigquery_etl.util.target.Schema.for_table")
+    @patch("bigquery_etl.util.target.bigquery.Client")
+    def test_placeholder_written_when_schema_inaccesible(
+        self, mock_client, mock_for_table, tmp_path
+    ):
+        """Placeholder schema should be created when get_table and dry run fail."""
+        from bigquery_etl.util.target import _fetch_stub_schema
+
+        mock_client.return_value.get_table.side_effect = PermissionError("403")
+        mock_for_table.return_value.schema = {"fields": []}
+
+        out_path = tmp_path / "schema.yaml"
+        _fetch_stub_schema(
+            "src-proj", "src_ds", "src_tbl", out_path, id_token="t", sql_dir="sql"
+        )
+
+        assert out_path.exists()
+        written = yaml.safe_load(out_path.read_text())
+        assert written["fields"], "placeholder schema must have at least one field"
+        assert written["fields"][0]["name"] == "_bqetl_stub_placeholder"
+
+
 class TestStripMaterializedView:
     def test_strips_create_clause(self, tmp_path):
         from bigquery_etl.cli.deploy import _strip_materialized_view

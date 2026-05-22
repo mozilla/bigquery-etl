@@ -762,6 +762,32 @@ class TestStripMaterializedView:
         assert "CREATE MATERIALIZED VIEW" not in new_path.read_text()
         assert "SELECT a, b FROM" in new_path.read_text()
 
+    def test_strips_when_identifier_contains_as_substring(self, tmp_path):
+        # Regression: under --isolated the staged FQN embeds the source
+        # dataset name, which can contain the substring "as" (e.g.
+        # `firefox_crashreporter_derived`, `..._tasks_derived`). The strip
+        # regex must match `AS` as a keyword, not as a substring inside the
+        # backticked identifier.
+        from bigquery_etl.cli.deploy import _strip_materialized_view
+
+        mv_dir = tmp_path / "p" / "ds" / "tbl"
+        mv_dir.mkdir(parents=True)
+        mv_file = mv_dir / "materialized_view.sql"
+        mv_file.write_text(
+            "CREATE MATERIALIZED VIEW "
+            "`moz-fx-data-integration-tests`.`test_schema`."
+            "`moz_fx_data_shared_prod__firefox_crashreporter_derived"
+            "__event_monitoring_live_v1`\n"
+            "OPTIONS(refresh_interval_minutes=10) AS\n"
+            "SELECT a, b FROM `p.other.tbl`"
+        )
+        new_path = _strip_materialized_view(mv_file)
+        body = new_path.read_text()
+        assert "CREATE MATERIALIZED VIEW" not in body
+        # Identifier must NOT have been chopped at the "as" in "crash".
+        assert "hreporter_derived" not in body
+        assert body.lstrip().startswith("SELECT a, b FROM")
+
 
 class TestRewriteTestsForTarget:
     def test_renames_files_in_target_subtree(self, tmp_path):

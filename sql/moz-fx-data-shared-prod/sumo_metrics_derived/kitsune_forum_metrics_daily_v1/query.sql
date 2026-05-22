@@ -74,6 +74,8 @@ questions AS (
     q.locale,
     ttfr.first_reply_date,
     ttfr.ttfr_mins,
+    COALESCE(q.is_solved, FALSE) AS is_solved,
+    DATE(q.solved_date) AS solved_date,
     COALESCE(hv.total_helpful_votes, 0) AS total_helpful_votes,
     COALESCE(hv.total_unhelpful_votes, 0) AS total_unhelpful_votes
   FROM
@@ -92,10 +94,12 @@ questions AS (
 SELECT
   created_date,
   first_reply_date,
+  solved_date,
   product,
   locale,
   COUNT(*) AS questions_created,
   COUNTIF(first_reply_date IS NOT NULL) AS questions_replied,
+  COUNTIF(is_solved) AS questions_solved,
   AVG(ttfr_mins / 60.0) AS avg_ttfr_hrs,
   SUM(ttfr_mins / 60.0) AS total_ttfr_hrs,
   SUM(total_helpful_votes) AS total_helpful_votes,
@@ -108,10 +112,12 @@ WHERE
 GROUP BY
   created_date,
   first_reply_date,
+  solved_date,
   product,
   locale
 ORDER BY
   created_date,
   first_reply_date,
+  solved_date,
   product,
   locale

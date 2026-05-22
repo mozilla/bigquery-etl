@@ -1622,6 +1622,26 @@ bqetl_cloudflare_device_market_share:
     - repo/bigquery-etl
     - impact/tier_3
 
+bqetl_statcounter_browser_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kbammarito@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-05-01'
+  description: |
+    Pulls browser market share data from Statcounter CSV downloads
+  repo: bigquery-etl
+  schedule_interval: 0 10 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
 bqetl_firefox_desktop_ad_click_history:
   default_args:
     depends_on_past: false

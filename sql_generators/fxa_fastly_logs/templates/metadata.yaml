@@ -8,3 +8,5 @@ owners:
 - atoufali@mozilla.com
 labels:
   authorized: true
+  owner1: benwu
+  owner2: atoufali

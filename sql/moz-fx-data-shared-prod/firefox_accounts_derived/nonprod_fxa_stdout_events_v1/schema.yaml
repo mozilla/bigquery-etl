@@ -2,13 +2,17 @@ fields:
 - name: logName
   type: STRING
   mode: NULLABLE
+  description: The resource name of the log to which this log entry belongs.
 - name: resource
   type: RECORD
   mode: NULLABLE
+  description: The monitored resource that produced this log entry.
   fields:
   - name: type
     type: STRING
     mode: NULLABLE
+    description: The monitored resource type. For example, the type of a Compute Engine
+      VM instance is `gce_instance`.
   - name: labels
     type: RECORD
     mode: NULLABLE
@@ -34,9 +38,12 @@ fields:
 - name: textPayload
   type: STRING
   mode: NULLABLE
+  description: The log entry payload, represented as a Unicode string (UTF-8).
 - name: jsonPayload
   type: RECORD
   mode: NULLABLE
+  description: The log entry payload, represented as a structure that is expressed
+    as a JSON object.
   fields:
   - name: x_forwarded_for
     type: STRING
@@ -228,61 +235,94 @@ fields:
 - name: receiveTimestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The time the log entry was received by Logging.
 - name: severity
   type: STRING
   mode: NULLABLE
+  description: The severity of the log entry. The default value is `LogSeverity.DEFAULT`.
 - name: insertId
   type: STRING
   mode: NULLABLE
+  description: A unique identifier for the log entry. Logging considers other log
+    entries in the same project, with the same `timestamp`, and with the same `insertId`
+    to be duplicates which are removed in a single query result.
 - name: httpRequest
   type: RECORD
   mode: NULLABLE
+  description: Information about the HTTP request associated with this log entry,
+    if applicable.
   fields:
   - name: requestMethod
     type: STRING
     mode: NULLABLE
+    description: 'The request method. Examples: "GET", "HEAD", "PUT", "POST".'
   - name: requestUrl
     type: STRING
     mode: NULLABLE
+    description: The scheme (http, https), the host name, the path and the query portion
+      of the URL that was requested.
   - name: requestSize
     type: INTEGER
     mode: NULLABLE
+    description: The size of the HTTP request message in bytes, including the request
+      headers and the request body.
   - name: status
     type: INTEGER
     mode: NULLABLE
+    description: 'The response code indicating the status of response. Examples: 200,
+      404.'
   - name: responseSize
     type: INTEGER
     mode: NULLABLE
+    description: The size of the HTTP response message sent back to the client, in
+      bytes.
   - name: userAgent
     type: STRING
     mode: NULLABLE
+    description: The user agent sent by the client.
   - name: remoteIp
     type: STRING
     mode: NULLABLE
+    description: The IP address (IPv4 or IPv6) of the client that issued the HTTP
+      request.
   - name: serverIp
     type: STRING
     mode: NULLABLE
+    description: The IP address (IPv4 or IPv6) of the origin server that the request
+      was sent to.
   - name: referer
     type: STRING
     mode: NULLABLE
+    description: The referer URL of the request, as defined in HTTP/1.1 Header Field
+      Definitions.
   - name: cacheLookup
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether or not a cache lookup was attempted.
   - name: cacheHit
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether or not an entity was served from cache (with or without validation).
   - name: cacheValidatedWithOriginServer
     type: BOOLEAN
     mode: NULLABLE
+    description: Whether or not the response was validated with the origin server
+      before being served from cache. This field is only meaningful if `cacheHit`
+      is True.
   - name: cacheFillBytes
     type: INTEGER
     mode: NULLABLE
+    description: The number of HTTP response bytes inserted into cache. Set only when
+      a cache fill was attempted.
   - name: protocol
     type: STRING
     mode: NULLABLE
+    description: 'Protocol used for the request. Examples: "HTTP/1.1", "HTTP/2".'
 - name: labels
   type: RECORD
   mode: NULLABLE
+  description: A map of key, value pairs that provides additional information about
+    the log entry.
   fields:
   - name: k8s_pod_app_kubernetes_io_part_of
     type: STRING
@@ -326,51 +366,79 @@ fields:
 - name: operation
   type: RECORD
   mode: NULLABLE
+  description: Information about an operation associated with the log entry, if applicable.
   fields:
   - name: id
     type: STRING
     mode: NULLABLE
+    description: An arbitrary operation identifier. Log entries with the same identifier
+      are assumed to be part of the same operation.
   - name: producer
     type: STRING
     mode: NULLABLE
+    description: An arbitrary producer identifier. The combination of `id` and `producer`
+      must be globally unique.
   - name: first
     type: BOOLEAN
     mode: NULLABLE
+    description: Set this to True if this is the first log entry in the operation.
   - name: last
     type: BOOLEAN
     mode: NULLABLE
+    description: Set this to True if this is the last log entry in the operation.
 - name: trace
   type: STRING
   mode: NULLABLE
+  description: The trace ID being written to Cloud Trace in association with this
+    log entry.
 - name: spanId
   type: STRING
   mode: NULLABLE
+  description: The ID of the Cloud Trace span associated with the current operation
+    in which the log is being written.
 - name: traceSampled
   type: BOOLEAN
   mode: NULLABLE
+  description: The sampling decision of the span associated with the log entry at
+    the time the log entry was created.
 - name: sourceLocation
   type: RECORD
   mode: NULLABLE
+  description: Source code location information associated with the log entry, if
+    any.
   fields:
   - name: file
     type: STRING
     mode: NULLABLE
+    description: Source file name. Depending on the runtime environment, this might
+      be a simple name or a fully-qualified name.
   - name: line
     type: INTEGER
     mode: NULLABLE
+    description: Line within the source file. 1-based; 0 indicates no line number
+      available.
   - name: function
     type: STRING
     mode: NULLABLE
+    description: Human-readable name of the function or method being invoked, with
+      optional context such as the class or package name.
 - name: split
   type: RECORD
   mode: NULLABLE
+  description: Information indicating this LogEntry is part of a sequence of multiple
+    log entries split from a single LogEntry.
   fields:
   - name: uid
     type: STRING
     mode: NULLABLE
+    description: A globally unique identifier for all log entries in a sequence of
+      split log entries.
   - name: index
     type: INTEGER
     mode: NULLABLE
+    description: The index of this LogEntry in the sequence of split log entries.
   - name: totalSplits
     type: INTEGER
     mode: NULLABLE
+    description: The total number of log entries that the original LogEntry was split
+      into.

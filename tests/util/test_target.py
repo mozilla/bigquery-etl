@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 import yaml
 
+from bigquery_etl.cli.deploy import _collect_isolated_dependencies
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
     SCHEMA_FILE,
@@ -19,6 +20,7 @@ from bigquery_etl.util.target import (
     get_target,
     prepare_target_directory,
     prepare_target_files,
+    read_source_identity_from_manifest,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
 )
@@ -883,3 +885,182 @@ class TestResolveIsolatedSchema:
         mock_client_cls.return_value.get_table.assert_called_once_with(
             "src-p.src_ds.tbl"
         )
+
+
+class TestCollectIsolatedDependenciesSchemaOnly:
+    """Test that _collect_isolated_dependencies handles schema.yaml-only deps.
+
+    Tables like Fivetran imports or external data have only metadata.yaml +
+    schema.yaml under sql/ (no query.sql). collect_target_dependencies returns
+    their schema.yaml path. _collect_isolated_dependencies must add them to the
+    artifacts dict so their source identity enters deployed_source_identities
+    and rewrite_for_isolated rewrites refs to them.
+    """
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_added_to_artifacts(self, mock_fetch_schema, tmp_path):
+        """schema.yaml deps returned by collect_target_dependencies are added to artifacts."""
+        sql_dir = tmp_path
+
+        # View that references a schema-only table
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.ext_ds.fivetran_tbl`"
+        )
+
+        # Schema-only table (no query file)
+        schema_only_dir = sql_dir / "src-proj" / "ext_ds" / "fivetran_tbl"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text(
+            "fields:\n  - name: col1\n    type: STRING\n"
+        )
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: test\n")
+
+        target = Target(
+            name="stage",
+            project_id="test-proj",
+            dataset="test_ds",
+            artifact_prefix="prefix_",
+        )
+
+        artifacts = {
+            "src-proj.ds.my_view": (view_dir / "view.sql", "view"),
+        }
+
+        _collect_isolated_dependencies(artifacts, str(sql_dir), target)
+
+        # The schema-only dep must appear in artifacts as a "table"
+        assert "src-proj.ext_ds.fivetran_tbl" in artifacts
+        dep_path, dep_type = artifacts["src-proj.ext_ds.fivetran_tbl"]
+        assert dep_path.name == "schema.yaml"
+        assert dep_type == "table"
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_source_identity_recoverable(
+        self, mock_fetch_schema, tmp_path
+    ):
+        """Source identity for schema-only deps is extractable from the path."""
+        sql_dir = tmp_path
+
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.static.country_names_v1`"
+        )
+
+        schema_only_dir = sql_dir / "src-proj" / "static" / "country_names_v1"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text("fields: []\n")
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: test\n")
+
+        target = Target(
+            name="stage",
+            project_id="test-proj",
+            dataset="test_ds",
+        )
+
+        artifacts = {
+            "src-proj.ds.my_view": (view_dir / "view.sql", "view"),
+        }
+
+        _collect_isolated_dependencies(artifacts, str(sql_dir), target)
+
+        dep_path, _ = artifacts["src-proj.static.country_names_v1"]
+        # No manifest at source — extract_from_query_path gives the source identity
+        source_id = read_source_identity_from_manifest(dep_path)
+        if source_id is None:
+            from bigquery_etl.util import extract_from_query_path
+
+            source_id = extract_from_query_path(dep_path)
+        assert source_id == ("src-proj", "static", "country_names_v1")
+
+
+class TestCollectTargetDependenciesStubDedup:
+    """Test that the seen_refs dedup doesn't prevent stub creation.
+
+    If a query (emit_stubs=False) processes an unmanaged ref before a view
+    (emit_stubs=True) does, the stub must still be created when the view
+    encounters the same ref.
+    """
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_stub_created_even_if_query_sees_ref_first(
+        self, mock_fetch_schema, tmp_path
+    ):
+        sql_dir = tmp_path
+
+        # A query WITHOUT schema.yaml that references an unmanaged table.
+        # _table_refs_from walks queries without schema.yaml.
+        query_dir = sql_dir / "src-proj" / "ds" / "my_query"
+        query_dir.mkdir(parents=True)
+        (query_dir / "query.sql").write_text(
+            "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+        )
+
+        # A view that references the same unmanaged table.
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+        )
+
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="dev_ds",
+            artifact_prefix="prefix_",
+        )
+
+        # Pass both files as artifacts. Since artifact_files is a set, the
+        # iteration order is non-deterministic — the test passes regardless
+        # of whether the query or the view is processed first.
+        artifact_files = {
+            query_dir / "query.sql",
+            view_dir / "view.sql",
+        }
+        deps = collect_target_dependencies(artifact_files, str(sql_dir), target)
+
+        expected_stub = (
+            sql_dir / "dev-proj" / "dev_ds" / "prefix_shared_tbl" / "query.py"
+        )
+        assert expected_stub in deps, (
+            "Stub must be created for the unmanaged ref even if a query "
+            "(emit_stubs=False) encounters it before the view does"
+        )
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_stub_not_duplicated_across_multiple_views(
+        self, mock_fetch_schema, tmp_path
+    ):
+        sql_dir = tmp_path
+
+        # Two views referencing the same unmanaged table.
+        for name in ("view_a", "view_b"):
+            d = sql_dir / "src-proj" / "ds" / name
+            d.mkdir(parents=True)
+            (d / "view.sql").write_text(
+                f"CREATE OR REPLACE VIEW `src-proj.ds.{name}` AS\n"
+                "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+            )
+
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="dev_ds",
+        )
+
+        artifact_files = {
+            sql_dir / "src-proj" / "ds" / "view_a" / "view.sql",
+            sql_dir / "src-proj" / "ds" / "view_b" / "view.sql",
+        }
+        deps = collect_target_dependencies(artifact_files, str(sql_dir), target)
+
+        stub_paths = [
+            p for p in deps if p.name == "query.py" and "shared_tbl" in str(p)
+        ]
+        assert len(stub_paths) == 1, "Stub should be created exactly once"
+        assert mock_fetch_schema.call_count == 1

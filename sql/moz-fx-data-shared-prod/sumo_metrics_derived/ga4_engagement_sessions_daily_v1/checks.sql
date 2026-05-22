@@ -28,7 +28,7 @@ kitsune_unmapped AS (
     q.product AS raw_product,
     COUNT(*) AS record_count
   FROM
-    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` AS q
+    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` AS q
   WHERE
     DATE(TIMESTAMP(q.created_utc), "UTC") = @submission_date
     AND mozfun.customer_experience.normalize_product(q.product, 'Kitsune') = 'Other'
@@ -48,17 +48,48 @@ kitsune_unmapped AS (
   HAVING
     record_count >= 1
 ),
+-- Mirror the consumer query's event filters (event_name = 'user_engagement',
+-- content_group IN ('kb-article', 'support-forum-question-details'),
+-- engagement_time_msec > 30000) so the drift signal stays scoped to values that
+-- actually land in the derived table and we avoid a daily full scan of
+-- ga4_events filtered only by the 'products' key.
+ga4_engaged_events AS (
+  SELECT
+    e.event_params
+  FROM
+    `mozdata.sumo_ga.ga4_events` AS e
+  WHERE
+    e.submission_date = @submission_date
+    AND e.event_name = 'user_engagement'
+    AND EXISTS (
+      SELECT
+        1
+      FROM
+        UNNEST(e.event_params) AS ep
+      WHERE
+        ep.key = 'content_group'
+        AND ep.value.string_value IN ('kb-article', 'support-forum-question-details')
+    )
+    AND EXISTS (
+      SELECT
+        1
+      FROM
+        UNNEST(e.event_params) AS ep
+      WHERE
+        ep.key = 'engagement_time_msec'
+        AND ep.value.int_value > 1000 * 30
+    )
+),
 ga4_unmapped AS (
   SELECT
     'GA4' AS source,
     ep.value.string_value AS raw_product,
     COUNT(*) AS record_count
   FROM
-    `mozdata.sumo_ga.ga4_events`,
+    ga4_engaged_events,
     UNNEST(event_params) AS ep
   WHERE
-    submission_date = @submission_date
-    AND ep.key = 'products'
+    ep.key = 'products'
     AND mozfun.customer_experience.normalize_product(ep.value.string_value, 'GA4') = 'Other'
     -- Exclude paths the UDF intentionally maps to 'Other'. The substring
     -- regexes mirror the GA4 'Other' branches in normalize_product; the

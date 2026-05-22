@@ -389,7 +389,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2588,7 +2589,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4807,7 +4809,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

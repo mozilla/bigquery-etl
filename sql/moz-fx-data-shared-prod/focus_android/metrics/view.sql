@@ -292,7 +292,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2226,7 +2227,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4160,7 +4162,8 @@ SELECT
       metrics.counter.network_ssl_token_cache_evictions,
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
-      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate
+      metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

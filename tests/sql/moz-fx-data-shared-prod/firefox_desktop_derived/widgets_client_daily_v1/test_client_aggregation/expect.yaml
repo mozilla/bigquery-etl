@@ -27,6 +27,8 @@
   sample_id: 42
   legacy_telemetry_client_id: legacy_id_1
   profile_group_id: profile_group_id_1
+  newtab_blocked_sponsors: []
+  experiments: []
   all_visits: 1
   default_ui_visits: 0
   widget_impression_visits: 1
@@ -69,6 +71,8 @@
   sample_id: 42
   legacy_telemetry_client_id: legacy_id_1
   profile_group_id: profile_group_id_1
+  newtab_blocked_sponsors: []
+  experiments: []
   all_visits: 2
   default_ui_visits: 2
   widget_impression_visits: 2

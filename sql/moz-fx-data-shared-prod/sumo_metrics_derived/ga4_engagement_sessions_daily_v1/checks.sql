@@ -1,13 +1,8 @@
 -- Drift warning for `customer_experience.normalize_product`.
 -- Scans each upstream source for raw product values that the UDF mapped to
--- 'Other' over the trailing 3 months ending at @submission_date, excluding
--- the raw values we have already decided to bucket as 'Other'. Surfaces only
--- volumes worth reviewing so isolated typos don't page anyone.
---
--- Scheduling: bqetl auto-runs checks.sql alongside a query.sql. This UDF
--- directory has no query, so wire this check into a daily monitoring query
--- (or symlink it into a consumer query directory) to get it scheduled —
--- meanwhile it is runnable ad-hoc via `./bqetl check run`.
+-- 'Other' on @submission_date, excluding raw values we have already decided
+-- to bucket as 'Other'. Runs daily alongside the consumer query so new slugs
+-- surface as they first appear — no need to re-scan history each run.
 
 #warn
 WITH zendesk_unmapped AS (
@@ -18,9 +13,7 @@ WITH zendesk_unmapped AS (
   FROM
     `moz-fx-data-shared-prod.zendesk_syndicate.ticket` AS t
   WHERE
-    DATE(t.created_at)
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 3 MONTH)
-    AND @submission_date
+    DATE(t.created_at) = @submission_date
     AND t.status != 'deleted'
     AND mozfun.customer_experience.normalize_product(t.custom_product, 'Zendesk') = 'Other'
     -- raw values intentionally bucketed as 'Other'
@@ -28,7 +21,7 @@ WITH zendesk_unmapped AS (
   GROUP BY
     raw_product
   HAVING
-    record_count >= 5
+    record_count >= 1
 ),
 kitsune_unmapped AS (
   SELECT
@@ -38,9 +31,7 @@ kitsune_unmapped AS (
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions` AS q
   WHERE
-    DATE(TIMESTAMP(q.created_utc), "UTC")
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 3 MONTH)
-    AND @submission_date
+    DATE(TIMESTAMP(q.created_utc), "UTC") = @submission_date
     AND mozfun.customer_experience.normalize_product(q.product, 'Kitsune') = 'Other'
     AND q.product NOT IN (
       'firefox-os',
@@ -56,7 +47,7 @@ kitsune_unmapped AS (
   GROUP BY
     raw_product
   HAVING
-    record_count >= 5
+    record_count >= 1
 ),
 ga4_unmapped AS (
   SELECT
@@ -67,9 +58,7 @@ ga4_unmapped AS (
     `mozdata.sumo_ga.ga4_events`,
     UNNEST(event_params) AS ep
   WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 3 MONTH)
-    AND @submission_date
+    submission_date = @submission_date
     AND ep.key = 'products'
     AND mozfun.customer_experience.normalize_product(ep.value.string_value, 'GA4') = 'Other'
     -- Exclude paths the UDF intentionally maps to 'Other'. The substring
@@ -77,6 +66,8 @@ ga4_unmapped AS (
     -- explicit NOT IN list covers standalone exact-match 'Other' paths the
     -- substring patterns wouldn't catch.
     AND ep.value.string_value NOT IN ('/privacy-and-security/')
+    -- Drop malformed paths (consecutive slashes) — instrumentation noise, not a product signal
+    AND NOT REGEXP_CONTAINS(ep.value.string_value, r'//')
     AND NOT REGEXP_CONTAINS(LOWER(ep.value.string_value), r'/contributor/')
     AND NOT REGEXP_CONTAINS(
       LOWER(ep.value.string_value),
@@ -85,7 +76,7 @@ ga4_unmapped AS (
   GROUP BY
     raw_product
   HAVING
-    record_count >= 50
+    record_count >= 5
 ),
 all_unmapped AS (
   SELECT
@@ -108,7 +99,7 @@ SELECT
     (SELECT COUNT(*) FROM all_unmapped) > 0,
     ERROR(
       FORMAT(
-        'Unmapped product values in 3 months ending %t — add to normalize_product UDF: %t',
+        'Unmapped product values on %t — add to normalize_product UDF: %t',
         @submission_date,
         ARRAY(
           SELECT AS STRUCT

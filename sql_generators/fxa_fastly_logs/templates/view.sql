@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `{{ target_project }}.fxa_fastly_logs.{{ env }}_{{ service }}`
+  `{{ target_project }}.{{ dataset }}.{{ env }}_{{ service }}`
 AS
 SELECT
   *

@@ -1,6 +1,7 @@
 friendly_name: Firefox Accounts Fastly Logs
 description: |-
-  Fastly CDN logs for Firefox Accounts. Contains prod and non-prod
+  Fastly CDN logs for Firefox Accounts. Contains authorized views over
+  the prod and non-prod Fastly logs in the FxA-owned GCP projects.
 dataset_base_acl: view
 user_facing: true
 labels: {}

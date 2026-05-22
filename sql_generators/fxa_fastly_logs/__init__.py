@@ -1,4 +1,4 @@
-"""Generate authorized views in fxa_fastly_logs fo Fastly CDN logs."""
+"""Generate authorized views in fxa_fastly_logs for Fastly CDN logs."""
 
 from pathlib import Path
 
@@ -23,7 +23,9 @@ SERVICES: list[str] = [
     "payments_next",
     "profile",
 ]
-# (env, stage) pairs. env is the GCP/deployment env (prod/nonprod)
+# (env, stage) pairs matching the upstream Fastly dataset naming convention
+# `fxa_<service>_<env>_<stage>_fastly_cdn_logs`. `env` is the deployment env;
+# `stage` is the application tier within that env
 ENVS: list[tuple[str, str]] = [
     ("prod", "prod"),
     ("nonprod", "stage"),
@@ -60,6 +62,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
             view_sql = view_template.render(
                 target_project=target_project,
+                dataset=DATASET,
                 service=service,
                 env=env,
                 stage=stage,
@@ -75,6 +78,7 @@ def generate(target_project, output_dir, use_cloud_function):
             metadata_path = (
                 output_dir / target_project / DATASET / view_name / "metadata.yaml"
             )
+            metadata_path.parent.mkdir(parents=True, exist_ok=True)
             metadata_path.write_text(metadata)
 
 

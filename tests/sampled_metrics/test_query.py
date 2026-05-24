@@ -33,6 +33,19 @@ get_sampled_metrics_from_api = query_mod.get_sampled_metrics_from_api
 get_current_state = query_mod.get_current_state
 compute_diff = query_mod.compute_diff
 
+# Mapping used by the get_metric_type stub installed for API tests.
+# Keys are the snake_cased Glean ID (dots in the canonical name replaced
+# with underscores), matching what query.py looks up.
+_DEFAULT_METRIC_TYPES = {
+    "paint_build_displaylist_time": "timing_distribution",
+    "memory_heap_allocated": "memory_distribution",
+    "fog_ipc_buffer_sizes": "memory_distribution",
+    "sampled_category_sampled_metric": "counter",
+    "sampled_category_unsampled_metric": "counter",
+    "metrics_metric_a": "counter",
+    "metrics_metric_b": "counter",
+}
+
 
 # -- Fixtures: mock API data --------------------------------------------------
 
@@ -56,8 +69,8 @@ def _make_experiment(
     """Build a mock experiment dict matching the Experimenter API shape."""
     if metrics_enabled is None:
         metrics_enabled = {
-            "timing_distribution.paint_build_displaylist_time": False,
-            "memory_distribution.heap_allocated": False,
+            "paint.build_displaylist_time": False,
+            "memory.heap_allocated": False,
         }
     if feature_ids is None:
         feature_ids = ["gleanInternalSdk"]
@@ -193,6 +206,21 @@ class TestIsActive:
 
 
 class TestGetSampledMetricsFromApi:
+    @pytest.fixture(autouse=True)
+    def _stub_metric_type_lookup(self, monkeypatch):
+        """Avoid hitting the Glean dictionary; resolve from a fixed map."""
+        monkeypatch.setattr(query_mod, "_glean_metric_types_by_app", {})
+
+        def fake_get_metric_type(metric_name, app_name):
+            if metric_name not in _DEFAULT_METRIC_TYPES:
+                raise ValueError(
+                    f"Metric '{metric_name}' not found in Glean dictionary "
+                    f"for app '{app_name}'"
+                )
+            return _DEFAULT_METRIC_TYPES[metric_name]
+
+        monkeypatch.setattr(query_mod, "get_metric_type", fake_get_metric_type)
+
     @mock.patch.object(query_mod, "fetch")
     def test_basic_extraction(self, mock_fetch):
         mock_fetch.return_value = [
@@ -212,7 +240,7 @@ class TestGetSampledMetricsFromApi:
         types = {r["metric_type"] for r in rows}
         names = {r["metric_name"] for r in rows}
         assert types == {"timing_distribution", "memory_distribution"}
-        assert names == {"paint_build_displaylist_time", "heap_allocated"}
+        assert names == {"paint_build_displaylist_time", "memory_heap_allocated"}
 
     @mock.patch.object(query_mod, "fetch")
     def test_filters_non_glean_experiments(self, mock_fetch):
@@ -239,14 +267,15 @@ class TestGetSampledMetricsFromApi:
             _make_experiment(
                 end_date=FUTURE_DATE,
                 metrics_enabled={
-                    "counter.sampled_metric": False,
-                    "counter.unsampled_metric": True,
+                    "sampled_category.sampled_metric": False,
+                    "sampled_category.unsampled_metric": True,
                 },
             ),
         ]
         rows = get_sampled_metrics_from_api()
         assert len(rows) == 1
-        assert rows[0]["metric_name"] == "sampled_metric"
+        assert rows[0]["metric_name"] == "sampled_category_sampled_metric"
+        assert rows[0]["metric_type"] == "counter"
 
     @mock.patch.object(query_mod, "fetch")
     def test_unions_metrics_across_branches(self, mock_fetch):
@@ -260,7 +289,7 @@ class TestGetSampledMetricsFromApi:
                         "value": {
                             "gleanMetricConfiguration": {
                                 "metrics_enabled": {
-                                    "counter.metric_a": False,
+                                    "metrics.metric_a": False,
                                 }
                             }
                         },
@@ -276,7 +305,7 @@ class TestGetSampledMetricsFromApi:
                         "value": {
                             "gleanMetricConfiguration": {
                                 "metrics_enabled": {
-                                    "counter.metric_b": False,
+                                    "metrics.metric_b": False,
                                 }
                             }
                         },
@@ -292,26 +321,71 @@ class TestGetSampledMetricsFromApi:
         ]
         rows = get_sampled_metrics_from_api()
         names = {r["metric_name"] for r in rows}
-        assert names == {"metric_a", "metric_b"}
+        assert names == {"metrics_metric_a", "metrics_metric_b"}
 
     @mock.patch.object(query_mod, "fetch")
-    def test_metric_without_dot(self, mock_fetch):
+    def test_multi_dot_category_id(self, mock_fetch):
+        """Glean categories can themselves contain dots (e.g. 'fog.ipc')."""
         mock_fetch.return_value = [
             _make_experiment(
                 end_date=FUTURE_DATE,
-                metrics_enabled={"nodot": False},
+                metrics_enabled={"fog.ipc.buffer_sizes": False},
             ),
         ]
         rows = get_sampled_metrics_from_api()
         assert len(rows) == 1
-        assert rows[0]["metric_type"] is None
-        assert rows[0]["metric_name"] == "nodot"
+        assert rows[0]["metric_name"] == "fog_ipc_buffer_sizes"
+        assert rows[0]["metric_type"] == "memory_distribution"
+
+    @mock.patch.object(query_mod, "fetch")
+    def test_unknown_metric_raises(self, mock_fetch):
+        mock_fetch.return_value = [
+            _make_experiment(
+                end_date=FUTURE_DATE,
+                metrics_enabled={"unknown.metric": False},
+            ),
+        ]
+        with pytest.raises(ValueError, match="unknown_metric"):
+            get_sampled_metrics_from_api()
 
     @mock.patch.object(query_mod, "fetch")
     def test_no_active_experiments(self, mock_fetch):
         mock_fetch.return_value = []
         rows = get_sampled_metrics_from_api()
         assert rows == []
+
+
+class TestGetMetricType:
+    """Direct coverage of the Glean dictionary lookup helper."""
+
+    @pytest.fixture(autouse=True)
+    def _clear_cache(self, monkeypatch):
+        monkeypatch.setattr(query_mod, "_glean_metric_types_by_app", {})
+
+    @mock.patch.object(query_mod, "fetch")
+    def test_fetches_dictionary_and_resolves(self, mock_fetch):
+        mock_fetch.return_value = {
+            "metrics": [
+                {"name": "paint.build_displaylist_time", "type": "timing_distribution"},
+                {"name": "memory.heap_allocated", "type": "memory_distribution"},
+            ]
+        }
+        assert (
+            query_mod.get_metric_type("paint_build_displaylist_time", "firefox_desktop")
+            == "timing_distribution"
+        )
+        assert (
+            query_mod.get_metric_type("memory_heap_allocated", "firefox_desktop")
+            == "memory_distribution"
+        )
+        # Second lookup for the same app reuses the cached dictionary.
+        assert mock_fetch.call_count == 1
+
+    @mock.patch.object(query_mod, "fetch")
+    def test_unknown_metric_raises(self, mock_fetch):
+        mock_fetch.return_value = {"metrics": []}
+        with pytest.raises(ValueError, match="missing_metric"):
+            query_mod.get_metric_type("missing_metric", "firefox_desktop")
 
 
 # -- Tests: compute_diff ------------------------------------------------------

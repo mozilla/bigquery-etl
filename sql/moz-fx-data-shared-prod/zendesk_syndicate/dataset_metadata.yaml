@@ -9,8 +9,13 @@ syndication:
     syndicated_project: moz-fx-sumo-prod
     syndicated_dataset: zendesk
   syndicated_tables:
+    - csat_survey_answer
     - group
+    - schedule
+    - schedule_holiday
     - ticket
+    - ticket_comment
+    - ticket_csat_survey
     - ticket_field_history
     - ticket_tag
     - user

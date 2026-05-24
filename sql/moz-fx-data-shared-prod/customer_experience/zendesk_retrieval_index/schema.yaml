@@ -48,8 +48,9 @@ fields:
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Raw upstream Zendesk `custom_product` value.
-      Normalized at read time by the `customer_experience.zendesk_retrieval_index` view.
+  description: Mozilla product, normalized at read time. Firefox-family raw values are mapped
+    to canonical names (`firefox` → `Firefox Desktop`, `mobile` → `Fenix`, `ios` → `Firefox iOS`,
+    `firefox-enterprise` → `Firefox Enterprise`); all other raw values collapse to `Non Firefox`.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -146,21 +147,22 @@ fields:
   - name: analysis_timestamp
     type: TIMESTAMP
     mode: NULLABLE
-    description: Ingestion timestamp — captures the actual wall-clock time when this row's
-      AI analysis was produced (`CURRENT_TIMESTAMP()` at query run). Distinct from the
-      partition date (`creation_date`), which reflects when the ticket itself was
-      created. Backfills and re-runs will record their own run time here.
+    description: Ingestion timestamp — wall-clock time when this row's AI analysis was produced.
   - name: embedding_succeeded
     type: BOOLEAN
     mode: NULLABLE
-    description: TRUE when `embedding IS NOT NULL`. **This is the sole driver for reprocessing today** —
-      partitions are re-run for rows where `embedding_succeeded = FALSE`. LLM-field issues are tracked in
-      `failure_reasons` for visibility but do **not** trigger reruns.
+    description: TRUE when `embedding IS NOT NULL`. Sole driver for reprocessing today —
+      partitions are re-run for rows where `embedding_succeeded = FALSE`.
   - name: failure_reasons
     type: STRING
     mode: REPEATED
-    description: Diagnostic tags for any quality check that failed on this row. Empty array when every check passes.
-      Possible tags - `embedding_missing`, `ticket_summary_llm_missing`, `ticket_category_llm_missing`, `ticket_language_llm_missing`,
-      `ticket_sentiment_score_missing`, `ticket_sentiment_score_out_of_range`, `ticket_entities_llm_missing`,
-      `ticket_entities_llm_has_empty_elements`, `ticket_topics_llm_missing`, `ticket_topics_llm_has_empty_elements`.
-      Use for triage (`SELECT reason, COUNT(*) FROM ..., UNNEST(metadata.failure_reasons) reason GROUP BY 1`).
+    description: Diagnostic tags for any quality check that failed on this row. Empty array when
+      every check passes. See the underlying
+      `customer_experience_derived.zendesk_retrieval_index_v1` schema for the authoritative
+      list of possible tags.
+- name: recency_score
+  type: FLOAT
+  mode: NULLABLE
+  description: Computed at read time. Exponential decay over `creation_date`
+    (`EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)`) — 1.0 today,
+    ~0.37 after 30 days.

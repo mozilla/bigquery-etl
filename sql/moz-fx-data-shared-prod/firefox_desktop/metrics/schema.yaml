@@ -12975,6 +12975,20 @@ fields:
         lookback.
 
         '
+    - name: browser_ui_interaction_preferences_pane_passwords_autofill
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the items interacted with in the Passwords and autofill
+        section of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -16,7 +16,7 @@ WITH kitsune_questions AS (
     q.question_id,
     q.created_date AS question_created_at,
     q.creator_username AS question_creator,
-    mozfun.customer_experience.normalize_product(q.product, 'Kitsune') AS product,
+    q.product,
     q.locale,
     q.topic,
     q.tier1_topic,
@@ -103,10 +103,6 @@ SELECT
       THEN NULL
     ELSE kitsune_joined.question_creator = answer_creator
   END AS is_self_answer,
-  (
-    STARTS_WITH(product, 'Firefox')
-    OR product IN ('Fenix', 'Klar iOS', 'Klar Android', 'Focus iOS', 'Focus Android')
-  ) AS is_firefox_product,
   num_helpful_votes,
   num_unhelpful_votes,
   kitsune_llm.llm_result.question_summary_llm,

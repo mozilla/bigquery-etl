@@ -110,7 +110,7 @@ zendesk AS (
     ticket.subject AS title,
     custom_appbot_star_rating AS star_rating,
     ticket.description AS content,
-    mozfun.customer_experience.normalize_product(ticket.custom_product, 'Zendesk') AS product,
+    ticket.custom_product AS product,
     u.locale,
     custom_category,
     g.name AS group_name,

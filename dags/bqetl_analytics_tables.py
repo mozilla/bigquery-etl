@@ -412,6 +412,21 @@ with DAG(
         retries=1,
     )
 
+    bigeye__customer_experience_derived__knowledge_base_retrieval_index__v1 = bigquery_bigeye_check(
+        task_id="bigeye__customer_experience_derived__knowledge_base_retrieval_index__v1",
+        table_id="moz-fx-data-shared-prod.customer_experience_derived.knowledge_base_retrieval_index_v1",
+        warehouse_id="1939",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
     bigeye__customer_experience_derived__zendesk_retrieval_index__v1 = bigquery_bigeye_check(
         task_id="bigeye__customer_experience_derived__zendesk_retrieval_index__v1",
         table_id="moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1",
@@ -740,6 +755,24 @@ with DAG(
         depends_on_past=False,
     )
 
+    customer_experience_derived__knowledge_base_retrieval_index__v1 = (
+        bigquery_etl_query(
+            task_id="customer_experience_derived__knowledge_base_retrieval_index__v1",
+            destination_table="knowledge_base_retrieval_index_v1",
+            dataset_id="customer_experience_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="lvargas@mozilla.com",
+            email=[
+                "gkaberere@mozilla.com",
+                "lvargas@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
     customer_experience_derived__zendesk_retrieval_index__v1 = bigquery_etl_query(
         task_id="customer_experience_derived__zendesk_retrieval_index__v1",
         destination_table="zendesk_retrieval_index_v1",
@@ -877,6 +910,10 @@ with DAG(
 
     bigeye__customer_experience_derived__kitsune_retrieval_index__v1.set_upstream(
         customer_experience_derived__kitsune_retrieval_index__v1
+    )
+
+    bigeye__customer_experience_derived__knowledge_base_retrieval_index__v1.set_upstream(
+        customer_experience_derived__knowledge_base_retrieval_index__v1
     )
 
     bigeye__customer_experience_derived__zendesk_retrieval_index__v1.set_upstream(

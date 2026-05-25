@@ -1,0 +1,18 @@
+friendly_name: nonprod payments Fastly CDN logs
+description: |-
+  Authorized view over Fastly CDN logs for the payments service in the nonprod environment.
+  Selects all columns from `moz-fx-fxa-nonprod.fxa_payments_nonprod_stage_fastly_cdn_logs.fastly`.
+owners:
+- bewu@mozilla.com
+- atoufali@mozilla.com
+labels:
+  authorized: true
+  owner1: bewu
+  owner2: atoufali
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-fxa-nonprod.fxa_payments_nonprod_stage_fastly_cdn_logs.fastly

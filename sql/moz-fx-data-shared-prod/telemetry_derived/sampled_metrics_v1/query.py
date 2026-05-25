@@ -34,13 +34,13 @@ BQ_SCHEMA = (
     bigquery.SchemaField("is_rollout", "BOOLEAN"),
     bigquery.SchemaField("app_name", "STRING"),
     bigquery.SchemaField("channel", "STRING"),
-    bigquery.SchemaField("os", "STRING"),
     bigquery.SchemaField("min_version", "STRING"),
     bigquery.SchemaField("max_version", "STRING"),
     bigquery.SchemaField("end_date", "DATE"),
     bigquery.SchemaField("metric_type", "STRING"),
     bigquery.SchemaField("metric_name", "STRING"),
     bigquery.SchemaField("sample_rate", "FLOAT"),
+    bigquery.SchemaField("os", "STRING"),
 )
 
 parser = ArgumentParser(description=__doc__)

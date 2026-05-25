@@ -44,9 +44,13 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         where_clause = _format_metric_types_filter(metric_types)
     else:
         where_clause = ""
+    # Rows with experimenter_slug = NULL are tombstones written by the
+    # sampled_metrics ETL when a metric is no longer covered by any active
+    # experiment/rollout. They aren't real sampled metrics and should be
+    # filtered out before the sample-rate guard runs.
     query = dedent(f"""
         WITH latest_metrics AS (
-          SELECT metric_type, metric_name, sample_rate, start_date
+          SELECT metric_type, metric_name, sample_rate, experimenter_slug, start_date
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
           {where_clause}
           QUALIFY ROW_NUMBER() OVER (
@@ -56,6 +60,7 @@ def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
         )
         SELECT metric_type, metric_name, sample_rate
         FROM latest_metrics
+        WHERE experimenter_slug IS NOT NULL
         """)
 
     try:

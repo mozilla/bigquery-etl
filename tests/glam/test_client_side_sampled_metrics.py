@@ -56,17 +56,17 @@ class TestGet:
         assert "experimenter_slug IS NOT NULL" in rendered_query
 
     @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
-    def test_partitions_by_os_so_stale_tombstones_dont_mask_newer_os(self, mock_run):
-        """A stale os=NULL tombstone must not outrank a newer os=Windows
-        row for the same metric. Adding `os` to PARTITION BY keeps the
-        two in separate partitions, so the tombstone only dominates its
-        own (os=NULL) partition and gets dropped by the slug-IS-NOT-NULL
-        filter — leaving the os=Windows row intact in the output.
-        """
+    def test_partition_matches_upstream_state_key(self, mock_run):
+        """Mirror the producer's (metric_type, metric_name, channel, app_name, os)
+        state key so the latest-per-group invariant holds even if a caller
+        skips `product` and the app/channel filters aren't applied."""
         mock_run.return_value = []
         client_side_sampled_metrics.get(product="firefox_desktop")
         rendered_query = mock_run.call_args.args[0]
-        assert "PARTITION BY metric_type, metric_name, os" in rendered_query
+        assert (
+            "PARTITION BY metric_type, metric_name, channel, app_name, os"
+            in rendered_query
+        )
 
     def test_empty_metric_types_short_circuits(self):
         assert client_side_sampled_metrics.get(metric_types=[]) == {}
@@ -99,10 +99,11 @@ class TestGet:
         assert " AND " in rendered_query
 
     @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
-    def test_unknown_product_returns_empty_without_querying(self, mock_run):
-        """Unmapped products short-circuit so we don't read another app's rows."""
-        result = client_side_sampled_metrics.get(product="org_mozilla_fennec_aurora")
-        assert result == {}
+    def test_unknown_product_raises(self, mock_run):
+        """Typos / new products surface as ValueError instead of silently
+        returning no sampled metrics (which would emit them as unsampled)."""
+        with pytest.raises(ValueError, match="firefox-desktop"):
+            client_side_sampled_metrics.get(product="firefox-desktop")
         mock_run.assert_not_called()
 
     @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
@@ -110,4 +111,4 @@ class TestGet:
         mock_run.return_value = []
         client_side_sampled_metrics.get(metric_types=["counter"])
         rendered_query = mock_run.call_args.args[0]
-        assert "app_name" not in rendered_query
+        assert "app_name =" not in rendered_query

@@ -55,9 +55,12 @@ def get(
     else:
         metric_types = []
     if product is not None:
-        app_name = _PRODUCT_TO_APP_NAME.get(product)
-        if app_name is None:
-            return {}
+        if product not in _PRODUCT_TO_APP_NAME:
+            raise ValueError(
+                f"Unknown product {product!r}; "
+                f"add a mapping in _PRODUCT_TO_APP_NAME if it's expected."
+            )
+        app_name = _PRODUCT_TO_APP_NAME[product]
     else:
         app_name = None
     where_clause = _build_where_clause(metric_types, app_name)
@@ -71,7 +74,7 @@ def get(
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
           {where_clause}
           QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY metric_type, metric_name, os
+            PARTITION BY metric_type, metric_name, channel, app_name, os
             ORDER BY start_date DESC
           ) = 1
         )

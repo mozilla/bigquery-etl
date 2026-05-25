@@ -95,11 +95,7 @@ def parse_max_version(targeting):
     return None
 
 
-_OS_TARGETING_MAP = {
-    "Windows": r"\bos\.isWindows\b",
-    "Mac": r"\bos\.isMac\b",
-    "Linux": r"\bos\.isLinux\b",
-}
+_SUPPORTED_OS_PREDICATES = {"Windows", "Mac", "Linux"}
 
 
 def parse_os(targeting):
@@ -109,22 +105,20 @@ def parse_os(targeting):
     silently mis-parsing the OS dimension would make downstream queries
     return incorrect results.
     """
-    if re.search(r"!\s*os\.is\w+", targeting):
-        raise ValueError(
-            f"Unsupported OS targeting (negation of os.is*) in: {targeting!r}"
-        )
-    known = set(_OS_TARGETING_MAP.keys())
-    for match in re.finditer(r"\bos\.is(\w+)\b", targeting):
-        candidate = match.group(1)
-        if candidate not in known:
+    found = []
+    for match in re.finditer(r"(!?)\s*\bos\.is(\w+)\b", targeting):
+        if match.group(1):
             raise ValueError(
-                f"Unsupported OS predicate 'os.is{candidate}' in: {targeting!r}"
+                f"Unsupported OS targeting (negation of os.is*) in: {targeting!r}"
             )
-    return [
-        name
-        for name, pattern in _OS_TARGETING_MAP.items()
-        if re.search(pattern, targeting)
-    ]
+        name = match.group(2)
+        if name not in _SUPPORTED_OS_PREDICATES:
+            raise ValueError(
+                f"Unsupported OS predicate 'os.is{name}' in: {targeting!r}"
+            )
+        if name not in found:
+            found.append(name)
+    return found
 
 
 def get_metric_type(metric_name, app_name):

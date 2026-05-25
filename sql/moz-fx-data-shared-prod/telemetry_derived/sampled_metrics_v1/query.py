@@ -34,6 +34,7 @@ BQ_SCHEMA = (
     bigquery.SchemaField("is_rollout", "BOOLEAN"),
     bigquery.SchemaField("app_name", "STRING"),
     bigquery.SchemaField("channel", "STRING"),
+    bigquery.SchemaField("os", "STRING"),
     bigquery.SchemaField("min_version", "STRING"),
     bigquery.SchemaField("max_version", "STRING"),
     bigquery.SchemaField("end_date", "DATE"),
@@ -92,6 +93,38 @@ def parse_max_version(targeting):
     if match:
         return match.group(1)
     return None
+
+
+_OS_TARGETING_MAP = {
+    "Windows": r"\bos\.isWindows\b",
+    "Mac": r"\bos\.isMac\b",
+    "Linux": r"\bos\.isLinux\b",
+}
+
+
+def parse_os(targeting):
+    """Parse the OS targets from a Nimbus targeting string.
+
+    Raises ValueError on negation or unknown `os.is<X>` predicates —
+    silently mis-parsing the OS dimension would make downstream queries
+    return incorrect results.
+    """
+    if re.search(r"!\s*os\.is\w+", targeting):
+        raise ValueError(
+            f"Unsupported OS targeting (negation of os.is*) in: {targeting!r}"
+        )
+    known = set(_OS_TARGETING_MAP.keys())
+    for match in re.finditer(r"\bos\.is(\w+)\b", targeting):
+        candidate = match.group(1)
+        if candidate not in known:
+            raise ValueError(
+                f"Unsupported OS predicate 'os.is{candidate}' in: {targeting!r}"
+            )
+    return [
+        name
+        for name, pattern in _OS_TARGETING_MAP.items()
+        if re.search(pattern, targeting)
+    ]
 
 
 def get_metric_type(metric_name, app_name):
@@ -155,6 +188,7 @@ def get_sampled_metrics_from_api():
         sample_rate = round(1 - (count / total), 4) if total > 0 else 1.0
 
         channel = parse_channel(targeting)
+        oses = parse_os(targeting) or [None]
         min_version = parse_min_version(targeting)
         max_version = parse_max_version(targeting)
 
@@ -180,21 +214,23 @@ def get_sampled_metrics_from_api():
             metric_name = metric.replace(".", "_")
             metric_type = get_metric_type(metric_name, app_name)
 
-            rows.append(
-                {
-                    "start_date": start_date,
-                    "experimenter_slug": slug,
-                    "is_rollout": is_rollout,
-                    "app_name": app_name,
-                    "channel": channel,
-                    "min_version": min_version,
-                    "max_version": max_version,
-                    "end_date": end_date,
-                    "metric_type": metric_type,
-                    "metric_name": metric_name,
-                    "sample_rate": sample_rate,
-                }
-            )
+            for os_target in oses:
+                rows.append(
+                    {
+                        "start_date": start_date,
+                        "experimenter_slug": slug,
+                        "is_rollout": is_rollout,
+                        "app_name": app_name,
+                        "channel": channel,
+                        "os": os_target,
+                        "min_version": min_version,
+                        "max_version": max_version,
+                        "end_date": end_date,
+                        "metric_type": metric_type,
+                        "metric_name": metric_name,
+                        "sample_rate": sample_rate,
+                    }
+                )
 
     return rows
 
@@ -202,14 +238,14 @@ def get_sampled_metrics_from_api():
 def get_current_state(client, destination_table):
     """Query the latest row per metric from BigQuery.
 
-    Returns a dict keyed by (metric_type, metric_name, channel, app_name)
+    Returns a dict keyed by (metric_type, metric_name, channel, app_name, os)
     with the sample_rate as value.
     """
     query = f"""
-        SELECT metric_type, metric_name, channel, app_name, sample_rate
+        SELECT metric_type, metric_name, channel, app_name, os, sample_rate
         FROM `{destination_table}`
         QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY metric_type, metric_name, channel, app_name
+            PARTITION BY metric_type, metric_name, channel, app_name, os
             ORDER BY start_date DESC
         ) = 1
     """
@@ -220,6 +256,7 @@ def get_current_state(client, destination_table):
             row["metric_name"],
             row["channel"],
             row["app_name"],
+            row["os"],
         )
         state[key] = float(row["sample_rate"])
     return state
@@ -242,6 +279,7 @@ def compute_diff(api_rows, current_state):
             row["metric_name"],
             row["channel"],
             row["app_name"],
+            row["os"],
         )
         # If multiple experiments affect the same metric, keep the most
         # recent one (by start date)
@@ -262,7 +300,7 @@ def compute_diff(api_rows, current_state):
     # Metrics that are no longer sampled (were < 1.0, now absent from API)
     for key, current_rate in current_state.items():
         if key not in api_state and round(current_rate, 4) != 1.0:
-            metric_type, metric_name, channel, app_name = key
+            metric_type, metric_name, channel, app_name, os = key
             rows_to_insert.append(
                 {
                     "start_date": today,
@@ -270,6 +308,7 @@ def compute_diff(api_rows, current_state):
                     "is_rollout": None,
                     "app_name": app_name,
                     "channel": channel,
+                    "os": os,
                     "min_version": None,
                     "max_version": None,
                     "end_date": None,

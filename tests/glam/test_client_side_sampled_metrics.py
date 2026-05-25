@@ -55,6 +55,19 @@ class TestGet:
         rendered_query = mock_run.call_args.args[0]
         assert "experimenter_slug IS NOT NULL" in rendered_query
 
+    @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
+    def test_partitions_by_os_so_stale_tombstones_dont_mask_newer_os(self, mock_run):
+        """A stale os=NULL tombstone must not outrank a newer os=Windows
+        row for the same metric. Adding `os` to PARTITION BY keeps the
+        two in separate partitions, so the tombstone only dominates its
+        own (os=NULL) partition and gets dropped by the slug-IS-NOT-NULL
+        filter — leaving the os=Windows row intact in the output.
+        """
+        mock_run.return_value = []
+        client_side_sampled_metrics.get(product="firefox_desktop")
+        rendered_query = mock_run.call_args.args[0]
+        assert "PARTITION BY metric_type, metric_name, os" in rendered_query
+
     def test_empty_metric_types_short_circuits(self):
         assert client_side_sampled_metrics.get(metric_types=[]) == {}
 

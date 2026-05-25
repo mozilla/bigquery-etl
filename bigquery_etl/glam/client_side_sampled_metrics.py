@@ -71,7 +71,7 @@ def get(
           FROM `{PROJECT_ID}.{DATASET}.{TABLE_NAME}`
           {where_clause}
           QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY metric_type, metric_name
+            PARTITION BY metric_type, metric_name, os
             ORDER BY start_date DESC
           ) = 1
         )

@@ -14,6 +14,11 @@ DATASET = "telemetry_derived"
 TABLE_NAME = "sampled_metrics_v1"
 EXPECTED_SAMPLE_RATE = 0.1  # For now, we only support 10% sampling.
 
+_PRODUCT_TO_APP_NAME = {
+    "firefox_desktop": "firefox_desktop",
+    "org_mozilla_fenix": "fenix",
+}
+
 
 def _run_bq_query(query: str):
     """Run a BigQuery query and return rows."""
@@ -22,28 +27,40 @@ def _run_bq_query(query: str):
     return query_job.result()
 
 
-def _format_metric_types_filter(metric_types: Iterable[str]) -> str:
-    """Return a SQL filter for the provided metric types."""
-    unique_types = {mt for mt in metric_types}
-    if not unique_types:
+def _build_where_clause(metric_types: List[str], app_name: Optional[str]) -> str:
+    """Return a SQL WHERE clause for metric_types + app_name, or '' if neither."""
+    conditions = []
+    if metric_types:
+        quoted = ",".join(f"'{mt}'" for mt in sorted(set(metric_types)))
+        conditions.append(f"metric_type IN ({quoted})")
+    if app_name:
+        conditions.append(f"app_name = '{app_name}'")
+    if not conditions:
         return ""
-    quoted = ",".join(f"'{mt}'" for mt in sorted(unique_types))
-    return f"WHERE metric_type IN ({quoted})"
+    return "WHERE " + " AND ".join(conditions)
 
 
-def get(metric_types: Optional[Iterable[str]] = None) -> dict[str, List[str]]:
+def get(
+    metric_types: Optional[Iterable[str]] = None,
+    product: Optional[str] = None,
+) -> dict[str, List[str]]:
     """Return sampled metrics grouped by metric_type from BigQuery.
 
     Takes the latest submission for each metric.
-    Pass metric_types to restrict the query to specific types.
     """
     if metric_types is not None:
         metric_types = list(metric_types)
         if not metric_types:
             return {}
-        where_clause = _format_metric_types_filter(metric_types)
     else:
-        where_clause = ""
+        metric_types = []
+    if product is not None:
+        app_name = _PRODUCT_TO_APP_NAME.get(product)
+        if app_name is None:
+            return {}
+    else:
+        app_name = None
+    where_clause = _build_where_clause(metric_types, app_name)
     # Rows with experimenter_slug = NULL are tombstones written by the
     # sampled_metrics ETL when a metric is no longer covered by any active
     # experiment/rollout. They aren't real sampled metrics and should be

@@ -1,3 +1,4 @@
+-- Generated via ./bqetl generate fxa_fastly_logs
 CREATE OR REPLACE VIEW
   `{{ target_project }}.{{ dataset }}.{{ env }}_{{ service }}`
 AS

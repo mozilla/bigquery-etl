@@ -79,11 +79,21 @@ class TestGet:
         rendered_query = mock_run.call_args.args[0]
         assert "app_name = 'firefox_desktop'" in rendered_query
 
+    @pytest.mark.parametrize(
+        "product",
+        [
+            "org_mozilla_fenix",
+            "org_mozilla_fenix_nightly",
+            "org_mozilla_firefox",
+            "org_mozilla_firefox_beta",
+            "org_mozilla_fennec_aurora",
+        ],
+    )
     @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
-    def test_fenix_product_translates_to_fenix_app_name(self, mock_run):
-        """org_mozilla_fenix maps to Experimenter's appName 'fenix'."""
+    def test_fenix_variants_translate_to_fenix_app_name(self, mock_run, product):
+        """All Fenix variants share Experimenter's appName 'fenix'."""
         mock_run.return_value = []
-        client_side_sampled_metrics.get(product="org_mozilla_fenix")
+        client_side_sampled_metrics.get(product=product)
         rendered_query = mock_run.call_args.args[0]
         assert "app_name = 'fenix'" in rendered_query
 

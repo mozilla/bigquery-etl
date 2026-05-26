@@ -4,8 +4,8 @@ SELECT
   REPLACE(
     REGEXP_REPLACE(
       destination_table.table_id,
-      r'_enrollments_[^_]+_[0-9]+$|_exposures_[^_]+_[0-9]+$|^enrollments_|^statistics_',
-      ''
+      r'^(?:statistics_|enrollments_)?(.+?)(?:_(enrollments|exposures|daily|weekly|days28|overall|preenrollment_(?:weekly|days28)).+)?$',
+      r'\1'
     ),
     '_',
     '-'

@@ -42,28 +42,22 @@ WITH final_probe_extract AS (
 -- to populate total_sample for agg_type other than 'count'
 glam_sample_counts AS (
   SELECT
-    fsc1.os,
-    fsc1.app_version,
-    fsc1.app_build_id,
-    fsc1.metric,
-    fsc1.key,
-    fsc1.ping_type,
-    fsc1.agg_type,
-    fsc2.total_sample
+    os,
+    app_version,
+    app_build_id,
+    metric,
+    key,
+    ping_type,
+    agg_type,
+    CASE
+      WHEN agg_type IN ('max', 'min', 'sum', 'avg')
+        THEN MAX(IF(agg_type = 'count', total_sample, NULL)) OVER (
+          PARTITION BY os, app_version, app_build_id, metric, key, ping_type
+        )
+      ELSE total_sample
+    END AS total_sample
   FROM
-    `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` fsc1
-  INNER JOIN
-    `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` fsc2
-    ON fsc1.os = fsc2.os
-    AND fsc1.app_build_id = fsc2.app_build_id
-    AND fsc1.app_version = fsc2.app_version
-    AND fsc1.metric = fsc2.metric
-    AND fsc1.key = fsc2.key
-    AND fsc1.ping_type = fsc2.ping_type
-    AND (
-      (fsc1.agg_type IN ('max', 'min', 'sum', 'avg') AND fsc2.agg_type = 'count')
-      OR (fsc1.agg_type NOT IN ('max', 'min', 'sum', 'avg') AND fsc2.agg_type = fsc1.agg_type)
-    )
+    `{{ dataset }}.{{ prefix }}__view_sample_counts_v1`
 ),
 -- get all the rcords from view_probe_counts and the matching from view_sample_counts
 ranked_data AS (

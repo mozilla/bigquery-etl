@@ -1,0 +1,17 @@
+friendly_name: nonprod api_accounts Fastly CDN logs
+description: |-
+  View on Fastly CDN logs for the api_accounts service in the nonprod environment.
+  Selects all columns from `moz-fx-fxa-nonprod.fxa_api_accounts_nonprod_stage_fastly_cdn_logs.fastly`.
+owners:
+- bewu@mozilla.com
+- atoufali@mozilla.com
+labels:
+  owner1: bewu
+  owner2: atoufali
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-fxa-nonprod.fxa_api_accounts_nonprod_stage_fastly_cdn_logs.fastly

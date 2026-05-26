@@ -49,12 +49,7 @@ glam_sample_counts AS (
     fsc1.key,
     fsc1.ping_type,
     fsc1.agg_type,
-    CASE
-      WHEN fsc1.agg_type IN ('max', 'min', 'sum', 'avg')
-        AND fsc2.agg_type = 'count'
-        THEN fsc2.total_sample
-      ELSE fsc1.total_sample
-    END AS total_sample
+    fsc2.total_sample
   FROM
     `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` fsc1
   INNER JOIN
@@ -65,6 +60,10 @@ glam_sample_counts AS (
     AND fsc1.metric = fsc2.metric
     AND fsc1.key = fsc2.key
     AND fsc1.ping_type = fsc2.ping_type
+    AND (
+      (fsc1.agg_type IN ('max', 'min', 'sum', 'avg') AND fsc2.agg_type = 'count')
+      OR (fsc1.agg_type NOT IN ('max', 'min', 'sum', 'avg') AND fsc2.agg_type = fsc1.agg_type)
+    )
 ),
 -- get all the rcords from view_probe_counts and the matching from view_sample_counts
 ranked_data AS (

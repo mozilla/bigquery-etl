@@ -22,7 +22,10 @@ fields:
 - name: impression_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of widgets_impression events for this widget and size within the visit
+  description: |
+    Count of widgets_impression events for this widget and size within the visit
+    Note that if the widget changes size it is possible for it to generate events without having associated impressions.
+    Toggling enabled and disabled can also produce multiple impressions in a single visit.
 - name: user_event_count
   type: INTEGER
   mode: NULLABLE
@@ -82,7 +85,7 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Legacy telemetry. Enables the calculation of metrics by profile_id
+  description: Identifies profile associated with client.
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE

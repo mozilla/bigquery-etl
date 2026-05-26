@@ -1,0 +1,11 @@
+2026-05-26:
+  start_date: 2024-04-10
+  end_date: 2026-05-26
+  reason: Initial backfill to update product field using the new UDF in (DENG-11157).
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

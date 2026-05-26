@@ -112,6 +112,8 @@ def generate(target_project, output_dir, use_cloud_function):
     desktop_view_schema_template = "desktop_view_schema.yaml"
     mobile_table_schema_template = "mobile_table_schema.yaml"
     mobile_view_schema_template = "mobile_view_schema.yaml"
+    # backfill template
+    focus_android_backfill_template = "focus_android_backfill.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
@@ -374,6 +376,20 @@ def generate(target_project, output_dir, use_cloud_function):
             ),
             skip_existing=False,
         )
+
+        # Write backfill YAML.
+        if browser.name == "focus_android":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+                basename="backfill.yaml",
+                sql=render(
+                    focus_android_backfill_template,
+                    template_folder=THIS_PATH / "templates",
+                    format=False,
+                ),
+                skip_existing=False,
+            )
 
     # Write Mobile unioned view SQL.
     write_sql(

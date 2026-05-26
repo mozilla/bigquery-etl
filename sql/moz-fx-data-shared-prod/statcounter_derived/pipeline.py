@@ -169,7 +169,7 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
         raise ValueError(
             f"Could not parse date from percent column header: '{percent_col}'"
         )
-    source_date = datetime.strptime(match.group(1), "%d %B %Y").date()
+    source_date = datetime.strptime(match.group(1), "%d %b %Y").date()
     if source_date != partition_date:
         raise ValueError(
             f"Source date in column header ({source_date}) does not match "

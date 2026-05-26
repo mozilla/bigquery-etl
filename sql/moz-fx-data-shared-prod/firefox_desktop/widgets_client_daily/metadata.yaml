@@ -1,0 +1,17 @@
+friendly_name: Widgets Client Daily
+description: |-
+  Daily aggregation of newtab widget impression and user-event metrics at the
+  client level. One row per Firefox Desktop (client_id, widget_name, widget_size)
+  per submission_date. Adds a derived `windows_version` column over the underlying
+  `firefox_desktop_derived.widgets_client_daily_v1` table.
+owners:
+- jsnyder@mozilla.com
+labels:
+  owner1: jsnyder
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.widgets_client_daily_v1

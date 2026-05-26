@@ -1,9 +1,12 @@
 - creation_date: "2024-01-15"
-  product: firefox-android
+  product: Firefox
   forum_questions_posted: 1
 - creation_date: "2024-01-15"
-  product: firefox-ios
+  product: Firefox Android
   forum_questions_posted: 1
 - creation_date: "2024-01-15"
-  product: firefox
-  forum_questions_posted: 2
+  product: Firefox Enterprise
+  forum_questions_posted: 1
+- creation_date: "2024-01-15"
+  product: Firefox iOS
+  forum_questions_posted: 1

@@ -120,8 +120,9 @@ jobs:
                Prefix each comment body with a Conventional Comments label. Don't use the `(blocking)` decorator — humans decide what's blocking.
             3. `mcp__github__submit_pending_pull_request_review` to finalize. Required parameters:
                - `event`: must be `"COMMENT"`. Never `APPROVE` or `REQUEST_CHANGES` — those statuses are reserved for human reviewers.
-               - `body`: cross-cutting observations and overall assessment. Always include the literal string `<!-- claude-review -->`
-                 in this body. It's a hidden HTML comment used to auto-collapse this review on rerun.
+               - `body`: cross-cutting observations and overall framing - not a restatement of the inline comments. Open with a
+                 factual description of what the PR does, not a characterization. Always include the literal string
+                 `<!-- claude-review -->` in this body. It's a hidden HTML comment used to auto-collapse this review on rerun.
 
             If any of those tools fail, fall back to posting a single consolidated top-level comment via `gh pr comment` so the run isn't silent.
           claude_args: |
@@ -129,7 +130,7 @@ jobs:
             --allowedTools mcp__github__create_pending_pull_request_review,mcp__github__add_comment_to_pending_review
             --allowedTools mcp__github__submit_pending_pull_request_review,mcp__github__delete_pending_pull_request_review
             --allowedTools mcp__github__get_pull_request_reviews,mcp__github__get_pull_request_review_comments,mcp__github__add_reply_to_pull_request_comment
-            --allowedTools mcp__github__get_pull_request,mcp__github__get_pull_request_diff,mcp__github__get_pull_request_files
+            --allowedTools mcp__github__get_pull_request,mcp__github__get_pull_request_diff,mcp__github__get_pull_request_files,mcp__github__get_file_contents
             --allowedTools mcp__github__get_workflow_run,mcp__github__list_workflow_runs,mcp__github__list_workflow_jobs
             --allowedTools "Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Read,Grep,Glob"
 

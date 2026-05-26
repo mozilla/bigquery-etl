@@ -43,3 +43,7 @@ fields:
   type: FLOAT64
   mode: NULLABLE
   description: Fraction of clients sampled (bucketConfig count / total)
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating system the rollout targets (e.g., Windows, Mac, Linux), parsed from the experiment targeting expression.

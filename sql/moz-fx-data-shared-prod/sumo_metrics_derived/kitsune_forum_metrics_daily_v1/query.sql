@@ -39,8 +39,8 @@ time_to_first_reply AS (
   WHERE
     rn = 1
 ),
--- Cumulative helpful/unhelpful votes per question, excluding OP answers, spam,
--- and answers from deactivated users.
+-- Cumulative helpful/unhelpful votes per question, excluding spam answers
+-- and answers from deactivated users. OP self-answers are included.
 helpful_votes AS (
   SELECT
     a.question_id,
@@ -49,14 +49,10 @@ helpful_votes AS (
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` a
   LEFT JOIN
-    `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
-    ON a.question_id = q.question_id
-  LEFT JOIN
     deactivation_filter df
     ON df.answer_id = a.answer_id
   WHERE
-    a.creator_username != q.creator_username
-    AND a.is_spam IS NOT TRUE
+    a.is_spam IS NOT TRUE
     AND df.is_deactivated IS NOT TRUE
   GROUP BY
     a.question_id
@@ -78,6 +74,8 @@ questions AS (
     q.locale,
     ttfr.first_reply_date,
     ttfr.ttfr_mins,
+    COALESCE(q.is_solved, FALSE) AS is_solved,
+    DATE(q.solved_date) AS solved_date,
     COALESCE(hv.total_helpful_votes, 0) AS total_helpful_votes,
     COALESCE(hv.total_unhelpful_votes, 0) AS total_unhelpful_votes
   FROM
@@ -92,51 +90,34 @@ questions AS (
     q.is_spam = FALSE
     AND q.is_locked = FALSE
     AND q.product IN ('firefox', 'mobile', 'ios', 'firefox-enterprise')
-),
-events AS (
-  SELECT
-    created_date AS `date`,
-    product,
-    locale,
-    'created' AS event_type,
-    NULL AS ttfr_mins,
-    total_helpful_votes,
-    total_unhelpful_votes
-  FROM
-    questions
-  WHERE
-    created_date IS NOT NULL
-  UNION ALL
-  SELECT
-    first_reply_date AS `date`,
-    product,
-    locale,
-    'replied' AS event_type,
-    ttfr_mins,
-    0 AS total_helpful_votes,
-    0 AS total_unhelpful_votes
-  FROM
-    questions
-  WHERE
-    first_reply_date IS NOT NULL
 )
 SELECT
-  `date`,
+  created_date,
+  first_reply_date,
+  solved_date,
   product,
   locale,
-  COUNTIF(event_type = 'created') AS questions_created,
-  COUNTIF(event_type = 'replied') AS questions_replied,
-  AVG(IF(event_type = 'replied', ttfr_mins / 60.0, NULL)) AS avg_ttfr_hrs,
-  SUM(IF(event_type = 'created', total_helpful_votes, 0)) AS total_helpful_votes,
-  SUM(IF(event_type = 'created', total_unhelpful_votes, 0)) AS total_unhelpful_votes,
+  COUNT(*) AS questions_created,
+  COUNTIF(first_reply_date IS NOT NULL) AS questions_replied,
+  COUNTIF(is_solved) AS questions_solved,
+  AVG(ttfr_mins / 60.0) AS avg_ttfr_hrs,
+  SUM(ttfr_mins / 60.0) AS total_ttfr_hrs,
+  SUM(total_helpful_votes) AS total_helpful_votes,
+  SUM(total_unhelpful_votes) AS total_unhelpful_votes,
   CURRENT_TIMESTAMP() AS etl_timestamp
 FROM
-  events
+  questions
+WHERE
+  created_date IS NOT NULL
 GROUP BY
-  `date`,
+  created_date,
+  first_reply_date,
+  solved_date,
   product,
   locale
 ORDER BY
-  `date`,
+  created_date,
+  first_reply_date,
+  solved_date,
   product,
   locale

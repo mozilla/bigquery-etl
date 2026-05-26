@@ -52,4 +52,3 @@ references:
   - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history
   - moz-fx-data-shared-prod.zendesk_syndicate.group
   - moz-fx-data-shared-prod.zendesk_syndicate.user
-  - moz-fx-data-shared-prod.static.cx_product_mappings_v1

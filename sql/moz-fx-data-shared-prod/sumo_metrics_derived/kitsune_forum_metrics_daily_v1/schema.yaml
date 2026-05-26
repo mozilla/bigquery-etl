@@ -1,11 +1,25 @@
 fields:
-- name: date
+- name: created_date
   type: DATE
   mode: NULLABLE
   description: |
-    The submission date (UTC). A question contributes to this date if it was
-    created OR received its first qualifying reply on this date, allowing both
-    questions_created and questions_replied to be tracked in a single partition.
+    The UTC date the question was created. Main date column for the table;
+    use this to aggregate questions_created, TTFR, and helpful-vote metrics.
+- name: first_reply_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The UTC date the question received its first qualifying reply (excluding
+    OP self-replies, spam answers, and answers from deactivated users). NULL
+    for questions that have not received a qualifying reply. Use this column
+    to aggregate questions_replied by reply date.
+- name: solved_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The UTC date the question was marked as solved. NULL for questions that
+    are not solved. Use this column to aggregate questions_solved by solve
+    date.
 - name: product
   type: STRING
   mode: NULLABLE
@@ -26,39 +40,69 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: |
-    Number of non-spam, non-locked Firefox questions created on this date
-    for this product and locale.
+    Number of non-spam, non-locked Firefox questions in this
+    (created_date, first_reply_date, solved_date, product, locale) bucket.
 - name: questions_replied
   type: INTEGER
   mode: NULLABLE
   description: |
-    Number of questions (of any creation date) that received their first
-    qualifying reply on this date. A qualifying reply excludes OP self-replies,
-    spam answers, and answers from deactivated users.
-    Use this column to compute Reply Rate:
+    Number of questions in this (created_date, first_reply_date, solved_date,
+    product, locale) bucket that received a qualifying first reply. A
+    qualifying reply excludes OP self-replies, spam answers, and answers from
+    deactivated users. To get replies-per-day, aggregate by first_reply_date.
+    Reply Rate:
       SUM(questions_replied) / SUM(questions_created)
+- name: questions_solved
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of questions in this (created_date, first_reply_date, solved_date,
+    product, locale) bucket that have been marked as solved, as of ETL run
+    time. To get solves-per-day, aggregate by solved_date.
+
+    Note: this column is NOT stable across ETL runs — `is_solved` reflects
+    current solved state, so `questions_solved` for a given `created_date`
+    will increase over time as historical questions are solved. When
+    aggregated by `created_date`, the formula below yields a *cumulative*
+    solved rate (share of questions created on that date that are solved
+    as of the latest ETL run), not a same-day solved rate. For a
+    solve-date-aligned view, aggregate by `solved_date` instead.
+    Solved Rate (cumulative, by created_date):
+      SUM(questions_solved) / SUM(questions_created)
 - name: avg_ttfr_hrs
   type: FLOAT
   mode: NULLABLE
   description: |
-    Average time to first qualifying reply in hours, for questions whose first
-    reply landed on this date. NULL when no questions received a first reply.
-    Use this column to compute the TTFR (Hrs) Forums KPI:
-      AVG(avg_ttfr_hrs) weighted by questions_replied across the desired window.
+    Average time to first qualifying reply in hours for questions in this
+    bucket. NULL when no questions received a first reply. For aggregations
+    across multiple dates/products/locales, prefer total_ttfr_hrs so the
+    rollup is properly weighted:
+      SUM(total_ttfr_hrs) / SUM(questions_replied)
+- name: total_ttfr_hrs
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Sum of time to first qualifying reply, in hours, across questions in this
+    bucket. NULL when no questions received a first reply. Pair with
+    questions_replied to compute the TTFR (Hrs) Forums KPI as a weighted
+    average:
+      SUM(total_ttfr_hrs) / SUM(questions_replied)
 - name: total_helpful_votes
   type: INTEGER
   mode: NULLABLE
   description: |
-    Cumulative helpful votes across all qualifying answers on questions created
-    on this date, as of ETL run time. Not filtered to votes cast on this date.
-    Use with total_unhelpful_votes to compute Helpfulness (%):
+    Cumulative helpful votes across all qualifying answers on questions
+    created on `created_date` (within this bucket), as of ETL run time. Not
+    filtered to votes cast on this date.
+    Helpfulness (%):
       SUM(total_helpful_votes) / (SUM(total_helpful_votes) + SUM(total_unhelpful_votes))
 - name: total_unhelpful_votes
   type: INTEGER
   mode: NULLABLE
   description: |
-    Cumulative unhelpful votes across all qualifying answers on questions created
-    on this date, as of ETL run time. Not filtered to votes cast on this date.
+    Cumulative unhelpful votes across all qualifying answers on questions
+    created on `created_date` (within this bucket), as of ETL run time. Not
+    filtered to votes cast on this date.
 - name: etl_timestamp
   type: TIMESTAMP
   mode: NULLABLE

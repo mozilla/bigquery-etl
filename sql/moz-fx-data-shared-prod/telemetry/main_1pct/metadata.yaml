@@ -28,3 +28,4 @@ owners:
   - ascholtz@mozilla.com
 labels:
   application: firefox
+  legacy: true

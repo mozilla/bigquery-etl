@@ -48,9 +48,8 @@ fields:
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Mozilla product associated with the support ticket.
-      Normalized via `moz-fx-data-shared-prod.static.cx_product_mappings_v1`
-      (source = 'Zendesk'); falls back to the raw `custom_product` value when no mapping exists.
+  description: Raw upstream Zendesk `custom_product` value.
+      Normalized at read time by the `customer_experience.zendesk_retrieval_index` view.
 - name: locale
   type: STRING
   mode: NULLABLE

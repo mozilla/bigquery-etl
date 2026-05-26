@@ -569,16 +569,22 @@ jobs:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
-            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
-            echo $PATHS
-            git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
-            PATH=".venv/bin:$PATH" script/bqetl \
-              --target stage \
-              --run-id "${GITHUB_RUN_ID}" \
-              deploy --tables --views --isolated \
-              $PATHS
+          if [ "$SKIP_STAGE_DEPLOYS" = "true" ]; then
+            echo "SKIP_STAGE_DEPLOYS=true, skipping stage deploy"
+            exit 0
           fi
+          PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+          if [ -z "$PATHS" ]; then
+            echo "No changed SQL paths, skipping stage deploy"
+            exit 0
+          fi
+          echo $PATHS
+          git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            deploy --tables --views --isolated \
+            $PATHS
       - name: Copy generated SQL to temporary stage directory
         run: |
           mkdir -p /tmp/workspace/staged-generated-sql
@@ -1360,7 +1366,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
       - name: Push Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@47edfe10709f2978fdcb5fd3037599d72aa10661  # v6.2.3
+        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
@@ -1370,7 +1376,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
       - name: Push tagged Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@47edfe10709f2978fdcb5fd3037599d72aa10661  # v6.2.3
+        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}

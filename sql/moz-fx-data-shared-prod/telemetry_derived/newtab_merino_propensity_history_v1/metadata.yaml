@@ -1,0 +1,26 @@
+friendly_name: Newtab Merino Propensity History
+description: |-
+  Daily snapshots of Newtab Merino propensity weights.
+  This table is written by the newtab_merino_propensity_v1 job after the current
+  serving table is updated.
+owners:
+- mmiermans@mozilla.com
+- rrando@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers
+labels:
+  incremental: true
+  owner: cbeck
+bigquery:
+  time_partitioning:
+    type: day
+    field: snapshot_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - position
+    - tile_format

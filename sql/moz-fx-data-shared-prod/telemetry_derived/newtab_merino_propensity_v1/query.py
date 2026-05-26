@@ -29,6 +29,7 @@ This is solving a matrix factorization problem. The core idea:
 
 import logging
 from argparse import ArgumentParser
+from datetime import date, datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -37,7 +38,7 @@ from google.cloud import bigquery
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-PER_ITEM_CUTOFF = 20 # After 20, we compute format independent of position
+PER_ITEM_CUTOFF = 20  # After 20, we compute format independent of position
 MAX_POSITION = 200
 MIN_SLOT_ITEMS = 200
 MIN_SLOT_CLICKS = 100
@@ -184,9 +185,13 @@ def compute_weights(hist):
     ]
 
     # Identify reliable slots
-    slot_stats = cell_bridge.reset_index().groupby(["position", "format"]).agg(
-        n_items=("corpus_item_id", "nunique"),
-        total_clicks=("clicks", "sum"),
+    slot_stats = (
+        cell_bridge.reset_index()
+        .groupby(["position", "format"])
+        .agg(
+            n_items=("corpus_item_id", "nunique"),
+            total_clicks=("clicks", "sum"),
+        )
     )
     reliable_slots = set(
         slot_stats[
@@ -231,15 +236,15 @@ def compute_weights(hist):
     for iteration in range(ALS_ITERATIONS):
         # Item effects: weighted mean of (log_ctr - slot_eff) per item
         residual = (log_ctr - slot_eff[slot_idx]) * weights
-        item_eff = np.bincount(item_idx, weights=residual, minlength=n_items) / np.bincount(
-            item_idx, weights=weights, minlength=n_items
-        )
+        item_eff = np.bincount(
+            item_idx, weights=residual, minlength=n_items
+        ) / np.bincount(item_idx, weights=weights, minlength=n_items)
 
         # Slot effects: weighted mean of (log_ctr - item_eff) per slot
         residual = (log_ctr - item_eff[item_idx]) * weights
-        new_slot_eff = np.bincount(slot_idx, weights=residual, minlength=n_slots) / np.bincount(
-            slot_idx, weights=weights, minlength=n_slots
-        )
+        new_slot_eff = np.bincount(
+            slot_idx, weights=residual, minlength=n_slots
+        ) / np.bincount(slot_idx, weights=weights, minlength=n_slots)
 
         max_change = np.max(np.abs(new_slot_eff - slot_eff))
         slot_eff = new_slot_eff
@@ -386,7 +391,35 @@ def compute_weights(hist):
         f"formats={sorted(output['tile_format'].unique())}"
     )
 
-    return output[["section_position", "position", "tile_format", "impressions", "weight"]]
+    return output[
+        ["section_position", "position", "tile_format", "impressions", "weight"]
+    ]
+
+
+def parse_snapshot_date(snapshot_date: str | None) -> date:
+    """Parse a snapshot date, defaulting to the current UTC date for manual runs."""
+    if snapshot_date:
+        return date.fromisoformat(snapshot_date)
+
+    return datetime.now(timezone.utc).date()
+
+
+def write_dataframe(client, df, destination):
+    """Write a DataFrame to BigQuery with WRITE_TRUNCATE."""
+    log.info(f"Writing {len(df)} rows to {destination} (WRITE_TRUNCATE)")
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+    job = client.load_table_from_dataframe(df, destination, job_config=job_config)
+    job.result()
+
+
+def build_history_snapshot(result, snapshot_date):
+    """Add snapshot metadata to the current propensity output."""
+    history = result.copy()
+    history.insert(0, "snapshot_date", snapshot_date)
+    history.insert(1, "snapshot_at", datetime.now(timezone.utc))
+    return history
 
 
 def main():
@@ -395,20 +428,31 @@ def main():
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--destination_dataset", default="telemetry_derived")
     parser.add_argument("--destination_table", default="newtab_merino_propensity_v1")
+    parser.add_argument("--snapshot_date")
+    parser.add_argument("--history_destination_dataset")
+    parser.add_argument(
+        "--history_destination_table",
+        default="newtab_merino_propensity_history_v1",
+    )
     args = parser.parse_args()
 
     client = bigquery.Client(args.project)
+    snapshot_date = parse_snapshot_date(args.snapshot_date)
+    history_destination_dataset = (
+        args.history_destination_dataset or args.destination_dataset
+    )
 
     hist = fetch_historical_impressions(client)
     result = compute_weights(hist)
     destination = f"{args.project}.{args.destination_dataset}.{args.destination_table}"
-    log.info(f"Writing {len(result)} rows to {destination} (WRITE_TRUNCATE)")
+    write_dataframe(client, result, destination)
 
-    job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    history = build_history_snapshot(result, snapshot_date)
+    history_destination = (
+        f"{args.project}.{history_destination_dataset}."
+        f"{args.history_destination_table}${snapshot_date:%Y%m%d}"
     )
-    job = client.load_table_from_dataframe(result, destination, job_config=job_config)
-    job.result()
+    write_dataframe(client, history, history_destination)
 
     log.info("Done.")
 

@@ -30,7 +30,6 @@ references:
   - moz-fx-data-shared-prod.bedrock_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.burnham_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.contextual_services_stable.INFORMATION_SCHEMA.PARTITIONS
-  - moz-fx-data-shared-prod.coverage_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.debug_ping_view_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.default_browser_agent_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.eng_workflow_stable.INFORMATION_SCHEMA.PARTITIONS

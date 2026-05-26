@@ -2,10 +2,19 @@ SELECT
   creation_time AS submission_timestamp,
   destination_table.table_id AS destination_table,
   REPLACE(
-    REGEXP_REPLACE(
-      destination_table.table_id,
-      r'^(?:statistics_|enrollments_)?(.+?)(?:_(enrollments|exposures|daily|weekly|days28|overall|preenrollment_(?:weekly|days28)).+)?$',
-      r'\1'
+    COALESCE(
+      -- extract slug from metrics table format (`{slug}_{basis}_[{data_source}_]{period}_{index}`)
+      REGEXP_EXTRACT(
+        destination_table.table_id,
+        r'^(.+?)_(?:enrollments|exposures)_.*_?(?:days28|day|week|overall|preenrollment_(?:week|days28))_\d+$'
+      ),
+      -- if no match for above, try statistics table format (`statistics_{slug}_{period}_{index}`)
+      REGEXP_EXTRACT(
+        destination_table.table_id,
+        r'^statistics_(.+)_(?:days28|day|week|overall|preenrollment_(?:week|days28))_\d+$'
+      ),
+      -- last try: enrollments table is `enrollments_{slug}`
+      REGEXP_EXTRACT(destination_table.table_id, r'^enrollments_(.+)$')
     ),
     '_',
     '-'

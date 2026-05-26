@@ -340,6 +340,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__widgets_client_daily__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__widgets_client_daily__v1",
+        destination_table="widgets_client_daily_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jsnyder@mozilla.com",
+        email=[
+            "jsnyder@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__widgets_visit_daily__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__widgets_visit_daily__v1",
         destination_table="widgets_visit_daily_v1",
@@ -497,6 +512,10 @@ with DAG(
 
     firefox_desktop_derived__report_content__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__widgets_client_daily__v1.set_upstream(
+        firefox_desktop_derived__widgets_visit_daily__v1
     )
 
     firefox_desktop_derived__widgets_visit_daily__v1.set_upstream(

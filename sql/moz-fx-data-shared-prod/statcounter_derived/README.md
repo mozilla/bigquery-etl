@@ -86,8 +86,6 @@ python <table_v1>/query.py --date-from 2026-05-01 --date-to 2026-05-12
 
 Each date is a separate fetch/load cycle, so large ranges take proportionally longer — worldwide makes 2 requests per day (one per device), regions makes 12 (one per region/device combination).
 
-Statcounter limits historical CSV downloads to the past 100 days. The maximum backfill is therefore 100 days, which produces at most 1,200 requests for the regions pipeline — small enough that the sequential fetch loop is not a scalability concern.
-
 ## Data
 
 ### Schema

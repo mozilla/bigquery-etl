@@ -141,7 +141,7 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
     """Rename Statcounter CSV columns to match the pipeline schema.
 
     The CSV has a fixed 'Browser' column and a dynamic percent column whose
-    name includes the date (e.g. 'Market Share Perc. (DD MMMM YYYY)'). Parse
+    name includes the date (e.g. 'Market Share Perc. (DD MMM YYYY)'). Parse
     the date from that header and compare it to partition_date so that a
     Statcounter fallback to a different day fails loudly instead of silently
     mis-stamping the row.
@@ -169,7 +169,7 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
         raise ValueError(
             f"Could not parse date from percent column header: '{percent_col}'"
         )
-    source_date = datetime.strptime(match.group(1), "%d %B %Y").date()
+    source_date = datetime.strptime(match.group(1), "%d %b %Y").date()
     if source_date != partition_date:
         raise ValueError(
             f"Source date in column header ({source_date}) does not match "

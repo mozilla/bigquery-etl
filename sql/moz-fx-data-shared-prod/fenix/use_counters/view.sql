@@ -2860,7 +2860,15 @@ SELECT
       metrics.counter.use_counter_doc_element_requestpointerlock,
       metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
       metrics.counter.use_counter_page_element_requestpointerlock,
-      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_doc_js_async_generator_function_created,
+      metrics.counter.use_counter_doc_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_doc_js_generator_function_created,
+      metrics.counter.use_counter_doc_js_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_async_generator_function_created,
+      metrics.counter.use_counter_page_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_generator_function_created,
+      metrics.counter.use_counter_page_js_generator_function_ion_eligible
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5744,7 +5752,15 @@ SELECT
       metrics.counter.use_counter_doc_element_requestpointerlock,
       metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
       metrics.counter.use_counter_page_element_requestpointerlock,
-      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_doc_js_async_generator_function_created,
+      metrics.counter.use_counter_doc_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_doc_js_generator_function_created,
+      metrics.counter.use_counter_doc_js_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_async_generator_function_created,
+      metrics.counter.use_counter_page_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_generator_function_created,
+      metrics.counter.use_counter_page_js_generator_function_ion_eligible
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -8628,7 +8644,15 @@ SELECT
       metrics.counter.use_counter_doc_element_requestpointerlock,
       metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
       metrics.counter.use_counter_page_element_requestpointerlock,
-      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_doc_js_async_generator_function_created,
+      metrics.counter.use_counter_doc_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_doc_js_generator_function_created,
+      metrics.counter.use_counter_doc_js_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_async_generator_function_created,
+      metrics.counter.use_counter_page_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_generator_function_created,
+      metrics.counter.use_counter_page_js_generator_function_ion_eligible
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -11512,7 +11536,15 @@ SELECT
       metrics.counter.use_counter_doc_element_requestpointerlock,
       metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
       metrics.counter.use_counter_page_element_requestpointerlock,
-      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_doc_js_async_generator_function_created,
+      metrics.counter.use_counter_doc_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_doc_js_generator_function_created,
+      metrics.counter.use_counter_doc_js_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_async_generator_function_created,
+      metrics.counter.use_counter_page_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_generator_function_created,
+      metrics.counter.use_counter_page_js_generator_function_ion_eligible
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -14396,7 +14428,15 @@ SELECT
       metrics.counter.use_counter_doc_element_requestpointerlock,
       metrics.counter.use_counter_doc_requested_pointer_lock_unadjusted_movement,
       metrics.counter.use_counter_page_element_requestpointerlock,
-      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement
+      metrics.counter.use_counter_page_requested_pointer_lock_unadjusted_movement,
+      metrics.counter.use_counter_doc_js_async_generator_function_created,
+      metrics.counter.use_counter_doc_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_doc_js_generator_function_created,
+      metrics.counter.use_counter_doc_js_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_async_generator_function_created,
+      metrics.counter.use_counter_page_js_async_generator_function_ion_eligible,
+      metrics.counter.use_counter_page_js_generator_function_created,
+      metrics.counter.use_counter_page_js_generator_function_ion_eligible
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

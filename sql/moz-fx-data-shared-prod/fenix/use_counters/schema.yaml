@@ -21524,6 +21524,66 @@ fields:
         the rate.
 
         '
+    - name: use_counter_doc_js_async_generator_function_created
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document created an async generator function. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_async_generator_function_ion_eligible
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document created an async generator function eligible
+        for Ion compilation. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_generator_function_created
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document created a generator function. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_generator_function_ion_eligible
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document created a generator function eligible for Ion
+        compilation. Compare against `use.counter.content_documents_destroyed` to
+        calculate the rate.
+
+        '
+    - name: use_counter_page_js_async_generator_function_created
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page created an async generator function. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_async_generator_function_ion_eligible
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page created an async generator function eligible for
+        Ion compilation. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_generator_function_created
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page created a generator function. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_generator_function_ion_eligible
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page created a generator function eligible for Ion compilation.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -12203,6 +12203,41 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page has requested pointer lock with unadjustedMovement
+    - name: use_counter2_js_asyncgeneratorfunctioncreated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document created an async generator function
+    - name: use_counter2_js_asyncgeneratorfunctioncreated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page created an async generator function
+    - name: use_counter2_js_asyncgeneratorfunctionioneligible_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document created an async generator function eligible
+        for Ion compilation
+    - name: use_counter2_js_asyncgeneratorfunctionioneligible_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page created an async generator function eligible for
+        Ion compilation
+    - name: use_counter2_js_generatorfunctioncreated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document created a generator function
+    - name: use_counter2_js_generatorfunctioncreated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page created a generator function
+    - name: use_counter2_js_generatorfunctionioneligible_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document created a generator function eligible for Ion
+        compilation
+    - name: use_counter2_js_generatorfunctionioneligible_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page created a generator function eligible for Ion compilation
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -24264,6 +24299,42 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page has requested pointer lock with unadjustedMovement
+        - name: use_counter2_js_asyncgeneratorfunctioncreated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document created an async generator function
+        - name: use_counter2_js_asyncgeneratorfunctioncreated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page created an async generator function
+        - name: use_counter2_js_asyncgeneratorfunctionioneligible_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document created an async generator function eligible
+            for Ion compilation
+        - name: use_counter2_js_asyncgeneratorfunctionioneligible_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page created an async generator function eligible
+            for Ion compilation
+        - name: use_counter2_js_generatorfunctioncreated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document created a generator function
+        - name: use_counter2_js_generatorfunctioncreated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page created a generator function
+        - name: use_counter2_js_generatorfunctionioneligible_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document created a generator function eligible for
+            Ion compilation
+        - name: use_counter2_js_generatorfunctionioneligible_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page created a generator function eligible for Ion
+            compilation
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

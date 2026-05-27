@@ -1,12 +1,11 @@
 ---
 friendly_name: {{ env }} {{ service }} Fastly CDN logs
 description: |-
-  Authorized view over Fastly CDN logs for the {{ service }} service in the {{ env }} environment.
+  View on Fastly CDN logs for the {{ service }} service in the {{ env }} environment.
   Selects all columns from `moz-fx-fxa-{{ env }}.fxa_{{ service }}_{{ env }}_{{ stage }}_fastly_cdn_logs.fastly`.
 owners:
 - bewu@mozilla.com
 - atoufali@mozilla.com
 labels:
-  authorized: true
   owner1: benwu
   owner2: atoufali

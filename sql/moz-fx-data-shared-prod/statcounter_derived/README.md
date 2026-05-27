@@ -2,6 +2,11 @@
 
 Fetches CSVs from Statcounter public download URLs (one per geography/device combination per day), enriches them into one row per date/geography/device/browser, and loads them into BigQuery via GCS.
 
+Examples include:
+
+- [Desktop Browser Market Share Europe for 1 Jan 2026](https://gs.statcounter.com/browser-market-share/desktop/europe/#daily-20260101-20260101-bar)
+- [Mobile Browser Market Share Worldwide for 1 Jan 2026](https://gs.statcounter.com/browser-market-share/mobile/worldwide/#daily-20260101-20260101-bar)
+
 This is a source ingestion pipeline following an EtLT pattern — the pipeline extracts, lightly transforms (column renames and dimension stamping), and loads data into BigQuery as-is. Any aggregation or business logic happens in downstream queries. The schema reflects Statcounter's data model, not an internal one, and is intentionally fixed.
 
 ## Table of Contents
@@ -80,8 +85,6 @@ python <table_v1>/query.py --date-from 2026-05-01 --date-to 2026-05-12
 ```
 
 Each date is a separate fetch/load cycle, so large ranges take proportionally longer — worldwide makes 2 requests per day (one per device), regions makes 12 (one per region/device combination).
-
-Statcounter limits historical CSV downloads to the past 100 days. The maximum backfill is therefore 100 days, which produces at most 1,200 requests for the regions pipeline — small enough that the sequential fetch loop is not a scalability concern.
 
 ## Data
 

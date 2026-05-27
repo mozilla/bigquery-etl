@@ -2,6 +2,11 @@
 
 Fetches CSVs from Statcounter public download URLs (one per geography/device combination per day), enriches them into one row per date/geography/device/browser, and loads them into BigQuery via GCS.
 
+Examples include:
+
+- [Desktop Browser Market Share Europe](https://gs.statcounter.com/browser-market-share/desktop/europe/#daily-20260101-20260101-bar)
+- [Mobile Browser Market Share Worldwide](https://gs.statcounter.com/browser-market-share/mobile/worldwide/#daily-20260101-20260101-bar)
+
 This is a source ingestion pipeline following an EtLT pattern — the pipeline extracts, lightly transforms (column renames and dimension stamping), and loads data into BigQuery as-is. Any aggregation or business logic happens in downstream queries. The schema reflects Statcounter's data model, not an internal one, and is intentionally fixed.
 
 ## Table of Contents

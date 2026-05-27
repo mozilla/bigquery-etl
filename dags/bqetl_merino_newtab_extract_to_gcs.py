@@ -42,7 +42,7 @@ default_args = {
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
     "email_on_retry": False,
-    "retries": 2,
+    "retries": 1,
     "max_active_tis_per_dag": None,
 }
 
@@ -51,7 +51,7 @@ tags = ["impact/tier_1", "repo/bigquery-etl"]
 with DAG(
     "bqetl_merino_newtab_extract_to_gcs",
     default_args=default_args,
-    schedule_interval="*/20 * * * *",
+    schedule_interval="*/10 * * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,

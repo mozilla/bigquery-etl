@@ -10,6 +10,7 @@ fields:
 - name: total_downloads
   type: INTEGER
   mode: NULLABLE
+  description: Number of distinct clients that triggered an install_stats event.
 - name: downloads_per_source
   type: RECORD
   mode: REPEATED

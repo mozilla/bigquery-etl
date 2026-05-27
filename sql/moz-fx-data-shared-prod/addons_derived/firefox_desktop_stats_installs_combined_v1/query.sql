@@ -1,6 +1,6 @@
 -- Combine firefox_desktop install stats from both legacy and glean based data sources.
--- Glean source containing clients using app version 148 and above.
 WITH unioned_install_stats AS (
+  -- Glean source containing clients using app version 148 and above.
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,

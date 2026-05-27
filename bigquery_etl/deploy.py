@@ -130,35 +130,38 @@ def deploy_table(
     if update_metadata:
         attach_metadata(artifact_file, table)
 
-    _create_or_update(client, table, skip_existing)
+    _create_or_update(client, table, skip_existing, existing_schema)
 
 
 def _create_or_update(
     client: bigquery.Client,
     table: bigquery.Table,
     skip_existing: bool = False,
+    schema: Optional["Schema"] = None,
 ) -> None:
     if table.created:
         if skip_existing:
             raise SkippedDeployException(f"{table} already exists.")
         log.info(f"{table} already exists, updating.")
         try:
-            client.update_table(
-                table,
-                [
-                    "schema",
-                    "friendly_name",
-                    "description",
-                    "time_partitioning",
-                    "clustering_fields",
-                    "labels",
-                ],
-            )
+            update_fields = [
+                "schema",
+                "friendly_name",
+                "description",
+                "time_partitioning",
+                "clustering_fields",
+                "labels",
+            ]
+            if schema is not None and schema.apply_constraints(table):
+                update_fields.append("table_constraints")
+            client.update_table(table, update_fields)
         except Exception as e:
             raise FailedDeployException(f"Unable to update table {table}: {e}") from e
         log.info(f"{table} updated.")
     else:
         try:
+            if schema is not None:
+                schema.apply_constraints(table)
             client.create_table(table)
         except Exception as e:
             raise FailedDeployException(f"Unable to create table {table}: {e}") from e

@@ -169,6 +169,42 @@ For our example:
 ./bqetl query schema update org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 
+### Primary and foreign key constraints
+
+You can optionally declare primary key and foreign key constraints in `schema.yaml`. These are unenforced in BigQuery; they don't prevent invalid data from being written, but they document relationships and can help the query optimizer.
+
+**Primary key:**
+
+```yaml
+primary_key:
+  - id
+fields:
+  - name: id
+    type: STRING
+    mode: REQUIRED
+    description: Unique identifier.
+  ...
+```
+
+**Foreign key:**
+
+```yaml
+foreign_keys:
+  - name: fk_sessions
+    referenced_table: moz-fx-data-shared-prod.sessions_derived.sessions_v1
+    column_references:
+      - referencing_column: session_id  # column in this table
+        referenced_column: id           # column in the referenced table
+fields:
+  ...
+```
+
+Both are optional and can be used together. A few requirements:
+
+- `referenced_table` must be a fully-qualified `project.dataset.table` string and must be an actual table (not a view).
+- The referenced table must have a `primary_key` declared in its own `schema.yaml`, and `referenced_column` must be one of those primary key columns.
+- The constraints are applied automatically when running `bqetl query schema deploy`.
+
 ## Creating a DAG
 
 BigQuery-ETL has some facilities in it to automatically add your query to [telemetry-airflow](https://github.com/mozilla/telemetry-airflow) (our instance of Airflow).
@@ -278,7 +314,7 @@ For our example:
     For new tables:
       - Set `shredder_mitigation: false` since there is no data yet to safeguard.
       - Backfill and validate your data.
-      - Set `shredder_mitigation: true` to protect the validated data. 
+      - Set `shredder_mitigation: true` to protect the validated data.
     For existing tables:
       - Bump the version of the query.
       - Make the necessary updates to the new version of the query and schema.
@@ -321,7 +357,7 @@ Optional parameters for Python scripts:
 - `query_script_args`: Additional CLI arguments to pass to the script, e.g. `--project=moz-fx-data-shared-prod`.
 Use this to set the backfill staging table if needed, e.g. `--destination-table=dataset__table_v1_YYYY_MM_DD`.
 - `query_script_dry_run_arg`: The name of the CLI argument the script uses for a dry run, e.g. `--dry-run`.
-When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour. 
+When provided, the system runs the script once with this argument appended before running the real backfill, mirroring the SQL dry run behaviour.
 The script must implement support for this argument itself.
 
 Example:

@@ -693,8 +693,10 @@ def generate_query_with_shredder_mitigation(
             )
         ]
         + [
-            f"COALESCE({previous_agg.query_cte}.{metric.name}, 0) - "
-            f"COALESCE({new_agg.query_cte}.{metric.name}, 0)"
+            f"IF({previous_agg.query_cte}.{metric.name} IS NULL"
+            f" AND {new_agg.query_cte}.{metric.name} IS NULL, NULL,"
+            f" COALESCE({previous_agg.query_cte}.{metric.name}, 0)"
+            f" - COALESCE({new_agg.query_cte}.{metric.name}, 0))"
             f" AS {metric.name}"
             for metric in metrics
             if metric.data_type != DataTypeGroup.FLOAT

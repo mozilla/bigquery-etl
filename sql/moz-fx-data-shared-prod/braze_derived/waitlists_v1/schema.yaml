@@ -2,31 +2,51 @@ fields:
 - mode: NULLABLE
   name: external_id
   type: STRING
+  description: The Braze external user identifier (UUID) matching the user's record
+    in braze_derived.users_v1, sourced from the CTMS email_id.
 - fields:
   - mode: NULLABLE
     name: waitlist_name
     type: STRING
+    description: The internal name of the product waitlist (e.g. 'relay', 'vpn', 'monitor'),
+      sourced from the CTMS waitlists name field.
   - mode: NULLABLE
     name: waitlist_geo
     type: STRING
+    description: Lowercase geographic region or country code specified by the user
+      when joining this waitlist, extracted from the CTMS waitlist fields JSON.
   - mode: NULLABLE
     name: waitlist_platform
     type: STRING
+    description: Lowercase platform preference specified by the user when joining
+      this waitlist (e.g. 'ios', 'android'), extracted from the CTMS waitlist fields
+      JSON.
   - mode: NULLABLE
     name: waitlist_source
     type: STRING
+    description: Lowercase acquisition source that attributed this waitlist sign-up,
+      sourced from the CTMS waitlists source field.
   - mode: NULLABLE
     name: create_timestamp
     type: TIMESTAMP
+    description: Timestamp when the user's waitlist record was first created in CTMS.
   - mode: NULLABLE
     name: subscribed
     type: BOOLEAN
+    description: Whether the user is currently on this waitlist. True indicates an
+      active sign-up; false indicates the user has been removed or unsubscribed.
   - mode: NULLABLE
     name: unsub_reason
     type: STRING
+    description: The reason provided when the user unsubscribed from this waitlist,
+      sourced from CTMS. Null when the user is still subscribed or no reason was given.
   - mode: NULLABLE
     name: update_timestamp
     type: TIMESTAMP
+    description: Timestamp when this waitlist record was most recently updated in
+      CTMS.
   mode: REPEATED
   name: waitlists
   type: RECORD
+  description: Array of product waitlist records for this user, each describing a
+    single waitlist the user has signed up for, sourced from ctms_braze.ctms_waitlists.

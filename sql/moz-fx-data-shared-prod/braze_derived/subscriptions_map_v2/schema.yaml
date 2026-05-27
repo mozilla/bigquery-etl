@@ -2,18 +2,30 @@ fields:
 - mode: NULLABLE
   name: braze_subscription_name
   type: STRING
+  description: The Braze subscription group name slug (e.g. 'mozilla-and-you', 'relay-waitlist')
+    used as the canonical identifier for a newsletter or waitlist in the Braze platform.
 - mode: NULLABLE
   name: description
   type: STRING
+  description: A human-readable label for the Braze subscription group (e.g. 'Mozilla
+    Community Newsletter', 'Firefox Relay Waitlist').
 - mode: NULLABLE
   name: mozilla_subscription_id
   type: STRING
+  description: The UUID identifying this subscription group in the Mozilla production
+    Braze environment.
 - mode: NULLABLE
   name: firefox_subscription_id
   type: STRING
+  description: The UUID identifying this subscription group in the Firefox production
+    Braze environment.
 - mode: NULLABLE
   name: mozilla_dev_subscription_id
   type: STRING
+  description: The UUID identifying this subscription group in the Mozilla development/staging
+    Braze environment.
 - mode: NULLABLE
   name: basket_slug
   type: STRING
+  description: The slug identifier used in Mozilla's Basket email subscription service
+    for this subscription group, typically matching braze_subscription_name.

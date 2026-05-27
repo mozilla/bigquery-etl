@@ -36,6 +36,7 @@ permissions: {}
 
 env:
   PYTHON_VERSION: '3.11'
+  PRIVATE_REPO: mozilla/private-bigquery-etl
 
 jobs:
   decide-runs:
@@ -483,7 +484,8 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      run-id: ${{ steps.dispatch.outputs.run_id }}
+      pr-number: ${{ steps.context.outputs.pr_number }}
+      commit-sha: ${{ steps.context.outputs.commit_sha }}
     environment: *job-env
     steps:
       - name: Determine context
@@ -495,7 +497,9 @@ jobs:
           EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
         run: |
-          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+          echo "commit_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "is_main_push=true" >> "$GITHUB_OUTPUT"
           else
             echo "is_main_push=false" >> "$GITHUB_OUTPUT"
@@ -520,22 +524,26 @@ jobs:
         id: dispatch
         env:
           TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
-          COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          COMMIT_SHA: ${{ steps.context.outputs.commit_sha }}
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
         run: |
-          curl -s -X POST \
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/mozilla/private-bigquery-etl/dispatches" \
+            "https://api.github.com/repos/${PRIVATE_REPO}/dispatches" \
             -d "$(jq -n \
               --arg sha "$COMMIT_SHA" \
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
               --argjson is_main "$IS_MAIN" \
-              '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main}}')"
+              '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main}}')")
 
+          if [ "$HTTP_STATUS" != "204" ]; then
+            echo "::error::Failed to dispatch private CI (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
           echo "Dispatched bqetl-ci event to private-bigquery-etl"
 
   wait-for-private-ci:
@@ -543,7 +551,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [trigger-private-ci]
     if: |
-      github.ref != 'refs/heads/main' &&
+      github.event_name != 'push' &&
       needs.trigger-private-ci.result == 'success'
     permissions:
       contents: read
@@ -556,35 +564,45 @@ jobs:
         id: poll
         env:
           TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
-          PR_NUMBER: ${{ needs.trigger-private-ci.outputs.pr-number || '' }}
+          PR_NUMBER: ${{ needs.trigger-private-ci.outputs.pr-number }}
+          COMMIT_SHA: ${{ needs.trigger-private-ci.outputs.commit-sha }}
         run: |
-          # Wait a moment for the workflow to be created
           sleep 10
 
           TIMEOUT=3600  # 60 minutes
           INTERVAL=30
           ELAPSED=0
 
-          # Find the most recent repository_dispatch run
           while [ $ELAPSED -lt $TIMEOUT ]; do
             RUN_JSON=$(curl -s \
               -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/mozilla/private-bigquery-etl/actions/workflows/private-ci.yml/runs?event=repository_dispatch&per_page=1")
+              "https://api.github.com/repos/${PRIVATE_REPO}/actions/workflows/private-ci.yml/runs?event=repository_dispatch&per_page=5")
 
-            STATUS=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].status')
-            CONCLUSION=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].conclusion')
-            RUN_URL=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].html_url')
+            # Match the run triggered for this specific commit
+            MATCHED=$(echo "$RUN_JSON" | jq -r \
+              --arg sha "$COMMIT_SHA" \
+              '[.workflow_runs[] | select(.head_sha == $sha)] | first // empty')
 
-            echo "Private CI status: ${STATUS}, conclusion: ${CONCLUSION} (${ELAPSED}s elapsed)"
+            if [ -z "$MATCHED" ]; then
+              echo "Waiting for private CI run to appear... (${ELAPSED}s elapsed)"
+              sleep $INTERVAL
+              ELAPSED=$((ELAPSED + INTERVAL))
+              continue
+            fi
+
+            STATUS=$(echo "$MATCHED" | jq -r '.status')
+            CONCLUSION=$(echo "$MATCHED" | jq -r '.conclusion // empty')
+            RUN_URL=$(echo "$MATCHED" | jq -r '.html_url')
+
+            echo "Private CI: ${STATUS} ${CONCLUSION} (${ELAPSED}s elapsed)"
 
             if [ "$STATUS" = "completed" ]; then
               echo "result=$CONCLUSION" >> "$GITHUB_OUTPUT"
               echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
 
-              # Build the diff URL if we have a PR number
               if [ -n "$PR_NUMBER" ]; then
-                echo "diff_url=https://github.com/mozilla/private-bigquery-etl/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff" >> "$GITHUB_OUTPUT"
+                echo "diff_url=https://github.com/${PRIVATE_REPO}/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff" >> "$GITHUB_OUTPUT"
               fi
 
               if [ "$CONCLUSION" != "success" ]; then
@@ -919,7 +937,7 @@ jobs:
     needs: [wait-for-private-ci, decide-runs]
     if: |
       always() &&
-      (github.ref != 'refs/heads/main') &&
+      github.event_name != 'push' &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true')
     permissions:
       contents: read

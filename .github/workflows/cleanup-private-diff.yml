@@ -9,12 +9,12 @@ jobs:
   cleanup:
     name: Delete diff branch in private-bigquery-etl
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - name: Delete bqetl-diff branch
         env:
           TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PRIVATE_REPO: mozilla/private-bigquery-etl
         run: |
           BRANCH="bqetl-diff/pr-${PR_NUMBER}"
           ENCODED_BRANCH=$(echo "$BRANCH" | sed 's|/|%2F|g')
@@ -23,7 +23,7 @@ jobs:
             -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -X DELETE \
-            "https://api.github.com/repos/mozilla/private-bigquery-etl/git/refs/heads/${ENCODED_BRANCH}")
+            "https://api.github.com/repos/${PRIVATE_REPO}/git/refs/heads/${ENCODED_BRANCH}")
 
           if [ "$HTTP_STATUS" = "204" ]; then
             echo "Deleted branch ${BRANCH} in private-bigquery-etl"

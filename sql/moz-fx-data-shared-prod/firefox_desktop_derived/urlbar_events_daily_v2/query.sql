@@ -189,7 +189,7 @@ total_urlbar_sessions AS (
     is_ai,
     is_search
 ),
-daily_bounce_disable_counts AS (
+daily_counts AS (
   SELECT
     submission_date,
     normalized_country_code,
@@ -289,7 +289,7 @@ join_counts_sessions AS (
     urlbar_bounces,
     urlbar_disables
   FROM
-    daily_bounce_disable_counts
+    daily_counts
   LEFT JOIN
     total_urlbar_sessions
     USING (

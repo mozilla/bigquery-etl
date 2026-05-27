@@ -471,6 +471,137 @@ jobs:
           name: schema-cache
           path: /tmp/workspace/schema-cache
 
+  trigger-private-ci:
+    name: Trigger Private CI
+    runs-on: ubuntu-latest
+    needs: [generate-sql, decide-runs]
+    if: |
+      (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'merge_group' ||
+       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')) &&
+      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run-id: ${{ steps.dispatch.outputs.run_id }}
+    environment: *job-env
+    steps:
+      - name: Determine context
+        id: context
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          PR_FROM_WR: ${{ github.event.workflow_run.pull_requests[0].number }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            echo "is_main_push=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_main_push=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Resolve PR number across all event types
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "pr_number=${EVENT_PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+            # Fork PRs via workflow_run: resolve PR number from head SHA
+            pr_number="$PR_FROM_WR"
+            if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+              pr_number=$(gh api \
+                "/repos/${REPO}/commits/$HEAD_SHA/pulls" \
+                --jq '.[0].number' 2>/dev/null || echo "")
+            fi
+            echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+          else
+            echo "pr_number=" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Trigger private-bigquery-etl CI
+        id: dispatch
+        env:
+          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+          RUN_ID: ${{ github.run_id }}
+          IS_MAIN: ${{ steps.context.outputs.is_main_push }}
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mozilla/private-bigquery-etl/dispatches" \
+            -d "$(jq -n \
+              --arg sha "$COMMIT_SHA" \
+              --arg pr "$PR_NUMBER" \
+              --arg run_id "$RUN_ID" \
+              --argjson is_main "$IS_MAIN" \
+              '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main}}')"
+
+          echo "Dispatched bqetl-ci event to private-bigquery-etl"
+
+  wait-for-private-ci:
+    name: Wait for Private CI
+    runs-on: ubuntu-latest
+    needs: [trigger-private-ci]
+    if: |
+      github.ref != 'refs/heads/main' &&
+      needs.trigger-private-ci.result == 'success'
+    permissions:
+      contents: read
+    environment: *job-env
+    outputs:
+      result: ${{ steps.poll.outputs.result }}
+      diff-url: ${{ steps.poll.outputs.diff_url }}
+    steps:
+      - name: Poll for private CI completion
+        id: poll
+        env:
+          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
+          PR_NUMBER: ${{ needs.trigger-private-ci.outputs.pr-number || '' }}
+        run: |
+          # Wait a moment for the workflow to be created
+          sleep 10
+
+          TIMEOUT=3600  # 60 minutes
+          INTERVAL=30
+          ELAPSED=0
+
+          # Find the most recent repository_dispatch run
+          while [ $ELAPSED -lt $TIMEOUT ]; do
+            RUN_JSON=$(curl -s \
+              -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/mozilla/private-bigquery-etl/actions/workflows/private-ci.yml/runs?event=repository_dispatch&per_page=1")
+
+            STATUS=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].status')
+            CONCLUSION=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].conclusion')
+            RUN_URL=$(echo "$RUN_JSON" | jq -r '.workflow_runs[0].html_url')
+
+            echo "Private CI status: ${STATUS}, conclusion: ${CONCLUSION} (${ELAPSED}s elapsed)"
+
+            if [ "$STATUS" = "completed" ]; then
+              echo "result=$CONCLUSION" >> "$GITHUB_OUTPUT"
+              echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
+
+              # Build the diff URL if we have a PR number
+              if [ -n "$PR_NUMBER" ]; then
+                echo "diff_url=https://github.com/mozilla/private-bigquery-etl/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff" >> "$GITHUB_OUTPUT"
+              fi
+
+              if [ "$CONCLUSION" != "success" ]; then
+                echo "::error::Private CI failed with conclusion: $CONCLUSION"
+                echo "See: $RUN_URL"
+                exit 1
+              fi
+              exit 0
+            fi
+
+            sleep $INTERVAL
+            ELAPSED=$((ELAPSED + INTERVAL))
+          done
+
+          echo "::error::Timed out waiting for private CI after ${TIMEOUT}s"
+          exit 1
+
   docs:
     name: Build and Deploy Documentation
     runs-on: ubuntu-latest
@@ -781,415 +912,113 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl backfill validate
 
-  private-generate-sql:
-    name: Generate Private SQL
-    runs-on: ubuntu-latest
-    needs: [generate-sql, decide-runs]
-    if: |
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true')
-    permissions:
-      id-token: write
-      contents: read
-    environment: *job-env
-    steps:
-      - *checkout
-      - *setup-python
-      - *restore-venv
-      - *download-generated-sql
-      - *auth-gcp-dryrun
-      - &setup-ssh-key-private-bqetl
-        name: Setup SSH key for private repo
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_BQETL_PRIVATE }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - name: Pull down private SQL content
-        run: |
-          git clone --branch main --depth 1 \
-            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
-      - name: Generate SQL content
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
-        run: |
-          export PATH="$PWD/.venv/bin:$PATH"
-          export PYTHONPATH="$PWD:$PYTHONPATH"
-          bqetl_script="$PWD/script/bqetl"
-          cd ~/private-bigquery-etl
-
-          $bqetl_script generate all --target-project moz-fx-data-shared-prod
-          $bqetl_script format sql/
-          $bqetl_script query schema render sql/ --output-dir=sql/
-          $bqetl_script dependency record --skip-existing sql/
-          $bqetl_script metadata update sql/
-          $bqetl_script monitoring update sql/
-
-          mkdir -p /tmp/workspace/private-generated-sql
-          cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
-          cp -rf sql/. /tmp/workspace/private-generated-sql/sql
-          cp bqetl_project.yaml /tmp/workspace/private-generated-sql/
-
-          git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-      - name: Encrypt private-generated-sql artifact
-        env:
-          ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
-        run: |
-          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
-            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
-            exit 1
-          fi
-          cd /tmp/workspace
-          tar czf - private-generated-sql | \
-            openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
-              -pass env:ARTIFACT_ENCRYPTION_KEY \
-              -out private-generated-sql.tar.gz.enc
-          rm -rf private-generated-sql
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: private-generated-sql
-          path: /tmp/workspace/private-generated-sql.tar.gz.enc
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          path: /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
-          archive: false
-
-  main-generate-sql-and-dags:
-    name: Generate SQL and DAGs from Main Branch
-    runs-on: ubuntu-latest
-    needs: [build, decide-runs]
-    if: |
-      (github.ref != 'refs/heads/main') &&
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
-    permissions:
-      id-token: write
-      contents: read
-    environment: *job-env
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-        with:
-          ref: main
-          persist-credentials: false
-          filter: blob:none
-      - *setup-python
-      - *restore-venv
-      - *auth-gcp-dryrun
-      - *setup-ssh-key-private-bqetl
-      - name: Generate SQL and DAGs
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
-        run: |
-          export PATH="$PWD/.venv/bin:$PATH"
-          export PYTHONPATH="$PWD:$PYTHONPATH"
-          bigquery_etl="$PWD"
-          bqetl_script="$PWD/script/bqetl"
-
-          # Get parent commit on main from which this branch diverged
-          MAIN_MERGE_BASE=$(git merge-base HEAD $GITHUB_REF || true)
-          echo "merge base with main: $MAIN_MERGE_BASE"
-
-          # Check if the generated-sql branch can be re-used
-          git clone -b generated-sql git@github.com:mozilla/bigquery-etl.git ~/remote-generated-sql
-          cd ~/remote-generated-sql
-
-          # Check if main merge base has been pushed to generated-sql yet, otherwise use latest
-          if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
-            echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
-            git checkout tags/c-${MAIN_MERGE_BASE:0:9}
-          else
-            # Commits on generated-sql are tagged with the sha1 hash of the commit on main
-            export LATEST_TAG_GENERATED_SQL=$(git describe --tags --abbrev=0)
-            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
-          fi
-
-          cd "$bigquery_etl"
-          export GENERATED_SQL_CHANGED=false
-
-          if [[ -n $MAIN_MERGE_BASE ]]; then
-            echo "Checking out $MAIN_MERGE_BASE for diff"
-            git checkout $MAIN_MERGE_BASE
-          fi
-
-          # If SQL generators changed, re-run SQL generation
-          if [[ $(git diff --name-only --diff-filter=d ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql_generators) ]]; then
-            echo "SQL generator changed; re-generate SQL"
-            GENERATED_SQL_CHANGED=true
-          fi
-
-          # If a SQL file was removed or renamed, re-run SQL generation
-          if [[ $(git diff --name-only --diff-filter=DR ${LATEST_TAG_GENERATED_SQL:-HEAD}...HEAD -- sql) ]]; then
-            echo "SQL file was removed; re-generate SQL"
-            GENERATED_SQL_CHANGED=true
-          fi
-
-          git checkout main
-
-          if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
-            # Re-run SQL generation
-            $bqetl_script generate all \
-              --ignore derived_view_schemas \
-              --target-project moz-fx-data-shared-prod
-          else
-            echo "Changes don't affect generated SQL. Use content from generated-sql branch"
-            # Merge files from the generated-sql branch, preserving those that changed in this PR
-            cp -rn ~/remote-generated-sql/sql/. sql
-          fi
-
-          $bqetl_script format sql/
-          $bqetl_script query schema render sql/ --output-dir=sql/
-          $bqetl_script dependency record --skip-existing sql/
-          $bqetl_script metadata update sql/
-          $bqetl_script monitoring update sql/
-
-          mkdir -p /tmp/workspace/main-generated-sql
-          cp -r sql /tmp/workspace/main-generated-sql/sql
-
-          # Generate private SQL
-          git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
-          cd ~/private-bigquery-etl
-          $bqetl_script generate all --target-project moz-fx-data-shared-prod
-          $bqetl_script format sql/
-          $bqetl_script query schema render sql/ --output-dir=sql/
-          $bqetl_script dependency record --skip-existing sql/
-          $bqetl_script metadata update sql/
-          $bqetl_script monitoring update sql/
-
-          cd "$bigquery_etl"
-          cp -rf ~/private-bigquery-etl/sql/. sql
-          cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
-
-          # Generate DAGs
-          mkdir -p /tmp/workspace/main-generated-sql/dags
-          $bqetl_script dag generate \
-            --output-dir /tmp/workspace/main-generated-sql/dags
-          rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: main-generated-sql
-          path: /tmp/workspace/main-generated-sql
-
-  generate-dags:
-    name: Generate DAGs
-    runs-on: ubuntu-latest
-    needs: [private-generate-sql, decide-runs]
-    if: |
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
-    permissions:
-      id-token: write
-      contents: read
-    environment: *job-env
-    steps:
-      - *checkout
-      - *setup-python
-      - *restore-venv
-      - *download-schema-cache
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: private-generated-sql
-          path: /tmp/workspace/
-      - name: Decrypt private-generated-sql artifact
-        env:
-          ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
-        run: |
-          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
-            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
-            exit 1
-          fi
-          cd /tmp/workspace
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
-            -pass env:ARTIFACT_ENCRYPTION_KEY \
-            -in private-generated-sql.tar.gz.enc | tar xzf -
-          rm private-generated-sql.tar.gz.enc
-      - name: Restore schema cache from generate-sql job
-        run: |
-          if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
-            cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
-            echo "Restored schema cache from generate-sql job"
-          fi
-      - *auth-gcp-dryrun
-      - *setup-ssh-key-private-bqetl
-      - name: Pull down private-bigquery-etl content
-        run: |
-          git clone --branch main --depth 1 \
-            git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
-      - name: Generate DAGs
-        env:
-          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
-          GOOGLE_PROJECT_ID: ${{ steps.auth-dryrun.outputs.project_id }}
-        run: |
-          rm -rf sql/
-          cp -rf /tmp/workspace/private-generated-sql/sql sql/
-
-          cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
-
-          mkdir -p /tmp/workspace/generated-dags/dags
-          PATH=".venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-dags/dags
-
-          mkdir -p /tmp/workspace/private-generated-dags/dags
-          mv /tmp/workspace/generated-dags/dags/private_bqetl_*.py /tmp/workspace/private-generated-dags/dags/
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: generated-dags
-          path: /tmp/workspace/generated-dags
-      - name: Encrypt private-generated-dags artifact
-        env:
-          ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
-        run: |
-          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
-            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
-            exit 1
-          fi
-          cd /tmp/workspace
-          tar czf - private-generated-dags | \
-            openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
-              -pass env:ARTIFACT_ENCRYPTION_KEY \
-              -out private-generated-dags.tar.gz.enc
-          rm -rf private-generated-dags
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: private-generated-dags
-          path: /tmp/workspace/private-generated-dags.tar.gz.enc
-
-  validate-dags:
-    name: Validate DAGs
-    runs-on: ubuntu-latest
-    needs: [generate-dags, decide-runs]
-    if: needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.deploy == 'true'
-    environment: *job-env
-    steps:
-      - *checkout
-      - name: Pull telemetry-airflow
-        run: |
-          git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-dags
-          path: /tmp/workspace/generated-dags
-      - name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
-        run: |
-          rm ~/telemetry-airflow/dags/* -f || true
-          cp -a /tmp/workspace/generated-dags/dags/. ~/telemetry-airflow/dags/
-      - name: Cache telemetry-airflow dependencies
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
-        with:
-          path: ~/telemetry-airflow/.venv
-          # yamllint disable-line rule:line-length
-          key: telemetry-airflow-deps-v1-${{ hashFiles('~/telemetry-airflow/requirements.txt', '~/telemetry-airflow/requirements-dev.txt', '~/telemetry-airflow/requirements-override.txt') }}
-          restore-keys: |
-            telemetry-airflow-deps-v1-
-      - name: Install telemetry-airflow dependencies
-        run: |
-          cd ~/telemetry-airflow
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install --no-deps -r requirements.txt
-          pip install --no-deps -r requirements-dev.txt
-          pip install --no-deps -r requirements-override.txt
-      - name: 🧪 Test valid DAGs
-        run: |
-          cd ~/telemetry-airflow
-          source .venv/bin/activate
-          python -m pytest tests/dags/test_dag_validity.py --junitxml=dag-test-results.xml
-      - name: Upload test results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          path: ~/telemetry-airflow/dag-test-results.xml
-          archive: false
-
   generate-diff:
-    name: Generate and Post SQL Diff
+    name: Post SQL Diff
     runs-on: ubuntu-latest
     environment: *build-env
-    needs: [generate-sql, generate-dags, main-generate-sql-and-dags, decide-runs]
+    needs: [wait-for-private-ci, decide-runs]
     if: |
+      always() &&
       (github.ref != 'refs/heads/main') &&
       (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true')
     permissions:
       contents: read
       pull-requests: write
     steps:
-      - *checkout
-      - name: Create workspace directory
-        run: mkdir -p /tmp/workspace
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-sql
-          path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-dags
-          path: /tmp/workspace/generated-dags
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: main-generated-sql
-          path: /tmp/workspace/main-generated-sql
-      - name: Generate diff
-        run: |
-          diff -qr --no-dereference \
-            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-dags/dags/ \
-            | grep '^Only in' \
-            > /tmp/workspace/sql.diff || true
-          diff -bur --no-dereference --new-file \
-            /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-dags/dags/ \
-            >> /tmp/workspace/sql.diff || true
-          diff -qr --no-dereference \
-            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-            | grep '^Only in' \
-            >> /tmp/workspace/sql.diff || true
-          diff -bur --no-dereference --new-file \
-            /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-            >> /tmp/workspace/sql.diff || true
-
-          # Write full diff to job summary for easy viewing
-          echo "## SQL Diff" >> $GITHUB_STEP_SUMMARY
-          echo '```diff' >> $GITHUB_STEP_SUMMARY
-          cat /tmp/workspace/sql.diff >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-      - name: Upload diff artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          path: /tmp/workspace/sql.diff
-          archive: false
-      - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6.4.0
-        with:
-          node-version: '21'
-      - name: Install diff dependencies
-        run: npm i @octokit/graphql@7.0.2
       - name: Find PR number
         id: find-pr
         env:
           EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
           EVENT_PR_TITLE: ${{ github.event.pull_request.title }}
+          WR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          WR_PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            echo "pr_number=$EVENT_PR_NUMBER" >> $GITHUB_OUTPUT
-            echo "pr_title=$EVENT_PR_TITLE" >> $GITHUB_OUTPUT
+            pr_number="$EVENT_PR_NUMBER"
+            pr_title="$EVENT_PR_TITLE"
+          elif [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+            pr_number="$WR_PR_NUMBER"
+            if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+              pr_number=$(gh api \
+                "/repos/${REPO}/commits/${WR_HEAD_SHA}/pulls" \
+                --jq '.[0].number' 2>/dev/null || echo "")
+            fi
+            pr_title=$(gh api \
+              "/repos/${REPO}/pulls/$pr_number" \
+              --jq '.title' 2>/dev/null || echo "")
           else
-            # Use gh CLI to find PR for this branch
             PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
-            PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
-            PR_TITLE=$(echo "$PR_JSON" | jq -r '.title // empty')
-            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-            echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+            pr_number=$(echo "$PR_JSON" | jq -r '.number // empty')
+            pr_title=$(echo "$PR_JSON" | jq -r '.title // empty')
           fi
-      - name: Post diff to GitHub
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+          {
+            echo "pr_title<<PREOF"
+            echo "$pr_title"
+            echo "PREOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Post diff link to PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ steps.find-pr.outputs.pr_number }}
+          PR_TITLE: ${{ steps.find-pr.outputs.pr_title }}
+          PRIVATE_DIFF_URL: ${{ needs.wait-for-private-ci.outputs.diff-url }}
           RUN_ID: ${{ github.run_id }}
-          COMMIT_MESSAGE: ${{ steps.find-pr.outputs.pr_title }}
-        run: node .github/workflows/post-diff.js
+        run: |
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR number found, skipping comment posting."
+            exit 0
+          fi
 
-  push-generated-sql-and-dags:
-    name: Push Generated SQL and DAGs
+          DIFF_LINK=""
+          if [ -n "$PRIVATE_DIFF_URL" ]; then
+            DIFF_LINK="[View full diff (SQL + DAGs)](${PRIVATE_DIFF_URL}) *(requires private-bigquery-etl access)*"
+          fi
+
+          BODY="### Integration report for \"${PR_TITLE}\"
+          ${DIFF_LINK}"
+
+          # Minimize previous diff comments
+          COMMENTS=$(curl -s \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments?per_page=100")
+
+          FILTER='.[] | select(.user.login == "github-actions[bot]"
+            and (.body | contains("Integration report"))) | .node_id'
+          MUTATION='mutation($id:ID!) {
+            minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
+              clientMutationId
+            }
+          }'
+
+          echo "$COMMENTS" | jq -r "$FILTER" | while read -r node_id; do
+            if [ -n "$node_id" ]; then
+              curl -s -X POST \
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Content-Type: application/json" \
+                "https://api.github.com/graphql" \
+                -d "$(jq -n --arg id "$node_id" \
+                  --arg q "$MUTATION" \
+                  '{query: $q, variables: {id: $id}}')"
+            fi
+          done
+
+          curl -s \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -X POST \
+            "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments" \
+            -d "$(jq -n --arg body "$BODY" '{body: $body}')"
+
+  push-generated-sql:
+    name: Push Generated SQL
     runs-on: ubuntu-latest
-    needs: [generate-sql, validate-dags]
+    needs: [generate-sql]
     if: *is-main-deploy
     environment: *deploy-env
     steps:
@@ -1197,10 +1026,6 @@ jobs:
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: generated-dags
-          path: /tmp/workspace/generated-dags
       - name: Setup SSH key for generated-sql
         run: |
           mkdir -p ~/.ssh
@@ -1227,195 +1052,6 @@ jobs:
             git push
             git push origin "c-$GITHUB_SHA"
           fi
-      - name: Push to generated-dags branch
-        run: |
-          git config --global user.name "GitHub Actions generate-dags job"
-          git config --global user.email "dataops+generated-dags@mozilla.com"
-          git clone --single-branch --branch generated-dags --depth=1 \
-            git@github.com:mozilla/bigquery-etl.git \
-            generated-dags
-          cd generated-dags/
-          rm -rf dags/
-          cp -r /tmp/workspace/generated-dags/dags dags
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to push"
-          else
-            git commit -m "Auto-push due to change on main branch [ci skip]" \
-              -m "Created from $GITHUB_SHA"
-            git push
-          fi
-
-  push-private-generated-sql-and-dags:
-    name: Push Private Generated SQL and DAGs
-    runs-on: ubuntu-latest
-    needs: [private-generate-sql, generate-dags]
-    if: *is-main-deploy
-    environment: *deploy-env
-    steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: private-generated-sql
-          path: /tmp/workspace/
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: private-generated-dags
-          path: /tmp/workspace/
-      - name: Decrypt private-generated-sql/dags artifacts
-        env:
-          ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
-        run: |
-          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
-            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
-            exit 1
-          fi
-          cd /tmp/workspace
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
-            -pass env:ARTIFACT_ENCRYPTION_KEY \
-            -in private-generated-sql.tar.gz.enc | tar xzf -
-          rm private-generated-sql.tar.gz.enc
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
-            -pass env:ARTIFACT_ENCRYPTION_KEY \
-            -in private-generated-dags.tar.gz.enc | tar xzf -
-          rm private-generated-dags.tar.gz.enc
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: PRIVATE_BIGQUERY_ETL_SHA
-          path: /tmp/workspace/
-      - *setup-ssh-key-private-bqetl
-      - name: Push to private-generated-sql branch
-        run: |
-          git config --global user.name "GitHub Actions private-generate-sql job"
-          git config --global user.email "dataops+private-generated-sql@mozilla.com"
-          git clone --single-branch --branch private-generated-sql \
-            git@github.com:mozilla/private-bigquery-etl \
-            private-generated-sql
-          cd private-generated-sql/
-          rm -rf sql/
-          cp -r /tmp/workspace/private-generated-sql/sql sql
-          git add .
-
-          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
-
-          if git diff --cached --quiet; then
-            echo "No changes to push"
-          else
-            git commit -m "Auto-push due to change on main branch [ci skip]" \
-              -m "Created from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA and $private_bqetl_sha"
-            git push
-          fi
-      - name: Push to private-generated-dags branch
-        run: |
-          git config --global user.name "GitHub Actions private-generate-dags job"
-          git config --global user.email "dataops+private-generated-dags@mozilla.com"
-          git clone --single-branch --branch private-generated-dags --depth=1 \
-            git@github.com:mozilla/private-bigquery-etl \
-            private-generated-dags
-          cd private-generated-dags/
-          rm -rf dags/
-          cp -r /tmp/workspace/private-generated-dags/dags dags
-          git add .
-
-          private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
-
-          if git diff --cached --quiet; then
-            echo "No changes to push"
-          else
-            git commit -m "Auto-push due to change on main branch [ci skip]" \
-              -m "Created from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA and $private_bqetl_sha"
-            git push
-          fi
-
-  deploy-to-private-gar:
-    name: Deploy to Private GAR
-    runs-on: ubuntu-latest
-    needs: [private-generate-sql, build, generate-sql]
-    if: *is-main-deploy
-    permissions:
-      id-token: write
-      contents: read
-    environment: *deploy-env
-    steps:
-      - *checkout
-      - *download-generated-sql
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          name: private-generated-sql
-          path: /tmp/workspace/
-      - name: Decrypt private-generated-sql artifact
-        env:
-          ARTIFACT_ENCRYPTION_KEY: ${{ secrets.ARTIFACT_ENCRYPTION_KEY }}
-        run: |
-          if [ -z "$ARTIFACT_ENCRYPTION_KEY" ]; then
-            echo "ARTIFACT_ENCRYPTION_KEY is not set" >&2
-            exit 1
-          fi
-          cd /tmp/workspace
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 \
-            -pass env:ARTIFACT_ENCRYPTION_KEY \
-            -in private-generated-sql.tar.gz.enc | tar xzf -
-          rm private-generated-sql.tar.gz.enc
-      - name: Move generated-sql into place
-        run: |
-          rm -rf sql/
-          cp -r /tmp/workspace/private-generated-sql/sql sql
-          # bigquery-etl bqetl_project.yaml configuration takes precedence over private-bigquery-etl
-          yq -n 'load("/tmp/workspace/private-generated-sql/bqetl_project.yaml") *+ load("/tmp/workspace/generated-sql/bqetl_project.yaml")' \
-            > bqetl_project.yaml
-      - name: Build the Docker image
-        run: |
-          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
-      - name: Push Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
-        with:
-          project_id: moz-fx-data-artifacts-prod
-          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
-          workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
-          service_account_name: bigquery-etl
-      - name: Build the tagged Docker image
-        run: |
-          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
-      - name: Push tagged Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
-        with:
-          project_id: moz-fx-data-artifacts-prod
-          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
-          workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
-          service_account_name: bigquery-etl
-
-  artifact-deployment:
-    name: Trigger Airflow Artifact Deployment
-    runs-on: ubuntu-latest
-    needs: [deploy-to-private-gar]
-    if: *is-main-deploy
-    permissions:
-      id-token: write
-      contents: read
-    environment: *deploy-env
-    steps:
-      - name: Authenticate to GCP and Generate ID Token
-        id: auth
-        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
-        with:
-          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_DEPLOYMENT_SERVICE_ACCOUNT_EMAIL }}
-          token_format: id_token
-          # yamllint disable-line rule:line-length
-          id_token_audience: https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger
-          id_token_include_email: true
-          create_credentials_file: false
-      - name: Trigger bqetl-artifact-deployment in Airflow
-        env:
-          ID_TOKEN: ${{ steps.auth.outputs.id_token }}
-        run: |
-          REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
-          RUN_URL="${REPO_URL}/actions/runs/${GITHUB_RUN_ID}"
-          NOTE="DAG triggered by **[${GITHUB_ACTOR}](https://github.com/${GITHUB_ACTOR})** "
-          NOTE="${NOTE}from ${GITHUB_REPOSITORY} CI build [${GITHUB_RUN_NUMBER}](${RUN_URL})"
-          curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger" \
-            -H "Authorization: bearer ${ID_TOKEN}" \
-            -H "Content-Type:application/json" \
-            -d "{\"dagrun_note\": \"${NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
 
   reset-stage-env:
     name: Reset Stage Environment
@@ -1473,81 +1109,6 @@ jobs:
         run: python -m build --sdist --wheel
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1.14.0
-
-  sync-bigquery-etl-submodule:
-    name: 🔃 Synchronize bigquery-etl submodule
-    runs-on: ubuntu-latest
-    needs: [push-generated-sql-and-dags]
-    if: *is-main-deploy
-    environment: *deploy-env
-    steps:
-      - &setup-ssh-keys-telemetry-airflow-dags
-        name: Setup SSH keys for telemetry-airflow-dags
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - name: Configure git
-        run: |
-          git config --global user.email "dataops@mozilla.com"
-          git config --global user.name "GitHub Actions sync-dags-repo job"
-      - name: Clone telemetry-airflow-dags and update bigquery-etl submodule
-        run: |
-          git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
-          cd telemetry-airflow-dags
-          git submodule update --init --depth 1 bigquery-etl
-          cd bigquery-etl
-          git fetch --depth=1 origin generated-dags
-          git reset --hard FETCH_HEAD
-          cd ..
-          git add bigquery-etl
-          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
-          git push origin main
-
-  sync-private-bigquery-etl-submodule:
-    name: 🔃 Synchronize private-bigquery-etl submodule
-    runs-on: ubuntu-latest
-    needs: [push-private-generated-sql-and-dags, sync-bigquery-etl-submodule]
-    if: *is-main-deploy
-    environment: *deploy-env
-    steps:
-      - name: Setup SSH keys for multiple repos
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY_BQETL_PRIVATE }}" > ~/.ssh/id_rsa
-          echo "${{ secrets.DEPLOY_KEY_TELEMETRY_AIRFLOW_DAGS }}" > ~/.ssh/id_rsa_telemetry
-          chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa_telemetry
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-          # Configure SSH: default for private-bigquery-etl submodule, alias for telemetry-airflow-dags
-          cat > ~/.ssh/config <<'EOF'
-          Host github.com
-            IdentitiesOnly yes
-            IdentityFile ~/.ssh/id_rsa
-          Host git-telemetry-airflow-dags
-            HostName github.com
-            User git
-            IdentitiesOnly yes
-            IdentityFile ~/.ssh/id_rsa_telemetry
-          EOF
-          chmod 600 ~/.ssh/config
-      - name: Configure git
-        run: |
-          git config --global user.email "dataops@mozilla.com"
-          git config --global user.name "GitHub Actions sync-dags-repo job"
-      - name: Clone telemetry-airflow-dags and update private-bigquery-etl submodule
-        run: |
-          git clone --branch main git@git-telemetry-airflow-dags:mozilla/telemetry-airflow-dags.git
-          cd telemetry-airflow-dags
-          git submodule update --init --depth 1 private-bigquery-etl
-          cd private-bigquery-etl
-          git fetch --depth=1 origin private-generated-dags
-          git reset --hard FETCH_HEAD
-          cd ..
-          git add private-bigquery-etl
-          git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
-          git push origin main
 
   # Post a single "Build" rolled-up check in `in_progress` state at the very
   # start of a workflow_run, so the PR Checks UI shows live progress instead
@@ -1616,7 +1177,8 @@ jobs:
       - test-bqetl
       - integration
       - generate-sql
-      - private-generate-sql
+      - trigger-private-ci
+      - wait-for-private-ci
       - docs
       - deploy-changes-to-stage
       - dry-run-sql
@@ -1625,9 +1187,6 @@ jobs:
       - validate-views
       - validate-metadata
       - validate-backfills
-      - main-generate-sql-and-dags
-      - generate-dags
-      - validate-dags
       - generate-diff
     runs-on: ubuntu-latest
     permissions:

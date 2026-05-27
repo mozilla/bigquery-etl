@@ -2,25 +2,43 @@ fields:
 - mode: NULLABLE
   name: external_id
   type: STRING
+  description: The Braze external user identifier (UUID) matching the user's record
+    in braze_derived.users_v1.
 - fields:
   - mode: NULLABLE
     name: subscription_name
     type: STRING
+    description: The Braze subscription group name slug for this subscription entry
+      (e.g. 'mozilla-and-you', 'guardian-vpn-waitlist'), matching braze_subscription_name
+      in subscriptions_map_v1.
   - mode: NULLABLE
     name: firefox_subscription_id
     type: STRING
+    description: The UUID identifying this subscription group in the Firefox production
+      Braze environment, sourced from subscriptions_map_v1.
   - mode: NULLABLE
     name: mozilla_subscription_id
     type: STRING
+    description: The UUID identifying this subscription group in the Mozilla production
+      Braze environment, sourced from subscriptions_map_v1.
   - mode: NULLABLE
     name: mozilla_dev_subscription_id
     type: STRING
+    description: The UUID identifying this subscription group in the Mozilla development/staging
+      Braze environment, sourced from subscriptions_map_v1.
   - mode: NULLABLE
     name: subscription_state
     type: STRING
+    description: The current state of this subscription for the user. Values are 'subscribed'
+      (user is actively subscribed) or 'unsubscribed' (user has unsubscribed).
   - mode: NULLABLE
     name: update_timestamp
     type: TIMESTAMP
+    description: Timestamp when this subscription state was most recently updated,
+      sourced from the newsletter or waitlist update_timestamp in user_profiles_v1.
   mode: REPEATED
   name: subscriptions
   type: RECORD
+  description: Array of Braze newsletter and waitlist subscription records for this
+    user, derived from user_profiles_v1 newsletters and waitlists and mapped to Braze
+    subscription IDs via subscriptions_map_v1.

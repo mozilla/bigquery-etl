@@ -108,7 +108,7 @@ tickets AS (
   SELECT
     DATE(TIMESTAMP(t.created_at), "UTC") AS created_date,
     DATE(COALESCE(sd.solved_at, sd.closed_at)) AS resolved_date,
-    COALESCE(m.product_mapping, t.custom_product) AS product,
+    mozfun.customer_experience.normalize_product(t.custom_product, 'Zendesk') AS product,
     COALESCE(ac.automation_category, 'human-handled') AS automation_category,
     t.id AS ticket_id
   FROM
@@ -116,10 +116,6 @@ tickets AS (
   LEFT JOIN
     appbot_class ab
     ON t.id = ab.ticket_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
-    ON m.product = t.custom_product
-    AND m.source = 'Zendesk'
   LEFT JOIN
     automation_classification ac
     ON t.id = ac.ticket_id

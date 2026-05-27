@@ -9,7 +9,7 @@ AI-enriched retrieval table derived from Zendesk customer support tickets, one r
 | | |
 |---|---|
 | **Grain** | One row per Zendesk ticket (keyed by `creation_date`, `ticket_id`) |
-| **Source** | `moz-fx-data-shared-prod.zendesk_syndicate.ticket` (+ joins to `group`, `user`, `ticket_field_history`, `ticket_tag`, and `static.cx_product_mappings_v1`) |
+| **Source** | `moz-fx-data-shared-prod.zendesk_syndicate.ticket` (+ joins to `group`, `user`, `ticket_field_history`, `ticket_tag`) |
 | **DAG** | `bqetl_analytics_tables` · daily · incremental |
 | **Partitioning** | `creation_date` *(partition filter required)* |
 | **Clustering** | `product`, `locale` |
@@ -206,7 +206,7 @@ WHERE creation_date BETWEEN DATE('2026-04-01') AND DATE('2026-04-30')
 ## 🔧 Implementation Notes
 
 - Incremental: one partition written per run, filtered by `DATE(ticket.created_at) = @submission_date`.
-- Source is read from the shared-prod syndicate: `zendesk_syndicate.ticket`, with joins to `group`, `user`, `ticket_field_history`, `ticket_tag`, and `static.cx_product_mappings_v1`.
+- Source is read from the shared-prod syndicate: `zendesk_syndicate.ticket`, with joins to `group`, `user`, `ticket_field_history`, `ticket_tag`.
 - **Appbot classification** uses `mozfun.customer_experience.classify_appbot_group` to tag tickets and exclude the `Appbot - Non-English` bucket.
 - **Automation classification** uses `mozfun.customer_experience.is_automated`; tickets that transitioned `solved → open` (reopens) are recategorized as agent-handled.
 - **Test-ticket exclusion** uses a tag regex (`(^|[-_])test([-_]|$)`) plus an explicit `qatest` match — narrower than a naive `LIKE '%test%'`.
@@ -219,7 +219,7 @@ WHERE creation_date BETWEEN DATE('2026-04-01') AND DATE('2026-04-30')
 
 - `recency_score` is **only on the `customer_experience.zendesk_retrieval_index` view**, not on this underlying table. It is computed at read time as `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay; 1.0 for today, ~0.37 after 30 days. Always reflects freshness relative to the current query date, so backfills don't have to recompute it.
 - `ticket_sentiment_score` ranges -1.0 (very negative) to 1.0 (very positive), 0 is neutral.
-- `product` is normalized from raw Zendesk `custom_product` via `static.cx_product_mappings_v1` (source = 'Zendesk'); falls back to the raw value when no mapping exists.
+- `product` the raw upstream Zendesk value. Normalization is applied at read time in the view.
 - `type` is always "ticket"; future versions may include additional content types.
 - `embedding` is a dense float array suitable for cosine similarity or nearest-neighbor search.
 

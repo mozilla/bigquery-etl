@@ -2,15 +2,27 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date the user was identified as an inactive Windows 10 Firefox
+    user and added to this list, derived from the fx_accounts ping submission timestamp.
 - name: external_id
   type: STRING
   mode: NULLABLE
+  description: The Braze external user identifier (UUID) linking this record to the
+    user's profile in braze_derived.users_v1, or a generated UUID if the user had
+    no prior Braze record.
 - name: email
   type: STRING
   mode: NULLABLE
+  description: The user's primary email address, sourced from their Braze profile
+    or Firefox Accounts record, used to target this re-engagement campaign.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: The application locale of the user at the time of their most recent
+    fx_accounts ping (e.g. 'en-US', 'de'). Only users with one of the supported locales
+    (de, en-US, en-GB, es-ES, fr, it, pl, pt-BR) are included.
 - name: fxa_id_sha256
   type: STRING
   mode: NULLABLE
+  description: SHA-256 hash of the user's Firefox Accounts (FxA) user ID, used to
+    link this record to FxA account data without exposing the raw identifier.

@@ -1,0 +1,9 @@
+friendly_name: Widgets Visit Daily
+description: |-
+  Daily aggregation of newtab widget impression and user-event metrics.
+  The granularity is one row per Firefox Desktop newtab_visit_id, widget_name, widget_size
+  and submission_date, unpacking the `widgets_impression` and `widgets_user_event`
+  events from the `newtab` event category. Adds a derived `windows_version` column
+  over the underlying `firefox_desktop_derived.widgets_visit_daily_v1` table.
+owners:
+- jsnyder@mozilla.com

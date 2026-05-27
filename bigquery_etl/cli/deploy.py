@@ -566,8 +566,13 @@ def _strip_materialized_view(target_file: Path) -> Path:
     materialized views can't be recreated without source data access.
     """
     sql_content = target_file.read_text()
+    # \bAS\b — match the keyword, not the substring "as" inside identifiers.
+    # Under --isolated the staged FQN is rewritten to embed the source dataset
+    # name (e.g. `..._firefox_crashreporter_derived__...`), and with
+    # IGNORECASE + non-greedy .*? a bare `AS` would match the "as" in "crash"
+    # and chop the identifier.
     sql_content = re.sub(
-        r"CREATE\s+MATERIALIZED\s+VIEW.*?AS",
+        r"CREATE\s+MATERIALIZED\s+VIEW.*?\bAS\b",
         "",
         sql_content,
         flags=re.DOTALL | re.IGNORECASE,
@@ -603,6 +608,9 @@ def _collect_isolated_dependencies(
             project, dataset, name = extract_from_query_path(dep_path)
             artifact_type = "view" if dep_path.name == VIEW_FILE else "table"
             artifacts[f"{project}.{dataset}.{name}"] = (dep_path, artifact_type)
+        elif dep_path.name == SCHEMA_FILE:
+            project, dataset, name = extract_from_query_path(dep_path)
+            artifacts[f"{project}.{dataset}.{name}"] = (dep_path, "table")
         elif dep_path.name in ROUTINE_FILES:
             routine_deps.append(dep_path)
     return routine_deps
@@ -1187,6 +1195,7 @@ def _deploy_table_artifact(file_path: Path, options: dict):
         sql_dir=options["sql_dir"],
         credentials=options["credentials"],
         id_token=options["id_token"],
+        isolated=options.get("isolated", False),
     )
 
 

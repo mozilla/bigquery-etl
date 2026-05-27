@@ -49,4 +49,3 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus
   - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
-  - moz-fx-data-shared-prod.static.cx_product_mappings_v1

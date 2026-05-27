@@ -1,0 +1,10 @@
+fields:
+- name: document_id
+  type: INT64
+  mode: NULLABLE
+- name: reviewed
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: is_approved
+  type: BOOL
+  mode: NULLABLE

@@ -22,9 +22,8 @@ fields:
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Mozilla product associated with the support question.
-      Normalized via `moz-fx-data-shared-prod.static.cx_product_mappings_v1`
-      (source = 'Kitsune'); falls back to the raw upstream value when no mapping exists.
+  description: Raw upstream Mozilla product value from `sumo_syndicate.kitsune_questions_plus`.
+      Normalized at read time by the `customer_experience.kitsune_retrieval_index` view.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -63,10 +62,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the question author also posted the answer (self-answer).
-- name: is_firefox_product
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Whether the support question is associated with a Firefox product (Desktop, Mobile, iOS, or Enterprise).
 - name: num_helpful_votes
   type: INTEGER
   mode: NULLABLE

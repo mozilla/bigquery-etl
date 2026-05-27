@@ -96,7 +96,7 @@ current_day_users_to_add AS (
     `moz-fx-data-shared-prod.braze_derived.users_v1` AS braze_users
     ON inactive.user_id_sha256 = braze_users.fxa_id_sha256
   LEFT JOIN
-    `moz-fx-data-shared-prod.accounts_backend_external.emails_v1` AS fxa_emails
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1` AS fxa_emails
     ON inactive.user_id_sha256 = TO_HEX(SHA256(fxa_emails.uid))
   -- some users have multiple email addresses in this table, only use primary
     AND fxa_emails.isPrimary = TRUE

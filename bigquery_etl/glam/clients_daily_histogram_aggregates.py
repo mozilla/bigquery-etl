@@ -3,7 +3,7 @@
 import argparse
 import sys
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from jinja2 import Environment, PackageLoader
 
@@ -36,6 +36,7 @@ def render_main(**kwargs):
 
 def get_distribution_metrics(
     schema: Dict,
+    product: Optional[str] = None,
 ) -> tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all distribution-like metrics in a Glean table.
 
@@ -53,7 +54,7 @@ def get_distribution_metrics(
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Metrics that are already sampled
-    sampled_metrics = get_sampled_metrics(metric_type_set)
+    sampled_metrics = get_sampled_metrics(metric_type_set, product=product)
     found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
@@ -143,7 +144,9 @@ def main():
     )
 
     schema = get_schema(args.source_table)
-    distributions, client_sampled_distributions = get_distribution_metrics(schema)
+    distributions, client_sampled_distributions = get_distribution_metrics(
+        schema, product=args.product
+    )
     metrics_sql = get_metrics_sql(distributions)
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
     if args.product == "firefox_desktop":

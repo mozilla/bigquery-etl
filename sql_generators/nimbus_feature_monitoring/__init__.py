@@ -161,6 +161,9 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     schema = (template_dir / "schema.yaml").read_text()
+    # Accumulate all feature tables across all apps so the single consolidated
+    # view is written once after the loop (not overwritten on each iteration).
+    all_feature_tables = []
     for app_config in ConfigCollection.from_github_repo().featmon_configs:
         dataset = app_config.spec.dataset
         source_tables = {}
@@ -203,9 +206,7 @@ def generate_queries(project, path, write_dir):
                                         event_name=metric.pop(
                                             "event_name", metric_name
                                         ),
-                                        source_type=source_tables[
-                                            source_name
-                                        ].type,
+                                        source_type=source_tables[source_name].type,
                                         **metric,
                                     )
                                 )
@@ -222,13 +223,12 @@ def generate_queries(project, path, write_dir):
                 Feature(
                     name=feat.nimbus_slug(),
                     project=project,
-                    dataset=f"{dataset}_derived",
+                    dataset="nimbus_feature_monitoring",
                     ratios=feat.ratios,
                     metrics_by_source=metrics_by_source,
                 )
             )
 
-        feature_tables = []
         for feature in features:
             args = {
                 "source_tables": [
@@ -240,7 +240,9 @@ def generate_queries(project, path, write_dir):
             }
 
             feature_name_sql = feature.name.replace("-", "_").lower()
-            table = f"nimbus_feature_monitoring_{feature_name_sql}_v1"
+            # Prefix with the app dataset to avoid collisions when multiple apps
+            # define a feature with the same Nimbus slug.
+            table = f"{dataset}_{feature_name_sql}_v1"
             sql_table_name = f"{feature.project}.{feature.dataset}.{table}"
 
             write_sql(
@@ -253,19 +255,19 @@ def generate_queries(project, path, write_dir):
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
             (write_path / "schema.yaml").write_text(schema)
 
-            feature_tables.append((feature.name, sql_table_name))
+            all_feature_tables.append((feature.name, dataset, sql_table_name))
 
-        # generate view over feature tables
-        view_args = {
-            "feature_tables": feature_tables,
-            "view": f"{project}.{dataset}.nimbus_feature_monitoring",
-        }
-        write_sql(
-            write_dir / project,
-            view_args["view"],
-            "view.sql",
-            reformat(view_template.render(**view_args)),
-        )
+    # Write a single consolidated view over all apps' feature tables.
+    view_args = {
+        "feature_tables": all_feature_tables,
+        "view": f"{project}.nimbus_feature_monitoring.all_features",
+    }
+    write_sql(
+        write_dir / project,
+        view_args["view"],
+        "view.sql",
+        reformat(view_template.render(**view_args)),
+    )
 
 
 @click.command("generate")

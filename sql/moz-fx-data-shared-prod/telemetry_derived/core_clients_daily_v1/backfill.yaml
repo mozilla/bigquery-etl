@@ -4,6 +4,6 @@
   reason: Fix duplicate client_ids caused by cross-partition duplicates in core_clients_first_seen_v1.
   watchers:
   - ascholtz@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false

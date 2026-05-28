@@ -38,6 +38,7 @@ SELECT
       LAX_BOOL(event_extra.is_enabled) AS `is_enabled`,
       LAX_BOOL(event_extra.is_enrolled_in_sent_from_firefox) AS `is_enrolled_in_sent_from_firefox`,
       LAX_BOOL(event_extra.is_homepage) AS `is_homepage`,
+      LAX_BOOL(event_extra.is_impression) AS `is_impression`,
       LAX_BOOL(event_extra.is_new_email_mask) AS `is_new_email_mask`,
       LAX_BOOL(event_extra.is_opted_in_sent_from_firefox) AS `is_opted_in_sent_from_firefox`,
       LAX_BOOL(event_extra.is_private) AS `is_private`,
@@ -162,6 +163,7 @@ SELECT
       JSON_VALUE(event_extra.trigger) AS `trigger`,
       JSON_VALUE(event_extra.type) AS `type`,
       JSON_VALUE(event_extra.user_selection) AS `user_selection`,
+      JSON_VALUE(event_extra.view) AS `view`,
       JSON_VALUE(event_extra.wallpaper_name) AS `wallpaper_name`,
       JSON_VALUE(event_extra.wallpaper_type) AS `wallpaper_type`
     ) AS `string`

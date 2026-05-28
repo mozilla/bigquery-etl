@@ -24,4 +24,5 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential/data-viewers
+  - workgroup:platform/backstage-gke
 require_column_descriptions: true

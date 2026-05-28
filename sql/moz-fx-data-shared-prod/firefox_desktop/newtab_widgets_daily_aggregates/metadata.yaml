@@ -1,0 +1,8 @@
+friendly_name: Newtab Widgets Daily Aggregates
+description: |-
+  Daily aggregation of newtab widget actions (impressions, usage actions, clicks,
+  enable/disable, etc.) for Firefox Desktop. One row per
+  (submission_date, app_version, os, channel, country, locale, widget_name) over
+  the underlying `firefox_desktop_derived.newtab_widgets_daily_aggregates_v1` table.
+owners:
+- gkatre@mozilla.com

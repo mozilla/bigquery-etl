@@ -253,6 +253,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    addons_derived__firefox_desktop_stats_installs_combined__v1 = bigquery_etl_query(
+        task_id="addons_derived__firefox_desktop_stats_installs_combined__v1",
+        destination_table="firefox_desktop_stats_installs_combined_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "lgreco@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     addons_derived__search_detection__v1 = bigquery_etl_query(
         task_id="addons_derived__search_detection__v1",
         destination_table="search_detection_v1",
@@ -398,15 +409,11 @@ with DAG(
     )
 
     addons_derived__dev_amo_stats_installs__v1.set_upstream(
-        addons_derived__amo_stats_installs_legacy_source__v1
-    )
-
-    addons_derived__dev_amo_stats_installs__v1.set_upstream(
         addons_derived__dev_amo_stats_dau__v1
     )
 
     addons_derived__dev_amo_stats_installs__v1.set_upstream(
-        addons_derived__firefox_desktop_stats_installs__v1
+        addons_derived__firefox_desktop_stats_installs_combined__v1
     )
 
     addons_derived__fenix_addons_by_client__v1.set_upstream(
@@ -422,6 +429,18 @@ with DAG(
     )
 
     addons_derived__firefox_desktop_stats_installs__v1.set_upstream(
+        wait_for_firefox_desktop_derived__events_stream__v1
+    )
+
+    addons_derived__firefox_desktop_stats_installs_combined__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    addons_derived__firefox_desktop_stats_installs_combined__v1.set_upstream(
+        wait_for_event_events
+    )
+
+    addons_derived__firefox_desktop_stats_installs_combined__v1.set_upstream(
         wait_for_firefox_desktop_derived__events_stream__v1
     )
 

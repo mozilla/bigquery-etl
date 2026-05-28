@@ -148,7 +148,7 @@ widget_metrics AS (
     widget_size,
     LOGICAL_OR(
       COALESCE(is_widget_enabled, FALSE)
-      OR COALESCE(SUM(IF(event_name = 'widgets_impression', count, 0)) > 0, FALSE)
+      OR COALESCE(event_name = 'widgets_impression', FALSE)
     ) AS is_widget_enabled,
     SUM(IF(event_name = 'widgets_impression', count, 0)) AS impression_count,
     SUM(IF(event_name = 'widgets_user_event', count, 0)) AS user_event_count,

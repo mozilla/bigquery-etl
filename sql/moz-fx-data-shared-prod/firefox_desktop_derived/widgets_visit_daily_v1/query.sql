@@ -146,7 +146,10 @@ widget_metrics AS (
     newtab_visit_id,
     widget_name,
     widget_size,
-    LOGICAL_OR(COALESCE(is_widget_enabled, FALSE)) AS is_widget_enabled,
+    LOGICAL_OR(
+      COALESCE(is_widget_enabled, FALSE)
+      OR COALESCE(impression_count > 0, FALSE)
+    ) AS is_widget_enabled,
     SUM(IF(event_name = 'widgets_impression', count, 0)) AS impression_count,
     SUM(IF(event_name = 'widgets_user_event', count, 0)) AS user_event_count,
     SUM(

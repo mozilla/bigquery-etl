@@ -30,7 +30,8 @@ SELECT
       metrics.labeled_counter.glean_upload_ping_upload_failure,
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
-      metrics.labeled_counter.glean_health_file_write_error
+      metrics.labeled_counter.glean_health_file_write_error,
+      metrics.labeled_counter.glean_upload_pending_pings_deleted
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

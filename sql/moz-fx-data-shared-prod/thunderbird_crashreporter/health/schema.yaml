@@ -477,6 +477,32 @@ fields:
         \ the last baseline ping)\n\nNote: Previously this also recorded the number\
         \ of submitted custom pings.\nNow it only records counts for the Glean built-in\
         \ pings.\n"
+    - name: glean_upload_pending_pings_deleted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of pings deleted because a pending pings quota was
+        exceeded,
+
+        labeled by which quota triggered the deletion.
+
+
+        * `count_quota`: the maximum number of pending pings was reached.
+
+        * `size_quota`: the maximum size of the pending pings directory was reached.
+
+
+        Sent on the health ping only; use this metric to verify whether
+
+        the configured limits are sufficient to survive connectivity outages.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

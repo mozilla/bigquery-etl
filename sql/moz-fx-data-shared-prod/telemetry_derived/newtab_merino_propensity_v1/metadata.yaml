@@ -29,3 +29,7 @@ scheduling:
   - telemetry_derived
   - --destination_table
   - newtab_merino_propensity_v1
+  - --snapshot_date
+  - "{{ ds }}"
+  - --history_destination_table
+  - newtab_merino_propensity_history_v1

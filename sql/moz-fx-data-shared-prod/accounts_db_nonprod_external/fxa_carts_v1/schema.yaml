@@ -25,6 +25,9 @@ fields:
 - name: taxAddress
   type: STRING
   mode: NULLABLE
+- name: currency
+  type: STRING
+  mode: NULLABLE
 - name: createdAt
   type: TIMESTAMP
   mode: NULLABLE
@@ -37,6 +40,12 @@ fields:
 - name: stripeCustomerId
   type: STRING
   mode: NULLABLE
+- name: stripeSubscriptionId
+  type: STRING
+  mode: NULLABLE
+- name: stripeIntentId
+  type: STRING
+  mode: NULLABLE
 - name: amount
   type: INTEGER
   mode: NULLABLE
@@ -45,4 +54,7 @@ fields:
   mode: NULLABLE
 - name: eligibilityStatus
   type: STRING
+  mode: NULLABLE
+- name: isFreeTrial
+  type: BOOLEAN
   mode: NULLABLE

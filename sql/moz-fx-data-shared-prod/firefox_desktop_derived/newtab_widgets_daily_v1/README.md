@@ -1,6 +1,6 @@
 # Newtab Widgets Daily
 
-Daily aggregation of Firefox New Tab widget telemetry at one row per widget per day,
+Daily aggregation of Firefox New Tab widget telemetry at one row per widget per day per app version per channel per os per country per locale,
 covering impressions, user interactions, enable/disable actions, and engagement metrics
 derived from the unified widget telemetry shape in `newtab_v1`.
 
@@ -10,11 +10,11 @@ derived from the unified widget telemetry shape in `newtab_v1`.
 
 | | |
 |---|---|
-| **Grain** | One row per `(submission_date, widget_name)` |
+| **Grain** | One row per `(submission_date, app_version, os, channel, country, locale, widget_name)` |
 | **Source** | `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1` |
 | **DAG** | `bqetl_newtab` · daily · incremental |
 | **Partitioning** | `submission_date` *(partition filter required)* |
-| **Clustering** | `widget_name` |
+| **Clustering** | `widget_name`, `channel`, `country` |
 | **Retention** | No expiration (aggregate table) |
 | **Owner** | gkatre@mozilla.com |
 | **Version** | v1 (initial version) |
@@ -28,7 +28,7 @@ derived from the unified widget telemetry shape in `newtab_v1`.
 ```mermaid
 flowchart TD
   A[Firefox Desktop Newtab Ping<br/>`firefox_desktop_stable.newtab_v1`] -->|filter @submission_date<br/>UNNEST events · widget events only<br/>GROUP BY widget_name| B[**This query**]
-  B --> C[Partitioned table<br/>time: `submission_date`<br/>cluster: `widget_name`]
+  B --> C[Partitioned table<br/>time: `submission_date`<br/>cluster: `widget_name`, `channel`, `country`]
 ```
 
 ---
@@ -37,7 +37,7 @@ flowchart TD
 
 1. **Input** — `newtab_v1` has one row per Glean ping; each ping contains a repeated `events` array.
 2. **Unnest** — Events are unnested and filtered to widget event types: `widgets_impression`, `widgets_user_event`, and `widgets_enabled`. Rows where `widget_name` is null are excluded.
-3. **Aggregation** — Metrics are computed per `(submission_date, widget_name)` using `COUNTIF` for event-level counts and `COUNT(DISTINCT client_id)` for engaged clients.
+3. **Aggregation** — Metrics are computed per `(submission_date, app_version, os, channel, country, locale, widget_name)` using `COUNTIF` for event-level counts and `COUNT(DISTINCT client_id)` for engaged clients.
 4. **User action breakdown** — A separate CTE computes per-widget `user_action` counts and aggregates them into a repeated `STRUCT<action, count>` array (`widget_user_action_counts`), ordered by `action`, joined back to the main aggregation.
 5. **Data inclusion** — All widget events from the stable table are included; no bot or synthetic client exclusions are applied at this layer.
 
@@ -51,13 +51,15 @@ flowchart TD
 |---|---|
 | Date | `submission_date` |
 | Widget | `widget_name` |
+| App | `app_version`, `channel` |
+| Client | `os`, `locale`, `country` |
 
 ### Metrics
 
 | Category | Fields |
 |---|---|
 | Reach | `widget_impression_count`, `widget_engaged_clients` |
-| Enablement | `widget_{enabled\|disabled}_count` |
+| Enablement | `widget_{enabled\|disabled}_count`, `widget_enabled_clients` |
 | Interaction | `widget_user_event_count`, `widget_link_click_count` |
 | Feature usage | `widget_{setting_change\|utility_action\|optin_accept}_count` |
 | Detail | `widget_user_action_counts` *(repeated `STRUCT<action, count>`)* |
@@ -102,7 +104,7 @@ SELECT
   SAFE_DIVIDE(SUM(widget_user_event_count), SUM(widget_impression_count)) AS interaction_rate,
   SAFE_DIVIDE(SUM(widget_utility_action_count), SUM(widget_user_event_count)) AS utility_rate
 FROM `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_widgets_daily_v1`
-WHERE submission_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+WHERE submission_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY) AND country = 'US'
 GROUP BY 1, 2
 ORDER BY 1 DESC, impressions DESC;
 ```

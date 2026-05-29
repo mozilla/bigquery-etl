@@ -3,6 +3,27 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date the widget telemetry was recorded, derived from submission_timestamp.
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: widget_name
   type: STRING
   mode: NULLABLE

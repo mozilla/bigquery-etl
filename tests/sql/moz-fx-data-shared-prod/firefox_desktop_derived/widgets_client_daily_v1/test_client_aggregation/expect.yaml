@@ -3,6 +3,7 @@
   client_id: client_id_1
   widget_name: focus_timer
   widget_size: small
+  is_widget_enabled: true
   app_version: 138
   os: Windows
   os_version: "10.0"

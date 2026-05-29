@@ -50,16 +50,46 @@ FROM
 WHERE
   submission_date = @submission_date
   AND ga_country IN (
+    "Albania",
     "Argentina",
     "Australia",
     "Bangladesh",
+    "Bulgaria",
     "Canada",
+    "Chile",
     "China",
+    "Colombia",
+    "Cyprus",
+    "Czechia",
+    "Ecuador",
+    "Estonia",
+    "Finland",
+    "Greece",
+    "Guatemala",
     "Hong Kong",
+    "Hungary",
     "India",
     "Indonesia",
+    "Japan",
+    "Kosovo",
+    "Latvia",
+    "Malaysia",
+    "Malta",
     "Mexico",
+    "New Zealand",
+    "North Macedonia",
+    "Panama",
+    "Poland",
+    "Portugal",
+    "Romania",
+    "Singapore",
+    "Slovakia",
+    "Slovenia",
+    "South Africa",
+    "Sweden",
+    "Taiwan",
     "Thailand",
+    "Türkiye",
     "United States",
     "Vietnam"
   )
@@ -197,7 +227,13 @@ def main(
     for event in conversion_events:
         logging.info(
             "Event payload: event_name=%s, event_time=%s, event_id=%s, action_source=%s, fbc=%s"
-            % (event.event_name, event.event_time, event.event_id, event.action_source, event.user_data.fbc)
+            % (
+                event.event_name,
+                event.event_time,
+                event.event_id,
+                event.action_source,
+                event.user_data.fbc,
+            )
         )
 
     FacebookAdsApi.init(access_token=access_token, crash_log=False)

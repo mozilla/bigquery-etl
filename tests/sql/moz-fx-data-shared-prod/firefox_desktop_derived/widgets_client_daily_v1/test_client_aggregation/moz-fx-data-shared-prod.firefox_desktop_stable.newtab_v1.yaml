@@ -18,6 +18,9 @@
       newtab_homepage_category: enabled
       newtab_newtab_category: enabled
       newtab_locale: en-US
+    string_list:
+      - newtab_widgets_enabled_list: lists
+      - newtab_widgets_enabled_list: focus_timer
   events:
     - category: newtab
       name: opened

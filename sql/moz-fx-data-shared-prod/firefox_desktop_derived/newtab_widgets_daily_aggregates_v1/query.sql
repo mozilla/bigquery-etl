@@ -169,6 +169,14 @@ enabled_users_aggregate AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND NULLIF(widget, '') IS NOT NULL
+  GROUP BY
+    submission_date,
+    app_version,
+    os,
+    channel,
+    locale,
+    country,
+    widget_name
 )
 SELECT
   submission_date,

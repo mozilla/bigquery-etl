@@ -11,6 +11,12 @@ labels:
   owner1: akomar@mozilla.com
 scheduling:
   dag_name: bqetl_accounts_db_daily
+  # Adjust the execution delta for the task dependencies in the bqetl_accounts_db DAG
+  # so this depends on the latest bqetl_accounts_db DAG run.
+  depends_on:
+  - dag_name: bqetl_accounts_db
+    task_id: accounts_db_external__fxa_accounts__v1
+    execution_delta: -22h
 bigquery:
   time_partitioning:
     type: day

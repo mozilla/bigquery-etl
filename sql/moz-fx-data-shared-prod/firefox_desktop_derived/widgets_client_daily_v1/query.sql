@@ -35,17 +35,31 @@ user_action_counts_summary AS (
     widget_size
 ),
 widget_enabled_users AS (
-  SELECT DISTINCT
+  SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     widget AS widget_name,
-    TRUE AS is_widget_enabled
+    TRUE AS is_widget_enabled,
+    ANY_VALUE(
+      SAFE_CAST(
+        mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS INT64
+      )
+    ) AS app_version,
+    ANY_VALUE(normalized_os) AS os,
+    ANY_VALUE(normalized_channel) AS channel,
+    ANY_VALUE(client_info.locale) AS locale,
+    ANY_VALUE(normalized_country_code) AS country,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(metrics.string_list.newtab_widgets_enabled_list) AS widget
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND NULLIF(widget, '') IS NOT NULL
+  GROUP BY
+    submission_date,
+    client_id,
+    widget_name,
+    is_widget_enabled
 ),
 client_metrics AS (
   SELECT
@@ -58,15 +72,21 @@ client_metrics AS (
       OR COALESCE(impression_count > 0, FALSE)
     ) AS is_widget_enabled,
       -- mode_last: pick the most frequent occurring value across visits
-    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version)) AS app_version,
-    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os)) AS os,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(COALESCE(wvd.app_version, weu.app_version))
+    ) AS app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(COALESCE(wvd.os, weu.os))) AS os,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version)) AS os_version,
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(windows_build_number)
     ) AS windows_build_number,
-    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(channel)) AS channel,
-    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
-    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(COALESCE(wvd.channel, weu.channel))
+    ) AS channel,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(COALESCE(wvd.locale, weu.locale))) AS locale,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(COALESCE(wvd.country, weu.country))
+    ) AS country,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision)) AS geo_subdivision,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(homepage_category)) AS homepage_category,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(newtab_category)) AS newtab_category,
@@ -121,12 +141,12 @@ client_metrics AS (
     SUM(enabled_count) AS enabled_count,
     SUM(disabled_count) AS disabled_count,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_derived.widgets_visit_daily_v1`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.widgets_visit_daily_v1` AS wvd
   FULL OUTER JOIN
-    widget_enabled_users
+    widget_enabled_users AS weu
     USING (submission_date, client_id, widget_name)
   WHERE
-    submission_date = @submission_date
+    wvd.submission_date = @submission_date
   GROUP BY
     submission_date,
     client_id,

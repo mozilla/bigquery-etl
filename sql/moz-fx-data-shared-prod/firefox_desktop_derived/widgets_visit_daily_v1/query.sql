@@ -126,19 +126,6 @@ user_action_counts_per_widget AS (
     user_action,
     widget_enabled
 ),
-widget_enabled_users AS (
-  SELECT DISTINCT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    widget AS widget_name,
-    TRUE AS is_widget_enabled
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
-    UNNEST(metrics.string_list.newtab_widgets_enabled_list) AS widget
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND NULLIF(widget, '') IS NOT NULL
-),
 widget_metrics AS (
   SELECT
     submission_date,
@@ -146,10 +133,6 @@ widget_metrics AS (
     newtab_visit_id,
     widget_name,
     widget_size,
-    LOGICAL_OR(
-      COALESCE(is_widget_enabled, FALSE)
-      OR COALESCE(event_name = 'widgets_impression', FALSE)
-    ) AS is_widget_enabled,
     SUM(IF(event_name = 'widgets_impression', count, 0)) AS impression_count,
     SUM(IF(event_name = 'widgets_user_event', count, 0)) AS user_event_count,
     SUM(
@@ -167,9 +150,6 @@ widget_metrics AS (
     ) AS user_action_counts,
   FROM
     user_action_counts_per_widget
-  FULL OUTER JOIN
-    widget_enabled_users
-    USING (submission_date, client_id, widget_name)
   GROUP BY
     submission_date,
     client_id,

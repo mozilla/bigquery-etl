@@ -15,10 +15,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Name of the widget that emits the event (e.g., lists, focus_timer, weather).
-- name: is_widget_enabled
-  type: BOOLEAN
-  mode: NULLABLE
-  description: TRUE if the user has enabled the widget on the newtab.
 - name: widget_size
   type: STRING
   mode: NULLABLE

@@ -1,0 +1,21 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: scope
+  type: STRING
+  mode: NULLABLE
+- name: service
+  type: STRING
+  mode: NULLABLE
+- name: clientId
+  type: STRING
+  mode: NULLABLE
+  description: clientId in hexadecimal format.
+- name: firstAuthorizedTosAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: lastAuthorizedTosAt
+  type: TIMESTAMP
+  mode: NULLABLE

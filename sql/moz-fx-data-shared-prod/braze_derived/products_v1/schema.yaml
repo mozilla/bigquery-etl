@@ -3,7 +3,7 @@ fields:
   name: external_id
   type: STRING
   description: The Braze external identifier for this user, corresponding to their
-    Basket email_id (UUID). Used to join to users_v1 and other Braze-derived tables.
+    Mozilla account ID (fxa_id). Used to sync to Braze profiles.
 - mode: NULLABLE
   name: provider
   type: STRING

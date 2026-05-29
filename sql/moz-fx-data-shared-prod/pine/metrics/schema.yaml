@@ -2870,6 +2870,14 @@ fields:
         \ in their Content-Encoding metadata \u2014 artifacts of early compression-dictionary\
         \ code that failed to clear the header before writing cache metadata. Tracking\
         \ this lets us know when the stale-entry population has died out.\n"
+    - name: networking_trans_found_in_pending_queue
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a transaction was unexpectedly still
+        found in a connection entry''s pending queue when nsHttpConnectionMgr::CheckTransInPendingQueue
+        ran.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -46174,11 +46182,15 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine identifiers for built-in
-        search engines and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are the search engine identifier for configuration
+        provided search engines and ''other'' for search engines installed via other
+        methods.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
+
+        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
+        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

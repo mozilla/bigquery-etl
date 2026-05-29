@@ -3262,6 +3262,20 @@ fields:
         \ in their Content-Encoding metadata \u2014 artifacts of early compression-dictionary\
         \ code that failed to clear the header before writing cache metadata. Tracking\
         \ this lets us know when the stale-entry population has died out.\n"
+    - name: networking_trans_found_in_pending_queue
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a transaction was unexpectedly still
+        found in a connection entry''s pending queue when nsHttpConnectionMgr::CheckTransInPendingQueue
+        ran.
+
+        '
+    - name: places_manager_connection_initialized
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a `PlacesConnection` was initialized.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -30544,6 +30558,190 @@ fields:
           mode: NULLABLE
       description: 'Time spent on the URL-classifier worker thread inside AntiTrackingChannelClassifierUtils::CheckChannelHelper
         (ms), covering content-classifier and URL-classifier feature lookups.
+
+        '
+    - name: places_manager_run_maintenance_chk_pnt_time_temp
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+
+
+        Duplication of `run_maintenance_chk_pnt_time_temp` for glean-sym testing.
+
+        '
+    - name: places_manager_run_maintenance_optimize_time_temp
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+
+
+        Duplication of `run_maintenance_optimize_time` for glean-sym testing.
+
+        '
+    - name: places_manager_run_maintenance_prune_time_temp
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+
+
+        Duplication of `run_maintenance_prune_time` for glean-sym testing.
+
+        '
+    - name: places_manager_run_maintenance_vacuum_time_temp
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time taken to execute `VACUUM` inside `run_maintenance()`
+
+
+        Duplication of `run_maintenance_vacuum_time` for glean-sym testing.
 
         '
   - name: custom_distribution

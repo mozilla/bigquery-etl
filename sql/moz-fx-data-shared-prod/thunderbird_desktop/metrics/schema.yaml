@@ -2323,6 +2323,14 @@ fields:
         \ in their Content-Encoding metadata \u2014 artifacts of early compression-dictionary\
         \ code that failed to clear the header before writing cache metadata. Tracking\
         \ this lets us know when the stale-entry population has died out.\n"
+    - name: networking_trans_found_in_pending_queue
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a transaction was unexpectedly still
+        found in a connection entry''s pending queue when nsHttpConnectionMgr::CheckTransInPendingQueue
+        ran.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

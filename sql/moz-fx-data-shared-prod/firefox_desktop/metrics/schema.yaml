@@ -3430,6 +3430,14 @@ fields:
         \ in their Content-Encoding metadata \u2014 artifacts of early compression-dictionary\
         \ code that failed to clear the header before writing cache metadata. Tracking\
         \ this lets us know when the stale-entry population has died out.\n"
+    - name: networking_trans_found_in_pending_queue
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a transaction was unexpectedly still
+        found in a connection entry''s pending queue when nsHttpConnectionMgr::CheckTransInPendingQueue
+        ran.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -13992,9 +14000,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Favicons database filesize (MB)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_DATABASE_FAVICONS_FILESIZE_MB.
-
         '
     - name: places_database_filesize
       type: RECORD
@@ -14019,9 +14024,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Database filesize (MB)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_DATABASE_FILESIZE_MB.
 
         '
     - name: session_restore_file_size_bytes
@@ -30096,9 +30098,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time to build the bookmarks tree
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_BACKUPS_BOOKMARKSTREE_MS.
-
         '
     - name: places_backups_daysfromlast
       type: RECORD
@@ -30141,9 +30140,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Days from last backup
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PLACES_BACKUPS_DAYSFROMLAST.
 
         '
     - name: places_backups_tojson
@@ -30188,9 +30184,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time to convert and write the backup
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_BACKUPS_TOJSON_MS.
-
         '
     - name: places_export_tohtml
       type: RECORD
@@ -30233,9 +30226,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Time to convert and write bookmarks.html
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_EXPORT_TOHTML_MS.
 
         '
     - name: places_frecency_recalc_chunk_time
@@ -30280,9 +30270,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time to recalculate frecency for a chunk of pages (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_FRECENCY_RECALC_CHUNK_TIME_MS.
-
         '
     - name: places_idle_frecency_decay_time
       type: RECORD
@@ -30325,9 +30312,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Time to decay all frecencies values on idle (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_IDLE_FRECENCY_DECAY_TIME_MS.
 
         '
     - name: places_idle_maintenance_time
@@ -30372,9 +30356,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Time to execute maintenance tasks on idle (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_IDLE_MAINTENANCE_TIME_MS.
-
         '
     - name: places_maintenance_daysfromlast
       type: RECORD
@@ -30418,9 +30399,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Days from last maintenance
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_MAINTENANCE_DAYSFROMLAST.
-
         '
     - name: places_most_recent_expired_visit
       type: RECORD
@@ -30463,9 +30441,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: the most recent expired visit in days
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        PLACES_MOST_RECENT_EXPIRED_VISIT_DAYS.
 
         '
     - name: region_fetch_time
@@ -31028,9 +31003,6 @@ fields:
           mode: NULLABLE
       description: 'Firefox: Time to initialize the bookmarks toolbar view (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FX_BOOKMARKS_TOOLBAR_INIT_MS.
-
         '
     - name: history_sidebar_lastvisited_tree_query_time
       type: RECORD
@@ -31120,9 +31092,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Time to search the history library (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_HISTORY_LIBRARY_SEARCH_TIME_MS.
 
         '
     - name: devtools_aboutdebugging_time_active
@@ -36974,8 +36943,7 @@ fields:
     - name: places_pages_need_frecency_recalculation
       type: INTEGER
       mode: NULLABLE
-      description: 'Number of pages that need a frecency recalculation. This metric
-        was generated to correspond to the Legacy Telemetry scalar places.pages_need_frecency_recalculation.
+      description: 'Number of pages that need a frecency recalculation.
 
         '
     - name: places_previousday_visits
@@ -45474,9 +45442,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Number of pages annotations
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_ANNOS_PAGES_COUNT.
-
         '
     - name: places_bookmarks_count
       type: RECORD
@@ -45501,9 +45466,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Number of bookmarks
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_BOOKMARKS_COUNT.
 
         '
     - name: places_expiration_steps_to_clean
@@ -45530,9 +45492,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Expiration steps to cleanup the database
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram PLACES_EXPIRATION_STEPS_TO_CLEAN2.
-
         '
     - name: places_keywords_count
       type: RECORD
@@ -45557,9 +45516,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Number of keywords
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_KEYWORDS_COUNT.
 
         '
     - name: places_pages_count
@@ -45586,9 +45542,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Number of unique pages
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_PAGES_COUNT.
-
         '
     - name: places_sorted_bookmarks_perc
       type: RECORD
@@ -45613,9 +45566,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Percentage of bookmarks organized in folders
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        PLACES_SORTED_BOOKMARKS_PERC.
 
         '
     - name: places_tagged_bookmarks_perc
@@ -45642,9 +45592,6 @@ fields:
           mode: NULLABLE
       description: 'PLACES: Percentage of tagged bookmarks
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        PLACES_TAGGED_BOOKMARKS_PERC.
-
         '
     - name: places_tags_count
       type: RECORD
@@ -45669,9 +45616,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'PLACES: Number of tags
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram PLACES_TAGS_COUNT.
 
         '
     - name: region_fetch_result

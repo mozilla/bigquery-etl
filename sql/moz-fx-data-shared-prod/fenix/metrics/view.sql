@@ -390,7 +390,9 @@ SELECT
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
-      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
+      metrics.counter.networking_trans_found_in_pending_queue,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1782,7 +1784,11 @@ SELECT
       metrics.timing_distribution.ai_summarize_duration,
       metrics.timing_distribution.network_ssl_token_cache_load_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
-      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2590,7 +2596,9 @@ SELECT
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
-      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
+      metrics.counter.networking_trans_found_in_pending_queue,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3982,7 +3990,11 @@ SELECT
       metrics.timing_distribution.ai_summarize_duration,
       metrics.timing_distribution.network_ssl_token_cache_load_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
-      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4810,7 +4822,9 @@ SELECT
       metrics.counter.network_ssl_token_cache_persistence_records_loaded,
       metrics.counter.networking_proxy_fast_path_used,
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
-      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged
+      metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
+      metrics.counter.networking_trans_found_in_pending_queue,
+      metrics.counter.places_manager_connection_initialized
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6202,7 +6216,11 @@ SELECT
       metrics.timing_distribution.ai_summarize_duration,
       metrics.timing_distribution.network_ssl_token_cache_load_time,
       metrics.timing_distribution.urlclassifier_check_channel_helper_time,
-      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time
+      metrics.timing_distribution.urlclassifier_check_channel_helper_worker_time,
+      metrics.timing_distribution.places_manager_run_maintenance_chk_pnt_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_optimize_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_prune_time_temp,
+      metrics.timing_distribution.places_manager_run_maintenance_vacuum_time_temp
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

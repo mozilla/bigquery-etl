@@ -7,6 +7,7 @@ import rich_click as click
 
 from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from .utils import qualified_table_name_matching
 
 DATE_TYPE = click.DateTime(formats=["%Y-%m-%d"])
@@ -68,12 +69,26 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
         "Reason for the backfill (include links to any related bugs or tickets)"
     )
 
-    val = click.prompt(
-        "Custom query path (leave blank for default)",
-        default="",
-        show_default=False,
+    shredder_mitigation = metadata is not None and (
+        SHREDDER_MITIGATION_LABEL in metadata.labels
     )
-    result["custom_query_path"] = val if val else None
+    result["shredder_mitigation"] = shredder_mitigation
+
+    if shredder_mitigation:
+        click.echo(
+            f"NOTE: Table metadata has the `{SHREDDER_MITIGATION_LABEL}` label. "
+            "If there is a previous version of this table, ensure this is a v{n+1} table to "
+            "preserve data from the previous version."
+        )
+        # Shredder mitigation generates a custom query at run time
+        result["custom_query_path"] = None
+    else:
+        val = click.prompt(
+            "Custom query path (leave blank for default)",
+            default="",
+            show_default=False,
+        )
+        result["custom_query_path"] = val if val else None
 
     if is_python_script:
         result["query_script_entrypoint"] = click.prompt(
@@ -100,10 +115,6 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
                 if not click.confirm("Add another argument?", default=False):
                     break
         result["query_script_arg"] = tuple(args)
-
-    result["shredder_mitigation"] = click.confirm(
-        "Use shredder mitigation?", default=False
-    )
 
     result["override_retention_range_limit"] = click.confirm(
         "Override retention range limit?", default=False

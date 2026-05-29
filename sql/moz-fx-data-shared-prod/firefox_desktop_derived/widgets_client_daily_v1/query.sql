@@ -34,13 +34,29 @@ user_action_counts_summary AS (
     widget_name,
     widget_size
 ),
+widget_enabled_users AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    widget AS widget_name,
+    TRUE AS is_widget_enabled
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
+    UNNEST(metrics.string_list.newtab_widgets_enabled_list) AS widget
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND NULLIF(widget, '') IS NOT NULL
+),
 client_metrics AS (
   SELECT
     submission_date,
     client_id,
     widget_name,
     widget_size,
-    LOGICAL_OR(is_widget_enabled) AS is_widget_enabled,
+    LOGICAL_OR(
+      COALESCE(is_widget_enabled, FALSE)
+      OR COALESCE(impression_count > 0, FALSE)
+    ) AS is_widget_enabled,
       -- mode_last: pick the most frequent occurring value across visits
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version)) AS app_version,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os)) AS os,
@@ -106,6 +122,9 @@ client_metrics AS (
     SUM(disabled_count) AS disabled_count,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.widgets_visit_daily_v1`
+  FULL OUTER JOIN
+    widget_enabled_users
+    USING (submission_date, client_id, widget_name)
   WHERE
     submission_date = @submission_date
   GROUP BY

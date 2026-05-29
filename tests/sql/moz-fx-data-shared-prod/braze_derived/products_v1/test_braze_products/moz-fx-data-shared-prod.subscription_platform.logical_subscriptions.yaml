@@ -1,7 +1,8 @@
 # stripe_subscriptions
 ---
 # user 1
-- mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+- mozilla_account_id: user_1
+  mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
   provider: Stripe
   payment_provider: PayPal
   provider_product_id: product_1_id
@@ -27,7 +28,8 @@
   current_period_started_at: 2020-12-01 10:00:00+00:00
   current_period_ends_at: 2020-12-30 10:00:00+00:00
   provider_subscription_updated_at: 2020-12-01 10:00:00+00:00
-- mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+- mozilla_account_id: user_1
+  mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
   provider: Stripe
   payment_provider: PayPal
   provider_product_id: product_2_id
@@ -53,7 +55,8 @@
   services:
     - name: service_2_name
   provider_subscription_updated_at: 2020-12-01 10:00:00+00:00
-- mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+- mozilla_account_id: user_1
+  mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
   provider: Stripe
   payment_provider: PayPal
   provider_product_id: product_3_id
@@ -79,7 +82,8 @@
     - name: service_3_name
   provider_subscription_updated_at: 2020-12-01 10:00:00+00:00
 # user 2
-- mozilla_account_id_sha256: 37d10eb12512879af42381783a6a7ae6576dcf3222d74c19ff1a394e0b5111b8 # fxa_uid_2
+- mozilla_account_id: user_2
+  mozilla_account_id_sha256: 37d10eb12512879af42381783a6a7ae6576dcf3222d74c19ff1a394e0b5111b8 # fxa_uid_2
   provider: Stripe
   payment_provider: PayPal
   provider_product_id: product_1_id
@@ -118,7 +122,8 @@
   provider_subscription_created_at: 2020-01-01 10:00:00+00:00
   provider_subscription_updated_at: 2020-02-01 10:00:00+00:00
 # user 3 no active subscriptions
-- mozilla_account_id_sha256: b9bcfde76202f5206cc1b4369c1aaacbbe43af1d1635cca33f33dcf3a9a020e9 # fxa_uid_3
+- mozilla_account_id: user_3
+  mozilla_account_id_sha256: b9bcfde76202f5206cc1b4369c1aaacbbe43af1d1635cca33f33dcf3a9a020e9 # fxa_uid_3
   provider: Stripe
   payment_provider: PayPal
   provider_product_id: product_1_id

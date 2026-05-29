@@ -126,21 +126,19 @@ bqetl_fxa_events:
   tags:
     - impact/tier_1
 
-bqetl_accounts_backend_external:
+bqetl_accounts_db_daily:
   schedule_interval: 30 1 * * *
   description: |
-    Copies data from Firefox Accounts (FxA) CloudSQL databases.
-
-    This DAG is under active development.
+    Daily imports from Firefox Accounts (FxA) CloudSQL databases.
   default_args:
     owner: akomar@mozilla.com
-    start_date: "2023-09-19"
-    email: ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"]
+    start_date: "2026-05-29"
+    email:
+      - akomar@mozilla.com
     retries: 1
     retry_delay: 10m
   tags:
     - impact/tier_3
-    - repo/bigquery-etl
 
 bqetl_accounts_derived:
   schedule_interval: 30 2 * * *

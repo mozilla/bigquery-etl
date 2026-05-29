@@ -10,7 +10,7 @@ labels:
   incremental: true
   owner1: akomar@mozilla.com
 scheduling:
-  dag_name: bqetl_accounts_backend_external
+  dag_name: bqetl_accounts_db_daily
 bigquery:
   time_partitioning:
     type: day

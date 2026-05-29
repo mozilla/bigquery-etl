@@ -11,14 +11,7 @@ owners:
 labels:
   incremental: true
   owner: cbeck
-  dag: bqetl_braze
   owner1: cbeck
-scheduling:
-  dag_name: bqetl_braze
-  date_partition_parameter: null
-  arguments:
-  - --append_table
-  - --noreplace
 bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

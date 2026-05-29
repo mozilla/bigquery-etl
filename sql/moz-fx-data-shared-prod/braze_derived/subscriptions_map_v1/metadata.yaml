@@ -11,11 +11,7 @@ owners:
 - cbeck@mozilla.com
 labels:
   owner: cbeck
-  dag: bqetl_braze
   owner1: cbeck
-scheduling:
-  dag_name: bqetl_braze
-  date_partition_parameter: null
 bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

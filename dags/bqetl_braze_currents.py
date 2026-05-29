@@ -53,33 +53,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_checks__fail_braze_derived__users__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_braze_derived__users__v1",
-        external_dag_id="bqetl_braze",
-        external_task_id="checks__fail_braze_derived__users__v1",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    braze_external__braze_clicks__v1 = bigquery_etl_query(
-        task_id="braze_external__braze_clicks__v1",
-        destination_table="braze_clicks_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="lmcfall@mozilla.com",
-        email=[
-            "cbeck@mozilla.com",
-            "lmcfall@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="click_time",
-        depends_on_past=False,
-    )
-
     braze_external__braze_currents_firefox_click__v1 = GKEPodOperator(
         task_id="braze_external__braze_currents_firefox_click__v1",
         arguments=[
@@ -640,69 +613,3 @@ with DAG(
         braze_external__braze_currents_pocket_unsubscribe__v1_external.set_upstream(
             braze_external__braze_currents_pocket_unsubscribe__v1
         )
-
-    braze_external__braze_opens__v1 = bigquery_etl_query(
-        task_id="braze_external__braze_opens__v1",
-        destination_table="braze_opens_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="lmcfall@mozilla.com",
-        email=[
-            "cbeck@mozilla.com",
-            "lmcfall@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="open_time",
-        depends_on_past=False,
-    )
-
-    braze_external__braze_sends__v1 = bigquery_etl_query(
-        task_id="braze_external__braze_sends__v1",
-        destination_table="braze_sends_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="lmcfall@mozilla.com",
-        email=[
-            "cbeck@mozilla.com",
-            "lmcfall@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="send_time",
-        depends_on_past=False,
-    )
-
-    braze_external__braze_clicks__v1.set_upstream(
-        braze_external__braze_currents_firefox_click__v1
-    )
-
-    braze_external__braze_clicks__v1.set_upstream(
-        braze_external__braze_currents_mozilla_click__v1
-    )
-
-    braze_external__braze_clicks__v1.set_upstream(
-        wait_for_checks__fail_braze_derived__users__v1
-    )
-
-    braze_external__braze_opens__v1.set_upstream(
-        braze_external__braze_currents_firefox_open__v1
-    )
-
-    braze_external__braze_opens__v1.set_upstream(
-        braze_external__braze_currents_mozilla_open__v1
-    )
-
-    braze_external__braze_opens__v1.set_upstream(
-        wait_for_checks__fail_braze_derived__users__v1
-    )
-
-    braze_external__braze_sends__v1.set_upstream(
-        braze_external__braze_currents_firefox_send__v1
-    )
-
-    braze_external__braze_sends__v1.set_upstream(
-        braze_external__braze_currents_mozilla_send__v1
-    )
-
-    braze_external__braze_sends__v1.set_upstream(
-        wait_for_checks__fail_braze_derived__users__v1
-    )

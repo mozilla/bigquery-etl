@@ -49,3 +49,5 @@ FROM
   `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions`
 CROSS JOIN
   UNNEST(services) AS services
+WHERE
+  mozilla_account_id IS NOT NULL

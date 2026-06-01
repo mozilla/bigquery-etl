@@ -1,0 +1,32 @@
+friendly_name: Bugzilla Tickets Base (Daily)
+description: "Daily metrics for SUMO Bugzilla tickets in the 'Knowledge Base Content'\
+  \ component.\n\nGrain: Daily\n\nTracks:\n- Bugs created on the date\n- Bugs resolved\
+  \ on the date (first RESOLVED transition, accounting for later REOPEN\u2192RESOLVED\
+  \ cycles)\n\nSource: moz-fx-data-shared-prod.bugzilla_metrics.bugs (daily snapshots)\n"
+owners:
+- phlee@mozilla.com
+- mozilla/customer_experience
+labels:
+  incremental: true
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.bugzilla_metrics.bugs

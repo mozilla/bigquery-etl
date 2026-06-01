@@ -443,6 +443,7 @@ SELECT
       JSON_VALUE(event_extra.issue) AS `issue`,
       JSON_VALUE(event_extra.item) AS `item`,
       JSON_VALUE(event_extra.item_preference_key) AS `item_preference_key`,
+      JSON_VALUE(event_extra.item_type) AS `item_type`,
       JSON_VALUE(event_extra.key_system) AS `key_system`,
       JSON_VALUE(event_extra.l10n_ids) AS `l10n_ids`,
       JSON_VALUE(event_extra.label) AS `label`,

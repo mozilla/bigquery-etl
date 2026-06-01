@@ -452,6 +452,31 @@ fields:
         or "C++" if a Nimbus rollback was acted upon.
 
         '
+    - name: system_pin_is_taskbar_pinned
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether Firefox is currently pinned to the Windows taskbar.
+
+        Possible values: * "IsPinned" * "NotPinned" * "Error"
+
+        '
+    - name: system_pin_previous_is_taskbar_pinned
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether Firefox was pinned to the Windows taskbar as of the previous
+        ping.
+
+        Possible values are the same as for `system_pin.is_taskbar_pinned`.
+
+        The OS does not keep track of previous pin state, so the agent records this
+        information itself. That means that it will be inaccurate until the first
+        time the pin state changes after the agent task begins running. Before then,
+        the value of `previous_is_taskbar_pinned` will be the same as `is_taskbar_pinned`.
+
+        This value is updated only when a ping is actually sent, so transitions are
+        not missed across rate-limited runs.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

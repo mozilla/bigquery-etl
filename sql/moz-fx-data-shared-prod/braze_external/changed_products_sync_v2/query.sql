@@ -22,7 +22,7 @@ products_with_counts AS (
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   products.external_id AS ALIAS_NAME,
-  'fxa_id' AS ALIAS_LABEL,
+  'fxa_id' AS ALIAS_LABEL, -- Braze requires this to know it's syncing on fxa_id
   TO_JSON(
     STRUCT(
       ARRAY_AGG(
@@ -165,7 +165,7 @@ SELECT
         )
         ORDER BY
           products.subscription_updated_at DESC
-      ) AS products_v1
+      ) AS products_v1 -- name of array in Braze - does not correspond w/ table name
     )
   ) AS PAYLOAD
 FROM

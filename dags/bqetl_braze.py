@@ -74,9 +74,9 @@ with DAG(
         task_concurrency=1,
     )
 
-    braze_external__changed_products_sync__v1 = bigquery_etl_query(
-        task_id="braze_external__changed_products_sync__v1",
-        destination_table="changed_products_sync_v1",
+    braze_external__changed_products_sync__v2 = bigquery_etl_query(
+        task_id="braze_external__changed_products_sync__v2",
+        destination_table="changed_products_sync_v2",
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
@@ -111,32 +111,8 @@ with DAG(
         retries=1,
     )
 
-    checks__warn_braze_external__changed_products_sync__v1 = bigquery_dq_check(
-        task_id="checks__warn_braze_external__changed_products_sync__v1",
-        source_table="changed_products_sync_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="cbeck@mozilla.com",
-        email=[
-            "cbeck@mozilla.com",
-            "lmcfall@mozilla.com",
-            "sherrera@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--append_table", "--noreplace"],
-        retry_delay=datetime.timedelta(seconds=300),
-        retries=1,
-    )
-
-    braze_external__changed_products_sync__v1.set_upstream(
+    braze_external__changed_products_sync__v2.set_upstream(
         checks__fail_braze_derived__products__v2
     )
 
     checks__fail_braze_derived__products__v2.set_upstream(braze_derived__products__v2)
-
-    checks__warn_braze_external__changed_products_sync__v1.set_upstream(
-        braze_external__changed_products_sync__v1
-    )

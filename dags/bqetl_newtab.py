@@ -515,6 +515,10 @@ with DAG(
     )
 
     firefox_desktop_derived__widgets_client_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__widgets_client_daily__v1.set_upstream(
         firefox_desktop_derived__widgets_visit_daily__v1
     )
 

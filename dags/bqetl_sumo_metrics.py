@@ -84,6 +84,17 @@ with DAG(
         retries=1,
     )
 
+    sumo_metrics_derived__bugzilla_tickets_base__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__bugzilla_tickets_base__v1",
+        destination_table="bugzilla_tickets_base_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="phlee@mozilla.com",
+        email=["phlee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     sumo_metrics_derived__freshness_metrics_base__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__freshness_metrics_base__v1",
         destination_table="freshness_metrics_base_v1",

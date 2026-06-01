@@ -1,3 +1,14 @@
+2026-06-01:
+  start_date: 2026-03-01
+  end_date: 2026-03-31
+  reason: Add past data for march
+  watchers:
+  - jsnyder@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
 2026-05-18:
   start_date: 2026-04-01
   end_date: 2026-05-14

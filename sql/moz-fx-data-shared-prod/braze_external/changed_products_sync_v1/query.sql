@@ -14,7 +14,7 @@ products_with_counts AS (
     products.*,
     COUNT(*) OVER (PARTITION BY products.external_id, products.product_name) AS subscription_count
   FROM
-    `moz-fx-data-shared-prod.braze_derived.products_v1` AS products
+    `moz-fx-data-shared-prod.braze_derived.products_v2` AS products
   WHERE
     products.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
 )

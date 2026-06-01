@@ -1,13 +1,18 @@
-friendly_name: Braze Products
+friendly_name: Braze Products Unnested
 description: |-
-  Product data from Stripe Subscriptions.
+  Product data from Stripe Subscriptions. v2 table uses a different structure.
   See https://mozilla-hub.atlassian.net/browse/DENG-3008
 owners:
 - cbeck@mozilla.com
 labels:
   schedule: daily
   owner: cbeck
+  dag: bqetl_braze
   owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  referenced_tables: []
 bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
@@ -20,6 +25,4 @@ references:
   checks.sql:
   - ..
   query.sql:
-  - moz-fx-data-shared-prod.braze_derived.users_v1
-  - moz-fx-data-shared-prod.ctms_braze.ctms_fxa
   - moz-fx-data-shared-prod.subscription_platform.logical_subscriptions

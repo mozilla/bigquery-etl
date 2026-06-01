@@ -10,7 +10,14 @@ owners:
 labels:
   incremental: true
   owner: cbeck
+  dag: bqetl_braze
   owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
 bigquery: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
@@ -25,5 +32,5 @@ references:
   checks.sql:
   - ..
   query.sql:
-  - moz-fx-data-shared-prod.braze_derived.products_v1
+  - moz-fx-data-shared-prod.braze_derived.products_v2
   - moz-fx-data-shared-prod.braze_external.changed_products_sync_v1

@@ -6,7 +6,7 @@ WITH max_update AS (
       TIMESTAMP(JSON_VALUE(payload.products_v1[0].subscription_updated_at, '$."$time"'))
     ) AS latest_subscription_updated_at
   FROM
-    `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
+    `moz-fx-data-shared-prod.braze_external.changed_products_sync_v2`
 ),
 -- Counts the number of subscriptions per product
 products_with_counts AS (

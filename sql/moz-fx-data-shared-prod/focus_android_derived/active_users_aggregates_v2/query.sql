@@ -177,6 +177,7 @@ todays_metrics AS (
     os_version_minor,
     submission_date,
     days_since_seen,
+    durations,
     client_id,
     first_seen_date,
     ad_clicks,
@@ -209,6 +210,7 @@ SELECT
   todays_metrics_enriched.* EXCEPT (
     client_id,
     days_since_seen,
+    durations,
     ad_clicks,
     organic_search_count,
     search_count,

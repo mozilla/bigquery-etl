@@ -18,7 +18,9 @@ fields:
 - name: is_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user has enabled the widget on the newtab.
+  description:
+    TRUE if the user has enabled the widget on the newtab.
+    Set to `true` if the widget appears in the enabled widgets list metric or if there is an impression event.
 - name: app_version
   type: INTEGER
   mode: NULLABLE

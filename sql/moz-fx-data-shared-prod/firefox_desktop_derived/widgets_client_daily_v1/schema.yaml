@@ -21,6 +21,7 @@ fields:
   description:
     TRUE if the user has enabled the widget on the newtab.
     Set to `true` if the widget appears in the enabled widgets list metric or if there is an impression event.
+    impression is used to solve the glean issue where metric telemetry sometimes have 1 day delay.
 - name: app_version
   type: INTEGER
   mode: NULLABLE

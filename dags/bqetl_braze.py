@@ -23,9 +23,8 @@ lmcfall@mozilla.com
 
 #### Tags
 
-* impact/tier_3
+* impact/tier_2
 * repo/bigquery-etl
-* triage/no_triage
 """
 
 
@@ -33,7 +32,12 @@ default_args = {
     "owner": "lmcfall@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 15, 0, 0),
     "end_date": None,
-    "email": ["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
+    "email": [
+        "cbeck@mozilla.com",
+        "lmcfall@mozilla.com",
+        "sherrera@mozilla.com",
+        "telemetry-alerts@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -42,7 +46,7 @@ default_args = {
     "max_active_tis_per_dag": None,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
+tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_braze",
@@ -53,30 +57,86 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    braze_derived__products__v1 = bigquery_etl_query(
-        task_id="braze_derived__products__v1",
-        destination_table="products_v1",
+    braze_derived__products__v2 = bigquery_etl_query(
+        task_id="braze_derived__products__v2",
+        destination_table="products_v2",
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
     )
 
-    checks__fail_braze_derived__products__v1 = bigquery_dq_check(
-        task_id="checks__fail_braze_derived__products__v1",
-        source_table="products_v1",
+    braze_external__changed_products_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_products_sync__v1",
+        destination_table="changed_products_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+    )
+
+    checks__fail_braze_derived__products__v2 = bigquery_dq_check(
+        task_id="checks__fail_braze_derived__products__v2",
+        source_table="products_v2",
         dataset_id="braze_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "lmcfall@mozilla.com", "sherrera@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retry_delay=datetime.timedelta(seconds=300),
         retries=1,
     )
 
-    checks__fail_braze_derived__products__v1.set_upstream(braze_derived__products__v1)
+    checks__warn_braze_external__changed_products_sync__v1 = bigquery_dq_check(
+        task_id="checks__warn_braze_external__changed_products_sync__v1",
+        source_table="changed_products_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="cbeck@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
+    )
+
+    braze_external__changed_products_sync__v1.set_upstream(
+        checks__fail_braze_derived__products__v2
+    )
+
+    checks__fail_braze_derived__products__v2.set_upstream(braze_derived__products__v2)
+
+    checks__warn_braze_external__changed_products_sync__v1.set_upstream(
+        braze_external__changed_products_sync__v1
+    )

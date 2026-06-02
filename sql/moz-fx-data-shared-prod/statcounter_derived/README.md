@@ -187,8 +187,9 @@ Each table also has a `checks.sql` that runs as a separate Airflow task after th
 > | --- | --- | --- |
 > | Fetch | Empty body or no data rows | Raises before writing to GCS or BigQuery |
 > | Validation | Min row count, PK, or bounds check fails | Raises before uploading to GCS |
-> | Load | BigQuery load job fails | Raises; pipeline deletes the GCS file before re-raising |
+> | Load | BigQuery load job fails | Raises; pipeline attempts GCS cleanup (logged if it fails) before re-raising the load error |
 > | Post-load | DataFrame and BigQuery counts do not match | Raises; pipeline leaves the GCS file in place for inspection |
+> | Cleanup | GCS delete fails after a successful load and count check | Logs the error; the date stays marked succeeded because the data is in BigQuery |
 
 #### CSV Deletion
 

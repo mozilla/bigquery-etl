@@ -545,11 +545,22 @@ def main(
         try:
             load_into_bigquery(partition_date, config.bq_table, blob_name)
         except Exception:
-            delete_from_gcs(blob_name)
+            try:
+                delete_from_gcs(blob_name)
+            except Exception:
+                logger.exception(
+                    f"GCS cleanup failed for {blob_name} after failed BQ load"
+                )
             raise
-        bq_record_count = count_bq_records(partition_date, config.bq_table)
-        compare_counts(len(df), bq_record_count)
-        delete_from_gcs(blob_name)
+        else:
+            bq_record_count = count_bq_records(partition_date, config.bq_table)
+            compare_counts(len(df), bq_record_count)
+            try:
+                delete_from_gcs(blob_name)
+            except Exception:
+                logger.exception(
+                    f"GCS cleanup failed for {blob_name} (data is loaded in BQ)"
+                )
 
 
 def build_sources(geographies: list[tuple[str, str, str]]) -> list[Source]:

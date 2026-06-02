@@ -140,11 +140,10 @@ def parse_csv(csv_content: bytes) -> pd.DataFrame:
 def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
     """Rename Statcounter CSV columns to match the pipeline schema.
 
-    The CSV has a fixed 'Browser' column and a dynamic percent column whose
-    name includes the date (e.g. 'Market Share Perc. (DD MMM YYYY)'). Parse
-    the date from that header and compare it to partition_date so that a
-    Statcounter fallback to a different day fails loudly instead of silently
-    mis-stamping the row.
+    The CSV has a fixed 'Browser' column and a dynamic percent column whose name includes the date.
+    Statcounter varies between abbreviated and full month names (e.g. 'Market Share Perc. (DD MMM YYYY)' or '(DD MMMM YYYY)'), so try both formats.
+    Parse the date from the header and compare it to partition_date so that a Statcounter fallback to a different day fails loudly
+    instead of silently mis-stamping the row.
 
     Args:
         df (pd.DataFrame): Parsed CSV data.
@@ -531,7 +530,7 @@ def main(
     ]
 
     succeeded: list[date] = []
-    failed: list[tuple[date, Exception]] = []
+    failed: list[date] = []
 
     for partition_date in dates:
         try:
@@ -578,7 +577,7 @@ def main(
                     )
         except Exception as e:
             logger.exception(f"Date {partition_date} failed: {e}")
-            failed.append((partition_date, e))
+            failed.append(partition_date)
 
     if len(dates) > 1:
         summary = (
@@ -586,7 +585,7 @@ def main(
             f"succeeded={[d.isoformat() for d in succeeded]}"
         )
         if failed:
-            summary += f" failed={[d.isoformat() for d, _ in failed]}"
+            summary += f" failed={[d.isoformat() for d in failed]}"
         logger.info(summary)
     if failed:
         raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")

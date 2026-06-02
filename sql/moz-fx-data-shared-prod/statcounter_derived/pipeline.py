@@ -530,7 +530,8 @@ def main(
     ]
 
     succeeded: list[date] = []
-    failed: list[date] = []
+    failed: list[tuple[date, str]] = []  # (date, error message)
+    last_exc: Exception | None = None
 
     for partition_date in dates:
         try:
@@ -577,7 +578,8 @@ def main(
                     )
         except Exception as e:
             logger.exception(f"Date {partition_date} failed: {e}")
-            failed.append(partition_date)
+            failed.append((partition_date, str(e)))
+            last_exc = e
 
     if len(dates) > 1:
         summary = (
@@ -585,9 +587,15 @@ def main(
             f"succeeded={[d.isoformat() for d in succeeded]}"
         )
         if failed:
-            summary += f" failed={[d.isoformat() for d in failed]}"
+            summary += (
+                " failed=["
+                + ", ".join(f"{d.isoformat()}: {msg}" for d, msg in failed)
+                + "]"
+            )
         logger.info(summary)
     if failed:
+        if len(dates) == 1 and last_exc is not None:
+            raise last_exc
         raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")
 
 

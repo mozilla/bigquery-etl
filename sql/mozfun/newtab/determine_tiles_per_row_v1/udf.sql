@@ -55,4 +55,9 @@ SELECT
   assert.equals(3, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1122)),
   assert.equals(3, newtab.determine_tiles_per_row_v1('OLD_GRID', 1698)),
   assert.equals(4, newtab.determine_tiles_per_row_v1('NEW_GRID', 1698)),
-  assert.equals(4, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1390)),;
+  assert.equals(4, newtab.determine_tiles_per_row_v1('SECTION_GRID', 1390)),
+  assert.equals(1, newtab.determine_tiles_per_row_v1('NOVA', 723)),
+  assert.equals(2, newtab.determine_tiles_per_row_v1('NOVA', 1122)),
+  assert.equals(3, newtab.determine_tiles_per_row_v1('NOVA', 1698)),
+  assert.equals(4, newtab.determine_tiles_per_row_v1('NOVA', 2000)),
+  assert.equals(6, newtab.determine_tiles_per_row_v1('NOVA', 3000)),;

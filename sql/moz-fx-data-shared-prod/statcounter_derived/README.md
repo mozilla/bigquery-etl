@@ -111,12 +111,12 @@ The pipeline hardcodes the schema rather than deriving it dynamically from `Pipe
 
 ### Transformation
 
-The raw CSV from Statcounter has two columns: `Browser` and a dynamic percent column whose name includes the date (e.g. `Market Share Perc. (DD MMMM YYYY)`). The pipeline renames these to `browser` and `percent`, then stamps each row with the partition date, geography, and device. The result has one row per date/geography/device/browser combination.
+The raw CSV from Statcounter has two columns: `Browser` and a dynamic percent column whose name includes the date. Statcounter alternates between abbreviated and full month names (e.g. `Market Share Perc. (DD MMM YYYY)` or `Market Share Perc. (DD MMMM YYYY)`), so the pipeline tries both formats when parsing. After parsing, the pipeline renames these to `browser` and `percent`, then stamps each row with the partition date, geography, and device. The result has one row per date/geography/device/browser combination.
 
 | Before | After |
 | --- | --- |
 | `Browser` | `browser` |
-| `Market Share Perc. (DD MMMM YYYY)` | `percent` |
+| `Market Share Perc. (DD MMM YYYY)` or `(DD MMMM YYYY)` | `percent` |
 | _(no date column)_ | `date` — added from partition date |
 | _(no geography column)_ | `geography` — added from source definition |
 | _(no device column)_ | `device` — added from source definition |

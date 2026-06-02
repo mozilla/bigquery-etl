@@ -138,9 +138,12 @@ widget_metrics AS (
     submission_date = @submission_date
   GROUP BY
     submission_date,
-    client_id,
     widget_name,
-    widget_size
+    app_version,
+    os,
+    channel,
+    country,
+    locale
 )
 SELECT
   widget_metrics.*,

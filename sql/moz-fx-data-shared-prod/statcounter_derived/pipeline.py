@@ -140,11 +140,10 @@ def parse_csv(csv_content: bytes) -> pd.DataFrame:
 def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
     """Rename Statcounter CSV columns to match the pipeline schema.
 
-    The CSV has a fixed 'Browser' column and a dynamic percent column whose
-    name includes the date (e.g. 'Market Share Perc. (DD MMM YYYY)'). Parse
-    the date from that header and compare it to partition_date so that a
-    Statcounter fallback to a different day fails loudly instead of silently
-    mis-stamping the row.
+    The CSV has a fixed 'Browser' column and a dynamic percent column whose name includes the date.
+    Statcounter varies between abbreviated and full month names (e.g. 'Market Share Perc. (DD MMM YYYY)' or '(DD MMMM YYYY)'), so try both formats.
+    Parse the date from the header and compare it to partition_date so that a Statcounter fallback to a different day fails loudly
+    instead of silently mis-stamping the row.
 
     Args:
         df (pd.DataFrame): Parsed CSV data.
@@ -155,7 +154,9 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
 
     Raises:
         ValueError: If the percent column is missing, malformed, or its
-            embedded date does not match partition_date.
+       ValueError: If the percent column is missing, if the date string
+           cannot be parsed as either abbreviated or full month format,
+           or if the embedded date does not match partition_date.
     """
     percent_cols = [col for col in df.columns if col.startswith("Market Share")]
     if len(percent_cols) != 1:
@@ -169,7 +170,17 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
         raise ValueError(
             f"Could not parse date from percent column header: '{percent_col}'"
         )
-    source_date = datetime.strptime(match.group(1), "%d %b %Y").date()
+    date_str = match.group(1)
+    for fmt in ("%d %b %Y", "%d %B %Y"):
+        try:
+            source_date = datetime.strptime(date_str, fmt).date()
+            break
+        except ValueError:
+            continue
+    else:
+        raise ValueError(
+            f"Could not parse date '{date_str}' from percent column header: '{percent_col}'"
+        )
     if source_date != partition_date:
         raise ValueError(
             f"Source date in column header ({source_date}) does not match "
@@ -520,36 +531,74 @@ def main(
         date_from + timedelta(days=i) for i in range((date_to - date_from).days + 1)
     ]
 
+    succeeded: list[date] = []
+    failed: list[tuple[date, str]] = []  # (date, error message)
+    last_exc: Exception | None = None
+
     for partition_date in dates:
-        dfs = []
-        for source in config.sources:
-            url = build_statcounter_url(source.base_url, partition_date, partition_date)
-            csv_content = fetch_csv(url, source.geography, source.device)
-            df = parse_csv(csv_content)
-            df = rename_columns(df, partition_date)
-            df = add_metadata(df, partition_date, source.geography, source.device)
-            df = add_surrogate_key(df)
-            df = reorder_columns(df)
-            dfs.append(df)
-
-        df = concatenate_dataframes(dfs)
-
-        validate_min_row_count(df)
-        validate_pk(df)
-        validate_numeric_bounds(df)
-
-        blob_name = (
-            f'{config.gcs_blob_prefix}_{partition_date.strftime("%Y%m%d")}_{run_id}.csv'
-        )
-        upload_to_gcs(df, blob_name)
         try:
-            load_into_bigquery(partition_date, config.bq_table, blob_name)
-        except Exception:
-            delete_from_gcs(blob_name)
-            raise
-        bq_record_count = count_bq_records(partition_date, config.bq_table)
-        compare_counts(len(df), bq_record_count)
-        delete_from_gcs(blob_name)
+            dfs: list[pd.DataFrame] = []
+            for source in config.sources:
+                url = build_statcounter_url(
+                    source.base_url, partition_date, partition_date
+                )
+                csv_content = fetch_csv(url, source.geography, source.device)
+                df = parse_csv(csv_content)
+                df = rename_columns(df, partition_date)
+                df = add_metadata(df, partition_date, source.geography, source.device)
+                df = add_surrogate_key(df)
+                df = reorder_columns(df)
+                dfs.append(df)
+
+            df = concatenate_dataframes(dfs)
+
+            validate_min_row_count(df)
+            validate_pk(df)
+            validate_numeric_bounds(df)
+
+            blob_name = f'{config.gcs_blob_prefix}_{partition_date.strftime("%Y%m%d")}_{run_id}.csv'
+            upload_to_gcs(df, blob_name)
+            try:
+                load_into_bigquery(partition_date, config.bq_table, blob_name)
+            except Exception:
+                try:
+                    delete_from_gcs(blob_name)
+                except Exception:
+                    logger.exception(
+                        f"GCS cleanup failed for {blob_name} after failed BQ load"
+                    )
+                raise
+            else:
+                bq_record_count = count_bq_records(partition_date, config.bq_table)
+                compare_counts(len(df), bq_record_count)
+                succeeded.append(partition_date)
+                try:
+                    delete_from_gcs(blob_name)
+                except Exception:
+                    logger.exception(
+                        f"GCS cleanup failed for {blob_name} (data is loaded in BQ)"
+                    )
+        except Exception as e:
+            logger.exception(f"Date {partition_date} failed: {e}")
+            failed.append((partition_date, str(e)))
+            last_exc = e
+
+    if len(dates) > 1:
+        summary = (
+            f"Summary ({len(succeeded)}/{len(dates)} succeeded): "
+            f"succeeded={[d.isoformat() for d in succeeded]}"
+        )
+        if failed:
+            summary += (
+                " failed=["
+                + ", ".join(f"{d.isoformat()}: {msg}" for d, msg in failed)
+                + "]"
+            )
+        logger.info(summary)
+    if failed:
+        if len(dates) == 1 and last_exc is not None:
+            raise last_exc
+        raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")
 
 
 def build_sources(geographies: list[tuple[str, str, str]]) -> list[Source]:

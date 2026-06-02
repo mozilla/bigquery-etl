@@ -2,7 +2,7 @@ friendly_name: Data Governance Metadata
 description: |-
   Metadata tables supporting Mozilla data governance. Access is restricted to
   the dataplatform/data-governance-developers workgroup.
-dataset_base_acl: restricted
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
 workgroup_access:

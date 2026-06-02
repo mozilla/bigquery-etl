@@ -529,6 +529,11 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
         run: |
+          if [[ -z "$TRIGGER_TOKEN" ]]; then
+            echo "::warning::No private repo token available (fork PR?), skipping dispatch"
+            exit 0
+          fi
+
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
@@ -856,106 +861,6 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl backfill validate
 
-  post-integration-report:
-    name: Post Integration Report
-    runs-on: ubuntu-latest
-    environment: *build-env
-    needs: [trigger-private-ci, decide-runs]
-    if: |
-      always() &&
-      github.event_name != 'push' &&
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true')
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Find PR number
-        id: find-pr
-        env:
-          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
-          EVENT_PR_TITLE: ${{ github.event.pull_request.title }}
-          WR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          WR_PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
-          REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            pr_number="$EVENT_PR_NUMBER"
-            pr_title="$EVENT_PR_TITLE"
-          elif [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
-            pr_number="$WR_PR_NUMBER"
-            if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
-              pr_number=$(gh api \
-                "/repos/${REPO}/commits/${WR_HEAD_SHA}/pulls" \
-                --jq '.[0].number' 2>/dev/null || echo "")
-            fi
-            if [[ -n "$pr_number" && "$pr_number" != "null" ]]; then
-              pr_title=$(gh api \
-                "/repos/${REPO}/pulls/$pr_number" \
-                --jq '.title' 2>/dev/null || echo "")
-            fi
-          else
-            PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
-            pr_number=$(echo "$PR_JSON" | jq -r '.number // empty')
-            pr_title=$(echo "$PR_JSON" | jq -r '.title // empty')
-          fi
-          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
-          {
-            echo "pr_title<<PREOF"
-            echo "$pr_title"
-            echo "PREOF"
-          } >> "$GITHUB_OUTPUT"
-      - name: Post diff link to PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ steps.find-pr.outputs.pr_number }}
-          PR_TITLE: ${{ steps.find-pr.outputs.pr_title }}
-        run: |
-          if [[ -z "$PR_NUMBER" ]]; then
-            echo "No PR number found, skipping comment posting."
-            exit 0
-          fi
-
-          DIFF_URL="https://github.com/${PRIVATE_REPO}/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff"
-
-          BODY="### Integration report for \"${PR_TITLE}\"
-          [View full diff, if available (SQL + DAGs)](${DIFF_URL}) *(requires private-bigquery-etl access)*"
-
-          # Minimize previous diff comments
-          COMMENTS=$(curl -s \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments?per_page=100")
-
-          FILTER='.[] | select(.user.login == "github-actions[bot]"
-            and (.body | contains("Integration report"))) | .node_id'
-          MUTATION='mutation($id:ID!) {
-            minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
-              clientMutationId
-            }
-          }'
-
-          echo "$COMMENTS" | jq -r "$FILTER" | while read -r node_id; do
-            if [[ -n "$node_id" ]]; then
-              curl -s -X POST \
-                -H "Authorization: token ${GITHUB_TOKEN}" \
-                -H "Content-Type: application/json" \
-                "https://api.github.com/graphql" \
-                -d "$(jq -n --arg id "$node_id" \
-                  --arg q "$MUTATION" \
-                  '{query: $q, variables: {id: $id}}')"
-            fi
-          done
-
-          curl -s \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -X POST \
-            "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments" \
-            -d "$(jq -n --arg body "$BODY" '{body: $body}')"
-
   push-generated-sql:
     name: Push Generated SQL
     runs-on: ubuntu-latest
@@ -1127,7 +1032,6 @@ jobs:
       - validate-views
       - validate-metadata
       - validate-backfills
-      - post-integration-report
     runs-on: ubuntu-latest
     permissions:
       checks: write

@@ -7,6 +7,19 @@ RETURNS INTEGER AS (
   CASE
     WHEN newtab_window_inner_width IS NULL
       THEN NULL
+    WHEN layout_type = "NOVA"
+      THEN
+        CASE
+          WHEN newtab_window_inner_width < 1024
+            THEN 1
+          WHEN newtab_window_inner_width < 1366
+            THEN 2
+          WHEN newtab_window_inner_width < 1920
+            THEN 3
+          WHEN newtab_window_inner_width < 2650
+            THEN 4
+          ELSE 6 --largest screen size can hold 6
+        END
     WHEN layout_type = 'SECTION_GRID'
       THEN
         CASE

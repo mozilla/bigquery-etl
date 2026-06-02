@@ -1,5 +1,5 @@
 WITH action_counts_per_widget AS (
-    -- unnest each visit's user_action_counts and sum per user_action to client-day grain
+    -- unnest each visit's user_action_counts and sum per user_action to widget-day grain
   SELECT
     submission_date,
     widget_name,

@@ -18,4 +18,4 @@ workgroup_access:
   - workgroup:accounts-confidential/data-viewers
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         createdAt,\n         tries\n       FROM\n         fxa.passwordForgotTokens\n    ')
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         createdAt,\n         tries,\n         verificationMethod\n       FROM\n         fxa.passwordForgotTokens\n    ')

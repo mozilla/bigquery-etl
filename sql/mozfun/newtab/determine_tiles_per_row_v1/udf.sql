@@ -7,7 +7,7 @@ RETURNS INTEGER AS (
   CASE
     WHEN newtab_window_inner_width IS NULL
       THEN NULL
-    WHEN layout_type = "NOVA"
+    WHEN layout_type = 'NOVA'
       THEN
         CASE
           WHEN newtab_window_inner_width < 1024

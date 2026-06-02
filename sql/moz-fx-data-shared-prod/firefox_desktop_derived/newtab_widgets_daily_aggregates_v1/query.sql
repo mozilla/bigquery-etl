@@ -127,7 +127,7 @@ widget_metrics AS (
     SUM(widget_user_event_visits) AS widget_user_event_visits,
     SUM(widget_enabled_visits) AS widget_enabled_visits,
     SUM(widget_disabled_visits) AS widget_disabled_visits,
-    SUM(change_size_or_learn_more_count) AS change_size_or_learn_more_count,
+    SUM(change_size_or_learn_more_count) AS change_size_or_learn_more_count
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.widgets_client_daily_v1`
   WHERE

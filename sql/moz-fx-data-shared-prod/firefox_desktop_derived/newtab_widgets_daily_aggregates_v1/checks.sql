@@ -5,7 +5,6 @@
 {{ min_row_count(1, "submission_date = @submission_date") }}
 --
 --
--- Grain integrity: enforce the documented "one row per (submission_date, widget_name)"
 -- grain so downstream aggregations stay correct if the GROUP BY ever changes.
 
 #fail

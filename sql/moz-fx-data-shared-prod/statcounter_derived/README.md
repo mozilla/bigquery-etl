@@ -236,6 +236,7 @@ Each table's `query.py` sets per-pipeline values via `make_app()`:
 - BigQuery queries use parameterized values rather than string interpolation
 - Airflow handles I/O retries (`retries: 2, retry_delay: 30m` in `dags.yaml`)
 - Inline comments explain non-obvious logic only — not what the code does, but why
+- Annotate a local only when its right-hand side does not pin the type — empty collections like `failed: list[tuple[date, Exception]] = []` need an annotation; string literals and typed function returns do not
 
 | Task type | Examples | Purity | Deterministic | Notes |
 | --- | --- | --- | --- | --- |

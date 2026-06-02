@@ -525,7 +525,7 @@ def main(
 
     for partition_date in dates:
         try:
-            dfs = []
+            dfs: list[pd.DataFrame] = []
             for source in config.sources:
                 url = build_statcounter_url(
                     source.base_url, partition_date, partition_date

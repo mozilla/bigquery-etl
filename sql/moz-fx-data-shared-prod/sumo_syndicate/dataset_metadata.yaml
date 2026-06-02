@@ -15,6 +15,7 @@ syndication:
     - kitsune_answers_raw
     - kitsune_wiki_document
     - kitsune_wiki_revision
+    - kitsune_wiki_document_plus
   administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer

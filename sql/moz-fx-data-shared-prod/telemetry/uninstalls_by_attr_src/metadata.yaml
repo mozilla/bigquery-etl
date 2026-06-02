@@ -3,3 +3,5 @@ description: 'Aggregate table calculating # unique clients with uninstalls by at
   source and date'
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

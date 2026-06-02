@@ -1,0 +1,54 @@
+friendly_name: Zendesk Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from Zendesk customer support tickets, containing embeddings
+   and semantic features to support grounded question answering over Mozilla support data.
+
+  Grain: one row per Zendesk ticket.
+
+  LLM generated fields:
+  - ticket_summary_llm
+  - ticket_category_llm
+  - ticket_language_llm
+  - ticket_entities_llm
+  - ticket_topics_llm
+  - embedding based on [title, content]
+  - ticket_sentiment_score based on [title, content]
+
+  Read-time fields (computed on the `customer_experience.zendesk_retrieval_index` view, not stored here):
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay,
+    1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience
+labels:
+  level: gold
+  incremental: true
+  change_controlled: true
+schema:
+  allow_field_addition: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - product
+    - locale
+require_column_descriptions: true
+monitoring:
+  enabled: true
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_tag
+  - moz-fx-data-shared-prod.zendesk_syndicate.ticket_field_history
+  - moz-fx-data-shared-prod.zendesk_syndicate.group
+  - moz-fx-data-shared-prod.zendesk_syndicate.user

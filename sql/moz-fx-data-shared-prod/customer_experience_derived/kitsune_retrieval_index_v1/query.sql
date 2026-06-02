@@ -1,9 +1,22 @@
+{% set llm_model = 'gemini-2.5-pro' %}
+{% set embedding_model = 'gemini-embedding-001' %}
+{% set sentiment_bound = 1 %}
+{%- set question_prompt =
+  'You are analyzing a Mozilla Support forum question. ' ~
+  'Extract the following fields and return them as structured data. ' ~
+  'question_summary_llm: maximum 8 words, clear, factual, in English. ' ~
+  'question_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words. ' ~
+  'question_language_llm: BCP 47 language tag of the question text, including region, e.g. en-US. ' ~
+  'question_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated. ' ~
+  'question_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels. ' ~
+  'question_sentiment_score: float from -' ~ sentiment_bound ~ ' to ' ~ sentiment_bound ~ ' where -' ~ sentiment_bound ~ ' is very negative, 0 is neutral, ' ~ sentiment_bound ~ ' is very positive. '
+-%}
 WITH kitsune_questions AS (
   SELECT
     q.question_id,
     q.created_date AS question_created_at,
     q.creator_username AS question_creator,
-    COALESCE(m.product_mapping, q.product) AS product,
+    q.product,
     q.locale,
     q.topic,
     q.tier1_topic,
@@ -13,10 +26,6 @@ WITH kitsune_questions AS (
     q.question_content AS content
   FROM
     `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus` q
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.cx_product_mappings_v1` m
-    ON m.product = q.product
-    AND m.source = 'Kitsune'
   WHERE
     q.is_spam = FALSE
     AND q.is_locked = FALSE
@@ -60,23 +69,8 @@ kitsune_llm AS (
   SELECT
     question_id,
     AI.GENERATE(
-      prompt => CONCAT(
-        'You are analyzing a Mozilla Firefox support forum question. ',
-        'Extract the following fields and return them as structured data. ',
-        'question_summary_llm: maximum 8 words, clear, factual, in English. ',
-        'question_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words. ',
-        'question_language_llm: BCP 47 language tag of the question text, including region, e.g. en-US. ',
-        'question_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated. ',
-        'question_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, ',
-        'reusable across similar texts, suitable as classification labels. ',
-        'question_sentiment_score: float from -1 to 1 where -1 is very negative, 0 is neutral, 1 is very positive. ',
-        'Title: ',
-        title,
-        '\n',
-        'Content: ',
-        content
-      ),
-      endpoint => 'gemini-2.5-pro-001',
+      prompt => CONCAT('{{ question_prompt }}', 'Title: ', title, '\n', 'Content: ', content),
+      endpoint => '{{ llm_model }}',
       output_schema => 'question_summary_llm STRING, question_category_llm STRING, question_language_llm STRING, question_entities_llm ARRAY<STRING>, question_topics_llm ARRAY<STRING>, question_sentiment_score FLOAT64'
     ) AS llm_result
   FROM
@@ -85,7 +79,7 @@ kitsune_llm AS (
 kitsune_embedding AS (
   SELECT
     question_id,
-    AI.EMBED(CONCAT(title, ' ', content), endpoint => 'gemini-embedding-001').result AS embedding
+    AI.EMBED(CONCAT(title, ' ', content), endpoint => '{{ embedding_model }}').result AS embedding
   FROM
     kitsune_questions_distinct
 )
@@ -109,10 +103,6 @@ SELECT
       THEN NULL
     ELSE kitsune_joined.question_creator = answer_creator
   END AS is_self_answer,
-  (
-    STARTS_WITH(product, 'Firefox')
-    OR product IN ('Fenix', 'Firefox iOS', 'Klar iOS', 'Klar Android', 'Focus iOS', 'Focus Android')
-  ) AS is_firefox_product,
   num_helpful_votes,
   num_unhelpful_votes,
   kitsune_llm.llm_result.question_summary_llm,
@@ -122,8 +112,8 @@ SELECT
   kitsune_llm.llm_result.question_topics_llm,
   IF(
     kitsune_llm.llm_result.question_sentiment_score
-    BETWEEN -1
-    AND 1,
+    BETWEEN - {{ sentiment_bound }}
+    AND {{ sentiment_bound }},
     kitsune_llm.llm_result.question_sentiment_score,
     NULL
   ) AS question_sentiment_score,
@@ -131,10 +121,10 @@ SELECT
   STRUCT(
     ['title', 'content'] AS input_fields,
     LENGTH(CONCAT(kitsune_joined.title, ' ', kitsune_joined.content)) AS input_char_count,
-    'gemini-2.5-pro-001' AS model_version,
-    'gemini-embedding-001' AS embedding_version,
+    '{{ llm_model }}' AS model_version,
+    '{{ embedding_model }}' AS embedding_version,
     'v1' AS prompt_version,
-    TIMESTAMP(@submission_date) AS analysis_timestamp,
+    CURRENT_TIMESTAMP() AS analysis_timestamp,
     embedding IS NOT NULL AS embedding_succeeded,
     ARRAY_CONCAT(
       IF(embedding IS NULL, ['embedding_missing'], []),
@@ -162,8 +152,8 @@ SELECT
         []
       ),
       IF(
-        kitsune_llm.llm_result.question_sentiment_score NOT BETWEEN -1
-        AND 1,
+        kitsune_llm.llm_result.question_sentiment_score NOT BETWEEN - {{ sentiment_bound }}
+        AND {{ sentiment_bound }},
         ['question_sentiment_score_out_of_range'],
         []
       ),

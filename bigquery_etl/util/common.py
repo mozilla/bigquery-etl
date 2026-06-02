@@ -1,5 +1,6 @@
 """Generic utility functions."""
 
+import fnmatch
 import glob
 import logging
 import os
@@ -16,6 +17,7 @@ from uuid import uuid4
 
 import click
 import sqlglot
+import yaml
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -114,29 +116,40 @@ def render(
     """Render a given template query using Jinja."""
     template_folder_path = Path(template_folder)
     path = template_folder_path / sql_filename
+    skip_patterns = ConfigLoader.get("render", "skip", fallback=[])
     skip = {
         file
-        for skip in ConfigLoader.get("render", "skip", fallback=[])
+        for pat in skip_patterns
         for file in glob.glob(
-            skip,
+            pat,
             recursive=True,
         )
     }
     test_project = ConfigLoader.get("default", "test_project")
-    sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
+    if test_project and f"/{test_project}/" in str(path):
+        from bigquery_etl.util.target import MANIFEST_FILENAME
 
-    if test_project in str(path):
-        # check if staged file needs to be skipped
-        skip.update(
-            [
-                p
-                for f in [Path(s) for s in skip]
-                for p in glob.glob(
-                    f"{sql_dir}/{test_project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-                    recursive=True,
+        manifest_path = template_folder_path / MANIFEST_FILENAME
+        if manifest_path.is_file():
+            try:
+                manifest = yaml.safe_load(manifest_path.read_text()) or {}
+            except (yaml.YAMLError, OSError) as e:
+                click.echo(
+                    f"Warning: could not read manifest {manifest_path}: {e}",
+                    err=True,
                 )
-            ]
-        )
+                manifest = {}
+            src_proj = manifest.get("source_project")
+            src_ds = manifest.get("source_dataset")
+            src_table = manifest.get("source_table")
+            if src_proj and src_ds and src_table:
+                source_equivalent = (
+                    f"sql/{src_proj}/{src_ds}/{src_table}/{sql_filename}"
+                )
+                if any(
+                    fnmatch.fnmatchcase(source_equivalent, pat) for pat in skip_patterns
+                ):
+                    skip.add(str(path))
 
     if any(s in str(path) for s in skip):
         rendered = path.read_text()

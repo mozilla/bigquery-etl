@@ -3,3 +3,5 @@ description: Uninstalls by default search engine split by if the uninstall was o
   date of installation or not
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

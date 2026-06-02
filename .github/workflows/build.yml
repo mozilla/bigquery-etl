@@ -7,10 +7,9 @@ on:
     types:
       - opened
       - synchronize
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
+  workflow_run:
+    workflows: ["Fork PR Gate"]
+    types: [completed]
   merge_group:
   workflow_dispatch:
     inputs:
@@ -44,12 +43,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: &is-allowed-event |
-      case(
-        github.event_name == 'pull_request_target', github.event.pull_request.head.repo.fork == true,
-        github.event_name == 'pull_request', github.event.pull_request.head.repo.fork != true,
-        true
-      )
+      pull-requests: read  # for resolve-pr-base on workflow_run events
+    # The workflow_run path is only for fork PRs (post gate-approval). For
+    # same-repo PRs the native pull_request path already runs everything, so
+    # firing build.yml again from workflow_run just duplicates work and
+    # leaves an orphan "Build" rolled-up check sitting in_progress.
+    # workflow_run.pull_requests[0] is populated for same-repo PRs and empty
+    # for fork PRs — the same heuristic resolve-pr-base relies on below —
+    # so the null check filters out the non-fork case.
+    if: &is-allowed-event >-
+      ${{
+        (github.event_name == 'workflow_run'
+          && github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.pull_requests[0] == null)
+        || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true)
+        || github.event_name == 'push'
+        || github.event_name == 'merge_group'
+        || github.event_name == 'workflow_dispatch'
+      }}
     outputs:
       validate-routines: ${{ steps.set-flags.outputs.validate-routines }}
       deploy: ${{ steps.set-flags.outputs.deploy }}
@@ -62,8 +73,37 @@ jobs:
           persist-credentials: false
           filter: blob:none
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
+      # For workflow_run (fork PRs post-gate), the PR event payload isn't
+      # available. Resolve the PR's base SHA via the API so changed-files can
+      # still compute a real diff instead of conservatively running everything.
+      # workflow_run.pull_requests[0] is reliable for same-repo PRs but often
+      # empty for fork PRs, so we fall back to looking up by head SHA.
+      - id: resolve-pr-base
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_FROM_EVENT: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          set -euo pipefail
+          pr_number="$PR_FROM_EVENT"
+          if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            pr_number=$(gh api \
+              "/repos/${{ github.repository }}/commits/$HEAD_SHA/pulls" \
+              --jq '.[0].number')
+          fi
+          if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            echo "Could not resolve PR for head $HEAD_SHA; falling back to full validation."
+            echo "base_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base_sha=$(gh api "/repos/${{ github.repository }}/pulls/$pr_number" --jq '.base.sha')
+          echo "Resolved PR #$pr_number, base $base_sha"
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
       - id: changed-files-routines
+        # Skip if we couldn't resolve a base SHA for workflow_run (run everything).
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -74,8 +114,9 @@ jobs:
             sql/moz-fx-data-shared-prod/udf/**
             sql/moz-fx-data-shared-prod/udf_js/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-sql
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -87,8 +128,9 @@ jobs:
             bigquery_etl/query_scheduling/**
             tests/sql/**
             bqetl_project.yaml
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - id: changed-files-bqetl
+        if: github.event_name != 'workflow_run' || steps.resolve-pr-base.outputs.base_sha != ''
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         with:
           files: |
@@ -100,18 +142,32 @@ jobs:
             requirements.txt
             requirements.in
             .github/workflows/**
-          base_sha: ${{ github.event.pull_request.base.sha || github.event.before }}
+          base_sha: ${{ steps.resolve-pr-base.outputs.base_sha || github.event.pull_request.base.sha || github.event.before }}
       - name: Decide which jobs to run
         id: set-flags
         env:
           VALIDATE_ROUTINES: ${{ steps.changed-files-routines.outputs.any_changed }}
           VALIDATE_SQL: ${{ steps.changed-files-sql.outputs.any_changed }}
           VALIDATE_BQETL: ${{ steps.changed-files-bqetl.outputs.any_changed }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_RESOLVED: ${{ steps.resolve-pr-base.outputs.base_sha }}
         run: |
+          # For workflow_run when PR base SHA couldn't be resolved, fall back to
+          # running everything (conservative). Otherwise the changed-files
+          # outputs are valid for both event paths.
+          if [[ "$EVENT_NAME" == "workflow_run" && -z "$PR_BASE_RESOLVED" ]]; then
+            echo "validate-routines=true" >> $GITHUB_OUTPUT
+            echo "validate-sql=true" >> $GITHUB_OUTPUT
+            echo "validate-bqetl=true" >> $GITHUB_OUTPUT
+            echo "deploy=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           echo "validate-routines=$VALIDATE_ROUTINES" >> $GITHUB_OUTPUT
           echo "validate-sql=$VALIDATE_SQL" >> $GITHUB_OUTPUT
           echo "validate-bqetl=$VALIDATE_BQETL" >> $GITHUB_OUTPUT
-          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+          if [[ "$EVENT_NAME" == "workflow_run" ]]; then
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          elif [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
             echo "deploy=false" >> $GITHUB_OUTPUT
@@ -123,7 +179,7 @@ jobs:
     permissions:
       contents: read
     environment: &build-env
-      name: ${{ github.event.pull_request.head.repo.fork == true && github.event.pull_request.author_association != 'MEMBER' && 'external-fork' || 'dev' }}
+      name: dev
       deployment: false
     if: *is-allowed-event
     steps:
@@ -132,7 +188,7 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
       - &setup-python
         name: Set up Python
         id: setup_python
@@ -155,7 +211,23 @@ jobs:
           pip install --no-deps -r requirements.txt
           pip-sync --pip-args=--no-deps
       - name: Save cached virtualenv
-        # Don't let forked PRs update the shared cache.
+        # Don't let forked PRs poison the shared cache. For `pull_request`
+        # events `head.repo.fork != true` filters forks directly; for
+        # `workflow_run` (gate-approved fork PRs) the PR payload is null so
+        # the clause evaluates true and fork runs DO write to cache. Safety
+        # rests on two invariants:
+        #   1. The cache key namespaces by hashFiles('requirements.txt'), so
+        #      a fork that changes deps lands in a separate key.
+        #   2. The build step is hermetic w.r.t. files outside requirements.txt:
+        #      `pip install --no-deps -r requirements.txt` + `pip-sync
+        #      --pip-args=--no-deps` doesn't consult setup.py / pyproject.toml /
+        #      repo-local pip.conf (there is no setup.py; pyproject.toml is only
+        #      read when building the local project, which we don't do; pip
+        #      ignores pip.conf in the working tree).
+        # If the build step ever changes to invoke the local project (e.g.
+        # `pip install .` / `-e .`) or to read other config files, expand the
+        # cache key to hash those files too — otherwise a fork could quietly
+        # publish a poisoned venv under main's cache key.
         if: steps.restore-venv.outputs.cache-hit != 'true' && github.event.pull_request.head.repo.fork != true
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
@@ -219,7 +291,7 @@ jobs:
       id-token: write
       contents: read
     environment: &job-env
-      name: ${{ github.event.pull_request.head.repo.fork == true && 'external-fork' || 'dev' }}
+      name: dev
       deployment: false
     steps:
       - *checkout
@@ -291,7 +363,7 @@ jobs:
         with:
           persist-credentials: true
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || github.sha }}
       - *setup-python
       - *restore-venv
       - *auth-gcp-dryrun
@@ -479,21 +551,40 @@ jobs:
           find sql -type f -exec chmod 644 {} \; 2>/dev/null || true
       - *auth-gcp-dryrun
       - *auth-gcp-stage
+      - &write-bqetl-targets
+        name: Write bqetl_targets.yaml
+        run: |
+          cat > bqetl_targets.yaml <<'EOF'
+          stage:
+            project_id: moz-fx-data-integration-tests
+            dataset: "{{ git.branch }}_{{ git.commit }}{% if run_id %}_{{ run_id }}{% endif %}"
+            artifact_prefix: "{{ artifact.project_id }}__{{ artifact.dataset_id }}__"
+            grant_dryrun_access: true
+            expire_after_hours: 12
+            rewrite_tests: true
+          EOF
       - name: Deploy changes to stage
         timeout-minutes: 120
         env:
           SKIP_STAGE_DEPLOYS: ${{ github.event.inputs.skip-stage-deploys }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          if [ "$SKIP_STAGE_DEPLOYS" != "true" ]; then
-            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
-            echo $PATHS
-            git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
-            PATH=".venv/bin:$PATH" script/bqetl stage deploy \
-              --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" \
-              --remove-updated-artifacts \
-              $PATHS
+          if [ "$SKIP_STAGE_DEPLOYS" = "true" ]; then
+            echo "SKIP_STAGE_DEPLOYS=true, skipping stage deploy"
+            exit 0
           fi
+          PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+          if [ -z "$PATHS" ]; then
+            echo "No changed SQL paths, skipping stage deploy"
+            exit 0
+          fi
+          echo $PATHS
+          git diff --no-index --diff-filter=d generated-sql/sql sql | head -1000 || true
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            deploy --tables --views --isolated \
+            $PATHS
       - name: Copy generated SQL to temporary stage directory
         run: |
           mkdir -p /tmp/workspace/staged-generated-sql
@@ -1275,7 +1366,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
       - name: Push Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@47edfe10709f2978fdcb5fd3037599d72aa10661  # v6.2.3
+        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
@@ -1285,7 +1376,7 @@ jobs:
         run: |
           docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
       - name: Push tagged Docker image to GAR
-        uses: mozilla-it/deploy-actions/docker-push@47edfe10709f2978fdcb5fd3037599d72aa10661  # v6.2.3
+        uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
           image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
@@ -1341,11 +1432,15 @@ jobs:
       - *setup-python
       - *restore-venv
       - *auth-gcp-stage
+      - *write-bqetl-targets
       - name: Delete stage datasets
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${GITHUB_SHA}_${GITHUB_RUN_ID}" --delete-expired
+          PATH=".venv/bin:$PATH" script/bqetl \
+            --target stage \
+            --run-id "${GITHUB_RUN_ID}" \
+            target clean --yes
 
   deploy-to-pypi:
     name: Deploy to PyPI
@@ -1453,3 +1548,174 @@ jobs:
           git add private-bigquery-etl
           git commit --allow-empty -m "Automatic commit from bigquery-etl commit ${{ github.sha }} [skip ci]"
           git push origin main
+
+  # Post a single "Build" rolled-up check in `in_progress` state at the very
+  # start of a workflow_run, so the PR Checks UI shows live progress instead
+  # of "skipped" until the per-job checks are reported at the end. The id is
+  # passed via job output to `report-checks` which PATCHes it to completed.
+  start-build-check:
+    name: Start build check
+    # Same fork-only filter as is-allowed-event — see comment there.
+    if: >-
+      github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.pull_requests[0] == null
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    outputs:
+      check_id: ${{ steps.create.outputs.check_id }}
+    steps:
+      - id: create
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          DETAILS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          check_id=$(gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+            -f name='Build' \
+            -f head_sha="$HEAD_SHA" \
+            -f status=in_progress \
+            -f details_url="$DETAILS_URL" \
+            --jq .id)
+          # Fail loudly if the API call returned nothing; otherwise downstream
+          # report-checks would PATCH /check-runs/<empty> and 404, leaving an
+          # orphan in_progress check on the PR forever.
+          if [[ -z "$check_id" || "$check_id" == "null" ]]; then
+            echo "::error::Failed to create rolled-up Build check (empty id)"
+            exit 1
+          fi
+          echo "check_id=$check_id" >> "$GITHUB_OUTPUT"
+
+  # Surface upstream job results as Checks-API check runs on the PR's head SHA.
+  # Only runs when build.yml is triggered via `workflow_run` (i.e. after the
+  # fork-gate approval). For same-repo PRs the native pull_request checks
+  # already appear in the PR UI, so this job is unnecessary there.
+  #
+  # `needs:` enforces ordering (run after all upstream jobs complete). The
+  # actual list of jobs to report is derived dynamically from the Actions Jobs
+  # API at runtime, so new jobs added to this workflow automatically appear in
+  # the fork-PR Checks UI without needing edits here.
+  report-checks:
+    name: Report PR checks
+    # !cancelled() so we still report when some upstream job failed.
+    # Same fork-only filter as is-allowed-event — see comment there.
+    if: |
+      !cancelled() &&
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.pull_requests[0] == null
+    needs:
+      - start-build-check
+      - decide-runs
+      - build
+      - verify-requirements
+      - verify-format-yaml
+      - verify-format-sql
+      - test-bqetl
+      - integration
+      - generate-sql
+      - private-generate-sql
+      - docs
+      - deploy-changes-to-stage
+      - dry-run-sql
+      - test-sql
+      - test-routines
+      - validate-views
+      - validate-metadata
+      - validate-backfills
+      - main-generate-sql-and-dags
+      - generate-dags
+      - validate-dags
+      - generate-diff
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      actions: read  # for listing jobs in this workflow run
+    steps:
+      - name: Post check runs for each upstream job
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.run_id }}
+          DETAILS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BUILD_CHECK_ID: ${{ needs.start-build-check.outputs.check_id }}
+        run: |
+          set -euo pipefail
+          # Iterate the Actions Jobs API for this run; each check-run's
+          # details_url points at the specific job's log so failing checks
+          # deep-link directly to the failure (rather than the run overview).
+          # Skip the reporter jobs themselves to avoid self-reporting.
+          overall=success
+          gh api --paginate \
+            "/repos/${{ github.repository }}/actions/runs/$RUN_ID/jobs" \
+            --jq '.jobs[]
+                  | select(.name != "Report PR checks"
+                        and .name != "Report fork-gate result"
+                        and .name != "Start build check")
+                  | "\(.name)\t\(.conclusion // "neutral")\t\(.html_url)"' \
+          | while IFS=$'\t' read -r name conclusion html_url; do
+              case "$conclusion" in
+                success)   c=success ;;
+                failure)   c=failure ;;
+                cancelled) c=cancelled ;;
+                skipped)   c=skipped ;;
+                *)         c=neutral ;;
+              esac
+              echo "Reporting: $name -> $c ($html_url)"
+              gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+                -f name="$name" \
+                -f head_sha="$HEAD_SHA" \
+                -f status=completed \
+                -f conclusion="$c" \
+                -f details_url="$html_url" >/dev/null
+            done
+
+          # PATCH the rolled-up "Build" check (created by start-build-check) to
+          # completed. Conclusion fails if any upstream `needs` failed/cancelled.
+          # Skip the PATCH if start-build-check failed (empty id) — otherwise
+          # we'd 404 against /check-runs/<empty>. The orphan in_progress check
+          # is the lesser evil; start-build-check's failure is itself visible.
+          if [[ -z "$BUILD_CHECK_ID" ]]; then
+            echo "::warning::No BUILD_CHECK_ID — start-build-check must have failed; skipping rollup PATCH."
+          else
+            for r in $(echo '${{ toJSON(needs) }}' | jq -r 'to_entries[] | .value.result'); do
+              case "$r" in
+                failure|cancelled) overall=failure ;;
+              esac
+            done
+            gh api -X PATCH "/repos/${{ github.repository }}/check-runs/$BUILD_CHECK_ID" \
+              -f status=completed \
+              -f conclusion="$overall" \
+              -f details_url="$DETAILS_URL" >/dev/null
+          fi
+
+  # Surface gate rejection / failure as a single check on the PR. Without this,
+  # a rejected approval (or errored gate) shows nothing in the PR UI.
+  report-gate-failure:
+    name: Report fork-gate result
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Post failure check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GATE_URL: ${{ github.event.workflow_run.html_url }}
+          GATE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+          summary="The fork-PR approval gate concluded with \`$GATE_CONCLUSION\`. "
+          summary+="CI did not run. A maintainer must approve the gate workflow "
+          summary+="for this push, or re-run if it errored."
+          gh api -X POST "/repos/${{ github.repository }}/check-runs" \
+            -f name='Fork PR Gate' \
+            -f head_sha="$HEAD_SHA" \
+            -f status=completed \
+            -f conclusion=failure \
+            -f details_url="$GATE_URL" \
+            -f "output[title]=Gate $GATE_CONCLUSION" \
+            -f "output[summary]=$summary" >/dev/null

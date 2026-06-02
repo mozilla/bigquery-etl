@@ -69,7 +69,7 @@ flowchart TD
 | Date | `creation_date` |
 | Product & Topic | `product`, `locale`, `topic`, `tier{1\|2\|3}_topic` |
 | Content | `title`, `content`, `answer_content`, `type` |
-| Flags | `is_self_answer`, `is_firefox_product` |
+| Flags | `is_self_answer` |
 | Timing | `answer_latency_seconds` |
 | AI-generated | `question_summary_llm`, `question_category_llm`, `question_language_llm`, `question_entities_llm`, `question_topics_llm` |
 
@@ -224,7 +224,7 @@ WHERE creation_date BETWEEN '2026-04-01' AND '2026-04-30'
 - `recency_score` is **only on the `customer_experience.kitsune_retrieval_index` view**, not on this underlying table. It is computed at read time as `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay; 1.0 for today, ~0.37 after 30 days. It always reflects freshness relative to the current query date, so backfills don't have to recompute it.
 - `answer_latency_seconds` is whole seconds between question and answer creation timestamps; NULL for unanswered questions. Divide by 60 for minutes, 3600 for hours. Reflects the answer state at the last partition write — late answers picked up on rerun will report their actual latency.
 - `question_sentiment_score` ranges -1.0 (very negative) to 1.0 (very positive), 0 is neutral.
-- `product` is normalized from raw Kitsune values (e.g., "firefox" → "Firefox Desktop", "mobile" → "Fenix").
+- `product` the raw upstream Kitsune value. Normalization is applied at read time in the view.
 - `type` is always "question"; future versions may include additional content types.
 - `embedding` is a dense float array suitable for cosine similarity or nearest-neighbor search.
 
@@ -243,7 +243,7 @@ WHERE creation_date BETWEEN '2026-04-01' AND '2026-04-30'
 | What changed | Field to update in `query.sql` |
 |---|---|
 | Prompt text or `output_schema` in `AI.GENERATE` | `prompt_version` — increment to `v2`, `v3`, … |
-| Generative model (currently `gemini-2.5-pro-001`) | `metadata.model_version` literal |
+| Generative model (currently `gemini-2.5-pro`) | `metadata.model_version` literal |
 | Embedding model (currently `gemini-embedding-001`) | `metadata.embedding_version` literal + re-embed full history |
 
 `prompt_version` is stored per row in `metadata.prompt_version`, so rows written under different prompts can be identified and re-processed during backfills. Add a row to this table for every change.

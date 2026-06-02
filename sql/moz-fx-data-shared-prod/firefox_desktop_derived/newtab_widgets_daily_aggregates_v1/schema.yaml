@@ -3,10 +3,14 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date the widget telemetry was recorded, derived from submission_timestamp.
+- name: widget_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the widget that emitted the event.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
+  description: Most-common Firefox Desktop major version observed for the client this day.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -15,19 +19,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The normalized channel the application is being distributed on.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country code in which the activity took place, as determined.
 - name: locale
   type: STRING
   mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: country
-  type: STRING
-  mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
-- name: widget_name
-  type: STRING
-  mode: NULLABLE
-  description: Name of the widget that emitted the event.
 - name: widget_enabled_clients
   type: INTEGER
   mode: NULLABLE
@@ -90,28 +89,12 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of New Tab visits where the widget was disabled.
-- name: impression_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of widget impression events recorded during the day.
-- name: user_event_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of widget user interaction events recorded during the day.
 - name: change_size_or_learn_more_count
   type: INTEGER
   mode: NULLABLE
   description: >
     Number of user interactions that either changed the widget size or clicked
     the learn more link.
-- name: enabled_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of widget enable events recorded during the day.
-- name: disabled_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of widget disable events recorded during the day.
 - name: widget_link_click_count
   type: INTEGER
   mode: NULLABLE

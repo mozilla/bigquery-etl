@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the telemetry was submitted / aggregated.
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Canonical app name (Firefox for Desktop / Firefox for Android /
+    Firefox for iOS). Rows for datasets outside these three apps are excluded.
+- name: metric_identifier
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Per-metric identifier. For event metrics this is "category.name"; for other
+    metric columns it is the normalized Glean column path (see the column_metrics
+    normalization in query.sql).
+- name: daily_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Logical (uncompressed) bytes of telemetry collected for this metric on this
+    day, summed across channels. Derived from dry-run byte sizes
+    (column_size_v1) and the event size approximation (event_counts_glean_v2).

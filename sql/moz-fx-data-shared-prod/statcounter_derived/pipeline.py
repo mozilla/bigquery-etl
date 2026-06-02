@@ -154,7 +154,9 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
 
     Raises:
         ValueError: If the percent column is missing, malformed, or its
-            embedded date does not match partition_date.
+       ValueError: If the percent column is missing, if the date string
+           cannot be parsed as either abbreviated or full month format,
+           or if the embedded date does not match partition_date.
     """
     percent_cols = [col for col in df.columns if col.startswith("Market Share")]
     if len(percent_cols) != 1:

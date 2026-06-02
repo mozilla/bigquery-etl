@@ -17,13 +17,12 @@ jobs:
           PRIVATE_REPO: mozilla/private-bigquery-etl
         run: |
           BRANCH="bqetl-diff/pr-${PR_NUMBER}"
-          ENCODED_BRANCH=$(echo "$BRANCH" | sed 's|/|%2F|g')
 
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -X DELETE \
-            "https://api.github.com/repos/${PRIVATE_REPO}/git/refs/heads/${ENCODED_BRANCH}")
+            "https://api.github.com/repos/${PRIVATE_REPO}/git/refs/heads/${BRANCH}")
 
           if [ "$HTTP_STATUS" = "204" ]; then
             echo "Deleted branch ${BRANCH} in private-bigquery-etl"

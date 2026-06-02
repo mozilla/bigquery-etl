@@ -499,19 +499,19 @@ jobs:
         run: |
           echo "commit_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
-          if [ "$GITHUB_EVENT_NAME" = "push" ] && [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "is_main_push=true" >> "$GITHUB_OUTPUT"
           else
             echo "is_main_push=false" >> "$GITHUB_OUTPUT"
           fi
 
           # Resolve PR number across all event types
-          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             echo "pr_number=${EVENT_PR_NUMBER}" >> "$GITHUB_OUTPUT"
-          elif [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+          elif [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
             # Fork PRs via workflow_run: resolve PR number from head SHA
             pr_number="$PR_FROM_WR"
-            if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
               pr_number=$(gh api \
                 "/repos/${REPO}/commits/$HEAD_SHA/pulls" \
                 --jq '.[0].number' 2>/dev/null || echo "")
@@ -537,88 +537,14 @@ jobs:
               --arg sha "$COMMIT_SHA" \
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
-              --argjson is_main "$IS_MAIN" \
+              --argjson is_main "${IS_MAIN:-false}" \
               '{event_type: "bqetl-ci", client_payload: {bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id, is_main_push: $is_main}}')")
 
-          if [ "$HTTP_STATUS" != "204" ]; then
+          if [[ "$HTTP_STATUS" != "204" ]]; then
             echo "::error::Failed to dispatch private CI (HTTP $HTTP_STATUS)"
             exit 1
           fi
           echo "Dispatched bqetl-ci event to private-bigquery-etl"
-
-  wait-for-private-ci:
-    name: Wait for Private CI
-    runs-on: ubuntu-latest
-    needs: [trigger-private-ci]
-    if: |
-      github.event_name != 'push' &&
-      needs.trigger-private-ci.result == 'success'
-    permissions:
-      contents: read
-    environment: *job-env
-    outputs:
-      result: ${{ steps.poll.outputs.result }}
-      diff-url: ${{ steps.poll.outputs.diff_url }}
-    steps:
-      - name: Poll for private CI completion
-        id: poll
-        env:
-          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
-          PR_NUMBER: ${{ needs.trigger-private-ci.outputs.pr-number }}
-          COMMIT_SHA: ${{ needs.trigger-private-ci.outputs.commit-sha }}
-        run: |
-          sleep 10
-
-          TIMEOUT=3600  # 60 minutes
-          INTERVAL=30
-          ELAPSED=0
-
-          while [ $ELAPSED -lt $TIMEOUT ]; do
-            RUN_JSON=$(curl -s \
-              -H "Authorization: Bearer ${TRIGGER_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${PRIVATE_REPO}/actions/workflows/private-ci.yml/runs?event=repository_dispatch&per_page=5")
-
-            # Match the run triggered for this specific commit
-            MATCHED=$(echo "$RUN_JSON" | jq -r \
-              --arg sha "$COMMIT_SHA" \
-              '[.workflow_runs[] | select(.head_sha == $sha)] | first // empty')
-
-            if [ -z "$MATCHED" ]; then
-              echo "Waiting for private CI run to appear... (${ELAPSED}s elapsed)"
-              sleep $INTERVAL
-              ELAPSED=$((ELAPSED + INTERVAL))
-              continue
-            fi
-
-            STATUS=$(echo "$MATCHED" | jq -r '.status')
-            CONCLUSION=$(echo "$MATCHED" | jq -r '.conclusion // empty')
-            RUN_URL=$(echo "$MATCHED" | jq -r '.html_url')
-
-            echo "Private CI: ${STATUS} ${CONCLUSION} (${ELAPSED}s elapsed)"
-
-            if [ "$STATUS" = "completed" ]; then
-              echo "result=$CONCLUSION" >> "$GITHUB_OUTPUT"
-              echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
-
-              if [ -n "$PR_NUMBER" ]; then
-                echo "diff_url=https://github.com/${PRIVATE_REPO}/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff" >> "$GITHUB_OUTPUT"
-              fi
-
-              if [ "$CONCLUSION" != "success" ]; then
-                echo "::error::Private CI failed with conclusion: $CONCLUSION"
-                echo "See: $RUN_URL"
-                exit 1
-              fi
-              exit 0
-            fi
-
-            sleep $INTERVAL
-            ELAPSED=$((ELAPSED + INTERVAL))
-          done
-
-          echo "::error::Timed out waiting for private CI after ${TIMEOUT}s"
-          exit 1
 
   docs:
     name: Build and Deploy Documentation
@@ -930,11 +856,11 @@ jobs:
         run: |
           PATH=".venv/bin:$PATH" script/bqetl backfill validate
 
-  generate-diff:
-    name: Post SQL Diff
+  post-integration-report:
+    name: Post Integration Report
     runs-on: ubuntu-latest
     environment: *build-env
-    needs: [wait-for-private-ci, decide-runs]
+    needs: [trigger-private-ci, decide-runs]
     if: |
       always() &&
       github.event_name != 'push' &&
@@ -953,19 +879,21 @@ jobs:
           REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             pr_number="$EVENT_PR_NUMBER"
             pr_title="$EVENT_PR_TITLE"
-          elif [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+          elif [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
             pr_number="$WR_PR_NUMBER"
-            if [ -z "$pr_number" ] || [ "$pr_number" = "null" ]; then
+            if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
               pr_number=$(gh api \
                 "/repos/${REPO}/commits/${WR_HEAD_SHA}/pulls" \
                 --jq '.[0].number' 2>/dev/null || echo "")
             fi
-            pr_title=$(gh api \
-              "/repos/${REPO}/pulls/$pr_number" \
-              --jq '.title' 2>/dev/null || echo "")
+            if [[ -n "$pr_number" && "$pr_number" != "null" ]]; then
+              pr_title=$(gh api \
+                "/repos/${REPO}/pulls/$pr_number" \
+                --jq '.title' 2>/dev/null || echo "")
+            fi
           else
             PR_JSON=$(gh pr view --json number,title 2>/dev/null || echo "{}")
             pr_number=$(echo "$PR_JSON" | jq -r '.number // empty')
@@ -984,21 +912,16 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ steps.find-pr.outputs.pr_number }}
           PR_TITLE: ${{ steps.find-pr.outputs.pr_title }}
-          PRIVATE_DIFF_URL: ${{ needs.wait-for-private-ci.outputs.diff-url }}
-          RUN_ID: ${{ github.run_id }}
         run: |
-          if [ -z "$PR_NUMBER" ]; then
+          if [[ -z "$PR_NUMBER" ]]; then
             echo "No PR number found, skipping comment posting."
             exit 0
           fi
 
-          DIFF_LINK=""
-          if [ -n "$PRIVATE_DIFF_URL" ]; then
-            DIFF_LINK="[View full diff (SQL + DAGs)](${PRIVATE_DIFF_URL}) *(requires private-bigquery-etl access)*"
-          fi
+          DIFF_URL="https://github.com/${PRIVATE_REPO}/blob/bqetl-diff/pr-${PR_NUMBER}/sql.diff"
 
           BODY="### Integration report for \"${PR_TITLE}\"
-          ${DIFF_LINK}"
+          [View full diff, if available (SQL + DAGs)](${DIFF_URL}) *(requires private-bigquery-etl access)*"
 
           # Minimize previous diff comments
           COMMENTS=$(curl -s \
@@ -1015,7 +938,7 @@ jobs:
           }'
 
           echo "$COMMENTS" | jq -r "$FILTER" | while read -r node_id; do
-            if [ -n "$node_id" ]; then
+            if [[ -n "$node_id" ]]; then
               curl -s -X POST \
                 -H "Authorization: token ${GITHUB_TOKEN}" \
                 -H "Content-Type: application/json" \
@@ -1196,7 +1119,6 @@ jobs:
       - integration
       - generate-sql
       - trigger-private-ci
-      - wait-for-private-ci
       - docs
       - deploy-changes-to-stage
       - dry-run-sql
@@ -1205,7 +1127,7 @@ jobs:
       - validate-views
       - validate-metadata
       - validate-backfills
-      - generate-diff
+      - post-integration-report
     runs-on: ubuntu-latest
     permissions:
       checks: write

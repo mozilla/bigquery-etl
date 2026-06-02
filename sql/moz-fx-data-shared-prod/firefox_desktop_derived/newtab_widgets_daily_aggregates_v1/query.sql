@@ -88,7 +88,7 @@ action_counts_summary AS (
       )
     ) AS widget_utility_action_count,
     SUM(IF(user_action = 'opt_in_accepted', action_count, 0)) AS widget_optin_accept_count,
-    ARRAY_AGG(STRUCT(user_action, action_count)) AS widget_user_action_counts
+    ARRAY_AGG(STRUCT(user_action, action_count) ORDER BY user_action) AS widget_user_action_counts
   FROM
     action_counts_per_widget
   GROUP BY

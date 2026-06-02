@@ -1,0 +1,38 @@
+friendly_name: Kitsune Contributor Metrics Weekly
+description: |
+  Weekly SUMO (Kitsune) support-forum contributor metrics, built on the
+  answer-level fact kitsune_contributor_answers_base_v1.
+
+  Grain: ISO week (one row per week)
+
+  Weeks are anchored to ISOWEEK and span the full history of qualifying answers
+  through the current week. The table is rebuilt in full each run (incremental:
+  false): contributor metrics are immutable historical facts derivable from the
+  full answer history, and the cross-week window functions (4-week moving
+  averages, 4-week lags, retention period comparisons) reference other weeks'
+  rows, so a full refresh is both correct and simplest.
+
+  Metrics (each with a 4-week moving average and a 4-weeks-prior lag of that MA):
+  - weekly_contributor_count: distinct contributors who answered that week
+  - new_contributors: contributors whose first qualifying answer was that week
+  - top_contributor_percentage: share of the week's answers from Top Contributors
+    (top 10 by answer count over the trailing 4 weeks)
+  - retention_rate: share of the prior 4-week period's contributors still active
+    in the current 4-week period (also split into Top / Regular by prior tier)
+
+  Replaces the weekly aggregation CTEs in:
+  - kitsune_weekly_contributors.sql (dashboard queries)
+
+  Exposed to the dashboard layer via the sumo_contributor_kpis view.
+owners:
+  - plee@mozilla.com
+  - mozilla/customer_insights
+labels:
+  incremental: false
+  application: sumo
+  type: derived_metrics
+  schedule: daily
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false

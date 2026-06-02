@@ -128,7 +128,7 @@ Each table is partitioned by `date`. Within a partition, the PK is the set of co
 ## Pipeline
 
 > [!NOTE]
-> The pipeline fails fast: errors in fetching or validation stop processing before any data reaches GCS or BigQuery. A count mismatch after load raises an error and leaves the GCS file in place for inspection. All errors bubble up to Airflow and mark the task as failed. See [Errors](#errors) for a full breakdown.
+> The pipeline processes each date independently. Within a single date, the pipeline fails fast: errors in fetching or validation stop processing before any data reaches GCS or BigQuery, and a count mismatch after load leaves the GCS file in place for inspection. Across a multi-date range (backfills), if a date fails, the pipeline logs the traceback and continues with the next date. At the end of the run, the pipeline emits a summary listing succeeded and failed dates, then exits with an error if any date failed so Airflow marks the task red. Single-date runs (the daily Airflow case) raise on first failure as before. See [Errors](#errors) for a full breakdown.
 
 ### Pipeline Steps
 
@@ -138,7 +138,7 @@ Once per run:
 2. Create the table with schema, partitioning, and clustering if it does not exist
 3. Set primary key constraints on the table if not already set
 
-For each date in the requested range, for each source (one per geography/device combination):
+Each date in the requested range runs inside its own try/except — a failure on one date does not stop later dates. For each date, for each source (one per geography/device combination):
 
 1. Fetch CSV from the download URL for that single date
 2. Parse CSV into a DataFrame
@@ -161,7 +161,7 @@ Then across all sources combined:
 
 ### Idempotency
 
-The pipeline processes date ranges one day at a time, mapping each to a single BigQuery partition overwrite — re-running any date replaces its partition cleanly with no duplicate rows.
+The pipeline processes date ranges one day at a time, mapping each to a single BigQuery partition overwrite — re-running any date replaces its partition cleanly with no duplicate rows. Because each date is self-contained, you can safely resume a backfill by narrowing the date range to only the failed dates listed in the end-of-run summary.
 
 ### Response Validation
 
@@ -190,6 +190,8 @@ Each table also has a `checks.sql` that runs as a separate Airflow task after th
 > | Load | BigQuery load job fails | Raises; pipeline attempts GCS cleanup (logged if it fails) before re-raising the load error |
 > | Post-load | DataFrame and BigQuery counts do not match | Raises; pipeline leaves the GCS file in place for inspection |
 > | Cleanup | GCS delete fails after a successful load and count check | Logs the error; the date stays marked succeeded because the data is in BigQuery |
+>
+> In a multi-date run, the outer loop catches any raise inside a date. The pipeline records the failed date with its full traceback and proceeds to the next date. Single-date runs raise immediately. In both cases, the task exits non-zero if any date failed.
 
 #### CSV Deletion
 

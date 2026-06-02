@@ -520,47 +520,66 @@ def main(
         date_from + timedelta(days=i) for i in range((date_to - date_from).days + 1)
     ]
 
+    succeeded: list[date] = []
+    failed: list[tuple[date, Exception]] = []
+
     for partition_date in dates:
-        dfs = []
-        for source in config.sources:
-            url = build_statcounter_url(source.base_url, partition_date, partition_date)
-            csv_content = fetch_csv(url, source.geography, source.device)
-            df = parse_csv(csv_content)
-            df = rename_columns(df, partition_date)
-            df = add_metadata(df, partition_date, source.geography, source.device)
-            df = add_surrogate_key(df)
-            df = reorder_columns(df)
-            dfs.append(df)
-
-        df = concatenate_dataframes(dfs)
-
-        validate_min_row_count(df)
-        validate_pk(df)
-        validate_numeric_bounds(df)
-
-        blob_name = (
-            f'{config.gcs_blob_prefix}_{partition_date.strftime("%Y%m%d")}_{run_id}.csv'
-        )
-        upload_to_gcs(df, blob_name)
         try:
-            load_into_bigquery(partition_date, config.bq_table, blob_name)
-        except Exception:
-            try:
-                delete_from_gcs(blob_name)
-            except Exception:
-                logger.exception(
-                    f"GCS cleanup failed for {blob_name} after failed BQ load"
+            dfs = []
+            for source in config.sources:
+                url = build_statcounter_url(
+                    source.base_url, partition_date, partition_date
                 )
-            raise
-        else:
-            bq_record_count = count_bq_records(partition_date, config.bq_table)
-            compare_counts(len(df), bq_record_count)
+                csv_content = fetch_csv(url, source.geography, source.device)
+                df = parse_csv(csv_content)
+                df = rename_columns(df, partition_date)
+                df = add_metadata(df, partition_date, source.geography, source.device)
+                df = add_surrogate_key(df)
+                df = reorder_columns(df)
+                dfs.append(df)
+
+            df = concatenate_dataframes(dfs)
+
+            validate_min_row_count(df)
+            validate_pk(df)
+            validate_numeric_bounds(df)
+
+            blob_name = f'{config.gcs_blob_prefix}_{partition_date.strftime("%Y%m%d")}_{run_id}.csv'
+            upload_to_gcs(df, blob_name)
             try:
-                delete_from_gcs(blob_name)
+                load_into_bigquery(partition_date, config.bq_table, blob_name)
             except Exception:
-                logger.exception(
-                    f"GCS cleanup failed for {blob_name} (data is loaded in BQ)"
-                )
+                try:
+                    delete_from_gcs(blob_name)
+                except Exception:
+                    logger.exception(
+                        f"GCS cleanup failed for {blob_name} after failed BQ load"
+                    )
+                raise
+            else:
+                bq_record_count = count_bq_records(partition_date, config.bq_table)
+                compare_counts(len(df), bq_record_count)
+                succeeded.append(partition_date)
+                try:
+                    delete_from_gcs(blob_name)
+                except Exception:
+                    logger.exception(
+                        f"GCS cleanup failed for {blob_name} (data is loaded in BQ)"
+                    )
+        except Exception as e:
+            logger.exception(f"Date {partition_date} failed: {e}")
+            failed.append((partition_date, e))
+
+    if len(dates) > 1:
+        summary = (
+            f"Summary ({len(succeeded)}/{len(dates)} succeeded): "
+            f"succeeded={[d.isoformat() for d in succeeded]}"
+        )
+        if failed:
+            summary += f" failed={[d.isoformat() for d, _ in failed]}"
+        logger.info(summary)
+    if failed:
+        raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")
 
 
 def build_sources(geographies: list[tuple[str, str, str]]) -> list[Source]:

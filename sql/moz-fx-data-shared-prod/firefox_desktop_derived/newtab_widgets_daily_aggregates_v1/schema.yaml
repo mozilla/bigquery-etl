@@ -42,7 +42,7 @@ fields:
   mode: NULLABLE
   description: >
     Number of distinct clients who actively engaged with the widget during the day,
-    via a user interaction or enable/disable action.
+    via a user interaction or enable action.
 - name: default_ui_clients
   type: INTEGER
   mode: NULLABLE

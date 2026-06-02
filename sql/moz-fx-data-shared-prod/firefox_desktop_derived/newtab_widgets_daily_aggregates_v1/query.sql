@@ -78,7 +78,6 @@ action_counts_summary AS (
           'timer_set',
           'timer_toggle_break',
           'timer_toggle_focus',
-          'timer_toggle_play',
           'view_key_dates',
           'view_schedule',
           'view_upcoming'

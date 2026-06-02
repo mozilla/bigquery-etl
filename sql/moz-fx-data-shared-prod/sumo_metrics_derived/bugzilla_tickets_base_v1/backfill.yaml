@@ -1,0 +1,11 @@
+2026-06-02:
+  start_date: 2025-03-29
+  end_date: 2026-06-02
+  reason: Initial back fill for Bugzilla data (DENG-11184).
+  watchers:
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

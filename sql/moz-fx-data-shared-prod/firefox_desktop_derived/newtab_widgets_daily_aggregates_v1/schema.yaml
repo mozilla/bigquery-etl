@@ -31,7 +31,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of distinct clients who had the widget enabled during the day.
-- name: widget_visited_clients
+- name: widget_enabled_clients_with_visit
   type: INTEGER
   mode: NULLABLE
   description: >

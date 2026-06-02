@@ -112,7 +112,7 @@ widget_metrics AS (
     COUNT(DISTINCT IF(is_widget_enabled, client_id, NULL)) AS widget_enabled_clients,
     COUNT(
       DISTINCT IF(is_widget_enabled AND all_visits > 0, client_id, NULL)
-    ) AS widget_visited_clients,
+    ) AS widget_enabled_clients_with_visit,
     COUNT(
       DISTINCT IF(user_event_count + enabled_count > 0, client_id, NULL)
     ) AS widget_engaged_clients,

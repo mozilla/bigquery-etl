@@ -1429,8 +1429,7 @@ bqetl_braze:
     retries: 3
     retry_delay: 5m
   tags:
-    - impact/tier_3
-    - triage/no_triage
+    - impact/tier_2
 
 bqetl_braze_currents:
   schedule_interval: 0 5 * * *
@@ -1622,6 +1621,26 @@ bqetl_cloudflare_device_market_share:
     - repo/bigquery-etl
     - impact/tier_3
 
+bqetl_statcounter_browser_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kbammarito@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2026-05-01'
+  description: |
+    Pulls browser market share data from Statcounter CSV downloads
+  repo: bigquery-etl
+  schedule_interval: 0 10 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
 bqetl_firefox_desktop_ad_click_history:
   default_args:
     depends_on_past: false
@@ -1673,13 +1692,13 @@ bqetl_merino_newtab_extract_to_gcs:
     email_on_retry: false
     end_date: null
     owner: cbeck@mozilla.com
-    retries: 2
+    retries: 1
     retry_delay: 5m
     start_date: '2024-08-14'
   description: |
     Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
   repo: bigquery-etl
-  schedule_interval: "*/20 * * * *"
+  schedule_interval: "*/10 * * * *"
   tags:
     - repo/bigquery-etl
     - impact/tier_1
@@ -2461,24 +2480,6 @@ bqetl_baseline_clients_city_seen:
   description: Scheduled queries for client city seen tables
   tags:
     - impact/tier_2
-    - repo/bigquery-etl
-
-bqetl_market_intel_bot:
-  default_args:
-    depends_on_past: false
-    email:
-      - lmcfall@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    end_date: null
-    owner: lmcfall@mozilla.com
-    retries: 1
-    retry_delay: 45m
-    start_date: '2025-09-01'
-  description: Runs on the 2nd day of the month to summarize last months' Chrome updates
-  schedule_interval: 0 15 2 * *
-  tags:
-    - impact/tier_3
     - repo/bigquery-etl
 
 bqetl_firefox_data_cta_uid_map:

@@ -1,0 +1,42 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The submission date (UTC). A ticket contributes to this date if it was
+    created OR resolved on this date, allowing both tickets_created and
+    tickets_resolved to be tracked in a single daily partition.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Mozilla product the ticket is for, mapped via
+    `mozfun.customer_experience.normalize_product` (source = 'Zendesk').
+    Unknown raw values map to 'Other'.
+- name: automation_category
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Ticket handling classification:
+    - 'automation': resolved entirely by an automated workflow and not reopened
+    - 'human-handled': all other tickets, including automated tickets that were
+      subsequently reopened (reopen indicates human involvement)
+- name: tickets_created
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of distinct tickets created on this date for this product and
+    automation category. A ticket is classified at resolution time; tickets
+    not yet resolved are classified as 'human-handled'.
+- name: tickets_resolved
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of distinct tickets resolved (solved or closed) on this date for
+    this product and automation category. Use this column to compute
+    Automation Resolution Rate:
+      SUM(tickets_resolved WHERE automation_category = 'automation') / SUM(tickets_resolved)
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery.

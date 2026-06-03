@@ -1,0 +1,30 @@
+friendly_name: Newtab Widgets Daily Aggregates
+description: |-
+  Daily aggregation of newtab widget impression and user-event metrics, rolled
+  up from `firefox_desktop_derived.widgets_client_daily_v1` to the widget level.
+  One row per (widget_name, app_version, os, channel, country, locale) per submission_date.
+  visit-level dimensions are aggregated in the same manner as the newtab_items_daily table.
+owners:
+  - ledi@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: ledi
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_newtab
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+      - widget_name
+      - country
+      - channel

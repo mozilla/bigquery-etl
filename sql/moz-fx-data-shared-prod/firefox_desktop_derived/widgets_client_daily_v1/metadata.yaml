@@ -1,0 +1,34 @@
+friendly_name: Widgets Client Daily
+description: |-
+  Daily aggregation of newtab widget impression and user-event metrics, rolled
+  up from `firefox_desktop_derived.widgets_visit_daily_v1` to the client level.
+  One row per (client_id, widget_name, widget_size) per submission_date.
+
+  When a client with an enabled widget does not visit newtab on a given day,
+  a row is created for each enabled widget with 0 visits.
+
+  visit-level dimensions are aggregated in the same manner as the newtab_clients_daily table.
+owners:
+  - jsnyder@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: jsnyder
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+      - sample_id
+      - client_id
+      - widget_name
+      - country

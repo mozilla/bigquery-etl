@@ -8,6 +8,7 @@ owners:
 labels:
   schedule: daily
   incremental: false
+  legacy: true
 scheduling:
   dag_name: bqetl_monitoring
 bigquery:

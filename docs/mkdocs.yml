@@ -38,6 +38,7 @@ nav:
   - Cookbooks:
       - Common workflows: cookbooks/common_workflows.md
       - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+      - Development workflows: cookbooks/development_workflows.md
       - Testing: cookbooks/testing.md
   - Reference:
       - bqetl CLI: bqetl.md

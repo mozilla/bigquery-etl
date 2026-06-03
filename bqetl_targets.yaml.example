@@ -4,7 +4,7 @@
 # Supported variables:  account.username, artifact.project_id, artifact.dataset_id, git.branch, git.commit
 
 shared_dev:
-  project_id: moz-fx-data-shared-dev
+  project_id: moz-fx-data-proto
   dataset: '{{ account.username }}_{{ git.branch }}'
   artifact_prefix: '{{ artifact.project_id }}__{{ artifact.dataset_id }}__'
 

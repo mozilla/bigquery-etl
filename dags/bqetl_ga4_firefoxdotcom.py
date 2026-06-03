@@ -188,31 +188,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
-    bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1 = bigquery_bigeye_check(
-        task_id="bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1",
-        table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.fbclid_desktop_conversion_events_v1",
-        warehouse_id="1939",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-    )
-
-    with TaskGroup(
-        "bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1_external",
-    ) as bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_census_feed__wait_for_bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1",
-            external_dag_id="bqetl_census_feed",
-            external_task_id="wait_for_bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1_external.set_upstream(
-            bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1
-        )
-
     bigeye__firefoxdotcom_derived__ga_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefoxdotcom_derived__ga_clients__v1",
         table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.ga_clients_v1",
@@ -288,17 +263,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retry_delay=datetime.timedelta(seconds=300),
         retries=1,
-    )
-
-    firefoxdotcom_derived__fbclid_desktop_conversion_events__v1 = bigquery_etl_query(
-        task_id="firefoxdotcom_derived__fbclid_desktop_conversion_events__v1",
-        destination_table="fbclid_desktop_conversion_events_v1",
-        dataset_id="firefoxdotcom_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(
@@ -492,10 +456,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    bigeye__firefoxdotcom_derived__fbclid_desktop_conversion_events__v1.set_upstream(
-        firefoxdotcom_derived__fbclid_desktop_conversion_events__v1
-    )
-
     bigeye__firefoxdotcom_derived__ga_clients__v1.set_upstream(
         firefoxdotcom_derived__ga_clients__v1
     )
@@ -514,22 +474,6 @@ with DAG(
 
     checks__warn_firefoxdotcom_derived__ga_sessions__v2.set_upstream(
         firefoxdotcom_derived__ga_sessions__v2
-    )
-
-    firefoxdotcom_derived__fbclid_desktop_conversion_events__v1.set_upstream(
-        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
-    )
-
-    firefoxdotcom_derived__fbclid_desktop_conversion_events__v1.set_upstream(
-        wait_for_clients_first_seen_v3
-    )
-
-    firefoxdotcom_derived__fbclid_desktop_conversion_events__v1.set_upstream(
-        wait_for_google_ads_derived__conversion_event_categorization__v2
-    )
-
-    firefoxdotcom_derived__fbclid_desktop_conversion_events__v1.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v2.set_upstream(

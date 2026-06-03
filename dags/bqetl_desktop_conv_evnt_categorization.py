@@ -196,6 +196,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="private_bqetl_marketing__wait_for_google_ads_derived__conversion_event_categorization__v2",
+            external_dag_id="private_bqetl_marketing",
+            external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
         google_ads_derived__conversion_event_categorization__v2_external.set_upstream(
             google_ads_derived__conversion_event_categorization__v2
         )

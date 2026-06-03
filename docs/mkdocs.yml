@@ -38,6 +38,7 @@ nav:
   - Cookbooks:
       - Common workflows: cookbooks/common_workflows.md
       - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+      - Backfilling a table: cookbooks/backfilling_a_table.md
       - Testing: cookbooks/testing.md
   - Reference:
       - bqetl CLI: bqetl.md

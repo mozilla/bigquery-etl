@@ -202,7 +202,7 @@ Each table also has a `checks.sql` that runs as a separate Airflow task after th
 
 ### Observability
 
-Python's standard `logging` module emits logs at each step, which route to Airflow task logs or the local CLI depending on the execution environment. Airflow handles scheduling.
+Python's standard `logging` module emits logs at each step, which route to Airflow task logs or the local CLI depending on the execution environment.
 
 ### Configuration
 
@@ -237,10 +237,12 @@ Each table's `query.py` sets per-pipeline values via `make_app()`:
 - Airflow handles I/O retries (`retries: 2, retry_delay: 30m` in `dags.yaml`)
 - Inline comments explain non-obvious logic only — not what the code does, but why
 - Annotate a local only when its right-hand side does not pin the type — empty collections like `failed: list[tuple[date, str]] = []` need an annotation; string literals and typed function returns do not
+- Purity classification below ignores `logger.info` / `logger.exception` side effects. Every function logs, so a logging side effect alone does not make a function impure
 
 | Task type | Examples | Purity | Deterministic | Notes |
 | --- | --- | --- | --- | --- |
-| Transformation | `rename_columns`, `add_metadata`, `add_surrogate_key`, `reorder_columns`, `concatenate_dataframes` | Pure | Yes | Return new DataFrames via `df.assign()` / `df.rename()`; inputs never mutated |
-| Scheduling | `date.today()` in `main` | Pure | No | No side effects, but the return value varies by call time |
-| Validation | `validate_min_row_count`, `validate_no_nulls`, `validate_unique_pk`, `validate_numeric_bounds` | Impure | Yes | Raises and logs are intentional controlled side effects |
-| I/O | `fetch_csv`, `upload_to_gcs`, `load_into_bigquery`, `count_bq_records`, `delete_from_gcs`, `ensure_dataset`, `ensure_table`, `ensure_primary_key` | Impure | No | Side effects and external state dependence are unavoidable for network and storage operations |
+| Transformation | `build_statcounter_url`, `parse_csv`, `rename_columns`, `add_metadata`, `add_surrogate_key`, `reorder_columns`, `concatenate_dataframes` | Pure | Yes | Return new values from their inputs; inputs never mutated |
+| Reporting | `log_summary` | Pure | Yes | Side effect is logging only |
+| Scheduling | `date.today()` in `main`, `log_elapsed` | Pure | No | Read external clocks; return value (or logged value) varies by call time |
+| Validation | `validate_min_row_count`, `validate_no_nulls`, `validate_unique_pk`, `validate_numeric_bounds`, `compare_counts`, `signal_failures` | Impure | Yes | Raise on invalid input or failed run state |
+| I/O | `fetch_csv`, `upload_to_gcs`, `load_into_bigquery`, `count_bq_records`, `delete_from_gcs`, `ensure_dataset`, `ensure_table`, `ensure_primary_key` | Impure | No | Network and storage operations carry unavoidable side effects |

@@ -5,7 +5,7 @@ This guide covers testing SQL changes in development environments before deployi
 ## Prerequisites
 
 - Authenticated to GCP: `gcloud auth application-default login`
-- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or shared dev project (e.g., `moz-fx-data-shared-dev`)
+- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
 
 ## Target-Based Development
 
@@ -27,6 +27,15 @@ dev:
 ```
 
 `dataset` and `dataset_prefix` are mutually exclusive. `artifact_prefix` can be used with either.
+
+**Shared dev project** (when a personal sandbox is not available, deploy to `moz-fx-data-proto`): since this project is shared across users, scope your artifacts with your username so they don't collide with other people's:
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  dataset_prefix: {{ account.username }}_{{ git.branch }}_{{ artifact.project_id }}
+```
+
+Clean up after yourself on the shared project (`./bqetl --target dev target clean --older-than 7d`), since others rely on it too.
 
 To avoid passing `--target` on every invocation, set a default using one of these (listed in priority order):
 

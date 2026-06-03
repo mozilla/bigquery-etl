@@ -894,9 +894,13 @@ jobs:
           else
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               -m "Created from $GITHUB_SHA"
-            git tag "c-$GITHUB_SHA"
+            if git rev-parse "c-$GITHUB_SHA" >/dev/null 2>&1; then
+              echo "Tag c-$GITHUB_SHA already exists, skipping"
+            else
+              git tag "c-$GITHUB_SHA"
+              git push origin "c-$GITHUB_SHA"
+            fi
             git push
-            git push origin "c-$GITHUB_SHA"
           fi
 
   reset-stage-env:

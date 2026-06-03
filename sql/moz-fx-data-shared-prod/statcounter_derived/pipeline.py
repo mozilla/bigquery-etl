@@ -539,7 +539,7 @@ def log_summary(
     if len(dates) <= 1:
         return
     summary = (
-        f"Summary: ran {dates[0].isoformat()} to {dates[-1].isoformat()}; "
+        f"Summary: attempted {dates[0].isoformat()} to {dates[-1].isoformat()}; "
         f"{len(succeeded)}/{len(dates)} succeeded"
     )
     if failed:

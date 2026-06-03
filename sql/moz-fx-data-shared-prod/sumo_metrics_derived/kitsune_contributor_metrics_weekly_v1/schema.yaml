@@ -1,0 +1,74 @@
+fields:
+- name: iso_week
+  type: DATE
+  mode: NULLABLE
+  description: ISO week start (Monday, ISOWEEK-truncated) the metrics are reported for.
+- name: weekly_contributor_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Distinct contributors who posted a qualifying answer during this ISO week.
+- name: weekly_contributor_count_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 4-week trailing moving average of weekly_contributor_count.
+- name: lagged_weekly_contributor_count_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: weekly_contributor_count_4w_ma from 4 weeks earlier (for week-over-period comparison).
+- name: new_contributors
+  type: INTEGER
+  mode: NULLABLE
+  description: Contributors whose first qualifying answer (ever) fell in this ISO week.
+- name: new_contributors_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 4-week trailing moving average of new_contributors.
+- name: lagged_new_contributors_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: new_contributors_4w_ma from 4 weeks earlier.
+- name: top_contributor_percentage
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Share of this week's answers posted by Top Contributors. Top Contributors are
+    the top 10 contributors (DENSE_RANK) by answer count over the trailing 4 weeks.
+- name: top_contributor_percentage_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 4-week trailing moving average of top_contributor_percentage.
+- name: lagged_top_contributor_percentage_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: top_contributor_percentage_4w_ma from 4 weeks earlier.
+- name: retention_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Overall contributor retention: share of contributors active in the prior
+    4-week period (weeks -8 to -4) who were also active in the current 4-week
+    period (weeks -4 to +1).
+- name: retention_rate_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 4-week trailing moving average of retention_rate.
+- name: retention_rate_top
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Retention rate restricted to contributors who were Top Contributors in the
+    prior 4-week period.
+- name: retention_rate_regular
+  type: FLOAT
+  mode: NULLABLE
+  description: |
+    Retention rate restricted to contributors who were Regular Contributors in
+    the prior 4-week period.
+- name: lagged_retention_rate_4w_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: retention_rate_4w_ma from 4 weeks earlier.
+- name: generated_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery.

@@ -712,3 +712,24 @@ fields:
   description: The Firefox release channel at the time of the crash (e.g., 'release', 'esr', 'nightly', 'beta').
 - name: time
   description: The date (truncated to midnight UTC) for which the daily active population count is reported.
+- name: appVersion
+  description: The user-visible version string of the application at the time the crash or event was recorded (e.g. "128.0"). This is the camelCase
+    alias of app_version as sourced from Socorro crash reports.
+- name: crash_count
+  description: The number of crash events recorded for a given combination of dimensions (e.g. date, process type, channel). Used in aggregate crash-reporting
+    tables to summarise crash volume.
+- name: crash_process_type
+  description: The Firefox multi-process component in which the crash occurred (e.g. "content", "gpu", "main", "utility"). Distinguishes crashes by
+    their originating process for triage and trend analysis.
+- name: crash_signature
+  description: A Socorro-computed string that identifies and groups crash reports by their most representative stack frame(s) (e.g. "OOM | large |
+    mozalloc_abort"). Used for crash deduplication and triage across products.
+- name: document_event_number
+  description: The ordinal position of this event row within its source telemetry document. Used to order or deduplicate events that are unnested from
+    a single ping into a flat events table.
+- name: event_extra_key
+  description: The key name for a single entry in a legacy telemetry event's extra map, produced when event extra key-value pairs are unnested into
+    separate rows. Pair with event_extra_value to reconstruct the full extra context for an event.
+- name: project
+  description: A namespace or grouping identifier for the Mozilla product, repository, or Taskcluster project associated with the row (e.g. "firefox",
+    "fenix", "gecko"). Scopes metrics and CI results to a specific engineering project.

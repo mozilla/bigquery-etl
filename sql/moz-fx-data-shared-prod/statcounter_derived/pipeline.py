@@ -532,7 +532,7 @@ def log_summary(
     logs the traceback via `logger.exception`.
 
     Args:
-        dates (list[date]): All dates the run attempted.
+        dates (list[date]): All attempted dates.
         succeeded (list[date]): Dates that landed in BigQuery.
         failed (list[tuple[date, str]]): (date, error message) for each failure.
     """
@@ -574,7 +574,7 @@ def signal_failures(
     per-cause detail.
 
     Args:
-        dates (list[date]): All dates the run attempted.
+        dates (list[date]): All attempted dates.
         failed (list[tuple[date, str]]): (date, error message) for each failure.
         last_exc (Exception | None): Most recent caught exception. Single-date
             runs re-raise this directly to preserve its type.

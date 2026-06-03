@@ -18,7 +18,7 @@ WITH new_profiles AS (
   FROM `{{ project_id }}.{{ dataset }}.baseline_clients_first_seen`
   WHERE
     {% if app_name == "fenix" %}
-    submission_date = DATE_SUB(@submission_date, INTERVAL 2 DAY)
+    submission_date = DATE_SUB(@submission_date, INTERVAL 2 DAY) -- see https://mozilla-hub.atlassian.net/browse/DO-2139 for more info about this decision
     {% else %}
     submission_date = @submission_date
     {% endif %}
@@ -195,7 +195,7 @@ SELECT
     `moz-fx-data-shared-prod.{{ dataset }}.play_store_attribution`
   WHERE
     {% if app_name == "fenix" %}
-    DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 15 DAY) AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 15 DAY) AND DATE_SUB(@submission_date, INTERVAL 1 DAY) -- see https://mozilla-hub.atlassian.net/browse/DO-2139 for more info about this decision
     {% else %}
     DATE(submission_timestamp) = @submission_date
     {% endif %}

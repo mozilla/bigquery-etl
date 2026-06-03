@@ -499,3 +499,118 @@ fields:
 - name: activations
   description: Count of new client profiles that met the activation criterion, typically defined as returning to use the application within a specified
     window after first install.
+- name: campaign
+  description: Identifier for the marketing campaign associated with an install or visit, typically sourced from the utm_campaign URL parameter or
+    an equivalent attribution signal.
+- name: client_count
+  description: The number of distinct clients contributing to the row or aggregation.
+- name: default_search_engine
+  description: The identifier or name of the default search engine configured by the client (e.g., 'google-b-d', 'baidu', 'DuckDuckGo').
+- name: duration
+  description: A time interval measured in seconds representing the elapsed time of a task, session, or participation window.
+- name: is_dau
+  description: Boolean flag indicating whether the client qualifies as a daily active user on the given submission date.
+- name: is_mau
+  description: Boolean flag indicating whether the client qualifies as a monthly active user, i.e., was active at least once in the 28 days ending
+    on the submission date.
+- name: is_wau
+  description: Boolean flag indicating whether the client qualifies as a weekly active user, i.e., was active at least once in the 7 days ending on
+    the submission date.
+- name: os_name
+  description: The human-readable name of the operating system on which the client was running (e.g., 'Windows', 'Mac', 'Android').
+- name: paid_vs_organic
+  description: Classification of a client's attribution as 'Paid' (attributed to a paid marketing channel) or 'Organic' (not attributed to paid spend).
+- name: priority
+  description: A label indicating the importance or urgency level assigned to a record (e.g., job, issue, or task).
+- name: slug
+  description: A URL-safe string identifier used as a path segment to uniquely reference a resource (e.g., an article, experiment, or content item).
+- name: active_hours
+  description: The total number of hours the client spent actively using the browser, expressed in fractional hours.
+- name: app_version_is_major_release
+  description: Boolean flag indicating whether the installed app version is a major release (i.e., the patch/revision component of the version string
+    is zero).
+- name: app_version_patch_revision
+  description: The patch or revision number component of the app version string (e.g., for version '142.1.3', the patch revision is 3); null for major
+    releases where no patch revision exists.
+- name: early_engagements
+  description: Count of early-engagement events recorded for a new profile within the first few days after installation, used to measure initial activation
+    quality.
+- name: num_days_active_day_2_7
+  description: The number of days the client was active between day 2 and day 7 (inclusive) after the first-seen date.
+- name: num_days_seen_day_2_7
+  description: The number of days the client submitted a ping between day 2 and day 7 (inclusive) after the first-seen date.
+- name: os_grouped
+  description: Operating system grouped into high-level categories such as 'Windows', 'Mac', 'Linux', 'Android', 'iOS', or 'Other'.
+- name: paid_vs_organic_gclid
+  description: Classification of an install as 'Paid' when the install referrer response contains a Google Click ID (gclid), or 'Organic' otherwise.
+- name: position
+  description: The ordinal position of a content or ad element within a page or grid layout; indexing convention (0-based or 1-based) may vary by context.
+- name: sap
+  description: Search Access Point — the entry point through which a user initiated a search (e.g., the address bar, a search box, or a new-tab tile).
+- name: subdivision1
+  description: The first-level administrative subdivision (e.g., state, province, or region) derived from IP geolocation, typically represented as
+    an ISO 3166-2 subdivision code.
+- name: activity_date
+  description: The calendar date on which a user action or conversion event took place, which may differ from the submission date when events are reported
+    with a delay.
+- name: clients
+  description: Count of distinct clients contributing to the aggregation.
+- name: crash_signature
+  description: A string identifying the type or location of a browser crash, used to group and classify crash events.
+- name: geo_country
+  description: ISO 3166-1 alpha-2 country code derived from the client's IP address geolocation.
+- name: organic_search_count
+  description: The total number of organic (non-ad-click) searches performed by the client or cohort.
+- name: surface
+  description: The high-level platform or form factor on which the client is running (e.g., 'desktop', 'mobile', 'tablet').
+- name: total_downloads
+  description: The total number of times a resource (such as an app or add-on) was downloaded in the reporting period.
+- name: updated
+  description: Timestamp indicating when the record was last modified in the source system.
+- name: appVersion
+  description: The version string of the application as recorded by the client at the time of the event or context snapshot.
+- name: as_of_date
+  description: The logical date associated with the data snapshot; rows reflect the state of the system as of this date.
+- name: creation_date
+  description: The date or timestamp when the record (e.g., question, ping, or table) was originally created.
+- name: events
+  description: A compact encoded or serialized representation of user interaction events recorded during a session or day.
+- name: expires
+  description: The expiry specification for a metric or probe, expressed as 'never', a calendar date, or a browser version number after which collection
+    stops.
+- name: fxa_uid
+  description: The Firefox Accounts user ID (SHA-256 hex string) that uniquely identifies a Mozilla account holder.
+- name: index
+  description: A compact string encoding of a numeric index, using Unicode code points to represent an event type or entry position in a compressed
+    event sequence.
+- name: is_activated
+  description: Boolean flag indicating whether a client or entity has met the defined activation criterion (e.g., returning to use the product within
+    a specified window after first install).
+- name: new_profile_metric_date
+  description: Boolean flag indicating whether the client's profile was newly created on the metric date being evaluated.
+- name: plan_id
+  description: The Stripe price or plan identifier (e.g., 'price_1JmRSRJNcmPzuWtRN9MG5cBy') representing the billing plan associated with a subscription.
+- name: price
+  description: The monetary price associated with a product, ad placement, or billing item.
+- name: product_name
+  description: The human-readable name of the Mozilla product or service the user is subscribed to or interacting with (e.g., 'Mozilla VPN', 'Firefox
+    Relay').
+- name: repeat_profile
+  description: Boolean flag indicating whether a new profile from the metric date was counted as a daily active user on at least two separate days
+    within their first 28 days.
+- name: retained_week_4_new_profile
+  description: Boolean flag indicating whether a new profile from the metric date was retained through week 4 (i.e., submitted at least one qualifying
+    ping in the fourth week after first seen).
+- name: subscription_id
+  description: The Stripe subscription identifier (e.g., 'sub_1LZXOfJNcmPzuWtRX6qIHqHA') that uniquely identifies a subscriber's subscription record.
+- name: _fivetran_synced
+  description: Timestamp recording when Fivetran last synced this record from the source system.
+- name: activated
+  description: Boolean flag indicating whether the client met the new-profile activation criterion, typically defined as returning to use the product
+    within the first week after installation.
+- name: addon_id
+  description: The unique string identifier for a browser add-on or extension (e.g., 'uBlock0@raymondhill.net').
+- name: addon_version
+  description: The version string of the installed browser add-on or extension.
+- name: app
+  description: The name or identifier of the Mozilla application associated with the record (e.g., 'Firefox Desktop', 'Firefox iOS', 'Firefox Android').

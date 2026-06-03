@@ -36,6 +36,7 @@ nav:
       - ... | mozfun/**.md
       - ... | moz-fx-data-shared-prod/**.md
   - Cookbooks:
+      - Backfilling a table: cookbooks/backfilling_a_table.md
       - Common workflows: cookbooks/common_workflows.md
       - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
       - Development workflows: cookbooks/development_workflows.md

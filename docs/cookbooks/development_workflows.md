@@ -43,7 +43,7 @@ dev:
 ```yaml
 dev:
   project_id: moz-fx-data-proto
-  dataset_prefix: {{ account.username }}_{{ git.branch }}_{{ artifact.project_id }}
+  dataset_prefix: '{{ account.username }}_{{ git.branch }}_{{ artifact.project_id }}'
 ```
 
 Clean up after yourself on the shared project (`./bqetl --target dev target clean --older-than 7d`), since others rely on it too.

@@ -231,3 +231,136 @@ fields:
   aliases:
   - updated_timestamp
   - updated_date
+- name: normalized_app_id
+  description: The normalized application identifier for the Mozilla product (e.g., 'org_mozilla_firefox', 'org_mozilla_fenix'). Distinguishes product
+    variants and release channels within the same product family.
+- name: experiment
+  description: The unique slug identifier of the Nimbus experiment for which data is aggregated or recorded (e.g., 'smart-shortcuts-v4p1'). Null when
+    the row is not scoped to a specific experiment.
+- name: total_events
+  description: The total count of events recorded for the given dimension combination in the aggregation period. Excludes page-view events where distinguished.
+- name: window_end
+  description: The exclusive end timestamp of the aggregation window for the row's time-bucketed metrics.
+- name: window_start
+  description: The inclusive start timestamp of the aggregation window for the row's time-bucketed metrics.
+- name: event_extra_key
+  description: The name of an extra key attached to a telemetry event, used to further classify or parameterize the event beyond its category and name.
+- name: days_sent_metrics_ping_bits
+  description: A 28-bit integer bitmask recording the days within the past 28-day window on which the client sent a metrics ping, with the least-significant
+    bit representing the most recent day.
+- name: n_metrics_ping
+  description: The number of metrics pings received from this client on the submission date or within the aggregation window.
+- name: date
+  description: The calendar date associated with the record, such as the date of an event, cost entry, metric observation, or partition boundary.
+- name: id
+  description: A unique identifier for the record within its source system. The type and format depend on the source (e.g., integer, UUID, or hex string).
+- name: type
+  description: A string classifying the kind or category of the record within its domain (e.g., event type, transaction type, or content type). Permitted
+    values vary by table.
+- name: is_active
+  description: Boolean flag indicating whether the entity (e.g., subscription, client, advertiser, or DAG) was active at the time of the record. True
+    means active; false means inactive or churned.
+- name: days_seen_bytes
+  description: A 365-bit (46-byte) binary representation of the days this client was seen over the past year, where the rightmost bit corresponds to
+    the most recent day.
+- name: status
+  description: The current lifecycle or operational state of the record (e.g., active, closed, canceled, succeeded). Permitted values are domain-specific.
+- name: baseline_profile_group_id
+  description: A UUID identifying the profile group as reported in the Glean baseline ping. Identifies which group of profiles this client belongs
+    to across baseline-ping-derived tables.
+- name: search_count
+  description: The total number of searches performed by the client or cohort for the given dimension combination on the submission date or aggregation
+    window.
+- name: name
+  description: A human-readable display name for the entity in the record (e.g., a product, add-on, participant, country, or data source). Interpretation
+    depends on the table context.
+- name: days_active_bytes
+  description: A binary representation of the days this client was considered active over a trailing window, encoded as a byte sequence with the most
+    recent day in the least-significant bit position.
+- name: region
+  description: The geographic region (e.g., a country subdivision or market area) associated with the client or event. Encoding and granularity vary
+    by source (e.g., ISO subdivision code, free-text region name).
+- name: source
+  description: A string identifying the origin or upstream system that produced or attributed the record (e.g., a traffic source, data pipeline, or
+    referral partner).
+- name: app_id
+  description: The application identifier for the Mozilla product that sent the event or ping (e.g., 'org.mozilla.firefox', 'firefox.desktop'). Uses
+    dot notation as defined in the Glean app registry.
+- name: platform
+  description: The operating system or device platform on which the event or activity occurred (e.g., 'Windows', 'Android', 'iOS', 'web'). Encoding
+    and granularity vary by source.
+- name: usage_profile_id
+  description: A UUID that uniquely identifies a Firefox usage-reporting profile. Used as the primary identifier in usage-reporting pipeline tables.
+- name: value
+  description: A generic payload field whose interpretation depends on the record's context. May hold a numeric measurement, a user-defined event string,
+    or an extra-field value.
+- name: url
+  description: A Uniform Resource Locator (URL) associated with the record, such as a clicked link, a content item, a source repository, or an ad placement.
+- name: created
+  description: The timestamp at which the entity (e.g., a customer record, subscription, or plan) was first created in the source system.
+- name: state
+  description: The current or computed state of the entity in its lifecycle model (e.g., a Markov state, DAG run state, or email address state). Permitted
+    values are domain-specific.
+- name: partition_date
+  description: The date used to partition this table's storage, typically matching submission_date and included to enable efficient partition-pruning
+    queries.
+- name: product
+  description: The Mozilla product or ad product associated with the record (e.g., 'Firefox', 'tile', 'spoc'). Interpretation and normalization depend
+    on the source system.
+- name: campaign_id
+  description: The unique identifier for an advertising or marketing campaign, as assigned by the originating ad platform or internal system.
+- name: impressions
+  description: The count of times an ad, content item, or search result was displayed to a user for the given dimension combination in the aggregation
+    period.
+- name: campaign_name
+  description: The human-readable name of the advertising or marketing campaign associated with the record.
+- name: description
+  description: A human-readable text field providing additional context or explanation for the record, such as the name of a subscription group, details
+    of a detected anomaly, or a product description.
+- name: end_date
+  description: The date or timestamp marking the end of the period or entity described by the record (e.g., experiment end date, subscription end date,
+    or time-window boundary).
+- name: device_type
+  description: The category of device on which the activity occurred (e.g., 'Desktop', 'Mobile', 'Tablet'). Encoding and permitted values vary by source.
+- name: category
+  description: A high-level classification grouping the record into a named category relevant to its domain (e.g., Glean event category, content category,
+    or release category).
+- name: language
+  description: The language setting of the user's device or account, typically expressed as an IETF BCP 47 language tag (e.g., 'en-US', 'de-DE').
+- name: metric
+  description: The name of the specific metric or measurement being recorded or aggregated for the row (e.g., a Glean metric name, a KPI name, or a
+    scalar identifier).
+- name: start_date
+  description: The date or timestamp marking the beginning of the period or entity described by the record (e.g., experiment start date, subscription
+    start date, or time-window boundary).
+- name: user_id
+  description: A unique identifier for a user within the source system. The format and scoping (e.g., UUID, integer, or hex string) depend on the system
+    of origin.
+- name: active_metric_date
+  description: A count or boolean flag indicating whether the client or profile was active on the metric date. When used as a count, represents the
+    number of active profiles on that date.
+- name: country_name
+  description: The full standardized name of the country associated with the record, as determined by IP geolocation or subscription data (e.g., 'United
+    States', 'Germany').
+- name: first_submission_timestamp
+  description: The timestamp of the first telemetry submission received from this client for the relevant event or entity, as recorded on the server
+    side.
+- name: new_profiles
+  description: The count of client profiles first seen on the date or within the dimension grouping represented by the row.
+- name: retained_week_4
+  description: A count or boolean indicating whether the client returned during the fourth week (approximately days 21–28) after the profile's first-seen
+    date, used as a 28-day retention metric.
+- name: timestamp
+  description: The date and time at which the event, change, or data point occurred, as recorded by the originating system. Precision and timezone
+    encoding vary by source.
+- name: update_count
+  description: The count of update events recorded for the entity within the aggregation window.
+- name: criteria
+  description: A string or label identifying the filtering condition or eligibility rule applied to select events or clients for the given row (e.g.,
+    a named event-selection criteria like 'any_event' or 'chatbot_usage').
+- name: device
+  description: The device type or form factor associated with the activity (e.g., 'desktop', 'mobile', 'tablet'). May also carry a raw OS or hardware
+    string from certain ad-platform sources.
+- name: event_type
+  description: The high-level type or category of the recorded event, describing what kind of interaction or lifecycle change occurred (e.g., 'login',
+    'New', 'Cancelled', 'contact').

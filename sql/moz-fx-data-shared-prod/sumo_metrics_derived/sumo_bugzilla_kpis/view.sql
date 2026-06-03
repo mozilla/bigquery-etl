@@ -7,23 +7,27 @@ WITH weeks AS (
   FROM
     UNNEST(
       GENERATE_DATE_ARRAY(
-        DATE_TRUNC(DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR), WEEK(SUNDAY)),
-        DATE_TRUNC(CURRENT_DATE, WEEK(SUNDAY)),
+        (
+          SELECT
+            DATE_TRUNC(MIN(`date`), ISOWEEK)
+          FROM
+            `moz-fx-data-shared-prod.sumo_metrics_derived.bugzilla_tickets_base_v1`
+        ),
+        DATE_TRUNC(CURRENT_DATE, ISOWEEK),
         INTERVAL 1 WEEK
       )
     ) AS week
 ),
 weekly AS (
   SELECT
-    DATE_TRUNC(`date`, WEEK(SUNDAY)) AS week,
+    DATE_TRUNC(`date`, ISOWEEK) AS week,
     SUM(bugs_created) AS bugs_created,
     SUM(bugs_resolved) AS bugs_resolved,
+    -- Open-bug backlog is a stock metric: take the count as of the latest day
+    -- in the week rather than summing across days.
+    ARRAY_AGG(bugs_open ORDER BY `date` DESC LIMIT 1)[OFFSET(0)] AS running_backlog,
   FROM
     `moz-fx-data-shared-prod.sumo_metrics_derived.bugzilla_tickets_base_v1`
-  WHERE
-    `date`
-    BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR)
-    AND CURRENT_DATE
   GROUP BY
     WEEK
 ),
@@ -33,10 +37,7 @@ joined AS (
     COALESCE(weekly.bugs_created, 0) AS bugs_created,
     COALESCE(weekly.bugs_resolved, 0) AS bugs_resolved,
     COALESCE(weekly.bugs_created, 0) - COALESCE(weekly.bugs_resolved, 0) AS bug_inventory,
-    SUM(COALESCE(weekly.bugs_created, 0) - COALESCE(weekly.bugs_resolved, 0)) OVER (
-      ORDER BY
-        weeks.week
-    ) AS running_backlog,
+    weekly.running_backlog,
   FROM
     weeks
   LEFT JOIN

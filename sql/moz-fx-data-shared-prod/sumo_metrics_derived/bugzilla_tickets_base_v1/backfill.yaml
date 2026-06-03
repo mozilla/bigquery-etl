@@ -1,3 +1,16 @@
+2026-06-03:
+  start_date: 2025-03-29
+  end_date: 2026-06-02
+  reason: >-
+    Add bugs_open (point-in-time open-bug backlog) column and update the
+    resolved definition to also treat a set resolution as resolved.
+  watchers:
+  - kpham@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
 2026-06-02:
   start_date: 2025-03-29
   end_date: 2026-06-02

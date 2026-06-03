@@ -9,9 +9,10 @@ WORKDIR /app
 # build typed-ast in separate stage because it requires gcc and libc-dev
 FROM base AS python-deps
 RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev
-COPY requirements.txt ./
+COPY requirements.txt requirements-private.txt* ./
 # use --no-deps to work around https://github.com/pypa/pip/issues/9644
-RUN pip install --no-deps -r requirements.txt
+RUN pip install --no-deps -r requirements.txt && \
+    if [ -f requirements-private.txt ]; then pip install --no-deps -r requirements-private.txt; fi
 
 FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 

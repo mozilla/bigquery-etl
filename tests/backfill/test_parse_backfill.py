@@ -473,6 +473,8 @@ class TestParseBackfill(object):
             status = Initiate
             custom_query_path = None
             shredder_mitigation = False
+            reinitialize_table = None
+            reinitialize_sampling_batch_size = None
             override_retention_limit = False
             override_depends_on_past_end_date = False
             ignore_date_partition_offset = False

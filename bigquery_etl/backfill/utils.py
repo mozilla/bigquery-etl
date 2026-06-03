@@ -18,6 +18,9 @@ QUALIFIED_TABLE_NAME_RE = re.compile(
     r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
 )
 
+# Match `{% if is_init() %}`) instead of a bare `is_init()` which can be in a comment
+IS_INIT_BLOCK_RE = re.compile(r"{%\s*if\s+is_init\(\)\s*%}")
+
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
@@ -137,7 +140,10 @@ def get_backfill_backup_table_name(
 
 
 def validate_table_metadata(
-    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+    sql_dir: str,
+    qualified_table_name: str,
+    ignore_missing_metadata: bool,
+    reinitialize_table: bool = False,
 ) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
     if ignore_missing_metadata:
@@ -152,9 +158,12 @@ def validate_table_metadata(
             return []
 
     errors = []
-    if not validate_depends_on_past(sql_dir, qualified_table_name):
+    if not validate_depends_on_past(
+        sql_dir, qualified_table_name, reinitialize_table=reinitialize_table
+    ):
         errors.append(
-            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}"
+            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}. "
+            "Use --reinitialize-table with `bqetl backfill create` to rebuild via the table's is_init() query."
         )
 
     if not validate_partitioning_type(sql_dir, qualified_table_name):
@@ -166,10 +175,14 @@ def validate_table_metadata(
     return errors
 
 
-def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
+def validate_depends_on_past(
+    sql_dir: str, qualified_table_name: str, reinitialize_table: bool = False
+) -> bool:
     """Check if the table depends on past and has null date_partition_parameter.
 
-    Fail if depends_on_past=true and date_partition_parameter=null
+    Fail if depends_on_past=true and date_partition_parameter=null, unless the
+    backfill reinitializes the table via its is_init() query (reinitialize_table=true),
+    which rebuilds the whole table without depending on prior partitions.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
@@ -180,12 +193,26 @@ def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
         "depends_on_past" in table_metadata.scheduling
         and "date_partition_parameter" in table_metadata.scheduling
     ):
-        return not (
+        depends_on_past_null_partition = (
             table_metadata.scheduling["depends_on_past"]
             and table_metadata.scheduling["date_partition_parameter"] is None
         )
+        if depends_on_past_null_partition and reinitialize_table:
+            # The reinitialize path rebuilds the whole table from its is_init() query;
+            # require that the query actually supports it.
+            return query_supports_reinitialize(sql_dir, qualified_table_name)
+        return not depends_on_past_null_partition
 
     return True
+
+
+def query_supports_reinitialize(sql_dir: str, qualified_table_name: str) -> bool:
+    """Return True if the table's query.sql can be reinitialized via is_init()."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+    if not query_path.exists():
+        return False
+    return IS_INIT_BLOCK_RE.search(query_path.read_text()) is not None
 
 
 def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:

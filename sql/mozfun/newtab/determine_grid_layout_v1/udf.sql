@@ -61,7 +61,7 @@ SELECT
   assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 130, new_grid.experiments)),
   assert.equals('OLD_GRID', newtab.determine_grid_layout_v1(FALSE, 130, old_grid.experiments)),
   assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 136, old_grid.experiments)),
-  assert.equals('NOVA', newtab.determine_grid_layout_v1(FALSE, 151, old_grid.experiments)),
+  assert.equals('NOVA', newtab.determine_grid_layout_v1(TRUE, 151, old_grid.experiments)),
   assert.equals('NOVA', newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)),
   assert.equals('SECTION_GRID', newtab.determine_grid_layout_v1(TRUE, 136, old_grid.experiments)),
 FROM

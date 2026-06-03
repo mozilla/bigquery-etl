@@ -698,7 +698,9 @@ SELECT
       metrics.labeled_counter.nimbus_qa_prefs_pref_type_errors,
       metrics.labeled_counter.network_cookies_open_error,
       metrics.labeled_counter.browser_engagement_windows_start_search_activation_count,
-      metrics.labeled_counter.networking_http_3_search_rtt_inflated
+      metrics.labeled_counter.networking_http_3_search_rtt_inflated,
+      metrics.labeled_counter.netwerk_happy_eyeballs_h3_discovery,
+      metrics.labeled_counter.netwerk_happy_eyeballs_https_rr_features
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

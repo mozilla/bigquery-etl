@@ -376,6 +376,31 @@ fields:
         have resolved.
 
         '
+    - name: first_startup_nimbus_init_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until Nimbus is fully initialized.
+
+        '
+    - name: first_startup_nimbus_loader_init_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until the Nimbus RemoteSettingsExperimentLoader
+        is initialized (including the AFTER_REMOTE_SETTINGS_UPDATE migration phase).
+
+        '
+    - name: first_startup_nimbus_manager_init_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until the Nimbus ExperimentManager is initialized.
+
+        '
+    - name: first_startup_nimbus_store_init_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until the Nimbus ExperimentStore is initialized.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

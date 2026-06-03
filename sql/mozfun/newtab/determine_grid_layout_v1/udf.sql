@@ -8,6 +8,8 @@ CREATE OR REPLACE FUNCTION newtab.determine_grid_layout_v1(
 )
 RETURNS STRING AS (
   CASE
+    WHEN app_version >= 151
+      THEN 'NOVA'
     WHEN is_section
       THEN 'SECTION_GRID'
     WHEN app_version >= 136
@@ -59,6 +61,8 @@ SELECT
   assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 130, new_grid.experiments)),
   assert.equals('OLD_GRID', newtab.determine_grid_layout_v1(FALSE, 130, old_grid.experiments)),
   assert.equals('NEW_GRID', newtab.determine_grid_layout_v1(FALSE, 136, old_grid.experiments)),
+  assert.equals('NOVA', newtab.determine_grid_layout_v1(FALSE, 151, old_grid.experiments)),
+  assert.equals('NOVA', newtab.determine_grid_layout_v1(FALSE, 161, old_grid.experiments)),
   assert.equals('SECTION_GRID', newtab.determine_grid_layout_v1(TRUE, 136, old_grid.experiments)),
 FROM
   new_grid,

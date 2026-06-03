@@ -1,0 +1,58 @@
+fields:
+- name: source_project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the profiled table.
+- name: source_dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset of the profiled table.
+- name: source_table
+  type: STRING
+  mode: REQUIRED
+  description: Table name (without project or dataset).
+- name: column_name
+  type: STRING
+  mode: REQUIRED
+  description: Field path using dot notation for nested fields (e.g. client_info.app_channel).
+- name: data_type
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery data type as reported by INFORMATION_SCHEMA.
+- name: null_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: Percentage of rows where this column is NULL. Null for undocumented columns.
+- name: distinct_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Approximate distinct non-null values. Null for STRUCT/ARRAY types or undocumented columns.
+- name: is_high_cardinality
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if distinct_count exceeds 50. High-cardinality columns store only an example value.
+- name: example_value
+  type: STRING
+  mode: NULLABLE
+  description: Single representative value. Only populated for high-cardinality columns.
+- name: values
+  type: RECORD
+  mode: REPEATED
+  description: Value/frequency pairs for low-cardinality columns (distinct_count <= 50).
+  fields:
+  - name: value
+    type: STRING
+    mode: NULLABLE
+    description: A representative column value, cast to string.
+  - name: frequency
+    type: INTEGER
+    mode: NULLABLE
+    description: Approximate count of rows holding this value in the sampled partition.
+- name: column_tier
+  type: STRING
+  mode: NULLABLE
+  description: scalar, leaf, nested_leaf, scalar_array, undocumented, or pii_suppressed (column name matched a known PII pattern — no values collected).
+- name: profiled_at
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the profiling job. This is the table's partition column.

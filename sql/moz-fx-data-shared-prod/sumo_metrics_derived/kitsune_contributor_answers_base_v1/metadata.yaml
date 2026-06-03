@@ -1,0 +1,54 @@
+friendly_name: Kitsune Contributor Answers Base
+description: |
+  Answer-level fact table for the SUMO (Kitsune) support forum, with one row per
+  qualifying answer used to measure contributor activity.
+
+  Grain: Answer
+
+  Each row is a single answer that satisfies all of the following (matching the
+  `main` CTE of the kitsune_weekly_contributors dashboard query):
+  - Not spam (kitsune_answers_raw.is_spam IS NOT TRUE)
+  - Posted by an active user (kitsune_auth_user.is_active = TRUE)
+  - On a Firefox product (firefox, mobile, ios, firefox-enterprise)
+  - Not an OP self-answer (answer creator <> question creator)
+
+  Product mapping:
+    firefox            -> Firefox desktop
+    mobile             -> Firefox for Android
+    ios                -> Firefox for iOS
+    firefox-enterprise -> Firefox for Enterprise
+  Non-Firefox products are excluded.
+
+  This table is the reusable base for kitsune_contributor_metrics_weekly_v1 and
+  for any other answer-level contributor reporting.
+
+  Note: total_helpful_votes / total_unhelpful_votes are cumulative vote totals
+  as of ETL run time, and last_login reflects current state. These columns are
+  not stable across runs. The contributor metrics built on top of this table do
+  not depend on those columns.
+
+  Replaces the `main` CTE in:
+  - kitsune_weekly_contributors.sql (dashboard queries)
+owners:
+- plee@mozilla.com
+- mozilla/customer_insights
+labels:
+  application: sumo
+  type: base_metrics
+  schedule: daily
+  dag: bqetl_sumo_metrics
+  owner1: plee
+scheduling:
+  dag_name: bqetl_sumo_metrics
+  date_partition_parameter: null
+  depends_on_past: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_auth_user
+  - moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus

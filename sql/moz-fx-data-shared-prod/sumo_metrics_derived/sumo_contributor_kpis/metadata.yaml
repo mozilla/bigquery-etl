@@ -1,0 +1,26 @@
+friendly_name: SUMO Contributor KPIs
+description: |
+  View exposing weekly SUMO (Kitsune) support-forum contributor KPIs, sourced
+  from kitsune_contributor_metrics_weekly_v1.
+
+  Grain: ISO week
+
+  KPIs exposed (each with a 4-week moving average and a 4-weeks-prior lag):
+    weekly_contributor_count    = distinct contributors who answered that week
+    new_contributors            = contributors whose first answer was that week
+    top_contributor_percentage  = share of the week's answers from Top Contributors
+    retention_rate              = prior-period contributors still active this period
+                                  (also split into Top / Regular by prior tier)
+owners:
+- plee@mozilla.com
+- mozilla/customer_insights
+labels:
+  owner1: plee
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+  - workgroup:sumo/bq-automation
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.sumo_metrics_derived.kitsune_contributor_metrics_weekly_v1

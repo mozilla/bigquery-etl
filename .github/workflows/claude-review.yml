@@ -140,6 +140,7 @@ jobs:
           claude_args: |
             --max-budget-usd 6.00
             --allowedTools mcp__github__create_pending_pull_request_review,mcp__github__add_comment_to_pending_review
+            --allowedTools mcp__github_inline_comment__create_inline_comment
             --allowedTools mcp__github__submit_pending_pull_request_review,mcp__github__delete_pending_pull_request_review
             --allowedTools mcp__github__get_pull_request_reviews,mcp__github__get_pull_request_review_comments,mcp__github__add_reply_to_pull_request_comment
             --allowedTools mcp__github__get_pull_request,mcp__github__get_pull_request_diff,mcp__github__get_pull_request_files,mcp__github__get_file_contents

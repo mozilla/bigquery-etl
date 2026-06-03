@@ -12,6 +12,7 @@ import yaml
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import SchemaField
+from google.cloud.bigquery.table import ColumnReference, ForeignKey
 from jmespath import search as jmespath_search
 
 from .. import dryrun
@@ -135,6 +136,48 @@ class Schema:
         else:
             raise KeyError(f"Field not found: {field_path}")
 
+    def apply_constraints(self, table: bigquery.Table) -> bool:
+        """Apply primary key and foreign key constraints from the schema to a BigQuery Table.
+
+        Returns True if constraints were applied (so callers can include
+        "table_constraints" in their update_table fields list).
+
+        Only acts when "primary_key" or "foreign_keys" is present in the schema,
+        treating schema.yaml as the source of truth for constraints. Builds the
+        API payload directly rather than via TableConstraints.to_api_repr(), which
+        omits the foreignKeys field when empty and would prevent clearing existing FKs.
+        """
+        if "primary_key" not in self.schema and "foreign_keys" not in self.schema:
+            return False
+
+        primary_key_columns = self.schema.get("primary_key") or []
+        foreign_key_defs = self.schema.get("foreign_keys") or []
+        foreign_keys = [
+            ForeignKey(
+                name=fk["name"],
+                referenced_table=bigquery.TableReference.from_string(
+                    fk["referenced_table"]
+                ),
+                column_references=[
+                    ColumnReference(
+                        referencing_column=cr["referencing_column"],
+                        referenced_column=cr["referenced_column"],
+                    )
+                    for cr in fk["column_references"]
+                ],
+            )
+            for fk in foreign_key_defs
+        ]
+
+        constraints: Dict[str, Any] = {}
+        if primary_key_columns:
+            constraints["primaryKey"] = {"columns": primary_key_columns}
+        # Always include foreignKeys (even as []) so BigQuery clears existing FKs
+        # when they are removed from schema.yaml.
+        constraints["foreignKeys"] = [fk.to_api_repr() for fk in foreign_keys]
+        table._properties["tableConstraints"] = constraints
+        return True
+
     def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
@@ -144,9 +187,13 @@ class Schema:
             # destination table already exists, update schema
             table = client.get_table(destination_table)
             table.schema = bigquery_schema
-            return client.update_table(table, ["schema"])
+            update_fields = ["schema"]
+            if self.apply_constraints(table):
+                update_fields.append("table_constraints")
+            return client.update_table(table, update_fields)
         except NotFound:
             table = bigquery.Table(destination_table, schema=bigquery_schema)
+            self.apply_constraints(table)
             return client.create_table(table)
 
     def merge(

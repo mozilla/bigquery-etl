@@ -1,13 +1,15 @@
 """Shared Statcounter CSV ingestion pipeline."""
 
+import functools
 import hashlib
 import io
 import logging
 import re
+import time
 import uuid
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 from urllib.parse import quote
 
 import pandas as pd
@@ -16,7 +18,7 @@ import typer
 from google.cloud import bigquery, storage
 from google.cloud.exceptions import NotFound
 
-# No-op under Airflow (root logger already configured); applies locally only.
+# No-op under Airflow (Airflow configures the root logger itself); applies locally only.
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -46,6 +48,17 @@ SCHEMA = [
 ]
 PK_COLUMNS = ["date", "geography", "device", "browser"]
 NUMERIC_COLUMNS = {"percent": (0, 100)}
+
+
+# Lazy-init so importing this module doesn't require GCP credentials.
+@functools.cache
+def _bq_client() -> bigquery.Client:
+    return bigquery.Client(project=BQ_PROJECT)
+
+
+@functools.cache
+def _storage_client() -> storage.Client:
+    return storage.Client()
 
 
 class Source(NamedTuple):
@@ -141,7 +154,8 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
     """Rename Statcounter CSV columns to match the pipeline schema.
 
     The CSV has a fixed 'Browser' column and a dynamic percent column whose name includes the date.
-    Statcounter varies between abbreviated and full month names (e.g. 'Market Share Perc. (DD MMM YYYY)' or '(DD MMMM YYYY)'), so try both formats.
+    Statcounter varies between abbreviated and full month names (e.g. 'Market Share Perc. (DD MMM YYYY)' or '(DD MMMM YYYY)')
+    and occasionally uses the 4-letter form "Sept", so normalize "Sept" → "Sep" and try both formats.
     Parse the date from the header and compare it to partition_date so that a Statcounter fallback to a different day fails loudly
     instead of silently mis-stamping the row.
 
@@ -153,10 +167,9 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
         pd.DataFrame: DataFrame with columns renamed to 'browser' and 'percent'.
 
     Raises:
-        ValueError: If the percent column is missing, malformed, or its
-       ValueError: If the percent column is missing, if the date string
-           cannot be parsed as either abbreviated or full month format,
-           or if the embedded date does not match partition_date.
+        ValueError: If the percent column is missing,
+        if the date string cannot be parsed as either abbreviated or full month format,
+        or if the embedded date does not match partition_date.
     """
     percent_cols = [col for col in df.columns if col.startswith("Market Share")]
     if len(percent_cols) != 1:
@@ -171,6 +184,9 @@ def rename_columns(df: pd.DataFrame, partition_date: date) -> pd.DataFrame:
             f"Could not parse date from percent column header: '{percent_col}'"
         )
     date_str = match.group(1)
+    # Statcounter sometimes uses the 4-letter "Sept" form, which neither %b
+    # nor %B accepts. \b anchors prevent corrupting "September".
+    date_str = re.sub(r"\bSept\b", "Sep", date_str)
     for fmt in ("%d %b %Y", "%d %B %Y"):
         try:
             source_date = datetime.strptime(date_str, fmt).date()
@@ -205,7 +221,7 @@ def add_metadata(
         device (str): Device value to assign to all rows.
 
     Returns:
-        pd.DataFrame: DataFrame with date, geography, and device columns added.
+        pd.DataFrame: DataFrame including date, geography, and device columns.
     """
     df = df.assign(
         date=partition_date.isoformat(),
@@ -225,7 +241,7 @@ def add_surrogate_key(df: pd.DataFrame) -> pd.DataFrame:
         df (pd.DataFrame): Transformed CSV data.
 
     Returns:
-        pd.DataFrame: DataFrame with sk column added.
+        pd.DataFrame: DataFrame including the sk column.
     """
     # | is safe as a separator: date is always ISO format, device is Desktop/Mobile,
     # geography and browser come from Statcounter's fixed taxonomy — none contain |.
@@ -276,7 +292,7 @@ def validate_no_nulls(df: pd.DataFrame) -> None:
         df (pd.DataFrame): Transformed CSV data.
 
     Raises:
-        ValueError: If a null or empty value is found in a PK column.
+        ValueError: If any PK column contains a null or empty value.
     """
     for col in PK_COLUMNS:
         if df[col].isnull().any():
@@ -308,7 +324,7 @@ def validate_unique_pk(df: pd.DataFrame) -> None:
         df (pd.DataFrame): Transformed CSV data.
 
     Raises:
-        ValueError: If duplicate PK values are detected.
+        ValueError: If the DataFrame contains duplicate PK values.
     """
     if df.duplicated(subset=PK_COLUMNS).any():
         raise ValueError(f"Duplicate rows detected on PK columns: {PK_COLUMNS}.")
@@ -332,7 +348,7 @@ def validate_numeric_bounds(df: pd.DataFrame) -> None:
         df (pd.DataFrame): Transformed CSV data.
 
     Raises:
-        ValueError: If a value is non-numeric or outside the expected bounds.
+        ValueError: If any value is non-numeric or falls outside the expected bounds.
     """
     for col, (lower, upper) in NUMERIC_COLUMNS.items():
         if df[col].isnull().any():
@@ -358,7 +374,7 @@ def upload_to_gcs(df: pd.DataFrame, blob_name: str) -> None:
         blob_name (str): GCS blob path.
     """
     gcs_uri = f"gs://{GCS_BUCKET}/{blob_name}"
-    client = storage.Client()
+    client = _storage_client()
     blob = client.bucket(GCS_BUCKET).blob(blob_name)
     blob.upload_from_string(df.to_csv(index=False), content_type="text/csv")
     logger.info(f"Uploaded {len(df)} rows to {gcs_uri}")
@@ -370,12 +386,12 @@ def load_into_bigquery(partition_date: date, bq_table: str, blob_name: str) -> N
     Uses WRITE_TRUNCATE to atomically replace the partition, making the operation idempotent.
 
     Args:
-        partition_date (date): The partition date, used to construct the partition decorator.
+        partition_date (date): Partition date for the BigQuery partition decorator.
         bq_table (str): BigQuery table name.
         blob_name (str): GCS blob path to load from.
     """
     gcs_uri = f"gs://{GCS_BUCKET}/{blob_name}"
-    client = bigquery.Client(project=BQ_PROJECT)
+    client = _bq_client()
     partition = partition_date.strftime("%Y%m%d")
     # $YYYYMMDD is BigQuery's partition decorator syntax — restricts the load to a single partition.
     table_ref = f"{BQ_PROJECT}.{BQ_DATASET}.{bq_table}${partition}"
@@ -404,7 +420,7 @@ def count_bq_records(partition_date: date, bq_table: str) -> int:
     Returns:
         int: Number of records in the table for the given date.
     """
-    client = bigquery.Client(project=BQ_PROJECT)
+    client = _bq_client()
     table_ref = f"{BQ_PROJECT}.{BQ_DATASET}.{bq_table}"
     query = f"SELECT COUNT(*) AS total FROM `{table_ref}` WHERE {DATE_COLUMN} = @partition_date"
     job_config = bigquery.QueryJobConfig(
@@ -424,8 +440,8 @@ def compare_counts(csv_count: int, bq_count: int) -> None:
     """Compare CSV and BigQuery record counts and raise if they do not match.
 
     Args:
-        csv_count (int): Number of records from the CSV.
-        bq_count (int): Number of records loaded into BigQuery.
+        csv_count (int): Record count from the CSV.
+        bq_count (int): BigQuery record count for the partition.
 
     Raises:
         ValueError: If the counts do not match.
@@ -439,7 +455,7 @@ def compare_counts(csv_count: int, bq_count: int) -> None:
 
 def ensure_dataset() -> None:
     """Create the BigQuery dataset if it does not already exist."""
-    client = bigquery.Client(project=BQ_PROJECT)
+    client = _bq_client()
     client.create_dataset(f"{BQ_PROJECT}.{BQ_DATASET}", exists_ok=True)
     logger.info(f"{BQ_PROJECT}.{BQ_DATASET} ready")
 
@@ -450,7 +466,7 @@ def ensure_table(config: PipelineConfig) -> None:
     Args:
         config (PipelineConfig): Pipeline configuration.
     """
-    client = bigquery.Client(project=BQ_PROJECT)
+    client = _bq_client()
     table = bigquery.Table(
         f"{BQ_PROJECT}.{BQ_DATASET}.{config.bq_table}", schema=SCHEMA
     )
@@ -469,7 +485,7 @@ def ensure_primary_key(bq_table: str) -> None:
     Args:
         bq_table (str): BigQuery table name.
     """
-    client = bigquery.Client(project=BQ_PROJECT)
+    client = _bq_client()
     table = client.get_table(f"{BQ_PROJECT}.{BQ_DATASET}.{bq_table}")
     existing = table.table_constraints
     if (
@@ -496,13 +512,82 @@ def delete_from_gcs(blob_name: str) -> None:
         blob_name (str): GCS blob path to delete.
     """
     gcs_uri = f"gs://{GCS_BUCKET}/{blob_name}"
-    client = storage.Client()
+    client = _storage_client()
     blob = client.bucket(GCS_BUCKET).blob(blob_name)
     try:
         blob.delete()
         logger.info(f"Deleted {gcs_uri}")
     except NotFound:
         logger.warning(f"{gcs_uri} already deleted, skipping")
+
+
+def log_summary(
+    dates: list[date],
+    succeeded: list[date],
+    failed: list[tuple[date, str]],
+) -> None:
+    """Emit the end-of-run summary for multi-date runs.
+
+    Single-date runs skip the summary because the per-date except block already
+    logs the traceback via `logger.exception`.
+
+    Args:
+        dates (list[date]): All dates the run attempted.
+        succeeded (list[date]): Dates that landed in BigQuery.
+        failed (list[tuple[date, str]]): (date, error message) for each failure.
+    """
+    if len(dates) <= 1:
+        return
+    summary = (
+        f"Summary: ran {dates[0].isoformat()} to {dates[-1].isoformat()}; "
+        f"{len(succeeded)}/{len(dates)} succeeded"
+    )
+    if failed:
+        summary += (
+            "; failed=["
+            + ", ".join(f"{d.isoformat()}: {msg}" for d, msg in failed)
+            + "]"
+        )
+    logger.info(summary)
+
+
+def log_elapsed(start: float) -> None:
+    """Emit the total pipeline elapsed time.
+
+    Args:
+        start (float): `time.monotonic()` value from run start.
+    """
+    minutes, seconds = divmod(time.monotonic() - start, 60)
+    logger.info(f"Pipeline run completed in {int(minutes)}m {seconds:.1f}s")
+
+
+def signal_failures(
+    dates: list[date],
+    failed: list[tuple[date, str]],
+    last_exc: Exception | None,
+) -> None:
+    """Raise to mark the run failed if any date failed.
+
+    Single-date runs re-raise the original exception so Airflow's UI and any
+    type-based alerting see the actual exception type. Multi-date runs raise
+    a terse `RuntimeError`; the summary log line above this call carries the
+    per-cause detail.
+
+    Args:
+        dates (list[date]): All dates the run attempted.
+        failed (list[tuple[date, str]]): (date, error message) for each failure.
+        last_exc (Exception | None): Most recent caught exception. Single-date
+            runs re-raise this directly to preserve its type.
+
+    Raises:
+        Exception: The original exception type for single-date failures.
+        RuntimeError: For multi-date failures, with the failed count.
+    """
+    if not failed:
+        return
+    if len(dates) == 1 and last_exc is not None:
+        raise last_exc
+    raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")
 
 
 def main(
@@ -517,8 +602,9 @@ def main(
         date_from (date | None): Start of the date range. Defaults to yesterday.
         date_to (date | None): End of the date range. Defaults to date_from.
     """
+    start = time.monotonic()
     yesterday = date.today() - timedelta(days=1)
-    # Default args can't use date.today() directly — it would be evaluated once at import time.
+    # Default args can't use date.today() directly — Python would evaluate it once at import time.
     date_from = date_from if date_from is not None else yesterday
     date_to = date_to if date_to is not None else date_from
 
@@ -583,22 +669,9 @@ def main(
             failed.append((partition_date, str(e)))
             last_exc = e
 
-    if len(dates) > 1:
-        summary = (
-            f"Summary ({len(succeeded)}/{len(dates)} succeeded): "
-            f"succeeded={[d.isoformat() for d in succeeded]}"
-        )
-        if failed:
-            summary += (
-                " failed=["
-                + ", ".join(f"{d.isoformat()}: {msg}" for d, msg in failed)
-                + "]"
-            )
-        logger.info(summary)
-    if failed:
-        if len(dates) == 1 and last_exc is not None:
-            raise last_exc
-        raise RuntimeError(f"{len(failed)} of {len(dates)} dates failed")
+    log_summary(dates, succeeded, failed)
+    log_elapsed(start)
+    signal_failures(dates, failed, last_exc)
 
 
 def build_sources(geographies: list[tuple[str, str, str]]) -> list[Source]:
@@ -650,12 +723,12 @@ def make_app(
 
     @app.command()
     def run(
-        date_from: Optional[datetime] = typer.Option(
+        date_from: datetime | None = typer.Option(
             None,
             formats=["%Y-%m-%d"],
             help="Start date (YYYY-MM-DD). Defaults to yesterday.",
         ),
-        date_to: Optional[datetime] = typer.Option(
+        date_to: datetime | None = typer.Option(
             None,
             formats=["%Y-%m-%d"],
             help="End date (YYYY-MM-DD). Defaults to --date-from.",

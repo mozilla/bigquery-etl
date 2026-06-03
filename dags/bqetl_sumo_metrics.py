@@ -118,6 +118,30 @@ with DAG(
         depends_on_past=False,
     )
 
+    sumo_metrics_derived__kitsune_contributor_answers_base__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__kitsune_contributor_answers_base__v1",
+        destination_table="kitsune_contributor_answers_base_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    sumo_metrics_derived__kitsune_contributor_metrics_weekly__v1 = bigquery_etl_query(
+        task_id="sumo_metrics_derived__kitsune_contributor_metrics_weekly__v1",
+        destination_table="kitsune_contributor_metrics_weekly_v1",
+        dataset_id="sumo_metrics_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="plee@mozilla.com",
+        email=["phlee@mozilla.com", "plee@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     sumo_metrics_derived__kitsune_forum_metrics_daily__v1 = bigquery_etl_query(
         task_id="sumo_metrics_derived__kitsune_forum_metrics_daily__v1",
         destination_table="kitsune_forum_metrics_daily_v1",
@@ -211,4 +235,8 @@ with DAG(
 
     sumo_metrics_derived__ga4_engagement_sessions_daily__v1.set_upstream(
         wait_for_sumo_ga_derived__ga4_events__v1
+    )
+
+    sumo_metrics_derived__kitsune_contributor_metrics_weekly__v1.set_upstream(
+        sumo_metrics_derived__kitsune_contributor_answers_base__v1
     )

@@ -1,0 +1,31 @@
+friendly_name: Knowledge Base Retrieval Index
+description: |-
+  AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Base, containing
+  embeddings and semantic features to support grounded question answering over support articles.
+
+  Grain: one row per Knowledge Base article (keyed by `id`).
+
+  LLM generated fields:
+  - article_summary_llm
+  - article_category_llm
+  - article_entities_llm
+  - article_topics_llm
+  - embedding based on [title, content]
+
+  Read-time fields (computed by this view, not stored in the underlying table):
+  - is_stale = TRUE when the article's most recent approved revision is at least 12 months old
+    (`DATE_DIFF(CURRENT_DATE(), last_approved_revision_date, MONTH) >= 12`). Articles with no
+    approved revision history (`last_approved_revision_date IS NULL`) are also reported as TRUE
+    so they surface for editor review. Mirrors the freshness logic in
+    `sumo_metrics_derived.freshness_metrics_base_v1`. Always reflects staleness at query time.
+
+  Visibility filter
+  - Only rows where `metadata.embedding_succeeded` is TRUE are surfaced; rows whose embedding step
+    failed are visible only on the underlying derived table for triage.
+
+  Metadata
+  - Additional data to support technical processes, such as backfills or investigations.
+  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+owners:
+- lvargas@mozilla.com
+- mozilla/customer_experience

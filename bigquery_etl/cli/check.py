@@ -205,9 +205,11 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
     ):
-        query_args = (
-            [] if (Path(checks_file).parent / "query.py").exists() else ctx.args
-        )
+        if (Path(checks_file).parent / "query.py").exists():
+            # python-query tables: drop script-only flags; keep --parameter=... bindings for checks.sql
+            query_args = [a for a in ctx.args if a.startswith("--parameter=")]
+        else:
+            query_args = ctx.args
         _run_check(
             checks_file,
             project_id,

@@ -114,14 +114,27 @@ jobs:
             Refer to docs/reference/recommended_practices.md for SQL conventions and best practices.
             Also consult .github/reviewer_checklist.md and address items applicable to this PR.
 
+            Label each finding with a Conventional Comments label: `issue`, `suggestion`, or
+            `nitpick`. Don't use the `praise` label or the `(blocking)` decorator - humans decide
+            what's blocking.
+
+            State the concrete problem and the fix, and match your wording to the label: don't
+            hedge an `issue` ("maybe", "you may want to") or inflate a `nitpick` into a demand.
+            Anchor each comment to a changed line; flag unchanged code only when a change breaks
+            or depends on it. Comment only when you're confident the issue is real. Don't post
+            comments that:
+            - Praise the code or restate what it does. If a change is correct, say nothing.
+            - Ask for verification ("Check if...", "Ensure that..."). Verify it yourself or don't raise it.
+            - Flag style preferences not backed by a documented standard.
+
             Post a single GitHub review using these tools in order:
             1. `mcp__github__create_pending_pull_request_review` to start a pending review.
-            2. `mcp__github__add_comment_to_pending_review` for each inline finding tied to specific lines.
-               Prefix each comment body with a Conventional Comments label. Don't use the `(blocking)` decorator — humans decide what's blocking.
+            2. `mcp__github__add_comment_to_pending_review` for each inline finding, prefixed with its label.
             3. `mcp__github__submit_pending_pull_request_review` to finalize. Required parameters:
-               - `event`: must be `"COMMENT"`. Never `APPROVE` or `REQUEST_CHANGES` — those statuses are reserved for human reviewers.
-               - `body`: cross-cutting observations and overall assessment. Always include the literal string `<!-- claude-review -->`
-                 in this body. It's a hidden HTML comment used to auto-collapse this review on rerun.
+               - `event`: must be `"COMMENT"`. Never `APPROVE` or `REQUEST_CHANGES` - those statuses are reserved for human reviewers.
+               - `body`: a few sentences of overall context. Open with a factual description of what the PR does, not a characterization.
+                 Do not include a bulleted list restating the inline findings - those belong inline only. Always include the literal
+                 string `<!-- claude-review -->` in this body. It's a hidden HTML comment used to auto-collapse this review on rerun.
 
             If any of those tools fail, fall back to posting a single consolidated top-level comment via `gh pr comment` so the run isn't silent.
           claude_args: |

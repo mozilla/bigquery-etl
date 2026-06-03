@@ -266,13 +266,13 @@ class DryRun:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:
             sql = re.sub(
-                "CREATE OR REPLACE VIEW.*?AS",
+                r"CREATE OR REPLACE VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,
             )
             sql = re.sub(
-                "CREATE MATERIALIZED VIEW.*?AS",
+                r"CREATE MATERIALIZED VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,

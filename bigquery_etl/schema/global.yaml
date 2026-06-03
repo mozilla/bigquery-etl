@@ -614,3 +614,47 @@ fields:
   description: The version string of the installed browser add-on or extension.
 - name: app
   description: The name or identifier of the Mozilla application associated with the record (e.g., 'Firefox Desktop', 'Firefox iOS', 'Firefox Android').
+- name: crash_count
+  description: The number of crashes recorded for the client or entity within the observation window. A value of zero indicates no crashes occurred
+    during that period.
+- name: crash_process_type
+  description: The type of process in which the crash occurred (e.g., 'main', 'content', 'gpu', 'extension'). Identifies which browser process component
+    was responsible for the crash.
+- name: customer_id
+  description: The unique identifier for the billing customer account assigned by the payment provider (e.g., a Stripe customer ID prefixed with 'cus_').
+    Used to associate subscriptions and charges with a single billing customer.
+- name: ended_at
+  description: The timestamp at which the subscription or entity definitively ended. Null for records that are still active.
+- name: first_reported_country
+  description: The first country code reported by the client, as observed in the earliest ping received from that client. Represents the country at
+    the time of initial activity.
+- name: installs
+  description: The count of successful installations within the observation period or cohort. Excludes reinstalls, upgrades, or ineligible install
+    events unless the specific table indicates otherwise.
+- name: is_daily_user
+  description: Boolean flag indicating whether the client qualifies as a daily active user on the given submission date, meaning a qualifying activity
+    ping was received on that day.
+- name: is_monthly_user
+  description: Boolean flag indicating whether the client qualifies as a monthly active user on the given submission date, meaning a qualifying ping
+    was received within the preceding 28 days inclusive.
+- name: is_weekly_user
+  description: Boolean flag indicating whether the client qualifies as a weekly active user on the given submission date, meaning a qualifying ping
+    was received within the preceding 7 days inclusive.
+- name: medium
+  description: The marketing or traffic medium describing the category of channel through which a user arrived (e.g., 'organic', 'cpc', 'referral',
+    'email'). Corresponds to the UTM medium parameter when set.
+- name: model
+  description: The identifier of the AI or machine learning model used to process a request (e.g., 'claude-sonnet-4-20250514', 'gpt-4o-mini-2024-07-18').
+    Null when the model is not applicable or not recorded for the provider.
+- name: project
+  description: The name or identifier of the cloud or organizational project associated with the resource or cost record (e.g., a GCP project ID or
+    Azure subscription name).
+- name: release_channel
+  description: The Firefox release channel on the client at the time the event or ping was recorded (e.g., 'release', 'beta', 'nightly', 'esr'). Reflects
+    the raw channel value, distinct from the normalized channel.
+- name: run_id
+  description: A unique identifier for a specific run or attempt of a task or job. In task execution contexts this is typically a zero-based integer
+    index; in pipeline contexts it may be a UUID or string token scoped to a single execution.
+- name: time
+  description: A Unix timestamp (seconds since epoch) representing when an event occurred on the client or system side. Use submission_timestamp for
+    ping receipt time; this field captures the event occurrence time.

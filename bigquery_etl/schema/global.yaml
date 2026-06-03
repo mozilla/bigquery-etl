@@ -364,3 +364,138 @@ fields:
 - name: event_type
   description: The high-level type or category of the recorded event, describing what kind of interaction or lifecycle change occurred (e.g., 'login',
     'New', 'Cancelled', 'contact').
+- name: exposure_count
+  description: Number of experiment exposure events recorded in the aggregation window, reflecting how many times enrolled clients encountered the
+    experimental feature or surface being tested.
+- name: first_event_timestamp
+  description: The timestamp of the first qualifying event observed for the client, used to anchor event-based cohort or first-seen analysis.
+- name: first_seen_city
+  description: The city where the client was first observed, as determined by IP geolocation on the date of first contact with Mozilla's telemetry
+    pipeline.
+- name: first_seen_city_date
+  description: The date on which the client's first-seen city was recorded, corresponding to the earliest geolocation observation for the client.
+- name: first_seen_country
+  description: The ISO 3166-1 alpha-2 country code of the country where the client was first observed, as determined by IP geolocation on the date
+    of first contact with Mozilla's telemetry pipeline.
+- name: first_seen_subdivision1
+  description: The first-level administrative subdivision (e.g., state or province code) where the client was first observed, as determined by IP geolocation
+    on the date of first contact with Mozilla's telemetry pipeline.
+- name: first_seen_subdivision2
+  description: The second-level administrative subdivision where the client was first observed, as determined by IP geolocation. Not applicable for
+    most countries and is typically null.
+- name: last_seen_city
+  description: The city where the client was most recently observed, as determined by IP geolocation on the date of last contact with Mozilla's telemetry
+    pipeline.
+- name: last_seen_city_date
+  description: The date on which the client's last-seen city was recorded, corresponding to the most recent geolocation observation for the client.
+- name: last_seen_country
+  description: The ISO 3166-1 alpha-2 country code of the country where the client was most recently observed, as determined by IP geolocation on the
+    date of last contact with Mozilla's telemetry pipeline.
+- name: last_seen_subdivision1
+  description: The first-level administrative subdivision (e.g., state or province code) where the client was most recently observed, as determined
+    by IP geolocation on the date of last contact with Mozilla's telemetry pipeline.
+- name: last_seen_subdivision2
+  description: The second-level administrative subdivision where the client was most recently observed, as determined by IP geolocation. Not applicable
+    for most countries and is typically null.
+- name: ad_clicks_count
+  description: Number of ad click events recorded for enrolled experiment clients in the aggregation window, counting clicks on advertisements shown
+    on search engine result pages.
+- name: clicks
+  description: The total number of times a user clicked on an ad or link within the reporting period.
+- name: disqualification_count
+  description: Number of experiment disqualification events recorded in the aggregation window, reflecting how many times a client was removed from
+    an experiment due to targeting criteria no longer being met.
+- name: enroll_count
+  description: Number of experiment enrollment events recorded in the aggregation window, reflecting how many times clients were successfully enrolled
+    into an experiment branch.
+- name: enroll_failed_count
+  description: Number of failed experiment enrollment attempts recorded in the aggregation window, where the client attempted but did not successfully
+    join an experiment.
+- name: first_seen_year
+  description: The calendar year in which the client profile was first observed by Mozilla's telemetry pipeline, extracted from first_seen_date and
+    used for cohort-level analysis.
+- name: graduate_count
+  description: Number of experiment graduation events recorded in the aggregation window, reflecting how many times clients transitioned out of an
+    experiment upon its conclusion.
+- name: new_profiles_metric_date
+  description: Count of new client profiles first seen on the metric date, used as the cohort base for retention calculations.
+- name: provider
+  description: The name of the external service or platform that provides the resource, product, or service described by the row (e.g., an ad server,
+    subscription platform, or AI service).
+- name: repeat_profiles
+  description: Count of new profiles created on the metric date that were recorded as daily active users at least twice in the following 28-day window,
+    indicating early retention.
+- name: retained_week_4_new_profiles
+  description: Count of new profiles created on the metric date that were recorded as daily active users at least once between days 22 and 28 after
+    the metric date, indicating four-week retention.
+- name: search_with_ads_count
+  description: Number of search engine result pages that contained advertisements, as recorded for enrolled experiment clients in the aggregation window.
+- name: title
+  description: A human-readable name or heading associated with the record, such as an ad creative title, content item heading, or pull request title.
+- name: unenroll_count
+  description: Number of experiment unenrollment events recorded in the aggregation window, reflecting how many times clients exited an experiment
+    before its conclusion.
+- name: unenroll_failed_count
+  description: Number of failed experiment unenrollment attempts recorded in the aggregation window, where a client attempted but did not successfully
+    exit an experiment.
+- name: update_failed_count
+  description: Number of failed experiment recipe update attempts recorded in the aggregation window, where the client could not successfully apply
+    an updated experiment configuration.
+- name: ad_clicks
+  description: The total number of advertisement clicks recorded for the client or dimension grouping in the reporting period, aggregated across all
+    applicable search access points or surfaces.
+- name: attributed
+  description: True if the client or install has a known attribution source (i.e., both attribution source and medium are present); false if the install
+    was organic or attribution data is unavailable.
+- name: daily_users
+  description: Count of clients that sent at least one ping on the submission date, used as the daily active user count for the given dimension grouping.
+- name: metric_date
+  description: The reference date used as the anchor for a retention or feature-usage measurement, typically representing the cohort date from which
+    downstream activity is measured.
+- name: monthly_users
+  description: Count of clients that sent at least one ping in the 28-day window ending on the submission date, used as the monthly active user count
+    for the given dimension grouping.
+- name: uri_count
+  description: The total number of URIs (web pages) visited by the client in the reporting period, derived from browser engagement scalars or equivalent
+    telemetry.
+- name: validation_failed_count
+  description: Number of experiment validation failure events recorded in the aggregation window, where a client's experiment configuration failed
+    a validation check.
+- name: weekly_users
+  description: Count of clients that sent at least one ping in the 7-day window ending on the submission date, used as the weekly active user count
+    for the given dimension grouping.
+- name: ad_click
+  description: The total number of advertisement clicks recorded for the client in the reporting period, aggregated across all applicable search engines
+    and access points.
+- name: search_with_ads
+  description: The total number of search engine result pages that contained advertisements, seen by the client or dimension grouping in the reporting
+    period.
+- name: count
+  description: The number of records, events, or entities matching the row's dimension combination.
+- name: email
+  description: The primary email address associated with the user or contact. This field contains personally identifiable information (PII) and should
+    be handled accordingly.
+- name: event_date
+  description: The calendar date on which the event occurred or was recorded.
+- name: ping_sent_metric_date
+  description: Count of client profiles that sent a telemetry ping on the metric date, used to measure activity at the cohort anchor point.
+- name: ping_sent_week_4
+  description: Count of client profiles that sent a telemetry ping between days 22 and 28 after the metric date, used to measure four-week retention.
+- name: product_id
+  description: An identifier for a product record, which may represent a Mozilla ad product, a subscription product, or a reference to a product in
+    an external system such as Stripe or an ad server.
+- name: active
+  description: Indicates whether the entity (e.g., account, user, or plan) is currently active. For accounts, this typically means the account is not
+    disabled and has a verified email address.
+- name: browser
+  description: The web browser used by the client or visitor (e.g., 'Firefox', 'Chrome', 'Safari'), as parsed from the user agent string.
+- name: content
+  description: The UTM content parameter associated with a traffic source or campaign, used to identify the specific link or creative variant within
+    a campaign.
+- name: currency
+  description: The three-letter ISO 4217 currency code (e.g., 'usd', 'eur') representing the currency used for the transaction or pricing.
+- name: sessions
+  description: The number of distinct browsing sessions recorded for the client or dimension grouping in the reporting period.
+- name: activations
+  description: Count of new client profiles that met the activation criterion, typically defined as returning to use the application within a specified
+    window after first install.

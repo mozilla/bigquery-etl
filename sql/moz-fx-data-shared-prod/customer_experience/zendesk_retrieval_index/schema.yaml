@@ -51,6 +51,11 @@ fields:
   description: Mozilla product, normalized at read time. Firefox-family raw values are mapped
     to canonical names (`firefox` → `Firefox Desktop`, `mobile` → `Fenix`, `ios` → `Firefox iOS`,
     `firefox-enterprise` → `Firefox Enterprise`); all other raw values collapse to `Non Firefox`.
+- name: product_version
+  type: STRING
+  mode: NULLABLE
+  description: Product version reported on the ticket, from the Zendesk
+    `custom_product_version` custom field. User-supplied; NULL when not provided.
 - name: locale
   type: STRING
   mode: NULLABLE

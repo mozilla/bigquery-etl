@@ -50,31 +50,29 @@ fields:
   name: agg_type
   type: STRING
   description: The aggregation type applied to this histogram. Currently always 'summed_histogram', indicating bucket counts are summed across clients.
-- fields:
+- description: A struct holding the normalized (weighted) histogram bucket counts
+    after GLAM normalization. The key is the bucket boundary and the value is the
+    normalized count as a float.
+  fields:
   - mode: NULLABLE
     name: key
     type: STRING
-  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
-    for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: record
   type: RECORD
-  description: A struct holding the normalized (weighted) histogram bucket counts after GLAM normalization. The key is the bucket boundary and the value
-    is the normalized count as a float.
-- fields:
+- description: A struct holding the non-normalized (raw summed) histogram bucket
+    counts prior to GLAM normalization. The key is the bucket boundary and the
+    value is the raw aggregated count.
+  fields:
   - mode: NULLABLE
     name: key
     type: STRING
-  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
-    for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: non_norm_record
   type: RECORD
-  description: A struct holding the non-normalized (raw summed) histogram bucket counts prior to GLAM normalization. The key is the bucket boundary and
-    the value is the raw aggregated count.

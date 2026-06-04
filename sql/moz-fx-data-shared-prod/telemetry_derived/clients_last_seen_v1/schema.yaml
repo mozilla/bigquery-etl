@@ -2470,7 +2470,9 @@ fields:
 - name: partner_id
   type: STRING
   mode: NULLABLE
-  description: The partner identifier associated with this Firefox installation, identifying preinstalled or co-distributed builds (e.g., 'ubuntu', 'mozillaonline').
+  description: The partner identifier associated with this Firefox installation,
+    identifying preinstalled or co-distributed builds (e.g., 'ubuntu',
+    'mozillaonline').
 - name: distribution_version
   type: STRING
   mode: NULLABLE

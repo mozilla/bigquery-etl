@@ -11,6 +11,7 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date when the server first received a ping from this client, establishing the start of the 28-day observation window.
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -27,6 +28,7 @@ fields:
 - name: build_id
   type: STRING
   mode: NULLABLE
+  description: The Firefox build ID of the client at the time of first seen, in YYYYMMDDHHMMSS format.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -34,6 +36,7 @@ fields:
 - name: os_version
   type: NUMERIC
   mode: NULLABLE
+  description: The operating system version of the client as a numeric value.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -41,27 +44,35 @@ fields:
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The attribution source from the install attribution, indicating the referring partner domain that drove the installation.
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
+  description: The derived user agent type at attribution time (e.g., 'chrome', 'edge', 'firefox').
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: The attribution medium from the install (e.g., 'organic', 'referral', 'cpc').
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: The campaign identifier from the install attribution.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: The attribution content identifier from the install attribution.
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: The attribution experiment key associated with the install.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
+  description: A unique token created at Firefox download time to correlate installs with download events.
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
+  description: Identifier indicating where the Firefox installation originated (e.g., 'mozorg', 'fxdotcom').
 - name: activated
   description: Whether the profile sent a main ping in at least 5 of their first 7
     days.
@@ -88,12 +99,15 @@ fields:
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: A bitmask encoding the days (within the first 28) on which the client sent at least one ping. Bit 0 = first seen date, bit 27 = 27 days later.
 - name: days_visited_1_uri_bits
   type: INTEGER
   mode: NULLABLE
+  description: A bitmask encoding the days (within the first 28) on which the client visited at least 1 URI, indicating active browsing.
 - name: days_interacted_bits
   type: INTEGER
   mode: NULLABLE
+  description: A bitmask encoding the days (within the first 28) on which the client had at least one user interaction event.
 - name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE

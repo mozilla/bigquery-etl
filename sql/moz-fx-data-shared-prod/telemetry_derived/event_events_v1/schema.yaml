@@ -27,6 +27,7 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: The name of the application that sent the event ping (e.g., 'Firefox').
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -38,6 +39,7 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: The operating system version string at the client, prior to normalization (e.g., '10.0' for Windows, '25.5.0' for macOS, '6.8.0' for Linux).
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -66,30 +68,42 @@ fields:
 - name: session_id
   type: STRING
   mode: NULLABLE
+  description: A UUID identifying the browser session in which the event occurred, used to correlate events within a single Firefox session.
 - name: session_start_time
   type: TIMESTAMP
   mode: NULLABLE
+  description: The timestamp at which the browser session started, truncated to minute precision, for correlating events to their originating session.
 - name: subsession_id
   type: STRING
   mode: NULLABLE
+  description: A UUID identifying the specific subsession within a browser session, as Firefox sessions are divided into subsessions when certain events
+    occur.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: The server-side timestamp when the event ping was received, used for ordering and joining with other telemetry data.
 - name: event_timestamp
   type: INTEGER
   mode: NULLABLE
+  description: The event's relative timestamp in milliseconds from the start of the browser session, as recorded by Firefox Legacy Telemetry.
 - name: event_category
   type: STRING
   mode: NULLABLE
+  description: The category of the Legacy Telemetry event, grouping related events under a common namespace (e.g., 'address', 'doh', 'normandy').
 - name: event_method
   type: STRING
   mode: NULLABLE
+  description: The method or action of the Legacy Telemetry event, indicating what happened within the event category (e.g., 'detected', 'submitted',
+    'saw_toggle').
 - name: event_object
   type: STRING
   mode: NULLABLE
+  description: The object on which the Legacy Telemetry event action was performed (e.g., 'address_form', 'toggle', 'nimbus_experiment').
 - name: event_string_value
   type: STRING
   mode: NULLABLE
+  description: An optional string value associated with the Legacy Telemetry event, providing additional context such as a numeric count, a state name,
+    or a UUID identifier.
 - name: event_map_values
   type: RECORD
   mode: REPEATED
@@ -103,15 +117,20 @@ fields:
 - name: event_process
   type: STRING
   mode: NULLABLE
+  description: The Firefox process type in which the event was recorded, such as 'parent', 'content', 'extension', or 'dynamic'.
 - name: build_id
   type: STRING
   mode: NULLABLE
+  description: The build ID of the Firefox application, formatted as a date-time string (e.g., '20260520211922'), identifying the specific build that
+    produced the event.
 - name: build_architecture
   type: STRING
   mode: NULLABLE
+  description: The CPU architecture for which Firefox was compiled (e.g., 'x86-64', 'aarch64', 'x86'), as recorded at build time.
 - name: profile_creation_date
   type: FLOAT
   mode: NULLABLE
+  description: The creation date of the Firefox profile expressed as the number of days since the Unix epoch (January 1, 1970).
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
@@ -120,18 +139,24 @@ fields:
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The referring domain or source that led to the Firefox installation, similar to UTM source (e.g., 'www.google.com', 'www.bing.com').
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
+  description: A unique token created at Firefox download time, used to link installs to specific download events across attribution pipelines.
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates whether the Firefox process is running under WOW64, meaning a 32-bit process on a 64-bit Windows system. True if running as
+    32-bit on 64-bit Windows; null on non-Windows platforms.
 - name: system_memory_mb
   type: FLOAT
   mode: NULLABLE
+  description: The total RAM available on the client's system, measured in megabytes.
 - name: city
   type: STRING
   mode: NULLABLE
+  description: The city in which the client is located, as determined by IP geolocation. Null when city-level data is unavailable or suppressed for privacy.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

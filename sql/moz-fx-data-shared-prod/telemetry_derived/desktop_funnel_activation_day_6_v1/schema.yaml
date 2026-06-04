@@ -15,6 +15,7 @@ fields:
 - mode: NULLABLE
   name: build_id
   type: STRING
+  description: The Firefox build identifier string (e.g., '20260516144017'), encoding the date and time the build was compiled.
 - mode: NULLABLE
   name: os
   type: STRING
@@ -22,9 +23,13 @@ fields:
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: The major.minor version of the operating system on the client at the time of first launch, truncated to the minor component for privacy
+    (e.g., '10', '6.1').
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: The attribution source; the referring domain or partner from which the client installed Firefox (e.g., 'www.google.com', 'www.bing.com').
+    Null when no attribution source is recorded.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
@@ -32,6 +37,8 @@ fields:
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
+  description: The browser user-agent used to download Firefox, indicating the browser the client was using prior to installation (e.g., 'chrome', 'edge',
+    'firefox'). Empty string when the UA could not be parsed.
 - mode: NULLABLE
   name: num_activated
   type: INTEGER

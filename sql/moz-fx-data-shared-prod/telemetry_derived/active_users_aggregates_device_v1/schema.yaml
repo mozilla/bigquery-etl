@@ -6,31 +6,35 @@ fields:
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+  description: True if the client has install attribution data; false if the install was unattributed.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
+  description: The attribution medium (UTM medium) from install attribution, such as 'referral' or 'cpc'. Null (~81%) when unattributed (sampled 2026-06-02).
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: The referring partner domain or UTM source from install attribution. Null (~81%) when the install was unattributed (sampled 2026-06-02).
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: Code of the country in which the activity took place, as determined by the IP geolocation.
 - mode: NULLABLE
   name: device_model
   type: STRING
+  description: The hardware model identifier of the client's device (e.g. 'iPhone14,5', 'Redmi 7A'). Null for Desktop clients (sampled 2026-06-02).
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
+  description: The calendar year in which the client was first seen by Mozilla's data pipeline.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: Name of the Mozilla application (e.g. 'Firefox Desktop', 'Fenix', 'Firefox iOS').
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -45,13 +49,11 @@ fields:
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the
-    client. E.g. for version "100.9.11", the major is 100.
+  description: Major or first part of the operating system version running at the client. E.g. for version "100.9.11", the major is 100.
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g.
-    for version "100.9.11", the minor is 9.
+  description: Minor part of the operating system version running at the client. E.g. for version "100.9.11", the minor is 9.
 - mode: NULLABLE
   name: submission_date
   type: DATE
@@ -71,26 +73,32 @@ fields:
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: Count of new Firefox profiles created on the submission_date for this dimension combination.
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
+  description: Total count of clicks on search advertisements. Null (~95%) for most non-desktop rows (sampled 2026-06-02).
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
+  description: Total count of organic (non-SAP) searches. Null (~59%) for mobile platforms (sampled 2026-06-02).
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: Total number of searches performed by clients in this row. Null (~59%) for platforms that do not report search counts (sampled 2026-06-02).
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: Total count of search result pages that contained at least one advertisement. Null (~92%) for most rows (sampled 2026-06-02).
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
+  description: Total number of URIs visited by clients in this row. Null (~70%) for mobile platforms (sampled 2026-06-02).
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
-- description: Count of distinct, qualified Desktop clients that we received a main
-    ping from on a given day. In mobile DAU = QDAU.
+  description: Total active browsing hours accumulated by clients in this row. Null (~59%) for mobile platforms that do not report this metric (sampled 2026-06-02).
+- description: Count of distinct, qualified Desktop clients that we received a main ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

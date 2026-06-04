@@ -22,9 +22,9 @@ WITH temp_unnested AS (
       AND event_action = 'annoyance'
     ) AS is_annoyed,
     sample_id,
-    IF(exit_type = 'bounce', TRUE, FALSE) AS is_bounce,
-    IF(exit_type = 'disable', TRUE, FALSE) AS is_disable,
-    IF(exit_type = 'abandonment', TRUE, FALSE) AS is_abandonment,
+    exit_type = 'bounce' AS is_bounce,
+    exit_type = 'disable' AS is_disable,
+    exit_type = 'abandonment' AS is_abandonment
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.urlbar_events`
   CROSS JOIN

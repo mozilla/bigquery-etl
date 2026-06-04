@@ -234,7 +234,7 @@ fields:
   - name: first_seen_date_source_ping
     type: STRING
     mode: NULLABLE
-    description: The ping type that provided the client''s first-seen date 'new_profile', 'main', or 'shutdown'.
+    description: The ping type that provided the client's first-seen date 'new_profile', 'main', or 'shutdown'.
   - name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE

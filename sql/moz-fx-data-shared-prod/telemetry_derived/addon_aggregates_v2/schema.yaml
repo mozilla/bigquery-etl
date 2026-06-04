@@ -6,8 +6,7 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -27,26 +26,33 @@ fields:
 - name: n_self_installed_addons
   type: INTEGER
   mode: NULLABLE
+  description: Number of add-ons the user explicitly installed themselves (not foreign-installed or system add-ons) on the submission_date.
 - name: n_shield_addons
   type: INTEGER
   mode: NULLABLE
+  description: Number of active Shield (Normandy) study add-ons installed on the client on the submission_date.
 - name: n_foreign_installed_addons
   type: INTEGER
   mode: NULLABLE
+  description: Number of add-ons installed by external software rather than by the user directly on the submission_date.
 - name: n_system_addons
   type: INTEGER
   mode: NULLABLE
+  description: Number of built-in system add-ons (e.g. 'Form Autofill', 'Web Compatibility Interventions') active on the client on the submission_date.
 - name: n_web_extensions
   type: INTEGER
   mode: NULLABLE
+  description: Number of WebExtension-type add-ons active on the client on the submission_date.
 - name: first_addon_install_date
   type: STRING
   mode: NULLABLE
+  description: Date string (YYYYMMDD) of the first add-on installation for this client. Null (~57%) for clients who have never installed a non-system add-on (sampled
+    2026-06-02).
 - name: profile_creation_date
   type: STRING
   mode: NULLABLE
+  description: Date string (YYYYMMDD) of the Firefox profile creation date for this client.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.

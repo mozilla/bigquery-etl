@@ -10,16 +10,16 @@ RETURNS BOOL AS (
     WHEN LOWER(distribution_id) != 'mozillaonline'
       THEN FALSE
     ELSE IFNULL(
-        norm.browser_version_info(app_version).major_version < 151
-        OR (
-          norm.browser_version_info(app_version).major_version = 151
-          AND norm.browser_version_info(app_version).minor_version = 0
-          AND norm.browser_version_info(app_version).patch_revision < 3
-        )
-        OR (
-          norm.browser_version_info(app_version).major_version = 151
-          AND norm.browser_version_info(app_version).minor_version = 0
-          AND norm.browser_version_info(app_version).patch_revision IS NULL
+        (
+          SELECT
+            v.major_version < 151
+            OR (
+              v.major_version = 151
+              AND v.minor_version = 0
+              AND (v.patch_revision < 3 OR v.patch_revision IS NULL)
+            )
+          FROM
+            UNNEST([norm.browser_version_info(app_version)]) AS v
         ),
         TRUE
       )
@@ -34,6 +34,10 @@ SELECT
   assert.false(norm.is_mozillaonline('MozillaOnline', '151.0.3')),
   -- Post-migration: FALSE
   assert.false(norm.is_mozillaonline('MozillaOnline', '152.0')),
+  -- Major release without patch (151.0): TRUE (pre-migration, patch is NULL)
+  assert.true(norm.is_mozillaonline('MozillaOnline', '151.0')),
+  -- Minor version bump (151.1): FALSE (post-migration)
+  assert.false(norm.is_mozillaonline('MozillaOnline', '151.1')),
   -- Well before migration: TRUE
   assert.true(norm.is_mozillaonline('MozillaOnline', '115.0')),
   -- Case-insensitive distribution_id: TRUE

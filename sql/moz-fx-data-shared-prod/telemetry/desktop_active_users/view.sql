@@ -28,7 +28,7 @@ SELECT
   CASE
     WHEN isp_name = 'BrowserStack'
       THEN CONCAT('Firefox Desktop', ' ', isp_name)
-    WHEN distribution_id = 'MozillaOnline'
+    WHEN mozfun.norm.is_mozillaonline(distribution_id, app_version)
       THEN CONCAT('Firefox Desktop', ' ', distribution_id)
     ELSE 'Firefox Desktop'
   END AS app_name,
@@ -57,7 +57,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   IF(
     LOWER(IFNULL(isp_name, '')) <> "browserstack"
-    AND LOWER(IFNULL(distribution_id, '')) <> "mozillaonline",
+    AND NOT mozfun.norm.is_mozillaonline(distribution_id, app_version),
     TRUE,
     FALSE
   ) AS is_desktop

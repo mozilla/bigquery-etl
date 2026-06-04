@@ -3,10 +3,7 @@ WITH bug_history AS (
     id,
     DATE(creation_ts) AS creation_date,
     MIN(
-      COALESCE(
-        IF(status = 'RESOLVED', snapshot_date, NULL),
-        IF(resolution IS NOT NULL, snapshot_date, NULL)
-      )
+      IF(status = 'RESOLVED' OR resolution IS NOT NULL, snapshot_date, NULL)
     ) AS first_resolved_date,
     MAX(IF(status = 'REOPENED', snapshot_date, NULL)) AS last_reopened_resolved_date,
   FROM

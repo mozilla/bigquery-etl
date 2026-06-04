@@ -42,8 +42,9 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: Array of active Normandy experiments the client was enrolled in at
+    event time, with branch and enrollment metadata for each.
   fields:
-  description: Array of active Normandy experiments the client was enrolled in at event time, with branch and enrollment metadata for each.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -104,8 +105,9 @@ fields:
 - name: event_map_values
   type: RECORD
   mode: REPEATED
+  description: Array of key-value string pairs providing additional event-specific
+    metadata (e.g., page URL, addon version, engine name).
   fields:
-  description: Array of key-value string pairs providing additional event-specific metadata (e.g., page URL, addon version, engine name).
   - name: key
     type: STRING
     mode: NULLABLE

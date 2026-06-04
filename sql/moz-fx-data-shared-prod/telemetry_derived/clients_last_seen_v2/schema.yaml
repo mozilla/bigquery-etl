@@ -1512,7 +1512,9 @@ fields:
   mode: REPEATED
   name: ad_clicks
   type: RECORD
-  description: Keyed counts of ad clicks across all search surfaces, where each key identifies the search engine and SAP source (e.g. 'google.in-content:organic:none').
+  description: Keyed counts of ad clicks across all search surfaces, where each
+    key identifies the search engine and SAP source (e.g.
+    'google.in-content:organic:none').
 - fields:
   - mode: NULLABLE
     name: key

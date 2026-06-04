@@ -840,9 +840,11 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
+  description: Total number of searches initiated via URL bar handoff (from the new tab page search to the URL bar) on the most recent active day.
 - mode: NULLABLE
   name: search_count_urlbar_persisted
   type: INTEGER
+  description: Total number of searches from a URL bar query that persisted from the previous page load on the most recent active day.
 - mode: NULLABLE
   name: session_restored_mean
   type: FLOAT
@@ -1169,30 +1171,42 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
+  description: Whether Firefox is pinned to the Windows taskbar on the client. True if pinned, False if not, Null if unavailable (non-Windows or older
+    builds).
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
+  description: Whether Firefox was most recently launched from a desktop shortcut. True if launched via desktop icon.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_start_menu
   type: BOOLEAN
+  description: Whether Firefox was most recently launched from the Windows Start Menu. True if launched via Start Menu.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
+  description: Whether Firefox was most recently launched from the Windows taskbar pin. True if launched via taskbar.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
+  description: Whether Firefox was most recently launched from another type of shortcut (not desktop, taskbar, or Start Menu). True if launched via other
+    shortcut.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
+  description: Whether Firefox was most recently launched via an unclassified launch method. True if launched via another method.
 - mode: NULLABLE
   name: search_count_webextension
   type: INTEGER
+  description: Total number of searches initiated from a WebExtension (browser extension) on the most recent active day.
 - mode: NULLABLE
   name: search_count_alias
   type: INTEGER
+  description: Total number of searches using a keyword/alias shortcut in the URL bar on the most recent active day.
 - mode: NULLABLE
   name: search_count_urlbar_searchmode
   type: INTEGER
+  description: Total number of searches initiated from the URL bar while in search mode (restricted to a specific search engine) on the most recent active
+    day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1426,18 +1440,24 @@ fields:
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: The identifier of the default search engine used in Firefox private browsing windows (e.g., 'ddg' for DuckDuckGo). Null if the same as
+    the normal default.
 - mode: NULLABLE
   name: default_private_search_engine_data_load_path
   type: STRING
+  description: The anonymized file path of the default private browsing search engine. Null if not configured separately from the normal default.
 - mode: NULLABLE
   name: default_private_search_engine_data_name
   type: STRING
+  description: The display name of the default private browsing search engine. Null if not configured separately.
 - mode: NULLABLE
   name: default_private_search_engine_data_origin
   type: STRING
+  description: The origin classification of the default private browsing search engine. Null if not configured separately.
 - mode: NULLABLE
   name: default_private_search_engine_data_submission_url
   type: STRING
+  description: The search submission URL for the default private browsing search engine. Null if not configured separately.
 - fields:
   - mode: NULLABLE
     name: engine
@@ -1454,6 +1474,7 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
+  description: The ISO country code used by Firefox to determine region-specific search defaults (set based on the client's locale and IP geolocation).
 - fields:
   - mode: NULLABLE
     name: key
@@ -1891,6 +1912,7 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
+  description: Total number of URIs visited across both normal and private browsing modes on the most recent active day.
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING

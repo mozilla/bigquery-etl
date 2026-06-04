@@ -24,6 +24,13 @@ fields:
   mode: NULLABLE
   description: Raw upstream Mozilla product value from `sumo_syndicate.kitsune_questions_plus`.
       Normalized at read time by the `customer_experience.kitsune_retrieval_index` view.
+- name: product_version
+  type: STRING
+  mode: NULLABLE
+  description: Product version reported on the support question, from the `ff_version`
+    field in `sumo_syndicate.kitsune_questions_plus`. Despite the upstream field name,
+    this applies to whichever product the question is about (see `product`), not only
+    Firefox. NULL when not provided.
 - name: locale
   type: STRING
   mode: NULLABLE

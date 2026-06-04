@@ -32,6 +32,7 @@ from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
     _initialize_previous_partition,
     _initiate_backfill,
+    _resolve_backfill_table,
     complete,
     create,
     info,
@@ -44,6 +45,7 @@ from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException, SkippedDeployException
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.util.target import Target
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -2168,6 +2170,38 @@ class TestBackfill:
         assert call_kwargs["query_script_arg"] == ["--dataset=staging"]
 
     @patch("google.cloud.bigquery.Client")
+    def test_initiate_backfill_skips_query_target_resolution(self, mock_client, runner):
+        """Initiate drives query backfill with the staging destination and opts out of
+        the query command's own --target redirection (would otherwise raise
+        "--destination-table and --target are mutually exclusive")."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging = (
+            "benwubenwutest.backfills_staging_derived.test__test_query_v1_2026_01_01"
+        )
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=staging,
+            entry=entry,
+            effective_table_name="benwubenwutest.dev_test.test_query_v1",
+        )
+
+        call_kwargs = mock_context.invoke.call_args[1]
+        assert call_kwargs["destination_table"] == staging
+        assert call_kwargs["skip_target_resolution"] is True
+
+    @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
     def test_initiate_backfill_script_skips_depends_on_past(
         self, mock_initialize_partition, mock_client, runner
@@ -2860,3 +2894,147 @@ class TestCopyPermissionsToStagingTable:
                 "serviceAccount:123-compute@developer.gserviceaccount.com",
             },
         }
+
+
+class TestBackfillTargetSupport:
+    """Backfill name resolution honors the active --target."""
+
+    PROD_TABLE = "moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3"
+
+    def _target(self):
+        return Target(
+            name="dev",
+            project_id="benwubenwutest",
+            dataset_prefix="dev_mybranch__{{ artifact.project_id }}__",
+        )
+
+    def test_resolve_backfill_table_no_target_passthrough(self):
+        table, dest_project = _resolve_backfill_table(None, self.PROD_TABLE)
+        assert table == self.PROD_TABLE
+        assert dest_project is None
+
+    def test_resolve_backfill_table_with_target(self):
+        table, dest_project = _resolve_backfill_table(self._target(), self.PROD_TABLE)
+        # dataset_prefix renders artifact.project_id (sanitized) and prefixes the
+        # dataset; table name is unchanged (no artifact_prefix configured).
+        assert table == (
+            "benwubenwutest."
+            "dev_mybranch__moz_fx_data_shared_prod__telemetry_derived."
+            "clients_first_seen_v3"
+        )
+        assert dest_project == "benwubenwutest"
+
+    def test_staging_name_honors_destination_project(self):
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="benwubenwutest",
+        )
+        assert name == (
+            "benwubenwutest.backfills_staging_derived."
+            "telemetry_derived__clients_first_seen_v3_2021_05_03"
+        )
+
+    def test_backup_name_honors_destination_project(self):
+        name = get_backfill_backup_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="benwubenwutest",
+        )
+        assert name == (
+            "benwubenwutest.backfills_staging_derived."
+            "telemetry_derived__clients_first_seen_v3_backup_2021_05_03"
+        )
+
+    def test_staging_name_defaults_to_prod_without_destination(self):
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE, date(2021, 5, 3)
+        )
+        assert name.startswith(
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+        )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_skip_public_redirect(self, mock_copy_table):
+        """A target swap keeps the destination as the (target) table, not the public one."""
+        public_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+            "bigquery": {
+                "time_partitioning": {"type": "day", "field": "submission_date"}
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(public_metadata))
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 3),  # single day
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="benwubenwutest.backfills_staging_derived.tbl",
+            qualified_table_name="benwubenwutest.dev_ds.tbl",
+            client=None,
+            entry=entry,
+            table_metadata=metadata,
+            skip_public_redirect=True,
+        )
+
+        # destination stays the target table; no redirect to mozilla-public-data
+        assert mock_copy_table.call_count == 1
+        staging_arg, prod_arg = mock_copy_table.call_args.args[:2]
+        assert prod_arg.startswith("benwubenwutest.dev_ds.tbl$")
+        assert "mozilla-public-data" not in prod_arg
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_checks_target_staging_project(
+        self, mock_client, mock_table_exists
+    ):
+        """With a destination_project, staging existence is checked in the target project."""
+        with CliRunner().isolated_filesystem():
+            table_dir = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(table_dir)
+            with open(f"{table_dir}/query.sql", "w") as f:
+                f.write("SELECT 1")
+            with open(f"{table_dir}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+            with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+                f.write(
+                    "2021-05-03:\n"
+                    "  start_date: 2021-01-03\n"
+                    "  end_date: 2021-01-03\n"
+                    "  reason: test_reason\n"
+                    "  watchers:\n"
+                    "  - test@example.org\n"
+                    "  status: Complete\n"
+                )
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            from bigquery_etl.backfill.utils import get_scheduled_backfills
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-shared-prod",
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                status=BackfillStatus.COMPLETE.value,
+                destination_project="benwubenwutest",
+            )
+
+            assert "moz-fx-data-shared-prod.test.test_query_v1" in result
+            # the staging existence check used the target project, not prod
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith(
+                "benwubenwutest.backfills_staging_derived."
+            )

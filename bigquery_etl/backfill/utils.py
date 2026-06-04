@@ -104,21 +104,36 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
     return backfill_file
 
 
-# TODO: It would be better to take in a backfill object.
-def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
-    """Return full table name where processed backfills are stored."""
+def get_backfill_staging_qualified_table_name(
+    qualified_table_name, entry_date, destination_project: Optional[str] = None
+) -> str:
+    """Return full table name where processed backfills are stored.
+
+    When a target environment is active, destination_project points the staging
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
 
-def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) -> str:
-    """Return full table name where backup of production table is stored."""
+def get_backfill_backup_table_name(
+    qualified_table_name: str,
+    entry_date: date,
+    destination_project: Optional[str] = None,
+) -> str:
+    """Return full table name where backup of production table is stored.
+
+    When a target environment is active, destination_project points the backup
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
 def validate_table_metadata(
@@ -210,9 +225,15 @@ def get_scheduled_backfills(
     status: Optional[str] = None,
     ignore_old_entries: bool = False,
     ignore_missing_metadata: bool = False,
+    destination_project: Optional[str] = None,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate or complete."""
-    client = bigquery.Client(project=project)
+    """Return backfill entries to initiate or complete.
+
+    When a target environment is active, destination_project is where the staging
+    and backup tables live (the target project), which is checked for existence
+    instead of the production backfill project.
+    """
+    client = bigquery.Client(project=destination_project or project)
 
     if qualified_table_name:
         backfills_dict = {
@@ -265,10 +286,14 @@ def get_scheduled_backfills(
 
         if (
             BackfillStatus.INITIATE.value == status
-            and _should_initiate(client, entry_to_process, qualified_table_name)
+            and _should_initiate(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ) or (
             BackfillStatus.COMPLETE.value == status
-            and _should_complete(client, entry_to_process, qualified_table_name)
+            and _should_complete(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ):
             backfills_to_process_dict[qualified_table_name] = entry_to_process
 
@@ -276,7 +301,10 @@ def get_scheduled_backfills(
 
 
 def _should_initiate(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be initiated.
 
@@ -286,7 +314,7 @@ def _should_initiate(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
 
     if _table_exists(client, staging_table):
@@ -296,7 +324,10 @@ def _should_initiate(
 
 
 def _should_complete(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be completed.
 
@@ -306,14 +337,14 @@ def _should_complete(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if not _table_exists(client, staging_table):
         click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if _table_exists(client, backup_table_name):
         click.echo(f"Backfill backup table already exists: {backup_table_name}")

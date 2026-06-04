@@ -11,8 +11,10 @@ fields:
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer encoding the number of days since the profile was created for each of the past 28 days, used to track profile age across
-    the rolling window.
+  description: Bit pattern marking the day the profile was created relative to
+    submission_date, with a single bit set at the offset equal to
+    days-since-creation. Only set when the profile was created within the last
+    7 days (0-6 days); 0 otherwise.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -96,7 +98,9 @@ fields:
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser on the client side.
+  description: The most frequently observed value of default_browser for this
+    client on the submission date, indicating whether the browser is set as the
+    default. Ties are broken by the latest submission_timestamp.
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE

@@ -6,39 +6,62 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: The date when the server first received any telemetry ping from this client.
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
+  description: The second date on which the server received a telemetry ping from this client, used to compute retention metrics. Null if the client
+    has only been seen once.
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
+  description: A 28-bit integer where each bit indicates whether the client was active on that day in the past 28 days. The rightmost bit represents
+    the most recent day (submission_date), 1 means active, 0 means not seen.
 - mode: NULLABLE
   name: days_visited_1_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI. The rightmost bit represents the most
+    recent day.
 - mode: NULLABLE
   name: days_visited_5_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 5 URIs. The rightmost bit represents the
+    most recent day.
 - mode: NULLABLE
   name: days_visited_10_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 10 URIs. The rightmost bit represents the
+    most recent day.
 - mode: NULLABLE
   name: days_had_8_active_ticks_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client had at least 8 active ticks (approximately 1 minute of activity).
+    The rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_opened_dev_tools_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client opened the Firefox Developer Tools at least once. The rightmost
+    bit represents the most recent day.
 - mode: NULLABLE
   name: days_interacted_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client had any active browsing hours (active_hours_sum > 0). The
+    rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in normal (non-private) browsing mode.
+    The rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in private browsing mode. The rightmost
+    bit represents the most recent day. Only populated for Firefox version 84 and above.
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client's profile was first created. Typically only one bit is set,
+    marking the profile creation day.
 - fields:
   - mode: NULLABLE
     name: experiment
@@ -52,6 +75,8 @@ fields:
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
+  description: An array of experiment participation records, one per active experiment, each containing the experiment slug, the assigned branch, and
+    a 28-bit integer encoding the days the client was seen enrolled.
 - mode: NULLABLE
   name: client_id
   type: STRING

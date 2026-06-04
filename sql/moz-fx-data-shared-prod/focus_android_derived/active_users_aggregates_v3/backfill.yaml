@@ -1,4 +1,4 @@
-2026-05-25:
+2026-06-03:
   start_date: 2026-04-15
   end_date: 2026-05-25
   reason: Fix inflated Focus Android metrics caused by duplicate client_ids in core_clients_last_seen_v1.

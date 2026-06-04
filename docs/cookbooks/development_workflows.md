@@ -1,11 +1,22 @@
 # Development Workflows
 
-This guide covers testing SQL changes in development environments before deploying to production.
+This guide explains how to try out a query against real data in a private workspace before it goes to production.
+
+When a query in bigquery-etl is new or changed, it is usually worth checking that it actually works (that it runs without errors and returns sensible numbers) before opening a pull request. Instead of writing to the production tables that power live dashboards and metrics, `bqetl` can run the query and save the results to a personal **development environment** that no one else sees. The query can be re-run and adjusted there until it looks right, and only then submitted for review.
+
+This is useful for:
+
+- **Testing a new derived table** before it becomes part of the scheduled pipeline.
+- **Checking a change to an existing query** — confirming the results still look correct and nothing downstream breaks.
+- **Exploring results** without the risk of overwriting or affecting production data.
+- **Sharing work-in-progress** results with a teammate for feedback.
+
+No deep familiarity with the command line is required. The examples below can be copied, with the table name and date adjusted to fit the task.
 
 ## Prerequisites
 
 - Authenticated to GCP: `gcloud auth application-default login`
-- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or shared dev project (e.g., `moz-fx-data-shared-dev`)
+- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
 
 ## Target-Based Development
 
@@ -27,6 +38,15 @@ dev:
 ```
 
 `dataset` and `dataset_prefix` are mutually exclusive. `artifact_prefix` can be used with either.
+
+**Shared dev project** (when a personal sandbox is not available, deploy to `moz-fx-data-proto`): since this project is shared across users, scope your artifacts with your username so they don't collide with other people's:
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  dataset_prefix: '{{ account.username }}_{{ git.branch }}_{{ artifact.project_id }}'
+```
+
+Clean up after yourself on the shared project (`./bqetl --target dev target clean --older-than 7d`), since others rely on it too.
 
 To avoid passing `--target` on every invocation, set a default using one of these (listed in priority order):
 

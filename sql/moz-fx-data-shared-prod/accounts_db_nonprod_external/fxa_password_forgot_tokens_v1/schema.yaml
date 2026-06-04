@@ -9,3 +9,6 @@ fields:
 - name: tries
   type: INTEGER
   mode: NULLABLE
+- name: verificationMethod
+  type: INTEGER
+  mode: NULLABLE

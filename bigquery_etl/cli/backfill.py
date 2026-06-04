@@ -8,6 +8,7 @@ import tempfile
 from collections import defaultdict
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
+from typing import Optional, Tuple
 
 import rich_click as click
 import yaml
@@ -32,6 +33,7 @@ from ..backfill.shredder_mitigation import (
     generate_query_with_shredder_mitigation,
 )
 from ..backfill.utils import (
+    BACKFILL_DESTINATION_DATASET,
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     copy_permissions_to_staging_table,
     get_backfill_backup_table_name,
@@ -68,9 +70,56 @@ from ..metadata.validate_metadata import (
 )
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents
+from ..util.target import Target, ensure_dataset_exists, target_ref_for_source
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+
+def _get_target(ctx) -> Optional[Target]:
+    """Return the active target from the click context, or None."""
+    return ctx.obj.get("target") if ctx.obj else None
+
+
+def _destination_project(
+    target: Optional[Target], default: Optional[str]
+) -> Optional[str]:
+    """Return the project backfills act in: the target project, else the default.
+
+    Pass default=None when used for the staging/backup destination_project (None
+    falls back to the production backfill project); pass the prod project_id when
+    used to pick the BigQuery client project.
+    """
+    return target.project_id if target else default
+
+
+def _resolve_backfill_table(
+    target: Optional[Target], source_qualified_table_name: str
+) -> Tuple[str, Optional[str]]:
+    """Resolve the table a backfill operates on and where its staging table lives.
+
+    Without a target this is a no-op: returns the source (production) table and
+    None (staging/backup default to the production backfill project).
+
+    With a target, the backfill is redirected into the target environment: the
+    table being backfilled is the target-deployed equivalent, and staging/backup
+    tables live in the target project (so production write access isn't required).
+    """
+    if target is None:
+        return source_qualified_table_name, None
+
+    src_project, src_dataset, src_table = qualified_table_name_matching(
+        source_qualified_table_name
+    )
+    tgt_project, tgt_dataset, tgt_table = target_ref_for_source(
+        target,
+        target.project_id or src_project,
+        src_project,
+        src_dataset,
+        src_table,
+    )
+    return f"{tgt_project}.{tgt_dataset}.{tgt_table}", target.project_id
+
 
 ignore_missing_metadata_option = click.option(
     "--ignore-missing-metadata",
@@ -515,6 +564,7 @@ def scheduled(
     ignore_missing_metadata,
 ):
     """Return list of backfill(s) that require processing."""
+    target = _get_target(ctx)
     backfills = get_scheduled_backfills(
         sql_dir,
         project_id,
@@ -522,6 +572,7 @@ def scheduled(
         status=status,
         ignore_old_entries=ignore_old_entries,
         ignore_missing_metadata=ignore_missing_metadata,
+        destination_project=_destination_project(target, None),
     )
 
     for qualified_table_name, entry in backfills.items():
@@ -583,8 +634,14 @@ def initiate(
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
 
+    target = _get_target(ctx)
+
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status=BackfillStatus.INITIATE.value
+        sql_dir,
+        project_id,
+        qualified_table_name,
+        status=BackfillStatus.INITIATE.value,
+        destination_project=_destination_project(target, None),
     )
 
     if not backfills_to_process_dict:
@@ -593,12 +650,32 @@ def initiate(
 
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
+    # When a target is active, the backfill is redirected into the target
+    # environment: it operates on the target-deployed table and stages into the target project
+    effective_table_name, staging_destination_project = _resolve_backfill_table(
+        target, qualified_table_name
+    )
+
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
-        qualified_table_name, entry_to_initiate.entry_date
+        qualified_table_name,
+        entry_to_initiate.entry_date,
+        destination_project=staging_destination_project,
     )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     is_python_script = (Path(sql_dir) / project / dataset / table / "query.py").exists()
+
+    # Python-script backfills aren't redirected under --target: the script's destination is baked
+    # into query_script_args at create time (pointing at the production staging project) and
+    # skip_target_resolution prevents any rewrite, so the script would write to the production
+    # staging table. Reject the combination rather than silently target the wrong project.
+    # Limitation tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054
+    if target is not None and is_python_script:
+        raise click.UsageError(
+            "--target is not supported for query.py (python script) backfills. "
+            "Run the script directly against the target."
+        )
+
     query_path = (
         Path(sql_dir)
         / project
@@ -607,14 +684,24 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
-    client = bigquery.Client(project=project_id)
+    effective_project = _destination_project(target, project_id)
+    client = bigquery.Client(project=effective_project)
+
+    if target is not None:
+        # Permission mirroring from the production table is meaningless in a dev
+        # target; make sure the target staging dataset exists instead.
+        copy_table_permissions = False
+        ensure_dataset_exists(
+            client,
+            f"{staging_destination_project}.{BACKFILL_DESTINATION_DATASET}",
+        )
 
     if copy_table_permissions:
         try:
-            client.get_table(qualified_table_name)
+            client.get_table(effective_table_name)
         except NotFound:
             raise RuntimeError(
-                f"Cannot use --copy-table-permissions since {qualified_table_name} does not exist."
+                f"Cannot use --copy-table-permissions since {effective_table_name} does not exist."
             ) from None
 
     # create schema before deploying staging table if it does not exist
@@ -634,7 +721,7 @@ def initiate(
         try:
             copy_permissions_to_staging_table(
                 client,
-                qualified_table_name,
+                effective_table_name,
                 backfill_staging_qualified_table_name,
             )
         except Exception as e:
@@ -673,15 +760,19 @@ def initiate(
         if copy_table_permissions and not is_python_script:
             _copy_permissions_with_cleanup()
 
-    billing_project = DEFAULT_BILLING_PROJECT
+    if target is not None:
+        # Dev backfills bill to the target project, not the production backfill slots.
+        billing_project = entry_to_initiate.billing_project or target.project_id
+    else:
+        billing_project = DEFAULT_BILLING_PROJECT
 
-    # override with billing project from backfill entry
-    if entry_to_initiate.billing_project is not None:
-        billing_project = entry_to_initiate.billing_project
-    elif not billing_project.startswith("moz-fx-data-backfill-"):
-        raise ValueError(
-            f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
-        )
+        # override with billing project from backfill entry
+        if entry_to_initiate.billing_project is not None:
+            billing_project = entry_to_initiate.billing_project
+        elif not billing_project.startswith("moz-fx-data-backfill-"):
+            raise ValueError(
+                f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
+            )
 
     if not is_python_script or entry_to_initiate.query_script_dry_run_arg:
         click.echo(
@@ -698,6 +789,7 @@ def initiate(
             billing_project=billing_project,
             is_python_script=is_python_script,
             query_script_dry_run_arg=entry_to_initiate.query_script_dry_run_arg,
+            effective_table_name=effective_table_name,
         )
 
     click.echo(
@@ -711,6 +803,7 @@ def initiate(
         parallelism,
         billing_project=billing_project,
         is_python_script=is_python_script,
+        effective_table_name=effective_table_name,
     )
 
     if copy_table_permissions and is_python_script:
@@ -731,6 +824,7 @@ def _initiate_backfill(
     billing_project=DEFAULT_BILLING_PROJECT,
     is_python_script=False,
     query_script_dry_run_arg=None,
+    effective_table_name: Optional[str] = None,
 ):
     if not is_authenticated():
         click.echo(
@@ -738,6 +832,11 @@ def _initiate_backfill(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # qualified_table_name keys the repo path + the production reference inside the
+    # query; effective_table_name is the table actually read/written, which differs
+    # under a target environment.
+    effective_table_name = effective_table_name or qualified_table_name
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
@@ -775,7 +874,8 @@ def _initiate_backfill(
         )
         sys.exit(1)
 
-    client = bigquery.Client(project=project)
+    effective_project, _, _ = qualified_table_name_matching(effective_table_name)
+    client = bigquery.Client(project=effective_project)
 
     if entry.shredder_mitigation is True:
         click.echo(
@@ -829,9 +929,12 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
+        # Seed the previous partition from effective_table_name (the --target table).
+        # The query reads production source tables for the new partitions, so under --target,
+        # the staging result intentionally mixes a target base partition with production partitions.
         _initialize_previous_partition(
             client,
-            qualified_table_name,
+            effective_table_name,
             backfill_staging_qualified_table_name,
             metadata,
             entry,
@@ -876,6 +979,9 @@ def _initiate_backfill(
             billing_project=billing_project,
             scheduling_overrides=scheduling_overrides,
             override_retention_range_limit=override_retention_limit,
+            # initiate already resolved the staging destination for the active target;
+            # don't let query backfill re-apply target redirection.
+            skip_target_resolution=True,
         )
     except subprocess.CalledProcessError as e:
         raise ValueError(
@@ -972,12 +1078,19 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client(project=project_id)
+
+    target = _get_target(ctx)
+    effective_project = _destination_project(target, project_id)
+    client = bigquery.Client(project=effective_project)
 
     click.echo("Backfill processing (complete) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status=BackfillStatus.COMPLETE.value
+        sql_dir,
+        project_id,
+        qualified_table_name,
+        status=BackfillStatus.COMPLETE.value,
+        destination_project=_destination_project(target, None),
     )
 
     if not backfills_to_process_dict:
@@ -990,20 +1103,32 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         f"Completing backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
     )
 
+    # Under a target, swap into the target-deployed table and use target-project
+    # staging/backup tables.
+    effective_table_name, staging_destination_project = _resolve_backfill_table(
+        target, qualified_table_name
+    )
+    if target is not None:
+        copy_table_permissions = False
+
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
-        qualified_table_name, entry_to_complete.entry_date
+        qualified_table_name,
+        entry_to_complete.entry_date,
+        destination_project=staging_destination_project,
     )
 
     # clone production table
     cloned_table_full_name = get_backfill_backup_table_name(
-        qualified_table_name, entry_to_complete.entry_date
+        qualified_table_name,
+        entry_to_complete.entry_date,
+        destination_project=staging_destination_project,
     )
-    _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
+    _copy_table(effective_table_name, cloned_table_full_name, client, clone=True)
 
     if copy_table_permissions:
         copy_permissions_to_staging_table(
             client,
-            qualified_table_name,
+            effective_table_name,
             cloned_table_full_name,
         )
 
@@ -1014,10 +1139,11 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
 
     _copy_backfill_staging_to_prod(
         backfill_staging_qualified_table_name,
-        qualified_table_name,
+        effective_table_name,
         client,
         entry_to_complete,
         table_metadata,
+        skip_public_redirect=target is not None,
     )
 
     # delete backfill staging table
@@ -1037,15 +1163,19 @@ def _copy_backfill_staging_to_prod(
     client: bigquery.Client,
     entry: Backfill,
     table_metadata: Metadata,
+    skip_public_redirect: bool = False,
 ):
     """Copy backfill staging table to prod based on table metadata and backfill config.
+
+    skip_public_redirect keeps the destination as given (used by target environments,
+    where the public-project redirect doesn't apply).
 
     If table is
        un-partitioned: copy the entire staging table to production.
        partitioned: determine and copy each partition from staging to production.
     """
     # If this is a public dataset, change the destination to the public project
-    if table_metadata.is_public_bigquery():
+    if not skip_public_redirect and table_metadata.is_public_bigquery():
         project, dataset, table = qualified_table_name_matching(qualified_table_name)
         public_project_id = ConfigLoader.get(
             "default", "public_project", fallback="mozilla-public-data"

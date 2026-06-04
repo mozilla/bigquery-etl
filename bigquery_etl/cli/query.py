@@ -710,6 +710,16 @@ def _backfill_script(
 @backfill_options.query_script_entrypoint()
 @backfill_options.query_script_date_arg()
 @backfill_options.query_script_arg()
+@defer_option()
+@click.option(
+    "--skip-target-resolution",
+    "--skip_target_resolution",
+    is_flag=True,
+    default=False,
+    hidden=True,
+    help="Internal: skip --target redirection because the caller (managed backfill) "
+    "has already resolved the destination table.",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -732,6 +742,8 @@ def backfill(
     query_script_entrypoint,
     query_script_date_arg,
     query_script_arg,
+    defer_to_target,
+    skip_target_resolution,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -769,6 +781,36 @@ def backfill(
         raise click.ClickException(
             f"Found multiple query source files to backfill: {query_files}"
         )
+
+    # The managed backfill flow (bqetl backfill initiate) calls this command with a
+    # destination already resolved for the active target, so it opts out of target
+    # redirection here to avoid double-handling.
+    #
+    # NOTE: any internal caller that passes --destination-table together with an active
+    # ctx target MUST also pass skip_target_resolution=True; otherwise the
+    # mutual-exclusivity check below raises.
+    target = (
+        None if skip_target_resolution else (ctx.obj.get("target") if ctx.obj else None)
+    )
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
+    # prepare target directories if using --target; the backfill then reads the
+    # target-copied query, runs in the target project, and writes to the target table
+    if target and target.project_id != project_id:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=True,
+        )
+        project_id = target.project_id
 
     query_file = query_files[0]
     query_file_path = Path(query_file)

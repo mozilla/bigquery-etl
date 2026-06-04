@@ -6,11 +6,11 @@ owners:
 - akomar@mozilla.com
 labels:
   application: accounts_backend
-  schedule: daily
-  dag: bqetl_accounts_backend_external
+  schedule: frequently
+  dag: bqetl_accounts_db
   owner1: akomar
 scheduling:
-  dag_name: bqetl_accounts_backend_external
+  dag_name: bqetl_accounts_db
   date_partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

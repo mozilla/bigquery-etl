@@ -7,10 +7,10 @@ owners:
 labels:
   application: accounts_backend
   schedule: daily
-  dag: bqetl_accounts_backend_external
+  dag: bqetl_accounts_db_daily
   owner1: wclouser
 scheduling:
-  dag_name: bqetl_accounts_backend_external
+  dag_name: bqetl_accounts_db_daily
   date_partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

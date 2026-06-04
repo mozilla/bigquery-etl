@@ -35,7 +35,7 @@ fields:
 - mode: NULLABLE
   name: days_had_8_active_ticks_bits
   type: INTEGER
-  description: A 28-bit integer encoding the days in the past 28 days on which this client had at least 8 active ticks (approximately 1 minute of activity).
+  description: A 28-bit integer encoding the days in the past 28 days on which this client had at least 8 active ticks.
     The rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_opened_dev_tools_bits

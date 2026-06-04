@@ -22,6 +22,18 @@ owners:
 - mozilla/kpi_table_reviewers
 labels:
   owner1: lvargas
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - app_name
+    - attribution_medium
+    - channel
 workgroup_access: []
 references:
   query.sql:

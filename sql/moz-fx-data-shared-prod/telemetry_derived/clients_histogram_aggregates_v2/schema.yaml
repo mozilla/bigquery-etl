@@ -23,6 +23,7 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application (e.g. "20251217121356"), identifying the specific nightly or release build.
 - mode: NULLABLE
   name: channel
   type: STRING

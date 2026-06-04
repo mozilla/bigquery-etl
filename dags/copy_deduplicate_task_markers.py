@@ -464,6 +464,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_sync_metrics__copy_deduplicate_all",
+            external_dag_id="bqetl_sync_metrics",
+            external_task_id="wait_for_copy_deduplicate_all",
+            execution_date="{{ (logical_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_terms_of_use__copy_deduplicate_all",
             external_dag_id="bqetl_terms_of_use",
             external_task_id="wait_for_copy_deduplicate_all",

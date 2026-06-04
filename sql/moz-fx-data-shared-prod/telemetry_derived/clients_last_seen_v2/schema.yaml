@@ -43,12 +43,18 @@ fields:
 - mode: NULLABLE
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER
+  description: Bit pattern encoding whether the client visited at least 1 URI in normal (non-private) browsing mode on each of the previous 28 days.
+    Each bit corresponds to one day, with the most-significant bit representing the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
+  description: Bit pattern encoding whether the client visited at least 1 URI in private browsing mode on each of the previous 28 days. Each bit corresponds
+    to one day.
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
+  description: Bit pattern encoding the day(s) within the previous 28-day window on which this client first created its Firefox profile. Typically a
+    single bit is set.
 - fields:
   - mode: NULLABLE
     name: experiment
@@ -1210,6 +1216,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the user accepted an autofill suggestion (any type), broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key

@@ -1888,27 +1888,41 @@ fields:
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN
+  description: Whether Firefox can install updates while not running (background updates enabled). True means Firefox may update itself even when the
+    browser is closed.
 - mode: NULLABLE
   name: user_pref_browser_search_suggest_enabled
   type: STRING
+  description: The value of the browser.search.suggest.enabled preference controlling search suggestions in the URL bar. 'false' if the user has disabled
+    suggestions.
 - mode: NULLABLE
   name: user_pref_browser_widget_in_navbar
   type: STRING
+  description: The value of the preference controlling whether the search widget appears in the navigation bar. 'false' means the search widget is not
+    pinned to the navbar.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_searches
   type: STRING
+  description: The value of the browser.urlbar.suggest.searches preference controlling search engine suggestions in the URL bar. 'false' if disabled
+    by the user.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
+  description: The value of the preference controlling whether search suggestions appear before browsing history in URL bar results. 'false' if the user
+    has disabled this.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest
   type: STRING
+  description: The value of the preference controlling Firefox Suggest (QuickSuggest) in the URL bar. 'false' if the user has opted out.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
+  description: The value of the preference controlling sponsored Firefox Suggest results in the URL bar. 'false' if the user has opted out of sponsored
+    suggestions.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
+  description: The choice the user made when presented with the Firefox Suggest onboarding dialog (e.g., 'accept_2', 'reject_2', 'not_now_2', 'close_1').
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
@@ -1916,9 +1930,11 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING
+  description: The value of the browser.newtabpage.enabled preference. 'false' means the user has replaced the default Firefox new tab page.
 - mode: NULLABLE
   name: user_pref_app_shield_optoutstudies_enabled
   type: STRING
+  description: The value of the app.shield.optoutstudies.enabled preference. 'false' means the user has opted out of Shield studies.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1972,15 +1988,22 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
   type: STRING
+  description: The value of the preference controlling non-sponsored Firefox Suggest results. 'false' if the user has opted out of non-sponsored suggestions.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING
+  description: The value of the preference controlling data collection for Firefox Suggest improvements. 'false' if the user has opted out of telemetry
+    for Suggest.
 - mode: NULLABLE
   name: scalar_a11y_hcm_foreground
   type: INTEGER
+  description: The foreground color used in high-contrast mode on the client, encoded as a 32-bit ARGB integer. Only populated when high-contrast mode
+    is active.
 - mode: NULLABLE
   name: scalar_a11y_hcm_background
   type: INTEGER
+  description: The background color used in high-contrast mode on the client, encoded as a 32-bit ARGB integer. Only populated when high-contrast mode
+    is active.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2094,15 +2117,20 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_bestmatch
   type: STRING
+  description: The value of the preference controlling Best Match (high-confidence sponsored Suggest results) in the URL bar. 'true' means Best Match
+    is enabled.
 - mode: NULLABLE
   name: scalar_parent_browser_ui_interaction_textrecognition_error_sum
   type: INTEGER
+  description: Total number of errors encountered during the text recognition feature on the most recent active day.
 - mode: NULLABLE
   name: text_recognition_interaction_timing_sum
   type: INTEGER
+  description: Total time in milliseconds spent in text recognition UI interactions on the most recent active day.
 - mode: NULLABLE
   name: text_recognition_interaction_timing_count_sum
   type: INTEGER
+  description: Total number of text recognition interaction timing measurements on the most recent active day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2116,78 +2144,103 @@ fields:
 - mode: NULLABLE
   name: text_recognition_api_performance_sum
   type: INTEGER
+  description: Total performance timing in milliseconds for text recognition API calls on the most recent active day.
 - mode: NULLABLE
   name: text_recognition_api_performance_count_sum
   type: INTEGER
+  description: Total number of text recognition API performance measurements on the most recent active day.
 - mode: NULLABLE
   name: text_recognition_text_length_sum
   type: INTEGER
+  description: Total length in characters of text recognized by the text recognition feature on the most recent active day.
 - mode: NULLABLE
   name: text_recognition_text_length_count_sum
   type: INTEGER
+  description: Total number of text recognition text length measurements on the most recent active day.
 - mode: NULLABLE
   name: places_searchbar_cumulative_searches_sum
   type: INTEGER
+  description: Cumulative total number of searches performed in the Firefox Places (bookmarks/history) searchbar on the most recent active day.
 - mode: NULLABLE
   name: places_searchbar_cumulative_filter_count_sum
   type: INTEGER
+  description: Cumulative total number of filter operations applied in the Firefox Places searchbar on the most recent active day.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
+  description: Whether Firefox was most recently launched from the Windows taskbar private browsing pin. True if launched via the private taskbar pin.
 - mode: NULLABLE
   name: dom_parentprocess_private_window_used
   type: BOOLEAN
+  description: Whether the user opened a private browsing window during the most recent active day. True means a private window was used.
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_any
   type: BOOLEAN
+  description: Whether Firefox is pinned to the Windows taskbar in any configuration (normal or private browsing). True if pinned in either mode.
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private_any
   type: BOOLEAN
+  description: Whether Firefox's private browsing mode icon is pinned to the Windows taskbar in any configuration. True if the private pin exists.
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private
   type: BOOLEAN
+  description: Whether Firefox's private browsing icon is pinned to the Windows taskbar. True if the private browsing shortcut is pinned.
 - mode: NULLABLE
   name: bookmark_migrations_quantity_chrome
   type: INTEGER
+  description: Number of bookmarks migrated from Google Chrome during the most recent active day.
 - mode: NULLABLE
   name: bookmark_migrations_quantity_edge
   type: INTEGER
+  description: Number of bookmarks migrated from Microsoft Edge during the most recent active day.
 - mode: NULLABLE
   name: bookmark_migrations_quantity_safari
   type: INTEGER
+  description: Number of bookmarks migrated from Apple Safari during the most recent active day.
 - mode: NULLABLE
   name: bookmark_migrations_quantity_all
   type: INTEGER
+  description: Total number of bookmarks migrated from all other browsers during the most recent active day.
 - mode: NULLABLE
   name: history_migrations_quantity_chrome
   type: INTEGER
+  description: Number of browsing history entries migrated from Google Chrome during the most recent active day.
 - mode: NULLABLE
   name: history_migrations_quantity_edge
   type: INTEGER
+  description: Number of browsing history entries migrated from Microsoft Edge during the most recent active day.
 - mode: NULLABLE
   name: history_migrations_quantity_safari
   type: INTEGER
+  description: Number of browsing history entries migrated from Apple Safari during the most recent active day.
 - mode: NULLABLE
   name: history_migrations_quantity_all
   type: INTEGER
+  description: Total number of browsing history entries migrated from all other browsers during the most recent active day.
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
   type: INTEGER
+  description: Number of saved login/password entries migrated from Google Chrome during the most recent active day.
 - mode: NULLABLE
   name: logins_migrations_quantity_edge
   type: INTEGER
+  description: Number of saved login/password entries migrated from Microsoft Edge during the most recent active day.
 - mode: NULLABLE
   name: logins_migrations_quantity_safari
   type: INTEGER
+  description: Number of saved login/password entries migrated from Apple Safari during the most recent active day.
 - mode: NULLABLE
   name: logins_migrations_quantity_all
   type: INTEGER
+  description: Total number of saved login/password entries migrated from all other browsers during the most recent active day.
 - mode: NULLABLE
   name: media_play_time_ms_audio_sum
   type: INTEGER
+  description: Total milliseconds of audio media playback on the most recent active day.
 - mode: NULLABLE
   name: media_play_time_ms_video_sum
   type: INTEGER
+  description: Total milliseconds of video media playback on the most recent active day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2361,15 +2414,19 @@ fields:
 - name: places_previousday_visits_mean
   type: FLOAT
   mode: NULLABLE
+  description: Mean number of page visits recorded in the Firefox Places database on the day prior to the most recent active day.
 - name: places_library_cumulative_bookmark_searches_sum
   type: INTEGER
   mode: NULLABLE
+  description: Cumulative total number of bookmark searches performed in the Firefox Library dialog on the most recent active day.
 - name: places_library_cumulative_history_searches_sum
   type: INTEGER
   mode: NULLABLE
+  description: Cumulative total number of history searches performed in the Firefox Library dialog on the most recent active day.
 - name: places_bookmarks_searchbar_cumulative_searches_sum
   type: INTEGER
   mode: NULLABLE
+  description: Cumulative total number of bookmark searches performed via the bookmarks searchbar on the most recent active day.
 - name: scalar_parent_library_link_sum
   type: RECORD
   mode: REPEATED
@@ -2403,18 +2460,25 @@ fields:
 - name: startup_profile_selection_reason_first
   type: STRING
   mode: NULLABLE
+  description: The reason the Firefox profile was selected on the very first run of the installation. Values indicate automated default selection, profile
+    manager, restart, etc.
 - name: first_document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID of the very first telemetry ping received from this client, useful for tracing the original ping that established the
+    client record.
 - name: partner_id
   type: STRING
   mode: NULLABLE
+  description: The partner identifier associated with this Firefox installation, identifying preinstalled or co-distributed builds (e.g., 'ubuntu', 'mozillaonline').
 - name: distribution_version
   type: STRING
   mode: NULLABLE
+  description: The version string of the distribution configuration associated with this Firefox installation.
 - name: distributor
   type: STRING
   mode: NULLABLE
+  description: The name of the organization or project that distributed this Firefox installation (e.g., 'canonical', 'mozillaonline', 'archlinux').
 - name: distributor_channel
   type: STRING
   mode: NULLABLE

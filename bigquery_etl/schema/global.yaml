@@ -231,3 +231,105 @@ fields:
   aliases:
   - updated_timestamp
   - updated_date
+- name: city
+  description: The city in which the activity took place, as determined by IP geolocation.
+- name: channel
+  description: The normalized channel the application is being distributed on.
+- name: os
+  description: The normalized name of the operating system running at the client.
+- name: os_version_major
+  description: Major or first part of the operating system version running at the client. E.g. for version "100.9.11", the major is 100.
+- name: os_version_minor
+  description: Minor part of the operating system version running at the client. E.g. for version "100.9.11", the minor is 9.
+- name: app_version_patch_revision
+  description: The patch/revision component of the app version. Null (~61%) for versions without a patch number (sampled 2026-06-02).
+- name: windows_build_number
+  description: The Windows build number (e.g. 22000). Always null for mobile platforms (sampled 2026-06-02).
+- name: app_channel
+  description: The release channel for this application entry, e.g. 'release', 'beta', or 'nightly'.
+- name: attribution_dlsource
+  description: Identifier indicating where the Firefox installation originated (e.g., 'mozorg', 'fxdotcom', 'mozillaci').
+- name: attribution_dltoken
+  description: A unique token created at Firefox download time to correlate installs with download events.
+- name: attribution_ua
+  description: The derived user agent type at attribution time (e.g., 'chrome', 'edge', 'firefox').
+- name: attribution.campaign
+  description: The campaign identifier from the install attribution.
+- name: attribution.content
+  description: The attribution content identifier from the install attribution.
+- name: attribution.dlsource
+  description: Identifier indicating where the Firefox installation originated (e.g., 'mozorg', 'fxdotcom').
+- name: attribution.dltoken
+  description: A unique token created at Firefox download time to correlate installs with download events.
+- name: attribution.experiment
+  description: The attribution experiment key associated with the install.
+- name: attribution.medium
+  description: The attribution medium from the install (e.g., 'organic', 'referral', 'cpc').
+- name: attribution.source
+  description: The attribution source from the install attribution, indicating the referring partner domain that drove the installation.
+- name: attribution.ua
+  description: The derived user agent type at attribution time (e.g., 'chrome', 'edge', 'firefox').
+- name: attribution.variation
+  description: The attribution variation key associated with the install.
+- name: build_id
+  description: The Firefox build ID of the client at the time of first seen, in YYYYMMDDHHMMSS format.
+- name: adjust_ad_group
+  description: The Adjust ad group identifier associated with the mobile install attribution. Only available for mobile clients.
+- name: adjust_campaign
+  description: The Adjust campaign identifier associated with the mobile install attribution. Only available for mobile clients.
+- name: adjust_creative
+  description: The Adjust creative identifier (e.g., ad creative name) associated with the mobile install attribution. Only available for mobile clients.
+- name: normalized_app_name
+  description: The normalized name of the Firefox application (e.g., Fenix, Firefox Desktop, Focus Android). Set to 'Other' if the app name was unrecognized.
+- name: play_store_attribution_campaign
+  description: The Google Play Store attribution campaign associated with the install, sourced from the Play Store referral parameters. Only available
+    for Android clients.
+- name: play_store_attribution_content
+  description: The Google Play Store attribution content parameter associated with the install. Only available for Android clients.
+- name: play_store_attribution_install_referrer_response
+  description: The raw install referrer response string from the Google Play Store (e.g., 'utm_source=google-play&utm_medium=organic'), containing
+    the full set of attribution parameters. Only available for Android clients.
+- name: play_store_attribution_medium
+  description: The Google Play Store attribution medium (e.g., 'organic', 'referral', 'preload') associated with the install. Only available for Android
+    clients.
+- name: play_store_attribution_source
+  description: The Google Play Store attribution source (e.g., 'google-play', 'eea-browser-choice') associated with the install. Only available for
+    Android clients.
+- name: play_store_attribution_term
+  description: The Google Play Store attribution search term associated with the install (e.g., 'firefox', 'mozilla firefox'). Only available for Android
+    clients.
+- name: arch
+  description: The CPU architecture of the device (e.g., 'arm64-v8a', 'armeabi-v7a', 'arm64', 'x86_64'). Represents the modal value across all core
+    pings for this client on the day.
+- name: default_browser
+  description: Whether the user has set Firefox as their default browser at the time of the ping. Null (~90%) when this preference is not reported
+    by the client.
+- name: application_name
+  description: The normalized application name reporting the crash (always 'Firefox' in this table, sampled 2026-06-02).
+- name: activity_segments_v1
+  description: 'User engagement segment based on browsing frequency. Values: ''core_user'', ''regular_user'', ''infrequent_user'', ''casual_user'',
+    ''other'' (sampled 2026-06-02).'
+- name: subsample_id
+  description: A number, 0-99, that samples by client_id to allow filtering data for analysis. Uniformly distributed across 100 buckets (sampled 2026-06-02).
+- name: client_info.telemetry_sdk_build
+  description: The version of the Glean SDK at the time the crash ping was collected (e.g. '67.2.0') (sampled 2026-06-02).
+- name: normalized_country_code
+  description: ISO 3166-1 alpha-2 country code of the client's location, as determined by IP geolocation (e.g. 'US', 'IN', 'FR') (sampled 2026-06-02).
+- name: campaign
+  description: The attribution campaign (UTM campaign) for the Firefox installation; null when the client is not attributed (sampled 2026-06-02).
+- name: content
+  description: The attribution content (UTM content) for the Firefox installation; null when the client is not attributed (sampled 2026-06-02).
+- name: medium
+  description: The attribution medium (UTM medium) for the Firefox installation; null when the client is not attributed (sampled 2026-06-02).
+- name: source
+  description: The attribution source (UTM source) for the Firefox installation; null when the client is not attributed (sampled 2026-06-02).
+- name: app_display_version
+  description: The user-visible version string of Firefox (e.g. '120.0.1').
+- name: fields.client_id
+  description: A unique identifier (UUID) for the client, nested inside the fields struct.
+- name: os_version_patch
+  description: The patch (third) component of the OS version string. For example, for '100.9.11', the patch is 11. Defaults to 0 when not present or
+    parseable.
+- name: experiments
+  description: An array of key-value pairs listing the Nimbus experiments and rollouts the client was enrolled in on the submission date, where key
+    is the experiment slug and value is the branch name (e.g. 'control', 'treatment-a').

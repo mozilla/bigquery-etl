@@ -50,6 +50,11 @@ fields:
   mode: NULLABLE
   description: Raw upstream Zendesk `custom_product` value.
       Normalized at read time by the `customer_experience.zendesk_retrieval_index` view.
+- name: product_version
+  type: STRING
+  mode: NULLABLE
+  description: Product version reported on the ticket, from the Zendesk
+    `custom_product_version` custom field. User-supplied; NULL when not provided.
 - name: locale
   type: STRING
   mode: NULLABLE

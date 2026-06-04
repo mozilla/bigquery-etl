@@ -693,8 +693,7 @@ class TestQuery:
             assert "--project_id=moz-fx-data-shared-prod" in args
             destination = [a for a in args if a.startswith("--destination_table=")]
             assert destination and (
-                "sandbox:backfills_staging_derived.t_2021_01_05"
-                in destination[0]
+                "sandbox:backfills_staging_derived.t_2021_01_05" in destination[0]
             )
 
     def test_query_backfill_with_scheduling_overrides(self, runner):

@@ -1261,7 +1261,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: A list of known accessibility clients that inject into Firefox
-        process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
+        process space (see https://searchfox.org/firefox-main/source/accessible/windows/msaa/Compatibility.h).
     - name: a11y_iatable_usage_flag
       type: STRING
       mode: NULLABLE
@@ -13267,7 +13267,7 @@ fields:
         mode: NULLABLE
         description: Time (ms) for the QuotaManager to load quota information. Keyed
           by conditions during quota info loading, see RecordTimeDeltaHelper::Run
-          in https://searchfox.org/mozilla-central/source/dom/quota/ActorsParent.cpp
+          in https://searchfox.org/firefox-main/source/dom/quota/ActorsParent.cpp
     - name: qm_shutdown_time_v0
       type: RECORD
       mode: REPEATED
@@ -13279,7 +13279,7 @@ fields:
         type: STRING
         mode: NULLABLE
         description: Time (ms) for the QuotaManager to shutdown. Keyed by conditions
-          during shutdown, see RecordTimeDeltaHelper::Run in https://searchfox.org/mozilla-central/source/dom/quota/ActorsParent.cpp
+          during shutdown, see RecordTimeDeltaHelper::Run in https://searchfox.org/firefox-main/source/dom/quota/ActorsParent.cpp
     - name: refresh_driver_tick_phase_weight
       type: RECORD
       mode: REPEATED
@@ -14360,7 +14360,7 @@ fields:
           type: STRING
           mode: NULLABLE
           description: A list of known accessibility clients that inject into Firefox
-            process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
+            process space (see https://searchfox.org/firefox-main/source/accessible/windows/msaa/Compatibility.h).
         - name: a11y_iatable_usage_flag
           type: STRING
           mode: NULLABLE
@@ -29965,7 +29965,7 @@ fields:
             description: 'Recorded on enable tool checkbox check/uncheck in Developer
               Tools options panel. Boolean stating if the tool was enabled or disabled
               by the user. Keyed by tool id. Current default tools with their id''s
-              are defined in https://searchfox.org/mozilla-central/source/devtools/client/definitions.js
+              are defined in https://searchfox.org/firefox-main/source/devtools/client/definitions.js
 
               '
         - name: devtools_toolbox_tabs_reordered

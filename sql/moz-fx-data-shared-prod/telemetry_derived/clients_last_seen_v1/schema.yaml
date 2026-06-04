@@ -2482,27 +2482,39 @@ fields:
 - name: distributor_channel
   type: STRING
   mode: NULLABLE
+  description: The distribution channel identifier for this Firefox installation, used to differentiate sub-variants within a distributor (e.g., 'ubuntu',
+    'mainWinStub', 'zena').
 - name: env_build_platform_version
   type: STRING
   mode: NULLABLE
+  description: The version of the XULRunner platform on which this Firefox binary is built (typically matches the app version).
 - name: env_build_xpcom_abi
   type: STRING
   mode: NULLABLE
+  description: The XPCOM ABI string identifying the processor and compiler combination of this Firefox binary (e.g., 'x86_64-msvc', 'aarch64-gcc3').
 - name: geo_db_version
   type: STRING
   mode: NULLABLE
+  description: The version string of the MaxMind GeoIP database used to geolocate the client on the most recent active day.
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
+  description: The hardware model identifier for Apple Mac devices (e.g., 'MacBookAir10,1'). Null for non-Mac clients.
 - name: max_subsession_counter
   type: INTEGER
   mode: NULLABLE
+  description: The maximum subsession counter value seen for this client on the most recent active day, indicating how many subsessions have occurred
+    in the session.
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
+  description: The minimum subsession counter value seen for this client on the most recent active day, typically 1 for the first subsession of a new
+    session.
 - name: startup_profile_selection_first_ping_only
   type: STRING
   mode: NULLABLE
+  description: The profile selection reason recorded in the first telemetry ping of the most recent active day, reflecting how the profile was chosen
+    at startup.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
@@ -2510,6 +2522,10 @@ fields:
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the Firefox BackupService is configured to automatically create profile backups in the background. True if background backup scheduling
+    is active.
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the user can create profile backups (i.e., the feature has not been disabled by a preference or compatibility issue). True if
+    backup creation is allowed.

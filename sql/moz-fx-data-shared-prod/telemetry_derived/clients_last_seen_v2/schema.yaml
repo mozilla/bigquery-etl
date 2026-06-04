@@ -1227,6 +1227,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_about_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where an about-page autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1237,6 +1238,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where an adaptive history autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1247,6 +1249,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where an origin-based autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1257,6 +1260,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_other_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where an autofill suggestion of type 'other' was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1267,6 +1271,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_preloaded_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a preloaded site autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1277,6 +1282,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a full-URL autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1287,6 +1293,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_bookmark_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the user chose a bookmark suggestion, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1297,6 +1304,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_dynamic_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a dynamic (non-standard) suggestion was chosen, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1307,6 +1315,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_extension_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where an extension-provided suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1317,6 +1326,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_formhistory_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a form-history autofill suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1327,6 +1337,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_history_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a browsing history suggestion was accepted, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1337,6 +1348,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_keyword_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a keyword bookmark was invoked, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1347,6 +1359,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_remotetab_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a synced remote tab suggestion was chosen, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1357,6 +1370,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchengine_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the user chose to search with a specific engine, broken down by engine key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1367,6 +1381,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchsuggestion_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a search suggestion was accepted, broken down by engine key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1377,6 +1392,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_switchtab_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the user switched to an already-open tab, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1387,6 +1403,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tabtosearch_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a tab-to-search suggestion was accepted, broken down by engine key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1397,6 +1414,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tip_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the user interacted with a tip suggestion, broken down by tip type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1407,6 +1425,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_topsite_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where a top-site suggestion was chosen, broken down by site key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1417,6 +1436,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_unknown_sum
   type: RECORD
+  description: Keyed counts of URL bar result selections where the result type could not be classified, broken down by result type key.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1492,6 +1512,7 @@ fields:
   mode: REPEATED
   name: ad_clicks
   type: RECORD
+  description: Keyed counts of ad clicks across all search surfaces, where each key identifies the search engine and SAP source (e.g. 'google.in-content:organic:none').
 - fields:
   - mode: NULLABLE
     name: key
@@ -1502,6 +1523,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_sum
   type: RECORD
+  description: Keyed counts of URL bar content searches by engine, summed across sessions on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1512,6 +1534,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_handoff_sum
   type: RECORD
+  description: Keyed counts of handoff URL bar content searches (initiated from the New Tab page search box) by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1522,6 +1545,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed counts of content searches performed while the URL bar was in search-mode, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1532,6 +1556,7 @@ fields:
   mode: REPEATED
   name: search_content_contextmenu_sum
   type: RECORD
+  description: Keyed counts of content searches initiated via the right-click context menu, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1542,6 +1567,7 @@ fields:
   mode: REPEATED
   name: search_content_about_home_sum
   type: RECORD
+  description: Keyed counts of content searches initiated from the about:home page, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1651,6 +1677,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed counts of URL bar search-mode result pages that contained ads, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1738,6 +1765,7 @@ fields:
   mode: REPEATED
   name: search_withads_reload_sum
   type: RECORD
+  description: Keyed counts of reload-triggered search result pages that contained ads, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1748,6 +1776,7 @@ fields:
   mode: REPEATED
   name: search_withads_unknown_sum
   type: RECORD
+  description: Keyed counts of search result pages from unclassified surfaces that contained ads, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1758,6 +1787,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_sum
   type: RECORD
+  description: Keyed counts of ad clicks on URL bar search result pages, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1768,6 +1798,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
   type: RECORD
+  description: Keyed counts of ad clicks on handoff URL bar search result pages, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1778,6 +1809,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed counts of ad clicks on URL bar search-mode result pages, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1788,6 +1820,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_contextmenu_sum
   type: RECORD
+  description: Keyed counts of ad clicks on context-menu search result pages, by engine, on the submission date.
 - fields:
   - mode: NULLABLE
     name: key

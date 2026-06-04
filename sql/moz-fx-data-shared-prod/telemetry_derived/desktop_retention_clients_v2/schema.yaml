@@ -98,9 +98,13 @@ fields:
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
+  description: A 28-bit integer bitmask encoding the days within the retention window on which the client sent at least one ping, where the least significant
+    bit represents the most recent day. Used to compute ping-based retention metrics.
 - mode: NULLABLE
   name: days_active_bits
   type: INTEGER
+  description: A 28-bit integer bitmask encoding the days within the retention window on which the client was active (sent an active ping), where the
+    least significant bit represents the most recent day. Used to compute activity-based retention metrics.
 - mode: NULLABLE
   name: ping_sent_metric_date
   type: BOOLEAN

@@ -1,0 +1,54 @@
+friendly_name: Sync Mobile
+description: |-
+  Daily aggregated sync metrics for mobile
+owners:
+- sync-team@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_sync_metrics
+  owner1: sync-team
+scheduling:
+  dag_name: bqetl_sync_metrics
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - application
+    - channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - mozdata.org_mozilla_fenix.addresses_sync
+  - mozdata.org_mozilla_fenix.bookmarks_sync
+  - mozdata.org_mozilla_fenix.creditcards_sync
+  - mozdata.org_mozilla_fenix.history_sync
+  - mozdata.org_mozilla_fenix.logins_sync
+  - mozdata.org_mozilla_fenix.tabs_sync
+  - mozdata.org_mozilla_firefox.bookmarks_sync
+  - mozdata.org_mozilla_firefox.creditcards_sync
+  - mozdata.org_mozilla_firefox.history_sync
+  - mozdata.org_mozilla_firefox.logins_sync
+  - mozdata.org_mozilla_firefox.tabs_sync
+  - mozdata.org_mozilla_firefox_beta.bookmarks_sync
+  - mozdata.org_mozilla_firefox_beta.creditcards_sync
+  - mozdata.org_mozilla_firefox_beta.history_sync
+  - mozdata.org_mozilla_firefox_beta.logins_sync
+  - mozdata.org_mozilla_firefox_beta.tabs_sync
+  - mozdata.org_mozilla_ios_firefox.bookmarks_sync
+  - mozdata.org_mozilla_ios_firefox.creditcards_sync
+  - mozdata.org_mozilla_ios_firefox.history_sync
+  - mozdata.org_mozilla_ios_firefox.logins_sync
+  - mozdata.org_mozilla_ios_firefox.tabs_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.bookmarks_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.creditcards_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.history_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.logins_sync
+  - mozdata.org_mozilla_ios_firefoxbeta.tabs_sync
+require_column_descriptions: false

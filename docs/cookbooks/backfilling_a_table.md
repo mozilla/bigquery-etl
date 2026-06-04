@@ -27,6 +27,12 @@ The hard rejections (no override) are enforced by [`validate_table_metadata`](ht
 
 ## Testing a backfill in a dev environment
 
+We can't create tables in `moz-fx-data-shared-prod.backfills_staging_derived`, so running
+the full managed backfill workflow locally is only possible with `--target`, which stages into 
+a test project. We can write to tables that already exist in
+`moz-fx-data-shared-prod.backfills_staging_derived`, so an active backfill can be
+amended by writing to its existing staging table.
+
 Before running a managed backfill against production, you can exercise the full
 `initiate` and `complete` flow against a [development target](development_workflows.md) by
 passing the global `--target` flag. With a target active, the backfill operates on the

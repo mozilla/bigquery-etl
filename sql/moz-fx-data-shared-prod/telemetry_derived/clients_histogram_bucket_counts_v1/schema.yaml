@@ -10,6 +10,7 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application (e.g. "20251217121356"), or "*" when aggregated across all builds.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -17,44 +18,58 @@ fields:
 - mode: NULLABLE
   name: first_bucket
   type: INTEGER
+  description: The lower bound of the first bucket in the histogram definition for the given metric.
 - mode: NULLABLE
   name: last_bucket
   type: INTEGER
+  description: The upper bound of the last bucket in the histogram definition for the given metric.
 - mode: NULLABLE
   name: num_buckets
   type: INTEGER
+  description: The total number of buckets in the histogram definition for the given metric.
 - mode: NULLABLE
   name: metric
   type: STRING
+  description: The name of the telemetry histogram probe (e.g. "event_longtask") being measured in this row.
 - mode: NULLABLE
   name: metric_type
   type: STRING
+  description: The type of the histogram probe, such as "histogram-exponential", "histogram-enumerated", "histogram-boolean", "histogram-linear", or
+    "histogram-categorical".
 - mode: NULLABLE
   name: key
   type: STRING
+  description: The keyed-histogram key for keyed histograms; empty string for non-keyed histograms.
 - mode: NULLABLE
   name: process
   type: STRING
 - mode: NULLABLE
   name: agg_type
   type: STRING
+  description: The aggregation method applied to produce the bucket counts; currently always "summed_histogram".
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+  description: The keyed-histogram key for keyed histograms; empty string for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: record
   type: RECORD
+  description: A struct containing the normalized bucket counts for this histogram row, where key is the bucket boundary and value is the normalized
+    count.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+  description: The keyed-histogram key for keyed histograms; empty string for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: non_norm_record
   type: RECORD
+  description: A struct containing the raw (non-normalized) bucket counts for this histogram row, where key is the bucket boundary and value is the raw
+    count.

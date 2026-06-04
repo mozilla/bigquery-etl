@@ -94,8 +94,9 @@ fields:
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: Whether Firefox is set as the default browser on the client device at the time of the last core ping submission. Null when this information
-    was not reported.
+  description: The most frequently observed value of default_browser for this
+    client on the submission date, indicating whether Firefox is set as the
+    default browser. Ties are broken by the latest submission_timestamp.
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE

@@ -6,15 +6,17 @@ fields:
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
-  description: A 28-bit integer where each bit represents whether the client was active on that day relative to submission_date, with the rightmost bit
-    representing the current day. Used to compute rolling activity windows without expanding to daily rows.
+  description: A 64-bit integer encoding the last 28 days of activity, where
+    each of the low 28 bits represents whether the client was active on that
+    day relative to submission_date. The rightmost bit represents the current
+    day.
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
-  description: Bit pattern marking the day the profile was created relative to
-    submission_date, with a single bit set at the offset equal to
-    days-since-creation. Only set when the profile was created within the last
-    7 days (0-6 days); 0 otherwise.
+  description: A 64-bit integer encoding profile creation within the last 28
+    days, with a single bit set at the offset equal to days-since-creation.
+    Only set when the profile was created within the last 7 days (0-6 days);
+    0 otherwise.
 - name: client_id
   type: STRING
   mode: NULLABLE

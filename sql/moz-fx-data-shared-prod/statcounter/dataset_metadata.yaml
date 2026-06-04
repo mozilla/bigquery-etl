@@ -1,0 +1,10 @@
+friendly_name: Statcounter
+description: |-
+  Views on browser market share collected from Statcounter CSV downloads
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

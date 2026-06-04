@@ -27,6 +27,15 @@ monitoring:
   - 463
   - 508
   - 509
+  # Per-workspace BigQuery warehouse IDs. Required for tables whose
+  # `monitoring.workspace` is non-default — Bigeye warehouses belong to a
+  # single workspace, so an API call to one workspace's warehouse ID won't
+  # see metrics in another workspace. Falls back to bigeye_warehouse_id
+  # when a workspace isn't listed here (preserves single-workspace behavior).
+  bigeye_warehouses:
+    463: 1939
+    508: 2014
+    509: 1977
   stable_tables_monitoring:
     # Firefox Desktop
     firefox_desktop_stable:
@@ -82,10 +91,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/app_store_v2_syndicate/apple_store_territory_report/view.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
@@ -270,6 +275,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_prod_v1/view.sql
+  # Source tables are in fxa projects
+  - sql/moz-fx-data-shared-prod/fxa_fastly_logs/*/view.sql
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
@@ -414,7 +421,6 @@ generate:
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
-    - mlhackweek_search
     - moso_mastodon_android
     - moso_mastodon_web
     - moso_mastodon_backend
@@ -453,7 +459,6 @@ generate:
       skip_pings:
       - topsites-impression  # access denied
       - serp-categorization  # access denied
-      - background-update  # table doesn't exist
       events_tables:  # overwrite event tables
         pine:  # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
@@ -484,7 +489,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     clients_last_seen_joined:
       skip_apps:
@@ -499,7 +503,6 @@ generate:
       - mozillavpn_backend_cirrus
       - pine
       - thunderbird_android
-      - thunderbird_crashreporter
       - thunderbird_desktop
     bigconfig:
       skip_apps:

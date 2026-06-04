@@ -23,6 +23,7 @@ description: |-
   down to a 0.01% sample. Like sample_id, it ranges from 0 to 99.
 labels:
   incremental: true
+  legacy: true
 owners:
 - jklukas@mozilla.com
 scheduling:

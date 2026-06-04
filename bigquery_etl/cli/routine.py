@@ -20,6 +20,7 @@ from ..cli.utils import (
     defer_option,
     is_authenticated,
     is_valid_project,
+    isolated_option,
     project_id_option,
     sql_dir_option,
 )
@@ -31,6 +32,7 @@ from ..routine.parse_routine import (
     PROCEDURE_FILE,
     UDF_FILE,
     RawRoutine,
+    accumulate_dependencies,
     read_routine_dir,
     routine_usage_pattern,
 )
@@ -418,6 +420,7 @@ Examples:
     "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
 )
 @defer_option()
+@isolated_option()
 @click.pass_context
 def publish(
     ctx,
@@ -429,12 +432,18 @@ def publish(
     gcs_path,
     dry_run,
     defer_to_target,
+    isolated,
 ):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
     target = ctx.obj.get("target") if ctx.obj else None
 
     public = False
+
+    if defer_to_target and isolated:
+        raise click.UsageError(
+            "--defer-to-target and --isolated are mutually exclusive."
+        )
 
     if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
@@ -449,6 +458,7 @@ def publish(
             gcs_bucket,
             gcs_path,
             defer_to_target,
+            isolated,
             pattern=name,
             dry_run=dry_run,
         )
@@ -476,9 +486,11 @@ def _publish_to_target(
     gcs_bucket,
     gcs_path,
     defer_to_target,
+    isolated=False,
     pattern=None,
     routine_files=None,
     dry_run=False,
+    deployed_source_identities=None,
 ):
     """Publish routines to a --target environment."""
     if routine_files is None:
@@ -514,8 +526,9 @@ def _publish_to_target(
         source_project_id,
         target,
         defer_to_target=defer_to_target,
-        isolated=False,
+        isolated=isolated,
         auto_deploy=False,
+        deployed_source_identities=deployed_source_identities,
     )
 
     # ensure target datasets exist
@@ -550,6 +563,18 @@ def _publish_to_target(
     client = bigquery.Client(project=target.project_id)
     raw_routines = [RawRoutine.from_file(f) for f in target_files]
     known_udfs = [r.name for r in raw_routines]
+
+    # Topologically sort so dependencies are published before dependents.
+    raw_routines_by_name = {r.name: r for r in raw_routines}
+    ordered_names: list = []
+    for r in raw_routines:
+        ordered_names = accumulate_dependencies(
+            ordered_names, raw_routines_by_name, r.name
+        )
+    raw_routines = [
+        raw_routines_by_name[n] for n in ordered_names if n in raw_routines_by_name
+    ]
+
     results = {}
     for raw_routine in raw_routines:
         routine_id = f"{target.project_id}.{raw_routine.name}"

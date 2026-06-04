@@ -125,6 +125,21 @@ def ping_has_metrics(dataset_family: str, unversioned_table: str) -> bool:
     return (dataset_family, unversioned_table) not in _get_pings_without_metrics()
 
 
+@cache
+def _get_glean_stable_tables():
+    """Return (dataset_family, unversioned_table) for all Glean stable tables."""
+    return {
+        (schema.bq_dataset_family, schema.bq_table_unversioned)
+        for schema in get_stable_table_schemas()
+        if "glean" in schema.schema_id
+    }
+
+
+def ping_has_stable_table(dataset_family: str, ping_name: str) -> bool:
+    """Return true if the given Glean ping has a stable table in the dataset."""
+    return (dataset_family, ping_name.replace("-", "_")) in _get_glean_stable_tables()
+
+
 def table_names_from_baseline(baseline_table, include_project_id=True):
     """Return a dict with full table IDs for derived tables and views.
 
@@ -234,6 +249,10 @@ def get_tables_with_events(
         pings.add("events")
 
     pings = pings.difference(min_pings)
+
+    # Only include pings that have a corresponding stable table deployed
+    # A metric can have a non-existent ping in "send_in_pings"
+    pings = {ping for ping in pings if ping_has_stable_table(bq_dataset_name, ping)}
 
     return pings
 

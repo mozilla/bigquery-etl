@@ -15,7 +15,7 @@ description: |
   Engagement Threshold: >30 seconds engagement time
 owners:
   - plee@mozilla.com
-  - mozilla/customer_insights
+  - mozilla/customer_experience
 labels:
   incremental: true
   application: sumo

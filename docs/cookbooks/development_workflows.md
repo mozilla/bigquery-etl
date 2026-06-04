@@ -1,11 +1,22 @@
 # Development Workflows
 
-This guide covers testing SQL changes in development environments before deploying to production.
+This guide explains how to try out a query against real data in a private workspace before it goes to production.
+
+When a query in bigquery-etl is new or changed, it is usually worth checking that it actually works (that it runs without errors and returns sensible numbers) before opening a pull request. Instead of writing to the production tables that power live dashboards and metrics, `bqetl` can run the query and save the results to a personal **development environment** that no one else sees. The query can be re-run and adjusted there until it looks right, and only then submitted for review.
+
+This is useful for:
+
+- **Testing a new derived table** before it becomes part of the scheduled pipeline.
+- **Checking a change to an existing query** — confirming the results still look correct and nothing downstream breaks.
+- **Exploring results** without the risk of overwriting or affecting production data.
+- **Sharing work-in-progress** results with a teammate for feedback.
+
+No deep familiarity with the command line is required. The examples below can be copied, with the table name and date adjusted to fit the task.
 
 ## Prerequisites
 
 - Authenticated to GCP: `gcloud auth application-default login`
-- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or shared dev project (e.g., `moz-fx-data-shared-dev`)
+- Access to a personal sandbox project (e.g., `dev-sandbox-user`) or the shared dev project `moz-fx-data-proto`
 
 ## Target-Based Development
 
@@ -27,6 +38,15 @@ dev:
 ```
 
 `dataset` and `dataset_prefix` are mutually exclusive. `artifact_prefix` can be used with either.
+
+**Shared dev project** (when a personal sandbox is not available, deploy to `moz-fx-data-proto`): since this project is shared across users, scope your artifacts with your username so they don't collide with other people's:
+```yaml
+dev:
+  project_id: moz-fx-data-proto
+  dataset_prefix: '{{ account.username }}_{{ git.branch }}_{{ artifact.project_id }}'
+```
+
+Clean up after yourself on the shared project (`./bqetl --target dev target clean --older-than 7d`), since others rely on it too.
 
 To avoid passing `--target` on every invocation, set a default using one of these (listed in priority order):
 
@@ -243,15 +263,79 @@ with `--dry-run` and spot-check the migration plan before accepting.
 A more robust implementation would match qualified table IDs via regex
 rather than using raw substring replace.
 
-### 8. Isolated deploys (e.g. for staging) _(future)_
+### 8. Isolated deploys (e.g. for staging)
 
-Use `--isolated` to rewrite **all** references to the target environment, ensuring complete isolation:
+Use `--isolated` to deploy a fully self-contained mirror into the target —
+every reference is rewritten so the deployed artifacts touch only target
+project data:
 
 ```bash
-./bqetl --target stage query run --isolated telemetry_derived.clients_daily_v6
+./bqetl --target stage deploy --tables --views --isolated \
+  telemetry_derived.clients_daily_v6
 ```
 
-This creates stubs in the target environment for all referenced artifacts.
+What `--isolated` does:
+
+1. **Walks dependencies** of each input artifact. Managed deps (under `sql/`)
+   are added as full artifacts. Unmanaged deps (live/stable tables, syndicated
+   tables, etc.) get a stub written directly into the target tree
+   (`sql/<target_project>/<target_dataset>/<target_artifact>/`) with a
+   `schema.yaml` fetched via `client.get_table()`.
+2. **Auto-discovers UDF dependencies** of every query/view/MV in the input
+   set, including transitive deps. These are added to the routine publish
+   step automatically; you don't need to list them in `--routines` paths.
+3. **Rewrites all 3-part references** in every artifact to point at target —
+   project, dataset, and artifact names rendered through the target's
+   templates. Same source of truth as the stub placement, so refs land where
+   the stubs are. 2-part UDF refs within UDF bodies (e.g.
+   `json.extract_int_map(...)` inside `mozfun.json.extract`) are also
+   rewritten.
+4. **Forces these flags together**: `--table-force`, `--table-skip-external-data`,
+   `--table-skip-existing-schemas`, `--view-force`, `--routines`. Schema
+   updates via dry-run are skipped — the schema in the target dir is
+   authoritative.
+5. **Strips `CREATE MATERIALIZED VIEW … AS`** for materialized-view artifacts
+   and renames them to `query.sql`, deploying as schema-only tables. (The
+   target project usually can't refresh MVs because it lacks source data.)
+
+`--isolated` is mutually exclusive with `--defer-to-target`.
+
+#### Schema resolution
+
+For each table without a `schema.yaml` in the target dir,
+`--isolated` falls back through:
+
+1. The `schema.yaml` copied from source (kept as-is, with `!include`
+   directives flattened).
+2. `client.get_table()` against the source project — fastest, works on
+   partition-required tables.
+3. Dry-running the rewritten query against the **target** project. UDFs and
+   stubs are already published at this point, so this picks up local UDF
+   changes.
+4. Fail loudly with the errors from steps 2 and 3 in the message.
+
+Tables marked `allow_field_addition` always re-derive (skip step 1) so
+schema drift is captured.
+
+#### CI parity flags
+
+For the `stage` target (or any CI-shared target), set these on the target
+in `bqetl_targets.yaml` so you don't have to remember to pass them every
+time:
+
+```yaml
+stage:
+  project_id: moz-fx-data-integration-tests
+  dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.commit }}"
+  grant_dryrun_access: true     # READER for dry_run.function_accounts
+  expire_after_hours: 12         # auto-GC by `target clean --delete-expired`
+  rewrite_tests: true            # mirror tests/sql/<src>/ → tests/sql/<tgt>/
+```
+
+CLI flags `--rewrite-tests/--no-rewrite-tests` and `--expire-after-hours=N`
+override per-run if needed. For personal `dev` targets, leave these unset —
+your dev datasets stay private (no service-account access), persist across
+iterations, and don't touch your `tests/sql/` tree.
 
 ## Future Enhancements
 

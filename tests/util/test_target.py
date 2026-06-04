@@ -6,14 +6,21 @@ from unittest.mock import patch
 import pytest
 import yaml
 
+from bigquery_etl.cli.deploy import _collect_isolated_dependencies
 from bigquery_etl.util.target import (
     MANIFEST_FILENAME,
+    SCHEMA_FILE,
     Target,
+    _normalize_table_ref,
+    _substitute_3part_ref,
+    _target_ref_for_source,
+    collect_target_dependencies,
     extract_commit_from_dataset_name,
     get_deployed_tables_in_target,
     get_target,
     prepare_target_directory,
     prepare_target_files,
+    read_source_identity_from_manifest,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
 )
@@ -310,7 +317,7 @@ class TestPrepareTargetFiles:
                 dataset="anna_dev",
                 artifact_prefix="{{ artifact.project_id }}_",
             )
-            result = prepare_target_files(
+            target_files = prepare_target_files(
                 query_files=[query_file],
                 sql_dir=str(sql_dir),
                 project_id="moz-fx-data-shared-prod",
@@ -320,9 +327,12 @@ class TestPrepareTargetFiles:
                 auto_deploy=False,
             )
 
-            assert len(result) == 1
+            assert len(target_files) == 1
             # artifact.project_id = sanitize("moz-fx-data-shared-prod") = "moz_fx_data_shared_prod"
-            assert result[0].parent.name == "moz_fx_data_shared_prod_clients_daily_v6"
+            assert (
+                target_files[0].parent.name
+                == "moz_fx_data_shared_prod_clients_daily_v6"
+            )
 
 
 @pytest.fixture
@@ -559,3 +569,545 @@ class TestGetTargetRawTemplates:
         assert "git.branch" in target.raw_dataset_prefix
         assert target.raw_dataset is None
         assert target.raw_artifact_prefix is None
+
+
+class TestTargetRefForSource:
+    def test_dataset_prefix_template(self):
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset_prefix="user_main_{{ artifact.project_id }}_",
+        )
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert proj == "dev-proj"
+        assert ds == "user_main_moz_fx_data_shared_prod_telemetry_derived"
+        assert tbl == "tbl_v1"
+
+    def test_dataset_field(self):
+        target = Target(name="dev", project_id="dev-proj", dataset="anna_dev")
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert (proj, ds, tbl) == ("dev-proj", "anna_dev", "tbl_v1")
+
+    def test_artifact_prefix_applied(self):
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="anna_dev",
+            artifact_prefix="branch_{{ artifact.dataset_id }}_",
+        )
+        _, _, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert tbl == "branch_telemetry_derived_tbl_v1"
+
+    def test_no_dataset_or_prefix_passthrough(self):
+        target = Target(name="dev", project_id="dev-proj")
+        proj, ds, tbl = _target_ref_for_source(
+            target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
+        )
+        assert (proj, ds, tbl) == ("dev-proj", "telemetry_derived", "tbl_v1")
+
+
+class TestSubstitute3PartRef:
+    """Test _substitute_3part_ref handles common ref forms."""
+
+    def test_fully_backticked(self):
+        sql = "SELECT * FROM `proj`.`ds`.`tbl`"
+        out = _substitute_3part_ref(sql, ("proj", "ds", "tbl"), ("p2", "d2", "t2"))
+        assert "`p2`.`d2`.`t2`" in out
+
+    def test_word_boundary_blocks_partial_match(self):
+        """`foo` shouldn't match the start of `foobar`."""
+        sql = "SELECT * FROM proj.ds.tbl_other JOIN proj.ds.tbl ON 1=1"
+        out = _substitute_3part_ref(sql, ("proj", "ds", "tbl"), ("p2", "d2", "t2"))
+        assert "proj.ds.tbl_other" in out
+        assert "`p2`.`d2`.`t2`" in out
+
+    def test_project_with_hyphen(self):
+        sql = "SELECT * FROM `moz-fx-data-shared-prod`.telemetry.main"
+        out = _substitute_3part_ref(
+            sql,
+            ("moz-fx-data-shared-prod", "telemetry", "main"),
+            ("ascholtz-dev", "test_ds", "test_tbl"),
+        )
+        assert "`ascholtz-dev`.`test_ds`.`test_tbl`" in out
+
+
+class TestNormalizeTableRef:
+    def test_information_schema_dataset_prepends_project(self):
+        # `dataset.INFORMATION_SCHEMA.TABLES` lacks a project → use default,
+        # then collapse the trailing INFORMATION_SCHEMA pseudo-path.
+        assert _normalize_table_ref(
+            "telemetry_derived.INFORMATION_SCHEMA.TABLES", "default-proj"
+        ) == ("default-proj", "telemetry_derived", "INFORMATION_SCHEMA.TABLES")
+
+    def test_information_schema_4part_collapsed(self):
+        # `proj.dataset.INFORMATION_SCHEMA.TABLES` → keep project & dataset,
+        # collapse INFORMATION_SCHEMA.* into the table position.
+        assert _normalize_table_ref(
+            "proj.telemetry_derived.INFORMATION_SCHEMA.TABLES", "default"
+        ) == ("proj", "telemetry_derived", "INFORMATION_SCHEMA.TABLES")
+
+    def test_invalid_returns_none(self):
+        assert _normalize_table_ref("just_one_part", "default") is None
+        assert _normalize_table_ref("a.b", "default") is None
+
+
+class TestCollectTargetDependencies:
+    """Integration test: build a fixture sql/ tree and check stub placement."""
+
+    def _make_sql_tree(self, sql_dir: Path) -> Path:
+        """Set up a small tree where artifact references an unmanaged table."""
+        artifact_dir = sql_dir / "src-proj" / "src_ds" / "view_a"
+        artifact_dir.mkdir(parents=True)
+        (artifact_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.src_ds.view_a` AS\n"
+            "SELECT * FROM `src-proj.unmanaged_ds.unmanaged_tbl`"
+        )
+        return artifact_dir / "view.sql"
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_stub_lands_at_target_path(self, mock_fetch_schema, tmp_path):
+        artifact_view = self._make_sql_tree(tmp_path)
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="dev_ds",
+            artifact_prefix="prefix_",
+        )
+
+        # Don't actually hit BigQuery for the schema; just verify the
+        # caller's path computation.
+        deps = collect_target_dependencies({artifact_view}, str(tmp_path), target)
+
+        # Expected stub path: <sql_dir>/dev-proj/dev_ds/prefix_unmanaged_tbl/query.py
+        expected_stub = (
+            tmp_path / "dev-proj" / "dev_ds" / "prefix_unmanaged_tbl" / "query.py"
+        )
+        assert expected_stub in deps
+        assert expected_stub.exists()
+        assert expected_stub.read_text().startswith("# Table stub generated")
+        # _fetch_stub_schema should have been called with the right out_path
+        mock_fetch_schema.assert_called_once()
+        out_path_arg = mock_fetch_schema.call_args.args[3]
+        assert out_path_arg.parent.name == "prefix_unmanaged_tbl"
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_managed_dep_is_followed_not_stubbed(self, mock_fetch_schema, tmp_path):
+        # The view references a managed table that exists in sql/.
+        view_dir = tmp_path / "src-proj" / "ds" / "view_a"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.view_a` AS\n"
+            "SELECT * FROM `src-proj.ds.tbl_managed`"
+        )
+        managed_dir = tmp_path / "src-proj" / "ds" / "tbl_managed"
+        managed_dir.mkdir(parents=True)
+        (managed_dir / "query.sql").write_text("SELECT 1")
+        (managed_dir / "schema.yaml").write_text("fields: []")
+
+        target = Target(name="dev", project_id="dev-proj", dataset="dev_ds")
+        deps = collect_target_dependencies(
+            {view_dir / "view.sql"}, str(tmp_path), target
+        )
+
+        # Managed dep returned as its source path; no stub written.
+        assert managed_dir / "query.sql" in deps
+        mock_fetch_schema.assert_not_called()
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_is_followed_not_stubbed(self, mock_fetch_schema, tmp_path):
+        # Schema-only table dirs (Fivetran/GA-style externally-loaded tables)
+        # should be recognized as managed and not trigger stub creation —
+        # otherwise the dry-run inside _fetch_stub_schema can 400 with
+        # "Unrecognized name: submission_date" on tables that don't have
+        # that column.
+        view_dir = tmp_path / "src-proj" / "ds" / "view_a"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.view_a` AS\n"
+            "SELECT * FROM `src-proj.ds.schema_only_tbl`"
+        )
+        schema_only_dir = tmp_path / "src-proj" / "ds" / "schema_only_tbl"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text("fields: []")
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: x\n")
+
+        target = Target(name="dev", project_id="dev-proj", dataset="dev_ds")
+        deps = collect_target_dependencies(
+            {view_dir / "view.sql"}, str(tmp_path), target
+        )
+
+        assert schema_only_dir / "schema.yaml" in deps
+        mock_fetch_schema.assert_not_called()
+
+
+class TestFetchStubSchema:
+    """
+    When both get_table and dry run fail to get a schema, the stub table should fall back
+    to a placeholder so downstream `SELECT *` views can still be created in stage.
+    """
+
+    @patch("bigquery_etl.util.target.Schema.for_table")
+    @patch("bigquery_etl.util.target.bigquery.Client")
+    def test_placeholder_written_when_schema_inaccessible(
+        self, mock_client, mock_for_table, tmp_path
+    ):
+        """Placeholder schema should be created when get_table raises and dry run is empty."""
+        from bigquery_etl.util.target import _fetch_stub_schema
+
+        mock_client.return_value.get_table.side_effect = PermissionError("403")
+        mock_for_table.return_value.schema = {"fields": []}
+
+        out_path = tmp_path / "schema.yaml"
+        _fetch_stub_schema(
+            "src-proj", "src_ds", "src_tbl", out_path, id_token="t", sql_dir="sql"
+        )
+
+        assert out_path.exists()
+        written = yaml.safe_load(out_path.read_text())
+        assert written["fields"], "placeholder schema must have at least one field"
+        assert written["fields"][0]["name"] == "_bqetl_stub_placeholder"
+
+    @patch("bigquery_etl.util.target.Schema.for_table")
+    @patch("bigquery_etl.util.target.bigquery.Client")
+    def test_placeholder_written_when_get_table_returns_empty_schema(
+        self, mock_client, mock_for_table, tmp_path
+    ):
+        """get_table on a table that has no columns should fall through to the dry run path."""
+        from bigquery_etl.util.target import _fetch_stub_schema
+
+        mock_client.return_value.get_table.return_value.schema = []
+        mock_for_table.return_value.schema = {"fields": []}
+
+        out_path = tmp_path / "schema.yaml"
+        _fetch_stub_schema(
+            "src-proj", "src_ds", "src_tbl", out_path, id_token="t", sql_dir="sql"
+        )
+
+        written = yaml.safe_load(out_path.read_text())
+        assert written["fields"][0]["name"] == "_bqetl_stub_placeholder"
+
+
+class TestStripMaterializedView:
+    def test_strips_create_clause(self, tmp_path):
+        from bigquery_etl.cli.deploy import _strip_materialized_view
+
+        mv_dir = tmp_path / "p" / "ds" / "tbl"
+        mv_dir.mkdir(parents=True)
+        mv_file = mv_dir / "materialized_view.sql"
+        mv_file.write_text(
+            "CREATE MATERIALIZED VIEW `p.ds.tbl`\n"
+            "OPTIONS(refresh_interval_minutes=10) AS\n"
+            "SELECT a, b FROM `p.other.tbl`"
+        )
+        new_path = _strip_materialized_view(mv_file)
+        assert new_path.name == "query.sql"
+        assert not mv_file.exists()
+        assert "CREATE MATERIALIZED VIEW" not in new_path.read_text()
+        assert "SELECT a, b FROM" in new_path.read_text()
+
+    def test_strips_when_identifier_contains_as_substring(self, tmp_path):
+        # Regression: under --isolated the staged FQN embeds the source
+        # dataset name, which can contain the substring "as" (e.g.
+        # `firefox_crashreporter_derived`, `..._tasks_derived`). The strip
+        # regex must match `AS` as a keyword, not as a substring inside the
+        # backticked identifier.
+        from bigquery_etl.cli.deploy import _strip_materialized_view
+
+        mv_dir = tmp_path / "p" / "ds" / "tbl"
+        mv_dir.mkdir(parents=True)
+        mv_file = mv_dir / "materialized_view.sql"
+        mv_file.write_text(
+            "CREATE MATERIALIZED VIEW "
+            "`moz-fx-data-integration-tests`.`test_schema`."
+            "`moz_fx_data_shared_prod__firefox_crashreporter_derived"
+            "__event_monitoring_live_v1`\n"
+            "OPTIONS(refresh_interval_minutes=10) AS\n"
+            "SELECT a, b FROM `p.other.tbl`"
+        )
+        new_path = _strip_materialized_view(mv_file)
+        body = new_path.read_text()
+        assert "CREATE MATERIALIZED VIEW" not in body
+        # Identifier must NOT have been chopped at the "as" in "crash".
+        assert "hreporter_derived" not in body
+        assert body.lstrip().startswith("SELECT a, b FROM")
+
+
+class TestRewriteTestsForTarget:
+    def test_renames_files_in_target_subtree(self, tmp_path):
+        from bigquery_etl.cli.deploy import _rewrite_tests_for_target
+
+        # Source artifact + its tests
+        source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
+        source_artifact.parent.mkdir(parents=True)
+        source_artifact.write_text("SELECT 1")
+        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl"
+        src_test_dir.mkdir(parents=True)
+        # Files that encode the source identity in their basename: full
+        # `<proj>.<ds>.<tbl>` form and the `.schema` variant.
+        (src_test_dir / "src-p.src_ds.tbl.yaml").write_text("rows: []")
+        (src_test_dir / "src-p.src_ds.tbl.schema.yaml").write_text("fields: []")
+
+        # Target path mapping
+        target_artifact = tmp_path / "sql" / "tgt-p" / "tgt_ds" / "tbl" / "query.sql"
+        target_artifact.parent.mkdir(parents=True)
+        target_artifact.write_text("SELECT 1")
+
+        _rewrite_tests_for_target(
+            {source_artifact: target_artifact},
+            tmp_path / "tests" / "sql",
+        )
+
+        tgt_test_dir = tmp_path / "tests" / "sql" / "tgt-p" / "tgt_ds" / "tbl"
+        assert (tgt_test_dir / "tgt-p.tgt_ds.tbl.yaml").exists()
+        assert (tgt_test_dir / "tgt-p.tgt_ds.tbl.schema.yaml").exists()
+        # Source files preserved at their original location.
+        assert (src_test_dir / "src-p.src_ds.tbl.yaml").exists()
+
+
+class TestResolveIsolatedSchema:
+    """Test the 3-step fallback chain."""
+
+    def _setup(self, tmp_path):
+        target_dir = tmp_path / "tgt-p" / "tgt_ds" / "tbl"
+        target_dir.mkdir(parents=True)
+        target_file = target_dir / "query.sql"
+        target_file.write_text("SELECT 1")
+        metadata_file = tmp_path / "src-p" / "src_ds" / "tbl" / "metadata.yaml"
+        metadata_file.parent.mkdir(parents=True)
+        return target_file, metadata_file
+
+    def test_existing_schema_kept(self, tmp_path):
+        from bigquery_etl.cli.deploy import _resolve_isolated_schema
+
+        target_file, metadata_file = self._setup(tmp_path)
+        target_schema = target_file.parent / SCHEMA_FILE
+        target_schema.write_text("fields:\n  - name: existing_field\n    type: INT64\n")
+
+        # Should keep the existing schema unchanged.
+        _resolve_isolated_schema(
+            target_file=target_file,
+            artifact_metadata_path=metadata_file,
+            source_project="src-p",
+            source_dataset="src_ds",
+            source_table="tbl",
+            sql_dir=str(tmp_path),
+        )
+        assert "existing_field" in target_schema.read_text()
+
+    @patch("bigquery_etl.schema.Schema.for_table")
+    @patch("bigquery_etl.schema.Schema.from_query_file")
+    @patch("bigquery_etl.cli.deploy.bigquery.Client")
+    def test_falls_back_to_get_table(
+        self, mock_client_cls, mock_from_query_file, mock_for_table, tmp_path
+    ):
+        from bigquery_etl.cli.deploy import _resolve_isolated_schema
+
+        target_file, metadata_file = self._setup(tmp_path)
+        # No existing schema → tries target dry-run (mocked to fail), then
+        # source dry-run (mocked to return empty fields), finally falls
+        # through to client.get_table.
+        mock_from_query_file.side_effect = Exception("target dry-run unavailable")
+        mock_for_table.return_value.schema = {"fields": []}
+
+        mock_table = mock_client_cls.return_value.get_table.return_value
+        mock_table.schema = []
+
+        _resolve_isolated_schema(
+            target_file=target_file,
+            artifact_metadata_path=metadata_file,
+            source_project="src-p",
+            source_dataset="src_ds",
+            source_table="tbl",
+            sql_dir=str(tmp_path),
+        )
+
+        target_schema = target_file.parent / SCHEMA_FILE
+        assert target_schema.exists()
+        mock_client_cls.return_value.get_table.assert_called_once_with(
+            "src-p.src_ds.tbl"
+        )
+
+
+class TestCollectIsolatedDependenciesSchemaOnly:
+    """Test that _collect_isolated_dependencies handles schema.yaml-only deps.
+
+    Tables like Fivetran imports or external data have only metadata.yaml +
+    schema.yaml under sql/ (no query.sql). collect_target_dependencies returns
+    their schema.yaml path. _collect_isolated_dependencies must add them to the
+    artifacts dict so their source identity enters deployed_source_identities
+    and rewrite_for_isolated rewrites refs to them.
+    """
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_added_to_artifacts(self, mock_fetch_schema, tmp_path):
+        """schema.yaml deps returned by collect_target_dependencies are added to artifacts."""
+        sql_dir = tmp_path
+
+        # View that references a schema-only table
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.ext_ds.fivetran_tbl`"
+        )
+
+        # Schema-only table (no query file)
+        schema_only_dir = sql_dir / "src-proj" / "ext_ds" / "fivetran_tbl"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text(
+            "fields:\n  - name: col1\n    type: STRING\n"
+        )
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: test\n")
+
+        target = Target(
+            name="stage",
+            project_id="test-proj",
+            dataset="test_ds",
+            artifact_prefix="prefix_",
+        )
+
+        artifacts = {
+            "src-proj.ds.my_view": (view_dir / "view.sql", "view"),
+        }
+
+        _collect_isolated_dependencies(artifacts, str(sql_dir), target)
+
+        # The schema-only dep must appear in artifacts as a "table"
+        assert "src-proj.ext_ds.fivetran_tbl" in artifacts
+        dep_path, dep_type = artifacts["src-proj.ext_ds.fivetran_tbl"]
+        assert dep_path.name == "schema.yaml"
+        assert dep_type == "table"
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_schema_only_dep_source_identity_recoverable(
+        self, mock_fetch_schema, tmp_path
+    ):
+        """Source identity for schema-only deps is extractable from the path."""
+        sql_dir = tmp_path
+
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.static.country_names_v1`"
+        )
+
+        schema_only_dir = sql_dir / "src-proj" / "static" / "country_names_v1"
+        schema_only_dir.mkdir(parents=True)
+        (schema_only_dir / "schema.yaml").write_text("fields: []\n")
+        (schema_only_dir / "metadata.yaml").write_text("friendly_name: test\n")
+
+        target = Target(
+            name="stage",
+            project_id="test-proj",
+            dataset="test_ds",
+        )
+
+        artifacts = {
+            "src-proj.ds.my_view": (view_dir / "view.sql", "view"),
+        }
+
+        _collect_isolated_dependencies(artifacts, str(sql_dir), target)
+
+        dep_path, _ = artifacts["src-proj.static.country_names_v1"]
+        # No manifest at source — extract_from_query_path gives the source identity
+        source_id = read_source_identity_from_manifest(dep_path)
+        if source_id is None:
+            from bigquery_etl.util import extract_from_query_path
+
+            source_id = extract_from_query_path(dep_path)
+        assert source_id == ("src-proj", "static", "country_names_v1")
+
+
+class TestCollectTargetDependenciesStubDedup:
+    """Test that the seen_refs dedup doesn't prevent stub creation.
+
+    If a query (emit_stubs=False) processes an unmanaged ref before a view
+    (emit_stubs=True) does, the stub must still be created when the view
+    encounters the same ref.
+    """
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_stub_created_even_if_query_sees_ref_first(
+        self, mock_fetch_schema, tmp_path
+    ):
+        sql_dir = tmp_path
+
+        # A query WITHOUT schema.yaml that references an unmanaged table.
+        # _table_refs_from walks queries without schema.yaml.
+        query_dir = sql_dir / "src-proj" / "ds" / "my_query"
+        query_dir.mkdir(parents=True)
+        (query_dir / "query.sql").write_text(
+            "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+        )
+
+        # A view that references the same unmanaged table.
+        view_dir = sql_dir / "src-proj" / "ds" / "my_view"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text(
+            "CREATE OR REPLACE VIEW `src-proj.ds.my_view` AS\n"
+            "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+        )
+
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="dev_ds",
+            artifact_prefix="prefix_",
+        )
+
+        # Pass both files as artifacts. Since artifact_files is a set, the
+        # iteration order is non-deterministic — the test passes regardless
+        # of whether the query or the view is processed first.
+        artifact_files = {
+            query_dir / "query.sql",
+            view_dir / "view.sql",
+        }
+        deps = collect_target_dependencies(artifact_files, str(sql_dir), target)
+
+        expected_stub = (
+            sql_dir / "dev-proj" / "dev_ds" / "prefix_shared_tbl" / "query.py"
+        )
+        assert expected_stub in deps, (
+            "Stub must be created for the unmanaged ref even if a query "
+            "(emit_stubs=False) encounters it before the view does"
+        )
+
+    @patch("bigquery_etl.util.target._fetch_stub_schema")
+    def test_stub_not_duplicated_across_multiple_views(
+        self, mock_fetch_schema, tmp_path
+    ):
+        sql_dir = tmp_path
+
+        # Two views referencing the same unmanaged table.
+        for name in ("view_a", "view_b"):
+            d = sql_dir / "src-proj" / "ds" / name
+            d.mkdir(parents=True)
+            (d / "view.sql").write_text(
+                f"CREATE OR REPLACE VIEW `src-proj.ds.{name}` AS\n"
+                "SELECT * FROM `src-proj.unmanaged_ds.shared_tbl`"
+            )
+
+        target = Target(
+            name="dev",
+            project_id="dev-proj",
+            dataset="dev_ds",
+        )
+
+        artifact_files = {
+            sql_dir / "src-proj" / "ds" / "view_a" / "view.sql",
+            sql_dir / "src-proj" / "ds" / "view_b" / "view.sql",
+        }
+        deps = collect_target_dependencies(artifact_files, str(sql_dir), target)
+
+        stub_paths = [
+            p for p in deps if p.name == "query.py" and "shared_tbl" in str(p)
+        ]
+        assert len(stub_paths) == 1, "Stub should be created exactly once"
+        assert mock_fetch_schema.call_count == 1

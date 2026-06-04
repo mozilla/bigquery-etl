@@ -124,7 +124,8 @@ fields:
   mode: NULLABLE
   name: app_version
   type: STRING
-- description: null
+- description: Install attribution metadata capturing the source, medium, campaign, and other parameters that identify how the Firefox installation was
+    acquired.
   fields:
   - description: The attribution source from the install attribution, indicating the referring partner domain that drove the installation.
     mode: NULLABLE

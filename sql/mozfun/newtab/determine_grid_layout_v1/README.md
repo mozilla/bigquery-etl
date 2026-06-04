@@ -12,24 +12,28 @@ This User-Defined Function (UDF) determines the appropriate grid layout type for
 
 ## 📌 Evaluation Criteria
 
-The UDF returns one of three possible values based on the following conditions:
+The UDF returns one of four possible values based on the following conditions:
 
-### 🔲 `SECTION_GRID`
+### `NOVA`
 Returned when:
-- `is_section = TRUE`
+- `app_version >= 151`
 
-### 🆕 `NEW_GRID`
+### `SECTION_GRID`
+Returned when:
+- `app_version < 151 AND is_section = TRUE`
+
+### `NEW_GRID`
 Returned when:
 - `is_section = FALSE` AND
 - One of the following holds:
-  - `app_version >= 136`
+  - `151 > app_version >= 136`
   - `app_version < 136` AND `experiment.key` matches one of the following:
     - `default-ui-experiment`
     - `new-tab-layout-variant-b-and-content-card-ui-rollout-global`
     - `new-tab-layout-variant-b-and-content-card-ui-release-rollout-global-v2`
     - `default-ui-experiment-logo-in-corner-rollout`
 
-### 🧓 `OLD_GRID`
+### `OLD_GRID`
 Returned when:
 - `is_section = FALSE` AND
 - `app_version < 136` AND
@@ -37,6 +41,7 @@ Returned when:
 
 ## 🏁 Return Values
 
+- `NOVA`
 - `SECTION_GRID`
 - `NEW_GRID`
 - `OLD_GRID`

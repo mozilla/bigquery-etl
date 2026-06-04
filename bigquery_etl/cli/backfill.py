@@ -70,11 +70,7 @@ from ..metadata.validate_metadata import (
 )
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import block_coding_agents
-from ..util.target import (
-    Target,
-    _target_ref_for_source,
-    ensure_dataset_exists,
-)
+from ..util.target import Target, ensure_dataset_exists, target_ref_for_source
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -103,7 +99,7 @@ def _resolve_backfill_table(
     src_project, src_dataset, src_table = qualified_table_name_matching(
         source_qualified_table_name
     )
-    tgt_project, tgt_dataset, tgt_table = _target_ref_for_source(
+    tgt_project, tgt_dataset, tgt_table = target_ref_for_source(
         target,
         target.project_id or src_project,
         src_project,

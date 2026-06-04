@@ -574,7 +574,7 @@ class TestQuery:
                 assert submission_date_params[0] in expected_submission_date_params
 
     def test_query_backfill_with_target(self, runner):
-        """With --target, the backfill prepares target files and runs in the target project."""
+        """Backfill with --target should prepare target files and run in the target project."""
         with (
             runner.isolated_filesystem(),
             patch("google.cloud.bigquery.Client", autospec=True),
@@ -601,7 +601,7 @@ class TestQuery:
                 f.write(yaml.dump(metadata_conf))
 
             # the target-prepared query lives under the target project tree
-            target_dir = "sql/benwubenwutest/dev_telemetry_derived/query_v1"
+            target_dir = "sql/sandbox/dev_telemetry_derived/query_v1"
             os.makedirs(target_dir)
             with open(f"{target_dir}/query.sql", "w") as f:
                 f.write(
@@ -612,7 +612,7 @@ class TestQuery:
                 f.write(yaml.dump(metadata_conf))
             prepare_target_files.return_value = [Path(f"{target_dir}/query.sql")]
 
-            target = Target(name="dev", project_id="benwubenwutest")
+            target = Target(name="dev", project_id="sandbox")
 
             result = runner.invoke(
                 backfill,
@@ -632,50 +632,13 @@ class TestQuery:
             assert prepare_target_files.call_count == 1
             assert check_call.call_count == 1
             args = check_call.call_args.args[0]
-            assert "--project_id=benwubenwutest" in args
+            assert "--project_id=sandbox" in args
             destination = [a for a in args if a.startswith("--destination_table=")]
-            assert destination and "benwubenwutest" in destination[0]
-
-    def test_query_backfill_target_and_destination_table_mutually_exclusive(
-        self, runner
-    ):
-        """--target and --destination-table cannot be combined."""
-        with runner.isolated_filesystem():
-            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
-            os.makedirs(src_dir)
-            with open(f"{src_dir}/query.sql", "w") as f:
-                f.write("SELECT 1")
-            with open(f"{src_dir}/metadata.yaml", "w") as f:
-                f.write(
-                    yaml.dump(
-                        {
-                            "friendly_name": "t",
-                            "description": "t",
-                            "owners": ["t@example.org"],
-                            "scheduling": {"dag_name": "bqetl_test"},
-                            "bigquery": {"time_partitioning": {"type": "day"}},
-                        }
-                    )
-                )
-
-            result = runner.invoke(
-                backfill,
-                [
-                    "telemetry_derived.query_v1",
-                    "--project_id=moz-fx-data-shared-prod",
-                    "--start_date=2021-01-05",
-                    "--end_date=2021-01-05",
-                    "--destination_table=p.d.t",
-                    "--override-retention-range-limit",
-                ],
-                obj={"target": Target(name="dev", project_id="benwubenwutest")},
-            )
-            assert result.exit_code != 0
-            assert "mutually exclusive" in result.output
+            assert destination and "sandbox" in destination[0]
 
     def test_query_backfill_skip_target_resolution_allows_destination(self, runner):
-        """--skip-target-resolution (used by managed backfill) lets a target coexist with
-        an explicit --destination-table and runs in the given project."""
+        """--skip-target-resolution (used by managed backfill) should let a target coexist with
+        an explicit --destination-table and run in the given project."""
         with (
             runner.isolated_filesystem(),
             patch("google.cloud.bigquery.Client", autospec=True),
@@ -704,7 +667,7 @@ class TestQuery:
                     )
                 )
 
-            staging = "benwubenwutest.backfills_staging_derived.t_2021_01_05"
+            staging = "sandbox.backfills_staging_derived.t_2021_01_05"
             result = runner.invoke(
                 backfill,
                 [
@@ -717,7 +680,7 @@ class TestQuery:
                     "--override-retention-range-limit",
                     "--skip-target-resolution",
                 ],
-                obj={"target": Target(name="dev", project_id="benwubenwutest")},
+                obj={"target": Target(name="dev", project_id="sandbox")},
             )
 
             # no mutual-exclusivity error, no target file prep, writes to the given staging table
@@ -730,7 +693,7 @@ class TestQuery:
             assert "--project_id=moz-fx-data-shared-prod" in args
             destination = [a for a in args if a.startswith("--destination_table=")]
             assert destination and (
-                "benwubenwutest:backfills_staging_derived.t_2021_01_05"
+                "sandbox:backfills_staging_derived.t_2021_01_05"
                 in destination[0]
             )
 

@@ -2171,13 +2171,9 @@ class TestBackfill:
 
     @patch("google.cloud.bigquery.Client")
     def test_initiate_backfill_skips_query_target_resolution(self, mock_client, runner):
-        """Initiate drives query backfill with the staging destination and opts out of
-        the query command's own --target redirection (would otherwise raise
-        "--destination-table and --target are mutually exclusive")."""
+        """When initiate calls query.backfill, the original --target should be used, not overidden by query.backfill."""
         prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-        staging = (
-            "benwubenwutest.backfills_staging_derived.test__test_query_v1_2026_01_01"
-        )
+        staging = "sandbox.backfills_staging_derived.test__test_query_v1_2026_01_01"
         entry = Backfill(
             entry_date=date(2026, 1, 1),
             start_date=date(2026, 1, 1),
@@ -2194,7 +2190,7 @@ class TestBackfill:
             qualified_table_name=prod_table_name,
             backfill_staging_qualified_table_name=staging,
             entry=entry,
-            effective_table_name="benwubenwutest.dev_test.test_query_v1",
+            effective_table_name="sandbox.dev_test.test_query_v1",
         )
 
         call_kwargs = mock_context.invoke.call_args[1]
@@ -2897,56 +2893,61 @@ class TestCopyPermissionsToStagingTable:
 
 
 class TestBackfillTargetSupport:
-    """Backfill name resolution honors the active --target."""
+    """Backfill commands should redirect into the target environment when --target is set."""
 
-    PROD_TABLE = "moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3"
+    PROD_TABLE = "moz-fx-data-shared-prod.test_derived.test_table_v1"
 
     def _target(self):
         return Target(
             name="dev",
-            project_id="benwubenwutest",
+            project_id="sandbox",
             dataset_prefix="dev_mybranch__{{ artifact.project_id }}__",
         )
 
-    def test_resolve_backfill_table_no_target_passthrough(self):
+    def test_resolve_backfill_table_without_target_should_return_source_unchanged(self):
+        """_resolve_backfill_table without a target should return the source table and no destination project."""
         table, dest_project = _resolve_backfill_table(None, self.PROD_TABLE)
         assert table == self.PROD_TABLE
         assert dest_project is None
 
-    def test_resolve_backfill_table_with_target(self):
+    def test_resolve_backfill_table_with_target_should_map_to_target_table(self):
+        """_resolve_backfill_table with a target should map the source to the target-deployed table and project."""
         table, dest_project = _resolve_backfill_table(self._target(), self.PROD_TABLE)
         # dataset_prefix renders artifact.project_id (sanitized) and prefixes the
         # dataset; table name is unchanged (no artifact_prefix configured).
         assert table == (
-            "benwubenwutest."
-            "dev_mybranch__moz_fx_data_shared_prod__telemetry_derived."
-            "clients_first_seen_v3"
+            "sandbox."
+            "dev_mybranch__moz_fx_data_shared_prod__test_derived."
+            "test_table_v1"
         )
-        assert dest_project == "benwubenwutest"
+        assert dest_project == "sandbox"
 
-    def test_staging_name_honors_destination_project(self):
+    def test_staging_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_staging_qualified_table_name should place staging in the destination project."""
         name = get_backfill_staging_qualified_table_name(
             self.PROD_TABLE,
             date(2021, 5, 3),
-            destination_project="benwubenwutest",
+            destination_project="sandbox",
         )
         assert name == (
-            "benwubenwutest.backfills_staging_derived."
-            "telemetry_derived__clients_first_seen_v3_2021_05_03"
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_2021_05_03"
         )
 
-    def test_backup_name_honors_destination_project(self):
+    def test_backup_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_backup_table_name should place the backup in the destination project."""
         name = get_backfill_backup_table_name(
             self.PROD_TABLE,
             date(2021, 5, 3),
-            destination_project="benwubenwutest",
+            destination_project="sandbox",
         )
         assert name == (
-            "benwubenwutest.backfills_staging_derived."
-            "telemetry_derived__clients_first_seen_v3_backup_2021_05_03"
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_backup_2021_05_03"
         )
 
-    def test_staging_name_defaults_to_prod_without_destination(self):
+    def test_staging_name_without_destination_project_should_default_to_prod(self):
+        """get_backfill_staging_qualified_table_name without a destination should default to the prod backfill project."""
         name = get_backfill_staging_qualified_table_name(
             self.PROD_TABLE, date(2021, 5, 3)
         )
@@ -2955,8 +2956,10 @@ class TestBackfillTargetSupport:
         )
 
     @patch("bigquery_etl.cli.backfill._copy_table")
-    def test_copy_backfill_staging_to_prod_skip_public_redirect(self, mock_copy_table):
-        """A target swap keeps the destination as the (target) table, not the public one."""
+    def test_copy_backfill_staging_to_prod_with_skip_public_redirect_should_keep_target_destination(
+        self, mock_copy_table
+    ):
+        """_copy_backfill_staging_to_prod with skip_public_redirect should keep the target table as the destination."""
         public_metadata = {
             "friendly_name": "test",
             "description": "test",
@@ -2966,9 +2969,11 @@ class TestBackfillTargetSupport:
                 "time_partitioning": {"type": "day", "field": "submission_date"}
             },
         }
-        with open(METADATA_FILE, "w") as f:
-            f.write(yaml.dump(public_metadata))
-        metadata = Metadata.from_file(METADATA_FILE)
+        # isolate the filesystem so the temporary metadata.yaml isn't written to cwd
+        with CliRunner().isolated_filesystem():
+            with open(METADATA_FILE, "w") as f:
+                f.write(yaml.dump(public_metadata))
+            metadata = Metadata.from_file(METADATA_FILE)
 
         entry = Backfill(
             entry_date=date(2021, 5, 3),
@@ -2981,8 +2986,8 @@ class TestBackfillTargetSupport:
         )
 
         _copy_backfill_staging_to_prod(
-            backfill_staging_table="benwubenwutest.backfills_staging_derived.tbl",
-            qualified_table_name="benwubenwutest.dev_ds.tbl",
+            backfill_staging_table="sandbox.backfills_staging_derived.tbl",
+            qualified_table_name="sandbox.dev_ds.tbl",
             client=None,
             entry=entry,
             table_metadata=metadata,
@@ -2992,15 +2997,15 @@ class TestBackfillTargetSupport:
         # destination stays the target table; no redirect to mozilla-public-data
         assert mock_copy_table.call_count == 1
         staging_arg, prod_arg = mock_copy_table.call_args.args[:2]
-        assert prod_arg.startswith("benwubenwutest.dev_ds.tbl$")
+        assert prod_arg.startswith("sandbox.dev_ds.tbl$")
         assert "mozilla-public-data" not in prod_arg
 
     @patch("bigquery_etl.backfill.utils._table_exists")
     @patch("google.cloud.bigquery.Client", autospec=True)
-    def test_get_scheduled_backfills_checks_target_staging_project(
+    def test_get_scheduled_backfills_with_destination_project_should_check_target_staging(
         self, mock_client, mock_table_exists
     ):
-        """With a destination_project, staging existence is checked in the target project."""
+        """get_scheduled_backfills with a destination_project should check staging existence in the target project."""
         with CliRunner().isolated_filesystem():
             table_dir = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(table_dir)
@@ -3029,12 +3034,10 @@ class TestBackfillTargetSupport:
                 "moz-fx-data-shared-prod",
                 "moz-fx-data-shared-prod.test.test_query_v1",
                 status=BackfillStatus.COMPLETE.value,
-                destination_project="benwubenwutest",
+                destination_project="sandbox",
             )
 
             assert "moz-fx-data-shared-prod.test.test_query_v1" in result
             # the staging existence check used the target project, not prod
             checked_staging = mock_table_exists.call_args_list[0].args[1]
-            assert checked_staging.startswith(
-                "benwubenwutest.backfills_staging_derived."
-            )
+            assert checked_staging.startswith("sandbox.backfills_staging_derived.")

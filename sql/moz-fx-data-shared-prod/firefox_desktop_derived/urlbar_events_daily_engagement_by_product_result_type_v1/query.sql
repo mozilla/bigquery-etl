@@ -17,7 +17,14 @@ WITH temp_unnested AS (
       AND event_action = 'engaged'
       AND is_terminal
     ) AS is_clicked,
-    (product_selected_result = res.product_result_type AND event_action = 'annoyance') AS is_annoyed
+    (
+      product_selected_result = res.product_result_type
+      AND event_action = 'annoyance'
+    ) AS is_annoyed,
+    sample_id,
+    IF(exit_type = 'bounce', TRUE, FALSE) AS is_bounce,
+    IF(exit_type = 'disable', TRUE, FALSE) AS is_disable,
+    IF(exit_type = 'abandonment', TRUE, FALSE) AS is_abandonment,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.urlbar_events`
   CROSS JOIN
@@ -37,11 +44,16 @@ SELECT
   ANY_VALUE(sponsored_suggestions_enabled) AS sponsored_suggestions_enabled,
   COUNT(DISTINCT IF(is_clicked, event_id, NULL)) AS urlbar_clicks,
   COUNT(DISTINCT IF(is_annoyed, event_id, NULL)) AS urlbar_annoyances,
-  COUNT(DISTINCT IF(is_terminal, event_id, NULL)) AS urlbar_impressions
+  COUNT(DISTINCT IF(is_terminal, event_id, NULL)) AS urlbar_impressions,
+  COUNT(DISTINCT IF(is_bounce, event_id, NULL)) AS urlbar_bounces,
+  COUNT(DISTINCT IF(is_disable, event_id, NULL)) AS urlbar_disables,
+  COUNT(DISTINCT IF(is_abandonment, event_id, NULL)) AS urlbar_abandonments,
+  sample_id
 FROM
   temp_unnested
 GROUP BY
   submission_date,
   client_id,
   profile_group_id,
-  product_result_type
+  product_result_type,
+  sample_id

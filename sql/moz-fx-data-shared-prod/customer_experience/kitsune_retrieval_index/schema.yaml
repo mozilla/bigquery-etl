@@ -25,6 +25,13 @@ fields:
   description: Mozilla product, normalized at read time. Firefox-family raw values are mapped
     to canonical names (`firefox` → `Firefox Desktop`, `mobile` → `Fenix`, `ios` → `Firefox iOS`,
     `firefox-enterprise` → `Firefox Enterprise`); all other raw values collapse to `Non Firefox`.
+- name: product_version
+  type: STRING
+  mode: NULLABLE
+  description: Product version reported on the support question, from the `ff_version`
+    field in `sumo_syndicate.kitsune_questions_plus`. Despite the upstream field name,
+    this applies to whichever product the question is about (see `product`), not only
+    Firefox. NULL when not provided.
 - name: locale
   type: STRING
   mode: NULLABLE

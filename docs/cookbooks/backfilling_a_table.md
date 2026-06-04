@@ -51,6 +51,11 @@ What changes under `--target`:
 The `backfill.yaml` entry is still read from the repo as usual; only the BigQuery
 locations are redirected. Without `--target`, behavior is unchanged (production backfill).
 
+`query.py` (python script) backfills do not support `--target`. A python-script backfill's
+destination is baked into the entry's `query_script_args` at create time and is not redirected, 
+so running one under `--target` is rejected to avoid writing to the production staging table. 
+This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054.
+
 ## Initiating the backfill:
 
 1. Create a backfill schedule entry to (re)-process data in your table:

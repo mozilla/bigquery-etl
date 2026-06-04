@@ -81,6 +81,18 @@ def _get_target(ctx) -> Optional[Target]:
     return ctx.obj.get("target") if ctx.obj else None
 
 
+def _destination_project(
+    target: Optional[Target], default: Optional[str]
+) -> Optional[str]:
+    """Return the project backfills act in: the target project, else the default.
+
+    Pass default=None when used for the staging/backup destination_project (None
+    falls back to the production backfill project); pass the prod project_id when
+    used to pick the BigQuery client project.
+    """
+    return target.project_id if target else default
+
+
 def _resolve_backfill_table(
     target: Optional[Target], source_qualified_table_name: str
 ) -> Tuple[str, Optional[str]]:
@@ -560,7 +572,7 @@ def scheduled(
         status=status,
         ignore_old_entries=ignore_old_entries,
         ignore_missing_metadata=ignore_missing_metadata,
-        destination_project=target.project_id if target else None,
+        destination_project=_destination_project(target, None),
     )
 
     for qualified_table_name, entry in backfills.items():
@@ -629,7 +641,7 @@ def initiate(
         project_id,
         qualified_table_name,
         status=BackfillStatus.INITIATE.value,
-        destination_project=target.project_id if target else None,
+        destination_project=_destination_project(target, None),
     )
 
     if not backfills_to_process_dict:
@@ -652,6 +664,18 @@ def initiate(
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     is_python_script = (Path(sql_dir) / project / dataset / table / "query.py").exists()
+
+    # Python-script backfills aren't redirected under --target: the script's destination is baked
+    # into query_script_args at create time (pointing at the production staging project) and
+    # skip_target_resolution prevents any rewrite, so the script would write to the production
+    # staging table. Reject the combination rather than silently target the wrong project.
+    # Limitation tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054
+    if target is not None and is_python_script:
+        raise click.UsageError(
+            "--target is not supported for query.py (python script) backfills. "
+            "Run the script directly against the target."
+        )
+
     query_path = (
         Path(sql_dir)
         / project
@@ -660,7 +684,7 @@ def initiate(
         / ("query.py" if is_python_script else "query.sql")
     )
 
-    effective_project = target.project_id if target else project_id
+    effective_project = _destination_project(target, project_id)
     client = bigquery.Client(project=effective_project)
 
     if target is not None:
@@ -697,7 +721,7 @@ def initiate(
         try:
             copy_permissions_to_staging_table(
                 client,
-                qualified_table_name,
+                effective_table_name,
                 backfill_staging_qualified_table_name,
             )
         except Exception as e:
@@ -905,6 +929,9 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
+        # Seed the previous partition from effective_table_name (the --target table).
+        # The query reads production source tables for the new partitions, so under --target,
+        # the staging result intentionally mixes a target base partition with production partitions.
         _initialize_previous_partition(
             client,
             effective_table_name,
@@ -1053,7 +1080,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         sys.exit(1)
 
     target = _get_target(ctx)
-    effective_project = target.project_id if target else project_id
+    effective_project = _destination_project(target, project_id)
     client = bigquery.Client(project=effective_project)
 
     click.echo("Backfill processing (complete) started....")
@@ -1063,7 +1090,7 @@ def complete(ctx, qualified_table_name, copy_table_permissions, sql_dir, project
         project_id,
         qualified_table_name,
         status=BackfillStatus.COMPLETE.value,
-        destination_project=target.project_id if target else None,
+        destination_project=_destination_project(target, None),
     )
 
     if not backfills_to_process_dict:

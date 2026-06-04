@@ -782,9 +782,13 @@ def backfill(
             f"Found multiple query source files to backfill: {query_files}"
         )
 
-    # The managed backfill flow (bqetl backfill initiate) drives this command with a
+    # The managed backfill flow (bqetl backfill initiate) calls this command with a
     # destination already resolved for the active target, so it opts out of target
     # redirection here to avoid double-handling.
+    #
+    # NOTE: any internal caller that passes --destination-table together with an active
+    # ctx target MUST also pass skip_target_resolution=True; otherwise the
+    # mutual-exclusivity check below raises.
     target = (
         None if skip_target_resolution else (ctx.obj.get("target") if ctx.obj else None)
     )

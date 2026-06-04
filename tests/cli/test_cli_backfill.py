@@ -2197,6 +2197,38 @@ class TestBackfill:
         assert call_kwargs["destination_table"] == staging
         assert call_kwargs["skip_target_resolution"] is True
 
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_with_target_should_be_rejected(
+        self, mock_client, mock_should_initiate, runner
+    ):
+        """initiate for a query.py backfill under --target should be rejected, not silently target prod staging."""
+        mock_should_initiate.return_value = True
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-03:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-01-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Initiate\n"
+            "  query_script_entrypoint: main\n"
+            "  query_script_date_arg: date\n"
+        )
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+            obj={"target": Target(name="dev", project_id="sandbox")},
+        )
+
+        assert result.exit_code != 0
+        assert "not supported for query.py" in result.output
+
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
     def test_initiate_backfill_script_skips_depends_on_past(

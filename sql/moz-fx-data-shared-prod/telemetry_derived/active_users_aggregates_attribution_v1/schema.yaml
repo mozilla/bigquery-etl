@@ -2,21 +2,27 @@ fields:
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
+  description: The attribution campaign identifier from the install attribution, indicating the marketing campaign that drove the installation (utm_campaign value).
 - mode: NULLABLE
   name: attribution_content
   type: STRING
+  description: The attribution content identifier from the install attribution, indicating the specific creative or link within a campaign.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
+  description: The attribution experiment key associated with the install, used to track funnel experiment parameters.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
+  description: The attribution medium from the install attribution, indicating the category of channel that drove the installation (e.g., 'organic', 'referral', 'cpc').
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: The attribution source from the install attribution, indicating the referring partner domain or website that drove the installation.
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
+  description: The attribution variation key associated with the install, used to track funnel experiment variation parameters.
 - description: The type of source of a client installation
   mode: NULLABLE
   name: adjust_network
@@ -28,22 +34,23 @@ fields:
 - mode: NULLABLE
   name: city
   type: STRING
+  description: The city in which the activity took place, as determined by IP geolocation.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: An ISO 3166-1 alpha-2 country code of the country in which the activity took place, as determined by the IP geolocation.
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
+  description: The calendar year in which the client's profile was first seen by Mozilla's telemetry pipeline.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The name of the browser or application (e.g., 'Firefox', 'Fenix', 'Firefox iOS').
 - mode: NULLABLE
   name: submission_date
   type: DATE
@@ -51,38 +58,48 @@ fields:
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: The number of daily active users on the submission date, counting clients that reported at least one qualifying ping.
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: The number of weekly active users on the submission date, counting clients that reported at least one qualifying ping in the prior 7 days.
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: The number of monthly active users on the submission date, counting clients that reported at least one qualifying ping in the prior 28 days.
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: The count of newly created profiles first seen on the submission date.
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
+  description: Total count of ad clicks recorded across all clients in this segment on the submission date.
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
+  description: Total count of organic (non-paid) search queries made by clients in this segment on the submission date.
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: Total count of search queries made by clients in this segment on the submission date.
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: Total count of searches that returned pages containing ads, for clients in this segment on the submission date.
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
+  description: Total count of URIs visited by clients in this segment on the submission date.
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
+  description: Total active browsing hours accumulated by clients in this segment on the submission date.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-- description: Count of distinct, qualified Desktop clients that we received a main
-    ping from on a given day. In mobile DAU = QDAU.
+  description: Indicates whether the clients in this row have a known install attribution. True if attribution data is present, false otherwise.
+- description: Count of distinct, qualified Desktop clients that we received a main ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

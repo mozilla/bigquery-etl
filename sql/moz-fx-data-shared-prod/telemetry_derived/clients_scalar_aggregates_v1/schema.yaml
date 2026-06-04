@@ -10,6 +10,8 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The operating system on which the client is running (e.g., 'Windows_NT', 'Darwin', 'Linux'). An asterisk ('*') indicates the value has
+    been aggregated across all operating systems.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -17,9 +19,12 @@ fields:
 - name: app_build_id
   type: STRING
   mode: NULLABLE
+  description: The build ID of the Firefox application (e.g., '20240509170740'). An asterisk ('*') indicates the value has been aggregated across all
+    build IDs.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The Firefox release channel from which the client is reporting (e.g., 'release', 'beta', 'nightly').
 - name: scalar_aggregates
   type: RECORD
   mode: REPEATED

@@ -6,8 +6,7 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -15,14 +14,16 @@ fields:
 - name: n_logged_event
   type: INTEGER
   mode: NULLABLE
+  description: Total number of telemetry events logged by this client on the submission_date across all processes (sampled 2026-06-02).
 - name: n_created_pictureinpicture
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the client opened a Picture-in-Picture video window on the submission_date. Zero for ~99.6% of clients (sampled 2026-06-02).
 - name: n_viewed_protection_report
   type: INTEGER
   mode: NULLABLE
+  description: Number of times the client viewed the Firefox privacy protection report on the submission_date. Zero for ~99.9% of clients (sampled 2026-06-02).
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.

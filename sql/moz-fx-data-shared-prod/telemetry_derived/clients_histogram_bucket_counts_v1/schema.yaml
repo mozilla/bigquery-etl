@@ -10,6 +10,8 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application used to compute these per-bucket counts. May be '*' when the row aggregates across all build IDs
+    for a given channel and OS combination.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -17,44 +19,62 @@ fields:
 - mode: NULLABLE
   name: first_bucket
   type: INTEGER
+  description: The lower bound value of the first bucket in this histogram's bucket range definition.
 - mode: NULLABLE
   name: last_bucket
   type: INTEGER
+  description: The upper bound value of the last bucket in this histogram's bucket range definition.
 - mode: NULLABLE
   name: num_buckets
   type: INTEGER
+  description: The total number of buckets defined for this histogram metric.
 - mode: NULLABLE
   name: metric
   type: STRING
+  description: The name of the telemetry histogram metric for this row (e.g., 'event_longtask', 'webext_extension_startup_ms_by_addonid').
 - mode: NULLABLE
   name: metric_type
   type: STRING
+  description: The histogram type for this metric, such as 'histogram-exponential', 'histogram-linear', 'histogram-enumerated', 'histogram-categorical',
+    'histogram-count', or 'histogram-boolean'.
 - mode: NULLABLE
   name: key
   type: STRING
+  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
+    for non-keyed histograms.
 - mode: NULLABLE
   name: process
   type: STRING
+  description: The Firefox process type from which this histogram was recorded (e.g., 'parent', 'content', 'gpu').
 - mode: NULLABLE
   name: agg_type
   type: STRING
+  description: The aggregation type applied to this histogram. Currently always 'summed_histogram', indicating bucket counts are summed across clients.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
+    for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: record
   type: RECORD
+  description: A struct holding the normalized (weighted) histogram bucket counts after GLAM normalization. The key is the bucket boundary and the value
+    is the normalized count as a float.
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+  description: For keyed histograms, the specific key string (e.g., an addon ID, domain, or feature flag) that scopes this row's counts. Empty string
+    for non-keyed histograms.
   - mode: NULLABLE
     name: value
     type: FLOAT
   mode: NULLABLE
   name: non_norm_record
   type: RECORD
+  description: A struct holding the non-normalized (raw summed) histogram bucket counts prior to GLAM normalization. The key is the bucket boundary and
+    the value is the raw aggregated count.

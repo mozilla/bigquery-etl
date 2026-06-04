@@ -12,8 +12,16 @@ fields:
   mode: NULLABLE
   description: |
     Number of Knowledge Base Content bugs resolved on this date.
-    Resolution date is the most recent of the first RESOLVED snapshot and any
+    A bug is considered resolved on the first snapshot where status = 'RESOLVED'
+    or resolution is set; resolution date is the most recent of that and any
     later REOPENED→RESOLVED snapshot.
+- name: bugs_open
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of Knowledge Base Content bugs open as of this date: created on or
+    before this date and not yet resolved as of this date, regardless of when
+    they were created.
 - name: etl_timestamp
   type: TIMESTAMP
   mode: NULLABLE

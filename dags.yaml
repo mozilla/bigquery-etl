@@ -127,7 +127,7 @@ bqetl_fxa_events:
     - impact/tier_1
 
 bqetl_accounts_db:
-  schedule_interval: 30 1/2 * * *
+  schedule_interval: 30 1/3 * * *
   description: |
     Frequent imports from Firefox Accounts (FxA) CloudSQL databases.
 

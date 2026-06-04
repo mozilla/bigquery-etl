@@ -16,7 +16,7 @@ scheduling:
   depends_on:
   - dag_name: bqetl_accounts_db
     task_id: accounts_db_external__fxa_accounts__v1
-    execution_delta: -22h
+    execution_delta: -21h
 bigquery:
   time_partitioning:
     type: day

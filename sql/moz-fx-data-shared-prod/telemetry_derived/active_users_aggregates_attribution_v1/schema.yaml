@@ -2,12 +2,17 @@ fields:
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
+  description: The UTM campaign identifier from the client's install attribution, identifying the specific marketing campaign (e.g. 'SET_DEFAULT_BROWSER', 'non-fx-button').
+    Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_content
   type: STRING
+  description: The attribution content identifier from the client's install attribution, used to distinguish links within a campaign. Null when attribution data is
+    unavailable.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
+  description: The funnel experiment parameter from the client's install attribution. Null when attribution data is unavailable.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
@@ -17,6 +22,7 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
+  description: The funnel experiment variation key from the client's install attribution. Null when attribution data is unavailable.
 - description: The type of source of a client installation
   mode: NULLABLE
   name: adjust_network
@@ -28,19 +34,19 @@ fields:
 - mode: NULLABLE
   name: city
   type: STRING
+  description: The city in which the client activity took place, as determined by IP geolocation.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: An ISO 3166-1 alpha-2 country code of the country in which the activity took place, as determined by the IP geolocation.
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
+  description: The calendar year in which the client was first seen by Mozilla's data pipeline.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
@@ -51,38 +57,48 @@ fields:
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: 'Daily Active Users: count of clients qualifying as active that reported at least one ping on the submission_date.'
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: 'Weekly Active Users: count of clients qualifying as active in the 7 days up to and including the submission_date.'
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: 'Monthly Active Users: count of clients qualifying as active in the 28 days up to and including the submission_date.'
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: Count of new Firefox profiles created on the submission_date.
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
+  description: Total count of clicks on search advertisements attributed to clients in this row. Null for mobile platforms that do not report this metric.
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
+  description: Total count of organic (non-SAP) searches performed by clients in this row. Null for mobile platforms that do not report this metric.
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: Total number of searches performed by clients in this row.
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: Total count of search result pages that contained at least one advertisement, as reported by clients in this row.
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
+  description: Total number of URIs visited by clients in this row. Null for platforms that do not report URI counts.
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
+  description: Total active browsing hours accumulated by clients in this row on the submission_date.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-- description: Count of distinct, qualified Desktop clients that we received a main
-    ping from on a given day. In mobile DAU = QDAU.
+  description: True if the client has install attribution data; false if the install was unattributed.
+- description: Count of distinct, qualified Desktop clients that we received a main ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

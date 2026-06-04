@@ -1,0 +1,14 @@
+---
+friendly_name: Normalize Is MozillaOnline
+description: |
+  Returns TRUE if the client should be treated as a MozillaOnline user based
+  on distribution_id and app_version.
+
+  A client is considered MozillaOnline if distribution_id is 'MozillaOnline'
+  (case-insensitive) and app_version is prior to 151.0.3, which is when the
+  MozillaOnline migration shipped (June 2, 2026). Users on 151.0.3+ are
+  post-migration canonical Firefox users and return FALSE.
+
+  Returns FALSE if distribution_id or app_version is NULL or if distribution_id
+  is not 'MozillaOnline'. Returns TRUE if distribution_id is 'MozillaOnline'
+  and app_version is malformed, as a conservative fallback.

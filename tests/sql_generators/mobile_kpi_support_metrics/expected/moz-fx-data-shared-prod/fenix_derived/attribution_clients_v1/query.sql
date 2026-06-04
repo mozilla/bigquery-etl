@@ -13,7 +13,7 @@ WITH new_profiles AS (
     submission_date = DATE_SUB(
       @submission_date,
       INTERVAL 2 DAY
-    ) -- see https://mozilla-hub.atlassian.net/browse/DO-2139
+    ) -- see https://mozilla-hub.atlassian.net/browse/DO-2139 for more info about this decision
     AND is_new_profile
 ),
 first_session_ping_base AS (

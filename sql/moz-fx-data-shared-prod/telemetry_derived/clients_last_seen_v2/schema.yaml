@@ -44,7 +44,7 @@ fields:
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER
   description: Bit pattern encoding whether the client visited at least 1 URI in normal (non-private) browsing mode on each of the previous 28 days.
-    Each bit corresponds to one day, with the most-significant bit representing the most recent day.
+    Each bit corresponds to one day, with the least-significant (rightmost) bit representing the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER

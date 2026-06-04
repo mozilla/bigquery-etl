@@ -342,7 +342,8 @@ fields:
   mode: NULLABLE
   name: flash_version
   type: STRING
-- description: Name of the country in which the activity took place, as determined by the IP geolocation.
+- description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
   mode: NULLABLE
   name: country
   type: STRING
@@ -510,7 +511,8 @@ fields:
   mode: NULLABLE
   name: install_year
   type: INTEGER
-- description: A flag indicating whether the browser is set as the default browser on the client side.
+- description: A flag indicating whether the browser is set as the default browser
+    on the client side.
   mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
@@ -1842,7 +1844,8 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
-  description: User preference controlling whether search suggestions appear before browsing history in URL bar results ('false' if user disabled). Null if not set.
+  description: User preference controlling whether search suggestions appear before browsing history in URL bar results ('false' if user disabled).
+    Null if not set.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest
   type: STRING
@@ -2476,15 +2479,15 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: 'The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled most frequently seen on the submission date.
-
+  description: |-
+    The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled most frequently seen on the submission date.
     If there is a tie, the value seen last according to submission_timestamp.
-
-    True if the BackupService is configured to automatically create backups in the background.'
+    True if the BackupService is configured to automatically create backups in the background.
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE

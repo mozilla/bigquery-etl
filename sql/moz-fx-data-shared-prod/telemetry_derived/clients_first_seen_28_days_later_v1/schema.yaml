@@ -6,7 +6,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -18,7 +19,8 @@ fields:
 - name: country_code
   type: STRING
   mode: NULLABLE
-  description: Code of the country in which the activity took place, as determined by the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: channel
   type: STRING
   mode: NULLABLE
@@ -72,15 +74,18 @@ fields:
   mode: NULLABLE
   description: Identifier indicating where the Firefox installation originated (e.g., 'mozorg', 'fxdotcom').
 - name: activated
-  description: Whether the profile sent a main ping in at least 5 of their first 7 days.
+  description: Whether the profile sent a main ping in at least 5 of their first 7
+    days.
   type: BOOLEAN
   mode: NULLABLE
 - name: returned_second_day
-  description: Whether the profile sent a main ping on any day after their first day during their first 28 days.
+  description: Whether the profile sent a main ping on any day after their first day
+    during their first 28 days.
   type: BOOLEAN
   mode: NULLABLE
 - name: qualified_second_day
-  description: Whether the profile qualified as DAU on any day after their first day during their first 28 days.
+  description: Whether the profile qualified as DAU on any day after their first day
+    during their first 28 days.
   type: BOOLEAN
   mode: NULLABLE
 - name: retained_week4
@@ -106,4 +111,5 @@ fields:
 - name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
-  description: How the profile was selected during startup, as reported by the first ping received.
+  description: How the profile was selected during startup, as reported by the first
+    ping received.

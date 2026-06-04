@@ -6,7 +6,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -118,8 +119,8 @@ fields:
 - name: engine_data_origin
   type: STRING
   mode: NULLABLE
-  description: 'The origin type of the default search engine: ''default'' for built-in engines, ''verified'' for user-installed with valid signatures, ''unverified''
-    or ''invalid'' for others.'
+  description: The origin type of the default search engine; default for built-in engines, verified for user-installed with valid signatures, unverified
+    or invalid for others.
 - name: engine_data_submission_url
   type: STRING
   mode: NULLABLE
@@ -143,7 +144,8 @@ fields:
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's IP address.
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -151,7 +153,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined by the IP geolocation.
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -187,7 +190,7 @@ fields:
 - name: installation_first_seen_installer_type
   type: STRING
   mode: NULLABLE
-  description: 'The type of installer used for this Firefox installation: ''full'', ''stub'', or ''msix''. Windows only; null on non-Windows.'
+  description: The type of installer used for this Firefox installation; 'full', 'stub', or 'msix'. Windows only; null on non-Windows.
 - name: installation_first_seen_other_inst
   type: BOOLEAN
   mode: NULLABLE
@@ -231,7 +234,7 @@ fields:
   - name: first_seen_date_source_ping
     type: STRING
     mode: NULLABLE
-    description: 'The ping type that provided the client''s first-seen date: ''new_profile'', ''main'', or ''shutdown''.'
+    description: The ping type that provided the client''s first-seen date 'new_profile', 'main', or 'shutdown'.
   - name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE
@@ -247,15 +250,17 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: funnel_derived
   type: STRING
   mode: NULLABLE
-  description: 'The derived acquisition funnel category for this client: ''mozorg windows funnel'', ''mozorg mac funnel'', ''partner'', or ''other''.'
+  description: The derived acquisition funnel category for this client; 'mozorg windows funnel', 'mozorg mac funnel', 'partner', or 'other'.
 - name: distribution_model
   type: STRING
   mode: NULLABLE
-  description: A categorized description of how Firefox was distributed to this client (e.g., 'non-distribution', 'OS pre-installed', 'secondary store', 'OEM pre-installed').
+  description: A categorized description of how Firefox was distributed to this client (e.g., 'non-distribution', 'OS pre-installed', 'secondary store',
+    'OEM pre-installed').
 - name: partner_org
   type: STRING
   mode: NULLABLE

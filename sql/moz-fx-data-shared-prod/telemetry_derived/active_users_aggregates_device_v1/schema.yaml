@@ -10,7 +10,8 @@ fields:
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: The attribution medium from the install attribution, indicating the category of channel that drove the installation (e.g., 'organic', 'referral', 'cpc').
+  description: The attribution medium from the install attribution, indicating the category of channel that drove the installation
+    (e.g., 'organic', 'referral', 'cpc').
 - mode: NULLABLE
   name: attribution_source
   type: STRING
@@ -18,7 +19,8 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Code of the country in which the activity took place, as determined by the IP geolocation.
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: device_model
   type: STRING
@@ -30,7 +32,8 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: A flag indicating whether the browser is set as the default browser on the client side.
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
@@ -50,11 +53,13 @@ fields:
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
-  description: Major or first part of the operating system version running at the client. E.g. for version "100.9.11", the major is 100.
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-  description: Minor part of the operating system version running at the client. E.g. for version "100.9.11", the minor is 9.
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
 - mode: NULLABLE
   name: submission_date
   type: DATE
@@ -99,7 +104,8 @@ fields:
   name: active_hours
   type: FLOAT
   description: Total active browsing hours accumulated by clients in this segment on the submission date.
-- description: Count of distinct, qualified Desktop clients that we received a main ping from on a given day. In mobile DAU = QDAU.
+- description: Count of distinct, qualified Desktop clients that we received a main
+    ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

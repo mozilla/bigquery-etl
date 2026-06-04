@@ -342,7 +342,8 @@ fields:
   mode: NULLABLE
   name: flash_version
   type: STRING
-- description: Code of the country in which the activity took place, as determined by the IP geolocation.
+- description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
   mode: NULLABLE
   name: country
   type: STRING
@@ -358,7 +359,8 @@ fields:
   mode: NULLABLE
   name: geo_subdivision2
   type: STRING
-- description: The name of the internet service provider associated with the client's IP address.
+- description: The name of the internet service provider associated with the client's
+    IP address.
   mode: NULLABLE
   name: isp_name
   type: STRING
@@ -378,10 +380,13 @@ fields:
   mode: NULLABLE
   name: gfx_features_d3d11_status
   type: STRING
-- description: Information about the out-of-process compositing ("GPU Process") GFX feature. unused - This feature has not been requested. unavailable - Safe Mode
-    or OS restriction prevents use. blocked - An internal condition (such as safe mode) prevents use. blocklisted - Blocked due to a blocklist restriction. denied"
-    - Blocked due to allowlist restrictions. disabled - User explicitly disabled this default feature. failed - Feature failed to initialize. available - User has
-    this feature available by default and it's in use.
+- description: Information about the out-of-process compositing ("GPU Process") GFX
+    feature. unused - This feature has not been requested. unavailable - Safe Mode
+    or OS restriction prevents use. blocked - An internal condition (such as safe
+    mode) prevents use. blocklisted - Blocked due to a blocklist restriction. denied"
+    - Blocked due to allowlist restrictions. disabled - User explicitly disabled this
+    default feature. failed - Feature failed to initialize. available - User has this
+    feature available by default and it's in use.
   mode: NULLABLE
   name: gfx_features_gpu_process_status
   type: STRING
@@ -513,7 +518,8 @@ fields:
   mode: NULLABLE
   name: install_year
   type: INTEGER
-- description: A flag indicating whether the browser is set as the default browser on the client side.
+- description: A flag indicating whether the browser is set as the default browser
+    on the client side.
   mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
@@ -585,7 +591,8 @@ fields:
   mode: NULLABLE
   name: plugins_notification_shown_sum
   type: INTEGER
-- description: The Firefox build id the browser is updating from. Follows the same format as application.buildId. Only valid for "update" pings with reason "success".
+- description: The Firefox build id the browser is updating from. Follows the same
+    format as application.buildId. Only valid for "update" pings with reason "success".
   mode: NULLABLE
   name: previous_build_id
   type: STRING
@@ -601,7 +608,8 @@ fields:
   mode: NULLABLE
   name: push_api_notify_sum
   type: INTEGER
-- description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -2415,7 +2423,8 @@ fields:
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
-  description: The hw.model of the hardware running this software. Mac only. e.g. "MacBookPro14,1"
+  description: The hw.model of the hardware running this software. Mac only. e.g.
+    "MacBookPro14,1"
 - name: max_subsession_counter
   type: INTEGER
   mode: NULLABLE
@@ -2431,16 +2440,20 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: 'The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled most frequently seen on the submission date.
+  description: 'The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled
+    most frequently seen on the submission date.
 
     If there is a tie, the value seen last according to submission_timestamp.
 
-    True if the BackupService is configured to automatically create backups in the background.'
+    True if the BackupService is configured to automatically create backups in the
+    background.'
 - name: browser_backup_archive_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.
+  description: True if the user can create backups, i.e. it has not been disabled
+    by a pref or otherwise deemed incompatible.

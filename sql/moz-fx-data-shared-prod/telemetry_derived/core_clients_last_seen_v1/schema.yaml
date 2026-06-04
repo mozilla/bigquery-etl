@@ -6,9 +6,13 @@ fields:
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer where each bit represents whether the client was active on that day relative to submission_date, with the rightmost bit
+    representing the current day. Used to compute rolling activity windows without expanding to daily rows.
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the number of days since the profile was created for each of the past 28 days, used to track profile age across
+    the rolling window.
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -16,18 +20,24 @@ fields:
 - name: profile_date
   type: DATE
   mode: NULLABLE
+  description: The date the Firefox profile was created on the client device, derived from the earliest observed profile creation timestamp.
 - name: sessions
   type: INTEGER
   mode: NULLABLE
+  description: Number of browser sessions recorded by the client on its most recently seen active day.
 - name: durations
   type: INTEGER
   mode: NULLABLE
+  description: Total active session duration in seconds reported by the client on its most recently seen active day.
 - name: flash_usage
   type: INTEGER
   mode: NULLABLE
+  description: Count of Flash plugin usage events on the client's most recently active day. This field is always 0 in practice as Flash is no longer
+    supported.
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: The name of the mobile application that submitted the core ping on the client's most recently active day (e.g., Fennec, Focus, FirefoxForFireTV).
 - name: os
   type: STRING
   mode: NULLABLE
@@ -40,9 +50,12 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+  description: City name associated with the client's IP address at most recent submission, as determined by IP geolocation. Null when geolocation cannot
+    resolve to a city.
 - name: app_build_id
   type: STRING
   mode: NULLABLE
+  description: The build identifier of the application as reported in the core ping URI metadata on the client's most recently active day.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -54,15 +67,20 @@ fields:
 - name: osversion
   type: STRING
   mode: NULLABLE
+  description: The raw operating system version string as reported by the client at most recent observation (e.g., '28', '33' for Android API level).
 - name: device
   type: STRING
   mode: NULLABLE
+  description: The device model identifier combining manufacturer and model (e.g., 'samsung-SM-N960F', 'MediaTek-SMART TV') as last observed for this
+    client.
 - name: arch
   type: STRING
   mode: NULLABLE
+  description: The CPU architecture of the device (e.g., arm64-v8a, armeabi-v7a) as last observed for this client.
 - name: default_search
   type: STRING
   mode: NULLABLE
+  description: The identifier of the default search engine configured on the client (e.g., 'google-b-m', 'baidu') as last observed.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -70,9 +88,11 @@ fields:
 - name: campaign
   type: STRING
   mode: NULLABLE
+  description: The attribution campaign identifier as reported in the core ping. This field is always null in the current data.
 - name: campaign_id
   type: STRING
   mode: NULLABLE
+  description: The advertising campaign identifier associated with the client's install attribution, when available. Null for most clients.
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
@@ -80,12 +100,17 @@ fields:
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the tracker stats share feature was enabled on the client at last observation. Almost always null in practice.
 - name: metadata_app_version
   type: STRING
   mode: NULLABLE
+  description: The application version string as reported in the HTTP request URI metadata (e.g., '4.6') at most recent observation.
 - name: bug_1501329_affected
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the client was affected by Bug 1501329, which caused incorrect telemetry in certain early Firefox for Android builds. False for
+    most clients.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The date on which the server first received a core ping from this client.

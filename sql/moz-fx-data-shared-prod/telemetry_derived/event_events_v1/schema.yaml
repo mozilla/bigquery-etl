@@ -39,7 +39,7 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: The operating system version string at the client, prior to normalization (e.g., '10.0' for Windows, '25.5.0' for macOS, '6.8.0' for Linux).
+  description: The operating system version string at the client (e.g., '10.0' for Windows, '25.5.0' for macOS, '6.8.0' for Linux).
 - name: experiments
   type: RECORD
   mode: REPEATED

@@ -25,8 +25,8 @@ fields:
 - mode: NULLABLE
   name: country_code
   type: STRING
-  description: The ISO 3166-1 alpha-2 country code where the client is located, as determined by IP geolocation. Countries with fewer than 5000 distinct
-    clients may be aggregated into 'OTHER' for privacy.
+  description: The ISO 3166-1 alpha-2 country code where the client is located, as determined by IP geolocation. Countries where both the handshake count
+    and distinct client count are below 5000 are aggregated into 'OTHER' for privacy.
 - mode: NULLABLE
   name: total_client_count
   type: INTEGER

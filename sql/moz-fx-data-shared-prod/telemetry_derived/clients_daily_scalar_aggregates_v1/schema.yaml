@@ -6,8 +6,7 @@ fields:
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: client_id
   type: STRING
@@ -15,8 +14,7 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
 - mode: NULLABLE
   name: os
   type: STRING
@@ -28,6 +26,7 @@ fields:
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application in YYYYMMDDHHMMSS format.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -36,21 +35,27 @@ fields:
   - mode: NULLABLE
     name: metric
     type: STRING
+    description: The name of the scalar metric being aggregated (e.g., 'browser_engagement_total_uri_count').
   - mode: NULLABLE
     name: metric_type
     type: STRING
+    description: The type of the scalar metric (e.g., 'scalar', 'keyed-scalar').
   - mode: NULLABLE
     name: key
     type: STRING
+    description: For keyed scalars, the string key identifying the specific sub-metric. Null for non-keyed scalars.
   - mode: NULLABLE
     name: process
     type: STRING
+    description: The Firefox process (e.g., 'parent', 'content', 'gpu') from which this scalar was collected.
   - mode: NULLABLE
     name: agg_type
     type: STRING
+    description: The aggregation type applied to the scalar values across subsessions (e.g., 'sum', 'max', 'mean').
   - mode: NULLABLE
     name: value
     type: FLOAT
+    description: The aggregated scalar value computed according to agg_type for this metric on the submission date.
   mode: REPEATED
   name: scalar_aggregates
   type: RECORD

@@ -42,8 +42,8 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
-  description: Array of active Normandy experiments the client was enrolled in at
-    event time, with branch and enrollment metadata for each.
+  description: Array of active experiments (Normandy and Nimbus) the client was
+    enrolled in at event time, with branch and enrollment metadata for each.
   fields:
   - name: key
     type: STRING

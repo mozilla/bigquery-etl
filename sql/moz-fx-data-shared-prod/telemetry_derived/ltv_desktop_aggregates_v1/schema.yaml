@@ -94,7 +94,8 @@ fields:
 - mode: REPEATED
   name: subsession_hours_sum_histogram
   type: FLOAT
-  description: Histogram of per-client subsession hours sums across cohort members, with one bucket per percentile (APPROX_QUANTILES at 99 buckets).
+  description: Histogram of per-client subsession hours sums across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sessions_started_on_this_day_total
   type: INTEGER
@@ -102,23 +103,28 @@ fields:
 - mode: REPEATED
   name: sessions_started_on_this_day_histogram
   type: INTEGER
-  description: Histogram of per-client session counts across cohort members, with one bucket per percentile (APPROX_QUANTILES at 99 buckets).
+  description: Histogram of per-client session counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: active_addons_count_mean_histogram
   type: FLOAT
-  description: Histogram of mean active add-on counts per client across cohort members, with one bucket per percentile.
+  description: Histogram of mean active add-on counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: max_concurrent_tab_count_max_histogram
   type: INTEGER
-  description: Histogram of maximum concurrent tab counts per client across cohort members, with one bucket per percentile.
+  description: Histogram of maximum concurrent tab counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: active_hours_sum_histogram
   type: FLOAT
-  description: Histogram of per-client active hours sums across cohort members, with one bucket per percentile.
+  description: Histogram of per-client active hours sums across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: REPEATED
   name: total_uri_count_histogram
   type: INTEGER
-  description: Histogram of total URI counts per client across cohort members, with one bucket per percentile.
+  description: Histogram of total URI counts per client across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_sum
   type: INTEGER
@@ -126,7 +132,8 @@ fields:
 - mode: REPEATED
   name: organic_histogram
   type: INTEGER
-  description: Histogram of per-client organic search access point counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic search access point counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: tagged_sap_sum
   type: INTEGER
@@ -134,7 +141,8 @@ fields:
 - mode: REPEATED
   name: tagged_sap_histogram
   type: INTEGER
-  description: Histogram of per-client tagged SAP search counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client tagged SAP search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: tagged_follow_on_sum
   type: INTEGER
@@ -142,7 +150,8 @@ fields:
 - mode: REPEATED
   name: tagged_follow_on_histogram
   type: INTEGER
-  description: Histogram of per-client tagged follow-on search counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client tagged follow-on search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sap_sum
   type: INTEGER
@@ -150,7 +159,8 @@ fields:
 - mode: REPEATED
   name: sap_histogram
   type: INTEGER
-  description: Histogram of per-client SAP search counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client SAP search counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: ad_click_sum
   type: INTEGER
@@ -158,7 +168,8 @@ fields:
 - mode: REPEATED
   name: ad_click_histogram
   type: INTEGER
-  description: Histogram of per-client SERP ad click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client SERP ad click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: ad_click_organic_sum
   type: INTEGER
@@ -166,7 +177,8 @@ fields:
 - mode: REPEATED
   name: ad_click_organic_histogram
   type: INTEGER
-  description: Histogram of per-client organic ad click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic ad click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: search_with_ads_sum
   type: INTEGER
@@ -174,7 +186,8 @@ fields:
 - mode: REPEATED
   name: search_with_ads_histogram
   type: INTEGER
-  description: Histogram of per-client SERP with ads counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client SERP with ads counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: newtab_visit_count_sum
   type: INTEGER
@@ -182,7 +195,8 @@ fields:
 - mode: REPEATED
   name: newtab_visit_count_histogram
   type: INTEGER
-  description: Histogram of per-client New Tab visit counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client New Tab visit counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: visits_with_non_search_engagement_sum
   type: INTEGER
@@ -190,7 +204,8 @@ fields:
 - mode: REPEATED
   name: visits_with_non_search_engagement_histogram
   type: INTEGER
-  description: Histogram of per-client non-search-engagement New Tab visit counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client non-search-engagement New Tab visit counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_clicks_sum
   type: INTEGER
@@ -198,7 +213,8 @@ fields:
 - mode: REPEATED
   name: organic_topsite_tile_clicks_histogram
   type: INTEGER
-  description: Histogram of per-client organic topsite tile click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic topsite tile click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_clicks_sum
   type: INTEGER
@@ -206,7 +222,8 @@ fields:
 - mode: REPEATED
   name: sponsored_topsite_tile_clicks_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored topsite tile click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored topsite tile click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_impressions_sum
   type: INTEGER
@@ -214,7 +231,8 @@ fields:
 - mode: REPEATED
   name: organic_topsite_tile_impressions_histogram
   type: INTEGER
-  description: Histogram of per-client organic topsite tile impression counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic topsite tile impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_impressions_sum
   type: INTEGER
@@ -222,7 +240,8 @@ fields:
 - mode: REPEATED
   name: sponsored_topsite_tile_impressions_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored topsite tile impression counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored topsite tile impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_topsite_tile_dismissals_sum
   type: INTEGER
@@ -230,7 +249,8 @@ fields:
 - mode: REPEATED
   name: organic_topsite_tile_dismissals_histogram
   type: INTEGER
-  description: Histogram of per-client organic topsite tile dismissal counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic topsite tile dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_topsite_tile_dismissals_sum
   type: INTEGER
@@ -238,7 +258,8 @@ fields:
 - mode: REPEATED
   name: sponsored_topsite_tile_dismissals_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored topsite tile dismissal counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored topsite tile dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_impressions_sum
   type: INTEGER
@@ -246,7 +267,8 @@ fields:
 - mode: REPEATED
   name: organic_stories_impressions_histogram
   type: INTEGER
-  description: Histogram of per-client organic Pocket story impression counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic Pocket story impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_impressions_sum
   type: INTEGER
@@ -254,7 +276,8 @@ fields:
 - mode: REPEATED
   name: sponsored_stories_impressions_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored Pocket story impression counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored Pocket story impression counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_clicks_sum
   type: INTEGER
@@ -262,7 +285,8 @@ fields:
 - mode: REPEATED
   name: organic_stories_clicks_histogram
   type: INTEGER
-  description: Histogram of per-client organic Pocket story click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic Pocket story click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_clicks_sum
   type: INTEGER
@@ -270,7 +294,8 @@ fields:
 - mode: REPEATED
   name: sponsored_stories_clicks_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored Pocket story click counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored Pocket story click counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: organic_stories_dismissals_sum
   type: INTEGER
@@ -278,7 +303,8 @@ fields:
 - mode: REPEATED
   name: organic_stories_dismissals_histogram
   type: INTEGER
-  description: Histogram of per-client organic Pocket story dismissal counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client organic Pocket story dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).
 - mode: NULLABLE
   name: sponsored_stories_dismissals_sum
   type: INTEGER
@@ -286,4 +312,5 @@ fields:
 - mode: REPEATED
   name: sponsored_stories_dismissals_histogram
   type: INTEGER
-  description: Histogram of per-client sponsored Pocket story dismissal counts across cohort members, with one bucket per percentile.
+  description: Histogram of per-client sponsored Pocket story dismissal counts across cohort members, as approximate quantile boundaries (100 values from
+    APPROX_QUANTILES(..., 99)).

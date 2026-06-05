@@ -1,8 +1,16 @@
+2026-06-08:
+  start_date: 2026-04-01
+  end_date: 2026-06-08
+  reason: updating fenix submission_date in https://mozilla-hub.atlassian.net/browse/DO-2139
+  watchers:
+    - kbammarito@mozilla.com
+  status: Initiate
+  override_retention_limit: false
 2025-05-20:
   start_date: 2023-04-08
   end_date: 2025-05-20
   reason: normalized_channel added, backfill to populate this field historically
   watchers:
-  - kik@mozilla.com
+    - kik@mozilla.com
   status: Complete
   override_retention_limit: false

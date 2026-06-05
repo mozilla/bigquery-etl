@@ -1,0 +1,14 @@
+# mock FxA emails
+---
+# uid_1 primary email -> used
+- uid: uid_1
+  email: user_1@mail.com
+  isPrimary: true
+# uid_1 secondary email -> ignored (not primary)
+- uid: uid_1
+  email: user_1_secondary@mail.com
+  isPrimary: false
+# uid_2 has only a non-primary email -> uid_2 is dropped entirely
+- uid: uid_2
+  email: user_2@mail.com
+  isPrimary: false

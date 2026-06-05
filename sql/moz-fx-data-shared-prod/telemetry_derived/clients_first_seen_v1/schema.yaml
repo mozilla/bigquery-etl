@@ -2472,10 +2472,12 @@ fields:
 - name: places_bookmarks_searchbar_cumulative_searches_sum
   type: INTEGER
   mode: NULLABLE
+  description: Cumulative count of bookmark searches via the bookmarks search bar on the first seen day.
 - name: scalar_parent_library_link_sum
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of link navigations from the Firefox Library panel by content type on the first seen day.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -2486,6 +2488,7 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of Firefox Library panel open events by trigger method on the first seen day.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -2496,6 +2499,7 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of searches performed within the Firefox Library panel by panel type on the first seen day.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -2505,30 +2509,39 @@ fields:
 - name: startup_profile_selection_reason_first
   type: STRING
   mode: NULLABLE
+  description: The reason the profile was selected at startup, from the first ping of the first seen day (e.g., 'firstrun-created-default', 'default').
 - name: first_document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID of the first ping received from this client on its first seen day.
 - name: partner_id
   type: STRING
   mode: NULLABLE
+  description: The partner identifier from the Firefox distribution configuration (e.g., 'ubuntu', 'mozillaonline'). Null if no partner.
 - name: distribution_version
   type: STRING
   mode: NULLABLE
+  description: The version string of the Firefox distribution package (e.g., '1.0', '2023.6'). Null for standard builds.
 - name: distributor
   type: STRING
   mode: NULLABLE
+  description: The name of the organization that distributed this Firefox build (e.g., 'canonical', 'mozillaonline', 'mint').
 - name: distributor_channel
   type: STRING
   mode: NULLABLE
+  description: The channel through which the distributor released this Firefox build (e.g., 'mainWinStub', 'ubuntu', 'firefox').
 - name: env_build_platform_version
   type: STRING
   mode: NULLABLE
+  description: The XULRunner platform version string from the build environment.
 - name: env_build_xpcom_abi
   type: STRING
   mode: NULLABLE
+  description: The binary ABI string from the build environment (e.g., 'x86_64-msvc', 'aarch64-gcc3').
 - name: geo_db_version
   type: STRING
   mode: NULLABLE
+  description: The version of the IP geolocation database used to resolve the client's location.
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
@@ -2537,12 +2550,15 @@ fields:
 - name: max_subsession_counter
   type: INTEGER
   mode: NULLABLE
+  description: The highest subsession counter value seen from this client on the first seen day, indicating total number of subsessions.
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
+  description: The lowest subsession counter value seen from this client on the first seen day.
 - name: startup_profile_selection_first_ping_only
   type: STRING
   mode: NULLABLE
+  description: The profile selection reason from the first ping of the first seen day, without fallback logic.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

@@ -63,3 +63,17 @@ fields:
 - mode: NULLABLE
   name: urlbar_impressions
   type: INTEGER
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: urlbar_bounces
+  type: INTEGER
+  mode: NULLABLE
+- name: urlbar_disables
+  type: INTEGER
+  mode: NULLABLE
+- name: urlbar_abandonments
+  type: INTEGER
+  mode: NULLABLE

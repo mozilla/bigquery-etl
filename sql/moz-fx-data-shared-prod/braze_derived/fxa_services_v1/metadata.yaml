@@ -17,7 +17,7 @@ labels:
   schedule: daily
   owner: sherrera
 scheduling:
-  dag_name: bqetl_accounts_backend_external
+  dag_name: bqetl_braze
   # the sources are full-table mirrors with no date partitioning, and this table
   # is rebuilt in full each run rather than per-day
   date_partition_parameter: null

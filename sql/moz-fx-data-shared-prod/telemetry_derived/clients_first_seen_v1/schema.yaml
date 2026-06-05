@@ -8,6 +8,7 @@ fields:
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
+  description: The date the server received the second ping from this client after first_seen_date. Null if the client has not yet sent a second ping.
 - mode: NULLABLE
   name: client_id
   type: STRING

@@ -1,9 +1,7 @@
 WITH sends AS (
   SELECT
-    send_id,
     send_time,
     dispatch_id,
-    external_user_id,
     message_extras,
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_sends_v1`

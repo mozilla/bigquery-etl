@@ -30,3 +30,4 @@ bigquery:
   clustering:
     fields:
     - normalized_app_name
+    - metric_identifier

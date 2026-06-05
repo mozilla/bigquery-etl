@@ -13,9 +13,18 @@ fields:
   type: STRING
   mode: NULLABLE
   description: >-
-    Per-metric identifier. For event metrics this is "category.name"; for other
-    metric columns it is the normalized Glean column path (see the column_metrics
-    normalization in query.sql).
+    Flat Glean metric identifier. Treat it as opaque: do NOT split it to recover
+    the category/name hierarchy. The two source branches use different,
+    canonical separators by design. Event metrics (event_counts_glean_v2) appear
+    as "category.name" (dot), since event_category/event_name are stored as
+    column values so the "." is preserved. Non-event metrics (column_size_v1)
+    appear underscore-flattened, e.g. "addons_has_enabled_addons" for
+    addons.has_enabled_addons, because the identifier is a BigQuery column name
+    where "." is illegal; recovering the original "." needs a Glean registry
+    lookup (the underscore is not a reliable split point) and is out of scope for
+    this MVP. A given metric normally takes only one separator form, but may be
+    sent on multiple pings and land in multiple datasets; we count every
+    occurrence, since each consumes storage.
 - name: daily_logical_bytes
   type: INTEGER
   mode: NULLABLE

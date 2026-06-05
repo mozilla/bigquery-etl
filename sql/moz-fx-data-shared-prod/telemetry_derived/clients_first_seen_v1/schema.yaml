@@ -799,9 +799,11 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
+  description: Total number of searches initiated via a handoff from the new tab URL bar to the browser URL bar on the first seen day.
 - mode: NULLABLE
   name: search_count_urlbar_persisted
   type: INTEGER
+  description: Total number of searches where the URL bar retained the search term after the search on the first seen day.
 - mode: NULLABLE
   name: session_restored_mean
   type: FLOAT

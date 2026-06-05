@@ -6,12 +6,18 @@ fields:
 - name: days_logged_event_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the days in the past 28 days on which this client logged at least one Telemetry event ping. The rightmost bit
+    represents the most recent day.
 - name: days_used_pictureinpicture_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the days in the past 28 days on which this client used the Picture-in-Picture feature at least once. The rightmost
+    bit represents the most recent day.
 - name: days_viewed_protection_report_bits
   type: INTEGER
   mode: NULLABLE
+  description: A 28-bit integer encoding the days in the past 28 days on which this client viewed the Privacy Protections report at least once. The rightmost
+    bit represents the most recent day.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -24,12 +30,15 @@ fields:
 - name: n_logged_event
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Telemetry event pings logged by this client on the most recent active day within the 28-day window.
 - name: n_created_pictureinpicture
   type: INTEGER
   mode: NULLABLE
+  description: The total number of Picture-in-Picture windows created by this client on the most recent active day within the 28-day window.
 - name: n_viewed_protection_report
   type: INTEGER
   mode: NULLABLE
+  description: The total number of times this client viewed the Privacy Protections report on the most recent active day within the 28-day window.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

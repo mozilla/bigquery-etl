@@ -25,6 +25,43 @@ The managed backfill workflow (`bqetl backfill create` / `initiate`) validates a
 
 The hard rejections (no override) are enforced by [`validate_table_metadata`](https://github.com/mozilla/bigquery-etl/tree/main/bigquery_etl/backfill/utils.py) in `bigquery_etl/backfill/utils.py`; the date/retention/duplicate checks live in [`bigquery_etl/backfill/validate.py`](https://github.com/mozilla/bigquery-etl/tree/main/bigquery_etl/backfill/validate.py).
 
+## Testing a backfill in a dev environment
+
+We can't create tables in `moz-fx-data-shared-prod.backfills_staging_derived`, so running
+the full managed backfill workflow locally is only possible with `--target`, which stages into 
+a test project. We can write to tables that already exist in
+`moz-fx-data-shared-prod.backfills_staging_derived`, so an active backfill can be
+amended by writing to its existing staging table.
+
+Before running a managed backfill against production, you can exercise the full
+`initiate` and `complete` flow against a [development target](development_workflows.md) by
+passing the global `--target` flag. With a target active, the backfill operates on the
+target-deployed table and stages into the target project (e.g. your sandbox).
+The query does not change, so it will still read from production tables:
+
+```bash
+# Deploy the table into your dev target first (see Development Workflows), then:
+./bqetl --target dev backfill initiate moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1
+# validate the staged data, then:
+./bqetl --target dev backfill complete moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1
+```
+
+What changes under `--target`:
+
+- Staging and backup tables are created in the **target project**'s
+  `backfills_staging_derived` dataset instead of production's.
+- The table that gets backed up and swapped is the **target-deployed** copy of the table,
+  not the production table.
+- Queries bill to the target project, and production IAM mirroring is skipped.
+
+The `backfill.yaml` entry is still read from the repo as usual; only the BigQuery
+locations are redirected. Without `--target`, behavior is unchanged (production backfill).
+
+`query.py` (python script) backfills do not support `--target`. A python-script backfill's
+destination is baked into the entry's `query_script_args` at create time and is not redirected, 
+so running one under `--target` is rejected to avoid writing to the production staging table. 
+This limitation is tracked in https://mozilla-hub.atlassian.net/browse/DENG-10054.
+
 ## Initiating the backfill:
 
 1. Create a backfill schedule entry to (re)-process data in your table:

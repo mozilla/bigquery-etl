@@ -663,7 +663,7 @@ def _create_target_stub(
     """
     is_wildcard = "*" in name
     stub_name = name.replace("*", "wildcard") if is_wildcard else name
-    tgt_project, tgt_dataset, tgt_table = _target_ref_for_source(
+    tgt_project, tgt_dataset, tgt_table = target_ref_for_source(
         target, target.project_id, project, dataset, stub_name
     )
     stub_path = Path(sql_dir) / tgt_project / tgt_dataset / tgt_table
@@ -850,7 +850,7 @@ def collect_target_dependencies(
     return artifact_dependencies
 
 
-def _target_ref_for_source(
+def target_ref_for_source(
     target: "Target",
     target_project: str,
     src_project: str,
@@ -961,7 +961,7 @@ def rewrite_for_isolated(
         sql = _substitute_3part_ref(
             sql,
             (src_project, src_dataset, src_table),
-            _target_ref_for_source(
+            target_ref_for_source(
                 target, target_project, src_project, src_dataset, src_table
             ),
         )
@@ -980,7 +980,7 @@ def rewrite_for_isolated(
         src_dataset, src_name = routine_name.split(".")
         if not _is_deployed(routine.project, src_dataset, src_name):
             continue
-        tgt = _target_ref_for_source(
+        tgt = target_ref_for_source(
             target, target_project, routine.project, src_dataset, src_name
         )
         udf_pattern = routine_usage_pattern(routine_name, routine.project)
@@ -1016,7 +1016,7 @@ def rewrite_for_defer(
         """
         if not (info.source_project and info.source_dataset and info.source_table):
             return None
-        _, expected_ds, _ = _target_ref_for_source(
+        _, expected_ds, _ = target_ref_for_source(
             target,
             target_project,
             info.source_project,
@@ -1089,7 +1089,7 @@ def prepare_target_directory(
 ) -> Path:
     """Prepare target directory for query execution with --target."""
     source_project, source_dataset, source_table = extract_from_query_path(query_file)
-    effective_project, effective_dataset, effective_table = _target_ref_for_source(
+    effective_project, effective_dataset, effective_table = target_ref_for_source(
         target,
         target.project_id or source_project,
         source_project,
@@ -1175,7 +1175,7 @@ def prepare_target_directory(
         for match in PERSISTENT_UDF_RE.finditer(sql):
             src_ds = match.group("dataset")
             src_nm = match.group("name")
-            _, tgt_ds, tgt_nm = _target_ref_for_source(
+            _, tgt_ds, tgt_nm = target_ref_for_source(
                 target,
                 effective_project,
                 source_project,

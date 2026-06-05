@@ -11,12 +11,16 @@ fields:
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
+  description: The attribution medium from the install attribution, indicating the category of channel that drove the installation
+    (e.g., 'organic', 'referral', 'cpc').
 - mode: NULLABLE
   name: attribution_source
   type: STRING
+  description: The attribution source from the install attribution, indicating the referring partner domain or website that drove the installation.
 - mode: NULLABLE
   name: city
   type: STRING
+  description: The city in which the activity took place, as determined by IP geolocation.
 - mode: NULLABLE
   name: country
   type: STRING
@@ -34,6 +38,7 @@ fields:
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The name of the browser or application (e.g., 'Firefox Desktop', 'Fenix', 'Firefox iOS').
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -45,6 +50,7 @@ fields:
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: The operating system version string on the client's device (e.g., '10.0' for Windows, '16' for Android).
 - mode: NULLABLE
   name: os_version_major
   type: INTEGER
@@ -74,33 +80,42 @@ fields:
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: Count of newly created profiles first seen on the submission date.
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
+  description: Total count of ad clicks recorded across all clients in this segment on the submission date.
 - mode: NULLABLE
   name: organic_search_count
   type: INTEGER
+  description: Total count of organic (non-paid) search queries made by clients in this segment on the submission date.
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+  description: Total count of search queries made by clients in this segment on the submission date.
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: Total count of searches that returned pages containing ads, for clients in this segment on the submission date.
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
+  description: Total count of URIs visited by clients in this segment on the submission date.
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
+  description: Total active browsing hours accumulated by clients in this segment on the submission date.
 - mode: NULLABLE
   name: first_seen_year
   type: INTEGER
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+  description: Indicates whether the clients in this row have a known install attribution. True if attribution data is present, false otherwise.
 - mode: NULLABLE
   name: language_name
   type: STRING
+  description: The human-readable name of the browser locale language (e.g., 'English', 'German').
 - description: Count of distinct, qualified Desktop clients that we received a main
     ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE

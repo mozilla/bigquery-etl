@@ -131,13 +131,24 @@ Without `--defer-to-target` (default): no rewrites — all references stay point
 Supports `--defer-to-target` (same as `query run`) and `--dry-run` to preview
 without making changes.
 
-### 4. Backfill testing  _(future)_
+### 4. Backfill testing
+
+Both the lower-level `query backfill` and the managed `backfill initiate`/`complete`
+commands support `--target`, running into the target-deployed table and (for managed
+backfills) staging into the target project so you can rehearse a backfill without
+production write access. See
+[Testing a backfill in a dev environment](backfilling_a_table.md#testing-a-backfill-in-a-dev-environment).
 
 ```bash
 ./bqetl --target dev query backfill --defer-to-target \
   --start-date 2024-01-01 \
   --end-date 2024-01-07 \
   telemetry_derived.clients_daily_v6
+```
+Managed backfill:
+```bash
+./bqetl --target dev backfill initiate moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+./bqetl --target dev backfill complete moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 ```
 
 ### 5. Share with teammates

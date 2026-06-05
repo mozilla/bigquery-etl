@@ -122,6 +122,12 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(seconds=72000)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_accounts_db_external__fxa_emails__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_accounts_db_external__fxa_emails__v1",
+        )
+
         accounts_db_external__fxa_emails__v1_external.set_upstream(
             accounts_db_external__fxa_emails__v1
         )
@@ -141,6 +147,19 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
     )
+
+    with TaskGroup(
+        "accounts_db_external__fxa_oauth_account_authorizations__v1_external",
+    ) as accounts_db_external__fxa_oauth_account_authorizations__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_accounts_db_external__fxa_oauth_account_authorizations__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_accounts_db_external__fxa_oauth_account_authorizations__v1",
+        )
+
+        accounts_db_external__fxa_oauth_account_authorizations__v1_external.set_upstream(
+            accounts_db_external__fxa_oauth_account_authorizations__v1
+        )
 
     accounts_db_external__fxa_security_events__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_security_events__v1",

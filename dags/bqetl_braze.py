@@ -57,6 +57,47 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_accounts_db_external__fxa_emails__v1 = ExternalTaskSensor(
+        task_id="wait_for_accounts_db_external__fxa_emails__v1",
+        external_dag_id="bqetl_accounts_db",
+        external_task_id="accounts_db_external__fxa_emails__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_accounts_db_external__fxa_oauth_account_authorizations__v1 = ExternalTaskSensor(
+        task_id="wait_for_accounts_db_external__fxa_oauth_account_authorizations__v1",
+        external_dag_id="bqetl_accounts_db",
+        external_task_id="accounts_db_external__fxa_oauth_account_authorizations__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    braze_derived__fxa_services__v1 = bigquery_etl_query(
+        task_id="braze_derived__fxa_services__v1",
+        destination_table="fxa_services_v1",
+        dataset_id="braze_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="sherrera@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     braze_derived__products__v2 = bigquery_etl_query(
         task_id="braze_derived__products__v2",
         destination_table="products_v2",
@@ -72,6 +113,42 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    braze_external__changed_fxa_services_events_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_fxa_services_events_sync__v1",
+        destination_table="changed_fxa_services_events_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="sherrera@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+    )
+
+    braze_external__changed_fxa_services_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_fxa_services_sync__v1",
+        destination_table="changed_fxa_services_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="sherrera@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__changed_products_sync__v2 = bigquery_etl_query(
@@ -90,6 +167,25 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         arguments=["--append_table", "--noreplace"],
+    )
+
+    checks__fail_braze_derived__fxa_services__v1 = bigquery_dq_check(
+        task_id="checks__fail_braze_derived__fxa_services__v1",
+        source_table="fxa_services_v1",
+        dataset_id="braze_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="sherrera@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
     )
 
     checks__fail_braze_derived__products__v2 = bigquery_dq_check(
@@ -111,8 +207,51 @@ with DAG(
         retries=1,
     )
 
+    checks__warn_braze_derived__fxa_services__v1 = bigquery_dq_check(
+        task_id="checks__warn_braze_derived__fxa_services__v1",
+        source_table="fxa_services_v1",
+        dataset_id="braze_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="sherrera@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "lmcfall@mozilla.com",
+            "sherrera@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        retry_delay=datetime.timedelta(seconds=300),
+        retries=1,
+    )
+
+    braze_derived__fxa_services__v1.set_upstream(
+        wait_for_accounts_db_external__fxa_emails__v1
+    )
+
+    braze_derived__fxa_services__v1.set_upstream(
+        wait_for_accounts_db_external__fxa_oauth_account_authorizations__v1
+    )
+
+    braze_external__changed_fxa_services_events_sync__v1.set_upstream(
+        checks__fail_braze_derived__fxa_services__v1
+    )
+
+    braze_external__changed_fxa_services_sync__v1.set_upstream(
+        checks__fail_braze_derived__fxa_services__v1
+    )
+
     braze_external__changed_products_sync__v2.set_upstream(
         checks__fail_braze_derived__products__v2
     )
 
+    checks__fail_braze_derived__fxa_services__v1.set_upstream(
+        braze_derived__fxa_services__v1
+    )
+
     checks__fail_braze_derived__products__v2.set_upstream(braze_derived__products__v2)
+
+    checks__warn_braze_derived__fxa_services__v1.set_upstream(
+        braze_derived__fxa_services__v1
+    )

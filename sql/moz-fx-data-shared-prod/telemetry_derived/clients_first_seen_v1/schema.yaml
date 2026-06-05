@@ -1652,6 +1652,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_persisted_sum
   type: RECORD
+  description: Keyed count of URL bar persisted search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1662,6 +1663,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed count of URL bar search mode result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1672,6 +1674,7 @@ fields:
   mode: REPEATED
   name: search_withads_contextmenu_sum
   type: RECORD
+  description: Keyed count of context menu search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1682,6 +1685,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_home_sum
   type: RECORD
+  description: Keyed count of about:home search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1692,6 +1696,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_newtab_sum
   type: RECORD
+  description: Keyed count of new tab page search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1702,6 +1707,7 @@ fields:
   mode: REPEATED
   name: search_withads_searchbar_sum
   type: RECORD
+  description: Keyed count of search bar result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1712,6 +1718,7 @@ fields:
   mode: REPEATED
   name: search_withads_system_sum
   type: RECORD
+  description: Keyed count of system-initiated search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1722,6 +1729,7 @@ fields:
   mode: REPEATED
   name: search_withads_webextension_sum
   type: RECORD
+  description: Keyed count of WebExtension-initiated search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1732,6 +1740,7 @@ fields:
   mode: REPEATED
   name: search_withads_tabhistory_sum
   type: RECORD
+  description: Keyed count of tab history search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1742,6 +1751,7 @@ fields:
   mode: REPEATED
   name: search_withads_reload_sum
   type: RECORD
+  description: Keyed count of reload search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1752,6 +1762,7 @@ fields:
   mode: REPEATED
   name: search_withads_unknown_sum
   type: RECORD
+  description: Keyed count of unknown-source search result pages containing ads, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1762,6 +1773,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_sum
   type: RECORD
+  description: Keyed count of ad clicks on URL bar search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1772,6 +1784,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
   type: RECORD
+  description: Keyed count of ad clicks on URL bar handoff search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1782,6 +1795,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_persisted_sum
   type: RECORD
+  description: Keyed count of ad clicks on URL bar persisted search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1792,6 +1806,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed count of ad clicks on URL bar search mode result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1802,6 +1817,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_contextmenu_sum
   type: RECORD
+  description: Keyed count of ad clicks on context menu search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1812,6 +1828,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_about_home_sum
   type: RECORD
+  description: Keyed count of ad clicks on about:home search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1822,6 +1839,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_about_newtab_sum
   type: RECORD
+  description: Keyed count of ad clicks on new tab page search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1832,6 +1850,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_searchbar_sum
   type: RECORD
+  description: Keyed count of ad clicks on search bar result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1842,6 +1861,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_system_sum
   type: RECORD
+  description: Keyed count of ad clicks on system-initiated search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1852,6 +1872,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_webextension_sum
   type: RECORD
+  description: Keyed count of ad clicks on WebExtension-initiated search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1862,6 +1883,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_tabhistory_sum
   type: RECORD
+  description: Keyed count of ad clicks on tab history search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1872,6 +1894,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_reload_sum
   type: RECORD
+  description: Keyed count of ad clicks on reload search result pages, by search engine, on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1882,39 +1905,51 @@ fields:
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
+  description: Keyed count of ad clicks on unknown-source search result pages, by search engine, on the first seen day.
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN
+  description: Whether background updates (downloading updates when Firefox is not running) are enabled.
 - mode: NULLABLE
   name: user_pref_browser_search_suggest_enabled
   type: STRING
+  description: User preference controlling whether search suggestions appear in the URL bar ('true'/'false' as string). Null if not explicitly set.
 - mode: NULLABLE
   name: user_pref_browser_widget_in_navbar
   type: STRING
+  description: User preference controlling whether a specific widget is shown in the navigation bar ('true'/'false' as string). Null if not set.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_searches
   type: STRING
+  description: User preference controlling whether URL bar search suggestions are shown ('true'/'false' as string). Null if not explicitly set.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
+  description: User preference controlling whether search suggestions appear before browsing history in URL bar results. Null if not set.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest
   type: STRING
+  description: User preference controlling whether Firefox Suggest results appear in the URL bar. Null if not set.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
+  description: User preference controlling whether sponsored Firefox Suggest results appear in the URL bar ('true'/'false' as string).
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
+  description: The user's response to the Firefox Suggest onboarding dialog (e.g., 'close_1', 'not_now_2', 'reject_2'). Null if not shown.
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
+  description: Total number of URIs visited across both normal and private browsing modes on the first seen day.
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING
+  description: User preference controlling whether the Firefox new tab page is enabled ('true'/'false' as string). Null if not explicitly set.
 - mode: NULLABLE
   name: user_pref_app_shield_optoutstudies_enabled
   type: STRING
+  description: User preference controlling whether the client participates in Shield studies ('true'/'false' as string). Null if not explicitly set.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1925,6 +1960,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sum
   type: RECORD
+  description: Keyed count of Firefox Suggest (Quicksuggest) result clicks by suggestion type on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1935,6 +1971,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sum
   type: RECORD
+  description: Keyed count of Firefox Suggest (Quicksuggest) result impressions by suggestion type on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1945,6 +1982,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sum
   type: RECORD
+  description: Keyed count of times the user clicked 'Help' on a Firefox Suggest result by suggestion type on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1955,6 +1993,7 @@ fields:
   mode: REPEATED
   name: contextual_services_topsites_click_sum
   type: RECORD
+  description: Keyed count of contextual services top site clicks by source on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1965,18 +2004,23 @@ fields:
   mode: REPEATED
   name: contextual_services_topsites_impression_sum
   type: RECORD
+  description: Keyed count of contextual services top site impressions by source on the first seen day.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
   type: STRING
+  description: User preference controlling whether non-sponsored Firefox Suggest results appear in the URL bar ('true'/'false' as string).
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING
+  description: User preference controlling whether interaction data with Firefox Suggest is collected ('true'/'false' as string).
 - mode: NULLABLE
   name: scalar_a11y_hcm_foreground
   type: INTEGER
+  description: The foreground color value (as an integer) used in Windows High Contrast Mode. Non-null only when High Contrast Mode is active.
 - mode: NULLABLE
   name: scalar_a11y_hcm_background
   type: INTEGER
+  description: The background color value (as an integer) used in Windows High Contrast Mode. Non-null only when High Contrast Mode is active.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1987,6 +2031,8 @@ fields:
   mode: REPEATED
   name: a11y_theme
   type: RECORD
+  description: Keyed array of accessibility theme overrides detected for this client, where each key is a theme name and the value is a boolean indicating
+    whether it is active.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1997,6 +2043,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of help clicks on non-sponsored best-match Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2007,6 +2054,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of help clicks on sponsored best-match Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2017,6 +2065,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_sum
   type: RECORD
+  description: Keyed count of user blocks on non-sponsored Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2027,6 +2076,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_sum
   type: RECORD
+  description: Keyed count of user blocks on sponsored Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2037,6 +2087,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of user blocks on sponsored best-match Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2047,6 +2098,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of user blocks on non-sponsored best-match Firefox Suggest results on the first seen day.
 - fields:
   - mode: NULLABLE
     name: key

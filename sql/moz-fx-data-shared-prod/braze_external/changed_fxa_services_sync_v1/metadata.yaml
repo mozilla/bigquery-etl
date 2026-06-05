@@ -1,0 +1,59 @@
+friendly_name: Braze Changed FxA Services Sync
+description: |-
+  FxA services that users have newly authorized, as a Braze Cloud Data Ingestion
+  payload. Scoped to services that map to a Braze subscription group (today just
+  'smartwindow'); the upstream braze_derived.fxa_services_v1 keeps all authorized
+  services for reference, and this table is the subset actually pushed to Braze. To
+  onboard another service, add it to the service_subscription_groups mapping in the
+  query (and to the matching mapping in changed_fxa_services_events_sync_v1).
+
+  The payload uses the array-of-objects `add` operator, so each new service is
+  appended to the user's existing fxa_services attribute. It also sets the profile
+  email so a new alias-only profile has a contactable address, and subscribes the
+  user to the mapped service's subscription group. We do NOT set the profile-level
+  email_subscribe (the global email master-switch), so we never re-subscribe a user
+  who has globally unsubscribed.
+
+  Braze's `add` always appends (it does not upsert or dedupe), so duplicates are
+  prevented solely by anti-joining against this table's own history (already_synced)
+  and emitting each (uid, service) only once. This table is therefore NOT expired --
+  it must keep full history, and re-backfilling/truncating it would create duplicate
+  array entries in Braze. Records sync to Braze on the fxa_id user alias (ALIAS_NAME
+  = uid, ALIAS_LABEL = 'fxa_id'). Sourced from braze_derived.fxa_services_v1.
+
+  Note on email: the mapped service's emails are transactional communications, sent
+  to people who have authorized and use that service. The subscription state
+  ('subscribed') and group are simply how Braze routes those transactional sends.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner: sherrera
+  dag: bqetl_braze
+  owner1: sherrera
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+bigquery:
+  time_partitioning:
+    type: day
+    field: updated_at
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze/data-viewers
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.fxa_services_v1
+  - moz-fx-data-shared-prod.braze_external.changed_fxa_services_sync_v1
+require_column_descriptions: true

@@ -335,7 +335,24 @@ unioned_pings AS (
       STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
     ) AS `client_info`,
     document_id,
-    events,
+    ARRAY(
+      SELECT
+        STRUCT(
+          events.category,
+          events.extra,
+          events.name,
+          events.timestamp,
+          STRUCT(
+            events.session.event_seq,
+            events.session.session_id,
+            events.session.session_sample_rate,
+            events.session.session_seq,
+            events.session.session_start_time
+          ) AS `session`
+        )
+      FROM
+        UNNEST(events) AS `events`
+    ) AS `events`,
     STRUCT(
       STRUCT(
         metadata.geo.city,
@@ -503,7 +520,24 @@ unioned_pings AS (
       STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
     ) AS `client_info`,
     document_id,
-    events,
+    ARRAY(
+      SELECT
+        STRUCT(
+          events.category,
+          events.extra,
+          events.name,
+          events.timestamp,
+          STRUCT(
+            events.session.event_seq,
+            events.session.session_id,
+            events.session.session_sample_rate,
+            events.session.session_seq,
+            events.session.session_start_time
+          ) AS `session`
+        )
+      FROM
+        UNNEST(events) AS `events`
+    ) AS `events`,
     STRUCT(
       STRUCT(
         metadata.geo.city,
@@ -671,7 +705,24 @@ unioned_pings AS (
       STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
     ) AS `client_info`,
     document_id,
-    events,
+    ARRAY(
+      SELECT
+        STRUCT(
+          events.category,
+          events.extra,
+          events.name,
+          events.timestamp,
+          STRUCT(
+            events.session.event_seq,
+            events.session.session_id,
+            events.session.session_sample_rate,
+            events.session.session_seq,
+            events.session.session_start_time
+          ) AS `session`
+        )
+      FROM
+        UNNEST(events) AS `events`
+    ) AS `events`,
     STRUCT(
       STRUCT(
         metadata.geo.city,

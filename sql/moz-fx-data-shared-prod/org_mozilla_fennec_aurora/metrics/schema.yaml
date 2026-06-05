@@ -156,6 +156,33 @@ fields:
   - name: timestamp
     type: INTEGER
     mode: NULLABLE
+  - name: session
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: event_seq
+      type: INTEGER
+      mode: NULLABLE
+      description: Per-session event counter, reset at each new session.
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+      description: The unique UUID for this session.
+    - name: session_sample_rate
+      type: FLOAT
+      mode: NULLABLE
+      description: The sampling rate in effect for this session.
+    - name: session_seq
+      type: INTEGER
+      mode: NULLABLE
+      description: Monotonically increasing session counter, persisted across restarts.
+    - name: session_start_time
+      type: STRING
+      mode: NULLABLE
+      description: Wall-clock timestamp at session start (RFC 3339). Absent on events
+        from before this field was introduced.
+    description: Session metadata attached to this event. Absent for out-of-session
+      events and events from before sessions were introduced.
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -13309,8 +13336,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted

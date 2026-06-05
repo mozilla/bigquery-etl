@@ -99,6 +99,19 @@ fields:
     type: STRING
   - name: timestamp
     type: INTEGER
+  - name: session
+    type: RECORD
+    fields:
+    - name: event_seq
+      type: INTEGER
+    - name: session_id
+      type: STRING
+    - name: session_sample_rate
+      type: FLOAT
+    - name: session_seq
+      type: INTEGER
+    - name: session_start_time
+      type: STRING
 - mode: NULLABLE
   name: metadata
   type: RECORD

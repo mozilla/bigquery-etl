@@ -28,6 +28,25 @@ fields:
   - name: timestamp
     type: INTEGER
     mode: NULLABLE
+  - name: session
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: event_seq
+      type: INTEGER
+      mode: NULLABLE
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+    - name: session_sample_rate
+      type: FLOAT
+      mode: NULLABLE
+    - name: session_seq
+      type: INTEGER
+      mode: NULLABLE
+    - name: session_start_time
+      type: STRING
+      mode: NULLABLE
 - name: metadata
   type: RECORD
   mode: NULLABLE

@@ -234,7 +234,14 @@ SELECT
             UNNEST(events.extra) AS `extra`
         ) AS `extra`,
         events.name,
-        events.timestamp
+        events.timestamp,
+        STRUCT(
+          events.session.event_seq,
+          events.session.session_id,
+          events.session.session_sample_rate,
+          events.session.session_seq,
+          events.session.session_start_time
+        ) AS `session`
       )
     FROM
       UNNEST(events) AS `events`
@@ -559,7 +566,14 @@ SELECT
             UNNEST(events.extra) AS `extra`
         ) AS `extra`,
         events.name,
-        events.timestamp
+        events.timestamp,
+        STRUCT(
+          events.session.event_seq,
+          events.session.session_id,
+          events.session.session_sample_rate,
+          events.session.session_seq,
+          events.session.session_start_time
+        ) AS `session`
       )
     FROM
       UNNEST(events) AS `events`
@@ -884,7 +898,14 @@ SELECT
             UNNEST(events.extra) AS `extra`
         ) AS `extra`,
         events.name,
-        events.timestamp
+        events.timestamp,
+        STRUCT(
+          events.session.event_seq,
+          events.session.session_id,
+          events.session.session_sample_rate,
+          events.session.session_seq,
+          events.session.session_start_time
+        ) AS `session`
       )
     FROM
       UNNEST(events) AS `events`
@@ -1209,7 +1230,14 @@ SELECT
             UNNEST(events.extra) AS `extra`
         ) AS `extra`,
         events.name,
-        events.timestamp
+        events.timestamp,
+        STRUCT(
+          events.session.event_seq,
+          events.session.session_id,
+          events.session.session_sample_rate,
+          events.session.session_seq,
+          events.session.session_start_time
+        ) AS `session`
       )
     FROM
       UNNEST(events) AS `events`

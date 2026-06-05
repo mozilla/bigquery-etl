@@ -1130,21 +1130,27 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
+  description: Whether Firefox is pinned to the Windows taskbar. True if pinned.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
+  description: Whether Firefox was launched via a desktop shortcut on the first seen day.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_start_menu
   type: BOOLEAN
+  description: Whether Firefox was launched via the Windows Start Menu on the first seen day.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
+  description: Whether Firefox was launched via the Windows taskbar on the first seen day.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
+  description: Whether Firefox was launched via a non-desktop shortcut on the first seen day.
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
+  description: Whether Firefox was launched via any other mechanism on the first seen day.
 - mode: NULLABLE
   name: search_count_webextension
   type: INTEGER

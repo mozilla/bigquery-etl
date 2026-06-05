@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-"""Profile columns of every base table in a source dataset.
+"""Profile columns of base tables across one or more source datasets.
 
-Writes one row per profiled column to a per-dataset destination table in
-``data_governance_metadata_derived``. Each weekly run overwrites its own date
-partition (``profiled_at``) so the job is idempotent.
+Writes one row per profiled column to a single destination table
+(``column_profiles_v1``) in ``data_governance_metadata_derived``, tagged with
+``source_dataset``/``source_table``. Profiles every base table in each
+``--source-datasets`` entry (default ``telemetry_derived telemetry``), or a
+``--tables`` subset. A single run accumulates all rows and overwrites its own
+``profiled_at`` date partition in one load, so the job is idempotent.
 
 The profiling logic is vendored verbatim from
 ``data-shared-llm-agents/scripts/bq_profiler.py`` so this script depends only on
@@ -32,6 +35,11 @@ _MAX_PROFILABLE_COLUMNS = 500
 _TIER3_COLUMNS = {"metrics"}
 
 _SKIP_TABLE_TYPES = {"VIEW", "MATERIALIZED VIEW"}
+
+# Profile errors that are expected/benign (the table just isn't profilable) vs.
+# hard failures (permissions, quota, unexpected). If every table hard-fails the
+# task should fail rather than silently writing nothing.
+_BENIGN_ERROR_MARKERS = ("is empty", "not found", "exceeds column limit")
 
 # Intentionally narrow: only leaf names that are unambiguously PII regardless of
 # table context. Suffix patterns like _id are excluded — they match too many
@@ -221,15 +229,29 @@ def field_path_to_alias(field_path: str) -> str:
     return field_path.replace(".", "__")
 
 
+def _sample_bucket(run_date: str, table: str) -> int:
+    """Deterministic 1% sample bucket (1-99) for a (run_date, table) pair.
+
+    Seeding by run_date makes a given --date reproducible; including the table
+    name spreads buckets across tables instead of always sampling the same one.
+    """
+    return random.Random(f"{run_date}:{table}").randint(1, 99)
+
+
 def build_profile_query(
     table: str,
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
+    sample_id: int | None = None,
 ) -> str:
     """Build a single query that profiles every profilable column in one pass.
 
     Profiles scalar and leaf tiers only. nested_leaf fields are profiled
     separately via build_nested_profile_queries (UNNEST-based).
+
+    sample_id selects the 1% bucket for tables with a sample_id column; the
+    caller passes a value derived deterministically from the run date so a
+    given --date always samples the same bucket.
     """
     excluded_tiers = {"undocumented", "pii_suppressed", "nested_leaf", "scalar_array"}
     profilable = [(fp, dt) for fp, dt, tier in columns if tier not in excluded_tiers]
@@ -255,8 +277,8 @@ def build_profile_query(
     if partition_filter:
         where_clauses.append(partition_filter)
     if has_sample_id:
-        sample_id = random.randint(1, 99)
-        where_clauses.append(f"`sample_id` = {sample_id}")
+        bucket = sample_id if sample_id is not None else random.randint(1, 99)
+        where_clauses.append(f"`sample_id` = {bucket}")
 
     where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
     return f"SELECT {select} FROM `{table}` {where}"
@@ -266,6 +288,7 @@ def build_nested_profile_queries(
     table: str,
     columns: list[tuple[str, str, str]],
     partition_filter: str | None = None,
+    sample_id: int | None = None,
 ) -> list[tuple[str, str, list[tuple[str, str]]]]:
     """Build one UNNEST-based profiling query per REPEATED parent column.
 
@@ -314,8 +337,8 @@ def build_nested_profile_queries(
         if partition_filter:
             where_clauses.append(partition_filter)
         if has_sample_id:
-            sample_id = random.randint(1, 99)
-            where_clauses.append(f"`sample_id` = {sample_id}")
+            bucket = sample_id if sample_id is not None else random.randint(1, 99)
+            where_clauses.append(f"`sample_id` = {bucket}")
 
         where = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
         query = (
@@ -328,26 +351,47 @@ def build_nested_profile_queries(
     return results
 
 
-def get_partition_filter(client: bigquery.Client, table: str) -> str | None:
-    """Return a WHERE clause scoped to a recent partition, or None."""
+def get_partition_filter(
+    client: bigquery.Client, table: str, run_date: str
+) -> str | None:
+    """Return a WHERE clause scoped to the partition 7 days before run_date.
+
+    Anchored to run_date (the --date / profiled_at partition being written), NOT
+    CURRENT_DATE, so the scanned source data corresponds to the partition
+    produced and reruns/backfills of a given date are reproducible. run_date
+    must be a validated ISO date (YYYY-MM-DD). Returns None for unpartitioned
+    tables.
+    """
     table_ref = client.get_table(table)
     tp = table_ref.time_partitioning
     if tp is None:
         return None
     field = tp.field
     if field:
-        return f"DATE(`{field}`) = DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)"
-    return "_PARTITIONDATE = DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)"
+        return f"DATE(`{field}`) = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
+    return f"_PARTITIONDATE = DATE_SUB(DATE('{run_date}'), INTERVAL 7 DAY)"
 
 
-def check_table_has_rows(client: bigquery.Client, table: str) -> tuple[int, float]:
+def _dataset_region(client: bigquery.Client, project: str, dataset: str) -> str:
+    """Return the INFORMATION_SCHEMA region qualifier (e.g. 'region-us') for a dataset.
+
+    TABLE_STORAGE is only queryable at region scope, so the region must match the
+    dataset's actual location rather than being hardcoded to US.
+    """
+    location = client.get_dataset(f"{project}.{dataset}").location
+    return f"region-{location.lower()}"
+
+
+def check_table_has_rows(
+    client: bigquery.Client, table: str, region: str
+) -> tuple[int, float]:
     """Return (total_rows, total_gb). (-1, 0) if not found, (0, 0) if empty."""
     project, dataset, table_name = table.split(".")
     _validate_bq_identifier(project, "project")
     _validate_bq_identifier(dataset, "dataset")
     query = f"""
         SELECT total_rows, total_logical_bytes
-        FROM `{project}.region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
+        FROM `{project}.{region}`.INFORMATION_SCHEMA.TABLE_STORAGE
         WHERE project_id = @project
         AND table_schema = @dataset
         AND table_name = @table_name
@@ -406,10 +450,12 @@ def _run_profile_query(
     client: bigquery.Client,
     table: str,
     columns: list[tuple[str, str, str]],
+    run_date: str,
 ) -> tuple[dict[str, Any], float]:
     """Execute the profiling query and return (column_stats_dict, gb_scanned)."""
-    partition_filter = get_partition_filter(client, table)
-    query = build_profile_query(table, columns, partition_filter)
+    partition_filter = get_partition_filter(client, table, run_date)
+    sample_id = _sample_bucket(run_date, table)
+    query = build_profile_query(table, columns, partition_filter, sample_id)
 
     job = client.query(query)
     rows = list(job.result())
@@ -418,6 +464,12 @@ def _run_profile_query(
     row = rows[0]
     total_rows = row.total_rows
     results: dict[str, Any] = {}
+
+    # The scanned slice (recent partition + 1% sample) can be empty even when the
+    # table has data. Emit no column stats rather than meaningless all-zero rows.
+    if total_rows == 0:
+        logger.info("Scanned slice empty for %s; no column stats emitted.", table)
+        return {}, gb_scanned
 
     for field_path, data_type, tier in columns:
         if tier == "undocumented":
@@ -436,7 +488,9 @@ def _run_profile_query(
             row, total_rows, field_path, data_type, tier
         )
 
-    nested_queries = build_nested_profile_queries(table, columns, partition_filter)
+    nested_queries = build_nested_profile_queries(
+        table, columns, partition_filter, sample_id
+    )
     for _parent, nested_sql, nested_fields in nested_queries:
         try:
             nested_job = client.query(nested_sql)
@@ -444,6 +498,18 @@ def _run_profile_query(
             gb_scanned += nested_job.total_bytes_processed / 1e9
             nested_row = nested_rows[0]
             nested_total = nested_row.total_rows
+            if nested_total == 0:
+                # Empty UNNEST slice — record the fields without misleading
+                # all-zero stats, same as the top-level empty-scan guard.
+                logger.info(
+                    "Nested slice empty for %s.%s; no stats emitted.", table, _parent
+                )
+                for field_path, data_type in nested_fields:
+                    results[field_path] = {
+                        "data_type": data_type,
+                        "tier": "nested_leaf",
+                    }
+                continue
             for field_path, data_type in nested_fields:
                 results[field_path] = _parse_profile_row(
                     nested_row, nested_total, field_path, data_type, "nested_leaf"
@@ -486,15 +552,18 @@ def list_bq_tables(project: str, dataset: str) -> str:
 
 
 def profile_bq_table(
+    client: bigquery.Client,
     project: str,
     dataset: str,
     table: str,
-    columns_filter: list[str] | None = None,
+    run_date: str,
+    region: str,
 ) -> str:
     """Profile every column in a single BigQuery table; return stats as JSON.
 
-    Samples 1% when a sample_id column is present. Applies a 7-day partition
-    filter when a date partition column is detected. Fields inside REPEATED
+    Samples 1% when a sample_id column is present. Applies a partition filter
+    scoped to 7 days before run_date when a date partition column is detected,
+    so the scanned data matches the profiled_at partition. Fields inside REPEATED
     structs are profiled via UNNEST with the same sampling. Simple
     ARRAY<scalar> columns are listed as tier "scalar_array" with no stats.
     Fields under _TIER3_COLUMNS (e.g. metrics) remain tier "undocumented".
@@ -504,9 +573,7 @@ def profile_bq_table(
     """
     fully_qualified = f"{project}.{dataset}.{table}"
     try:
-        client = bigquery.Client(project=project)
-
-        total_rows, total_gb = check_table_has_rows(client, fully_qualified)
+        total_rows, _ = check_table_has_rows(client, fully_qualified, region)
         if total_rows == -1:
             return json.dumps(
                 {"error": f"Table {fully_qualified} not found in INFORMATION_SCHEMA."}
@@ -524,24 +591,15 @@ def profile_bq_table(
                     ),
                 }
             )
-        column_stats, gb_scanned = _run_profile_query(client, fully_qualified, columns)
-
-        if columns_filter:
-            filter_set = set(columns_filter)
-            column_stats = {
-                fp: stats
-                for fp, stats in column_stats.items()
-                if fp.split(".")[0] in filter_set
-            }
+        column_stats, gb_scanned = _run_profile_query(
+            client, fully_qualified, columns, run_date
+        )
 
         return json.dumps(
             {
                 "table": fully_qualified,
                 "total_rows": total_rows,
                 "gb_scanned": round(gb_scanned, 4),
-                "profiled_at": datetime.datetime.now(datetime.timezone.utc).strftime(
-                    "%Y-%m-%d"
-                ),
                 "columns": column_stats,
             },
             default=_json_default,
@@ -609,7 +667,7 @@ def save_profiles(
     )
     # Must match the destination table's clustering, otherwise loads into a
     # clustered table fail with "Incompatible table partitioning specification".
-    job_config.clustering_fields = ["source_table", "column_name"]
+    job_config.clustering_fields = ["source_dataset", "source_table", "column_name"]
 
     partition_date = date.replace("-", "")
     client.load_table_from_json(
@@ -627,21 +685,70 @@ def parse_args() -> argparse.Namespace:
         "--date", required=True, help="Run date (YYYY-MM-DD); the partition key."
     )
     parser.add_argument("--source-project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--source-dataset", required=True)
+    parser.add_argument(
+        "--source-datasets",
+        nargs="+",
+        default=["telemetry_derived", "telemetry"],
+        help="Source datasets to profile (default: telemetry_derived telemetry).",
+    )
     parser.add_argument("--destination-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
         "--destination-dataset", default="data_governance_metadata_derived"
     )
-    parser.add_argument(
-        "--destination-table", default="column_profiles_telemetry_derived_v1"
-    )
+    parser.add_argument("--destination-table", default="column_profiles_v1")
     parser.add_argument(
         "--tables",
         nargs="*",
-        help="Optional subset of source table names to profile.",
+        help=(
+            "Optional subset of source table names to profile. Requires exactly "
+            "one --source-datasets entry; default profiles all base tables in "
+            "each dataset."
+        ),
     )
     parser.add_argument("--max-workers", type=int, default=3)
-    return parser.parse_args()
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help=(
+            "Discover and report the tables that would be profiled, then exit "
+            "without running profiling queries or writing to BigQuery."
+        ),
+    )
+    args = parser.parse_args()
+    try:
+        datetime.date.fromisoformat(args.date)
+    except ValueError:
+        parser.error(f"--date must be an ISO date (YYYY-MM-DD); got {args.date!r}")
+    if args.tables and len(args.source_datasets) > 1:
+        parser.error(
+            "--tables requires exactly one --source-datasets entry "
+            "(table names are ambiguous across datasets); got "
+            f"{len(args.source_datasets)}: {args.source_datasets}"
+        )
+    return args
+
+
+def _discover_base_tables(
+    project: str, dataset: str, table_filter: set[str] | None
+) -> list[str]:
+    """List profilable base tables in a dataset (skipping views), honoring filter."""
+    tables_result = json.loads(list_bq_tables(project, dataset))
+    if "error" in tables_result:
+        logger.warning(
+            "Skipping dataset %s.%s — table discovery failed: %s",
+            project,
+            dataset,
+            tables_result["error"],
+        )
+        return []
+    base = [
+        t["table"]
+        for t in tables_result["tables"]
+        if t["table_type"] not in _SKIP_TABLE_TYPES
+    ]
+    if table_filter:
+        base = [t for t in base if t in table_filter]
+    return base
 
 
 def main() -> None:
@@ -649,61 +756,126 @@ def main() -> None:
     args = parse_args()
 
     client = bigquery.Client(project=args.source_project)
+    table_filter = set(args.tables) if args.tables else None
 
-    tables_result = json.loads(list_bq_tables(args.source_project, args.source_dataset))
-    if "error" in tables_result:
-        raise RuntimeError(
-            f"Failed to list tables in {args.source_project}."
-            f"{args.source_dataset}: {tables_result['error']}"
+    # Build (dataset, table) work items across every requested dataset, and
+    # resolve each dataset's region (TABLE_STORAGE is queryable only per region).
+    work: list[tuple[str, str]] = []
+    dataset_regions: dict[str, str] = {}
+    for dataset in args.source_datasets:
+        try:
+            dataset_regions[dataset] = _dataset_region(
+                client, args.source_project, dataset
+            )
+        except Exception as e:
+            logger.warning(
+                "Skipping dataset %s.%s — could not resolve region: %s",
+                args.source_project,
+                dataset,
+                e,
+            )
+            continue
+        tables = _discover_base_tables(args.source_project, dataset, table_filter)
+        logger.info(
+            "Discovered %d base table(s) to profile in %s.%s",
+            len(tables),
+            args.source_project,
+            dataset,
         )
+        work.extend((dataset, t) for t in tables)
 
-    base_tables = [
-        t["table"]
-        for t in tables_result["tables"]
-        if t["table_type"] not in _SKIP_TABLE_TYPES
-    ]
-    if args.tables:
-        subset = set(args.tables)
-        base_tables = [t for t in base_tables if t in subset]
+    if table_filter:
+        missing = sorted(table_filter - {t for _, t in work})
+        if missing:
+            logger.warning(
+                "Requested --tables not found in %s: %s",
+                args.source_datasets,
+                missing,
+            )
 
-    logging.info(
-        "Profiling %d base table(s) in %s.%s",
-        len(base_tables),
-        args.source_project,
-        args.source_dataset,
-    )
+    if not work:
+        logger.warning(
+            "No tables to profile across datasets %s; partition left unchanged.",
+            args.source_datasets,
+        )
+        return
 
-    def _profile_one(table_name: str) -> tuple[str, str]:
-        return table_name, profile_bq_table(
-            args.source_project, args.source_dataset, table_name
+    if args.dry_run:
+        logger.info(
+            "DRY RUN — would profile %d table(s) across %d dataset(s) and "
+            "overwrite %s.%s.%s$%s. No profiling queries or writes performed.",
+            len(work),
+            len(args.source_datasets),
+            args.destination_project,
+            args.destination_dataset,
+            args.destination_table,
+            args.date.replace("-", ""),
+        )
+        for dataset, table_name in work:
+            logger.info("  would profile %s.%s", dataset, table_name)
+        return
+
+    def _profile_one(item: tuple[str, str]) -> tuple[tuple[str, str], str]:
+        dataset, table_name = item
+        return item, profile_bq_table(
+            client,
+            args.source_project,
+            dataset,
+            table_name,
+            args.date,
+            dataset_regions[dataset],
         )
 
     rows: list[dict[str, Any]] = []
+    profiled = 0
+    hard_failures = 0
+    total_gb_scanned = 0.0
     with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-        futures = {executor.submit(_profile_one, t): t for t in base_tables}
+        futures = {executor.submit(_profile_one, item): item for item in work}
         for future in as_completed(futures):
-            table_name = futures[future]
+            dataset, table_name = futures[future]
             try:
                 _, profile_json = future.result()
             except Exception as e:
-                logging.warning("Profiling raised for %s: %s", table_name, e)
+                logger.warning("Profiling raised for %s.%s: %s", dataset, table_name, e)
+                hard_failures += 1
                 continue
 
             profile = json.loads(profile_json)
             if "error" in profile:
-                logging.warning("Skipping %s: %s", table_name, profile["error"])
+                msg = profile["error"]
+                if any(marker in msg for marker in _BENIGN_ERROR_MARKERS):
+                    logger.info("Skipping %s.%s: %s", dataset, table_name, msg)
+                else:
+                    logger.warning(
+                        "Profiling failed for %s.%s: %s", dataset, table_name, msg
+                    )
+                    hard_failures += 1
                 continue
 
+            profiled += 1
+            total_gb_scanned += profile.get("gb_scanned", 0.0)
             table_rows = build_rows(profile, args.date)
-            logging.info("%s → %d column rows", table_name, len(table_rows))
+            logger.info("%s.%s → %d column rows", dataset, table_name, len(table_rows))
             rows.extend(table_rows)
 
+    # A dataset-wide outage (permissions/quota) would otherwise log warnings and
+    # exit 0, hiding the failure from triage. Fail loudly when nothing profiled
+    # AND at least one table hard-failed (an all-empty/benign dataset is fine).
+    if profiled == 0 and hard_failures > 0:
+        raise RuntimeError(
+            f"All profiling attempts failed across datasets {args.source_datasets} "
+            f"({hard_failures} hard failure(s), 0 tables profiled) — failing the task."
+        )
+
     if not rows:
-        logging.warning(
-            "No rows to write for %s.%s on %s; partition left unchanged.",
-            args.source_project,
-            args.source_dataset,
+        logger.warning(
+            "No rows to write for %s on %s (%d table(s) profiled, %.2f GB scanned); "
+            "partition left unchanged.",
+            args.source_datasets,
             args.date,
+            profiled,
+            total_gb_scanned,
         )
         return
 
@@ -715,13 +887,17 @@ def main() -> None:
         args.destination_dataset,
         args.destination_table,
     )
-    logging.info(
-        "Wrote %d rows to %s.%s.%s$%s",
+    logger.info(
+        "Wrote %d rows from %d table(s) across %d dataset(s) to %s.%s.%s$%s "
+        "(%.2f GB scanned)",
         len(rows),
+        profiled,
+        len(args.source_datasets),
         args.destination_project,
         args.destination_dataset,
         args.destination_table,
         args.date.replace("-", ""),
+        total_gb_scanned,
     )
 
 

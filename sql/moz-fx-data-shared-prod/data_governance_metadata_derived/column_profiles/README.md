@@ -7,48 +7,49 @@ enrichment tooling to generate accurate column descriptions.
 
 ## Architecture
 
-Profiling is split into **one job (and table) per source dataset**, with a
-single **union view** as the read interface:
+A single weekly job profiles a configurable list of source datasets and writes
+all rows to **one table**, `column_profiles_v1`, tagged with
+`source_dataset`/`source_table`. An unversioned passthrough **view**,
+`column_profiles`, is the read surface:
 
+```mermaid
+flowchart LR
+    DS(["Source datasets<br/><b>--source-datasets</b><br/>telemetry_derived, telemetry"])
+    JOB["<b>bqetl_data_governance_metadata</b><br/>weekly · single task<br/>profile → one WRITE_TRUNCATE load"]
+
+    subgraph BQ["data_governance_metadata_derived"]
+        direction LR
+        TBL[("<b>column_profiles_v1</b> (table)<br/>partition: profiled_at DATE<br/>cluster: source_dataset,<br/>source_table, column_name<br/>retention: 90 days")]
+        VIEW["<b>column_profiles</b> (view)<br/>SELECT * FROM column_profiles_v1"]
+        TBL --> VIEW
+    end
+
+    AGENT{{"<b>schema_enricher</b><br/>read_column_profiles"}}
+
+    DS --> JOB --> TBL
+    VIEW --> AGENT
+
+    classDef source fill:#e3f2fd,stroke:#1565c0,color:#0d47a1;
+    classDef job fill:#fff3e0,stroke:#e65100,color:#bf360c;
+    classDef store fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20;
+    classDef consumer fill:#f3e5f5,stroke:#6a1b9a,color:#4a148c;
+    class DS source
+    class JOB job
+    class TBL,VIEW store
+    class AGENT consumer
+    style BQ fill:#fafafa,stroke:#bdbdbd,color:#424242
 ```
-                          ┌─────────────────────────────────────────┐
-  weekly bqetl job  ─────▶│ column_profiles_telemetry_derived_v1     │┐
-  (one per source         │   partitioned by profiled_at (DATE)      ││
-   dataset)               │   clustered by source_table, column_name ││  per-dataset
-                          └─────────────────────────────────────────┘│  tables
-                           ┌─────────────────────────────────────────┐│
-                           │ column_profiles_<other_dataset>_v1  ...  │┘
-                           └─────────────────────────────────────────┘
-                                              │ UNION ALL
-                                              ▼
-                                  ┌───────────────────────┐
-                                  │   column_profiles      │   ← query this
-                                  │        (view)          │
-                                  └───────────────────────┘
-                                              │
-                                              ▼
-                                   schema_enricher agent
-                                   (read_column_profiles)
-```
 
-Why per-dataset tables instead of one shared table:
-
-- **Idempotent reruns/backfills** — each weekly run overwrites only its own
-  `profiled_at` date partition (`WRITE_TRUNCATE` on the partition decorator).
-  A single shared table would force `DELETE`+`INSERT` per dataset and risk
-  concurrent-DML contention.
-- **Failure isolation** — a problem profiling one dataset doesn't fail the
-  others.
-- **Per-dataset cost attribution** — each job is its own Airflow task.
-
-The union `view` gives consumers a single query surface regardless of how many
-per-dataset tables exist.
+A single task accumulates every dataset's rows and overwrites the run's
+`profiled_at` partition in **one** `WRITE_TRUNCATE` load — so reruns/backfills
+are idempotent without the concurrent-DML contention a multi-writer shared
+table would have. The view gives consumers a stable, unversioned name.
 
 ## Querying the view (`column_profiles`)
 
-The view exposes the same columns as every underlying table. **Always filter on
-`profiled_at`** — it is the partition key, and a filter lets BigQuery prune
-partitions in each underlying table (pruning propagates through `UNION ALL`).
+**Always filter on `profiled_at`** — it is the partition key, and a filter lets
+BigQuery prune partitions. `source_dataset`/`source_table` are clustering keys,
+so they speed up scans but do **not** prune partitions on their own.
 
 Latest profile for one table's columns:
 
@@ -86,11 +87,10 @@ ORDER BY source_table, column_tier;
 ```
 
 > **Pruning note:** filtering only on `source_dataset` / `source_table` does
-> *not* prune partitions (those are clustering keys, not the partition column),
-> and the view still fans out to every underlying table. Including a
-> `profiled_at` lower bound is what bounds the scan. `DATE(profiled_at) >= …`
-> also works and prunes if you need a form that is valid against both `DATE`
-> and `TIMESTAMP` profiled_at columns.
+> *not* prune partitions (those are clustering keys, not the partition column).
+> Including a `profiled_at` lower bound is what bounds the scan. `DATE(profiled_at)
+> >= …` also works and prunes, and is valid whether `profiled_at` is `DATE` (this
+> table/view) or `TIMESTAMP`.
 
 ## Schema
 
@@ -105,7 +105,7 @@ ORDER BY source_table, column_tier;
 | `distinct_count` | INTEGER | NULLABLE | Approximate distinct non-null values. |
 | `is_high_cardinality` | BOOLEAN | NULLABLE | True if `distinct_count` > 50. |
 | `example_value` | STRING | NULLABLE | Representative value (high-cardinality columns only). |
-| `values` | RECORD (REPEATED) | | `value`/`frequency` pairs (low-cardinality columns, distinct_count ≤ 50). |
+| `values` | RECORD (REPEATED) | | `value`/`frequency` pairs — full distribution for low-cardinality columns (distinct_count ≤ 50), or the top 5 values for high-cardinality columns (which also set `example_value`). |
 | `column_tier` | STRING | NULLABLE | `scalar`, `leaf`, `nested_leaf`, `scalar_array`, `undocumented`, or `pii_suppressed`. |
 | `profiled_at` | DATE | REQUIRED | Run date of the profiling job; the partition key. |
 
@@ -115,79 +115,85 @@ skipped (too wide to profile in one pass) and simply produce no rows.
 
 ## Partitioning & retention
 
-Each per-dataset table is:
+`column_profiles_v1` is:
 
 - **Partitioned** by `profiled_at` (DATE, daily granularity).
-- **Clustered** by `source_table`, `column_name`.
+- **Clustered** by `source_dataset`, `source_table`, `column_name`.
 - **Retained** for **90 days** (`expiration_days: 90`) — roughly the last ~13
   weekly snapshots; older partitions are auto-deleted by BigQuery. Consumers
   read the latest snapshot, so history is kept only for drift analysis.
 
 ## Scheduling
 
-All per-dataset jobs run on the **`bqetl_data_governance_metadata`** DAG,
-weekly (Mondays 04:00 UTC). Each run profiles its source dataset's base tables
-(1% `sample_id` sampling and a 7-day partition filter bound the scan) and
-overwrites that run's `profiled_at` partition.
+The job runs on the **`bqetl_data_governance_metadata`** DAG, weekly (Mondays
+04:00 UTC). By default it profiles `telemetry_derived` and `telemetry`; each run
+profiles every base table in those datasets (1% `sample_id` sampling and a
+7-day partition filter bound the scan) and overwrites that run's `profiled_at`
+partition.
 
-## Adding a new source dataset
+## Adding / changing source datasets
 
-To start profiling another dataset (e.g. `firefox_desktop`):
+Datasets are a **job parameter**, not separate tables — add one by editing the
+scheduled `arguments` in
+[`../column_profiles_v1/metadata.yaml`](../column_profiles_v1/metadata.yaml):
 
-1. **Clone the job directory** for the new dataset:
+```yaml
+scheduling:
+  arguments: [
+    "--date", "{{ ds }}",
+    "--source-datasets", "telemetry_derived", "telemetry", "firefox_desktop"
+  ]
+```
 
-   ```bash
-   cp -r \
-     sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_telemetry_derived_v1 \
-     sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_firefox_desktop_v1
-   ```
+Then regenerate the DAG (`./bqetl dag generate bqetl_data_governance_metadata`)
+and confirm the Airflow workload-identity SA
+(`default-workloads@moz-fx-data-airflow-gke-prod`) has read on the new dataset
+(standard `derived`/`derived_restricted` datasets grant it via their base ACL;
+verify with `bq show <project>:<dataset>`). No new table, view, or schema deploy
+is needed — the rows land in `column_profiles_v1` tagged by `source_dataset`.
 
-   `query.py` is generic — it takes the source dataset and destination table as
-   arguments, so it does **not** need editing.
+### Profiling a subset of tables (manual / scoped runs)
 
-2. **Update `metadata.yaml`** in the new directory:
-   - `friendly_name` / `description` → reference the new dataset.
-   - `scheduling.arguments` → point at the new dataset and destination table:
-     ```yaml
-     arguments: [
-       "--date", "{{ ds }}",
-       "--source-dataset", "firefox_desktop",
-       "--destination-table", "column_profiles_firefox_desktop_v1"
-     ]
-     ```
-   - Keep `dag_name: bqetl_data_governance_metadata`, the `time_partitioning`
-     (`profiled_at`, `expiration_days: 90`), and clustering unchanged.
+`query.py` accepts `--tables`, but it **requires exactly one
+`--source-datasets` entry** (table names are ambiguous across datasets). These
+runs are for one-off/scoped profiling; the scheduled job omits `--tables` and
+profiles all base tables in each dataset.
 
-3. **`schema.yaml`** is identical for every dataset — copy as-is.
+**Via bqetl** (`bqetl query run` does not support `query.py` — use `backfill`,
+which runs the script's `main` entrypoint; `--project-id` is required, and each
+script arg is passed as a separate `--query-script-arg`):
 
-4. **Deploy the new table's schema** (the partition-decorator load won't create
-   a partitioned/clustered table on its own):
+```bash
+./bqetl query backfill data_governance_metadata_derived.column_profiles_v1 \
+  --project-id moz-fx-data-shared-prod \
+  --start-date 2026-06-04 --end-date 2026-06-04 \
+  --query-script-entrypoint main \
+  --query-script-date-arg date \
+  --query-script-arg "--source-datasets" --query-script-arg "telemetry_derived" \
+  --query-script-arg "--tables" \
+  --query-script-arg "feature_usage_v2" --query-script-arg "clients_first_seen_v3"
+```
 
-   ```bash
-   ./bqetl query schema deploy \
-     moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles_firefox_desktop_v1
-   ```
+**Directly** (simplest for ad-hoc dev; bypasses bqetl, runs in the repo venv):
 
-5. **Add the table to the union view** — append a `UNION ALL` block in
-   [`view.sql`](./view.sql):
+```bash
+./venv/bin/python sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_v1/query.py \
+  --date 2026-06-04 --source-datasets telemetry_derived \
+  --tables feature_usage_v2 clients_first_seen_v3
+```
 
-   ```sql
-   UNION ALL
-   SELECT *
-   FROM `moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles_firefox_desktop_v1`
-   ```
+Both write a single `WRITE_TRUNCATE` partition for the given date, so re-running
+is idempotent.
 
-6. **Regenerate the DAG** so the new task is scheduled:
+**Dry run** — preview which tables would be profiled without running any
+profiling query or writing to BigQuery. Add `--dry-run` to the direct form, or
+`--query-script-arg "--dry-run"` to the bqetl form (bqetl's own `--dry-run` is
+not compatible with `query.py` jobs, so it must be passed through to the script):
 
-   ```bash
-   ./bqetl dag generate bqetl_data_governance_metadata
-   ```
-
-7. **Confirm IAM** — the Airflow workload-identity SA
-   (`default-workloads@moz-fx-data-airflow-gke-prod`) needs read on the new
-   source dataset. Standard `derived`/`derived_restricted` datasets already
-   grant the pipeline service accounts via their base ACL; verify with
-   `bq show <project>:<source_dataset>` if unsure.
+```bash
+./venv/bin/python sql/moz-fx-data-shared-prod/data_governance_metadata_derived/column_profiles_v1/query.py \
+  --date 2026-06-04 --source-datasets telemetry_derived --dry-run
+```
 
 ## Consumers
 

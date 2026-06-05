@@ -38,7 +38,7 @@ fields:
 - name: values
   type: RECORD
   mode: REPEATED
-  description: Value/frequency pairs for low-cardinality columns (distinct_count <= 50).
+  description: Value/frequency pairs; full distribution for low-cardinality columns (distinct_count <= 50), or the top 5 values for high-cardinality columns.
   fields:
   - name: value
     type: STRING

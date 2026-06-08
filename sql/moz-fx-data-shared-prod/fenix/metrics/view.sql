@@ -2074,7 +2074,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
-      metrics.labeled_timing_distribution.dom_gc_in_progress
+      metrics.labeled_timing_distribution.dom_gc_in_progress,
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4282,7 +4283,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
-      metrics.labeled_timing_distribution.dom_gc_in_progress
+      metrics.labeled_timing_distribution.dom_gc_in_progress,
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6510,7 +6512,8 @@ SELECT
       metrics.labeled_timing_distribution.javascript_gc_time_between,
       metrics.labeled_timing_distribution.javascript_gc_time_between_minor,
       metrics.labeled_timing_distribution.javascript_gc_time_between_slices,
-      metrics.labeled_timing_distribution.dom_gc_in_progress
+      metrics.labeled_timing_distribution.dom_gc_in_progress,
+      metrics.labeled_timing_distribution.dns_https_rr_lookup_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

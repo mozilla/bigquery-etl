@@ -3675,8 +3675,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -6828,7 +6827,9 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Whether bfcache is used when loading a page from session history
+      description: 'Whether bfcache is used when loading a page from session history.
+        This metric was disabled between bugs 1892551 and 2037998, so the data may
+        have discontinuities over that period.
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         BFCACHE_PAGE_RESTORED.
@@ -48985,6 +48986,57 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram GC_IN_PROGRESS_MS.
+
+        '
+    - name: dns_https_rr_lookup_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time for a completed HTTPS RR (type 65) resolution (msec), keyed
+        by whether it was resolved over DoH/TRR or natively.
 
         '
   - name: labeled_custom_distribution

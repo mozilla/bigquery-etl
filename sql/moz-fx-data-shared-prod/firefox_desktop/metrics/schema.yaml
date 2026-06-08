@@ -9213,7 +9213,9 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Whether bfcache is used when loading a page from session history
+      description: 'Whether bfcache is used when loading a page from session history.
+        This metric was disabled between bugs 1892551 and 2037998, so the data may
+        have discontinuities over that period.
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         BFCACHE_PAGE_RESTORED.
@@ -52081,15 +52083,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are the search engine identifier for configuration
-        provided search engines and ''other'' for search engines installed via other
-        methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time
@@ -55029,6 +55027,57 @@ fields:
         cleared block was at the origin or page-URL level.
 
         '
+    - name: dns_https_rr_lookup_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time for a completed HTTPS RR (type 65) resolution (msec), keyed
+        by whether it was resolved over DoH/TRR or natively.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -57529,6 +57578,41 @@ fields:
       description: 'Number of memories stored for a user, split by source
 
         '
+    - name: search_counts_hidden_engines
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records the count of hidden search engines.\n- `oneOff` refers\
+        \ to an engine hidden from only the one-off buttons or\n  the unified search\
+        \ button.\n- `disabled` refers to an engine that has been disabled from the\
+        \ whole\n  application, e.g. removed from the old settings (prior to FF 152)\
+        \ or\n  disabled in the new settings (FF 152 & later).\n"
+    - name: search_counts_totals
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records the type and number of search engines that a user has\
+        \ installed and enabled.\nThe total of all labels is the total count of search\
+        \ engines installed.\n- `appProvidedConfig` refers to the search engine integrations\
+        \ provided by\n  the application.\n- `userInstalledConfig` refers to engines\
+        \ from the application's\n  configuration that the user has chosen to install.\n\
+        - `openSearch` refers to an engine installed via a web page providing an\n\
+        \  \"OpenSearch\" definition.\n- `addon` refers to an engine linked to a particular\
+        \ add-on. - `policy` refers to an engine added by an enterprise policy. -\
+        \ `user` refers to an engine a user has added, e.g. via the settings\n  UI\
+        \ to add an engine, or via right-clicking on a search field on a web\n  page.\n"
   - name: labeled_memory_distribution
     type: RECORD
     mode: NULLABLE

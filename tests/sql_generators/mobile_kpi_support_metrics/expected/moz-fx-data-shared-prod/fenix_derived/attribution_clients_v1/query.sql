@@ -10,10 +10,7 @@ WITH new_profiles AS (
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
-    submission_date = DATE_SUB(
-      @submission_date,
-      INTERVAL 2 DAY
-    ) -- see https://mozilla-hub.atlassian.net/browse/DO-2139 for more info about this decision
+    submission_date = @submission_date
     AND is_new_profile
 ),
 first_session_ping_base AS (
@@ -141,12 +138,7 @@ play_store_attribution_ping_base AS (
   FROM
     `moz-fx-data-shared-prod.fenix.play_store_attribution`
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 15 DAY)
-    AND DATE_SUB(
-      @submission_date,
-      INTERVAL 1 DAY
-    ) -- see https://mozilla-hub.atlassian.net/browse/DO-2139 for more info about this decision
+    DATE(submission_timestamp) = @submission_date
     -- We stopped receiving play_store_attribution via the first-session ping on 2026-04-07 including this filter
     -- to only start using the new ping starting one day prior to this to ensure consistency.
     AND DATE(submission_timestamp) >= "2026-04-06"

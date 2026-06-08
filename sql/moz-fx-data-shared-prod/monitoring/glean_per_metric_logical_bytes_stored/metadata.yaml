@@ -1,0 +1,16 @@
+friendly_name: Glean Per-Metric Logical Bytes Stored
+description: |-
+  Daily logical (uncompressed) bytes of telemetry collected per Glean metric per
+  app, derived from monitoring_derived.glean_per_metric_logical_bytes_stored_v1.
+  Volume-only input for telemetry cost projection; cost is applied downstream.
+owners:
+- tlong@mozilla.com
+labels:
+  owner1: tlong
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.glean_per_metric_logical_bytes_stored_v1

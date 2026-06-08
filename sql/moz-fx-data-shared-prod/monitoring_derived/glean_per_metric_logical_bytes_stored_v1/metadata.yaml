@@ -1,0 +1,42 @@
+friendly_name: Glean Per-Metric Logical Bytes Stored
+description: |-
+  Daily logical (uncompressed) bytes of telemetry collected per Glean metric,
+  per app (Firefox for Desktop / Android / iOS).
+
+  Combines two sources, both already aggregated:
+    - event metrics from monitoring_derived.event_counts_glean_v2 (uses
+      event_extras_length, the aggregated event-extra byte size, which only
+      exists in v2)
+    - non-event metric columns from monitoring_derived.column_size_v1
+
+  This table intentionally contains volume only (logical bytes). Cost modelling
+  (compression ratio, retention, storage rate) and projection scenarios are
+  applied downstream (e.g. in Grafana) as constants, since cost is linear in
+  bytes. It is the reproducible per-metric input for the telemetry cost
+  projection framework.
+owners:
+- tlong@mozilla.com
+labels:
+  incremental: true
+  owner1: tlong
+  dag: bqetl_monitoring
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_app_name
+    - metric_identifier
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.column_size_v1
+  - moz-fx-data-shared-prod.monitoring_derived.event_counts_glean_v2

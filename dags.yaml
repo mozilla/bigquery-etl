@@ -2751,3 +2751,18 @@ bqetl_nimbus_feature_monitoring:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_data_governance_metadata:
+  schedule_interval: 0 4 * * 1   # weekly, Monday 04:00 UTC
+  description: |
+    Profiles columns of source datasets and writes per-column statistics to
+    data_governance_metadata_derived for schema enrichment tooling.
+  default_args:
+    owner: gkatre@mozilla.com
+    start_date: "2026-06-01"
+    email: ["gkatre@mozilla.com"]
+    retries: 1
+    retry_delay: 30m
+    depends_on_past: false
+  tags:
+    - impact/tier_3

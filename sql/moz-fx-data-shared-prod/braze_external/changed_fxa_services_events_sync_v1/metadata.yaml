@@ -1,0 +1,37 @@
+friendly_name: Braze Changed FxA Services Events Sync
+description: |-
+  Braze custom-event payloads recording a "<service> - subscribe" event the first
+  time a user authorizes a service that maps to a Braze email subscription group
+  (the companion to the subscriptions set in
+  braze_external.changed_fxa_services_sync_v1). Modeled on Basket's per-newsletter
+  "<name> - subscribe" custom event (mozmeao/basket basket/news/backends/braze.py).
+
+  The mapped service's emails are transactional welcome communications.
+
+  Driven by a service_subscription_groups mapping in the query: add a service
+  there. Each user's subscribe event is emitted once
+  per service -- the query reads its own history (already_sent) to avoid
+  re-sending, so the table is not expired. This is a Cloud Data Ingestion CUSTOM
+  EVENTS sync (one event per row): PAYLOAD holds `name`. Records sync to Braze on
+  the fxa_id user alias (ALIAS_NAME = uid, ALIAS_LABEL = 'fxa_id'). Sourced from
+  braze_derived.fxa_services_v1.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner: sherrera
+bigquery:
+  time_partitioning:
+    type: day
+    field: updated_at
+    require_partition_filter: false
+    # not expired: the query reads its own history (already_sent) to emit each
+    # user's subscribe event only once
+    expiration_days: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+require_column_descriptions: true

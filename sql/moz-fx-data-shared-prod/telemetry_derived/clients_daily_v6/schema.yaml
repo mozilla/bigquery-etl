@@ -1445,6 +1445,7 @@ fields:
   mode: REPEATED
   name: search_with_ads
   type: RECORD
+  description: Keyed count of search result page impressions containing ads, keyed by search engine and access point.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1455,6 +1456,7 @@ fields:
   mode: REPEATED
   name: ad_clicks
   type: RECORD
+  description: Keyed count of ad clicks on search result pages, keyed by search engine and access point.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1465,6 +1467,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_sum
   type: RECORD
+  description: Keyed count of searches from the URL bar, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1475,6 +1478,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_handoff_sum
   type: RECORD
+  description: Keyed count of searches via URL bar new-tab handoff, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1485,6 +1489,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_persisted_sum
   type: RECORD
+  description: Keyed count of searches where the URL bar retained the term after submission, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1495,6 +1500,7 @@ fields:
   mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed count of URL bar search-mode searches, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1505,6 +1511,7 @@ fields:
   mode: REPEATED
   name: search_content_contextmenu_sum
   type: RECORD
+  description: Keyed count of context menu searches, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1515,6 +1522,7 @@ fields:
   mode: REPEATED
   name: search_content_about_home_sum
   type: RECORD
+  description: Keyed count of searches from the about:home page, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1525,6 +1533,7 @@ fields:
   mode: REPEATED
   name: search_content_about_newtab_sum
   type: RECORD
+  description: Keyed count of searches from the new tab page, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1535,6 +1544,7 @@ fields:
   mode: REPEATED
   name: search_content_searchbar_sum
   type: RECORD
+  description: Keyed count of searches from the dedicated search bar, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1545,6 +1555,7 @@ fields:
   mode: REPEATED
   name: search_content_system_sum
   type: RECORD
+  description: Keyed count of system-initiated searches, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1555,6 +1566,7 @@ fields:
   mode: REPEATED
   name: search_content_webextension_sum
   type: RECORD
+  description: Keyed count of extension-initiated searches, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1565,6 +1577,7 @@ fields:
   mode: REPEATED
   name: search_content_tabhistory_sum
   type: RECORD
+  description: Keyed count of searches from tab history navigation, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1575,6 +1588,7 @@ fields:
   mode: REPEATED
   name: search_content_reload_sum
   type: RECORD
+  description: Keyed count of searches triggered by page reload, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1585,6 +1599,7 @@ fields:
   mode: REPEATED
   name: search_content_unknown_sum
   type: RECORD
+  description: Keyed count of searches from unclassified entry points, keyed by search engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1595,6 +1610,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_sum
   type: RECORD
+  description: Keyed count of URL bar search result pages that contained ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1605,6 +1621,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_handoff_sum
   type: RECORD
+  description: Keyed count of new-tab handoff search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1615,6 +1632,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_persisted_sum
   type: RECORD
+  description: Keyed count of persisted-URL-bar search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1625,6 +1643,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed count of search-mode search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1970,6 +1989,7 @@ fields:
   mode: REPEATED
   name: a11y_theme
   type: RECORD
+  description: Keyed boolean indicators of Windows accessibility theme settings active for this client, keyed by theme attribute name.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1980,6 +2000,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of help link clicks on non-sponsored Best Match Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1990,6 +2011,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of help link clicks on sponsored Best Match Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2000,6 +2022,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_sum
   type: RECORD
+  description: Keyed count of times a non-sponsored Firefox Suggest result was dismissed/blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2010,6 +2033,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_sum
   type: RECORD
+  description: Keyed count of times a sponsored Firefox Suggest result was dismissed/blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2020,6 +2044,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of times a sponsored Best Match Firefox Suggest result was blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2030,6 +2055,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of times a non-sponsored Best Match Firefox Suggest result was blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2040,6 +2066,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of clicks on sponsored Best Match Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2050,6 +2077,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of clicks on non-sponsored Best Match Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2060,6 +2088,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of impressions of sponsored Best Match Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2070,6 +2099,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Keyed count of impressions of non-sponsored Best Match Firefox Suggest results.
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_bestmatch
   type: STRING
@@ -2207,6 +2237,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_dynamic_wikipedia_sum
   type: RECORD
+  description: Keyed count of times a dynamic Wikipedia Firefox Suggest result was blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2217,6 +2248,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_block_weather_sum
   type: RECORD
+  description: Keyed count of times a weather Firefox Suggest result was blocked.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2227,6 +2259,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_dynamic_wikipedia_sum
   type: RECORD
+  description: Keyed count of clicks on dynamic Wikipedia Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2237,6 +2270,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_nonsponsored_sum
   type: RECORD
+  description: Keyed count of clicks on non-sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2247,6 +2281,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sponsored_sum
   type: RECORD
+  description: Keyed count of clicks on sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2257,6 +2292,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_weather_sum
   type: RECORD
+  description: Keyed count of clicks on weather Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2267,6 +2303,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_dynamic_wikipedia_sum
   type: RECORD
+  description: Keyed count of help link clicks on dynamic Wikipedia Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2277,6 +2314,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_sum
   type: RECORD
+  description: Keyed count of help link clicks on non-sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2287,6 +2325,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_sum
   type: RECORD
+  description: Keyed count of help link clicks on sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2297,6 +2336,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_weather_sum
   type: RECORD
+  description: Keyed count of help link clicks on weather Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2307,6 +2347,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
   type: RECORD
+  description: Keyed count of impressions of dynamic Wikipedia Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2317,6 +2358,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_sum
   type: RECORD
+  description: Keyed count of impressions of non-sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2327,6 +2369,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_sum
   type: RECORD
+  description: Keyed count of impressions of sponsored Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2337,6 +2380,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
+  description: Keyed count of impressions of weather Firefox Suggest results.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2347,6 +2391,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_opened_sum
   type: RECORD
+  description: Keyed count of times Firefox Sidebar panels were opened, keyed by panel name.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2357,6 +2402,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_search_sum
   type: RECORD
+  description: Keyed count of searches within Firefox Sidebar panels, keyed by panel name.
 - fields:
   - mode: NULLABLE
     name: key
@@ -2367,6 +2413,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_link_sum
   type: RECORD
+  description: Keyed count of link activations within Firefox Sidebar panels, keyed by panel name.
 - name: places_previousday_visits_mean
   type: FLOAT
   mode: NULLABLE
@@ -2387,6 +2434,7 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of link activations within the Firefox Library panel, keyed by section.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -2397,6 +2445,7 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of times the Firefox Library panel was opened, keyed by entry point.
   - name: key
     type: STRING
     mode: NULLABLE
@@ -2407,6 +2456,7 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
+  description: Keyed count of searches within the Firefox Library panel, keyed by section.
   - name: key
     type: STRING
     mode: NULLABLE

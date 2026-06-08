@@ -1,0 +1,37 @@
+friendly_name: Column Profiles
+description: |-
+  Per-column profiling statistics (null rate, approximate distinct count,
+  cardinality flag, example value, and value/frequency pairs) for base tables
+  across one or more source datasets, tagged with source_dataset/source_table.
+  Produced weekly by a self-contained Python job (defaults to profiling
+  telemetry_derived and telemetry) and consumed by schema enrichment tooling.
+  Each run overwrites its own profiled_at date partition.
+owners:
+- gkatre@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_data_governance_metadata
+  owner1: gkatre
+scheduling:
+  dag_name: bqetl_data_governance_metadata
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --source-datasets
+  - telemetry_derived
+  - telemetry
+bigquery:
+  time_partitioning:
+    type: day
+    field: profiled_at
+    require_partition_filter: false
+    expiration_days: 90.0
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+    - column_name
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataplatform/data-governance-developers

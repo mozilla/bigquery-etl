@@ -1,7 +1,7 @@
 2026-06-08:
-  start_date: 2026-04-01
+  start_date: 2026-06-03
   end_date: 2026-06-08
-  reason: updating fenix submission_date in https://mozilla-hub.atlassian.net/browse/DO-2139
+  reason: reverting fenix submission_date changes in https://github.com/mozilla/bigquery-etl/pull/9534
   watchers:
     - kbammarito@mozilla.com
   status: Initiate

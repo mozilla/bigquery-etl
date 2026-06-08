@@ -364,6 +364,21 @@ with DAG(
         arguments=["--billing-project", "moz-fx-data-backfill-3"],
     )
 
+    monitoring_derived__glean_per_metric_logical_bytes_stored__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__glean_per_metric_logical_bytes_stored__v1",
+        destination_table="glean_per_metric_logical_bytes_stored_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tlong@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "tlong@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     monitoring_derived__looker_dashboard_load_times__v1 = GKEPodOperator(
         task_id="monitoring_derived__looker_dashboard_load_times__v1",
         arguments=[
@@ -671,6 +686,14 @@ with DAG(
 
     monitoring_derived__event_monitoring_aggregates__v1.set_upstream(
         wait_for_firefox_desktop_derived__event_monitoring_live__v1
+    )
+
+    monitoring_derived__glean_per_metric_logical_bytes_stored__v1.set_upstream(
+        monitoring_derived__column_size__v1
+    )
+
+    monitoring_derived__glean_per_metric_logical_bytes_stored__v1.set_upstream(
+        monitoring_derived__event_counts_glean__v2
     )
 
     monitoring_derived__schema_error_counts__v2.set_upstream(

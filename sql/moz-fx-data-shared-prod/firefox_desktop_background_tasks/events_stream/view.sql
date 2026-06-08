@@ -10,8 +10,10 @@ SELECT
       LAX_BOOL(event_extra.blocked) AS `blocked`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
       LAX_BOOL(event_extra.result_is_default) AS `result_is_default`,
+      LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,
       LAX_BOOL(event_extra.success) AS `success`
     ) AS `boolean`,
+    STRUCT(LAX_INT64(event_extra.session_seq) AS `session_seq`) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.feature) AS `feature`,
@@ -20,6 +22,8 @@ SELECT
       JSON_VALUE(event_extra.name) AS `name`,
       JSON_VALUE(event_extra.reason) AS `reason`,
       JSON_VALUE(event_extra.selection) AS `selection`,
+      JSON_VALUE(event_extra.session_id) AS `session_id`,
+      JSON_VALUE(event_extra.session_start_time) AS `session_start_time`,
       JSON_VALUE(event_extra.value) AS `value`
     ) AS `string`
   ) AS extras

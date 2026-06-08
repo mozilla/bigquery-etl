@@ -15,39 +15,62 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: The date when the server first received any telemetry ping from this client.
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
+  description: The second date on which the server received a telemetry ping from this client, used to compute retention metrics. Null if the client
+    has only been seen once.
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
+  description: A 28-bit integer where each bit indicates whether the client was active on that day in the past 28 days. The rightmost bit represents
+    the most recent day (submission_date), 1 means active, 0 means not seen.
 - mode: NULLABLE
   name: days_visited_1_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI. The rightmost bit represents the most
+    recent day.
 - mode: NULLABLE
   name: days_visited_5_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 5 URIs. The rightmost bit represents the
+    most recent day.
 - mode: NULLABLE
   name: days_visited_10_uri_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 10 URIs. The rightmost bit represents the
+    most recent day.
 - mode: NULLABLE
   name: days_had_8_active_ticks_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client had at least 8 active ticks (approximately 40 seconds of active
+    interaction). The rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_opened_dev_tools_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client opened the Firefox Developer Tools at least once. The rightmost
+    bit represents the most recent day.
 - mode: NULLABLE
   name: days_interacted_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client had any active browsing hours (active_hours_sum > 0). The
+    rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in normal (non-private) browsing mode.
+    The rightmost bit represents the most recent day.
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client visited at least 1 URI in private browsing mode. The rightmost
+    bit represents the most recent day. Only populated for Firefox version 84 and above.
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
+  description: A 28-bit integer encoding the days in the past 28 days on which this client's Firefox profile was first created. Typically only one bit
+    is set, marking the profile creation day.
 - fields:
   - mode: NULLABLE
     name: experiment
@@ -61,18 +84,24 @@ fields:
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
+  description: Array of experiment participation records, one per active experiment, each containing the experiment slug, assigned branch, and a 28-bit
+    integer encoding the days the client was seen enrolled.
 - mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
+  description: Total number of content process abort events (abnormal terminations) recorded for this client on the most recent active day.
 - mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
+  description: Total number of Gecko Media Plugin (GMP) process abort events recorded for this client on the most recent active day.
 - mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
+  description: Total number of plugin process abort events recorded for this client on the most recent active day.
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
+  description: Mean number of active add-ons installed on this client, averaged across subsessions on the most recent active day.
 - fields:
   - mode: NULLABLE
     name: addon_id
@@ -125,21 +154,28 @@ fields:
   mode: REPEATED
   name: active_addons
   type: RECORD
+  description: Array of active add-ons installed on this client as of the most recent active day, including metadata such as ID, name, version, and flags
+    for whether the add-on is a system extension or web extension.
 - mode: NULLABLE
   name: active_experiment_branch
   type: STRING
+  description: The branch of the legacy active experiment this client was enrolled in. Null for clients not in a legacy experiment.
 - mode: NULLABLE
   name: active_experiment_id
   type: STRING
+  description: The ID of the legacy active experiment this client was enrolled in. Null for clients not in a legacy experiment.
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+  description: Total number of active browsing hours logged by this client on the most recent active day.
 - mode: NULLABLE
   name: addon_compatibility_check_enabled
   type: BOOLEAN
+  description: Whether add-on compatibility checking was enabled on this client on the most recent active day.
 - mode: NULLABLE
   name: app_build_id
   type: STRING
+  description: The build ID of the Firefox application identifying the specific build on the most recent active day (e.g., '20260511200624').
 - mode: NULLABLE
   name: app_display_version
   type: STRING
@@ -147,6 +183,7 @@ fields:
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: The application name reported by this client, always 'Firefox' for rows in this table.
 - mode: NULLABLE
   name: app_version
   type: STRING
@@ -182,9 +219,11 @@ fields:
   mode: NULLABLE
   name: attribution
   type: RECORD
+  description: Struct containing install attribution parameters identifying the marketing channel and campaign that sourced this Firefox installation.
 - mode: NULLABLE
   name: blocklist_enabled
   type: BOOLEAN
+  description: Whether the Firefox add-on/plugin blocklist was enabled on this client on the most recent active day.
 - mode: NULLABLE
   name: channel
   type: STRING
@@ -192,78 +231,103 @@ fields:
 - mode: NULLABLE
   name: client_clock_skew_mean
   type: FLOAT
+  description: Mean clock skew in hours between the client clock and server time on the most recent active day.
 - mode: NULLABLE
   name: client_submission_latency_mean
   type: FLOAT
+  description: Mean latency in hours between ping creation and server receipt on the most recent active day.
 - mode: NULLABLE
   name: cpu_cores
   type: INTEGER
+  description: Number of physical CPU cores in the client's processor on the most recent active day.
 - mode: NULLABLE
   name: cpu_count
   type: INTEGER
+  description: Number of logical CPU threads (including hyperthreading) in the client's processor on the most recent active day.
 - mode: NULLABLE
   name: cpu_family
   type: INTEGER
+  description: The CPU family identifier of the client's processor on the most recent active day.
 - mode: NULLABLE
   name: cpu_l2_cache_kb
   type: INTEGER
+  description: The L2 cache size in kilobytes of the client's CPU on the most recent active day.
 - mode: NULLABLE
   name: cpu_l3_cache_kb
   type: INTEGER
+  description: The L3 cache size in kilobytes of the client's CPU on the most recent active day.
 - mode: NULLABLE
   name: cpu_model
   type: INTEGER
+  description: The CPU model identifier number of the client's processor on the most recent active day.
 - mode: NULLABLE
   name: cpu_speed_mhz
   type: INTEGER
+  description: The clock speed of the client's CPU in megahertz on the most recent active day.
 - mode: NULLABLE
   name: cpu_stepping
   type: INTEGER
+  description: The CPU stepping revision identifier of the client's processor on the most recent active day.
 - mode: NULLABLE
   name: cpu_vendor
   type: STRING
+  description: The CPU vendor string of the client's processor on the most recent active day (e.g., 'GenuineIntel', 'AuthenticAMD').
 - mode: NULLABLE
   name: crashes_detected_content_sum
   type: INTEGER
+  description: Total number of content process crashes detected for this client on the most recent active day.
 - mode: NULLABLE
   name: crashes_detected_gmplugin_sum
   type: INTEGER
+  description: Total number of Gecko Media Plugin process crashes detected for this client on the most recent active day.
 - mode: NULLABLE
   name: crashes_detected_plugin_sum
   type: INTEGER
+  description: Total number of plugin process crashes detected for this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_attempt_content_sum
   type: INTEGER
+  description: Total number of content crash report submission attempts made by this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_attempt_main_sum
   type: INTEGER
+  description: Total number of main process crash report submission attempts made by this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_attempt_plugin_sum
   type: INTEGER
+  description: Total number of plugin crash report submission attempts made by this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_success_content_sum
   type: INTEGER
+  description: Total number of successfully submitted content crash reports for this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_success_main_sum
   type: INTEGER
+  description: Total number of successfully submitted main process crash reports for this client on the most recent active day.
 - mode: NULLABLE
   name: crash_submit_success_plugin_sum
   type: INTEGER
+  description: Total number of successfully submitted plugin crash reports for this client on the most recent active day.
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: The identifier of the client's default search engine on the most recent active day (e.g., 'google-b-d', 'baidu').
 - mode: NULLABLE
   name: default_search_engine_data_load_path
   type: STRING
+  description: The anonymized file path of the default search engine configuration on the most recent active day (e.g., '[app]google').
 - mode: NULLABLE
   name: default_search_engine_data_name
   type: STRING
+  description: The display name of the client's default search engine on the most recent active day (e.g., 'Google', 'DuckDuckGo').
 - mode: NULLABLE
   name: default_search_engine_data_origin
   type: STRING
+  description: The origin classification of the default search engine on the most recent active day; 'default', 'verified', 'unverified', or 'invalid'.
 - mode: NULLABLE
   name: default_search_engine_data_submission_url
   type: STRING
+  description: The HTTP search submission URL for the client's default search engine on the most recent active day.
 - mode: NULLABLE
   name: devtools_toolbox_opened_count_sum
   type: INTEGER

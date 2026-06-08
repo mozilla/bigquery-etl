@@ -331,6 +331,7 @@ fields:
 - mode: NULLABLE
   name: devtools_toolbox_opened_count_sum
   type: INTEGER
+  description: Total number of times the Firefox Developer Tools toolbox was opened on the most recent active day.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
@@ -338,33 +339,44 @@ fields:
 - mode: NULLABLE
   name: e10s_enabled
   type: BOOLEAN
+  description: Whether Electrolysis (multi-process Firefox) was enabled on this client on the most recent active day. True for the vast majority of modern
+    Firefox clients.
 - mode: NULLABLE
   name: env_build_arch
   type: STRING
+  description: The CPU architecture of the Firefox binary on the most recent active day (e.g., 'x86-64', 'aarch64', 'x86').
 - mode: NULLABLE
   name: env_build_id
   type: STRING
+  description: The build ID of the Firefox environment on the most recent active day, matching the build datestamp (e.g., '20260511200624').
 - mode: NULLABLE
   name: env_build_version
   type: STRING
+  description: The version string of the Firefox environment on the most recent active day (e.g., '151.0').
 - mode: REPEATED
   name: environment_settings_intl_accept_languages
   type: STRING
+  description: Array of language codes from the browser's Accept-Language header preference on the most recent active day.
 - mode: REPEATED
   name: environment_settings_intl_app_locales
   type: STRING
+  description: Array of locales available in the Firefox application package on the most recent active day.
 - mode: REPEATED
   name: environment_settings_intl_available_locales
   type: STRING
+  description: Array of all locales available in the current Firefox installation on the most recent active day.
 - mode: REPEATED
   name: environment_settings_intl_requested_locales
   type: STRING
+  description: Array of locales explicitly requested by the user in Firefox's language preferences on the most recent active day.
 - mode: REPEATED
   name: environment_settings_intl_system_locales
   type: STRING
+  description: Array of locale codes reported by the operating system on the most recent active day.
 - mode: REPEATED
   name: environment_settings_intl_regional_prefs_locales
   type: STRING
+  description: Array of locale codes used for regional formatting preferences (e.g., date and number formats) on the most recent active day.
 - fields:
   - mode: NULLABLE
     name: key
@@ -375,12 +387,18 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: Array of key-value pairs representing active Nimbus/Normandy experiment enrollments on the most recent active day, where each key is the
+    experiment slug and value is the assigned branch.
 - mode: NULLABLE
   name: first_paint_mean
   type: FLOAT
+  description: Mean time in milliseconds from browser start to first paint, averaged across sessions on the most recent active day. Measures perceived
+    startup performance.
 - mode: NULLABLE
   name: flash_version
   type: STRING
+  description: The version of Adobe Flash Player installed on this client on the most recent active day. Typically null for modern Firefox as Flash support
+    has been removed.
 - mode: NULLABLE
   name: country
   type: STRING
@@ -389,114 +407,158 @@ fields:
 - mode: NULLABLE
   name: city
   type: STRING
+  description: The city associated with the client's IP address as determined by IP geolocation on the most recent active day.
 - mode: NULLABLE
   name: geo_subdivision1
   type: STRING
+  description: The primary administrative subdivision (e.g., state, province) of the client's geographic location, derived from IP geolocation on the
+    most recent active day.
 - mode: NULLABLE
   name: geo_subdivision2
   type: STRING
+  description: The secondary administrative subdivision of the client's geographic location, derived from IP geolocation on the most recent active day.
 - mode: NULLABLE
   name: isp_name
   type: STRING
+  description: The name of the Internet Service Provider associated with the client's IP address on the most recent active day.
 - mode: NULLABLE
   name: isp_organization
   type: STRING
+  description: The name of the organization associated with the client's IP address on the most recent active day; may be more specific than isp_name
+    for business accounts.
 - mode: NULLABLE
   name: gfx_features_advanced_layers_status
   type: STRING
+  description: The status of the Advanced Layers graphics compositor feature on the most recent active day (e.g., 'available', 'blocked', 'disabled').
 - mode: NULLABLE
   name: gfx_features_d2d_status
   type: STRING
+  description: The status of the Direct2D graphics acceleration feature on the most recent active day. Windows-only; values include 'available', 'unavailable',
+    and 'blocklisted' variants.
 - mode: NULLABLE
   name: gfx_features_d3d11_status
   type: STRING
+  description: The status of the Direct3D 11 compositor on the most recent active day. Windows-only; values include 'available', 'blocklisted', and 'unavailable'
+    variants.
 - mode: NULLABLE
   name: gfx_features_gpu_process_status
   type: STRING
+  description: The status of the GPU process feature on the most recent active day (e.g., 'available', 'unused', 'unavailable' with a reason).
 - mode: NULLABLE
   name: histogram_parent_devtools_aboutdebugging_opened_count_sum
   type: INTEGER
+  description: Total number of times the about:debugging DevTools panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_animationinspector_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Animation Inspector panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_browserconsole_opened_count_sum
   type: INTEGER
+  description: Total number of times the Browser Console was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_canvasdebugger_opened_count_sum
   type: INTEGER
+  description: Total number of times the Canvas Debugger DevTools panel was opened on the most recent active day. This tool was removed in older Firefox
+    versions.
 - mode: NULLABLE
   name: histogram_parent_devtools_computedview_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Computed View (CSS computed styles) panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_custom_opened_count_sum
   type: INTEGER
+  description: Total number of times a custom DevTools panel provided by an extension was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_developertoolbar_opened_count_sum
   type: INTEGER
+  description: Total number of times the legacy DevTools toolbar (GCLI) was opened on the most recent active day. This toolbar was removed in newer Firefox
+    versions.
 - mode: NULLABLE
   name: histogram_parent_devtools_dom_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools DOM panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_eyedropper_opened_count_sum
   type: INTEGER
+  description: Total number of times the standalone color eyedropper tool was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_fontinspector_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Font Inspector panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_inspector_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools HTML Inspector panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_jsbrowserdebugger_opened_count_sum
   type: INTEGER
+  description: Total number of times the Browser Toolbox JavaScript debugger was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_jsdebugger_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools JavaScript Debugger panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_jsprofiler_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools JavaScript Profiler panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_layoutview_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Layout View (flexbox/grid inspector) panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Memory panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
   type: INTEGER
+  description: Total number of times the eyedropper tool was opened via the DevTools menu on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_netmonitor_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Network Monitor panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_options_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Options/Settings panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_paintflashing_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Paint Flashing tool was activated on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_picker_eyedropper_opened_count_sum
   type: INTEGER
+  description: Total number of times the color picker's eyedropper tool was opened from within DevTools on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_responsive_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Responsive Design Mode was activated on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_ruleview_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools CSS Rules panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Scratchpad JavaScript editor was opened on the most recent active day. This tool was removed in newer
+    Firefox versions.
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_window_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Scratchpad was opened as a separate window on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_shadereditor_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Shader Editor was opened on the most recent active day. This tool was removed in newer Firefox versions.
 - mode: NULLABLE
   name: histogram_parent_devtools_storage_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Storage Inspector panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_styleeditor_opened_count_sum
   type: INTEGER
+  description: Total number of times the DevTools Style Editor panel was opened on the most recent active day.
 - mode: NULLABLE
   name: histogram_parent_devtools_webaudioeditor_opened_count_sum
   type: INTEGER

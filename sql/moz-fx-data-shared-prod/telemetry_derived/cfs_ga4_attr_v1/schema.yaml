@@ -508,3 +508,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The default channel group classification by GA4 cross-channel attribution (e.g., 'Organic Search', 'Paid Search', 'Referral').
+- name: attribution_msstoresignedin
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the user was signed in to the Microsoft Store at install time,
+    when Firefox was installed via the Microsoft Store

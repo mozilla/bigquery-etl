@@ -131,26 +131,47 @@ profiles every base table in those datasets (1% `sample_id` sampling and a
 7-day partition filter bound the scan) and overwrites that run's `profiled_at`
 partition.
 
-## Adding / changing source datasets
+## Running with a custom date / datasets
 
-Datasets are a **job parameter**, not separate tables — add one by editing the
-scheduled `arguments` in
+`date` and `source_datasets` are **per-run parameters**, not separate tables, so
+you rarely need to edit the job.
+
+**Ad-hoc, in Airflow — "Trigger DAG w/ config":** trigger
+`bqetl_data_governance_metadata` and paste a JSON config (both keys optional):
+
+```json
+{"date": "2026-06-01", "source_datasets": "fenix firefox_desktop"}
+```
+
+- `date` — `YYYY-MM-DD`; the `profiled_at` partition written (source scanned is
+  `date` − 7 days). Omit → the run's logical date.
+- `source_datasets` — space- or comma-separated string. Omit → the default
+  `telemetry_derived telemetry`.
+
+(The same guidance is on the DAG's docs panel in the Airflow UI.)
+
+**Permanently (the scheduled default):** edit the `source_datasets` fallback in
+the scheduled `arguments` in
 [`../column_profiles_v1/metadata.yaml`](../column_profiles_v1/metadata.yaml):
 
 ```yaml
 scheduling:
   arguments: [
-    "--date", "{{ ds }}",
-    "--source-datasets", "telemetry_derived", "telemetry", "firefox_desktop"
+    "--date", "{{ dag_run.conf.get('date', ds) }}",
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived telemetry firefox_desktop') }}"
   ]
 ```
 
-Then regenerate the DAG (`./bqetl dag generate bqetl_data_governance_metadata`)
-and confirm the Airflow workload-identity SA
-(`default-workloads@moz-fx-data-airflow-gke-prod`) has read on the new dataset
+then regenerate the DAG (`./bqetl dag generate bqetl_data_governance_metadata`).
+No new table, view, or schema deploy is needed — rows land in `column_profiles_v1`
+tagged by `source_dataset`. Confirm the Airflow workload-identity SA
+(`default-workloads@moz-fx-data-airflow-gke-prod`) has read on any new dataset
 (standard `derived`/`derived_restricted` datasets grant it via their base ACL;
-verify with `bq show <project>:<dataset>`). No new table, view, or schema deploy
-is needed — the rows land in `column_profiles_v1` tagged by `source_dataset`.
+verify with `bq show <project>:<dataset>`).
+
+> `--source-datasets` takes a **single** space- or comma-separated value (so it
+> can be driven by `dag_run.conf`), e.g. `"telemetry_derived telemetry"` — quote
+> it on the CLI when listing more than one.
 
 ### Profiling a subset of tables (manual / scoped runs)
 

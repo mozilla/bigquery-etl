@@ -12,9 +12,13 @@ owners:
 - gkatre@mozilla.com
 scheduling:
   dag_name: bqetl_data_governance_metadata
+  # date and source_datasets are overridable per-run via the Airflow trigger
+  # "Configuration JSON" (dag_run.conf), falling back to the run's logical date
+  # and the default dataset list. Example conf:
+  #   {"date": "2026-06-01", "source_datasets": "fenix firefox_desktop"}
   arguments: [
-    "--date", "{{ ds }}",
-    "--source-datasets", "telemetry_derived", "telemetry"
+    "--date", "{{ dag_run.conf.get('date', ds) }}",
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived telemetry') }}"
   ]
 bigquery:
   time_partitioning:

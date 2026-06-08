@@ -687,9 +687,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
         "--source-datasets",
-        nargs="+",
-        default=["telemetry_derived", "telemetry"],
-        help="Source datasets to profile (default: telemetry_derived telemetry).",
+        default="telemetry_derived telemetry",
+        help=(
+            "Source datasets to profile, space- or comma-separated as a single "
+            "value (default: 'telemetry_derived telemetry'). Passed as one string "
+            "so it can be driven by an Airflow dag_run.conf override."
+        ),
     )
     parser.add_argument("--destination-project", default="moz-fx-data-shared-prod")
     parser.add_argument(
@@ -719,6 +722,13 @@ def parse_args() -> argparse.Namespace:
         datetime.date.fromisoformat(args.date)
     except ValueError:
         parser.error(f"--date must be an ISO date (YYYY-MM-DD); got {args.date!r}")
+    # Accept a single space/comma-delimited string (so it works from a single
+    # CLI value or an Airflow dag_run.conf override) and normalize to a list.
+    args.source_datasets = [
+        d for d in re.split(r"[,\s]+", args.source_datasets.strip()) if d
+    ]
+    if not args.source_datasets:
+        parser.error("--source-datasets must list at least one dataset.")
     if args.tables and len(args.source_datasets) > 1:
         parser.error(
             "--tables requires exactly one --source-datasets entry "

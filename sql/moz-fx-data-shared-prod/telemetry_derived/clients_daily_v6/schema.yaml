@@ -1654,6 +1654,7 @@ fields:
   mode: REPEATED
   name: search_withads_contextmenu_sum
   type: RECORD
+  description: Keyed count of context menu search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1664,6 +1665,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_home_sum
   type: RECORD
+  description: Keyed count of about:home search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1674,6 +1676,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_newtab_sum
   type: RECORD
+  description: Keyed count of new tab page search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1684,6 +1687,7 @@ fields:
   mode: REPEATED
   name: search_withads_searchbar_sum
   type: RECORD
+  description: Keyed count of search bar search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1694,6 +1698,7 @@ fields:
   mode: REPEATED
   name: search_withads_system_sum
   type: RECORD
+  description: Keyed count of system-initiated search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1704,6 +1709,7 @@ fields:
   mode: REPEATED
   name: search_withads_webextension_sum
   type: RECORD
+  description: Keyed count of extension-initiated search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1714,6 +1720,7 @@ fields:
   mode: REPEATED
   name: search_withads_tabhistory_sum
   type: RECORD
+  description: Keyed count of tab history search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1724,6 +1731,7 @@ fields:
   mode: REPEATED
   name: search_withads_reload_sum
   type: RECORD
+  description: Keyed count of reload-triggered search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1734,6 +1742,7 @@ fields:
   mode: REPEATED
   name: search_withads_unknown_sum
   type: RECORD
+  description: Keyed count of unclassified-entry-point search result pages with ads, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1744,6 +1753,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_sum
   type: RECORD
+  description: Keyed count of ad clicks from URL bar searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1754,6 +1764,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
   type: RECORD
+  description: Keyed count of ad clicks from new-tab handoff searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1764,6 +1775,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_persisted_sum
   type: RECORD
+  description: Keyed count of ad clicks from persisted-URL-bar searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1774,6 +1786,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_searchmode_sum
   type: RECORD
+  description: Keyed count of ad clicks from URL bar search-mode searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1784,6 +1797,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_contextmenu_sum
   type: RECORD
+  description: Keyed count of ad clicks from context menu searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1794,6 +1808,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_about_home_sum
   type: RECORD
+  description: Keyed count of ad clicks from about:home searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1804,6 +1819,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_about_newtab_sum
   type: RECORD
+  description: Keyed count of ad clicks from new tab page searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1814,6 +1830,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_searchbar_sum
   type: RECORD
+  description: Keyed count of ad clicks from search bar searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1824,6 +1841,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_system_sum
   type: RECORD
+  description: Keyed count of ad clicks from system-initiated searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1834,6 +1852,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_webextension_sum
   type: RECORD
+  description: Keyed count of ad clicks from extension-initiated searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1844,6 +1863,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_tabhistory_sum
   type: RECORD
+  description: Keyed count of ad clicks from tab history navigation searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1854,6 +1874,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_reload_sum
   type: RECORD
+  description: Keyed count of ad clicks from reload-triggered searches, keyed by engine.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1864,6 +1885,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
+  description: Keyed count of ad clicks from unclassified search entry points, keyed by engine.
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN

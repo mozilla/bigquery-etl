@@ -51,7 +51,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_braze",
     default_args=default_args,
-    schedule_interval="0 5,13,21 * * *",
+    schedule_interval="30 4,13,22 * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,

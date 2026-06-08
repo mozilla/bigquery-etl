@@ -416,13 +416,19 @@ def classify_columns(
                 DataTypeGroup.FLOAT,
                 DataTypeGroup.NUMERIC,
             ):
-                # A column that's not a dimensions nor a grouping columns is classified as metric.
+                # A column that's not a dimension nor a grouping column is classified as
+                # a metric. A metric is COMMON only if it also existed in the previous
+                # version's schema; otherwise it is ADDED (new in this version) and must
+                # not be compared against the previous table.
+                metric_existed = existing_schema is not None and any(
+                    field.name == key for field in existing_schema
+                )
                 metrics.append(
                     Column(
                         key,
                         value_type[key],
                         ColumnType.METRIC,
-                        ColumnStatus.COMMON,
+                        ColumnStatus.COMMON if metric_existed else ColumnStatus.ADDED,
                     )
                 )
             else:
@@ -561,10 +567,26 @@ def generate_query_with_shredder_mitigation(
             f"Table {destination_table} did not return any rows for {backfill_date}."
         )
 
-    if not common_dimensions or not added_dimensions or not metrics:
+    if not common_dimensions or not metrics:
         raise click.ClickException(
-            "The process requires that previous & query have at least one dimension in common,"
-            " one dimension added and one metric."
+            "The process requires that previous & new query have at least one dimension in common,"
+            " and one metric. Adding new dimensions is optional and the backfill can run with"
+            " shredder mitigation without them to keep the existing data stable."
+        )
+
+    # Metrics that existed in the previous version are compared (previous - new) to
+    # recover shredded data.
+    # Metrics added in the new version are calculated using the new query.
+    common_metrics = [
+        metric for metric in metrics if metric.status == ColumnStatus.COMMON
+    ]
+    new_metrics = [metric for metric in metrics if metric.status == ColumnStatus.ADDED]
+    if not common_metrics:
+        raise click.ClickException(
+            "Shredder mitigation requires at least one metric that exists in the previous"
+            " version of the table to compute the shredder impact. All metrics in the new"
+            " query are new, so there is nothing to mitigate. Consider setting "
+            "shredder_mitigation = false to backfill without mitigation."
         )
 
     # Find the new version of the query.
@@ -610,7 +632,10 @@ def generate_query_with_shredder_mitigation(
                 and dim.data_type in (DataTypeGroup.BOOLEAN, DataTypeGroup.DATE)
             )
         ]
-        + [f"SUM({metric.name}) AS {metric.name}" for metric in metrics]
+        # Only aggregate metrics present in the previous version; this select feeds
+        # both new_agg and previous_agg, and the previous table has no column for a
+        # metric that is new in this version.
+        + [f"SUM({metric.name}) AS {metric.name}" for metric in common_metrics]
     )
     new_agg_query = new_agg.generate_query(
         select_list=common_select,
@@ -693,18 +718,22 @@ def generate_query_with_shredder_mitigation(
             )
         ]
         + [
-            f"COALESCE({previous_agg.query_cte}.{metric.name}, 0) - "
+            f"{previous_agg.query_cte}.{metric.name} - "
             f"COALESCE({new_agg.query_cte}.{metric.name}, 0)"
             f" AS {metric.name}"
-            for metric in metrics
+            for metric in common_metrics
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
             # Round FLOAT to avoid exponential numbers.
             f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "
             f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
-            for metric in metrics
+            for metric in common_metrics
             if metric.data_type == DataTypeGroup.FLOAT
+        ]
+        + [
+            f"CAST(0 AS {metric.data_type.name}) AS {metric.name}"
+            for metric in new_metrics
         ]
     )
 
@@ -735,7 +764,7 @@ def generate_query_with_shredder_mitigation(
             [
                 f"COALESCE({previous_agg.query_cte}.{metric.name}, 0) >"
                 f" COALESCE({new_agg.query_cte}.{metric.name}, 0)"
-                for metric in metrics
+                for metric in common_metrics
             ]
         ),
     )
@@ -846,7 +875,7 @@ def generate_query_with_shredder_mitigation(
                 and dim.data_type != DataTypeGroup.STRING
             )
         ]
-        + [f"SUM({metric.name})" f" AS {metric.name}" for metric in metrics]
+        + [f"SUM({metric.name})" f" AS {metric.name}" for metric in common_metrics]
     )
     previous_checks_query = previous.generate_query(
         select_list=checks_select,

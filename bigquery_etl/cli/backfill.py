@@ -645,7 +645,13 @@ def initiate(
     )
 
     if not backfills_to_process_dict:
-        click.echo(f"No backfill processed for {qualified_table_name}")
+        click.echo(
+            f"No backfill processed for {qualified_table_name}: no entry with status "
+            f"'{BackfillStatus.INITIATE.value}' was found. This can also happen if the "
+            f"backfill was already started: check the '{BACKFILL_DESTINATION_DATASET}' "
+            f"dataset — if a staging table for this table already exists, the backfill is "
+            f"already running. Delete that staging table if you want to start it over."
+        )
         return
 
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]

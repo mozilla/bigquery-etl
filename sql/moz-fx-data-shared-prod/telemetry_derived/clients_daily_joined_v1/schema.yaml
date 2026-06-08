@@ -1159,6 +1159,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
   type: RECORD
+  description: Keyed count of user interactions in the Firefox Preferences Home panel, keyed by the specific UI element interacted with.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1169,6 +1170,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
   type: RECORD
+  description: Keyed count of URL bar autofill result selections, keyed by the autofill source (e.g., 'origin', 'url', 'adaptive').
 - fields:
   - mode: NULLABLE
     name: key
@@ -1179,6 +1181,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_about_sum
   type: RECORD
+  description: Keyed count of URL bar selections of autofill suggestions for about; pages, keyed by the specific page.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1189,6 +1192,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
+  description: Keyed count of URL bar selections of adaptive autofill suggestions (learned from the user's history), keyed by source.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1199,6 +1203,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
   type: RECORD
+  description: Keyed count of URL bar selections of origin-based autofill suggestions, keyed by the domain origin.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1209,6 +1214,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_other_sum
   type: RECORD
+  description: Keyed count of URL bar selections of autofill suggestions of type 'other', keyed by source.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1219,6 +1225,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_preloaded_sum
   type: RECORD
+  description: Keyed count of URL bar selections of autofill suggestions from the preloaded top sites list, keyed by site.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1229,6 +1236,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
+  description: Keyed count of URL bar selections of full-URL autofill suggestions, keyed by source.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1239,6 +1247,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_bookmark_sum
   type: RECORD
+  description: Keyed count of URL bar result selections of bookmarks, keyed by the search entry point (e.g., 'urlbar', 'searchbar').
 - fields:
   - mode: NULLABLE
     name: key
@@ -1249,6 +1258,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_dynamic_sum
   type: RECORD
+  description: Keyed count of URL bar selections of dynamic result types, keyed by result type.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1259,6 +1269,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_extension_sum
   type: RECORD
+  description: Keyed count of URL bar result selections provided by a browser extension, keyed by extension ID.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1269,6 +1280,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_formhistory_sum
   type: RECORD
+  description: Keyed count of URL bar selections of form history suggestions, keyed by field name.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1279,6 +1291,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_history_sum
   type: RECORD
+  description: Keyed count of URL bar selections of browsing history results, keyed by the entry point.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1289,6 +1302,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_keyword_sum
   type: RECORD
+  description: Keyed count of URL bar selections of keyword (search engine shortcut) results, keyed by keyword.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1299,6 +1313,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_remotetab_sum
   type: RECORD
+  description: Keyed count of URL bar selections of remote tabs (tabs from synced devices), keyed by device type.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1309,6 +1324,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchengine_sum
   type: RECORD
+  description: Keyed count of URL bar selections that launched a search via a specific engine, keyed by search engine identifier.
 - fields:
   - mode: NULLABLE
     name: key
@@ -1319,6 +1335,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchsuggestion_sum
   type: RECORD
+  description: Keyed count of URL bar selections of search suggestions, keyed by search engine identifier.
 - fields:
   - mode: NULLABLE
     name: key

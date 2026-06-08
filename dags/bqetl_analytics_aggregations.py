@@ -774,98 +774,6 @@ with DAG(
             checks__fail_focus_ios_derived__active_users_aggregates__v3
         )
 
-    checks__fail_klar_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
-        task_id="checks__fail_klar_android_derived__active_users_aggregates__v3",
-        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="klar_android_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="lvargas@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retry_delay=datetime.timedelta(seconds=300),
-        retries=1,
-    )
-
-    with TaskGroup(
-        "checks__fail_klar_android_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_klar_android_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="private_bqetl_ads__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            external_dag_id="private_bqetl_ads",
-            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_fx_health_ind_dashboard",
-            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=44100)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_dynamic_dau__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_dynamic_dau",
-            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=51300)).isoformat() }}",
-        )
-
-        checks__fail_klar_android_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_klar_android_derived__active_users_aggregates__v3
-        )
-
-    checks__fail_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
-        task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
-        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="klar_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="lvargas@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retry_delay=datetime.timedelta(seconds=300),
-        retries=1,
-    )
-
-    with TaskGroup(
-        "checks__fail_klar_ios_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_klar_ios_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="private_bqetl_ads__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            external_dag_id="private_bqetl_ads",
-            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_fx_health_ind_dashboard",
-            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=44100)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_dynamic_dau__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_dynamic_dau",
-            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=51300)).isoformat() }}",
-        )
-
-        checks__fail_klar_ios_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_klar_ios_derived__active_users_aggregates__v3
-        )
-
     checks__warn_fenix_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__warn_fenix_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -1164,6 +1072,34 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    with TaskGroup(
+        "klar_android_active_users_aggregates_v3_external",
+    ) as klar_android_active_users_aggregates_v3_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_klar_android_active_users_aggregates_v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_klar_android_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_klar_android_active_users_aggregates_v3",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_klar_android_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=44100)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_dynamic_dau__wait_for_klar_android_active_users_aggregates_v3",
+            external_dag_id="bqetl_dynamic_dau",
+            external_task_id="wait_for_klar_android_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=51300)).isoformat() }}",
+        )
+
+        klar_android_active_users_aggregates_v3_external.set_upstream(
+            klar_android_active_users_aggregates_v3
+        )
+
     klar_ios_active_users_aggregates_v3 = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates_v3",
         destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -1179,6 +1115,34 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
+
+    with TaskGroup(
+        "klar_ios_active_users_aggregates_v3_external",
+    ) as klar_ios_active_users_aggregates_v3_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_klar_ios_active_users_aggregates_v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_klar_ios_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_klar_ios_active_users_aggregates_v3",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_klar_ios_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=44100)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_dynamic_dau__wait_for_klar_ios_active_users_aggregates_v3",
+            external_dag_id="bqetl_dynamic_dau",
+            external_task_id="wait_for_klar_ios_active_users_aggregates_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=51300)).isoformat() }}",
+        )
+
+        klar_ios_active_users_aggregates_v3_external.set_upstream(
+            klar_ios_active_users_aggregates_v3
+        )
 
     telemetry_derived__daily_active_users_by_product_category__v1 = bigquery_etl_query(
         task_id="telemetry_derived__daily_active_users_by_product_category__v1",
@@ -1347,14 +1311,6 @@ with DAG(
 
     checks__fail_focus_ios_derived__active_users_aggregates__v3.set_upstream(
         focus_ios_active_users_aggregates_v3
-    )
-
-    checks__fail_klar_android_derived__active_users_aggregates__v3.set_upstream(
-        klar_android_active_users_aggregates_v3
-    )
-
-    checks__fail_klar_ios_derived__active_users_aggregates__v3.set_upstream(
-        klar_ios_active_users_aggregates_v3
     )
 
     checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
@@ -1566,15 +1522,15 @@ with DAG(
     )
 
     telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
-        checks__fail_klar_android_derived__active_users_aggregates__v3
-    )
-
-    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
-        checks__fail_klar_ios_derived__active_users_aggregates__v3
-    )
-
-    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
         firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        klar_android_active_users_aggregates_v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        klar_ios_active_users_aggregates_v3
     )
 
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(

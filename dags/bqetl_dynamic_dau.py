@@ -133,36 +133,36 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-        external_dag_id="bqetl_analytics_aggregations",
-        external_task_id="checks__fail_klar_android_derived__active_users_aggregates__v3",
-        execution_delta=datetime.timedelta(seconds=35100),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-        external_dag_id="bqetl_analytics_aggregations",
-        external_task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
-        execution_delta=datetime.timedelta(seconds=35100),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_firefox_desktop_active_users_aggregates_v4 = ExternalTaskSensor(
         task_id="wait_for_firefox_desktop_active_users_aggregates_v4",
         external_dag_id="bqetl_analytics_aggregations",
         external_task_id="firefox_desktop_active_users_aggregates_v4",
+        execution_delta=datetime.timedelta(seconds=35100),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_klar_android_active_users_aggregates_v3 = ExternalTaskSensor(
+        task_id="wait_for_klar_android_active_users_aggregates_v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="klar_android_active_users_aggregates_v3",
+        execution_delta=datetime.timedelta(seconds=35100),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_klar_ios_active_users_aggregates_v3 = ExternalTaskSensor(
+        task_id="wait_for_klar_ios_active_users_aggregates_v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="klar_ios_active_users_aggregates_v3",
         execution_delta=datetime.timedelta(seconds=35100),
         check_existence=True,
         mode="reschedule",
@@ -229,13 +229,13 @@ with DAG(
     )
 
     telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
-        wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3
-    )
-
-    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
-        wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3
-    )
-
-    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
         wait_for_firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
+        wait_for_klar_android_active_users_aggregates_v3
+    )
+
+    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
+        wait_for_klar_ios_active_users_aggregates_v3
     )

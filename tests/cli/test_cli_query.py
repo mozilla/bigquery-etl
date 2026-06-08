@@ -387,6 +387,11 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT 1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write("fields: []")
 
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v2")
             with open(
@@ -477,6 +482,15 @@ class TestQuery:
                 )
                 == 1
             )
+
+            schema_matches = paths_matching_name_pattern(
+                "telemetry_derived.query_v1",
+                "sql/",
+                "moz-fx-data-shared-prod",
+                files=["schema.yaml"],
+            )
+            assert len(schema_matches) == 1
+            assert schema_matches[0].name == "schema.yaml"
 
     def test_attach_metadata_labels(self, runner):
         with runner.isolated_filesystem():

@@ -107,7 +107,7 @@ INIT_SAMPLE_ID_PARALLELISM = 2
 # Default number of sample_ids processed per init/reinitialize batch.
 # BigQuery limits partition modifications to 30000 per table per day and
 # partition_modifications = num_batches * num_partitions.
-DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE = 20
+DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE = 20
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
@@ -1731,7 +1731,7 @@ def _run_init_query(
     sql_content,
     billing_project,
     public_project_id=None,
-    sampling_batch_size=DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE,
+    sampling_batch_size=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
     dry_run=False,
     ignore_public_dataset=False,
 ):
@@ -1857,7 +1857,7 @@ def _run_init_query(
     "--sampling_batch_size",
     help="Number of sample IDs per initialization batch (e.g. 0–19, 20–39, etc.).",
     type=int,
-    default=DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE,
+    default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
 )
 @click.option(
     "--file",

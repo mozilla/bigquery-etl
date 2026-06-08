@@ -5,7 +5,7 @@ from pathlib import Path
 
 import rich_click as click
 
-from ..cli.query import DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE
+from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from .utils import qualified_table_name_matching
@@ -135,7 +135,7 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
                 "(keep num_batches * num_partitions under BigQuery's "
                 "30000 partition-modifications/table/day cap)",
                 type=click.IntRange(1, 100),
-                default=DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE,
+                default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
             )
 
     # ensure options that might not be prompted are set, to satisfy test for completeness

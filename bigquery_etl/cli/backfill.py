@@ -54,7 +54,7 @@ from ..backfill.validate import (
     validate_query_script_options,
     validate_reinitialize_sampling_batch_size_value,
 )
-from ..cli.query import DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE, _run_init_query
+from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE, _run_init_query
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
     QualifiedTableNameType,
@@ -212,20 +212,20 @@ def backfill(ctx):
     flag_value=True,
     default=None,
     help="Rebuild the whole table by re-running its is_init() query into a staging table. "
-    "Can run in parallel sample_id batches if the query supports it (has @sampling_batch_size"
+    "Can run in parallel sample_id batches if the query supports it (has @sampling_batch_size "
     "parameter). Required for depends_on_past tables with a null date_partition_parameter "
     "(e.g. first_seen tables), which can't be backfilled one partition at a time.",
 )
 @click.option(
     "--reinitialize-sampling-batch-size",
     "--reinitialize_sampling_batch_size",
-    type=int,
+    type=click.IntRange(1, 100),
     default=None,
     help="Number of sample_ids to process per job when --reinitialize-table runs an "
     "is_init() query that supports @sampling_batch_size. Smaller batches mean more jobs "
     "(each spanning all partitions), so keep num_batches * num_partitions under BigQuery's "
     "30000 partition-modifications/table/day cap. "
-    f"Defaults to {DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE} when reinitializing.",
+    f"Defaults to {DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE} when reinitializing.",
 )
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
@@ -401,8 +401,13 @@ def validate(
     errors = defaultdict(list)
 
     for table_name, table_entries in backfills_dict.items():
-        # Entries are newest-first; initiate/complete only ever act on the latest entry
-        reinitialize_table = bool(table_entries and table_entries[0].reinitialize_table)
+        # initiate acts on the (single) Initiate-status entry, not necessarily the
+        # newest by entry date, so derive the reinitialize flag from that same entry.
+        reinitialize_table = any(
+            entry.reinitialize_table
+            for entry in table_entries
+            if entry.status == BackfillStatus.INITIATE
+        )
         if metadata_errors := validate_table_metadata(
             sql_dir,
             table_name,
@@ -953,6 +958,15 @@ def _initiate_backfill(
     # Reinitialize path: rebuild the whole table from its is_init() query into staging
     # (parallel per sample_id) instead of replaying the day-by-day query. Used for
     # depends_on_past tables with a null date_partition_parameter.
+    if entry.reinitialize_table and is_python_script:
+        # The reinitialize path reruns query.sql's is_init() branch; a python-script
+        # table has no query.sql to reinitialize, so reject rather than silently
+        # falling through to the day-by-day path.
+        raise ValueError(
+            "reinitialize_table is not supported for python-script tables: "
+            f"{qualified_table_name}."
+        )
+
     if entry.reinitialize_table and not is_python_script:
         _reinitialize_into_staging(
             qualified_table_name,
@@ -961,7 +975,7 @@ def _initiate_backfill(
             # unset on the entry => use the default batch size
             sampling_batch_size=(
                 entry.reinitialize_sampling_batch_size
-                or DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE
+                or DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
             ),
             dry_run=dry_run,
         )
@@ -1050,7 +1064,7 @@ def _reinitialize_into_staging(
     qualified_table_name: str,
     backfill_staging_qualified_table_name: str,
     billing_project: str,
-    sampling_batch_size: int = DEFAULT_REINITIALIZE_SAMPLING_BATCH_SIZE,
+    sampling_batch_size: int = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
     dry_run: bool = False,
 ):
     """Rebuild the whole table into the staging table via its is_init() query.

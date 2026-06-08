@@ -27,6 +27,7 @@ from bigquery_etl.backfill.utils import (
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
+    query_supports_reinitialize,
 )
 from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
@@ -854,6 +855,78 @@ class TestBackfill:
             "depends on past and null partition parameter are not supported"
             in result.output
         )
+
+    def test_validate_backfill_reinitialize_reads_initiate_entry_not_newest(
+        self, runner, mock_date
+    ):
+        """The reinitialize flag is read from the Initiate-status entry (which initiate
+        acts on), not whichever entry happens to be newest by entry date."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        # Newest entry is a Complete backfill without reinitialize_table; the older
+        # entry is the Initiate one that does reinitialize. Validation must read the
+        # Initiate entry's flag (and pass), not the newest entry's (which would fail).
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-05:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-05-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Complete\n"
+            "  override_depends_on_past_end_date: true\n"
+            + BACKFILL_YAML_TEMPLATE
+            + "  reinitialize_table: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_query_supports_reinitialize_matches_jinja_if_block_forms(self):
+        """is_init() is recognized in if-blocks (including whitespace-trim and compound
+        conditions) but not in comments or non-if uses."""
+        query_path = Path(QUERY_DIR) / "query.sql"
+
+        supported = [
+            "SELECT 1 {% if is_init() %} {% endif %}",
+            "SELECT 1 {%- if is_init() %} {% endif %}",
+            "SELECT 1 {% if is_init() and foo %} {% endif %}",
+            "SELECT 1 {% if not is_init() %} {% endif %}",
+        ]
+        for sql in supported:
+            query_path.write_text(sql)
+            assert query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
+
+        unsupported = [
+            "SELECT 1 -- is_init()",
+            "SELECT 1 {% set x = is_init() %}",
+            "SELECT 1",
+        ]
+        for sql in unsupported:
+            query_path.write_text(sql)
+            assert not query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
 
     def test_validate_backfill_invalid_table_name(self, runner):
         result = runner.invoke(
@@ -2433,6 +2506,46 @@ class TestBackfill:
         assert mock_context.invoke.call_count == 0
         assert mock_initialize_partition.call_count == 0
         assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_reinitialize_python_script_fails(
+        self, mock_reinitialize, mock_client, runner
+    ):
+        """reinitialize_table is rejected for python-script tables, which have no
+        query.sql is_init() branch to rerun (rather than silently falling through)."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        # A python-script table is identified by the presence of query.py.
+        (Path(QUERY_DIR) / "query.py").write_text("# script")
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            reinitialize_table=True,
+        )
+
+        with pytest.raises(ValueError, match="not supported for python-script tables"):
+            _initiate_backfill(
+                ctx=MagicMock(),
+                qualified_table_name=prod_table_name,
+                backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+                entry=entry,
+                is_python_script=True,
+            )
+
+        # the reinitialize path is never entered for a python-script table
+        assert mock_reinitialize.call_count == 0
 
     @patch("bigquery_etl.cli.query._initialize_in_parallel")
     def test_reinitialize_into_staging_batches_sample_ids(self, mock_init_parallel):

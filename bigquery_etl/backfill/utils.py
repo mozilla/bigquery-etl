@@ -18,8 +18,10 @@ QUALIFIED_TABLE_NAME_RE = re.compile(
     r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
 )
 
-# Match `{% if is_init() %}`) instead of a bare `is_init()` which can be in a comment
-IS_INIT_BLOCK_RE = re.compile(r"{%\s*if\s+is_init\(\)\s*%}")
+# Match an `{% if ... is_init() ... %}` block (including the `{%-` whitespace-trim form
+# and compound conditions like `{% if is_init() and foo %}`) instead of a bare
+# `is_init()`, which can appear in a comment.
+IS_INIT_BLOCK_RE = re.compile(r"{%-?\s*if\s+[^%]*\bis_init\(\)")
 
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"

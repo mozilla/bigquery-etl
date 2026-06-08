@@ -97,6 +97,11 @@ new_profile_ping_agg AS (
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
+      environment.settings.attribution.msstoresignedin RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_msstoresignedin,
+    ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
         submission_timestamp
@@ -325,6 +330,11 @@ shutdown_ping_agg AS (
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
+      environment.settings.attribution.msstoresignedin RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_msstoresignedin,
+    ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
         submission_timestamp
@@ -497,6 +507,9 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_variation,
+    ARRAY_AGG(attribution.msstoresignedin RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_msstoresignedin,
     ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS engine_data_load_path,
@@ -662,7 +675,8 @@ _current AS (
       all_dates,
       source_ping,
       source_ping_priority,
-      profile_group_id
+      profile_group_id,
+      attribution_msstoresignedin
     ),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
@@ -670,7 +684,8 @@ _current AS (
       pings.reported_new_profile_ping AS reported_new_profile_ping,
       pings.reported_shutdown_ping AS reported_shutdown_ping
     ) AS metadata,
-    unioned.profile_group_id
+    unioned.profile_group_id,
+    unioned.attribution_msstoresignedin
   FROM
     unioned
   INNER JOIN

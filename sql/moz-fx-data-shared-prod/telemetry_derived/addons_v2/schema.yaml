@@ -19,6 +19,8 @@ fields:
 - name: subsession_start_date
   type: STRING
   mode: NULLABLE
+  description: The start date and time of the telemetry subsession during which this add-on data was recorded, as reported by the client
+    (timezone-offset string).
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -26,18 +28,23 @@ fields:
 - name: addon_id
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for the add-on, typically in reverse-DNS or email format (e.g., 'formautofill@mozilla.org').
 - name: blocklisted
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the add-on appears in the Firefox blocklist. True if blocked, false otherwise.
 - name: name
   type: STRING
   mode: NULLABLE
+  description: The display name of the add-on, limited to 100 characters (e.g., 'Picture-In-Picture', 'Form Autofill').
 - name: user_disabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the user has explicitly disabled this add-on. True if disabled by the user.
 - name: app_disabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the application has disabled this add-on due to version incompatibility, dependency issues, or blocklisting. True if app-disabled.
 - name: version
   type: STRING
   mode: NULLABLE
@@ -45,33 +52,43 @@ fields:
 - name: scope
   type: INTEGER
   mode: NULLABLE
+  description: 'Numeric code indicating the installation scope of the add-on: 1=profile, 2=user, 4=application, 8=system, 16=built-in.'
 - name: type
   type: STRING
   mode: NULLABLE
+  description: 'The type of add-on: ''extension'', ''locale'', ''dictionary'', or ''service''.'
 - name: foreign_install
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether this add-on was installed by an external application rather than directly by the user. True if foreign-installed.
 - name: has_binary_components
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the add-on includes binary (native code) components. Always false since Firefox 60.
 - name: install_day
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the Unix epoch (1970-01-01) on which this add-on was first installed.
 - name: update_day
   type: INTEGER
   mode: NULLABLE
+  description: The number of days since the Unix epoch (1970-01-01) on which this add-on was last updated.
 - name: signed_state
   type: INTEGER
   mode: NULLABLE
+  description: 'The AMO signature state of the add-on: 2=signed, 3=system add-on, 4=preliminary signed; negative values indicate invalid or unsigned states.'
 - name: is_system
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the add-on is a Mozilla system add-on shipped with Firefox. True if system, false if user-installed.
 - name: is_web_extension
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the add-on uses the WebExtension API. True for modern WebExtensions, false for legacy XUL-based add-ons.
 - name: multiprocess_compatible
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the add-on is compatible with multi-process Firefox (e10s). Always true since Firefox 61.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

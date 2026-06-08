@@ -1,0 +1,26 @@
+friendly_name: FxA Services
+description: |-
+  Full per-user state of FxA OAuth ToS authorizations, flattened to
+  one row per (uid, service). Each row carries the user's primary email and the
+  first-authorized ToS timestamp for that service.
+
+  Sourced from the daily accounts_db_external.fxa_oauth_account_authorizations_v1
+  and accounts_db_external.fxa_emails_v1 mirrors. Because those are full-table
+  mirrors, this table always reflects the complete current set of a user's
+  services and is fully rebuilt each run. The downstream
+  braze_external.changed_fxa_services_sync_v1 table picks the rows that are new
+  since the last sync and builds the Braze sync payload.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: sherrera
+scheduling:
+  dag_name: bqetl_braze
+  # the sources are full-table mirrors with no date partitioning, and this table
+  # is rebuilt in full each run rather than per-day
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+require_column_descriptions: true

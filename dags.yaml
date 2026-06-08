@@ -126,21 +126,39 @@ bqetl_fxa_events:
   tags:
     - impact/tier_1
 
-bqetl_accounts_backend_external:
-  schedule_interval: 30 1 * * *
+bqetl_accounts_db:
+  schedule_interval: 30 1/3 * * *
   description: |
-    Copies data from Firefox Accounts (FxA) CloudSQL databases.
+    Frequent imports from Firefox Accounts (FxA) CloudSQL databases.
 
-    This DAG is under active development.
+    Daily imports run in the `bqetl_accounts_db_daily` DAG.
   default_args:
-    owner: akomar@mozilla.com
-    start_date: "2023-09-19"
-    email: ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"]
+    owner: wclouser@mozilla.com
+    start_date: "2026-06-04"
+    email:
+      - wclouser@mozilla.com
+      - akomar@mozilla.com
     retries: 1
     retry_delay: 10m
   tags:
     - impact/tier_3
-    - repo/bigquery-etl
+
+bqetl_accounts_db_daily:
+  schedule_interval: 30 1 * * *
+  description: |
+    Daily imports from Firefox Accounts (FxA) CloudSQL databases.
+
+    More frequent imports run in the `bqetl_accounts_db` DAG.
+  default_args:
+    owner: wclouser@mozilla.com
+    start_date: "2026-06-04"
+    email:
+      - wclouser@mozilla.com
+      - akomar@mozilla.com
+    retries: 1
+    retry_delay: 10m
+  tags:
+    - impact/tier_3
 
 bqetl_accounts_derived:
   schedule_interval: 30 2 * * *
@@ -2618,6 +2636,18 @@ bqetl_rust_component_metrics:
   tags:
     - impact/tier_3
 
+bqetl_sync_metrics:
+  schedule_interval: 0 3 * * *
+  description: The DAG schedules sync metric queries.
+  default_args:
+    owner: sync-team@mozilla.com
+    start_date: "2026-06-03"
+    email: ["telemetry-alerts@mozilla.com", "sync-team@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
 bqetl_sumo_metrics:
   schedule_interval: 0 3 * * *
   description: |
@@ -2721,3 +2751,18 @@ bqetl_nimbus_feature_monitoring:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_data_governance_metadata:
+  schedule_interval: 0 4 * * 1   # weekly, Monday 04:00 UTC
+  description: |
+    Profiles columns of source datasets and writes per-column statistics to
+    data_governance_metadata_derived for schema enrichment tooling.
+  default_args:
+    owner: gkatre@mozilla.com
+    start_date: "2026-06-01"
+    email: ["gkatre@mozilla.com"]
+    retries: 1
+    retry_delay: 30m
+    depends_on_past: false
+  tags:
+    - impact/tier_3

@@ -268,7 +268,8 @@ clients_summary AS (
         environment.settings.attribution.variation,
         environment.settings.attribution.dltoken,
         environment.settings.attribution.dlsource,
-        environment.settings.attribution.ua
+        environment.settings.attribution.ua,
+        environment.settings.attribution.msstoresignedin
       ),
       NULL
     ) AS attribution,

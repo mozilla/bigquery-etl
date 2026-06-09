@@ -143,7 +143,7 @@ you rarely need to edit the job.
 {"date": "2026-06-01", "source_datasets": "fenix firefox_desktop"}
 ```
 
-- `date` — `YYYY-MM-DD`; the `profiled_at` partition written (source scanned is
+- `date` — (date format: `YYYY-MM-DD`) the `profiled_at` partition written (source scanned is
   `date` − 7 days). Omit → the run's logical date.
 - `source_datasets` — space or comma-separated string. Omit → the default
   `telemetry_derived telemetry`.

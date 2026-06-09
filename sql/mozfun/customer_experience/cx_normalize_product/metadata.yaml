@@ -1,0 +1,11 @@
+friendly_name: CX Normalize Product
+description:
+  Standardizes product names in the Customer Experience domain so they are
+  consistent across domains (Product, Marketing, etc.), implementing the
+  canonical product mapping defined by the Customer Experience team
+  (see README).
+  Maps a raw product identifier (GA4 page path, Zendesk custom_product or
+  Kitsune product slug) to the canonical CX product name.
+  Unknown inputs return 'unclassified' and NULL inputs return NULL, so
+  products we cannot recognize stay distinct from those we deliberately group
+  as 'Other'. See README for the rule list.

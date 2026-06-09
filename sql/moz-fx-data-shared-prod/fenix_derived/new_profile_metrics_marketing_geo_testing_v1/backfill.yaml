@@ -1,3 +1,16 @@
+2026-06-08:
+  start_date: 2026-06-03
+  end_date: 2026-06-08
+  reason: DENG-11226, backfill downstream of attribution_clients_v1 logic update
+  watchers:
+  - cbeck@mozilla.com
+  - kbammarito@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+
 2025-02-05:
   start_date: 2021-01-01
   end_date: 2025-02-05

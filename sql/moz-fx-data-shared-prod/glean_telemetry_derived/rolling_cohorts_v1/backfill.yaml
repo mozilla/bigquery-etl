@@ -4,6 +4,7 @@
   reason: DENG-11226, backfill downstream of attribution_clients_v1 logic update
   watchers:
   - cbeck@mozilla.com
+  - kbammarito@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

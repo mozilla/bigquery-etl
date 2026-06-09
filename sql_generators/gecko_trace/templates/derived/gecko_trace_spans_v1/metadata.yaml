@@ -12,7 +12,7 @@ description: |-
   and contextual metadata through resource and scope fields.
 
 owners:
-  - mvanstraten@mozilla.com
+  - jjalkanen@mozilla.com
 
 labels:
   incremental: true

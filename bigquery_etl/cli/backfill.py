@@ -43,6 +43,7 @@ from ..backfill.utils import (
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
     qualified_table_name_matching,
+    query_supports_reinitialize,
     validate_table_metadata,
 )
 from ..backfill.validate import (
@@ -51,7 +52,9 @@ from ..backfill.validate import (
     validate_duplicate_entry_with_initiate_status,
     validate_file,
     validate_query_script_options,
+    validate_reinitialize_sampling_batch_size_value,
 )
+from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE, _run_init_query
 from ..cli.query import backfill as query_backfill
 from ..cli.utils import (
     QualifiedTableNameType,
@@ -203,6 +206,27 @@ def backfill(ctx):
     help="If set, allow backfill for depends_on_past tables to have an end date before the entry date. "
     "In some cases, this can cause inconsistencies in the data.",
 )
+@click.option(
+    "--reinitialize-table",
+    "--reinitialize_table",
+    flag_value=True,
+    default=None,
+    help="Rebuild the whole table by re-running its is_init() query into a staging table. "
+    "Can run in parallel sample_id batches if the query supports it (has @sampling_batch_size "
+    "parameter). Required for depends_on_past tables with a null date_partition_parameter "
+    "(e.g. first_seen tables), which can't be backfilled one partition at a time.",
+)
+@click.option(
+    "--reinitialize-sampling-batch-size",
+    "--reinitialize_sampling_batch_size",
+    type=click.IntRange(1, 100),
+    default=None,
+    help="Number of sample_ids to process per job when --reinitialize-table runs an "
+    "is_init() query that supports @sampling_batch_size. Smaller batches mean more jobs "
+    "(each spanning all partitions), so keep num_batches * num_partitions under BigQuery's "
+    "30000 partition-modifications/table/day cap. "
+    f"Defaults to {DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE} when reinitializing.",
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -224,6 +248,8 @@ def create(
     shredder_mitigation,
     override_retention_range_limit,
     override_depends_on_past_end_date,
+    reinitialize_table,
+    reinitialize_sampling_batch_size,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -249,9 +275,16 @@ def create(
         override_depends_on_past_end_date = opts.get(
             "override_depends_on_past_end_date", False
         )
+        reinitialize_table = opts.get("reinitialize_table", None)
+        reinitialize_sampling_batch_size = opts.get(
+            "reinitialize_sampling_batch_size", None
+        )
 
     if errors := validate_table_metadata(
-        sql_dir, qualified_table_name, ignore_missing_metadata=True
+        sql_dir,
+        qualified_table_name,
+        ignore_missing_metadata=True,
+        reinitialize_table=reinitialize_table,
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
@@ -281,6 +314,8 @@ def create(
         status=BackfillStatus.INITIATE,
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
+        reinitialize_table=reinitialize_table,
+        reinitialize_sampling_batch_size=reinitialize_sampling_batch_size,
         override_retention_limit=override_retention_range_limit,
         override_depends_on_past_end_date=override_depends_on_past_end_date,
         billing_project=billing_project,
@@ -365,9 +400,19 @@ def validate(
 
     errors = defaultdict(list)
 
-    for table_name in backfills_dict:
+    for table_name, table_entries in backfills_dict.items():
+        # initiate acts on the (single) Initiate-status entry, not necessarily the
+        # newest by entry date, so derive the reinitialize flag from that same entry.
+        reinitialize_table = any(
+            entry.reinitialize_table
+            for entry in table_entries
+            if entry.status == BackfillStatus.INITIATE
+        )
         if metadata_errors := validate_table_metadata(
-            sql_dir, table_name, ignore_missing_metadata
+            sql_dir,
+            table_name,
+            ignore_missing_metadata,
+            reinitialize_table=reinitialize_table,
         ):
             click.echo("\n".join(metadata_errors))
             raise MetadataValidationError(str(metadata_errors))
@@ -910,6 +955,32 @@ def _initiate_backfill(
 
     override_retention_limit = entry.override_retention_limit
 
+    # Reinitialize path: rebuild the whole table from its is_init() query into staging
+    # (parallel per sample_id) instead of replaying the day-by-day query. Used for
+    # depends_on_past tables with a null date_partition_parameter.
+    if entry.reinitialize_table and is_python_script:
+        # The reinitialize path reruns query.sql's is_init() branch; a python-script
+        # table has no query.sql to reinitialize, so reject rather than silently
+        # falling through to the day-by-day path.
+        raise ValueError(
+            "reinitialize_table is not supported for python-script tables: "
+            f"{qualified_table_name}."
+        )
+
+    if entry.reinitialize_table and not is_python_script:
+        _reinitialize_into_staging(
+            qualified_table_name,
+            backfill_staging_qualified_table_name,
+            billing_project=billing_project,
+            # unset on the entry => use the default batch size
+            sampling_batch_size=(
+                entry.reinitialize_sampling_batch_size
+                or DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
+            ),
+            dry_run=dry_run,
+        )
+        return
+
     # rewrite query to query the staging table instead of the prod table
     # and copy previous partition if table depends on past
     if metadata.scheduling.get("depends_on_past") and not is_python_script:
@@ -987,6 +1058,46 @@ def _initiate_backfill(
         raise ValueError(
             f"Backfill initiate resulted in error for {qualified_table_name}"
         ) from e
+
+
+def _reinitialize_into_staging(
+    qualified_table_name: str,
+    backfill_staging_qualified_table_name: str,
+    billing_project: str,
+    sampling_batch_size: int = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+    dry_run: bool = False,
+):
+    """Rebuild the whole table into the staging table via its is_init() query.
+
+    Runs the table's query.sql with is_init() set to true, writing into the already
+    deployed staging table. For tables with a @sample_id parameter, the query is run in
+    parallel over sample_ids (batched by sampling_batch_size when the query supports
+    @sampling_batch_size). This mirrors `bqetl query initialize` but targets the staging
+    table instead of production, so the existing complete step can swap it in.
+    """
+    validate_reinitialize_sampling_batch_size_value(sampling_batch_size)
+
+    if not query_supports_reinitialize("sql", qualified_table_name):
+        raise ValueError(
+            f"Cannot reinitialize {qualified_table_name}: query.sql does not use is_init()."
+        )
+
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_file = Path("sql") / project / dataset / table / "query.sql"
+
+    _run_init_query(
+        project=project,
+        public_project_id=None,
+        destination_table=backfill_staging_qualified_table_name,
+        dataset=dataset,
+        query_file=query_file,
+        sql_content=query_file.read_text(),
+        billing_project=billing_project,
+        sampling_batch_size=sampling_batch_size,
+        dry_run=dry_run,
+        # write to the standard (non-public) staging table, not a public redirect
+        ignore_public_dataset=True,
+    )
 
 
 def _initialize_previous_partition(
@@ -1171,6 +1282,7 @@ def _copy_backfill_staging_to_prod(
     where the public-project redirect doesn't apply).
 
     If table is
+       reinitialized: copy the entire staging table to production (all partitions).
        un-partitioned: copy the entire staging table to production.
        partitioned: determine and copy each partition from staging to production.
     """
@@ -1189,7 +1301,9 @@ def _copy_backfill_staging_to_prod(
     if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
         partitioning_type = table_metadata.bigquery.time_partitioning.type
 
-    if partitioning_type is None:
+    # A reinitialized table was rebuilt in full in staging across all partitions
+    # (not just the entry's date range), so replace the whole prod table at once.
+    if entry.reinitialize_table or partitioning_type is None:
         _copy_table(backfill_staging_table, qualified_table_name, client)
     else:
         backfill_date_range = BackfillDateRange(

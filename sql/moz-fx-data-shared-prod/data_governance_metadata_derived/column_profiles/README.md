@@ -145,7 +145,7 @@ you rarely need to edit the job.
 
 - `date` — `YYYY-MM-DD`; the `profiled_at` partition written (source scanned is
   `date` − 7 days). Omit → the run's logical date.
-- `source_datasets` — space- or comma-separated string. Omit → the default
+- `source_datasets` — space or comma-separated string. Omit → the default
   `telemetry_derived telemetry`.
 
 (The same guidance is on the DAG's docs panel in the Airflow UI.)

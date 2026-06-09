@@ -28,9 +28,13 @@ description: |-
     product name; returns 'unclassified' for raw slugs the UDF cannot map (monitored, see below).
 
   Monitoring
-  - A Bigeye custom rule (`bigeye_custom_rules.sql`) alerts when `product` contains
+  - A Bigeye metric `has_no_unclassified_value` alerts when the `product` contains
     'unclassified' values over a rolling 7-day `creation_date` window, surfacing raw
-    slugs that need a mapping added to the UDF.
+    values that need a mapping added to the UDF.
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
+monitoring:
+  enabled: true
+  partition_column: creation_date
+  collection: Customer Experience

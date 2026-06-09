@@ -43,6 +43,22 @@ unlabeled_metrics AS (
     {{ attributes }}
 ),
 {% if client_sampled_unlabeled_metrics %}
+  -- Sampled metrics are full-rate everywhere except the rollout's target
+  -- population; collect them here like normal metrics.
+  full_rate_sampled_unlabeled_metrics AS (
+    SELECT
+      {{ attributes }},
+      ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
+        {{ client_sampled_unlabeled_metrics }}
+      ] AS scalar_aggregates
+    FROM
+      extracted
+    WHERE
+      channel IN ("nightly", "beta")
+      OR (channel = "release" AND os != "Windows")
+    GROUP BY
+      {{ attributes }}
+  ),
   sampled_unlabeled_metrics AS (
     SELECT
       {{ attributes }},
@@ -54,7 +70,7 @@ unlabeled_metrics AS (
     WHERE
       channel = "{{ client_sampled_channel}}"
       AND os = "{{ client_sampled_os}}"
-      AND sample_id = {{ client_sampled_max_sample_id }}
+      AND sample_id <= {{ client_sampled_max_sample_id }}
     GROUP BY
       {{ attributes }}
   ),
@@ -65,6 +81,11 @@ unioned_unlabeled_metrics AS (
   FROM
     unlabeled_metrics
     {% if client_sampled_unlabeled_metrics %}
+      UNION ALL
+      SELECT
+        *
+      FROM
+        full_rate_sampled_unlabeled_metrics
       UNION ALL
       SELECT
         *
@@ -88,6 +109,19 @@ grouped_labeled_metrics AS (
     OR (channel = "release" AND os = "Windows" AND sample_id < 10)
 ),
 {% if client_sampled_labeled_metrics %}
+  -- Full-rate everywhere except the rollout's target population.
+  full_rate_grouped_sampled_labeled_metrics AS (
+    SELECT
+      {{ attributes }},
+      ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+        {{ client_sampled_labeled_metrics }}
+      ] AS metrics
+    FROM
+      extracted
+    WHERE
+      channel IN ("nightly", "beta")
+      OR (channel = "release" AND os != "Windows")
+  ),
   grouped_sampled_labeled_metrics AS (
     SELECT
       {{ attributes }},
@@ -99,7 +133,7 @@ grouped_labeled_metrics AS (
     WHERE
       channel = "{{ client_sampled_channel}}"
       AND os = "{{ client_sampled_os}}"
-      AND sample_id = {{ client_sampled_max_sample_id }}
+      AND sample_id <= {{ client_sampled_max_sample_id }}
   ),
 {% endif %}
 unioned_grouped_labeled_metrics AS (
@@ -108,6 +142,11 @@ unioned_grouped_labeled_metrics AS (
   FROM
     grouped_labeled_metrics
     {% if client_sampled_labeled_metrics %}
+      UNION ALL
+      SELECT
+        *
+      FROM
+        full_rate_grouped_sampled_labeled_metrics
       UNION ALL
       SELECT
         *

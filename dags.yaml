@@ -1435,7 +1435,7 @@ bqetl_google_search_console:
     - impact/tier_1
 
 bqetl_braze:
-  schedule_interval: 0 5,13,21 * * *
+  schedule_interval: 30 4,13,22 * * *
   description: ETL for Braze workflows.
   default_args:
     owner: lmcfall@mozilla.com

@@ -179,6 +179,10 @@ fields:
   - mode: NULLABLE
     name: ua
     type: STRING
+  - mode: NULLABLE
+    name: msstoresignedin
+    type: BOOLEAN
+    description: Whether the user was signed in to the Microsoft Store at install time, when Firefox was installed via the Microsoft Store
   mode: NULLABLE
   name: attribution
   type: RECORD

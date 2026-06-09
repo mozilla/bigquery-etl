@@ -22,6 +22,8 @@ scheduling:
   priority: 85
   start_date: '2019-04-15'
   depends_on_past: true
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day
@@ -38,6 +40,7 @@ schema:
     - moz-fx-data-shared-prod
     - telemetry_derived
     - clients_daily_v6
+  allow_field_addition: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

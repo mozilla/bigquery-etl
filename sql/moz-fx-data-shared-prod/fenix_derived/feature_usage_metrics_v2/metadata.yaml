@@ -9,7 +9,6 @@ labels:
   incremental: true
   owner1: rzhao
   table_type: aggregate
-  shredder_mitigation: true
   dag: bqetl_mobile_feature_usage
   owner2: vsabino
 scheduling:

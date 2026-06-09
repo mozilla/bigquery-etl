@@ -44,7 +44,8 @@ SELECT
       LAX_BOOL(event_extra.is_private) AS `is_private`,
       LAX_BOOL(event_extra.is_private_mode) AS `is_private_mode`,
       LAX_BOOL(event_extra.is_toolbar) AS `is_toolbar`,
-      LAX_BOOL(event_extra.outcome) AS `outcome`
+      LAX_BOOL(event_extra.outcome) AS `outcome`,
+      LAX_BOOL(event_extra.sampled_in) AS `sampled_in`
     ) AS `boolean`,
     STRUCT(
       LAX_INT64(event_extra.api_query_count) AS `api_query_count`,
@@ -65,6 +66,7 @@ SELECT
       LAX_INT64(event_extra.n_words) AS `n_words`,
       LAX_INT64(event_extra.position) AS `position`,
       LAX_INT64(event_extra.selected_tab_index) AS `selected_tab_index`,
+      LAX_INT64(event_extra.session_seq) AS `session_seq`,
       LAX_INT64(event_extra.size) AS `size`,
       LAX_INT64(event_extra.tab_count) AS `tab_count`,
       LAX_INT64(event_extra.to_version) AS `to_version`,
@@ -146,6 +148,8 @@ SELECT
       JSON_VALUE(event_extra.selected_result_subtype) AS `selected_result_subtype`,
       JSON_VALUE(event_extra.sequence_id) AS `sequence_id`,
       JSON_VALUE(event_extra.sequence_position) AS `sequence_position`,
+      JSON_VALUE(event_extra.session_id) AS `session_id`,
+      JSON_VALUE(event_extra.session_start_time) AS `session_start_time`,
       JSON_VALUE(event_extra.setting) AS `setting`,
       JSON_VALUE(event_extra.share_type) AS `share_type`,
       JSON_VALUE(event_extra.size) AS `size`,

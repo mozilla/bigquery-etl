@@ -227,7 +227,8 @@ new_profile_ping_agg AS (
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -416,7 +417,8 @@ shutdown_ping_agg AS (
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -567,7 +569,8 @@ main_ping_agg AS (
   WHERE
     {% if is_init() %}
       submission_date >= '2010-01-01'
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
     {% else %}
       submission_date = @submission_date
     {% endif %}

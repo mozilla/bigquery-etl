@@ -689,7 +689,7 @@ def parse_args() -> argparse.Namespace:
         "--source-datasets",
         default="telemetry_derived telemetry",
         help=(
-            "Source datasets to profile, space- or comma-separated as a single "
+            "Source datasets to profile, space or comma-separated as a single "
             "value (default: 'telemetry_derived telemetry'). Passed as one string "
             "so it can be driven by an Airflow dag_run.conf override."
         ),

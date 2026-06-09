@@ -107,10 +107,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+    wait_for_checks__fail_focus_android_derived__active_users_aggregates__v4 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v4",
         external_dag_id="bqetl_analytics_aggregations",
-        external_task_id="checks__fail_focus_android_derived__active_users_aggregates__v3",
+        external_task_id="checks__fail_focus_android_derived__active_users_aggregates__v4",
         execution_delta=datetime.timedelta(seconds=35100),
         check_existence=True,
         mode="reschedule",
@@ -221,7 +221,7 @@ with DAG(
     )
 
     telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
-        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3
+        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v4
     )
 
     telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(

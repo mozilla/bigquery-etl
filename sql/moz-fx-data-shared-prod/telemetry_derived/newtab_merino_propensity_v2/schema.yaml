@@ -6,6 +6,9 @@ fields:
   name: snapshot_at
   type: TIMESTAMP
 - mode: NULLABLE
+  name: layout
+  type: STRING
+- mode: NULLABLE
   name: section_position
   type: INTEGER
 - mode: NULLABLE

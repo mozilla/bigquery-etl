@@ -15,6 +15,8 @@ description: |-
   - question_sentiment_score based on [title, content]
 
   Read-time fields (computed by this view, not stored in the underlying table):
+  - product = `mozfun.customer_experience.cx_normalize_product(product, 'Kitsune')` — canonical
+    product name; returns 'unclassified' for raw slugs the UDF cannot map (monitored, see below).
   - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay,
     1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
 
@@ -26,6 +28,15 @@ description: |-
   - The underlying table requires a partition filter. Always include
     `WHERE creation_date >= ...` (or an equivalent range) when querying
     this view, otherwise BigQuery will reject the query.
+
+  Monitoring
+  - A Bigeye metric `has_no_unclassified_value` alerts when the `product` contains
+    'unclassified' values over a rolling 7-day `creation_date` window, surfacing raw
+    values that need a mapping added to the UDF.
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
+monitoring:
+  enabled: true
+  partition_column: creation_date
+  collection: Customer Experience

@@ -122,3 +122,23 @@ class TestGet:
         client_side_sampled_metrics.get(metric_types=["counter"])
         rendered_query = mock_run.call_args.args[0]
         assert "app_name =" not in rendered_query
+
+    @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
+    def test_channel_and_os_filters_in_query(self, mock_run):
+        """Scoping to a population restricts the lookup to metrics sampled
+        there, so a metric not sampled on (channel, os) isn't returned."""
+        mock_run.return_value = []
+        client_side_sampled_metrics.get(
+            product="firefox_desktop", channel="release", os="Windows"
+        )
+        rendered_query = mock_run.call_args.args[0]
+        assert "channel = 'release'" in rendered_query
+        assert "os = 'Windows'" in rendered_query
+
+    @mock.patch.object(client_side_sampled_metrics, "_run_bq_query")
+    def test_channel_and_os_omitted_by_default(self, mock_run):
+        mock_run.return_value = []
+        client_side_sampled_metrics.get(product="firefox_desktop")
+        rendered_query = mock_run.call_args.args[0]
+        assert "channel =" not in rendered_query
+        assert "os =" not in rendered_query

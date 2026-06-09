@@ -1,7 +1,7 @@
 2026-06-08:
   start_date: 2026-06-03
   end_date: 2026-06-08
-  reason: Backfill downstream of attribution_clients_v1 logic update
+  reason: DENG-11226, backfill downstream of attribution_clients_v1 logic update
   watchers:
   - cbeck@mozilla.com
   status: Initiate

@@ -1,14 +1,13 @@
 # cx_normalize_product
 
-Standardizes product names so they are consistent across domains (Product, Glean, etc.), implementing the canonical product mapping defined by the Customer Experience team.
+Standardizes product names in the Customer Experience domain, so they are consistent with other domains (Product, Glean, etc.).
+Implementing the canonical product mapping defined by the Customer Experience team https://docs.google.com/spreadsheets/d/1NX_Kso5fm-NcfLQ6KxHGH3Jje0MSabdAkNnnyjvu1aI/edit?gid=2127849644#gid=2127849644.
 
 ```
 mozfun.customer_experience.cx_normalize_product(raw STRING, source STRING) -> STRING
 ```
 
 `source` selects the rule set: `'GA4'`, `'Zendesk'`, or `'Kitsune'`. An unknown `source` falls through to `'unclassified'`.
-
-> This is a separate UDF from `mozfun.customer_experience.normalize_product`. That one maps unknown inputs to `'Other'` and is relied on by the existing `sumo_metrics_derived` consumers; it is intentionally left unchanged. `cx_normalize_product` adopts the stricter semantics below.
 
 ## Return values
 

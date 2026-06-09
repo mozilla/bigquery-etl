@@ -26,6 +26,7 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen,
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,
@@ -103,6 +104,7 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen,
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count
     ) AS `counter`,
@@ -213,6 +215,7 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen,
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,
@@ -290,6 +293,7 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen,
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,

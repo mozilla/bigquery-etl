@@ -417,6 +417,22 @@ fields:
       description: 'On mobile, the number of times the application went to foreground.
 
         '
+    - name: glean_sessions_seen
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of sessions started since the last metrics ping.
+
+        Incremented for every session start, regardless of sampling.
+
+        This metric is a counter and is out-of-session by default, so it
+
+        is never suppressed by any session sampling which means it can be
+
+        used to validate sampling rates against the events-ping session_start
+
+        count.
+
+        '
     - name: glean_validation_app_forceclosed_count
       type: INTEGER
       mode: NULLABLE

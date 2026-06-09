@@ -25,7 +25,8 @@ SELECT
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count,
-      metrics.counter.glean_validation_foreground_count
+      metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
@@ -99,7 +100,8 @@ SELECT
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count,
-      metrics.counter.glean_validation_foreground_count
+      metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
@@ -173,7 +175,8 @@ SELECT
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count,
-      metrics.counter.glean_validation_foreground_count
+      metrics.counter.glean_validation_foreground_count,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,

@@ -294,7 +294,8 @@ SELECT
       metrics.counter.networking_proxy_fast_path_used,
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
-      metrics.counter.networking_trans_found_in_pending_queue
+      metrics.counter.networking_trans_found_in_pending_queue,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

@@ -20,7 +20,8 @@ SELECT
       metrics.counter.glean_error_io,
       metrics.counter.glean_time_invalid_timezone_offset,
       metrics.counter.glean_upload_in_flight_pings_dropped,
-      metrics.counter.glean_upload_missing_send_ids
+      metrics.counter.glean_upload_missing_send_ids,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

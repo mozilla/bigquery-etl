@@ -3465,6 +3465,22 @@ fields:
         ran.
 
         '
+    - name: glean_sessions_seen
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of sessions started since the last metrics ping.
+
+        Incremented for every session start, regardless of sampling.
+
+        This metric is a counter and is out-of-session by default, so it
+
+        is never suppressed by any session sampling which means it can be
+
+        used to validate sampling rates against the events-ping session_start
+
+        count.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -52083,11 +52099,15 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine identifiers for built-in
-        search engines and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are the search engine identifier for configuration
+        provided search engines and ''other'' for search engines installed via other
+        methods.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
+
+        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
+        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

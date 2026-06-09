@@ -38,7 +38,8 @@ SELECT
       metrics.counter.default_browser_onboarding_go_to_settings_pressed,
       metrics.counter.browser_pdf_viewer_used,
       metrics.counter.glean_upload_in_flight_pings_dropped,
-      metrics.counter.glean_upload_missing_send_ids
+      metrics.counter.glean_upload_missing_send_ids,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

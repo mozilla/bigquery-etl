@@ -392,7 +392,8 @@ SELECT
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
-      metrics.counter.places_manager_connection_initialized
+      metrics.counter.places_manager_connection_initialized,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2601,7 +2602,8 @@ SELECT
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
-      metrics.counter.places_manager_connection_initialized
+      metrics.counter.places_manager_connection_initialized,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4830,7 +4832,8 @@ SELECT
       metrics.counter.rtcpeerconnection_count_rtcp_mux_policy_negotiate,
       metrics.counter.http3_stale_dcb_dcz_cache_entries_purged,
       metrics.counter.networking_trans_found_in_pending_queue,
-      metrics.counter.places_manager_connection_initialized
+      metrics.counter.places_manager_connection_initialized,
+      metrics.counter.glean_sessions_seen
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

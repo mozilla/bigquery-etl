@@ -1,4 +1,5 @@
 type: BIGCONFIG_FILE
+# Monitored on the view because `product` is normalized at read time, so 'unclassified' only exists there.
 tag_deployments:
 - collection:
     name: Customer Experience
@@ -9,3 +10,5 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.customer_experience.kitsune_retrieval_index.product
     metrics:
     - saved_metric_id: has_no_unclassified_value
+      rct_overrides:
+      - creation_date

@@ -98,6 +98,7 @@ saved_metric_definitions:
         - submission_date
     - saved_metric_id: has_no_unclassified_value
       # upper_bound 0 means 0% of values may be 'unclassified' over a rolling 7-day window.
+      # rct_overrides default submission_date.
       metric_type:
         predefined_metric: PERCENT_VALUE_IN_LIST
       parameters:
@@ -115,7 +116,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 7
       rct_overrides:
-        - creation_date
+        - submission_date
     - saved_metric_id: is_2_char_len
       metric_type:
         predefined_metric: STRING_LENGTH_MIN

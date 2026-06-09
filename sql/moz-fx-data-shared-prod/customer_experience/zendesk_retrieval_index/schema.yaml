@@ -50,7 +50,7 @@ fields:
   mode: NULLABLE
   description: Mozilla product the ticket is about, normalized at read time via
     `mozfun.customer_experience.cx_normalize_product`. Raw Zendesk `custom_product` values are
-    mapped to canonical product names (e.g. `Firefox Desktop`, `Fenix`, `Firefox iOS`,
+    mapped to canonical product names (e.g. `Fenix`, `Firefox iOS`,
     `Mozilla VPN`, `Firefox Relay`, `Mozilla Account`). Known-but-unsupported products return
     `Other`, unrecognized values return `unclassified`, and NULL is preserved.
 - name: product_version

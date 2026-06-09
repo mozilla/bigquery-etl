@@ -14,7 +14,7 @@ description: |-
   spans within the trace, with child spans nested in childSpans arrays.
 
 owners:
-  - mvanstraten@mozilla.com
+  - jjalkanen@mozilla.com
 
 labels:
   incremental: true

@@ -4,7 +4,7 @@
   reason: reverting fenix submission_date changes in https://github.com/mozilla/bigquery-etl/pull/9534
   watchers:
   - kbammarito@mozilla.com
-  status: Initiate
+  status: Complete
   override_retention_limit: false
 2025-05-20:
   start_date: 2023-04-08

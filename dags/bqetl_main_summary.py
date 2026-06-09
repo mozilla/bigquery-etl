@@ -128,6 +128,7 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2023, 9, 15, 0, 0),
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         parameters=["submission_date:DATE:{{ds}}"],
         retry_delay=datetime.timedelta(seconds=300),
         retries=1,
@@ -254,6 +255,7 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2023, 9, 15, 0, 0),
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         parameters=["submission_date:DATE:{{ds}}"],
         retry_delay=datetime.timedelta(seconds=300),
         retries=1,
@@ -527,6 +529,7 @@ with DAG(
         start_date=datetime.datetime(2020, 5, 5, 0, 0),
         date_partition_parameter=None,
         depends_on_past=True,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
     )
@@ -562,6 +565,7 @@ with DAG(
         start_date=datetime.datetime(2019, 4, 15, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         priority_weight=85,
     )
 
@@ -596,6 +600,7 @@ with DAG(
         start_date=datetime.datetime(2023, 9, 15, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         priority_weight=85,
     )
 
@@ -622,6 +627,7 @@ with DAG(
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         priority_weight=85,
     )
 

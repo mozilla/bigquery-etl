@@ -5,6 +5,7 @@ from pathlib import Path
 
 import rich_click as click
 
+from ..cli.query import DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 from ..cli.utils import EmailType, QualifiedTableNameType
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from .utils import qualified_table_name_matching
@@ -117,6 +118,26 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
             "Override depends-on-past end date check?", default=False
         )
 
+    null_date_partition = (
+        metadata is not None
+        and "date_partition_parameter" in metadata.scheduling
+        and metadata.scheduling["date_partition_parameter"] is None
+    )
+    if depends_on_past and null_date_partition:
+        result["reinitialize_table"] = click.confirm(
+            "Reinitialize the whole table by re-running its is_init() query "
+            "(required for depends_on_past tables with a null date_partition_parameter)?",
+            default=True,
+        )
+        if result["reinitialize_table"]:
+            result["reinitialize_sampling_batch_size"] = click.prompt(
+                "Number of sample_ids per reinitialize batch "
+                "(keep num_batches * num_partitions under BigQuery's "
+                "30000 partition-modifications/table/day cap)",
+                type=click.IntRange(1, 100),
+                default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+            )
+
     # ensure options that might not be prompted are set, to satisfy test for completeness
     unprompted_or_conditional = [
         "billing_project",
@@ -125,6 +146,8 @@ def prompt_for_options(sql_dir, qualified_table_name=None) -> dict:
         "query_script_arg",
         "query_script_dry_run_arg",
         "override_depends_on_past_end_date",
+        "reinitialize_table",
+        "reinitialize_sampling_batch_size",
     ]
     for option in unprompted_or_conditional:
         result[option] = result.get(option)

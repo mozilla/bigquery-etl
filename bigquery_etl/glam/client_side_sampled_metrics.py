@@ -34,14 +34,23 @@ def _run_bq_query(query: str):
     return query_job.result()
 
 
-def _build_where_clause(metric_types: List[str], app_name: Optional[str]) -> str:
-    """Return a SQL WHERE clause for metric_types + app_name, or '' if neither."""
+def _build_where_clause(
+    metric_types: List[str],
+    app_name: Optional[str],
+    channel: Optional[str] = None,
+    os: Optional[str] = None,
+) -> str:
+    """Return a SQL WHERE clause for the given filters, or '' if none apply."""
     conditions = []
     if metric_types:
         quoted = ",".join(f"'{mt}'" for mt in sorted(set(metric_types)))
         conditions.append(f"metric_type IN ({quoted})")
     if app_name:
         conditions.append(f"app_name = '{app_name}'")
+    if channel:
+        conditions.append(f"channel = '{channel}'")
+    if os:
+        conditions.append(f"os = '{os}'")
     if not conditions:
         return ""
     return "WHERE " + " AND ".join(conditions)
@@ -50,10 +59,13 @@ def _build_where_clause(metric_types: List[str], app_name: Optional[str]) -> str
 def get(
     metric_types: Optional[Iterable[str]] = None,
     product: Optional[str] = None,
+    channel: Optional[str] = None,
+    os: Optional[str] = None,
 ) -> dict[str, List[str]]:
     """Return sampled metrics grouped by metric_type from BigQuery.
 
-    Takes the latest submission for each metric.
+    Takes the latest submission for each metric. ``channel``/``os`` scope the
+    lookup to the population a metric is sampled on.
     """
     if metric_types is not None:
         metric_types = list(metric_types)
@@ -70,7 +82,7 @@ def get(
         app_name = _PRODUCT_TO_APP_NAME[product]
     else:
         app_name = None
-    where_clause = _build_where_clause(metric_types, app_name)
+    where_clause = _build_where_clause(metric_types, app_name, channel, os)
     # Rows with experimenter_slug = NULL are tombstones written by the
     # sampled_metrics ETL when a metric is no longer covered by any active
     # experiment/rollout. They aren't real sampled metrics and should be

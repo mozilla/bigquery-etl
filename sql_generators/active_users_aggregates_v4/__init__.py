@@ -68,6 +68,7 @@ class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
     firefox_desktop = "Firefox Desktop"
+    focus_android = "Focus Android"
 
 
 @click.command()
@@ -98,7 +99,6 @@ def generate(target_project, output_dir, use_cloud_function):
     focus_android_query_template = env.get_template("focus_android_query.sql")
     # view templates
     focus_android_view_template = env.get_template("focus_android_view.sql")
-    mobile_view_template = env.get_template("mobile_view.sql")
     view_template = env.get_template("view.sql")
     # metadata template
     metadata_template = "metadata.yaml"
@@ -123,7 +123,9 @@ def generate(target_project, output_dir, use_cloud_function):
         test_folder = ""
         parts = 2
         # Handle absolute and relative paths for tests
-        output_path = Path("tests").joinpath(*output_dir.parts[output_dir.is_absolute():])
+        output_path = Path("tests").joinpath(
+            *output_dir.parts[output_dir.is_absolute() :]
+        )
 
         for group in templates[template_type]:
             try:

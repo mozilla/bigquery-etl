@@ -11,6 +11,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
+    DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
     _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
@@ -27,7 +28,7 @@ from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
 from bigquery_etl.util.target import Target
 
-DEFAULT_SAMPLING_BATCH_SIZE = 4
+DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 TOTAL_SAMPLE_ID_COUNT = 100
 
 
@@ -387,6 +388,11 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT 1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write("fields: []")
 
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v2")
             with open(
@@ -477,6 +483,15 @@ class TestQuery:
                 )
                 == 1
             )
+
+            schema_matches = paths_matching_name_pattern(
+                "telemetry_derived.query_v1",
+                "sql/",
+                "moz-fx-data-shared-prod",
+                files=["schema.yaml"],
+            )
+            assert len(schema_matches) == 1
+            assert schema_matches[0].name == "schema.yaml"
 
     def test_attach_metadata_labels(self, runner):
         with runner.isolated_filesystem():

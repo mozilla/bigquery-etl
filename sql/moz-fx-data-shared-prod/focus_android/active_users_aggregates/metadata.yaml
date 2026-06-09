@@ -8,4 +8,4 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
-  - moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v3
+  - moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v4

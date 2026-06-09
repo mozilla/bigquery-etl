@@ -346,8 +346,8 @@ def classify_columns(
     new_row: dict,
     existing_dimension_columns: list,
     new_dimension_columns: list,
-    existing_schema: bigquery.schema.SchemaField,
-    new_schema: bigquery.schema.SchemaField,
+    existing_schema: list[bigquery.schema.SchemaField],
+    new_schema: list[bigquery.schema.SchemaField],
 ) -> tuple[list[Column], list[Column], list[Column], list[Column], list[Column]]:
     """Compare new row with existing columns & return common, added & removed columns."""
     common_dimensions = []

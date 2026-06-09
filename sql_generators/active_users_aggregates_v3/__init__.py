@@ -286,17 +286,18 @@ def generate(target_project, output_dir, use_cloud_function):
         )
 
         # Write view schema YAML.
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-            basename="schema.yaml",
-            sql=render(
-                view_schema_template,
-                template_folder=THIS_PATH / "templates",
-                format=False,
-            ),
-            skip_existing=False,
-        )
+        if browser.name != "focus_android":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+                basename="schema.yaml",
+                sql=render(
+                    view_schema_template,
+                    template_folder=THIS_PATH / "templates",
+                    format=False,
+                ),
+                skip_existing=False,
+            )
 
         # Write query SQL.
         write_sql(

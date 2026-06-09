@@ -59,6 +59,9 @@ private_pings AS (
     metrics.object.newtab_content_inferred_interests AS inferred_interests,
     CAST(metrics.quantity.newtab_content_utc_offset AS NUMERIC) AS raw_offset
   FROM `moz-fx-data-shared-prod.firefox_desktop.newtab_content_live`
+  -- The original job uses CURRENT_TIMESTAMP() - 10 days. This partitioned job
+  -- takes a DATE at midnight and caps the end at the next midnight, so it spans
+  -- 11 calendar dates: @date - 10 through @date.
   WHERE submission_timestamp >= TIMESTAMP_SUB(TIMESTAMP(@date), INTERVAL 10 DAY)
     AND submission_timestamp < TIMESTAMP_ADD(TIMESTAMP(@date), INTERVAL 1 DAY)
     AND metrics.string.newtab_content_country IN ("US")
@@ -403,37 +406,6 @@ def compute_weights(hist):
     ]
 
 
-def build_partition_output(result, run_date):
-    """Add partition metadata to the propensity output."""
-    partition_output = result.copy()
-    partition_output.insert(0, "snapshot_date", run_date)
-    partition_output.insert(1, "snapshot_at", datetime.now(timezone.utc))
-    partition_output.insert(2, "layout", LAYOUT)
-    return partition_output
-
-
-def write_partition(client, result, destination, run_date, dry_run):
-    """Write one date partition to the destination table."""
-    partition_output = build_partition_output(result, run_date)
-    partition_destination = f"{destination}${run_date:%Y%m%d}"
-    log.info(
-        f"Writing {len(partition_output)} rows to "
-        f"{partition_destination} (WRITE_TRUNCATE)"
-    )
-
-    if dry_run:
-        log.info("Dry run requested; skipping BigQuery load.")
-        return
-
-    job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-    )
-    job = client.load_table_from_dataframe(
-        partition_output, partition_destination, job_config=job_config
-    )
-    job.result()
-
-
 def main():
     """Entry point."""
     parser = ArgumentParser(description=__doc__)
@@ -441,15 +413,27 @@ def main():
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--destination_dataset", default="telemetry_derived")
     parser.add_argument("--destination_table", default="newtab_merino_propensity_v2")
-    parser.add_argument("--dry_run", "--dry-run", action="store_true")
     args = parser.parse_args()
 
     client = bigquery.Client(args.project)
 
     hist = fetch_historical_impressions(client, args.date)
     result = compute_weights(hist)
-    destination = f"{args.project}.{args.destination_dataset}.{args.destination_table}"
-    write_partition(client, result, destination, args.date, args.dry_run)
+    result.insert(0, "snapshot_date", args.date)
+    result.insert(1, "snapshot_at", datetime.now(timezone.utc))
+    result.insert(2, "layout", LAYOUT)
+
+    destination = (
+        f"{args.project}.{args.destination_dataset}."
+        f"{args.destination_table}${args.date:%Y%m%d}"
+    )
+    log.info(f"Writing {len(result)} rows to {destination} (WRITE_TRUNCATE)")
+
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+    job = client.load_table_from_dataframe(result, destination, job_config=job_config)
+    job.result()
 
     log.info("Done.")
 

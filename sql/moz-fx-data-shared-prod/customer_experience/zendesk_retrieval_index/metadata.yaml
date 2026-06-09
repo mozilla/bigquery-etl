@@ -1,27 +1,21 @@
 friendly_name: Zendesk Retrieval Index
-description: |-
-  AI-enriched retrieval table derived from Zendesk customer support tickets, containing embeddings
-  and semantic features to support grounded question answering over Mozilla support data.
-
-  Grain: one row per Zendesk ticket.
-
-  LLM generated fields:
-  - summary_llm
-  - category_llm
-  - language_llm
-  - entities_llm
-  - topics_llm
-  - embedding based on [title, description]
-  - sentiment_score based on [title, description]
-
-  Metadata
-  - Additional data to support technical processes, such as backfills or investigations.
-  - The prompt version is a self-managed version for changes in the prompt given to the LLM.
-
-  Usage
-  - The underlying table requires a partition filter. Always include
-    `WHERE creation_date >= ...` (or an equivalent range) when querying
-    this view, otherwise BigQuery will reject the query.
+description: "AI-enriched retrieval table derived from Zendesk customer support tickets,\
+  \ containing embeddings\nand semantic features to support grounded question answering\
+  \ over Mozilla support data.\n\nGrain: one row per Zendesk ticket.\n\nLLM generated\
+  \ fields:\n- summary_llm\n- category_llm\n- language_llm\n- entities_llm\n- topics_llm\n\
+  - embedding based on [title, description]\n- sentiment_score based on [title, description]\n\
+  \nMetadata\n- Additional data to support technical processes, such as backfills\
+  \ or investigations.\n- The prompt version is a self-managed version for changes\
+  \ in the prompt given to the LLM.\n\nUsage\n- The underlying table requires a partition\
+  \ filter. Always include\n  `WHERE creation_date >= ...` (or an equivalent range)\
+  \ when querying\n  this view, otherwise BigQuery will reject the query.\n\nRead-time\
+  \ fields (computed by this view, not stored in the underlying table):\n- product\
+  \ = `mozfun.customer_experience.cx_normalize_product(product, 'Zendesk')` \u2014\
+  \ canonical\n  product name; returns 'unclassified' for raw slugs the UDF cannot\
+  \ map (monitored, see below).\n\nMonitoring\n- A Bigeye metric `has_no_unclassified_value`\
+  \ alerts when the `product` contains\n  'unclassified' values over a rolling 7-day\
+  \ `creation_date` window, surfacing raw\n  values that need a mapping added to the\
+  \ UDF."
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
@@ -34,3 +28,8 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1
+monitoring:
+  enabled: true
+  collection: Customer Experience
+  partition_column: creation_date
+  partition_column_set: true

@@ -30,6 +30,7 @@ scheduling:
   email:
   - kwindau@mozilla.com
   depends_on_past: true
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day

@@ -29,6 +29,7 @@ This is solving a matrix factorization problem. The core idea:
 
 import logging
 from argparse import ArgumentParser
+from datetime import date, datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -37,13 +38,14 @@ from google.cloud import bigquery
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-PER_ITEM_CUTOFF = 20 # After 20, we compute format independent of position
+PER_ITEM_CUTOFF = 20  # After 20, we compute format independent of position
 MAX_POSITION = 200
 MIN_SLOT_ITEMS = 200
 MIN_SLOT_CLICKS = 100
 MIN_CELL_IMPRESSIONS = 10
 MIN_OUTPUT_IMPRESSIONS = 2000
 ALS_ITERATIONS = 30
+LAYOUT = "SECTION_GRID"
 
 HISTORICAL_IMPRESSIONS_SQL = """
 WITH
@@ -57,7 +59,8 @@ private_pings AS (
     metrics.object.newtab_content_inferred_interests AS inferred_interests,
     CAST(metrics.quantity.newtab_content_utc_offset AS NUMERIC) AS raw_offset
   FROM `moz-fx-data-shared-prod.firefox_desktop.newtab_content_live`
-  WHERE submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 10 DAY)
+  WHERE submission_timestamp >= TIMESTAMP_SUB(TIMESTAMP(@date), INTERVAL 10 DAY)
+    AND submission_timestamp < TIMESTAMP_ADD(TIMESTAMP(@date), INTERVAL 1 DAY)
     AND metrics.string.newtab_content_country IN ("US")
 ),
 
@@ -154,10 +157,15 @@ FROM adjusted_totals att
 """
 
 
-def fetch_historical_impressions(client):
+def fetch_historical_impressions(client, run_date):
     """Run the historical impressions query and return a DataFrame."""
-    log.info("Fetching historical impressions from BigQuery...")
-    df = client.query(HISTORICAL_IMPRESSIONS_SQL).to_dataframe()
+    log.info(f"Fetching historical impressions from BigQuery for {run_date}...")
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter("date", "DATE", run_date),
+        ]
+    )
+    df = client.query(HISTORICAL_IMPRESSIONS_SQL, job_config=job_config).to_dataframe()
     log.info(f"Fetched {len(df):,} rows")
     return df
 
@@ -184,9 +192,13 @@ def compute_weights(hist):
     ]
 
     # Identify reliable slots
-    slot_stats = cell_bridge.reset_index().groupby(["position", "format"]).agg(
-        n_items=("corpus_item_id", "nunique"),
-        total_clicks=("clicks", "sum"),
+    slot_stats = (
+        cell_bridge.reset_index()
+        .groupby(["position", "format"])
+        .agg(
+            n_items=("corpus_item_id", "nunique"),
+            total_clicks=("clicks", "sum"),
+        )
     )
     reliable_slots = set(
         slot_stats[
@@ -231,15 +243,15 @@ def compute_weights(hist):
     for iteration in range(ALS_ITERATIONS):
         # Item effects: weighted mean of (log_ctr - slot_eff) per item
         residual = (log_ctr - slot_eff[slot_idx]) * weights
-        item_eff = np.bincount(item_idx, weights=residual, minlength=n_items) / np.bincount(
-            item_idx, weights=weights, minlength=n_items
-        )
+        item_eff = np.bincount(
+            item_idx, weights=residual, minlength=n_items
+        ) / np.bincount(item_idx, weights=weights, minlength=n_items)
 
         # Slot effects: weighted mean of (log_ctr - item_eff) per slot
         residual = (log_ctr - item_eff[item_idx]) * weights
-        new_slot_eff = np.bincount(slot_idx, weights=residual, minlength=n_slots) / np.bincount(
-            slot_idx, weights=weights, minlength=n_slots
-        )
+        new_slot_eff = np.bincount(
+            slot_idx, weights=residual, minlength=n_slots
+        ) / np.bincount(slot_idx, weights=weights, minlength=n_slots)
 
         max_change = np.max(np.abs(new_slot_eff - slot_eff))
         slot_eff = new_slot_eff
@@ -386,29 +398,58 @@ def compute_weights(hist):
         f"formats={sorted(output['tile_format'].unique())}"
     )
 
-    return output[["section_position", "position", "tile_format", "impressions", "weight"]]
+    return output[
+        ["section_position", "position", "tile_format", "impressions", "weight"]
+    ]
+
+
+def build_partition_output(result, run_date):
+    """Add partition metadata to the propensity output."""
+    partition_output = result.copy()
+    partition_output.insert(0, "snapshot_date", run_date)
+    partition_output.insert(1, "snapshot_at", datetime.now(timezone.utc))
+    partition_output.insert(2, "layout", LAYOUT)
+    return partition_output
+
+
+def write_partition(client, result, destination, run_date, dry_run):
+    """Write one date partition to the destination table."""
+    partition_output = build_partition_output(result, run_date)
+    partition_destination = f"{destination}${run_date:%Y%m%d}"
+    log.info(
+        f"Writing {len(partition_output)} rows to "
+        f"{partition_destination} (WRITE_TRUNCATE)"
+    )
+
+    if dry_run:
+        log.info("Dry run requested; skipping BigQuery load.")
+        return
+
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+    job = client.load_table_from_dataframe(
+        partition_output, partition_destination, job_config=job_config
+    )
+    job.result()
 
 
 def main():
     """Entry point."""
     parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--date", required=True, type=date.fromisoformat)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--destination_dataset", default="telemetry_derived")
-    parser.add_argument("--destination_table", default="newtab_merino_propensity_v1")
+    parser.add_argument("--destination_table", default="newtab_merino_propensity_v2")
+    parser.add_argument("--dry_run", "--dry-run", action="store_true")
     args = parser.parse_args()
 
     client = bigquery.Client(args.project)
 
-    hist = fetch_historical_impressions(client)
+    hist = fetch_historical_impressions(client, args.date)
     result = compute_weights(hist)
     destination = f"{args.project}.{args.destination_dataset}.{args.destination_table}"
-    log.info(f"Writing {len(result)} rows to {destination} (WRITE_TRUNCATE)")
-
-    job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-    )
-    job = client.load_table_from_dataframe(result, destination, job_config=job_config)
-    job.result()
+    write_partition(client, result, destination, args.date, args.dry_run)
 
     log.info("Done.")
 

@@ -25,6 +25,7 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day
@@ -44,3 +45,4 @@ schema:
     - clients_daily_v6
     exclude:
     - submission_date
+  allow_field_addition: true

@@ -163,6 +163,11 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The derived user agent type at attribution time (e.g., 'chrome', 'edge', 'firefox').
+  - name: msstoresignedin
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the user was signed in to the Microsoft Store at install time,
+     when Firefox was installed via the Microsoft Store
   mode: NULLABLE
   name: attribution
   type: RECORD

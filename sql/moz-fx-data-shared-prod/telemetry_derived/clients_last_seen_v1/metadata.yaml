@@ -22,6 +22,7 @@ scheduling:
   priority: 85
   start_date: '2019-04-15'
   depends_on_past: true
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day
@@ -40,3 +41,4 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
+  allow_field_addition: true

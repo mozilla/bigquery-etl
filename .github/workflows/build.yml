@@ -1364,22 +1364,22 @@ jobs:
             > bqetl_project.yaml
       - name: Build the Docker image
         run: |
-          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest
       - name: Push Docker image to GAR
         uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
-          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:latest
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest
           workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
           service_account_name: bigquery-etl
       - name: Build the tagged Docker image
         run: |
-          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+          docker build . -t us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:${{ github.sha }}
       - name: Push tagged Docker image to GAR
         uses: mozilla-it/deploy-actions/docker-push@f7f886627a7914358ff56dda226419e1df90ca40  # v6.5.4
         with:
           project_id: moz-fx-data-artifacts-prod
-          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/bigquery-etl/bigquery-etl:${{ github.sha }}
+          image_tags: us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:${{ github.sha }}
           workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
           service_account_name: bigquery-etl
 

@@ -1,13 +1,12 @@
 ---
 friendly_name: Gecko Trace Signatures
 description: |-
-  Signature-based trace statistics from Gecko across all Firefox applications.
+  Signature-based aggregation of trace statistics from Gecko traces.
 
-  This view provides a unified interface to signature data from multiple Firefox
-  applications including Firefox Desktop, Firefox for Android (Fenix Nightly),
-  and Firefox for Android (Beta). Each row represents aggregated statistics
-  for a specific trace signature pattern, with an additional application field
-  to identify the source.
+  This view aggregates trace data by signature, computing statistics across
+  all traces with the same signature pattern. For each date and signature,
+  it computes the minimum submission timestamp, average trace duration,
+  and the number of traces matching that signature.
 
   Signatures are calculated based on the hierarchical structure and attributes
   of spans within traces, allowing identification of common execution patterns.

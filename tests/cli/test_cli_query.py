@@ -11,6 +11,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.backfill.utils import NBR_DAYS_RETAINED
 from bigquery_etl.cli.query import (
+    DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
     _backfill_script,
     _update_query_schema_with_base_schemas,
     backfill,
@@ -27,7 +28,7 @@ from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
 from bigquery_etl.util.target import Target
 
-DEFAULT_SAMPLING_BATCH_SIZE = 4
+DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
 TOTAL_SAMPLE_ID_COUNT = 100
 
 

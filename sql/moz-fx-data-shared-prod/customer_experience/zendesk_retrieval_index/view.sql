@@ -3,18 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (product),
-  CASE
-    product
-    WHEN "firefox"
-      THEN "Firefox Desktop"
-    WHEN "mobile"
-      THEN "Fenix"
-    WHEN "ios"
-      THEN "Firefox iOS"
-    WHEN "firefox-enterprise"
-      THEN "Firefox Enterprise"
-    ELSE "Non Firefox"
-  END AS product,
+  mozfun.customer_experience.cx_normalize_product(product, 'Zendesk') AS product,
   EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30) AS recency_score
 FROM
   `moz-fx-data-shared-prod.customer_experience_derived.zendesk_retrieval_index_v1`

@@ -22,9 +22,11 @@ fields:
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Mozilla product, normalized at read time. Firefox-family raw values are mapped
-    to canonical names (`firefox` → `Firefox Desktop`, `mobile` → `Fenix`, `ios` → `Firefox iOS`,
-    `firefox-enterprise` → `Firefox Enterprise`); all other raw values collapse to `Non Firefox`.
+  description: Mozilla product the question is about, normalized at read time via
+    `mozfun.customer_experience.cx_normalize_product`. Raw Kitsune slugs are mapped to
+    canonical product names (e.g. `Firefox Desktop`, `Fenix`, `Firefox iOS`, `Mozilla VPN`,
+    `Firefox Relay`, `Thunderbird`). Known-but-unsupported products return `Other`,
+    unrecognized values return `unclassified`, and NULL is preserved.
 - name: product_version
   type: STRING
   mode: NULLABLE

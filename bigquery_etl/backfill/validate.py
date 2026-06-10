@@ -148,6 +148,27 @@ def validate_retention_range(backfill_entry: Backfill, backfill_file: Path) -> N
         )
 
 
+def validate_reinitialize_sampling_batch_size_value(batch_size) -> None:
+    """Check that a reinitialize sampling batch size is within the valid range.
+
+    A None value is allowed (the default batch size is used). Raises ValueError
+    for any out-of-range value.
+    """
+    if batch_size is None:
+        return
+    if not 1 <= batch_size <= 100:
+        raise ValueError(
+            f"reinitialize_sampling_batch_size must be between 1 and 100, got {batch_size}."
+        )
+
+
+def validate_reinitialize_sampling_batch_size(backfill_entry: Backfill) -> None:
+    """Check that the entry's reinitialize sampling batch size is within range."""
+    validate_reinitialize_sampling_batch_size_value(
+        backfill_entry.reinitialize_sampling_batch_size
+    )
+
+
 def validate_query_script_options(
     backfill_entry: Backfill, backfill_file: Path
 ) -> None:
@@ -187,6 +208,7 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         validate_old_entry_date(backfill_entry)
         validate_retention_range(backfill_entry, backfill_file)
         validate_query_script_options(backfill_entry, backfill_file)
+        validate_reinitialize_sampling_batch_size(backfill_entry)
     validate_entries_are_sorted(backfills)
 
 

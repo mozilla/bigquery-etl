@@ -21,6 +21,8 @@ RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy 
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local
+# some jobs require a browser to be installed
+RUN playwright install --with-deps firefox
 COPY .bigqueryrc /root/
 COPY . .
 RUN pip install .

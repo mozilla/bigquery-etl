@@ -1,5 +1,11 @@
 ---
 fields:
+  - name: submission_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      Timestamp when the signatures were first observed.
+      Used for partitioning.
   - name: signature
     type: STRING
     mode: NULLABLE

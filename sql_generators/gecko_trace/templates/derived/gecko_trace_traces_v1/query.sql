@@ -42,7 +42,7 @@ trace AS (
     trace_id
 )
 SELECT
-  submission_timestamp,
+  submission_timestamp AS submission_date,
   mozfun.gecko_trace.calculate_signature(root_span) AS signature,
   trace_id,
   duration_nano,

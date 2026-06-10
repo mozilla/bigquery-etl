@@ -8,6 +8,7 @@ WITH ping AS (
     DATE(submission_timestamp) = @submission_date
 )
 SELECT
+  submission_timestamp AS submission_date,
   JSON_VALUE(span, "$.trace_id") AS trace_id,
   JSON_VALUE(span, '$.span_id') AS span_id,
   JSON_VALUE(span, '$.parent_span_id') AS parent_span_id,

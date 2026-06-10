@@ -5,6 +5,6 @@
   watchers:
   - ascholtz@mozilla.com
   - lvargas@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: true
   override_retention_limit: false

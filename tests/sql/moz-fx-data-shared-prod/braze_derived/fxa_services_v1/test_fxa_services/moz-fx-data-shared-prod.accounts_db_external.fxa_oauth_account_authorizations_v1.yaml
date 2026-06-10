@@ -1,0 +1,20 @@
+# mock OAuth ToS authorizations
+---
+# uid_1: 'sync' authorized under two clients on different dates -> collapses to MIN
+- uid: uid_1
+  service: sync
+  firstAuthorizedTosAt: 2026-05-01 10:00:00+00:00
+- uid: uid_1
+  service: sync
+  firstAuthorizedTosAt: 2026-05-03 10:00:00+00:00
+# uid_1: 'smartwindow' authorized once
+- uid: uid_1
+  service: smartwindow
+  firstAuthorizedTosAt: 2026-05-05 10:00:00+00:00
+# uid_1: null service -> dropped by WHERE service IS NOT NULL
+- uid: uid_1
+  firstAuthorizedTosAt: 2026-05-06 10:00:00+00:00
+# uid_2: has a service but no primary email -> dropped by the INNER JOIN
+- uid: uid_2
+  service: sync
+  firstAuthorizedTosAt: 2026-05-02 10:00:00+00:00

@@ -10,15 +10,23 @@ fields:
 - name: thread_offset
   type: INTEGER
   mode: NULLABLE
+  description: The zero-based index of the thread within the crash's stack trace array. Rows are produced for the first thread (offset 0) and the crashing
+    thread.
 - name: frame_offset
   type: INTEGER
   mode: NULLABLE
+  description: The zero-based index of the stack frame within its thread, limited to the first 40 frames per thread.
 - name: debug_file
   type: STRING
   mode: NULLABLE
+  description: The debug symbol filename (PDB or equivalent) for the module containing this stack frame, used to resolve the frame's symbol information.
 - name: debug_id
   type: STRING
   mode: NULLABLE
+  description: The unique debug identifier for the binary module associated with this stack frame, used in combination with debug_file to locate the
+    correct symbol file.
 - name: module_offset
   type: INTEGER
   mode: NULLABLE
+  description: The computed byte offset of the instruction pointer within the module's base address (frame.ip - module.base_addr). Null when either value
+    is missing or not a valid hex address.

@@ -23,6 +23,9 @@ fields:
 - name: custom_product
   type: STRING
   mode: NULLABLE
+- name: custom_product_version
+  type: STRING
+  mode: NULLABLE
 - name: custom_appbot_star_rating
   type: STRING
   mode: NULLABLE

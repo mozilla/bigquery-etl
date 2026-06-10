@@ -26,6 +26,7 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: The name of the browser application (e.g., 'Firefox').
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -37,9 +38,12 @@ fields:
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: The operating system version string reported by the client (e.g., '10.0' for Windows, '5.1' for Windows XP).
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: Array of active experiments (Normandy and Nimbus) the client was
+    enrolled in at event time, with branch and enrollment metadata for each.
   fields:
   - name: key
     type: STRING
@@ -65,33 +69,44 @@ fields:
 - name: session_id
   type: STRING
   mode: NULLABLE
+  description: UUID identifying the browser session from which this event was recorded.
 - name: session_start_time
   type: TIMESTAMP
   mode: NULLABLE
+  description: Parsed timestamp indicating when the browser session that produced this event started.
 - name: subsession_id
   type: STRING
   mode: NULLABLE
+  description: UUID identifying the subsession within the browser session from which this event was recorded.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Timestamp when the telemetry ping containing this event was received by the ingestion server.
 - name: event_timestamp
   type: INTEGER
   mode: NULLABLE
+  description: Milliseconds elapsed since the start of the session when this event occurred.
 - name: event_category
   type: STRING
   mode: NULLABLE
+  description: The category portion of the telemetry event identifier (e.g., 'normandy', 'navigation').
 - name: event_method
   type: STRING
   mode: NULLABLE
+  description: The method portion of the telemetry event identifier describing the action taken (e.g., 'enroll', 'unenroll', 'search').
 - name: event_object
   type: STRING
   mode: NULLABLE
+  description: The object portion of the telemetry event identifier describing what was acted upon (e.g., 'preference_study', 'about_newtab').
 - name: event_string_value
   type: STRING
   mode: NULLABLE
+  description: An optional string value providing additional context for the event, such as an experiment or preference name.
 - name: event_map_values
   type: RECORD
   mode: REPEATED
+  description: Array of key-value string pairs providing additional event-specific
+    metadata (e.g., page URL, addon version, engine name).
   fields:
   - name: key
     type: STRING
@@ -102,24 +117,31 @@ fields:
 - name: event_process
   type: STRING
   mode: NULLABLE
+  description: The Firefox browser process in which the event occurred (e.g., 'parent', 'content', 'dynamic', 'gpu').
 - name: build_id
   type: STRING
   mode: NULLABLE
+  description: The build identifier of the Firefox application that generated this event (e.g., '20180704003137').
 - name: build_architecture
   type: STRING
   mode: NULLABLE
+  description: The CPU architecture for which the Firefox build was compiled (e.g., 'x86-64', 'x86').
 - name: profile_creation_date
   type: FLOAT
   mode: NULLABLE
+  description: The creation date of the client's Firefox profile expressed as the number of days since the Unix epoch.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: True if Firefox is set as the operating system's default browser; false otherwise.
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: The referring domain or partner source from which the Firefox installation was attributed.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
+  description: A unique token created at Firefox download time used to track the specific download event.
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
@@ -131,6 +153,7 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+  description: The city derived from the client's IP address via geolocation at ingestion time.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

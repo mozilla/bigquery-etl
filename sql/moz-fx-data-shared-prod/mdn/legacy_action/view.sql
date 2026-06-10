@@ -65,7 +65,18 @@ CREATE OR REPLACE VIEW
             )
           ] AS extra,
           'clicked' AS name,
-          0 AS `timestamp`
+          0 AS `timestamp`,
+          CAST(
+            NULL
+            AS
+              STRUCT<
+                event_seq INT64,
+                session_id STRING,
+                session_sample_rate FLOAT64,
+                session_seq INT64,
+                session_start_time STRING
+              >
+          ) AS session
         )
       ] AS events,
       metadata,

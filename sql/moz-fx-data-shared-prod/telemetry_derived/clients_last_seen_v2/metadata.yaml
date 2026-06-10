@@ -48,3 +48,4 @@ schema:
     - telemetry_derived
     - clients_daily_v6
     exclude: null
+  allow_field_addition: true

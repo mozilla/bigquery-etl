@@ -1,10 +1,10 @@
-2026-05-21:
-  start_date: 2026-04-01
-  end_date: 2026-05-10
-  reason: Initial backfill for DENG-11096. Limited window for DS/stakeholder evaluation of CX use cases before a broader backfill.
+2026-06-04:
+  start_date: 2025-01-01
+  end_date: 2026-05-31
+  reason: Backfill for DENG-11219.
   watchers:
-    - lvargas@mozilla.com
-  status: Initiate
+  - lvargas@mozilla.com
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

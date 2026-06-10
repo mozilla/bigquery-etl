@@ -27,11 +27,14 @@ from bigquery_etl.backfill.utils import (
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
+    query_supports_reinitialize,
 )
 from bigquery_etl.cli.backfill import (
     _copy_backfill_staging_to_prod,
     _initialize_previous_partition,
     _initiate_backfill,
+    _reinitialize_into_staging,
+    _resolve_backfill_table,
     complete,
     create,
     info,
@@ -44,6 +47,7 @@ from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException, SkippedDeployException
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.util.target import Target
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -335,6 +339,63 @@ class TestBackfill:
         assert backfill.watchers == [VALID_WATCHER]
         assert backfill.reason == DEFAULT_REASON
         assert backfill.status == DEFAULT_STATUS
+
+    def test_create_backfill_reinitialize_table(self, runner):
+        """--reinitialize-table is persisted and allows the depends_on_past null-partition combo."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--reinitialize-table",
+            ],
+        )
+
+        assert result.exit_code == 0
+        backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
+        backfill = Backfill.entries_from_file(backfill_file)[0]
+        assert backfill.reinitialize_table is True
+        # batch size is left unset (resolved to the default at initiate time) and so
+        # is not written to backfill.yaml when the flag isn't passed
+        assert backfill.reinitialize_sampling_batch_size is None
+        assert "reinitialize_sampling_batch_size" not in Path(backfill_file).read_text()
+
+    def test_create_backfill_reinitialize_custom_batch_size(self, runner):
+        """--reinitialize-sampling-batch-size is persisted on the entry."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        result = runner.invoke(
+            create,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                "--start_date=2021-03-01",
+                "--reinitialize-table",
+                "--reinitialize-sampling-batch-size=25",
+            ],
+        )
+
+        assert result.exit_code == 0
+        backfill_file = QUERY_DIR + "/" + BACKFILL_FILE
+        backfill = Backfill.entries_from_file(backfill_file)[0]
+        assert backfill.reinitialize_sampling_batch_size == 25
 
     def test_create_backfill_with_exsting_entry(self, runner):
         backfill_entry_1 = Backfill(
@@ -728,6 +789,144 @@ class TestBackfill:
             "depends on past and null partition parameter are not supported"
             in result.output
         )
+
+    def test_validate_backfill_depends_on_past_null_partition_param_reinitialize_passes(
+        self, runner, mock_date
+    ):
+        """Validation should pass for the depends_on_past null-partition combo when the
+        entry sets reinitialize_table and the query uses is_init()."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        # depends_on_past tables also require the end date to be on or after the entry
+        # date (or an override), which is unrelated to the reinitialize bypass.
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE
+            + "  reinitialize_table: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_backfill_reinitialize_without_is_init_fails(self, runner):
+        """reinitialize_table doesn't bypass the check if the query has no is_init()."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        # query.sql has no is_init() (default "SELECT 1" from setup_files)
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            BACKFILL_YAML_TEMPLATE + "  reinitialize_table: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 1
+        assert (
+            "depends on past and null partition parameter are not supported"
+            in result.output
+        )
+
+    def test_validate_backfill_reinitialize_reads_initiate_entry_not_newest(
+        self, runner, mock_date
+    ):
+        """The reinitialize flag is read from the Initiate-status entry (which initiate
+        acts on), not whichever entry happens to be newest by entry date."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata))
+        with open(os.path.join(QUERY_DIR, "query.sql"), "w") as f:
+            f.write("SELECT 1 {% if is_init() %} {% endif %}")
+
+        # Newest entry is a Complete backfill without reinitialize_table; the older
+        # entry is the Initiate one that does reinitialize. Validation must read the
+        # Initiate entry's flag (and pass), not the newest entry's (which would fail).
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-05:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-05-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Complete\n"
+            "  override_depends_on_past_end_date: true\n"
+            + BACKFILL_YAML_TEMPLATE
+            + "  reinitialize_table: true\n"
+            + "  override_depends_on_past_end_date: true\n"
+        )
+
+        result = runner.invoke(
+            validate,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_query_supports_reinitialize_matches_jinja_if_block_forms(self):
+        """is_init() is recognized in if-blocks (including whitespace-trim and compound
+        conditions) but not in comments or non-if uses."""
+        query_path = Path(QUERY_DIR) / "query.sql"
+
+        supported = [
+            "SELECT 1 {% if is_init() %} {% endif %}",
+            "SELECT 1 {%- if is_init() %} {% endif %}",
+            "SELECT 1 {% if is_init() and foo %} {% endif %}",
+            "SELECT 1 {% if not is_init() %} {% endif %}",
+        ]
+        for sql in supported:
+            query_path.write_text(sql)
+            assert query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
+
+        unsupported = [
+            "SELECT 1 -- is_init()",
+            "SELECT 1 {% set x = is_init() %}",
+            "SELECT 1",
+        ]
+        for sql in unsupported:
+            query_path.write_text(sql)
+            assert not query_supports_reinitialize(
+                "sql", "moz-fx-data-shared-prod.test.test_query_v1"
+            ), sql
 
     def test_validate_backfill_invalid_table_name(self, runner):
         result = runner.invoke(
@@ -2168,6 +2367,66 @@ class TestBackfill:
         assert call_kwargs["query_script_arg"] == ["--dataset=staging"]
 
     @patch("google.cloud.bigquery.Client")
+    def test_initiate_backfill_skips_query_target_resolution(self, mock_client, runner):
+        """When initiate calls query.backfill, the original --target should be used, not overidden by query.backfill."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        staging = "sandbox.backfills_staging_derived.test__test_query_v1_2026_01_01"
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=staging,
+            entry=entry,
+            effective_table_name="sandbox.dev_test.test_query_v1",
+        )
+
+        call_kwargs = mock_context.invoke.call_args[1]
+        assert call_kwargs["destination_table"] == staging
+        assert call_kwargs["skip_target_resolution"] is True
+
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_python_script_with_target_should_be_rejected(
+        self, mock_client, mock_should_initiate, runner
+    ):
+        """initiate for a query.py backfill under --target should be rejected, not silently target prod staging."""
+        mock_should_initiate.return_value = True
+        sql_file = Path(QUERY_DIR) / "query.sql"
+        sql_file.rename(sql_file.with_suffix(".py"))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            "2021-05-03:\n"
+            "  start_date: 2021-01-03\n"
+            "  end_date: 2021-01-03\n"
+            "  reason: test_reason\n"
+            "  watchers:\n"
+            "  - test@example.org\n"
+            "  status: Initiate\n"
+            "  query_script_entrypoint: main\n"
+            "  query_script_date_arg: date\n"
+        )
+
+        result = runner.invoke(
+            initiate,
+            ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+            obj={"target": Target(name="dev", project_id="sandbox")},
+        )
+
+        assert result.exit_code != 0
+        assert "not supported for query.py" in result.output
+
+    @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
     def test_initiate_backfill_script_skips_depends_on_past(
         self, mock_initialize_partition, mock_client, runner
@@ -2204,6 +2463,143 @@ class TestBackfill:
 
         assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
         assert mock_initialize_partition.call_count == 0
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._initialize_previous_partition")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_reinitialize_skips_day_by_day(
+        self, mock_reinitialize, mock_initialize_partition, mock_client, runner
+    ):
+        """reinitialize_table should rebuild via is_init() and skip the day-by-day path."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} {% endif %}"
+        )
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            reinitialize_table=True,
+        )
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+            entry=entry,
+        )
+
+        assert mock_reinitialize.call_count == 1
+        # the day-by-day query backfill and previous-partition seeding are skipped
+        assert mock_context.invoke.call_count == 0
+        assert mock_initialize_partition.call_count == 0
+        assert not (Path(QUERY_DIR) / "replaced_ref.sql").exists()
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill._reinitialize_into_staging")
+    def test_initiate_backfill_reinitialize_python_script_fails(
+        self, mock_reinitialize, mock_client, runner
+    ):
+        """reinitialize_table is rejected for python-script tables, which have no
+        query.sql is_init() branch to rerun (rather than silently falling through)."""
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
+        # A python-script table is identified by the presence of query.py.
+        (Path(QUERY_DIR) / "query.py").write_text("# script")
+
+        entry = Backfill(
+            entry_date=date(2026, 1, 1),
+            start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 1),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=DEFAULT_STATUS,
+            reinitialize_table=True,
+        )
+
+        with pytest.raises(ValueError, match="not supported for python-script tables"):
+            _initiate_backfill(
+                ctx=MagicMock(),
+                qualified_table_name=prod_table_name,
+                backfill_staging_qualified_table_name="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1",
+                entry=entry,
+                is_python_script=True,
+            )
+
+        # the reinitialize path is never entered for a python-script table
+        assert mock_reinitialize.call_count == 0
+
+    @patch("bigquery_etl.cli.query._initialize_in_parallel")
+    def test_reinitialize_into_staging_batches_sample_ids(self, mock_init_parallel):
+        """The is_init() query runs into staging, batched over sample_ids."""
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} "
+            "AND sample_id >= @sample_id "
+            "AND sample_id < @sample_id + @sampling_batch_size "
+            "{% endif %}"
+        )
+        staging = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        _reinitialize_into_staging(
+            qualified_table_name="moz-fx-data-shared-prod.test.test_query_v1",
+            backfill_staging_qualified_table_name=staging,
+            billing_project=DEFAULT_BILLING_PROJECT,
+        )
+
+        assert mock_init_parallel.call_count == 1
+        kwargs = mock_init_parallel.call_args.kwargs
+        # destination is the staging table, not prod
+        assert kwargs["table"] == staging
+        # batched by 20 => 5 jobs
+        assert kwargs["sample_ids"] == [0, 20, 40, 60, 80]
+        assert "--parameter=sampling_batch_size:INT64:20" in kwargs["arguments"]
+        # don't redirect a public-dataset table's writes away from staging
+        assert kwargs["ignore_public_dataset"] is True
+
+    @patch("bigquery_etl.cli.query._initialize_in_parallel")
+    def test_reinitialize_into_staging_custom_batch_size(self, mock_init_parallel):
+        """A non-default sampling_batch_size changes the batching and the parameter."""
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            "SELECT 1 {% if is_init() %} "
+            "AND sample_id >= @sample_id "
+            "AND sample_id < @sample_id + @sampling_batch_size "
+            "{% endif %}"
+        )
+        staging = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        _reinitialize_into_staging(
+            qualified_table_name="moz-fx-data-shared-prod.test.test_query_v1",
+            backfill_staging_qualified_table_name=staging,
+            billing_project=DEFAULT_BILLING_PROJECT,
+            sampling_batch_size=25,
+        )
+
+        kwargs = mock_init_parallel.call_args.kwargs
+        # batched by 25 => 4 jobs
+        assert kwargs["sample_ids"] == [0, 25, 50, 75]
+        assert "--parameter=sampling_batch_size:INT64:25" in kwargs["arguments"]
 
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.backfill.utils._should_initiate")
@@ -2683,6 +3079,53 @@ class TestBackfill:
             )
             assert call.args == (expected_staging, expected_prod, None)
 
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_reinitialize(self, mock_copy_table):
+        """A reinitialized table is copied whole, not partition-by-partition."""
+        # Partitioned table that would otherwise be copied per-partition.
+        partitioned_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "first_seen_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(partitioned_metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days, but a full rebuild ignores the range
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+            reinitialize_table=True,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Single whole-table copy, not 3 per-partition copies.
+        assert mock_copy_table.call_count == 1
+        assert mock_copy_table.call_args.args == (
+            "moz-fx-data-shared-prod.staging.table",
+            "moz-fx-data-shared-prod.dataset.table",
+            None,
+        )
+
 
 class TestCopyPermissionsToStagingTable:
     PROD_TABLE = "moz-fx-data-shared-prod.test_dataset.test_table"
@@ -2860,3 +3303,154 @@ class TestCopyPermissionsToStagingTable:
                 "serviceAccount:123-compute@developer.gserviceaccount.com",
             },
         }
+
+
+class TestBackfillTargetSupport:
+    """Backfill commands should redirect into the target environment when --target is set."""
+
+    PROD_TABLE = "moz-fx-data-shared-prod.test_derived.test_table_v1"
+
+    def _target(self):
+        return Target(
+            name="dev",
+            project_id="sandbox",
+            dataset_prefix="dev_mybranch__{{ artifact.project_id }}__",
+        )
+
+    def test_resolve_backfill_table_without_target_should_return_source_unchanged(self):
+        """_resolve_backfill_table without a target should return the source table and no destination project."""
+        table, dest_project = _resolve_backfill_table(None, self.PROD_TABLE)
+        assert table == self.PROD_TABLE
+        assert dest_project is None
+
+    def test_resolve_backfill_table_with_target_should_map_to_target_table(self):
+        """_resolve_backfill_table with a target should map the source to the target-deployed table and project."""
+        table, dest_project = _resolve_backfill_table(self._target(), self.PROD_TABLE)
+        # dataset_prefix renders artifact.project_id (sanitized) and prefixes the
+        # dataset; table name is unchanged (no artifact_prefix configured).
+        assert table == (
+            "sandbox."
+            "dev_mybranch__moz_fx_data_shared_prod__test_derived."
+            "test_table_v1"
+        )
+        assert dest_project == "sandbox"
+
+    def test_staging_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_staging_qualified_table_name should place staging in the destination project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="sandbox",
+        )
+        assert name == (
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_2021_05_03"
+        )
+
+    def test_backup_name_with_destination_project_should_use_target_project(self):
+        """get_backfill_backup_table_name should place the backup in the destination project."""
+        name = get_backfill_backup_table_name(
+            self.PROD_TABLE,
+            date(2021, 5, 3),
+            destination_project="sandbox",
+        )
+        assert name == (
+            "sandbox.backfills_staging_derived."
+            "test_derived__test_table_v1_backup_2021_05_03"
+        )
+
+    def test_staging_name_without_destination_project_should_default_to_prod(self):
+        """get_backfill_staging_qualified_table_name without a destination should default to the prod backfill project."""
+        name = get_backfill_staging_qualified_table_name(
+            self.PROD_TABLE, date(2021, 5, 3)
+        )
+        assert name.startswith(
+            f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}."
+        )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_with_skip_public_redirect_should_keep_target_destination(
+        self, mock_copy_table
+    ):
+        """_copy_backfill_staging_to_prod with skip_public_redirect should keep the target table as the destination."""
+        public_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+            "bigquery": {
+                "time_partitioning": {"type": "day", "field": "submission_date"}
+            },
+        }
+        # isolate the filesystem so the temporary metadata.yaml isn't written to cwd
+        with CliRunner().isolated_filesystem():
+            with open(METADATA_FILE, "w") as f:
+                f.write(yaml.dump(public_metadata))
+            metadata = Metadata.from_file(METADATA_FILE)
+
+        entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 3),  # single day
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="sandbox.backfills_staging_derived.tbl",
+            qualified_table_name="sandbox.dev_ds.tbl",
+            client=None,
+            entry=entry,
+            table_metadata=metadata,
+            skip_public_redirect=True,
+        )
+
+        # destination stays the target table; no redirect to mozilla-public-data
+        assert mock_copy_table.call_count == 1
+        staging_arg, prod_arg = mock_copy_table.call_args.args[:2]
+        assert prod_arg.startswith("sandbox.dev_ds.tbl$")
+        assert "mozilla-public-data" not in prod_arg
+
+    @patch("bigquery_etl.backfill.utils._table_exists")
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_get_scheduled_backfills_with_destination_project_should_check_target_staging(
+        self, mock_client, mock_table_exists
+    ):
+        """get_scheduled_backfills with a destination_project should check staging existence in the target project."""
+        with CliRunner().isolated_filesystem():
+            table_dir = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(table_dir)
+            with open(f"{table_dir}/query.sql", "w") as f:
+                f.write("SELECT 1")
+            with open(f"{table_dir}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+            with open(f"{table_dir}/{BACKFILL_FILE}", "w") as f:
+                f.write(
+                    "2021-05-03:\n"
+                    "  start_date: 2021-01-03\n"
+                    "  end_date: 2021-01-03\n"
+                    "  reason: test_reason\n"
+                    "  watchers:\n"
+                    "  - test@example.org\n"
+                    "  status: Complete\n"
+                )
+
+            # staging exists, backup does not -> eligible to complete
+            mock_table_exists.side_effect = [True, False]
+
+            from bigquery_etl.backfill.utils import get_scheduled_backfills
+
+            result = get_scheduled_backfills(
+                "sql",
+                "moz-fx-data-shared-prod",
+                "moz-fx-data-shared-prod.test.test_query_v1",
+                status=BackfillStatus.COMPLETE.value,
+                destination_project="sandbox",
+            )
+
+            assert "moz-fx-data-shared-prod.test.test_query_v1" in result
+            # the staging existence check used the target project, not prod
+            checked_staging = mock_table_exists.call_args_list[0].args[1]
+            assert checked_staging.startswith("sandbox.backfills_staging_derived.")

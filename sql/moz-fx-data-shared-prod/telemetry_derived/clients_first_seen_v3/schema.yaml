@@ -280,3 +280,8 @@ fields:
   mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.
+- name: attribution_msstoresignedin
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the user was signed in to the Microsoft Store at install time,
+    when Firefox was installed via the Microsoft Store

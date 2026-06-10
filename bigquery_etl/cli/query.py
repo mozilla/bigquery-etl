@@ -103,6 +103,11 @@ DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 3
 INIT_SAMPLE_ID_PARALLELISM = 2
+
+# Default number of sample_ids processed per init/reinitialize batch.
+# BigQuery limits partition modifications to 30000 per table per day and
+# partition_modifications = num_batches * num_partitions.
+DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE = 20
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
@@ -710,6 +715,16 @@ def _backfill_script(
 @backfill_options.query_script_entrypoint()
 @backfill_options.query_script_date_arg()
 @backfill_options.query_script_arg()
+@defer_option()
+@click.option(
+    "--skip-target-resolution",
+    "--skip_target_resolution",
+    is_flag=True,
+    default=False,
+    hidden=True,
+    help="Internal: skip --target redirection because the caller (managed backfill) "
+    "has already resolved the destination table.",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -732,6 +747,8 @@ def backfill(
     query_script_entrypoint,
     query_script_date_arg,
     query_script_arg,
+    defer_to_target,
+    skip_target_resolution,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -769,6 +786,36 @@ def backfill(
         raise click.ClickException(
             f"Found multiple query source files to backfill: {query_files}"
         )
+
+    # The managed backfill flow (bqetl backfill initiate) calls this command with a
+    # destination already resolved for the active target, so it opts out of target
+    # redirection here to avoid double-handling.
+    #
+    # NOTE: any internal caller that passes --destination-table together with an active
+    # ctx target MUST also pass skip_target_resolution=True; otherwise the
+    # mutual-exclusivity check below raises.
+    target = (
+        None if skip_target_resolution else (ctx.obj.get("target") if ctx.obj else None)
+    )
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
+    # prepare target directories if using --target; the backfill then reads the
+    # target-copied query, runs in the target project, and writes to the target table
+    if target and target.project_id != project_id:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=True,
+        )
+        project_id = target.project_id
 
     query_file = query_files[0]
     query_file_path = Path(query_file)
@@ -1656,6 +1703,7 @@ def _initialize_in_parallel(
     sample_ids,
     addl_templates,
     billing_project,
+    ignore_public_dataset: bool = False,
 ):
     with ThreadPool(parallelism) as pool:
         # Process all sample_ids in parallel.
@@ -1669,8 +1717,82 @@ def _initialize_in_parallel(
                 dataset,
                 addl_templates=addl_templates,
                 billing_project=billing_project,
+                ignore_public_dataset=ignore_public_dataset,
             ),
             [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
+        )
+
+
+def _run_init_query(
+    project,
+    destination_table,
+    dataset,
+    query_file,
+    sql_content,
+    billing_project,
+    public_project_id=None,
+    sampling_batch_size=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+    dry_run=False,
+    ignore_public_dataset=False,
+):
+    """Run a query's is_init() branch into the destination table.
+
+    Appends to the (already-created) destination table. For queries with a
+    @sample_id parameter the run is parallelized over sample_ids, batched by
+    sampling_batch_size when the query also uses @sampling_batch_size (to stay
+    under BigQuery's 30000 partition-modifications/table/day cap, since
+    partition_modifications = num_batches * num_partitions). Shared by
+    `query initialize` and the backfill reinitialize path.
+    """
+    arguments = [
+        "query",
+        "--use_legacy_sql=false",
+        "--format=none",
+        "--append_table",
+        "--noreplace",
+    ]
+    if dry_run:
+        arguments += ["--dry_run"]
+
+    if "@sample_id" in sql_content:
+        sample_ids = list(range(0, 100))
+
+        # To support batch initialization, include the following clause in your query:
+        # AND sample_id >= @sample_id
+        # AND sample_id < @sample_id + @sampling_batch_size
+        #
+        # This limits each run to a range of sample IDs equal to the specified batch
+        # size (e.g., if @sample_id=0 and @sampling_batch_size=20, sample IDs 0–19).
+        if "@sampling_batch_size" in sql_content:
+            sample_ids = list(range(0, 100, sampling_batch_size))
+            arguments += [
+                f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
+            ]
+
+        _initialize_in_parallel(
+            project=project,
+            public_project_id=public_project_id,
+            table=destination_table,
+            dataset=dataset,
+            query_file=query_file,
+            arguments=arguments,
+            parallelism=INIT_SAMPLE_ID_PARALLELISM,
+            sample_ids=sample_ids,
+            addl_templates={"is_init": lambda: True},
+            billing_project=billing_project,
+            ignore_public_dataset=ignore_public_dataset,
+        )
+    else:
+        _run_query(
+            query_files=[query_file],
+            project_id=project,
+            public_project_id=public_project_id,
+            destination_table=destination_table,
+            dataset_id=dataset,
+            query_arguments=arguments,
+            addl_templates={"is_init": lambda: True},
+            billing_project=billing_project,
+            ignore_public_dataset=ignore_public_dataset,
         )
 
 
@@ -1733,9 +1855,9 @@ def _initialize_in_parallel(
 @click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
-    help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
+    help="Number of sample IDs per initialization batch (e.g. 0–19, 20–39, etc.).",
     type=int,
-    default=4,
+    default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
 )
 @click.option(
     "--file",
@@ -1870,60 +1992,19 @@ def initialize(
                         respect_dryrun_skip=False,
                     )
 
-                arguments = [
-                    "query",
-                    "--use_legacy_sql=false",
-                    "--format=none",
-                    "--append_table",
-                    "--noreplace",
-                ]
-                if dry_run:
-                    arguments += ["--dry_run"]
-
-                if "@sample_id" in sql_content:
-                    sample_ids = list(range(0, 100))
-
-                    # To support batch initialization, include the following clause in your query:
-                    # AND sample_id >= @sample_id
-                    # AND sample_id < @sample_id + @sampling_batch_size
-                    #
-                    # This limits each run to a range of sample IDs equal to the specified batch size
-                    # (e.g., if @sample_id=0 and @sampling_batch_size=4, the query processes sample IDs 0–3).
-                    if "@sampling_batch_size" in sql_content:
-                        sample_ids = [i for i in range(0, 100, sampling_batch_size)]
-                        arguments += [
-                            f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
-                        ]
-
-                    _initialize_in_parallel(
-                        project=project,
-                        public_project_id=public_project_id,
-                        table=destination_table if public_project_id else full_table_id,
-                        dataset=dataset,
-                        query_file=query_file,
-                        arguments=arguments,
-                        parallelism=INIT_SAMPLE_ID_PARALLELISM,
-                        sample_ids=sample_ids,
-                        addl_templates={
-                            "is_init": lambda: True,
-                        },
-                        billing_project=billing_project,
-                    )
-                else:
-                    _run_query(
-                        query_files=[query_file],
-                        project_id=project,
-                        public_project_id=public_project_id,
-                        destination_table=(
-                            destination_table if public_project_id else full_table_id
-                        ),
-                        dataset_id=dataset,
-                        query_arguments=arguments,
-                        addl_templates={
-                            "is_init": lambda: True,
-                        },
-                        billing_project=billing_project,
-                    )
+                _run_init_query(
+                    project=project,
+                    public_project_id=public_project_id,
+                    destination_table=(
+                        destination_table if public_project_id else full_table_id
+                    ),
+                    dataset=dataset,
+                    query_file=query_file,
+                    sql_content=sql_content,
+                    sampling_batch_size=sampling_batch_size,
+                    dry_run=dry_run,
+                    billing_project=billing_project,
+                )
             else:
                 for file in materialized_views:
                     with open(file) as init_file_stream:

@@ -18,6 +18,11 @@ QUALIFIED_TABLE_NAME_RE = re.compile(
     r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
 )
 
+# Match an `{% if ... is_init() ... %}` block (including the `{%-` whitespace-trim form
+# and compound conditions like `{% if is_init() and foo %}`) instead of a bare
+# `is_init()`, which can appear in a comment.
+IS_INIT_BLOCK_RE = re.compile(r"{%-?\s*if\s+[^%]*\bis_init\(\)")
+
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
@@ -104,25 +109,43 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
     return backfill_file
 
 
-# TODO: It would be better to take in a backfill object.
-def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
-    """Return full table name where processed backfills are stored."""
+def get_backfill_staging_qualified_table_name(
+    qualified_table_name, entry_date, destination_project: Optional[str] = None
+) -> str:
+    """Return full table name where processed backfills are stored.
+
+    When a target environment is active, destination_project points the staging
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
 
-def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) -> str:
-    """Return full table name where backup of production table is stored."""
+def get_backfill_backup_table_name(
+    qualified_table_name: str,
+    entry_date: date,
+    destination_project: Optional[str] = None,
+) -> str:
+    """Return full table name where backup of production table is stored.
+
+    When a target environment is active, destination_project points the backup
+    table at the target project (e.g. a dev sandbox) instead of production.
+    """
     _, dataset, table = qualified_table_name_matching(qualified_table_name)
     cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
+    project = destination_project or BACKFILL_DESTINATION_PROJECT
 
-    return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    return f"{project}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
 def validate_table_metadata(
-    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+    sql_dir: str,
+    qualified_table_name: str,
+    ignore_missing_metadata: bool,
+    reinitialize_table: bool = False,
 ) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
     if ignore_missing_metadata:
@@ -137,9 +160,12 @@ def validate_table_metadata(
             return []
 
     errors = []
-    if not validate_depends_on_past(sql_dir, qualified_table_name):
+    if not validate_depends_on_past(
+        sql_dir, qualified_table_name, reinitialize_table=reinitialize_table
+    ):
         errors.append(
-            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}"
+            f"Tables with depends on past and null partition parameter are not supported: {qualified_table_name}. "
+            "Use --reinitialize-table with `bqetl backfill create` to rebuild via the table's is_init() query."
         )
 
     if not validate_partitioning_type(sql_dir, qualified_table_name):
@@ -151,10 +177,14 @@ def validate_table_metadata(
     return errors
 
 
-def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
+def validate_depends_on_past(
+    sql_dir: str, qualified_table_name: str, reinitialize_table: bool = False
+) -> bool:
     """Check if the table depends on past and has null date_partition_parameter.
 
-    Fail if depends_on_past=true and date_partition_parameter=null
+    Fail if depends_on_past=true and date_partition_parameter=null, unless the
+    backfill reinitializes the table via its is_init() query (reinitialize_table=true),
+    which rebuilds the whole table without depending on prior partitions.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
@@ -165,12 +195,26 @@ def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
         "depends_on_past" in table_metadata.scheduling
         and "date_partition_parameter" in table_metadata.scheduling
     ):
-        return not (
+        depends_on_past_null_partition = (
             table_metadata.scheduling["depends_on_past"]
             and table_metadata.scheduling["date_partition_parameter"] is None
         )
+        if depends_on_past_null_partition and reinitialize_table:
+            # The reinitialize path rebuilds the whole table from its is_init() query;
+            # require that the query actually supports it.
+            return query_supports_reinitialize(sql_dir, qualified_table_name)
+        return not depends_on_past_null_partition
 
     return True
+
+
+def query_supports_reinitialize(sql_dir: str, qualified_table_name: str) -> bool:
+    """Return True if the table's query.sql can be reinitialized via is_init()."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+    if not query_path.exists():
+        return False
+    return IS_INIT_BLOCK_RE.search(query_path.read_text()) is not None
 
 
 def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
@@ -210,9 +254,15 @@ def get_scheduled_backfills(
     status: Optional[str] = None,
     ignore_old_entries: bool = False,
     ignore_missing_metadata: bool = False,
+    destination_project: Optional[str] = None,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate or complete."""
-    client = bigquery.Client(project=project)
+    """Return backfill entries to initiate or complete.
+
+    When a target environment is active, destination_project is where the staging
+    and backup tables live (the target project), which is checked for existence
+    instead of the production backfill project.
+    """
+    client = bigquery.Client(project=destination_project or project)
 
     if qualified_table_name:
         backfills_dict = {
@@ -265,10 +315,14 @@ def get_scheduled_backfills(
 
         if (
             BackfillStatus.INITIATE.value == status
-            and _should_initiate(client, entry_to_process, qualified_table_name)
+            and _should_initiate(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ) or (
             BackfillStatus.COMPLETE.value == status
-            and _should_complete(client, entry_to_process, qualified_table_name)
+            and _should_complete(
+                client, entry_to_process, qualified_table_name, destination_project
+            )
         ):
             backfills_to_process_dict[qualified_table_name] = entry_to_process
 
@@ -276,7 +330,10 @@ def get_scheduled_backfills(
 
 
 def _should_initiate(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be initiated.
 
@@ -286,7 +343,7 @@ def _should_initiate(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
 
     if _table_exists(client, staging_table):
@@ -296,7 +353,10 @@ def _should_initiate(
 
 
 def _should_complete(
-    client: bigquery.Client, backfill: Backfill, qualified_table_name: str
+    client: bigquery.Client,
+    backfill: Backfill,
+    qualified_table_name: str,
+    destination_project: Optional[str] = None,
 ) -> bool:
     """Determine whether a backfill should be completed.
 
@@ -306,14 +366,14 @@ def _should_complete(
         return False
 
     staging_table = get_backfill_staging_qualified_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if not _table_exists(client, staging_table):
         click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(
-        qualified_table_name, backfill.entry_date
+        qualified_table_name, backfill.entry_date, destination_project
     )
     if _table_exists(client, backup_table_name):
         click.echo(f"Backfill backup table already exists: {backup_table_name}")

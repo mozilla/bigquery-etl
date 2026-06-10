@@ -13,7 +13,6 @@ from bigquery_etl.util.target import (
     Target,
     _normalize_table_ref,
     _substitute_3part_ref,
-    _target_ref_for_source,
     collect_target_dependencies,
     extract_commit_from_dataset_name,
     get_deployed_tables_in_target,
@@ -23,6 +22,7 @@ from bigquery_etl.util.target import (
     read_source_identity_from_manifest,
     render_artifact_prefix_pattern,
     render_dataset_pattern,
+    target_ref_for_source,
 )
 
 
@@ -578,7 +578,7 @@ class TestTargetRefForSource:
             project_id="dev-proj",
             dataset_prefix="user_main_{{ artifact.project_id }}_",
         )
-        proj, ds, tbl = _target_ref_for_source(
+        proj, ds, tbl = target_ref_for_source(
             target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
         )
         assert proj == "dev-proj"
@@ -587,7 +587,7 @@ class TestTargetRefForSource:
 
     def test_dataset_field(self):
         target = Target(name="dev", project_id="dev-proj", dataset="anna_dev")
-        proj, ds, tbl = _target_ref_for_source(
+        proj, ds, tbl = target_ref_for_source(
             target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
         )
         assert (proj, ds, tbl) == ("dev-proj", "anna_dev", "tbl_v1")
@@ -599,14 +599,14 @@ class TestTargetRefForSource:
             dataset="anna_dev",
             artifact_prefix="branch_{{ artifact.dataset_id }}_",
         )
-        _, _, tbl = _target_ref_for_source(
+        _, _, tbl = target_ref_for_source(
             target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
         )
         assert tbl == "branch_telemetry_derived_tbl_v1"
 
     def test_no_dataset_or_prefix_passthrough(self):
         target = Target(name="dev", project_id="dev-proj")
-        proj, ds, tbl = _target_ref_for_source(
+        proj, ds, tbl = target_ref_for_source(
             target, "dev-proj", "moz-fx-data-shared-prod", "telemetry_derived", "tbl_v1"
         )
         assert (proj, ds, tbl) == ("dev-proj", "telemetry_derived", "tbl_v1")

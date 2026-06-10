@@ -50,7 +50,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    docker_image = "us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest"
+    docker_image = (
+        "us-docker.pkg.dev/moz-fx-data-artifacts-prod/private-bigquery-etl/private-bigquery-etl:latest"
+    )
 {% for task_group in task_groups | sort %}
     task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
 {% endfor %}

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles`
+  `moz-fx-data-shared-prod.data_governance_metadata.column_profiles`
 AS
 SELECT
   *

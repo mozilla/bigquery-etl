@@ -8,26 +8,27 @@ enrichment tooling to generate accurate column descriptions.
 ## Architecture
 
 A single weekly job profiles a configurable list of source datasets and writes
-all rows to **one table**, `column_profiles_v1`, tagged with
-`source_dataset`/`source_table`. An unversioned passthrough **view**,
-`column_profiles`, is the read surface:
+all rows to **one table**, `column_profiles_v1`, in
+`data_governance_metadata_derived`, tagged with `source_dataset`/`source_table`.
+An unversioned passthrough **view**, `column_profiles`, in the user-facing
+`data_governance_metadata` dataset is the read surface. Both datasets are
+restricted to the `dataplatform/data-governance-developers` workgroup.
 
 ```mermaid
 flowchart LR
     DS(["Source datasets<br/><b>--source-datasets</b><br/>e.g. telemetry_derived, telemetry"])
     JOB["<b>bqetl_data_governance_metadata</b><br/>weekly · single task<br/>profile → one WRITE_TRUNCATE load"]
 
-    subgraph BQ["data_governance_metadata_derived"]
-        direction LR
+    subgraph DERIVED["data_governance_metadata_derived (derived_restricted)"]
         TBL[("<b>column_profiles_v1</b> (table)<br/>partition: profiled_at DATE<br/>cluster: source_dataset,<br/>source_table, column_name<br/>retention: 90 days")]
+    end
+    subgraph PUBLIC["data_governance_metadata (view_restricted)"]
         VIEW["<b>column_profiles</b> (view)<br/>SELECT * FROM column_profiles_v1"]
-        TBL --> VIEW
     end
 
     AGENT{{"<b>schema_enricher</b><br/>read_column_profiles"}}
 
-    DS --> JOB --> TBL
-    VIEW --> AGENT
+    DS --> JOB ---> TBL ---> VIEW --> AGENT
 
     classDef source fill:#e3f2fd,stroke:#1565c0,color:#0d47a1;
     classDef job fill:#fff3e0,stroke:#e65100,color:#bf360c;
@@ -37,7 +38,8 @@ flowchart LR
     class JOB job
     class TBL,VIEW store
     class AGENT consumer
-    style BQ fill:#fafafa,stroke:#bdbdbd,color:#424242
+    style DERIVED fill:#fafafa,stroke:#bdbdbd,color:#424242
+    style PUBLIC fill:#fafafa,stroke:#bdbdbd,color:#424242
 ```
 
 A single task accumulates every dataset's rows and overwrites the run's
@@ -55,7 +57,7 @@ Latest profile for one table's columns:
 
 ```sql
 SELECT column_name, data_type, null_rate, distinct_count, example_value
-FROM `moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles`
+FROM `moz-fx-data-shared-prod.data_governance_metadata.column_profiles`
 WHERE source_dataset = 'telemetry_derived'
   AND source_table   = 'feature_usage_v2'
   AND profiled_at >= CURRENT_DATE() - INTERVAL 14 DAY   -- prunes to ~1-2 partitions
@@ -66,7 +68,7 @@ Low-cardinality value distribution for a column:
 
 ```sql
 SELECT column_name, v.value, v.frequency
-FROM `moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles`,
+FROM `moz-fx-data-shared-prod.data_governance_metadata.column_profiles`,
      UNNEST(values) AS v
 WHERE source_dataset = 'telemetry_derived'
   AND source_table   = 'feature_usage_v2'
@@ -79,7 +81,7 @@ Coverage snapshot for a dataset (how many columns profiled, by tier):
 
 ```sql
 SELECT source_table, column_tier, COUNT(*) AS n_columns
-FROM `moz-fx-data-shared-prod.data_governance_metadata_derived.column_profiles`
+FROM `moz-fx-data-shared-prod.data_governance_metadata.column_profiles`
 WHERE source_dataset = 'telemetry_derived'
   AND profiled_at >= CURRENT_DATE() - INTERVAL 14 DAY
 GROUP BY source_table, column_tier
@@ -149,7 +151,7 @@ Paste a JSON config (both keys optional):
 
 ### For permanent job runs:
 Edit the `source_datasets` in
-[`../column_profiles_v1/metadata.yaml`](../column_profiles_v1/metadata.yaml):
+[`metadata.yaml`](./metadata.yaml):
 
 ```yaml
 scheduling:

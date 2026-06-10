@@ -55,4 +55,4 @@ fields:
 - name: profiled_at
   type: DATE
   mode: NULLABLE
-  description: Run date of the profiling job; the partition key of the underlying per-dataset tables.
+  description: Run date of the profiling job; the partition key of the underlying column_profiles_v1 table.

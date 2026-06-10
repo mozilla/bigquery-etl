@@ -2800,7 +2800,7 @@ bqetl_gecko_trace:
     owner: jjalkanen@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: "2025-09-26"
+    start_date: "2026-06-10"
   description: |
     Processes gecko trace data across multiple Firefox applications.
   repo: bigquery-etl

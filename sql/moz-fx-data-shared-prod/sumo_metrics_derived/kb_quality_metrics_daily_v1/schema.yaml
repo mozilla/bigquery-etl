@@ -1,0 +1,69 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Observation date (point-in-time snapshot within the trailing 1-year window)
+- name: daily_fresh_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of in-scope articles that were fresh (fresh_ind = 1) on `day`
+- name: daily_article_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of in-scope articles present on `day`
+- name: daily_helpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total helpful votes cast across all articles on `day`
+- name: daily_total_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total votes cast across all articles on `day`
+- name: fresh_count_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 14-day moving average of daily_fresh_count
+- name: article_count_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 14-day moving average of daily_article_count
+- name: helpful_votes_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 14-day moving average of daily_helpful_votes
+- name: total_votes_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: 14-day moving average of daily_total_votes
+- name: lagged_fresh_count_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: fresh_count_14_ma shifted back 14 days
+- name: lagged_article_count_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: article_count_14_ma shifted back 14 days
+- name: lagged_helpful_votes_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: helpful_votes_14_ma shifted back 14 days
+- name: lagged_total_votes_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: total_votes_14_ma shifted back 14 days
+- name: freshness_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: fresh_count_14_ma / article_count_14_ma (smoothed freshness rate)
+- name: helpful_percentage_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: helpful_votes_14_ma / total_votes_14_ma (smoothed helpfulness rate)
+- name: lagged_freshness_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: freshness_14_ma as of 14 days earlier
+- name: lagged_helpful_percentage_14_ma
+  type: FLOAT
+  mode: NULLABLE
+  description: helpful_percentage_14_ma as of 14 days earlier

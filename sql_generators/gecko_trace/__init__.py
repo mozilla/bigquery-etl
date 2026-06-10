@@ -15,7 +15,7 @@ TEMPLATES = THIS_MODULE / "templates"
 PING_NAME = "gecko_trace"
 APPLICATIONS = (
     "firefox_desktop",  # The desktop version of Firefox
-    "org_mozilla_fenix_nightly",  # Nightly channel of Firefox Preview
+    "org_mozilla_fenix_nightly",  # Nightly channel of Firefox for Android
     "org_mozilla_firefox_beta",  # Beta channel of Firefox for Android
 )
 
@@ -26,6 +26,10 @@ def generate_derived(output_dir, target_project):
 
     for app_id in APPLICATIONS:
         for template_name in env.list_templates("*.sql"):
+            # Skip shared includes (not standalone tables).
+            if template_name.startswith("_"):
+                continue
+
             query_template = env.get_template(template_name)
             table_name = template_name.split("/")[0]
             write_sql(
@@ -39,7 +43,6 @@ def generate_derived(output_dir, target_project):
                 ),
             )
 
-            # Copy metadata.yaml and schema.yaml files
             template_dir = TEMPLATES / "derived" / table_name
             output_table_dir = (
                 output_dir / target_project / f"{app_id}_derived" / table_name
@@ -57,6 +60,13 @@ def generate_derived(output_dir, target_project):
                     template_dir / "schema.yaml",
                     output_table_dir / "schema.yaml",
                 )
+
+            if (template_dir / "backfill.yaml").exists():
+                with open(output_table_dir / "backfill.yaml", "w") as f:
+                    rendered_backfill = env.get_template(
+                        table_name + "/backfill.yaml"
+                    ).render(app_id=app_id)
+                    f.write(rendered_backfill)
 
 
 def generate_aggregates(output_dir, target_project):

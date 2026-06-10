@@ -1,5 +1,11 @@
 ---
 fields:
+  - name: submission_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      Submission timestamp for when this span was received.
+      Used for partitioning and determining when the span data was first observed.
   - name: trace_id
     type: STRING
     mode: NULLABLE
